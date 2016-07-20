@@ -1,69 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/material_white">
-
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/material_white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <!--上一单信息-->
-        <LinearLayout
-            android:id="@+id/frame_lastorder"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/bg_lastorder"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_last_amount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="合计：¥0.00"
-                android:textColor="@color/material_black"
-                android:textSize="16sp"/>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/bg_lastorder"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <TextView
-                android:id="@+id/tv_last_quantity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="数量：0.00"
-                android:textColor="@color/material_black"
-                android:textSize="16sp"/>
+                <LinearLayout
+                    android:id="@+id/frame_lastorder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
 
-            <TextView
-                android:id="@+id/tv_last_discount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="优惠：¥0.00"
-                android:textColor="@color/material_black"
-                android:textSize="16sp"/>
+                    <TextView
+                        android:id="@+id/tv_last_amount"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="合计：¥0.00"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/tv_last_charge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="找零：¥0.00"
-                android:textColor="@color/material_black"
-                android:textSize="16sp"/>
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_last_quantity"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="数量：0.00"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_last_discount"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="优惠：¥0.00"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tv_last_charge"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="找零：¥0.00"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
+        <!--分割线-->
+        <View
+            android:id="@+id/horizontal_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/mf_dividerColorPrimary"/>
 
         <!--数量和价格-->
         <LinearLayout
@@ -133,7 +159,9 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"
+            android:layout_marginEnd="@dimen/spacing_double"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:layout_marginTop="@dimen/spacing_normal"
             app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:inputNumberLabelView_inputTextColor="@color/black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"
@@ -143,7 +171,8 @@
             android:id="@+id/ll_procuct_header"
             layout="@layout/itemview_header_cashier"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"/>
 
         <!--商品列表-->
         <android.support.v7.widget.RecyclerView
@@ -152,21 +181,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <!--分割线-->
-        <View
-            android:id="@+id/horizontal_line"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/mf_dividerColorPrimary"/>
 
-        <!--结算-->
-        <Button
-            android:id="@+id/button_settle"
-            style="@style/mfh_button_text"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/btn_rectange_green"
-            android:text="@string/button_settle"/>
     </LinearLayout>
 
     <TextView
@@ -174,24 +189,30 @@
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="start|bottom"
+        android:layout_marginBottom="76dp"
+        android:layout_marginStart="32dp"
         android:background="@drawable/bg_float_number"
         android:gravity="center"
         android:minWidth="80dp"
         android:singleLine="true"
         android:text=""
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="76dp"
         android:textColor="@color/material_white"
         android:textSize="20sp"
         android:visibility="visible"/>
-    <!--<android.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab_send"-->
-    <!--android:src="@mipmap/ic_aircraft_white"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="12dp"-->
-    <!--android:layout_alignParentStart="true"-->
-    <!--android:layout_alignParentBottom="true"/>-->
 
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_settle"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_checkmark_white_32"
+        app:backgroundTint="@color/material_green_500"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        app:rippleColor="@color/material_green_800"/>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

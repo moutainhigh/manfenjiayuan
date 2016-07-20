@@ -3,17 +3,13 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:baselineAligned="false"
-              android:divider="@drawable/divider_vertical_line_primary"
-              android:orientation="horizontal"
-              android:showDividers="middle">
+              android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="70dp"
         android:layout_height="match_parent"
-        android:divider="@drawable/divider_horizontal_line"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:showDividers="middle">
+        android:orientation="vertical">
         <!--导航-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/slideMenu"
