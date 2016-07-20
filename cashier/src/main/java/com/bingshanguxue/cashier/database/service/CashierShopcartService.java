@@ -194,8 +194,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
                 shopcartEntity.setCateType(goods.getCateType());
 
                 shopcartEntity.setCostPrice(goods.getCostPrice());
-                //默认会员价使用标准单价计算，可以在后面售价时修改。
-                shopcartEntity.setFinalPrice(goods.getCostPrice());
+                shopcartEntity.setFinalPrice(goods.getFinalPrice());
             }
 
             //标准价金额
