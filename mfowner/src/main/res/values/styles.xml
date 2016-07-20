@@ -1,0 +1,258 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+        <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/owner_actionbar_style</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:homeAsUpIndicator">@drawable/actionbar_back_indicator</item>
+        <!--返回icon-->
+    </style>
+
+    <style name="owner_actionbar_style" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#fff8f8f6</item>
+        <item name="android:titleTextStyle">@style/ActionBar_titleStyle</item>
+        <item name="android:height">140dp</item>
+    </style>
+
+    <style name="ActionBar_titleStyle">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="intro_gv_item_iv_style">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="intro_gv_item_tv_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+    <style name="intro_gv_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:stretchMode">columnWidth</item>
+    </style>
+
+    <style name="base_tab_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!--BottomBar-->
+    <style name="bottombar_text" parent="base_tab_text">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/tab_indicator_text</item>
+    </style>
+
+    <style name="bottombar_icon">
+        <item name="android:layout_width">23dp</item>
+        <item name="android:layout_height">23dp</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="bottombar_item">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+
+    <!--摇一摇 -->
+    <style name="shake_tab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/textcolor_shake_tab_text</item>
+    </style>
+    <style name="shake_tab_text" parent="base_tab_text">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/textcolor_shake_tab_text</item>
+    </style>
+
+    <style name="shake_tab_icon">
+        <item name="android:layout_width">28dp</item>
+        <item name="android:layout_height">28dp</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <!--余额/会员积分/我的收藏-->
+    <style name="me_top_tab">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:clickable">true</item>
+    </style>
+    <!--余额/会员积分/我的收藏-->
+    <style name="me_top_tab_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FF000000</item>
+    </style>
+    <!--余额/会员积分/我的收藏-->
+    <style name="me_top_tab_text_value">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#FF000000</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:paddingLeft">3dp</item>
+        <item name="android:paddingRight">3dp</item>
+    </style>
+
+
+    <!--Function GridView-->
+    <!--
+    <style name="function_gridview">
+        <item name="android:background">@color/window_background_gray</item>
+        <item name="android:verticalSpacing">1dp</item>
+        <item name="android:horizontalSpacing">1dp</item>
+        <item name="android:listSelector">@null</item>
+    </style>
+
+    <style name="function_gridview_item_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/tab_indicator_text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="function_gridview_item_image">
+        <item name="android:layout_width">25dp</item>
+        <item name="android:layout_height">25dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="life_gridview_item_image">
+        <item name="android:layout_width">62dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="function_gridview_item_discount">
+        <item name="android:layout_width">43dp</item>
+        <item name="android:layout_height">43dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">@null</item>
+    </style>
+    -->
+
+    <!--Category GridView-->
+    <!--
+    <style name="category_gridview">
+        <item name="android:background">#ffffff</item>
+        <item name="android:verticalSpacing">5dp</item>
+        <item name="android:horizontalSpacing">5dp</item>
+    </style>
+
+    <style name="category_gridview_item_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/tab_indicator_text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="category_gridview_item_image">
+        <item name="android:layout_width">25dp</item>
+        <item name="android:layout_height">25dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="category_commodity_gridview_item_image">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">#14767676</item>
+    </style>
+
+    <style name="category_commodity_gridview_item_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#c8000000</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:background">#14767676</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="category_brand_gridview_item_image">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:background">#1e767676</item>
+    </style>
+    -->
+
+    <style name="category_listitem_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/category_listitem_text</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+
+    <!--Shake Result Dialog-->
+    <style name="dialog_shake_result" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <!--边框-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsTranslucent">false</item>
+        <!--半透明-->
+        <item name="android:windowNoTitle">true</item>
+        <!--无标题-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--背景透明-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <!--模糊-->
+    </style>
+
+
+    <style name="scroll_view_custom">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fillViewport">true</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:measureAllChildren">false</item>
+    </style>
+
+    <!--圆角矩形·灰色·按键-->
+    <style name="corners_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">27dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:background">@drawable/btn_settings_bg</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">@dimen/default_margin_left</item>
+        <item name="android:paddingRight">@dimen/default_margin_right</item>
+    </style>
+
+</resources>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!--订单编号-->
+    <TextView
+        android:id="@+id/tv_id"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/tv_biztype"
+        android:singleLine="true"
+        android:text="订单编号" />
+
+    <!-- 业务类型-->
+    <TextView
+        android:id="@+id/tv_biztype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/material_deep_orange_500"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:padding="@dimen/spacing_micro"
+        android:text="业务类型"
+        android:textColor="@color/material_white"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_createDate"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_id"
+        android:layout_toStartOf="@+id/button_pay_history"
+        android:singleLine="true"
+        android:text="下单时间" />
+
+
+    <!-- 订单状态-->
+    <TextView
+        android:id="@+id/tv_order_status"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_createDate"
+        android:layout_toStartOf="@+id/button_pay_history"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="订单状态" />
+    <!-- 同步状态-->
+    <TextView
+        android:id="@+id/tv_sync_status"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_order_status"
+        android:layout_toStartOf="@+id/button_pay_history"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="同步状态" />
+
+
+    <!-- 支付方式-->
+    <TextView
+        android:id="@+id/tv_pay_type"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_sync_status"
+        android:layout_toStartOf="@+id/button_pay_history"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="支付方式" />
+
+    <!-- 网点-->
+    <TextView
+        android:id="@+id/tv_office"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_pay_type"
+        android:layout_toStartOf="@+id/button_pay_history"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="网点" />
+
+    <!-- 租户-->
+    <TextView
+        android:id="@+id/tv_tenant"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_office"
+        android:layout_toStartOf="@+id/button_pay_history"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="租户" />
+
+    <Button
+        android:id="@+id/button_pay_history"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/tv_biztype"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_hollow_green"
+        android:text="支付记录"
+        android:textColor="@color/black_65"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content"
+    android:gravity="center"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--订单编号-->
+    <TextView
+        android:id="@+id/tv_id"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="订单编号"
+        android:layout_toStartOf="@+id/tv_paystatus"
+        android:layout_marginEnd="@dimen/spacing_normal" />
+
+    <!-- 支付状态-->
+    <TextView
+        android:id="@+id/tv_paystatus"
+        style="@style/mfh_form_content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="支付状态"
+        android:layout_below="@+id/tv_barcode"
+        android:layout_toStartOf="@+id/tv_confirmStatus"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_alignParentTop="true"
+        android:background="@color/material_orange_500"
+        android:padding="@dimen/spacing_micro"
+        android:textColor="@color/material_white"
+        android:textSize="16sp"/>
+
+    <!-- 确认状态-->
+    <TextView
+        android:id="@+id/tv_confirmStatus"
+        style="@style/mfh_form_content_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="确认状态"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/material_deep_orange_500"
+        android:padding="@dimen/spacing_micro"
+        android:textColor="@color/material_white"
+        android:textSize="16sp"
+        android:layout_below="@+id/tv_paystatus"
+        android:layout_toStartOf="@+id/button_pay_history"/>
+
+
+    <!--条码-->
+    <TextView
+        android:id="@+id/tv_barcode"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="条码"
+        android:layout_below="@+id/tv_id"
+        android:layout_toStartOf="@+id/button_pay_history"/>
+
+
+
+    <!-- 网点-->
+    <TextView
+        android:id="@+id/tv_office"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="网点"
+        android:layout_below="@+id/tv_barcode"
+        android:layout_toStartOf="@+id/button_pay_history"/>
+
+    <!-- 网点-->
+    <TextView
+        android:id="@+id/tv_createdate"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="创建日期"
+        android:layout_below="@+id/tv_office"
+        android:layout_toStartOf="@+id/button_pay_history"/>
+
+    <TextView
+        android:id="@+id/tv_updatedate"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="更新日期"
+        android:layout_below="@+id/tv_createdate"
+        android:layout_toStartOf="@+id/button_pay_history"/>
+
+    <Button
+        android:id="@+id/button_pay_history"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/spacing_normal"
+        android:background="@drawable/btn_hollow_green"
+        android:layout_below="@+id/tv_confirmStatus"
+        android:text="支付记录"
+        android:textColor="@color/black_65"
+        android:textSize="16sp" />
+
+
+</RelativeLayout>

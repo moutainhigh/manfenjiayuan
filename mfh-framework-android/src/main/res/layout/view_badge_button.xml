@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="@dimen/spacing_normal">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_buttonImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/material_clothes"/>
+
+        <TextView
+            android:id="@+id/tv_badgeNumber"
+            style="@style/HighlightNumberStyle"
+            android:layout_marginStart="-15dp"
+            android:layout_toEndOf="@+id/iv_buttonImage"
+            android:text="99+"
+            android:visibility="visible"/>
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_buttonText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:padding="@dimen/spacing_micro"
+        android:text="文本"
+        android:textColor="#FF000000"
+        android:textSize="12sp"/>
+
+</LinearLayout>

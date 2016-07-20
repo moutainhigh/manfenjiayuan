@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E8E8E7">
+
+    <include
+        layout="@layout/topbar_custom_with_statusbar"
+        android:id="@+id/top_bar" />
+
+    <com.mfh.framework.hybrid.HybridWebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_bar"
+        android:scrollbars="none"/>
+
+    <com.mfh.framework.uikit.widget.EmptyLayout
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_bar"
+        android:visibility="gone"/>
+
+</RelativeLayout>

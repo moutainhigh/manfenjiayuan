@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/material_white"
+    android:baselineAligned="false">
+
+    <RelativeLayout
+        android:id="@+id/frame_top"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:background="@color/mf_colorPrimary"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:textColor="@color/material_white"
+            android:textSize="20sp"
+            android:text="盘点批次"
+            android:gravity="start|center_vertical"/>
+
+        <ImageButton
+            android:id="@+id/button_sync"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:src="@mipmap/ic_cloud_upload_white_24dp"
+            android:background="@null"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+    </RelativeLayout>
+
+    <!-- google 官方下拉刷新 -->
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefreshlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frame_top">
+
+        <!--订单列表-->
+        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+            android:id="@+id/order_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!--空视图-->
+    <TextView
+        android:id="@+id/order_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frame_top"
+        style="@style/mfh_textview_text"
+        android:text="暂无数据，点击重试"
+        android:gravity="center"
+        android:clickable="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

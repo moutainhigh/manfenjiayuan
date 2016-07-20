@@ -1,0 +1,135 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:divider="@drawable/divider_vertical_line_primary"
+    android:showDividers="middle"
+    android:background="@color/material_white"
+    android:baselineAligned="false">
+
+    <!--商品列表-->
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/bg_form"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_stock_batch_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_procuct_header"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
+            <!--空视图-->
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/mfh_textview_text"
+                android:text="暂无数据"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:visibility="gone"/>
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <ProgressBar
+                android:id="@+id/animProgress"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                style="@style/loading"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/mf_dividerColorPrimary"
+            android:layout_above="@+id/frame_bottom"/>
+
+        <!--底部快捷菜单-->
+        <LinearLayout
+            android:id="@+id/frame_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:layout_alignParentBottom="true">
+            <!--商品数-->
+            <TextView
+                android:id="@+id/tv_goods_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="商品数：0.00"
+                android:textSize="16sp"
+                android:textColor="@color/material_black"
+                android:padding="8dp"/>
+            <!--商品金额-->
+            <TextView
+                android:id="@+id/tv_total_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="商品金额：0.00"
+                android:textSize="16sp"
+                android:textColor="@color/material_black"
+                android:padding="8dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--类目列表-->
+    <LinearLayout
+        android:id="@+id/right_frame"
+        android:layout_width="@dimen/common_right_panel_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:divider="@drawable/divider_horizontal_line_primary"
+        android:showDividers="middle">
+
+        <!--导航-->
+        <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
+            android:id="@+id/tab_order"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/material_white"
+            app:allowWidthFull="true"
+            app:slidingBlock="@drawable/slidingblock_white_greenline"/>
+
+        <!--订单列表-->
+        <com.mfh.framework.uikit.widget.CustomViewPager
+            android:id="@+id/viewpager_order"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/button_create_bill"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="新建单据"
+            android:gravity="center"
+            android:textColor="@color/material_black"
+            android:textSize="20sp"
+            android:background="@drawable/btn_rectange_gray"/>
+
+    </LinearLayout>
+
+</LinearLayout>

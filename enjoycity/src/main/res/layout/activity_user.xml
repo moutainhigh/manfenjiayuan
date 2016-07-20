@@ -1,0 +1,37 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:id="@+id/abl_toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--&lt;!&ndash;-->
+            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
+            <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"&ndash;&gt;-->
+        <!--&lt;!&ndash;<include&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/tool_bar"&ndash;&gt;-->
+            <!--&lt;!&ndash;layout="@layout/tool_bar"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:theme="@style/ToolbarTheme"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="@color/transparent"&ndash;&gt;-->
+            <!--&lt;!&ndash;app:navigationIcon="@mipmap/ic_arrow_back_white_24dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+    <!--</android.support.design.widget.AppBarLayout>-->
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:navigationIcon="@mipmap/ic_arrow_back_white_24dp"
+        android:layout_marginTop="@dimen/status_bar_height"/>
+
+</FrameLayout>

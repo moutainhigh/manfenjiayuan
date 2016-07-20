@@ -1,0 +1,108 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@drawable/divider_horizontal_line_primary"
+    android:showDividers="middle"
+    android:orientation="vertical">
+
+    <include layout="@layout/contentview_dialog_header"
+        android:id="@+id/frame_top"/>
+
+    <!--内容区-->
+    <RelativeLayout
+        android:id="@+id/left_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:background="@color/material_white">
+
+        <!--订单列表-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_list"
+            android:layout_width="@dimen/common_right_panel_width"
+            android:layout_height="match_parent"/>
+
+
+        <!--分割线-->
+        <View
+            android:id="@+id/vertial_line"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/mf_dividerColorPrimary"
+            android:layout_toEndOf="@+id/order_list"/>
+
+        <!--商品列表-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/vertial_line"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+            <include layout="@layout/itemview_purchase_fresh_shopcart_goods_header"
+                android:id="@+id/ll_procuct_header"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!--底部快捷菜单-->
+    <LinearLayout
+        android:id="@+id/frame_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/mfhtheme_maskPrimary">
+        <!--订单数-->
+        <TextView
+            android:id="@+id/tv_order_quantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="订单数:3"
+            android:textSize="16sp"
+            android:textColor="@color/material_black"
+            android:padding="8dp"
+            android:layout_marginStart="16dp"/>
+        <!--商品数-->
+        <TextView
+            android:id="@+id/tv_goods_quantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="商品数：-0.00"
+            android:textSize="16sp"
+            android:textColor="@color/material_black"
+            android:padding="8dp"/>
+        <!--商品金额-->
+        <TextView
+            android:id="@+id/tv_total_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="商品金额：+0.00"
+            android:textSize="16sp"
+            android:textColor="@color/mf_red"
+            android:padding="8dp"/>
+
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:text="提交"
+            android:gravity="center"
+            style="@style/mfh_button_text"
+            android:background="@drawable/btn_rectange_green"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="3dp"
+    android:background="@drawable/bg_listview_item"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:divider="@drawable/divider_horizontal_line"
+    android:showDividers="beginning|middle|end">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/iv_shop_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentStart="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_shop"
+            android:contentDescription=""
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/tv_shop_name"
+            android:layout_marginEnd="@dimen/default_margin_right"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="冰珊孤雪"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/iv_shop_icon"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:divider="@drawable/divider_horizontal_line"
+        android:showDividers="middle"
+        android:dividerPadding="8dp">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_tip_title"
+            android:layout_marginEnd="@dimen/default_margin_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="冰珊孤雪"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tv_tip_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="冰珊孤雪"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:gravity="end"
+            android:drawablePadding="4dp"/>
+    </LinearLayout>
+
+</LinearLayout>

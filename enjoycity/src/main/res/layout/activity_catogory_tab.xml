@@ -1,0 +1,118 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/tool_bar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/abl_toolbar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/category_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_category_current"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text=""
+                    android:textSize="14sp"
+                    android:textColor="@color/black_70"
+                    android:gravity="center"
+                    android:drawableEnd="@drawable/toggle_menu_normal"
+                    android:background="@color/window_background_primary"
+                    android:paddingStart="@dimen/mf_spac_horizontal_primary"
+                    android:paddingEnd="@dimen/mf_spac_horizontal_primary"/>
+                <TextView
+                    android:id="@+id/tv_category_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="全部商品"
+                    android:textSize="14sp"
+                    android:textColor="@color/black_70"
+                    android:gravity="center"
+                    android:drawableEnd="@drawable/ic_dialog_close"
+                    android:background="@color/window_background_primary"
+                    android:paddingStart="@dimen/mf_spac_horizontal_primary"
+                    android:paddingEnd="@dimen/mf_spac_horizontal_primary"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/category_header">
+
+                <com.mfh.enjoycity.view.CategorySlidingTabStrip
+                    android:id="@+id/sticky_category_tab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/sliding_tab_strip_background"
+                    app:allowWidthFull="false"
+                    app:slidingBlock="@null"
+                    android:visibility="gone"/>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/tab_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#E8E8E7"
+                android:visibility="gone"
+                android:layout_below="@+id/category_header">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            style="@style/loading"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+
+        <com.mfh.enjoycity.view.FloatShopcartView
+            android:id="@+id/fab_shopcart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="@dimen/default_margin_bottom"
+            android:layout_marginEnd="@dimen/default_margin_right"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

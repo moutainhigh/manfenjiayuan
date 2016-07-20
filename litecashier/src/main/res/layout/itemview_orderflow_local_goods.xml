@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <!--货号/品名-->
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:gravity="center_vertical"
+        android:ellipsize="end"
+        android:singleLine="false"
+        android:text="货号\n品名" />
+
+    <!--零售价-->
+    <TextView
+        android:id="@+id/tv_costprice"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/material_black"
+        android:text="零售价" />
+
+    <!--数量-->
+    <TextView
+        android:id="@+id/tv_quantity"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/material_black"
+        android:text="数量" />
+
+    <!--总价-->
+    <TextView
+        android:id="@+id/tv_amount"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/material_black"
+        android:text="总价" />
+
+
+</LinearLayout>

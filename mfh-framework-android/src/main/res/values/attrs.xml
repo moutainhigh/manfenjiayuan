@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--reference：参考某一资源ID-->
+    <attr name="text" format="string|reference"/>
+    <attr name="textColor" format="reference|color"/>
+    <attr name="textSize" format="dimension"/>
+    <attr name="subText" format="string|reference"/>
+    <attr name="subTextColor" format="reference|color"/>
+    <attr name="subTextSize" format="dimension"/>
+    <attr name="subTextGravity" format="integer"/>
+    <attr name="subTextMaxLines" format="integer"/>
+
+    <attr name="hint" format="string|reference"/>
+    <attr name="textColorHint" format="reference|color"/>
+    <attr name="src" format="reference"/>
+
+    <attr name="position">
+        <enum name="top" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="bottom" value="2"/>
+        <enum name="single" value="3"/>
+    </attr>
+
+    <attr name="itemdecoration_line" format="reference"/><!--分割线:水平线-->
+
+
+    <!--自定义搜索控件-->
+    <declare-styleable name="CustomSearchView">
+        <attr name="hint"/>
+        <attr name="textColorHint"/>
+        <attr name="textColor"/>
+        <attr name="inflateResource" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="SettingsItem">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="subTextGravity"/>
+        <attr name="subTextMaxLines"/>
+        <attr name="isArrowVisible" format="boolean"/>
+        <attr name="isLogoVisible" format="boolean"/>
+        <attr name="logoSrc" format="reference"/>
+        <attr name="position"/>
+    </declare-styleable>
+    <declare-styleable name="ToggleSettingItem">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="subTextGravity"/>
+        <attr name="subTextMaxLines"/>
+        <attr name="position"/>
+    </declare-styleable>
+    <declare-styleable name="BadgeViewButton">
+        <attr name="textVisible" format="boolean"/>
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="src"/>
+    </declare-styleable>
+    <declare-styleable name="MultiLayerLabel">
+        <attr name="topText" format="string|reference"/>
+        <attr name="topTextColor" format="reference|color"/>
+        <attr name="topTextSize" format="dimension"/>
+        <attr name="bottomText" format="string|reference"/>
+        <attr name="bottomTextColor" format="reference|color"/>
+        <attr name="bottomTextSize" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="OptionalLabel">
+        <attr name="mLabelView_title" format="string"/>
+        <attr name="mLabelView_titleWidth" format="dimension"/>
+
+        <attr name="mLabelView_inputTextColor" format="color"/>
+        <attr name="mLabelView_inputTextSize" format="dimension"/>
+        <attr name="mLabelView_inputTextColorHint" format="color"/>
+        <attr name="mLabelView_inputHint" format="string"/>
+
+        <attr name="mLabelView_rightImageButtonEnabled" format="boolean"/>
+        <attr name="mLabelView_rightButtonWidth" format="dimension"/>
+        <attr name="mLabelView_rightImageButtonSrc" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="NaviAddressView">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="hint"/>
+        <attr name="textColorHint"/>
+    </declare-styleable>
+    <!--网格密码输入控件-->
+    <declare-styleable name="gridPasswordView">
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="gpvLineColor" format="color"/>
+        <attr name="gpvGridColor" format="color"/>
+        <attr name="gpvLineWidth" format="dimension"/>
+        <attr name="gpvPasswordLength" format="integer"/>
+        <attr name="gpvPasswordTransformation" format="string"/>
+        <attr name="softInputEnableInTouchMode" format="boolean"/>
+
+        <attr name="gpvPasswordType" format="enum">
+            <enum name="numberPassword" value="0"/>
+            <enum name="textPassword" value="1"/>
+            <enum name="textVisiblePassword" value="2"/>
+            <enum name="textWebPassword" value="3"/>
+        </attr>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="slidingBlock" format="reference|color"/>
+        <attr name="allowWidthFull" format="boolean"/>
+        <attr name="disableViewPager" format="boolean"/>
+    </declare-styleable>
+
+    <!--圆形ImageView-->
+    <declare-styleable name="CircleImageView">
+        <!--
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />-->
+        <attr name="border_overlay" format="boolean"/>
+    </declare-styleable>
+
+    <!--圆角ImageView-->
+    <declare-styleable name="RoundedImageView">
+        <attr name="corner_radius" format="dimension"/>
+        <attr name="border_width" format="dimension"/>
+        <attr name="border_color" format="color"/>
+        <attr name="mutate_background" format="boolean"/>
+        <attr name="oval" format="boolean"/>
+        <attr name="android:scaleType"/>
+    </declare-styleable>
+
+    <declare-styleable name="Field">
+        <attr name="fieldName" format="string"/>
+        <attr name="fieldValue" format="string"/>
+        <attr name="fieldSeparate" format="boolean"/>
+        <attr name="fieldIsNew" format="boolean"/>
+        <attr name="fieldPaddingLeft" format="dimension"/>
+        <attr name="fieldPaddingRight" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="ToggleButton">
+        <attr name="toggleBorderWidth" format="dimension"/>
+        <attr name="offBorderColor" format="reference|color"/>
+        <attr name="offColor" format="reference|color"/>
+        <attr name="onColor" format="reference|color"/>
+        <attr name="spotColor" format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="horizontal_spacing" format="dimension"/>
+        <attr name="vertical_spacing" format="dimension"/>
+    </declare-styleable>
+
+
+</resources>

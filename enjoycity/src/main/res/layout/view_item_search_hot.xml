@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:flowlayout="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/material_white"
+        android:textSize="12sp"
+        android:gravity="start"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:background="@color/gray"/>
+
+    <com.mfh.framework.uikit.widget.FlowLayout
+        android:id="@+id/flow_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        flowlayout:horizontal_spacing="10dp"
+        flowlayout:vertical_spacing="10dp"/>
+</LinearLayout>

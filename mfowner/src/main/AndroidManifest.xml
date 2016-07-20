@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mfh.owner">
+
+    <!-- 个推SDK权限配置开始 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="getui.permission.GetuiService" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <!-- 自定义权限 -->
+    <permission
+        android:name="getui.permission.GetuiService"
+        android:protectionLevel="normal"/>
+    <!-- 个推SDK权限配置结束 -->
+
+    <!-- 使用网络功能所需权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!-- 使用拨打电话权限 -->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <!--相机/本地图库功能-->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- 使用照相机权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <!-- 自动聚焦权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 本地数据库、SDK离线地图和cache功能需要读写外部存储器 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--手机震动-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--
+    <uses-permission android:name="android.hardware.sensor.accelerometer"/>-->
+
+    <!-- Sensoro -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--对GPS_PROVIDER和NETWORK_PROVIDER都有效-->
+
+    <!--高德地图权限配置-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--只针对NETWORK_PROVIDER-->
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@style/AppBaseTheme_Light"
+        android:name="com.mfh.owner.AppContext">
+
+        <!--引导页-->
+        <activity
+            android:name=".ui.StartActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!--主界面-->
+        <activity
+            android:name=".ui.MainTabActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"  />
+        <!--登录界面-->
+        <activity
+            android:name=".ui.web.H5AuthActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize"/>
+        <!--浏览器-->
+        <activity
+            android:name=".ui.activity.NativeWebViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.web.BrowserActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.web.ComnJBH5Activity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ui.map.ShareLocationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.SettingFragmentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.AccountSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.GeneralSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.UserProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.shake.ShakeHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.shake.ShakeActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name="com.mfh.framework.core.qrcode.ScanActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <!--接收微信的请求及返回值-->
+        <activity
+            android:name="com.mfh.owner.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Transparent"/>
+
+        <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <!-- alipay sdk end -->
+
+        <service android:name=".service.BackService">
+            <intent-filter>
+                <action android:name="com.mfh.owner.service.BackService" />
+                <action android:name="action.receiver.background" />
+            </intent-filter>
+        </service>
+
+        <!-- 个推SDK配置开始 -->
+        <!-- 配置的第三方参数属性 -->
+        <meta-data
+            android:name="PUSH_APPID"
+            android:value="ck7Q9Tz8NV50vPN0dd5tvA" />
+        <meta-data
+            android:name="PUSH_APPSECRET"
+            android:value="mjCiZevyUC8NfLG9q7Ioe8" />
+        <meta-data
+            android:name="PUSH_APPKEY"
+            android:value="Nyn6wQtduT6qBrDMpDE216" />
+        <meta-data
+            android:name="PUSH_GROUPID"
+            android:value="" />
+
+        <!--配置SDK核心服务-->m
+        <service
+            android:name="com.igexin.sdk.PushService"
+            android:exported="true"
+            android:label="NotificationCenter"
+            android:process=":pushservice"/>
+
+        <receiver
+            android:name="com.igexin.getuiext.service.PayloadReceiver"
+            android:exported="false">
+            <intent-filter>
+                <!-- 这个com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4固定，不能修改  -->
+                <action android:name="com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4" />
+                <!-- android:name="com.igexin.sdk.action.第三方的appId" -->
+                <action android:name="com.igexin.sdk.action.ck7Q9Tz8NV50vPN0dd5tvA" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.igexin.getuiext.service.GetuiExtService"
+            android:process=":pushservice" />
+
+        <receiver android:name=".service.PushDemoReceiver">
+            <intent-filter>
+                <action android:name="com.igexin.sdk.action.ck7Q9Tz8NV50vPN0dd5tvA" />
+            </intent-filter>
+        </receiver>
+        <!-- 个推SDK配置结束 -->
+
+
+        <!--
+        Process: com.mfh.owner:pushservice, PID: 9422
+    java.lang.ClassCastException: android.os.BinderProxy cannot be cast to com.sensoro.beacon.kit.BeaconProcessService$BeaconProcessServiceBinder
+        android:process="remote"
+        -->
+        <!-- Sensoro-->
+        <service android:name="com.sensoro.beacon.kit.BeaconProcessService"/>
+        <service android:name="com.sensoro.beacon.kit.BeaconService"/>
+        <service android:name="com.sensoro.beacon.kit.IntentProcessorService"/>
+
+        <!--友盟配置信息-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5467106bfd98c50684001a98"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}"/>
+
+        <!--高德地图-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="5ad15842443a3c47b64a983daa4d351e" />
+
+    </application>
+
+</manifest>

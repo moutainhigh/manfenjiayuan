@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/abl_toolbar">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mfh.framework.uikit.compound.ToggleSettingItem
+                android:id="@+id/item_location"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:text="@string/label_settings_location"
+                app:position="top"/>
+
+            <com.mfh.framework.uikit.compound.ToggleSettingItem
+                android:id="@+id/item_notification"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:text="@string/label_settings_notification"
+                app:position="bottom"
+                />
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_2_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                android:layout_marginBottom="@dimen/default_margin_bottom"
+                app:logoSrc="@drawable/material_housekeeping"
+                app:text="@string/label_settings_clearcache"
+                app:subText="@string/label_settings_clearcache_description"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

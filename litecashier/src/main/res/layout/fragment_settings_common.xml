@@ -1,0 +1,309 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider_horizontal_line_primary"
+            android:dividerPadding="@dimen/spacing_normal"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <!--商品-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+
+                <Button
+                    android:id="@+id/button_sync_goods"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="同步商品库"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+            <!--设备-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_terminal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="8dp"
+                    android:text="设备编号"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:id="@+id/button_register_terminal"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="激活设备"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+            <!--客显-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_led_port"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="8dp"
+                    android:text="客显"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switchCompat_led_port"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="8dp"/>
+
+                <Button
+                    android:id="@+id/button_set_led_port"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="设置"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+            <!--打印机-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_printer_port"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="8dp"
+                    android:text="打印机"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switchCompat_printer_port"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="8dp"/>
+
+                <Button
+                    android:id="@+id/button_set_printer_port"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="设置"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+                <Button
+                    android:id="@+id/button_print_testdata"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="打印测试"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+            <!--电子秤-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_scale_port"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="8dp"
+                    android:text="电子秤"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switchCompat_scale_port"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="8dp"/>
+
+                <Button
+                    android:id="@+id/button_set_scale_port"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="设置"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+            <!--寺冈电子秤-->
+            <TextView
+                android:id="@+id/tv_smscale_rs232"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/icon_arrow_right"
+                android:gravity="start"
+                android:padding="@dimen/spacing_double"
+                android:text="寺冈电子秤"
+                android:textColor="@color/material_black"
+                android:textSize="16sp"/>
+
+            <!--寺冈电子秤-->
+            <TextView
+                android:id="@+id/tv_smscale_ftp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/icon_arrow_right"
+                android:gravity="start"
+                android:padding="@dimen/spacing_double"
+                android:text="寺冈电子秤"
+                android:textColor="@color/material_black"
+                android:textSize="16sp"/>
+
+            <!--绿泰电子价签-->
+            <TextView
+                android:id="@+id/tv_greentags_webservice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/icon_arrow_right"
+                android:gravity="start"
+                android:padding="@dimen/spacing_double"
+                android:text="绿泰电子价签"
+                android:textColor="@color/material_black"
+                android:textSize="16sp"/>
+
+
+            <!--电子秤-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="8dp"
+                    android:text="系统键盘"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switchCompat_softkeyboard"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="8dp"/>
+
+            </LinearLayout>
+
+            <!--内存-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_memory"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:padding="8dp"
+                    android:text="内存"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:id="@+id/button_clear_cache"
+                    android:layout_width="140dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/btn_rectange_green"
+                    android:gravity="center"
+                    android:text="清空缓存"
+                    android:textColor="@color/material_white"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+            <!--版本-->
+            <TextView
+                android:id="@+id/tv_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/icon_arrow_right"
+                android:gravity="start"
+                android:padding="@dimen/spacing_double"
+                android:text="当前版本"
+                android:textColor="@color/material_black"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,1 @@
+include ':mfh-framework-all', ':mfh-framework-android', ':im', ':self-service-cashier', ':mfh-framework-business', ':pda-wholesaler', ':pda-supermarket', ':pda-supermarket-idata2', ':pda-supermarket-gpio', ':mixicook-vip', ':cashier', ':pda', ':enjoycity', ':mfowner', ':litecashier-display', ':vector_user', ':loveshopping', ':vector_uikit'

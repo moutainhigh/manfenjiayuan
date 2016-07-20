@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scroll_view_custom"
+        android:layout_below="@+id/abl_toolbar">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_1_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top" />
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_1_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height" />
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_1_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginBottom="@dimen/default_margin_bottom" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

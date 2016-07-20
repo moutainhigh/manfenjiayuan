@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#64eeeeee">
+
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="134dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <!--导航 56-->
+                <RelativeLayout
+                    android:id="@+id/frame_navibar"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:background="#35363B"
+                    android:orientation="horizontal"
+                    android:paddingEnd="@dimen/spacing_double"
+                    android:paddingStart="@dimen/spacing_double">
+
+                    <!--<ImageButton-->
+                    <!--android:id="@+id/ib_shopcart"-->
+                    <!--android:layout_width="56dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_alignParentStart="true"-->
+                    <!--android:layout_marginEnd="@dimen/spacing_micro"-->
+                    <!--android:background="@null"-->
+                    <!--android:contentDescription="@null"-->
+                    <!--android:scaleType="center"-->
+                    <!--android:src="@mipmap/ic_toolbar_shopcart_white"/>-->
+                    <com.mfh.framework.uikit.compound.BadgeViewButton
+                        android:id="@+id/ib_shopcart"
+                        android:layout_width="64dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="@dimen/spacing_micro"
+                        app:src="@mipmap/ic_toolbar_shopcart_white"
+                        app:textVisible="false"/>
+
+                    <TextView
+                        android:id="@+id/tv_service_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="@dimen/spacing_micro"
+                        android:layout_marginStart="@dimen/spacing_micro"
+                        android:layout_toEndOf="@+id/ib_shopcart"
+                        android:layout_toStartOf="@+id/syncProgressBar"
+                        android:gravity="center"
+                        android:text="@string/title_server"
+                        android:textColor="@color/material_white"
+                        android:textSize="20sp"/>
+
+
+                    <ProgressBar
+                        android:id="@+id/syncProgressBar"
+                        android:layout_toStartOf="@+id/ib_settings"
+                        style="@style/loading"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="@dimen/spacing_micro"
+                        android:layout_marginStart="@dimen/spacing_micro"
+                        android:layout_centerVertical="true"
+                        android:visibility="invisible"/>
+
+                    <ImageButton
+                        android:id="@+id/ib_settings"
+                        android:layout_width="56dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:background="@null"
+                        android:contentDescription="@null"
+                        android:scaleType="center"
+                        android:src="@mipmap/ic_toolbar_settings"/>
+
+                </RelativeLayout>
+
+                <!--广告轮播 205-->
+                <com.mfh.framework.uikit.adv.AdvertisementViewPager
+                    android:id="@+id/viewpager_adv"
+                    android:layout_width="match_parent"
+                    android:layout_height="205dp"
+                    android:background="@color/material_white"/>
+
+                <!--前台类目 118-->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/category_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/material_white"/>
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="16dp"
+                    android:background="#64eeeeee"/>
+            </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!--前台类目 455-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/groupon_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</android.support.design.widget.CoordinatorLayout>

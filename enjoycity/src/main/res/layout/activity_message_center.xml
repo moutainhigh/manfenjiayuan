@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scroll_view_custom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/abl_toolbar">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--周边/商场/优选-->
+            <com.mfh.framework.uikit.widget.PagerSlidingTabStrip
+                android:id="@+id/pager_tabstrip"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/sliding_tab_strip_background"
+                app:allowWidthFull="true"
+                app:slidingBlock="@drawable/category_tab_item" />
+            <android.support.v4.view.ViewPager
+                android:id="@+id/messageViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/pager_tabstrip"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

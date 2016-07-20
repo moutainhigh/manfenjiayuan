@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content"
+    android:gravity="center"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--联系人信息-->
+    <TextView
+        android:id="@+id/tv_company"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="22sp"
+        android:ellipsize="end"
+        android:padding="2dp"
+        android:text="快递公司" />
+
+    <TextView
+        android:id="@+id/tv_courier"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:padding="2dp"
+        android:text="快递员" />
+
+    <TextView
+        android:id="@+id/tv_receiveDate"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:padding="2dp"
+        android:text="收件时间" />
+
+</LinearLayout>

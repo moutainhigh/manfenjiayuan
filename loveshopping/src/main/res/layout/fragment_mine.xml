@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.manfenjiayuan.loveshopping.widget.UserProfileView
+                android:id="@+id/userProfileView"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"/>
+
+            <!--余额/会员积分/我的收藏-->
+            <LinearLayout
+                android:id="@+id/ll_second"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:divider="@drawable/divider_vertical"
+                android:dividerPadding="@dimen/spacing_normal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_micro"
+                android:showDividers="middle">
+
+                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                    android:id="@+id/label_balance"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    app:bottomText="@string/label_balance"
+                    app:topText="￥ 0.00"/>
+
+                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                    android:id="@+id/label_points"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    app:bottomText="@string/label_points"
+                    app:topText="￥ 0.00"/>
+
+                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                    android:id="@+id/label_collection"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    app:bottomText="@string/label_collection"
+                    app:topText="￥ 0.00"/>
+
+            </LinearLayout>
+
+            <!--待付款/待收货/待评价-->
+            <LinearLayout
+                android:id="@+id/ll_second_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sectioin_divider_height"
+                android:background="@drawable/bg_white_shdow_top_gray"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
+
+                <com.mfh.framework.uikit.compound.BadgeViewButton
+                    android:id="@+id/button_pending_payment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:logoSrc="@mipmap/icon_pending_payment"
+                    app:text="@string/label_pending_payment"/>
+
+                <com.mfh.framework.uikit.compound.BadgeViewButton
+                    android:id="@+id/button_pending_receipt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:src="@mipmap/icon_pending_receipt"
+                    app:text="@string/label_pending_receipt"/>
+
+                <com.mfh.framework.uikit.compound.BadgeViewButton
+                    android:id="@+id/button_pending_evaluation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:src="@mipmap/icon_pending_evaluation"
+                    app:text="@string/label_pending_evaluation"/>
+
+            </LinearLayout>
+
+            <!--订单/购物车-->
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_1_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:logoSrc="@mipmap/icon_orders_normal"
+                app:position="top"
+                app:subText="@string/label_me_orders_description"
+                app:text="@string/label_me_orders"/>
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_1_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height"
+
+                app:logoSrc="@mipmap/icon_cart_normal"
+                app:position="bottom"
+                app:subText="@string/label_me_cart_description"
+                app:text="@string/label_me_cart"/>
+
+            <!--钱包/卡包/包裹-->
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_2_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:logoSrc="@mipmap/icon_wallet_normal"
+                app:position="top"
+                app:subText="@string/label_me_wallet_description"
+                app:text="@string/label_me_wallet"/>
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_2_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:logoSrc="@mipmap/icon_cardpack_normal"
+                app:position="center"
+                app:subText="@string/label_me_carkpack_description"
+                app:text="@string/label_me_carkpack"/>
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_2_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height"
+                app:logoSrc="@mipmap/icon_parcel_normal"
+                app:position="bottom"
+                app:subText="@string/label_me_parcel_description"
+                app:text="@string/label_me_parcel"/>
+
+            <!--满分小伙伴-->
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_3_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height"
+                app:logoSrc="@mipmap/icon_mfhpartner_normal"
+                app:position="single"
+                app:subText="@string/label_me_mfhpartner_description"
+                app:text="@string/label_me_mfhpartner"/>
+
+            <!--反馈-->
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_4_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height"
+                android:visibility="gone"
+                app:logoSrc="@mipmap/icon_mfhpartner_normal"
+                app:position="single"
+                app:text="@string/label_me_feedback"/>
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_settings"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height"
+                app:logoSrc="@mipmap/icon_mfhpartner_normal"
+                app:position="single"
+                app:text="@string/action_settings"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

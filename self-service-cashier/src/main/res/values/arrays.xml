@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+      <string-array name="settings_goods_status">
+        <item>不限</item>
+        <item>出售中</item>
+        <item>已下架</item>
+    </string-array>
+
+    <string-array name="settings_goods_catetype">
+        <item>不限</item>
+        <item>普通商品</item>
+        <item>商品套餐</item>
+        <item>生鲜</item>
+        <item>香烟</item>
+        <item>烘培</item>
+        <item>水果</item>
+    </string-array>
+
+    <string-array name="order_paytype">
+        <item>现金</item>
+        <item>会员</item>
+        <item>支付宝</item>
+        <item>微信</item>
+        <item>银联</item>
+    </string-array>
+
+    <!--计件单位-->
+    <string-array name="unit_name_0">
+        <item>个</item>
+        <item>盒</item>
+        <item>包</item>
+        <item>瓶</item>
+        <item>袋</item>
+        <item>听</item>
+        <item>条</item>
+        <item>只</item>
+        <item>份</item>
+        <item>对</item>
+    </string-array>
+    <!--计重单位-->
+    <string-array name="unit_name_1">
+        <item>Kg</item>
+    </string-array>
+
+</resources>

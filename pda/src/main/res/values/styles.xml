@@ -1,0 +1,53 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="mf_edittext_text">
+        <item name="android:textColor">@color/material_black</item>
+        <item name="android:textColorHint">@color/black_35</item>
+        <item name="android:background">?android:editTextBackground</item>
+    </style>
+
+
+    <style name="mfh_textview_text">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/material_black</item>
+    </style>
+
+    <style name="mfh_textlabelview">
+        <item name="textLabelView_leftTextSize">18px</item>
+        <item name="textLabelView_leftTextColor">@color/material_black</item>
+        <item name="textLabelView_leftTextWidth">100dp</item>
+        <item name="textLabelView_rightTextSize">18px</item>
+        <item name="textLabelView_rightTextColor">@color/material_black</item>
+    </style>
+
+    <style name="mfh_editlabelview">
+        <item name="editLabelView_leftTextSize">18px</item>
+        <item name="editLabelView_leftTextColor">@color/material_black</item>
+        <item name="editLabelView_leftTextWidth">200px</item>
+        <item name="editLabelView_rightTextSize">18px</item>
+        <item name="editLabelView_rightTextColor">@color/material_black</item>
+        <item name="editLabelView_rightTextColorHint">@color/black_35</item>
+    </style>
+
+    <!--app:textLabelView_leftText="规格:"-->
+    <!--app:textLabelView_leftTextSize="7sp"-->
+    <!--app:textLabelView_leftTextColor="@color/black"-->
+    <!--app:textLabelView_leftTextWidth="100dp"-->
+    <!--app:textLabelView_rightTextSize="7sp"-->
+    <!--app:textLabelView_rightTextColor=""-->
+
+    <style name="mf_scrolview">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fillViewport">true</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:measureAllChildren">false</item>
+    </style>
+
+
+</resources>

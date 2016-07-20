@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="order_tenant_query">
+        <item>当前租户</item>
+        <item>所有租户</item>
+    </string-array>
+    <string-array name="order_status_query">
+        <item>全部</item>
+        <item>等待支付</item>
+        <item>挂单</item>
+        <item>支付处理中</item>
+        <item>异常</item>
+        <item>已结束</item>
+    </string-array>
+
+</resources>

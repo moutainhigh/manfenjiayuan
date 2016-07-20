@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content"
+    android:layout_height="72dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+    <ImageButton
+        android:id="@+id/button_toggle_item"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_ratio"
+        android:contentDescription="@null"
+        android:background="@null"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="手机号"
+            android:textColor="@color/material_black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="姓名"
+            android:textColor="@color/material_black"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_transport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="物流信息"
+            android:textColor="@color/material_black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="条码"
+            android:textColor="@color/material_black"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_createDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="入库时间"
+        android:textColor="@color/material_black"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/tv_payStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="支付"
+        android:gravity="center"
+        android:textColor="@color/material_black"
+        android:textSize="16sp" />
+
+</LinearLayout>

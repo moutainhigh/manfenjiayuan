@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BarcodeScan">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pda-supermarket/libs/BarcodeScan.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

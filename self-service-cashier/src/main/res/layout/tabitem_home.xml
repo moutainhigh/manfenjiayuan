@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="70dp"
+              android:background="@drawable/bg_leftmenu_item"
+              android:clickable="true"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_badge"
+        android:layout_width="48dp"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/iv_buttonImage"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_leftmenu_cashier_normal"/>
+
+        <ImageView
+            android:id="@+id/iv_badge"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_oval_red_24"/>
+
+        <!--<TextView-->
+        <!--style="@style/HighlightNumberStyle"-->
+        <!--android:id="@+id/tv_badge"-->
+        <!--android:layout_toEndOf="@+id/iv_buttonImage"-->
+        <!--android:layout_marginStart="-10dp"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:text="99+"-->
+        <!--android:textColor="@color/material_white"-->
+        <!--android:visibility="gone" />-->
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_buttonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="冰珊孤雪"
+        android:textColor="@color/textcolor_white"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+</LinearLayout>

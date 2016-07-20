@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/contentview_dialog_header" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/mfhtheme_maskPrimary">
+
+        <LinearLayout
+            android:layout_width="442dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="商品条码"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_barcode"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    android:gravity="start|center_vertical"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:text=""
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="商品名称"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+
+                <EditText
+                    android:id="@+id/et_productName"
+                    style="@style/mfh_edittext_normal"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint=""
+                    android:inputType="text"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="规格"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_shortName"
+                    style="@style/mfh_edittext_normal"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint="商品规格"
+                    android:inputType="text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="计量方式"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <!--style="@style/SpinnerMfhTheme"-->
+                <Spinner
+                    android:id="@+id/spinner_price_type"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    style="@style/dropDownSpinnerStyle"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="单位"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+
+                <!--style="@style/SpinnerMfhTheme"-->
+                <Spinner
+                    android:id="@+id/spinner_unit"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    style="@style/dropDownSpinnerStyle"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="批发商"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <!--发货方，批发商-->
+                <com.mfh.framework.uikit.compound.OptionalLabel
+                    android:id="@+id/label_invcomp_provider"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    app:mLabelView_inputHint="选择批发商"
+                    app:mLabelView_inputTextColor="@color/black"
+                    app:mLabelView_inputTextColorHint="@color/black_35"
+                    app:mLabelView_inputTextSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="采购价"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_buyprice"
+                    style="@style/mfh_edittext_normal"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint="采购价"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="零售价"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_costprice"
+                    style="@style/mfh_edittext_normal"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint="零售价"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="72dp"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="采购数量"
+                    android:textColor="@color/black_70"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/et_quantity"
+                    style="@style/mfh_edittext_normal"
+                    android:layout_width="254dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="32dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center_vertical"
+                    android:hint="采购数量"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!--按键-->
+    <include layout="@layout/view_dialog_footer" />
+
+</LinearLayout>

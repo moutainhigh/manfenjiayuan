@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_micro">
+
+    <TextView
+        android:id="@+id/tab_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:drawablePadding="@dimen/spacing_nano"
+        android:drawableTop="@drawable/bottombar_home"
+        android:gravity="center"
+        android:text="首页"
+        android:textColor="@color/tab_indicator_text"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/tab_mes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-6dp"
+        android:minWidth="13dp"
+        android:layout_toEndOf="@+id/tab_title"
+        android:background="@drawable/comn_number_highlight"
+        android:text=""
+        android:gravity="center"
+        android:textSize="11sp"
+        android:visibility="invisible"
+        android:textColor="@color/material_white"/>
+
+</RelativeLayout>

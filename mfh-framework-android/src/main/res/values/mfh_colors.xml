@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="mfh_colorPrimary">@color/material_green_500</color>
+    <color name="mfh_colorPrimaryGrey">@color/material_grey_500</color>
+    <color name="mfh_colorPrimaryDark">#303F9F</color>
+    <color name="mfh_colorAccent">#FF4081</color>
+
+
+    <!--启动页面渐变颜色-->
+    <color name="mfh_splash_startColor">@color/material_light_green_500</color>
+    <color name="mfh_splash_endColor">@color/material_green_800</color>
+
+</resources>

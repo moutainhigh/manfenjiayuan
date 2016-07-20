@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/contentview_dialog_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"/>
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/frame_bottom"
+        android:layout_below="@+id/frame_top"/>
+    <!--按键-->
+    <include
+        android:id="@+id/frame_bottom"
+        layout="@layout/view_dialog_footer"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/frame_bottom"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_double"
+        android:src="@mipmap/ic_print_white"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_sync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fab_print"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_double"
+        android:src="@mipmap/ic_sync_data_normal"/>
+
+</RelativeLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- 导航标题栏 -->
+    <RelativeLayout
+        android:id="@+id/fragment_life"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/top_function"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="36dp"
+            android:paddingBottom="16dp"
+            android:paddingRight="16dp"
+            android:background="@null"
+            android:gravity="center_vertical">
+
+            <com.mfh.owner.view.FunctionButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_sweep"
+                android:layout_weight="1" />
+
+            <com.mfh.owner.view.FunctionButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_shake"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewpager_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/top_function"
+            android:orientation="vertical">
+            <com.mfh.framework.uikit.widget.PagerSlidingTabStrip
+                android:id="@+id/pager_tabstrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sliding_tab_strip_background"
+                app:allowWidthFull="true"
+                app:slidingBlock="@drawable/image_sliding_block"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                style="@style/fill_fill">
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/fragment_shake"
+        android:id="@+id/life_shake"
+        android:visibility="gone"/>
+
+</RelativeLayout>

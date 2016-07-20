@@ -1,0 +1,227 @@
+package com.mfh.litecashier.ui.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import com.mfh.framework.core.utils.DensityUtil;
+import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
+import com.mfh.litecashier.ui.fragment.components.HandoverFragment;
+import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
+import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
+import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
+import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
+import com.mfh.litecashier.ui.fragment.purchase.SelectInvSendOrderFragment;
+import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment;
+
+import butterknife.Bind;
+
+/**
+ * 对话框
+ * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ */
+public class SimpleDialogActivity extends BaseActivity {
+    public static final String EXTRA_KEY_SERVICE_TYPE = "serviceType";
+    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x02;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x03;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_SELECT_INV_SENDORDER      = 0x06;//选择采购单
+    public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x07;//选择收货单
+    public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x09;//采购商品详情
+    public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x10;//选择批发商&门店
+    public static final int FRAGMENT_TYPE_DAILY_SETTLE              = 0x20;//日结
+    public static final int FRAGMENT_TYPE_HANDOVER                  = 0x21;//交接班
+    private int serviceType = 0;
+
+
+    public static final String EXTRA_KEY_DIALOG_TYPE = "dialogType";
+    public static final int DT_NORMAL   = 0x01;//正常
+    public static final int DT_MIDDLE   = 0x02;//中等
+    public static final int DT_VERTICIAL_FULLSCREEN   = 0x03;//全屏
+    private int dialogType = DT_NORMAL;
+
+    public static final String EXTRA_KEY_TITLE = "title";
+
+    @Bind(R.id.fragment_container)
+    FrameLayout frameLayout;
+
+    public static void actionStart(Context context, Bundle extras) {
+        Intent intent = new Intent(context, SimpleDialogActivity.class);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_simple_dialog;
+    }
+
+    @Override
+    protected boolean isBackKeyEnabled() {
+        return false;
+    }
+
+    @Override
+    protected void initViews() {
+        super.initViews();
+
+        ViewGroup.LayoutParams layoutParams = frameLayout.getLayoutParams();
+        if (dialogType == DT_NORMAL){
+            layoutParams.width = DensityUtil.dip2px(this, 600);
+        }
+        else if (dialogType == DT_MIDDLE){
+            layoutParams.width = DensityUtil.dip2px(this,
+                    getResources().getDimension(R.dimen.mf_simple_dialog_width));
+        }
+        else if (dialogType == DT_VERTICIAL_FULLSCREEN){
+            layoutParams.width = DensityUtil.dip2px(this, 600);
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+        else {
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+        frameLayout.setLayoutParams(layoutParams);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        handleIntent();
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        super.onCreate(savedInstanceState);
+
+//        startService(new Intent(this, Utf7ImeService.class));
+        //hide soft input
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        initFragments();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void handleIntent() {
+        Intent intent = this.getIntent();
+        if (intent != null) {
+            int animType = intent.getIntExtra(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            //setTheme必须放在onCreate之前执行，后面执行是无效的
+            if (animType == ANIM_TYPE_NEW_FLOW) {
+//                this.setTheme(R.style.activity_new_task);
+            }
+
+            serviceType = intent.getIntExtra(EXTRA_KEY_SERVICE_TYPE, -1);
+            dialogType = intent.getIntExtra(EXTRA_KEY_DIALOG_TYPE, DT_MIDDLE);
+//            ZLogger.d("serviceType=" + serviceType);
+        }
+    }
+
+    /**
+     * 初始化内容视图
+     * Caused by: java.lang.IllegalStateException: commit already called
+     */
+    private void initFragments() {
+        if (serviceType == FRAGMENT_TYPE_CREATE_PURCHASE_GOODS) {
+            StockScSkuGoodsFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = StockScSkuGoodsFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = StockScSkuGoodsFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (serviceType == FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS) {
+            GreateScSkuGoodsFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = GreateScSkuGoodsFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = GreateScSkuGoodsFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (serviceType == FRAGMENT_TYPE_HANDOVER) {
+            HandoverFragment handoverFragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                handoverFragment = HandoverFragment.newInstance(intent.getExtras());
+            } else {
+                handoverFragment = HandoverFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, handoverFragment)
+                    .commit();
+        } else if (serviceType == FRAGMENT_TYPE_DAILY_SETTLE) {
+            DailySettleFragment dailySettleFragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                dailySettleFragment = DailySettleFragment.newInstance(intent.getExtras());
+            } else {
+                dailySettleFragment = DailySettleFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, dailySettleFragment)
+                    .commit();
+        } else if (serviceType == FRAGMENT_TYPE_SELECT_INV_SENDORDER) {
+            SelectInvSendOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = SelectInvSendOrderFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = SelectInvSendOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (serviceType == FRAGMENT_TYPE_SELECT_INV_RECVORDER) {
+            SelectInvRecvOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = SelectInvRecvOrderFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = SelectInvRecvOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
+        //采购商品详情
+        else if (serviceType == FRAGMENT_TYPE_PURCHASE_GOODSDETAIL) {
+            PurchaseGoodsDetailFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = PurchaseGoodsDetailFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = PurchaseGoodsDetailFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (serviceType == FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT) {
+            SelectWholesalerWithTenantFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = SelectWholesalerWithTenantFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = SelectWholesalerWithTenantFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
+    }
+}

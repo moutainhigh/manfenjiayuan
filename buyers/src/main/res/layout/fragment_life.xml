@@ -1,0 +1,85 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@null">
+
+    <RelativeLayout
+        android:id="@+id/fragment_life"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--扫一扫/摇一摇-->
+        <LinearLayout
+            android:id="@+id/top_function"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="36dp"
+            android:paddingBottom="16dp"
+            android:paddingRight="16dp"
+            android:background="@null"
+            android:gravity="center_vertical">
+
+            <com.mfh.buyers.view.FunctionButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_sweep"
+                android:layout_weight="1" />
+
+            <com.mfh.buyers.view.FunctionButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/button_shake"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <!--周边/商场/优选-->
+        <TabHost
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tabHost"
+            android:layout_below="@+id/top_function">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="#E8E8E7">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/tabbar_bg_shadow_bottom"
+                    android:gravity="center">
+                    <TabWidget
+                        android:id="@android:id/tabs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"/>
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/tab_viewpager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"/>
+
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+    </RelativeLayout>
+
+    <include
+        layout="@layout/fragment_shake"
+        android:id="@+id/life_shake"
+        android:visibility="gone"/>
+
+</RelativeLayout>

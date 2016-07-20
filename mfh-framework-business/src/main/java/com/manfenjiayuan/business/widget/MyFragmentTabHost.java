@@ -1,0 +1,45 @@
+package com.manfenjiayuan.business.widget;
+
+import android.content.Context;
+import android.support.v4.app.FragmentTabHost;
+import android.util.AttributeSet;
+import android.view.View;
+
+import com.manfenjiayuan.business.R;
+
+/**
+ * tabhost
+ * @author FireAnt（http://my.oschina.net/LittleDY）
+ * @version 创建时间：2014年9月28日 下午2:27:51 
+ * 
+ */
+
+public class MyFragmentTabHost extends FragmentTabHost {
+	
+	private String mCurrentTag;
+	
+	private String mNoTabChangedTag;
+	
+	public MyFragmentTabHost(Context context, AttributeSet attrs) {
+		super(context, attrs);
+	}
+	
+	@Override
+	public void onTabChanged(String tag) {
+		if (tag.equals(mNoTabChangedTag)) {
+			setCurrentTabByTag(mCurrentTag);
+		} else {
+			super.onTabChanged(tag);
+			mCurrentTag = tag;
+		}
+	}
+	
+	public void setNoTabChangedTag(String tag) {
+		this.mNoTabChangedTag = tag;
+	}
+
+	public View getBadgeView(int i) {
+//		return getChildAt(i).findViewById(R.id.tab_mes);
+		return getTabWidget().getChildTabViewAt(i).findViewById(R.id.tab_mes);
+	}
+}

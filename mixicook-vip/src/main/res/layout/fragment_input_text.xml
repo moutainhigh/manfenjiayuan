@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint=""
+        android:gravity="left|center_vertical"
+        android:layout_marginTop="16dp"
+        android:textSize="14sp"
+        android:inputType="none"
+        android:singleLine="true"
+        android:background="@drawable/widget_chat_message_editbox_background"
+        android:imeOptions="actionNext"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:paddingStart="8dp"
+        android:text=""
+        android:textColor="@color/material_black"/>
+
+    <Button
+        android:id="@+id/button_submit"
+        android:text="确定"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/et_nickname"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/green_button_select"
+        android:textColor="#ffffff"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"
+        android:contentDescription="" />
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:text="收货"
+        android:textColor="@color/material_white"
+        android:textSize="24sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/tv_title"
+        android:showDividers="middle"
+        android:padding="@dimen/spacing_normal"
+        android:divider="@drawable/divider_horizontal_line">
+
+        <TextView
+            android:id="@+id/tv_invioorder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_margin="@dimen/spacing_micro"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_micro"
+            android:text="发货单"
+            android:textColor="@color/material_black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_select_sendorder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_margin="@dimen/spacing_micro"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_micro"
+            android:text="采购订单"
+            android:textColor="@color/material_black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_create_neworder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_margin="@dimen/spacing_micro"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:gravity="center_vertical"
+            android:padding="@dimen/spacing_micro"
+            android:text="新建收货单"
+            android:textColor="@color/material_black"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

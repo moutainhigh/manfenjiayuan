@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_second_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sectioin_divider_height"
+        android:background="@drawable/bg_white_shdow_top_gray"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <com.mfh.framework.uikit.compound.BadgeViewButton
+            android:id="@+id/btn_recent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <com.mfh.framework.uikit.compound.BadgeViewButton
+            android:id="@+id/btn_hot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <com.mfh.framework.uikit.compound.BadgeViewButton
+            android:id="@+id/btn_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <LinearLayout
+            android:id="@+id/ll_left"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/chat_tmp_user_head"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+        <ImageButton
+            android:id="@+id/ib_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_toEndOf="@+id/ll_left"
+            android:scaleType="centerCrop"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_below="@+id/ib_top"
+            android:layout_alignStart="@+id/ib_top"
+            android:layout_alignParentBottom="true">
+
+            <ImageButton
+                android:id="@+id/ib_bottom_left"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/chat_tmp_user_head"
+                android:scaleType="centerCrop"/>
+
+            <ImageButton
+                android:id="@+id/ib_bottom_right"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/chat_tmp_user_head"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

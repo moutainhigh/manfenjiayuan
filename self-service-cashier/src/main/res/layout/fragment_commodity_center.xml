@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_white">
+
+    <include layout="@layout/contentview_dialog_header"
+        android:id="@+id/frame_top"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_top"
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:showDividers="middle">
+        <FrameLayout
+            android:id="@+id/frame_category"
+            android:layout_width="@dimen/common_right_panel_width"
+            android:layout_height="match_parent">
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/category_list"
+                android:layout_width="244dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"/>
+            <!--空视图-->
+            <TextView
+                android:id="@+id/empty_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/mfh_textview_text"
+                android:text="@string/label_nodata_reload"
+                android:gravity="center"
+                android:clickable="true"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!-- google 官方下拉刷新 -->
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swiperefreshlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.mfh.framework.hybrid.HybridWebView
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <com.mfh.framework.uikit.widget.EmptyLayout
+                android:id="@+id/error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+        </FrameLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

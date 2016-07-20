@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/top_bar"
+        layout="@layout/topbar_custom" />
+
+    <com.mfh.framework.uikit.widget.ReboundScrollView
+        android:id="@+id/reboundScrollView"
+        style="@style/scroll_view_custom"
+        android:layout_below="@+id/top_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="选择图片" />
+
+            <ImageView
+                android:id="@+id/iv_select"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@null"
+                android:contentDescription="" />
+
+            <TextView
+                android:id="@+id/tv_base64"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:padding="5dp"
+                android:scrollbars="vertical"
+                android:text="Small Text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+            <ImageView
+                android:id="@+id/iv_receive"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@null"
+                android:contentDescription="" />
+
+        </LinearLayout>
+    </com.mfh.framework.uikit.widget.ReboundScrollView>
+
+</LinearLayout>
+

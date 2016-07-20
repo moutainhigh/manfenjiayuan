@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">满分家园</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <!-- 微信分享返回结果-->
+    <string name="errcode_success">发送成功</string>
+    <string name="errcode_cancel">发送取消</string>
+    <string name="errcode_deny">发送被拒绝</string>
+    <string name="errcode_unknown">发送返回</string>
+
+    <string name="topbar_title_login">登录</string>
+    <string name="topbar_title_homepage">首页</string>
+    <string name="topbar_title_life">生活</string>
+    <string name="topbar_title_mall">商城</string>
+    <string name="topbar_title_individual">我的主页</string>
+    <string name="topbar_title_branches">网点分布</string>
+    <string name="topbar_title_shake">摇一摇</string>
+    <string name="topbar_title_shake_surround">摇一摇周边</string>
+    <string name="topbar_title_shake_history">摇一摇历史</string>
+    <string name="topbar_title_shop_trollery">购物车</string>
+    <string name="topbar_title_settings">设置</string>
+    <string name="topbar_title_settings_profile">个人资料</string>
+    <string name="topbar_title_settings_account">账号和安全</string>
+    <string name="topbar_title_settings_general">通用</string>
+    <string name="topbar_title_category">类目</string>
+    <string name="topbar_title_select_position">选择住址</string>
+    <string name="topbar_title_bill">账单</string>
+    <string name="topbar_title_recharge">充值</string>
+    <string name="topbar_title_change_pwd_login">修改登录密码</string>
+    <string name="topbar_title_change_pwd_pay">修改支付密码</string>
+    <string name="topbar_title_change_nickname">修改昵称</string>
+    <string name="topbar_title_share_location">位置</string>
+    <string name="topbar_title_cardpack">我的卡包</string>
+    <string name="topbar_title_order">套餐日历</string>
+    <string name="topbar_title_test">测试</string>
+    <string name="topbar_title_debug_jsbridge">测试·JS Brigge</string>
+
+
+    <string name="bottombar_title_individual">我</string>
+    <string name="bottombar_title_mall">商城</string>
+    <string name="bottombar_title_surround">小伙伴</string>
+    <string name="bottombar_title_message">对话</string>
+    <string name="bottombar_title_homepage">首页</string>
+    <string name="bottombar_title_order">提醒</string>
+    <string name="bottombar_title_life">生活</string>
+    <string name="bottombar_title_store">微店</string>
+    <string name="bottombar_title_people">小伙伴</string>
+    <string name="bottombar_title_redenvelope">红包</string>
+    <string name="bottombar_title_parcel">仓储</string>
+
+    <string name="label_balance">余额</string>
+    <string name="label_collection">我的收藏</string>
+    <string name="label_points">会员积分</string>
+    <string name="label_pending_payment">待付款</string>
+    <string name="label_pending_receipt">待收货</string>
+    <string name="label_pending_evaluation">待评价</string>
+    <string name="label_settings_notification">开启通知</string>
+    <string name="label_settings_location">开启位置服务</string>
+    <string name="label_settings_clearcache">清除缓存</string>
+    <string name="label_settings_clearcache_description">包括图片数据等</string>
+    <string name="label_settings_user_profile">个人资料</string>
+    <string name="label_settings_account">账户安全</string>
+    <string name="label_settings_general">通用</string>
+    <string name="label_settings_customer_center">客服中心</string>
+    <string name="label_settings_nickname">昵称</string>
+    <string name="label_settings_sex">性别</string>
+    <string name="label_me_orders">订单</string>
+    <string name="label_me_orders_description">查看全部已购商品与服务</string>
+    <string name="label_me_cart">购物车</string>
+    <string name="label_me_cart_description">%s件商品</string>
+    <string name="label_me_packages">套餐</string>
+    <string name="label_me_packages_description_def"></string>
+    <string name="label_me_packages_description">%s件商品</string>
+    <string name="label_me_wallet">钱包</string>
+    <string name="label_me_wallet_description">账单与充值</string>
+    <string name="label_me_carkpack">卡包</string>
+    <string name="label_me_carkpack_description">优惠券、红包、会员卡</string>
+    <string name="label_me_red_envelope">红包</string>
+    <string name="label_me_red_envelope_description_def">您还没有红包</string>
+    <string name="label_me_red_envelope_description">%s个红包</string>
+    <string name="label_me_coupon">优惠券</string>
+    <string name="label_me_coupon_description_def">您还没有优惠券</string>
+    <string name="label_me_coupon_description">您有%s张优惠券</string>
+    <string name="label_me_membership_card">会员卡</string>
+    <string name="label_me_membership_card_description_def">您还没有会员卡</string>
+    <string name="label_me_membership_card_description">%s张会员卡</string>
+    <string name="label_me_parcel">包裹</string>
+    <string name="label_me_parcel_description">待取包裹</string>
+    <string name="label_me_task">任务</string>
+    <string name="label_me_task_description">领取的任务</string>
+    <string name="label_me_mfhpartner">满分小伙伴</string>
+    <string name="label_me_mfhpartner_description">马上加入</string>
+    <string name="label_me_branches">默认收货网点</string>
+    <string name="label_me_village">常住小区</string>
+    <string name="label_me_feedback">反馈</string>
+    <string name="label_login_new_user">"我是新用户，<font color='#ff2d77ff'>马上点击注册"</font></string>
+    <string name="label_account_name">账户</string>
+    <string name="label_account_change_login_pwd">修改登录密码</string>
+    <string name="label_account_change_pay_pwd">修改支付密码</string>
+    <string name="label_account_change_pay_pwd_description">6位数字,默认为手机号后6位</string>
+
+    <string name="button_sweep">扫一扫</string>
+    <string name="button_scanning">扫一扫</string>
+    <string name="button_shake">摇一摇</string>
+    <string name="button_settings">设置</string>
+    <string name="button_logout">退出当前账号</string>
+    <string name="button_message">消息</string>
+    <string name="button_search">搜索</string>
+    <string name="button_search_clean_history">清空搜索历史</string>
+    <string name="button_select_position">请选择住址</string>
+    <string name="button_shopping_trolley">购物车</string>
+    <string name="button_save">保存</string>
+    <string name="button_branches_map">地图模式查看</string>
+    <string name="button_recharge_weixin">微信充值</string>
+    <string name="button_recharge_alipay">支付宝充值</string>
+    <string name="button_recharge">马上充值</string>
+    <string name="button_change_pwd_submit">确认修改</string>
+    <string name="button_more_store_surround">查看所有周边店铺</string>
+    <string name="button_clean">清空</string>
+    <string name="button_send">发送</string>
+    <string name="button_test">测试</string>
+    <string name="button_confirm">确认</string>
+
+
+
+    <string name="dialog_set_sex">修改性别</string>
+    <string name="dialog_item_male">男</string>
+    <string name="dialog_item_female">女</string>
+    <string name="dialog_button_stock_out">出库</string>
+
+
+    <string name="hint_input_login_username">用户名：注册手机号</string>
+    <string name="hint_input_login_password">密码：默认手机后6位</string>
+    <string name="hint_query_category">寻找你喜欢的宝贝、店铺</string>
+    <string name="hint_edit_old_pwd">请输入原始密码</string>
+    <string name="hint_edit_new_pwd">请输入新密码（至少6位）</string>
+    <string name="hint_edit_new_pwd_confirm">新密码确认</string>
+    <string name="hint_edit_old_paypwd">请输入原始密码</string>
+    <string name="hint_edit_new_paypwd">请输入6位新密码</string>
+    <string name="hint_edit_new_paypwd_confirm">新密码确认</string>
+    <string name="hint_edit_nickname">请输入新昵称</string>
+
+
+    <string name="toast_oldpwd_empty">旧密码不能为空</string>
+    <string name="toast_newpwd_empty">新密码不能为空</string>
+    <string name="toast_confirmpwd_empty">确认新密码不能为空</string>
+    <string name="toast_newpwd_conflict">两次输入密码不一致</string>
+    <string name="toast_newpwd_short">请输入6位新密码</string>
+    <string name="toast_nickname_empty">昵称不能为空</string>
+    <string name="toast_nickname_conflict">新的昵称不能和之前的相同</string>
+    <string name="toast_change_paypwd_succeess">修改支付密码成功</string>
+    <string name="toast_change_loginpwd_success">修改登录密码成功</string>
+    <string name="toast_change_nickname_success">修改昵称成功</string>
+    <string name="toast_change_sex_success">修改性别成功</string>
+    <string name="toast_change_header_success">修改头像成功</string>
+    <string name="toast_login_telephone_empty">请输入手机号</string>
+    <string name="toast_login_pwd_empty">请输入登录密码</string>
+
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ask_bt_open">Do you want to open bluetooth</string>
+
+    <string name="wx_pay_result_callback_msg" formatted="false">微信支付结果: %s</string>
+
+
+    <string name="format_balance_ammount">￥ %s</string>
+
+
+</resources>

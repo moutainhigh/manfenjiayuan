@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/window_background_primary">
+
+    <!--购物车商品列表-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listview_procucts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view_footer" />
+
+    <!--foot view-->
+    <LinearLayout
+        android:id="@+id/view_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_shdow_top_gray"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingStart="8dp"
+            android:text="商品总价"
+            android:textColor="@color/black_50"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_total_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="￥11.00"
+            android:textColor="@color/red"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_confirm_order"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_add_to_shopcart_bg"
+            android:text="确定下单"
+            android:textColor="@color/material_white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/animProgress"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        style="@style/loading"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

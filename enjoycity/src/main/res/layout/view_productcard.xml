@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--商品图片-->
+        <ImageView
+            android:id="@+id/iv_product"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:transitionName="transition_product_img"
+            android:contentDescription=""
+            android:layout_margin="4dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"/>
+
+        <ImageView
+            android:id="@+id/iv_promote_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_tag_hot"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/tv_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7.6折"
+            android:textColor="@color/material_white"
+            android:textSize="10sp"
+            android:background="@drawable/ic_tag_hot"
+            android:gravity="center"
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp"
+            android:singleLine="true"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_badgeNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:minWidth="16dp"
+            android:background="@drawable/badge_shopcart_number_bg"
+            android:text="9"
+            android:textSize="10sp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:textColor="@color/material_white"
+            android:layout_gravity="right"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <!--商品描述-->
+    <TextView
+        android:id="@+id/tv_product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="商品描述"
+        android:textColor="@color/material_black"
+        android:textSize="12sp"
+        android:gravity="start|center_vertical"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:lines="2"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
+        <!--商品价格-->
+        <TextView
+            android:id="@+id/tv_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="￥8.88"
+            android:textColor="#F34F4B"
+            android:textSize="14sp"
+            android:gravity="start|center_vertical"
+            android:singleLine="true"/>
+
+        <!--加入购物车-->
+        <ImageButton
+            android:id="@+id/ib_shopcart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_productcard_shopcart"
+            android:layout_marginStart="4dp"
+            android:background="@null"/>
+    </LinearLayout>
+</LinearLayout>

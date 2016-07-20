@@ -1,0 +1,178 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:divider="@drawable/divider_vertical_line_primary"
+    android:showDividers="middle"
+    android:background="@color/material_white"
+    android:baselineAligned="false">
+
+    <!--商品列表-->
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/bg_form"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_stockcheck_goods_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_procuct_header"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
+            <!--空视图-->
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/mfh_textview_text"
+                android:text="暂无数据"
+                android:layout_margin="16dp"
+                android:gravity="center"/>
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <ProgressBar
+                android:id="@+id/animProgress"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                style="@style/loading"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/mf_dividerColorPrimary"
+            android:layout_above="@+id/frame_bottom"/>
+
+        <!--底部快捷菜单-->
+        <LinearLayout
+            android:id="@+id/frame_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:layout_alignParentBottom="true">
+            <!--盘点数-->
+            <TextView
+                android:id="@+id/tv_check_quantity"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="盘点数：0.00"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="@color/material_black"
+                android:padding="8dp"/>
+            <!--系统库存-->
+            <TextView
+                android:id="@+id/tv_system_inventory"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="系统库存：0.00"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="@color/material_black"
+                android:padding="8dp"/>
+            <!--盈亏数-->
+            <TextView
+                android:id="@+id/tv_loss_quantity"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="盈亏数：0.00"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="@color/material_black"
+                android:padding="8dp"/>
+            <!--盈亏金额-->
+            <TextView
+                android:id="@+id/tv_loss_amount"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="盈亏金额：0.00"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:textColor="@color/material_black"
+                android:padding="8dp"/>
+
+            <Button
+                android:id="@+id/button_submit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="确定"
+                android:gravity="center"
+                android:textColor="@color/material_white"
+                android:textSize="20sp"
+                android:background="@drawable/btn_rectange_green"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--类目列表-->
+    <RelativeLayout
+        android:id="@+id/right_frame"
+        android:layout_width="@dimen/common_right_panel_width"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- google 官方下拉刷新 -->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_create">
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/order_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <!--空视图-->
+        <TextView
+            android:id="@+id/order_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/mfh_textview_text"
+            android:text="@string/label_nodata_reload"
+            android:gravity="center"
+            android:clickable="true"
+            android:layout_above="@+id/button_create"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/button_create"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="新建盘点"
+            android:gravity="center"
+            android:textColor="@color/material_black"
+            android:layout_alignParentBottom="true"
+            android:textSize="20sp"
+            android:background="@drawable/btn_rectange_gray"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

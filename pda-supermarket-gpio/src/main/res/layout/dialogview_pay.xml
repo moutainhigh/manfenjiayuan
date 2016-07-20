@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+        android:id="@+id/elv_pay"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        app:editLabelView_leftText="支付密码:"
+        app:editLabelView_leftTextSize="18sp"
+        app:editLabelView_leftTextColor="@color/black"
+        app:editLabelView_rightTextSize="18sp"
+        app:editLabelView_rightTextColor="@color/black"
+        app:editLabelView_rightTextColorHint="@color/black_35"
+        app:editLabelView_rightHint="请输入支付密码"/>
+
+</LinearLayout>

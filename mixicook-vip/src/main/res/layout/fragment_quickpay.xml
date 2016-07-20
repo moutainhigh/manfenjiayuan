@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/mfh_colorPrimary"
+                android:padding="@dimen/spacing_double">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_double"
+        android:layout_marginBottom="@dimen/spacing_double"
+        android:layout_above="@+id/iv_launcher"
+        android:background="@drawable/bg_quick_pay">
+
+        <LinearLayout
+            android:id="@+id/codeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_topup"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_double">
+
+            <ImageView
+                android:id="@+id/iv_code_128"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/iv_qr_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_double"
+                android:background="@null"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/button_topup"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:text="充值"
+            android:textColor="@color/material_white"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_launcher"
+        android:layout_width="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="24dp"
+        android:background="@null"
+        android:layout_margin="@dimen/spacing_double"
+        android:layout_alignParentBottom="true"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"/>
+
+
+</RelativeLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_header"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <TextView
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:text="商品" />
+
+
+    <TextView
+        android:id="@+id/tv_upperLimit"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="排面库存" />
+
+    <com.mfh.litecashier.ui.widget.MOrderLabelView
+        android:id="@+id/orderLabel_quantity"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="start|center_vertical"
+        app:mOrderLabelView_text="@string/label_stock_quantity"
+        app:mOrderLabelView_textSize="16sp"
+        app:mOrderLabelView_textColor="@color/black"/>
+
+
+    <com.mfh.litecashier.ui.widget.MOrderLabelView
+        android:id="@+id/orderLabel_monthlysales"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="start|center_vertical"
+        app:mOrderLabelView_text="@string/label_monthly_sales"
+        app:mOrderLabelView_textSize="16sp"
+        app:mOrderLabelView_textColor="@color/black"/>
+
+
+    <TextView
+        android:id="@+id/tv_buyprice"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="@string/label_purchase_price"
+        android:visibility="gone"/>
+
+    <!--库存成本价-->
+    <TextView
+        android:id="@+id/tv_header_buyprice"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="成本价" />
+
+
+    <TextView
+        android:id="@+id/tv_header_costprice"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="@string/label_cost_price" />
+
+
+    <ImageButton
+        android:id="@+id/ib_order_goods"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:background="@null"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_shopcart_add_large"
+        android:visibility="invisible"/>
+
+</LinearLayout>

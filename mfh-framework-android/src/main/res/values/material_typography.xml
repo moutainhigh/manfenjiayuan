@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Dense scripts-->
+    <!--Chinese, Japanese, and Korean.-->
+    <dimen name="ch_fontsize_display4">112sp</dimen>//light
+    <dimen name="ch_fontsize_display3">56sp</dimen>//regular
+    <dimen name="ch_fontsize_display2">45sp</dimen>//regular
+    <dimen name="ch_fontsize_display1">34sp</dimen>//regular
+    <dimen name="ch_fontsize_headline">24sp</dimen>//regular
+    <dimen name="ch_fontsize_title">21sp</dimen>//medium
+    <dimen name="ch_fontsize_desktop_subheading">16sp</dimen>//regular
+    <dimen name="ch_fontsize_device_subheading">17sp</dimen>//regular
+    <dimen name="ch_fontsize_desktop_body2">14sp</dimen>//medium
+    <dimen name="ch_fontsize_device_body2">15sp</dimen>//medium
+    <dimen name="ch_fontsize_desktop_body1">14sp</dimen>//regular
+    <dimen name="ch_fontsize_device_body1">15sp</dimen>//regular
+    <dimen name="ch_fontsize_caption">13sp</dimen>//regular
+    <dimen name="ch_fontsize_button">15sp</dimen>//medium
+
+</resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scroll_view_custom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/abl_toolbar">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_scan"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:logoSrc="@drawable/icon_setting_profile"
+                app:text="@string/label_scan_carpon"/>
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_help"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                app:text="@string/label_settings_help"
+                app:logoSrc="@drawable/icon_settings_account"
+                app:position="bottom"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/tv_version_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="您还没有任何代金券"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

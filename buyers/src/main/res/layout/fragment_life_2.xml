@@ -1,0 +1,122 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/fragment_life"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--扫一扫/摇一摇-->
+        <LinearLayout
+            android:id="@+id/top_function"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="36dp">
+
+            <com.mfh.buyers.view.FunctionButton
+                android:id="@+id/button_sweep"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.mfh.buyers.view.FunctionButton
+                android:id="@+id/button_shake"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_catetory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/top_function"
+            android:background="#E8E8E7"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/ll_category_barv_h"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_alignParentTop="true">
+
+                <!--周边/商场/优选-->
+                <com.mfh.comna.comn.widgets.PagerSlidingTabStrip
+                    android:id="@+id/pager_tabstrip"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/sliding_tab_strip_background"
+                    app:allowWidthFull="true"
+                    app:slidingBlock="@drawable/category_tab_item" />
+                <ImageButton
+                    android:id="@+id/ib_more_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/icon_arrow_down"
+                    android:background="@drawable/sliding_tab_strip_background"
+                    android:paddingStart="@dimen/space_primary"
+                    android:paddingEnd="@dimen/space_primary"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_category_bar_v"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:visibility="gone"
+                android:background="@color/window_background_primary">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="分类"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/space_primary"/>
+                <ImageButton
+                    android:id="@+id/ib_hide_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/icon_arrow_up"
+                    android:background="@null"
+                    android:paddingStart="@dimen/space_primary"
+                    android:paddingEnd="@dimen/space_primary"/>
+            </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/tab_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/ll_category_barv_h"/>
+            <ListView
+                android:id="@+id/category_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/ll_category_barv_h"
+                android:background="#ffffff"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/life_shake"
+        layout="@layout/fragment_shake"
+        android:visibility="gone" />
+
+</RelativeLayout>

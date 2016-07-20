@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="sensoro-scanner-1.0.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mfowner/libs/sensoro-scanner-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

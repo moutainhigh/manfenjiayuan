@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="72dp"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:padding="8dp">
+
+    <!--商品基础信息-->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center_vertical">
+
+        <!--图片-->
+        <ImageView
+            android:id="@+id/iv_header"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@mipmap/ic_image_error"
+            android:contentDescription="@null" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <!--名称-->
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/mfh_form_header_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="商品名称" />
+
+            <TextView
+                android:id="@+id/tv_barcode"
+                style="@style/mfh_form_header_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="@color/black_65"
+                android:layout_below="@+id/tv_name"
+                android:text="条码" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--采购单位-->
+    <TextView
+        android:id="@+id/tv_unit"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/material_black"
+        android:text="单位" />
+
+    <!--采购数量-->
+    <TextView
+        android:id="@+id/tv_quantity"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:drawablePadding="4dp"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/material_black"
+        android:text="数量" />
+
+    <com.manfenjiayuan.business.widget.NumberPickerView
+        android:id="@+id/numberPickerView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:decreaseDrawableAutoHide="true"
+        android:layout_weight="1.5"
+        android:visibility="invisible"/>
+
+</LinearLayout>

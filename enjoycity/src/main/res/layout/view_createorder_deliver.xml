@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:background="@color/material_white"
+    android:divider="@drawable/divider_horizontal_line"
+    android:showDividers="beginning|middle|end">
+
+    <RelativeLayout
+        android:id="@+id/rl_deliver_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_listview_item"
+        android:padding="@dimen/mf_spac_horizontal_primary">
+
+        <TextView
+            android:layout_marginEnd="@dimen/space_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="期望送达时间"
+            android:textSize="12sp"
+            android:textColor="@color/black_70"
+            android:drawableStart="@drawable/ic_deliver_time"
+            android:drawablePadding="8dp"
+            android:layout_toStartOf="@+id/tv_time"
+            android:gravity="center_vertical"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未选择"
+            android:textSize="12sp"
+            android:layout_alignParentEnd="true"
+            android:textColor="#fe5000"
+            android:gravity="center|end"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:drawablePadding="4dp"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

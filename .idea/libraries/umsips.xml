@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="umsips">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/self-service-cashier/libs/umsips.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

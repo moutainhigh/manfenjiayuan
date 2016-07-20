@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="@dimen/mf_simple_dialog_width"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/contentview_dialog_header"/>
+
+    <EditText
+        android:id="@+id/et_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/default_amount"
+        android:textSize="@dimen/textsize_huge"
+        android:textColor="#FE5000"
+        android:padding="16dp"
+        android:hint=""
+        android:maxLength="8"
+        android:gravity="end"
+        android:singleLine="true"
+        android:background="@null"
+        android:inputType="numberDecimal"
+        android:textIsSelectable="false"/>
+
+    <include layout="@layout/view_mf_keyboard_number"
+        android:id="@+id/ll_keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"/>
+
+    <!--按键-->
+    <include layout="@layout/view_dialog_footer"/>
+
+</LinearLayout>

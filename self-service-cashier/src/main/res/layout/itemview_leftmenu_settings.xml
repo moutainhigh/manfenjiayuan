@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    android:layout_width="260dp"
+    android:layout_height="50dp"
+    android:background="@drawable/bg_leftmenu_item_settings"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/iv_buttonImage"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/tv_buttonText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="冰珊孤雪"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"/>
+
+</LinearLayout>

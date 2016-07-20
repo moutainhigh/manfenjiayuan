@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gv_item_divider">#C0C0C0</color>
+    <color name="gv_item_select">#C0C0C0</color>
+    <color name="chat_actionbar">#F8F8F6</color>
+    <color name="widget_chat_background_tab_pressed">#6633B5E5</color>
+
+
+    <color name="background_color">#ffd1dce9</color>
+    <color name="text_color">#ff666666</color>
+    <color name="TextColorBlack">#FF000000</color>
+    <color name="TextColorWhite">#FFFFFFFF</color>
+    <color name="BgColor">#ffd1dce9</color>
+    <color name="navpage">#FFE1E8EB</color>
+    <color name="semitransparent">#80000000</color>
+
+    <color name="green_nomal">#00CC33</color>
+    <color name="green_select">#ff329b4e</color>
+    <color name="gray_nomal">#CCCCCC</color>
+    <color name="gray_select">#999999</color>
+    <color name="red_nomal">#ff0000</color>
+    <color name="red_select">#8b0000</color>
+
+    <color name="main_tab_normal">#808080</color>
+    <color name="main_tab_pressed">#45B91C</color>
+
+    <!-- 窗口背景色-->
+    <color name="window_background">#FF93DD81</color>
+    <!-- 顶部导航栏背景色-->
+    <color name="topbar_background">#ff329b4e</color>
+    <!-- 底部导航栏背景色-->
+    <color name="bootombar_background">#FFFFFFFF</color>
+
+    <color name="listitem_white">#FFFFFFFF</color>
+    <color name="listitem_gray">#1015762d</color>
+
+    <color name="searchbar_hint_text_color_1">#808080</color>
+    <color name="searchbar_hint_background_color_1">#a0808080</color>
+
+    <color name="category_listitem_text_normal">#FF000000</color>
+    <color name="category_listitem_text_selected">#ff329b4e</color>
+    <color name="category_listitem_background_selected">#FFFFFF</color>
+    <color name="category_listitem_background_normal">#E8E8E7</color>
+
+
+
+
+</resources>

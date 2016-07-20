@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/material_white"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:divider="@drawable/divider_horizontal_line"
+    android:showDividers="end">
+
+    <ImageView
+        android:id="@+id/iv_marker"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/icon_address_gray" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="200dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/iv_marker"
+        android:gravity="start"
+        android:paddingEnd="4dp"
+        android:text="收货人: 冰珊孤雪"
+        android:textColor="@color/black_80"
+        android:textSize="14sp"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/tv_telephone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tv_name"
+        android:layout_toEndOf="@+id/tv_name"
+        android:layout_toStartOf="@+id/iv_arrow"
+        android:layout_marginEnd="4dp"
+        android:gravity="end"
+        android:text="15250065084"
+        android:textColor="@color/black_80"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_name"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/iv_marker"
+        android:gravity="start"
+        android:paddingEnd="4dp"
+        android:text="配送至:"
+        android:textColor="@color/black_50"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tv_to"
+        android:layout_toEndOf="@+id/tv_to"
+        android:layout_toStartOf="@+id/iv_arrow"
+        android:layout_alignEnd="@+id/tv_telephone"
+        android:gravity="start"
+        android:text="满分家园"
+        android:textColor="@color/black_80"
+        android:textSize="12sp"
+        android:singleLine="true"/>
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/icon_guide"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

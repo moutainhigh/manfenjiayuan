@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/mf_simple_dialog_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/contentview_dialog_header" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mf_simple_dialog_height"
+        android:gravity="center"
+        android:paddingEnd="32dp"
+        android:paddingStart="32dp">
+
+        <LinearLayout
+            android:id="@+id/frame_courier_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp">
+
+            <TextView
+                android:id="@+id/tv_query_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/label_courier_number"
+                android:textColor="@color/material_black"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/et_courier_number"
+                style="@style/mfh_edittext_normal"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginStart="16dp"
+                android:hint="@string/label_courier_number"
+                android:inputType="text"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frame_courier_number"
+            android:layout_margin="32dp">
+
+            <!--style="@style/SpinnerMfhTheme"-->
+            <Spinner
+                android:id="@+id/spinner_province"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                style="@style/dropDownSpinnerStyle" />
+
+            <!--style="@style/SpinnerMfhTheme"-->
+            <Spinner
+                android:id="@+id/spinner_city"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                style="@style/dropDownSpinnerStyle" />
+
+            <!--style="@style/SpinnerMfhTheme"-->
+            <Spinner
+                android:id="@+id/spinner_town"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                style="@style/dropDownSpinnerStyle" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--按键-->
+    <include layout="@layout/view_dialog_footer" />
+
+</LinearLayout>

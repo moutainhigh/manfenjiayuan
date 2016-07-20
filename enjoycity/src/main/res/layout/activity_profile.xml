@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scroll_view_custom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/abl_toolbar">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_tel"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:logoSrc="@drawable/icon_setting_profile"
+                app:text="@string/label_settings_telephone"
+                app:position="top"/>
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                app:logoSrc="@drawable/icon_settings_account"
+                app:text="@string/label_settings_name"
+                app:position="center"/>
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_sex"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                app:logoSrc="@drawable/icon_setting_general"
+                app:text="@string/label_settings_appellation"
+                app:position="bottom"/>
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_logout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:logoSrc="@drawable/icon_settings_customer_service"
+                app:text="@string/label_settings_logout"
+                app:position="single"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

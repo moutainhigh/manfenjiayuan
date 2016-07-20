@@ -1,0 +1,45 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/view_shop_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E8E8E7"
+        android:orientation="vertical">
+        <com.mfh.framework.uikit.widget.PagerSlidingTabStrip
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@color/material_black"
+            app:allowWidthFull="true"
+            app:slidingBlock="@drawable/home_category_tab_item" />
+        <!--<android.support.v4.view.ViewPager-->
+            <!--android:id="@+id/tab_viewpager"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
+
+        <com.mfh.enjoycity.widget.WebviewViewPager
+            android:id="@+id/tab_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <com.mfh.framework.uikit.widget.EmptyLayout
+        android:id="@+id/view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <com.mfh.enjoycity.view.NoShopView
+        android:id="@+id/view_noshop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</FrameLayout>

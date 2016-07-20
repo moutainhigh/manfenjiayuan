@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/dialog_background"
+            android:layout_marginTop="50dp">
+
+            <ImageButton
+                android:id="@+id/button_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_close"
+                android:background="@null"
+                android:padding="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分享订单，跟好友一起领红包"
+                android:padding="8dp"
+                android:textColor="@color/material_black"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="70dp"/>
+
+            <TextView
+                android:id="@+id/tv_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分享城市之间app给你的好友，和他们一起来领取现金礼，你也有份哦！"
+                android:padding="16dp"
+                android:textColor="@color/black_65"
+                android:textSize="14sp"
+                android:gravity="start|center_vertical"
+                android:layout_gravity="center_horizontal"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tv_order_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="分享我购买的商品清单"
+                android:padding="8dp"
+                android:textColor="@color/material_black"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:drawableStart="@drawable/icon_radio_on"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/mf_colorPrimary"/>
+
+            <LinearLayout
+                android:id="@+id/ll_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:padding="16dp">
+
+                <Button
+                    android:id="@+id/button_wx_friend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/share_icon_wechat"
+                    android:drawablePadding="8dp"
+                    android:text="微信好友"
+                    android:textSize="12sp"
+                    android:textColor="@color/black_80"
+                    android:background="@null"/>
+
+                <Button
+                    android:id="@+id/button_wx_circle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/share_icon_wechatfriends"
+                    android:drawablePadding="8dp"
+                    android:text="朋友圈"
+                    android:textSize="12sp"
+                    android:textColor="@color/black_80"
+                    android:background="@null"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_red_elevelope"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            style="@style/loading"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            android:layout_margin="16dp"/>
+
+    </FrameLayout>
+
+
+</LinearLayout>

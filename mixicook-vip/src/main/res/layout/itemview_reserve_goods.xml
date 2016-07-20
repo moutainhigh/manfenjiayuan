@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="72dp"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:paddingBottom="8dp"
+              android:paddingEnd="2dp"
+              android:paddingStart="8dp"
+              android:paddingTop="8dp">
+
+    <!--图片-->
+    <ImageView
+        android:id="@+id/iv_header"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:contentDescription="@null"
+        android:src="@mipmap/ic_image_error"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1.5"
+        android:orientation="vertical">
+
+        <!--名称-->
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/mfh_textview_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="商品名称"/>
+
+        <!--采购价格&单位-->
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/mfh_textview_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_name"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="价格"
+            android:textColor="@color/black_65"/>
+
+    </RelativeLayout>
+
+
+    <com.manfenjiayuan.business.widget.NumberPickerView
+        android:id="@+id/numberPickerView"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:isInterceptOutside="false"
+        app:decreaseDrawableAutoHide="true"/>
+
+</LinearLayout>

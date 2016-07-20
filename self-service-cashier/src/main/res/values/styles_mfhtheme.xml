@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="mfh_button_text">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/material_white</item>
+    </style>
+
+</resources>

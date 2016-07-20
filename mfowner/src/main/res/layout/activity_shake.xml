@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/frame_background_01">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topbar_height"
+        android:layout_marginTop="19dp">
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:src="@drawable/navi_shake_back_normal"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/space_primary"
+            style="@style/topbar_icon"
+            android:contentDescription="" />
+
+        <ImageButton
+            style="@style/topbar_icon"
+            android:id="@+id/ib_more"
+            android:src="@drawable/navi_shake_more_normal"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/space_primary"
+            android:contentDescription="" />
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_shake_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:contentDescription="@null"
+        android:src="@drawable/shake_icon_anim" />
+
+    <com.mfh.framework.uikit.compound.LoadingTextView
+        android:id="@+id/loadingTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_shake_icon"
+        android:layout_marginTop="@dimen/btn_fab_margins"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            style="@style/bottombar_item"
+            android:id="@+id/ll_tab_store"
+            android:visibility="gone">
+
+            <ImageView
+                style="@style/shake_tab_icon"
+                android:id="@+id/img_store"
+                android:src="@drawable/shake_type_store"
+                android:contentDescription=""/>
+
+            <TextView
+                style="@style/shake_tab_text"
+                android:id="@+id/tv_store"
+                android:text="@string/bottombar_title_store"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/bottombar_item"
+            android:id="@+id/ll_tab_people">
+
+            <ImageView
+                style="@style/shake_tab_icon"
+                android:id="@+id/img_people"
+                android:src="@drawable/shake_type_people"
+                android:contentDescription="" />
+
+            <TextView
+                style="@style/shake_tab_text"
+                android:id="@+id/tv_people"
+                android:text="@string/bottombar_title_people"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/bottombar_item"
+            android:id="@+id/ll_tab_redenvelope">
+
+            <ImageView
+                style="@style/shake_tab_icon"
+                android:id="@+id/img_redenvelope"
+                android:src="@drawable/shake_type_redenvelope"
+                android:contentDescription="" />
+
+            <TextView
+                style="@style/shake_tab_text"
+                android:id="@+id/tv_redenvelope"
+                android:text="@string/bottombar_title_redenvelope"
+                android:layout_marginTop="3dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

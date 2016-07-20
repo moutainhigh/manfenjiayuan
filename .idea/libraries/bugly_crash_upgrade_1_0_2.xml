@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="bugly_crash_upgrade_1.0.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/self-service-cashier/libs/bugly_crash_upgrade_1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

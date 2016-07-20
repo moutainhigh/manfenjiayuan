@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black_70"
+    android:baselineAligned="false">
+
+    <!--类目列表-->
+    <LinearLayout
+        android:id="@+id/right_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/material_white"
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:showDividers="middle"
+        android:layout_above="@+id/button_submit">
+
+        <!--根目录-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/root_category_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"/>
+        <!--二级类目-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/second_category_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:visibility="invisible"/>
+        <!--三级类目-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/third_category_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:visibility="invisible"/>
+        <!--四级类目-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fourth_category_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:visibility="invisible"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:text="确定"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@color/material_white"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/btn_rectange_green"/>
+
+</RelativeLayout>

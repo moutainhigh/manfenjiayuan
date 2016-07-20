@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content_transparent"
+    android:layout_height="44dp"
+    android:orientation="horizontal"
+    android:gravity="center">
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="商品"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_packageNum"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="箱规"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+    <TextView
+        android:id="@+id/tv_startnum"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="起配量"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+    <TextView
+        android:id="@+id/tv_buyprice"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="采购价"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/mf_red"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+</LinearLayout>

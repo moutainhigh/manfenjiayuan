@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#ffffff"
+    android:padding="5dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/iv_marker"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/icon_radio_on"
+        android:contentDescription=""
+        android:layout_marginStart="8dp"
+        android:visibility="visible"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp">
+        <TextView
+            style="@style/listitem_text_title"
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="姓名"
+            android:gravity="start"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/tv_telephone"/>
+
+        <TextView
+            style="@style/listitem_text_title"
+            android:id="@+id/tv_telephone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="手机号"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/tv_name"/>
+
+        <TextView
+            style="@style/listitem_text_detail"
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="地址"
+            android:gravity="start"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginTop="4dp"
+            android:layout_alignStart="@+id/tv_name" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/icon_arrow_right"
+        android:contentDescription=""
+        android:layout_marginStart="12dp"
+        android:visibility="gone"/>
+
+
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--白色背景色，解决黑色透明问题-->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/spacing_normal"/>
+            <solid android:color="@color/material_white" />
+        </shape>
+    </item>
+    <!--30%透明度的黑色线-->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/spacing_normal"/>
+            <solid android:color="@color/mf_dividerColorPrimary" />
+        </shape>
+    </item>
+
+    <item android:bottom="44dp">
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="@dimen/spacing_normal"
+                     android:topRightRadius="@dimen/spacing_normal"/>
+            <solid android:color="@color/material_white" />
+        </shape>
+    </item>
+
+</layer-list>

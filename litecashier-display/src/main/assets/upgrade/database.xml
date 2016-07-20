@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<upgrade-configs>
+    <upgrade-config>
+        <domain>CASHIERDISPLAY.CLIENT.DB.UPGRADE</domain>
+        <description>cashierdisplay client db upgrade config</description>
+        <version>0</version>
+        <script-file-path>upgrade/</script-file-path>
+        <script-file-prefix>cashierdisplay</script-file-prefix>
+        <datasource-id></datasource-id>
+        <className></className>
+    </upgrade-config>
+</upgrade-configs>

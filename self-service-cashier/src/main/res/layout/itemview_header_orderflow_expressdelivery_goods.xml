@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_header"
+    android:gravity="center">
+
+
+    <TextView
+        android:id="@+id/tv_receiverName"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="收件人" />
+
+
+    <TextView
+        android:id="@+id/tv_receiverPhone"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:text="电话" />
+
+    <!--条码-->
+    <TextView
+        android:id="@+id/tv_barcode"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:text="快递面单号" />
+
+    <!--单位-->
+    <TextView
+        android:id="@+id/tv_status"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="状态" />
+    <!--零售价-->
+    <TextView
+        android:id="@+id/tv_deliveryDate"
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:text="领取时间" />
+
+</LinearLayout>

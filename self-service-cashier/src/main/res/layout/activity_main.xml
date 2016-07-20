@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:baselineAligned="false"
+              android:divider="@drawable/divider_vertical_line_primary"
+              android:orientation="horizontal"
+              android:showDividers="middle">
+
+    <LinearLayout
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
+        android:divider="@drawable/divider_horizontal_line"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:showDividers="middle">
+        <!--导航-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/slideMenu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#35363b"/>
+
+        <com.bingshanguxue.vector_uikit.SyncButton
+            android:id="@+id/button_sync"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#35363b"/>
+
+    </LinearLayout>
+
+
+    <!--收银区-->
+    <include
+        layout="@layout/fragment_cashier"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <!--广告轮播 780*1080/458.25*752dp-->
+    <com.mfh.framework.uikit.adv.AdvertisementViewPager
+        android:id="@+id/viewpager_adv"
+        android:layout_width="543dp"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"/>
+
+</LinearLayout>
+

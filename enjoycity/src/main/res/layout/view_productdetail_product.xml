@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/mf_spac_horizontal_primary">
+
+    <!--商品名称-->
+    <TextView
+        android:id="@+id/tv_product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:textColor="@color/material_black"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_product_name"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+        <!--当前价格-->
+        <TextView
+            android:id="@+id/tv_product_cost_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="￥88.00"
+            android:textSize="20sp"
+            android:textColor="#f15a09"
+            android:gravity="center"/>
+
+        <!--历史价格-->
+        <TextView
+            android:id="@+id/tv_product_old_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="￥123.00"
+            android:textSize="12sp"
+            android:textColor="@color/black_30"
+            android:gravity="start|center"
+            android:paddingStart="8dp"/>
+
+        <!--配送方式-->
+        <ImageView
+            android:id="@+id/iv_marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_code_delivery"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <!--规格-->
+
+</RelativeLayout>

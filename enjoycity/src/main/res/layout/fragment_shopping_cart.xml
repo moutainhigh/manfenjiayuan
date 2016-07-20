@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background_primary">
+
+    <!--foot view-->
+    <LinearLayout
+        android:id="@+id/view_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_shdow_top_gray"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:text="商品总价"
+            android:textColor="@color/material_black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_total_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="￥11.00"
+            android:textColor="@color/material_red_500"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_confirm_order"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            android:background="#ff329b4e"
+            android:text="确定"
+            android:textColor="@color/material_white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!--购物车商品列表-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/listview_procucts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/view_footer"/>
+
+    <!--购物车为空-->
+    <LinearLayout
+        android:id="@+id/view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/img_null_cart" />
+
+        <TextView
+            android:id="@+id/tv_version_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="您的购物车里啥都没有" />
+
+        <Button
+            android:id="@+id/button_buy"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/green_button_select"
+            android:text="再逛逛"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+</RelativeLayout>

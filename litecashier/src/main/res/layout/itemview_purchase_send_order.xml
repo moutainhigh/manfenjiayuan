@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_provider_name"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="批发商名称"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_orderNumber"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/black_65"
+        android:textSize="14sp"
+        android:text="订单编号" />
+
+    <TextView
+        android:id="@+id/tv_createDate"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/black_65"
+        android:textSize="14sp"
+        android:text="下单时间" />
+
+    <TextView
+        android:id="@+id/tv_transHumanName"
+        style="@style/mfh_form_content_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/black_65"
+        android:textSize="14sp"
+        android:text="经手人" />
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="状态"
+        android:gravity="center_vertical"
+        android:textColor="@color/black_65"
+        android:textSize="14sp" />
+
+</LinearLayout>

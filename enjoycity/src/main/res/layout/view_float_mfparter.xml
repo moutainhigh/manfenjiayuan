@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="47dp"
+    android:orientation="horizontal"
+    android:background="@drawable/btn_float_mfparter_bg"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/iv_header"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_parter_header"/>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="99位小伙伴\n正在为您服务"
+        android:textColor="@color/black_50"
+        android:textSize="11sp"
+        android:gravity="start|center"
+        android:maxLines="2"
+        android:layout_marginEnd="16dp"/>
+
+</LinearLayout>

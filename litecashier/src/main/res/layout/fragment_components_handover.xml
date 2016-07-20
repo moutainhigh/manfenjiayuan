@@ -1,0 +1,174 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_white"
+    android:baselineAligned="false"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/contentview_dialog_header" />
+
+    <!--门店-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:padding="8dp">
+        <!--门店-->
+        <TextView
+            android:id="@+id/tv_officename"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="门店：" />
+
+        <!--收银员-->
+        <TextView
+            android:id="@+id/tv_humanName"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="交班人：" />
+
+
+        <!--交班时间-->
+        <TextView
+            android:id="@+id/tv_handover_datetime"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="交班时间：" />
+
+    </LinearLayout>
+
+    <!--营业额-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:orientation="horizontal"
+        android:padding="8dp">
+        <!--营业额合计-->
+        <TextView
+            android:id="@+id/tv_amount"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="营业额合计：" />
+
+        <!--账户新增-->
+        <TextView
+            android:id="@+id/tv_income"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="账户新增：" />
+
+
+        <!--现金收取-->
+        <TextView
+            android:id="@+id/tv_cash"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="现金收取：" />
+    </LinearLayout>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="64dp"
+        android:layout_weight="1"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--头部-->
+            <include
+                android:id="@+id/frame_header_goods_list"
+                layout="@layout/itemview_analysis_agg_header"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+            <!--商品列表-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="308dp">
+                <!--空视图-->
+                <TextView
+                    android:id="@+id/empty_view"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="暂无数据"
+                    android:visibility="gone"/>
+
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/order_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+            <include
+                android:id="@+id/frame_header_goods_list"
+                layout="@layout/itemview_analysis_acc_header"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="8dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp">
+                <!--空视图-->
+                <TextView
+                    android:id="@+id/paytype_empty_view"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="暂无数据"
+                    android:visibility="gone"/>
+
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/paytype_order_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <!--按键-->
+    <include layout="@layout/view_dialog_footer" />
+
+</LinearLayout>

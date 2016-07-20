@@ -1,0 +1,92 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:divider="@drawable/divider_horizontal_line"
+    android:showDividers="middle"
+    android:orientation="vertical">
+
+
+    <com.mfh.petitestock.widget.compound.EditQueryView
+        android:id="@+id/eqv_barcode"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
+        app:editQueryView_inputTextSize="18px"
+        app:editQueryView_inputTextColor="@color/black"
+        app:editLabelView_inputTextColorHint="@color/black_35"
+        app:editQueryView_inputHint="@string/hint_input_package_no"/>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/mf_scrolview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <com.mfh.petitestock.widget.compound.TextLabelView
+                android:id="@+id/label_receiveName"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="收件人:"
+                style="@style/mfh_textlabelview"/>
+
+            <com.mfh.petitestock.widget.compound.TextLabelView
+                android:id="@+id/label_receivePhone"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="手机号:"
+                style="@style/mfh_textlabelview"/>
+
+
+            <com.mfh.petitestock.widget.compound.TextLabelView
+                android:id="@+id/label_itemTypeName"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="包裹类型:"
+                style="@style/mfh_textlabelview"/>
+
+
+            <com.mfh.petitestock.widget.compound.TextLabelView
+                android:id="@+id/label_createdDate"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="入库时间:"
+                style="@style/mfh_textlabelview"/>
+
+            <com.mfh.petitestock.widget.compound.TextLabelView
+                android:id="@+id/label_transportName"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="物流公司:"
+                style="@style/mfh_textlabelview"/>
+
+            <com.mfh.petitestock.widget.compound.TextLabelView
+                android:id="@+id/label_transHumanInfo"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="配送员:"
+                style="@style/mfh_textlabelview"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:text="@string/button_package_stockout"
+        android:textColor="@color/material_white"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:background="@drawable/bg_btn_rectange_gray"/>
+
+</LinearLayout>

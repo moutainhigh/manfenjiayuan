@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/mfhtheme_maskPrimary"
+                android:padding="12sp">
+
+    <!--用户信息：用户名/手机号-->
+    <TextView
+        android:id="@+id/tv_vip_brief"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_normal"
+        android:text=":"
+        android:textColor="@color/material_black"
+        android:textSize="@dimen/textsize_normal"/>
+
+    <!--头像-->
+    <com.mfh.framework.uikit.widget.AvatarView
+        android:id="@+id/iv_vip_header"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/chat_tmp_user_head"/>
+
+
+</RelativeLayout>

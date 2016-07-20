@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--224=100+114-->
+    <!--广告-->
+    <LinearLayout
+        android:id="@+id/frame_adv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone">
+
+        <com.mfh.framework.uikit.widget.AvatarView
+            android:id="@+id/iv_adv_header"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_margin="8dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/frame_adv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="2dp">
+                <TextView
+                    android:id="@+id/tv_adv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="可口可乐苏州分公司"
+                    android:textSize="20sp"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textColor="@color/material_black"/>
+                <ImageView
+                    android:id="@+id/iv_marker_01"
+                    android:layout_width="34dp"
+                    android:layout_height="19dp"
+                    android:src="@mipmap/ic_marker_special"
+                    android:layout_margin="2dp"
+                    android:contentDescription="@null"/>
+
+                <ImageView
+                    android:id="@+id/iv_marker_02"
+                    android:layout_width="34dp"
+                    android:layout_height="19dp"
+                    android:src="@mipmap/ic_marker_coupon"
+                    android:layout_margin="2dp"
+                    android:contentDescription="@null"/>
+
+                <ImageView
+                    android:id="@+id/iv_marker_03"
+                    android:layout_width="34dp"
+                    android:layout_height="19dp"
+                    android:src="@mipmap/ic_marker_delivery"
+                    android:layout_margin="2dp"
+                    android:contentDescription="@null"/>
+
+                <ImageView
+                    android:id="@+id/iv_marker_04"
+                    android:layout_width="34dp"
+                    android:layout_height="19dp"
+                    android:src="@mipmap/ic_marker_fullcut"
+                    android:layout_margin="2dp"
+                    android:contentDescription="@null"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_adv_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="年终特卖会，330ml买3箱送一箱，还送50元代金券，还不马上购买!"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:drawableStart="@mipmap/ic_marker_born"
+                android:drawablePadding="4dp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/gray"
+                android:padding="2dp"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/button_order"
+            android:layout_width="72dp"
+            android:layout_height="36dp"
+            android:text="订购"
+            android:textSize="16sp"
+            android:background="@drawable/btn_hollow_green"
+            android:textColor="@color/mf_colorPrimary"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
+
+    <!--广告图片-->
+    <LinearLayout
+        android:id="@+id/frame_adv_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frame_adv"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/adv_pic_0"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@null"/>
+
+        <ImageView
+            android:id="@+id/adv_pic_1"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_margin="4dp"
+            android:contentDescription="@null"/>
+
+        <ImageView
+            android:id="@+id/adv_pic_2"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_margin="4dp"
+            android:contentDescription="@null"/>
+
+        <ImageView
+            android:id="@+id/adv_pic_3"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_margin="4dp"
+            android:contentDescription="@null"/>
+
+        <ImageView
+            android:id="@+id/adv_pic_4"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_margin="4dp"
+            android:contentDescription="@null"/>
+
+        <ImageView
+            android:id="@+id/adv_pic_5"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@null"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_adv_bigpanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/img_adv_default"
+        android:contentDescription="@null"
+        android:visibility="gone"/>
+
+</RelativeLayout>

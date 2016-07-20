@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/material_white"
+                                    app:cardCornerRadius="2dp"
+                                    app:cardElevation="5dp"
+                                    app:cardPreventCornerOverlap="true"
+                                    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:id="@+id/rootview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_normal">
+        <!-- 业务类型-->
+        <TextView
+            android:id="@+id/tv_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_normal"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"/>
+
+        <!--订单编号-->
+        <TextView
+            android:id="@+id/tv_id"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_badge"
+            android:singleLine="true"
+            android:text="订单编号"/>
+
+        <TextView
+            android:id="@+id/tv_createDate"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_id"
+            android:singleLine="true"
+            android:text="下单时间"/>
+
+        <!-- 网点-->
+        <TextView
+            android:id="@+id/tv_office"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_createDate"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="网点"/>
+
+        <!-- 租户-->
+        <TextView
+            android:id="@+id/tv_tenant"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_office"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="租户"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_tenant"
+            android:gravity="center_vertical|end">
+
+            <ImageButton
+                android:id="@+id/ib_process"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="@dimen/spacing_normal"
+                android:background="@null"
+                android:src="@mipmap/ic_cardview_process"/>
+
+            <ImageButton
+                android:id="@+id/ib_print_preview"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="@dimen/spacing_normal"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:background="@null"
+                android:src="@mipmap/ic_cardview_print_preview"/>
+
+
+            <ImageButton
+                android:id="@+id/ib_payhistory"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="@dimen/spacing_normal"
+                android:background="@null"
+                android:src="@mipmap/ic_cardview_payhistory"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

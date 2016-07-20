@@ -1,0 +1,198 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_white"
+    android:baselineAligned="false"
+    android:divider="@drawable/divider_vertical_line_primary"
+    android:orientation="horizontal"
+    android:showDividers="middle">
+
+
+    <!--类目列表-->
+    <include
+        android:id="@+id/category_panel"
+        layout="@layout/backend_category_panel"
+        android:layout_width="@dimen/common_right_panel_width"
+        android:layout_height="match_parent" />
+
+    <!--分割线-->
+    <View
+        android:id="@+id/vertial_line"
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@+id/category_panel"
+        android:background="@color/mf_dividerColorPrimary" />
+
+    <!--搜索条件-->
+    <LinearLayout
+        android:id="@+id/frame_conditions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/vertial_line"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:orientation="vertical">
+
+        <!--搜索条件-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp">
+            <!--商品条码-->
+            <com.mfh.litecashier.ui.widget.InputSearchView
+                android:id="@+id/inlv_barcode"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
+                app:inputNumberLabelView_inputTextColor="@color/black"
+                app:inputNumberLabelView_inputTextColorHint="@color/black_35" />
+            <!--商品名称-->
+            <com.mfh.litecashier.ui.widget.InputSearchView
+                android:id="@+id/inlv_productname"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/spacing_double"
+                android:layout_weight="1"
+                app:inputNumberLabelView_inputHint="@string/hint_product_name"
+                app:inputNumberLabelView_inputTextColor="@color/black"
+                app:inputNumberLabelView_inputTextColorHint="@color/black_35" />
+
+
+            <!--批发商-->
+            <com.mfh.framework.uikit.compound.OptionalLabel
+                android:id="@+id/label_platform_provider"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/spacing_double"
+                android:layout_weight="1"
+                app:mLabelView_inputHint="所有批发商"
+                app:mLabelView_inputTextColor="@color/black"
+                app:mLabelView_inputTextColorHint="@color/black_35"
+                app:mLabelView_inputTextSize="16sp" />
+
+
+            <Button
+                android:id="@+id/button_toggle_conditions"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:background="@null"
+                android:drawableEnd="@drawable/ic_toggle_conditions"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical|end"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:text="展开"
+                android:textColor="@color/btn_toggle_conditions"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!--动态搜索条件-->
+        <LinearLayout
+            android:id="@+id/frame_option_conditions"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:visibility="gone">
+
+            <com.mfh.litecashier.ui.widget.InputSearchView
+                android:id="@+id/inlv_brands"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:inputNumberLabelView_inputHint="@string/hint_product_brand"
+                app:inputNumberLabelView_inputTextColor="@color/black"
+                app:inputNumberLabelView_inputTextColorHint="@color/black_35" />
+
+            <!--style="@style/SpinnerMfhTheme"-->
+            <Spinner
+                android:id="@+id/spinner_price_type"
+                android:layout_width="0dp"
+                style="@style/dropDownSpinnerStyle"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/spacing_double"
+                android:layout_weight="1"
+                android:spinnerMode="dropdown" />
+
+            <Button
+                android:id="@+id/button_query"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/btn_rectange_green"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@color/material_white"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <!--分割线-->
+        <View
+            android:id="@+id/horizontal_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/mf_dividerColorPrimary" />
+
+    </LinearLayout>
+
+
+    <!--头部-->
+    <include
+        android:id="@+id/frame_header_goods_list"
+        layout="@layout/itemview_ordergoods_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/frame_conditions"
+        android:layout_margin="8dp"
+        android:layout_toEndOf="@+id/category_panel" />
+
+    <!--商品列表-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frame_header_goods_list"
+        android:layout_margin="8dp"
+        android:layout_toEndOf="@+id/category_panel">
+        <!--空视图-->
+        <TextView
+            android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="暂无数据" />
+
+        <!--订单列表-->
+        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+            android:id="@+id/goods_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_shopcart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@mipmap/ic_fab_shopcart_white" />
+
+</RelativeLayout>

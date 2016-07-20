@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:baselineAligned="false"
+              android:divider="@drawable/divider_vertical_line_primary"
+              android:orientation="horizontal"
+              android:showDividers="middle">
+
+    <!--订单列表-->
+    <RelativeLayout
+        android:id="@+id/frame_order"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <!-- google 官方下拉刷新 -->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/order_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <!--空视图-->
+        <TextView
+            android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/label_nodata_reload"/>
+
+    </RelativeLayout>
+
+    <!--搜索条件-->
+    <LinearLayout
+        android:id="@+id/frame_search_params"
+        android:layout_width="@dimen/common_right_panel_width"
+        android:layout_height="match_parent"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp">
+        <!--租户:当前租户/所有租户-->
+        <!--style="@style/SpinnerMfhTheme"-->
+        <Spinner
+            android:id="@+id/spinner_tenant"
+            style="@style/dropDownSpinnerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:spinnerMode="dropdown"/>
+
+        <!--订单状态-->
+        <!--style="@style/SpinnerMfhTheme"-->
+        <Spinner
+            android:id="@+id/spinner_status"
+            style="@style/dropDownSpinnerStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:spinnerMode="dropdown"/>
+
+        <!--订单编号-->
+        <com.mfh.litecashier.ui.widget.InputSearchView
+            android:id="@+id/insv_order_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:orientation="horizontal"
+            app:inputNumberLabelView_inputHint="订单编号"
+            app:inputNumberLabelView_inputTextColor="@color/black"
+            app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+
+        <!--日结-->
+        <Button
+            android:id="@+id/button_dailysettle"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@drawable/btn_rectange_primary"
+            android:gravity="center"
+            android:text="日结"
+            android:textColor="@color/material_white"
+            android:textSize="24sp"
+            android:visibility="visible"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

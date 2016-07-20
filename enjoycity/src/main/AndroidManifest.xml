@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.mfh.enjoycity">
+
+    <!-- 个推SDK权限配置开始 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
+    <!-- 自定义权限 -->
+    <uses-permission android:name="getui.permission.GetuiService.com.mfh.enjoycity"/>
+    <permission
+        android:name="getui.permission.GetuiService.com.mfh.enjoycity"
+        android:protectionLevel="normal"/>
+    <!-- 个推SDK权限配置结束 -->
+
+    <!-- 使用网络功能所需权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <!-- 使用拨打电话权限 -->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <!--相机/本地图库功能-->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera"/>
+    <!-- 使用照相机权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <!-- 自动聚焦权限 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- 本地数据库、SDK离线地图和cache功能需要读写外部存储器 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--手机震动-->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!--
+    <uses-permission android:name="android.hardware.sensor.accelerometer"/>-->
+
+    <!-- Sensoro -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--对GPS_PROVIDER和NETWORK_PROVIDER都有效-->
+
+    <!--高德地图权限配置-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- 浮动通知权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!--只针对NETWORK_PROVIDER-->
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+    <application
+        android:name="com.mfh.enjoycity.AppContext"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+
+        <!--引导页-->
+        <activity
+            android:name=".ui.activity.StartActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!--主界面-->
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.UserActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.InviteActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ui.AboutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".ui.ProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.AddressManagerActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.AddAddressActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.CreateOrderActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.CarponActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.MessageCenterActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.ShareActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.StaticWebActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.ShoppingCartActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.SearchCommunityActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.ChangeCityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent"/>
+        <activity
+            android:name=".ui.settings.SettingFragmentActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.settings.AccountSettingActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.settings.GeneralSettingActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.settings.UserProfileActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.ProductDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent"/>
+        <activity
+            android:name="com.manfenjiayuan.business.ui.HybridActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name="com.mfh.framework.hybrid.BaseHybridActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ui.SearchProductActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.AllProductActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.CategoryTabActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.HotSalesActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.OfenBuyActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.MfPayActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dialog"/>
+        <activity
+            android:name=".ui.MfOrderShareActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Dialog"/>
+        <activity
+            android:name=".ui.activity.SelectAddressActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--浏览器-->
+        <activity
+            android:name=".ui.activity.NativeWebViewActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.web.BrowserActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--接收微信的请求及返回值-->
+        <activity
+            android:name="com.mfh.enjoycity.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.Transparent"/>
+
+        <!-- alipay sdk begin -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <!-- alipay sdk end -->
+
+        <service android:name=".service.BackService">
+            <intent-filter>
+                <action android:name="com.mfh.enjoycity.service.BackService"/>
+                <action android:name="action.receiver.background"/>
+            </intent-filter>
+        </service>
+
+
+        <!-- 个推SDK配置开始 -->
+        <!-- 配置的第三方参数属性 -->
+        <meta-data
+            android:name="PUSH_APPID"
+            android:value="h4imIKxOPh8UDfgw8BgGh2"/>
+        <meta-data
+            android:name="PUSH_APPSECRET"
+            android:value="MRF4y90IX7AvNsaGp6jT07"/>
+        <meta-data
+            android:name="PUSH_APPKEY"
+            android:value="C2K4Fl5qQ08m0U4BpEhdN1"/>
+        <meta-data
+            android:name="PUSH_GROUPID"
+            android:value=""/>
+
+        <!-- 配置第三方Receiver -->
+        <receiver
+            android:name="com.mfh.enjoycity.service.PushDemoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.igexin.sdk.action.h4imIKxOPh8UDfgw8BgGh2"/>
+            </intent-filter>
+        </receiver>
+
+        <!--配置SDK核心服务-->
+        <service
+            android:name="com.igexin.sdk.PushService"
+            android:exported="true"
+            android:label="NotificationCenter"
+            android:process=":pushservice"/>
+        <service
+            android:name="com.igexin.sdk.PushServiceUser"
+            android:exported="true"
+            android:label="NotificationCenterUser"/>
+
+        <receiver android:name="com.igexin.sdk.PushReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="com.igexin.sdk.action.refreshls"/>
+                <!-- 以下三项为可选的action声明，可大大提高service存活率和消息到达速度 -->
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.igexin.sdk.PushManagerReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.igexin.sdk.action.pushmanager"/>
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.igexin.sdk.PushActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:process=":pushservice"
+            android:taskAffinity="com.igexin.sdk.PushActivityTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <service
+            android:name="com.igexin.download.DownloadService"
+            android:process=":pushservice"/>
+        <receiver android:name="com.igexin.download.DownloadReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        <provider
+            android:name="com.igexin.download.DownloadProvider"
+            android:authorities="downloads.com.mfh.enjoycity"
+            android:exported="true"
+            android:process=":pushservice"/>
+        <activity
+            android:name="com.igexin.getuiext.activity.GetuiExtActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:process=":pushservice"
+            android:taskAffinity="android.task.myServicetask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <receiver
+            android:name="com.igexin.getuiext.service.PayloadReceiver"
+            android:exported="false">
+            <intent-filter>
+                <!-- 这个com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4固定，不能修改  -->
+                <action android:name="com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4"/>
+                <!-- android:name="com.igexin.sdk.action.第三方的appId" -->
+                <action android:name="com.igexin.sdk.action.h4imIKxOPh8UDfgw8BgGh2"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="com.igexin.getuiext.service.GetuiExtService"
+            android:process=":pushservice"/>
+        <!-- 个推SDK配置结束 -->
+
+
+        <!--
+        Process: com.mfh.owner:pushservice, PID: 9422
+    java.lang.ClassCastException: android.os.BinderProxy cannot be cast to com.sensoro.beacon.kit.BeaconProcessService$BeaconProcessServiceBinder
+        android:process="remote"
+        -->
+        <!-- Sensoro-->
+        <service android:name="com.sensoro.beacon.kit.BeaconService"/>
+        <service android:name="com.sensoro.beacon.kit.BeaconProcessService"/>
+        <service android:name="com.sensoro.beacon.kit.IntentProcessorService"/>
+
+        <!--友盟配置信息-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5467106bfd98c50684001a98"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}"/>
+
+        <!--高德地图-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="1735b745e0973da9658e1e778de464f2"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+    </application>
+
+</manifest>

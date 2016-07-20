@@ -1,0 +1,106 @@
+apply plugin: 'com.android.application'
+
+def releaseTime() {
+    return new Date().format("MMdd", TimeZone.getTimeZone("UTC"))
+}
+
+android {
+
+    useLibrary 'org.apache.http.legacy'
+
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    signingConfigs {
+        debug {
+        }
+        release {
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.mfh.enjoycity"
+        minSdkVersion 19
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 77
+        versionName "1.6.8"
+        multiDexEnabled true
+    }
+    buildTypes {
+        debug {
+//            buildConfigField "boolean", "LOG_DEBUG", "true"//是否输出LOG信息
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        release {
+//            buildConfigField "boolean", "LOG_DEBUG", "false"//是否输出LOG信息
+            minifyEnabled false
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName
+                if (variant.buildType.name == "release") {
+                    // 输出apk名称为mfh_cashier_v1.0.1_101915_wandoujia.apk
+                    fileName = "mfh_enjoycity_${variant.productFlavors[0].name}_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}.apk"
+                } else {
+                    fileName = "mfh_enjoycity_${variant.productFlavors[0].name}_v${defaultConfig.versionName}_${releaseTime()}_beta.apk"
+                }
+
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+    productFlavors {
+        bingshanguxue {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "bingshanguxue"]
+        }
+        mixicook {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "mixicook"]
+        }
+    }
+    File propFile = file('signing.properties');
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+        if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile rootProject.ext.dependencies["design"]
+//    compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["eventbus"]
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile project(':mfh-framework-all')
+    compile project(':mfh-framework-android')
+    compile project(':im')
+    compile project(path: ':mfh-framework-business')
+}

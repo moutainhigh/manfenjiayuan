@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/startpage"
+        android:id="@+id/rl_login_no_info" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/rl_login_have_info">
+
+        <com.mfh.comna.view.img.FineImgView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/tv_login_user_head"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_login_user_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_login_user_name"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+
+    <Button
+        android:id="@+id/btn_start_we_chat_login"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/green_button_select"
+        android:textColor="@color/material_white"
+        android:text="微信登录" />
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/read_button_select"
+        android:text="账号登陆"
+        android:textColor="#ffffff" />
+
+</RelativeLayout>

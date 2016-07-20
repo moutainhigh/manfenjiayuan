@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="180dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp">
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/key_del"
+            android:background="@null"
+            android:gravity="center_vertical|end"
+            android:hint="输入领券手机号"
+            android:inputType="phone"
+            android:padding="@dimen/spacing_normal"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/material_black"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/textsize_double" />
+
+        <ImageButton
+            android:id="@+id/key_del"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/spacing_normal"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_keyboard_del" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <Button
+            android:id="@+id/key_1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="1"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_2"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="2"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_3"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="3"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+
+        <Button
+            android:id="@+id/key_4"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="4"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_5"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="5"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_6"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="6"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <Button
+            android:id="@+id/key_7"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="7"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_8"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="8"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_9"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="9"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <Button
+            android:id="@+id/key_0"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="0"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/key_enter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/bg_keyboard_item"
+            android:text="领取"
+            android:textColor="@color/material_black"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+</LinearLayout>

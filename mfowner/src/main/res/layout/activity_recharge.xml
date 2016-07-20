@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/topbar_custom"
+        android:id="@+id/top_bar" />
+
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/btn_recharge_weixin_bg">
+
+            <Button
+                android:id="@+id/button_weixin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_recharge_weixin"
+                android:textColor="#ffffffff"
+                android:drawableLeft="@drawable/icon_recharge_weixin_normal"
+                android:background="#ff8bc751"
+                android:padding="10dp"
+                android:drawablePadding="5dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/btn_recharge_alipay_bg">
+
+            <Button
+                android:id="@+id/button_alipay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_recharge_alipay"
+                android:textColor="#ffffffff"
+                android:drawableLeft="@drawable/icon_recharge_alipay_normal"
+                android:background="#fff5a623"
+                android:padding="10dp"
+                android:drawablePadding="5dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView_recharge"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top_bar"
+        android:layout_above="@+id/bottom_bar" />
+
+    <com.mfh.framework.uikit.widget.LoadingImageView
+        android:id="@+id/loadingImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

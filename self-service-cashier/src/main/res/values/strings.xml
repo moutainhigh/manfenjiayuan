@@ -1,0 +1,119 @@
+<resources>
+    <string name="app_name">MixiCook</string>
+
+    <string name="author_name">bingshanguxue</string>
+
+
+    <!--日志-->
+
+    <!--提示文字-->
+    <string name="hint_login_account">账号</string>
+    <string name="hint_login_password">密码</string>
+    <string name="hint_input_password">输入密码</string>
+    <string name="hint_return_gooods">输入订单编号/商品条码</string>
+    <string name="hint_product_barcode">商品条码</string>
+    <string name="hint_product_name">商品名称</string>
+    <string name="hint_product_brand">品牌</string>
+    <string name="hint_money">金额</string>
+    <string name="hint_backcard_tradeno">请输入银行单号</string>
+    <string name="hint_pay_password">请输入支付密码</string>
+
+
+    <string name="toast_login_username_empty">用户名不能为空!</string>
+    <string name="toast_login_password_empty">密码不能为空!</string>
+    <string name="toast_sync_data_process">数据同步中&#8230;&#8230;</string>
+
+    <!--按键文字-->
+    <string name="button_login_signin">登录</string>
+    <string name="button_login_retrieve_pwd">忘记密码</string>
+    <string name="button_login_signup">新用户注册</string>
+    <string name="button_get_verifycode">获取验证码</string>
+    <string name="button_change_phone">修改手机号</string>
+    <string name="button_lock">锁定</string>
+    <string name="button_logout">退出</string>
+    <string name="button_handover">交接班</string>
+    <string name="button_dailysettle">日结</string>
+    <string name="button_hangup_order">挂单</string>
+    <string name="button_clear_order">清空</string>
+    <string name="button_print">打印</string>
+    <string name="button_feedpaper">走纸</string>
+    <string name="button_return_goods">退货</string>
+    <string name="button_meassure">称重</string>
+    <string name="button_money_box">钱箱</string>
+    <string name="button_settle">结算</string>
+    <string name="btn_service_back">返回</string>
+    <string name="button_accept">接收</string>
+    <string name="button_rebuff">回绝</string>
+    <string name="button_confirm">确认</string>
+    <string name="button_cancel">取消</string>
+    <string name="button_category_back">返回</string>
+    <string name="button_follow">关注</string>
+
+
+    <!--标签-->
+    <string name="label_order_amount">商品金额</string>
+    <string name="label_member_discount">会员优惠</string>
+    <string name="label_coupons">代金券</string>
+    <string name="label_paid_money">已付</string>
+    <string name="label_handle_amount">应收金额</string>
+    <string name="label_paid_amount">收取金额</string>
+    <string name="label_verifycode">验证码</string>
+    <string name="label_member_cardno">会员卡卡号</string>
+    <string name="label_topup_amount">充值金额</string>
+    <string name="label_pay_password">支付密码</string>
+    <string name="label_quantity">数量</string>
+    <string name="label_amount">金额</string>
+    <string name="label_buyprice">配销价</string>
+    <string name="label_profit">利润</string>
+    <string name="label_profit_rate">利润率</string>
+    <string name="label_stock_quantity">库存</string>
+    <string name="label_lowerlimit">安全库存</string>
+    <string name="label_sellnumber">销量</string>
+    <string name="label_daily_sales">日销量</string>
+    <string name="label_monthly_sales">月销量</string>
+    <string name="label_supplier">批发商</string>
+    <string name="label_purchase_price">采购价</string>
+    <string name="label_cost_price">零售价</string>
+    <string name="label_unit">单位</string>
+    <string name="label_packageNum">箱规</string>
+    <string name="label_minimum_order_quantity">起订量</string>
+    <string name="label_ordergoods">订货</string>
+    <string name="label_backcard_tradeno">银行单号</string>
+    <string name="label_courier_number">快递单号</string>
+    <string name="label_pocket_number">衣袋编号</string>
+    <string name="label_mfcard_id">芯片号</string>
+    <string name="label_nodata_reload">暂无数据, 点击重试!!</string>
+    <string name="label_nocoupon_reload">暂无卡券可用, 点击刷新!!</string>
+
+    <!--标题-->
+    <string name="title_server">服务台</string>
+    <string name="title_commodity">商品</string>
+    <string name="title_fragment_cashier_commonly">我的</string>
+    <string name="title_fragment_cashier_express">寄快递</string>
+
+
+    <string name="default_amount">0.00</string>
+    <string name="default_net_weight">0.000</string>
+    <string name="default_amount_unit">¥0.00</string>
+
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_close">Close</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_test">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+</resources>

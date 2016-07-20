@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MFH-Android.iml" filepath="$PROJECT_DIR$/MFH-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cashier/cashier.iml" filepath="$PROJECT_DIR$/cashier/cashier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/enjoycity/enjoycity.iml" filepath="$PROJECT_DIR$/enjoycity/enjoycity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/im/im.iml" filepath="$PROJECT_DIR$/im/im.iml" />
+      <module fileurl="file://$PROJECT_DIR$/litecashier-display/litecashier-display.iml" filepath="$PROJECT_DIR$/litecashier-display/litecashier-display.iml" />
+      <module fileurl="file://$PROJECT_DIR$/loveshopping/loveshopping.iml" filepath="$PROJECT_DIR$/loveshopping/loveshopping.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mfh-framework-all/mfh-framework-all.iml" filepath="$PROJECT_DIR$/mfh-framework-all/mfh-framework-all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mfh-framework-android/mfh-framework-android.iml" filepath="$PROJECT_DIR$/mfh-framework-android/mfh-framework-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mfh-framework-business/mfh-framework-business.iml" filepath="$PROJECT_DIR$/mfh-framework-business/mfh-framework-business.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mfowner/mfowner.iml" filepath="$PROJECT_DIR$/mfowner/mfowner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mixicook-vip/mixicook-vip.iml" filepath="$PROJECT_DIR$/mixicook-vip/mixicook-vip.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pda/pda.iml" filepath="$PROJECT_DIR$/pda/pda.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pda-supermarket/pda-supermarket.iml" filepath="$PROJECT_DIR$/pda-supermarket/pda-supermarket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pda-supermarket-gpio/pda-supermarket-gpio.iml" filepath="$PROJECT_DIR$/pda-supermarket-gpio/pda-supermarket-gpio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pda-supermarket-idata2/pda-supermarket-idata2.iml" filepath="$PROJECT_DIR$/pda-supermarket-idata2/pda-supermarket-idata2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pda-wholesaler/pda-wholesaler.iml" filepath="$PROJECT_DIR$/pda-wholesaler/pda-wholesaler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/self-service-cashier/self-service-cashier.iml" filepath="$PROJECT_DIR$/self-service-cashier/self-service-cashier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vector_uikit/vector_uikit.iml" filepath="$PROJECT_DIR$/vector_uikit/vector_uikit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vector_user/vector_user.iml" filepath="$PROJECT_DIR$/vector_user/vector_user.iml" />
+    </modules>
+  </component>
+</project>

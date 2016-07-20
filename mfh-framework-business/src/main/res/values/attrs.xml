@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--reference：参考某一资源ID-->
+    <!--<attr name="text" format="string|reference"/>-->
+    <!--<attr name="textColor" format="reference|color"/>-->
+    <!--<attr name="textSize" format="dimension"/>-->
+    <!--<attr name="subText" format="string|reference"/>-->
+    <!--<attr name="subTextColor" format="reference|color"/>-->
+    <!--<attr name="subTextSize" format="dimension"/>-->
+    <!--<attr name="subTextGravity" format="integer"/>-->
+    <!--<attr name="subTextMaxLines" format="integer"/>-->
+
+    <!--<attr name="hint" format="string|reference"/>-->
+    <!--<attr name="textColorHint" format="reference|color"/>-->
+    <!--<attr name="src" format="reference"/>-->
+
+    <!--<attr name="position">-->
+        <!--<enum name="top" value="0" />-->
+        <!--<enum name="center" value="1" />-->
+        <!--<enum name="bottom" value="2" />-->
+        <!--<enum name="single" value="3" />-->
+    <!--</attr>-->
+
+    <!--<attr name="itemdecoration_line" format="reference" />&lt;!&ndash;分割线:水平线&ndash;&gt;-->
+
+
+    <declare-styleable name="NumberPickerView">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="increaseDrawable" format="reference"/>
+        <attr name="decreaseDrawable" format="reference"/>
+        <!--当数字为0时，自动隐藏“－”按钮，默认为fasle-->
+        <attr name="decreaseDrawableAutoHide" format="boolean"/>
+        <!--数字改变是是否拦截处理，默认为fasle-->
+        <attr name="isInterceptOutside" format="boolean"/>
+    </declare-styleable>
+
+</resources>

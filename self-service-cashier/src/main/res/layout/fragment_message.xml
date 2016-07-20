@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_white"
+    android:divider="@drawable/divider_vertical_line_primary"
+    android:orientation="horizontal"
+    android:showDividers="middle">
+
+    <!--聊天页面-->
+    <LinearLayout
+        android:id="@+id/frame_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/vertial_line"
+        android:divider="@drawable/divider_horizontal_line_primary"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <RelativeLayout
+            android:id="@+id/frame_people"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="姓名"
+                android:textColor="@color/material_black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/tv_name"
+                android:gravity="center_vertical"
+                android:text="地址"
+                android:textColor="@color/black_80"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <!--消息列表-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/material_white"
+            android:padding="@dimen/spacing_normal" />
+
+        <!--消息输入区域-->
+        <include layout="@layout/chat_input_view"/>
+
+        <!--卡券-->
+        <FrameLayout
+            android:id="@+id/frame_coupon"
+            android:layout_width="match_parent"
+            android:layout_height="208dp"
+            android:visibility="gone">
+            <!--空视图-->
+            <TextView
+                android:id="@+id/no_coupon_view"
+                style="@style/mfh_textview_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:text="暂无数据" />
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/coupon_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <com.mfh.framework.uikit.adv.AdvertisementViewPager
+            android:id="@+id/emoji_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+    <!--分割线-->
+    <View
+        android:id="@+id/vertial_line"
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/frame_contact_list"
+        android:background="@color/mf_dividerColorPrimary" />
+
+    <!--联系人列表-->
+    <LinearLayout
+        android:id="@+id/frame_contact_list"
+        android:layout_width="275dp"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/right_tab"
+        android:divider="@drawable/divider_horizontal_line_primary"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <EditText
+            android:id="@+id/et_query"
+            style="@style/mfh_edittext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?android:editTextBackground"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="@mipmap/ic_edit_search_normal"
+            android:gravity="center_vertical|start"
+            android:hint="搜索姓名"
+            android:textSize="@dimen/textsize_normal" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/category_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:padding="4dp" />
+    </LinearLayout>
+
+    <!--右侧导航-->
+    <com.mfh.litecashier.ui.widget.LeftTabStrip
+        android:id="@+id/right_tab"
+        android:layout_width="@dimen/home_rightslide_width"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:background="#35363B"
+        app:allowWidthFull="true"
+        app:slidingBlock="@null" />
+
+</RelativeLayout>

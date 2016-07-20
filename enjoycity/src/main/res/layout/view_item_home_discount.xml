@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/space_primary">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="商品描述"
+            android:textColor="@color/material_black"
+            android:textSize="14sp"
+            android:gravity="start|center_vertical"
+            android:padding="4dp"
+            android:singleLine="true"/>
+
+        <Button
+            android:id="@+id/button_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="More"
+            android:textColor="@color/material_black"
+            android:textSize="14sp"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:drawablePadding="4dp"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <com.mfh.framework.uikit.widget.ChildGridView
+        android:id="@+id/grid_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3"
+        android:horizontalSpacing="1dp"
+        android:verticalSpacing="1dp"/>
+</LinearLayout>

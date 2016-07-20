@@ -1,0 +1,47 @@
+<resources>
+
+    <!-- 日间模式 -->
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="MfhNoActionBarAppTheme">
+        <!-- Customize your theme here. -->
+
+        <item name="searchViewStyle">@style/MySearchViewStyle</item>
+    </style>
+
+
+    <style name="AppTheme.NewFlow">
+        <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
+    </style>
+
+    <!--透明-->
+    <style name="AppTheme.Transparent">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowIsFloating">true</item>-->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="AppTheme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/mf_dialog_frame</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowIsFloating">true</item>-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@style/anim_dialog</item>
+    </style>
+
+    <!--<style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">-->
+        <!--<item name="colorControlNormal">@color/material_white</item>-->
+    <!--</style>-->
+
+    <!---->
+    <!--<style name="TransparentToolbarTheme" parent="ThemeOverlay.AppCompat.Light">-->
+        <!--<item name="colorControlNormal">@color/material_white</item>-->
+        <!--<item name="android:background">@color/transparent</item>-->
+    <!--</style>-->
+
+
+</resources>

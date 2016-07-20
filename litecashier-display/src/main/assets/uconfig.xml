@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configs>
+    <class uconfig="com.mfh.framework.configure.DefaultUConfig">
+        <item type="properties">com.mfh.framework.configure.PropertiesConfiguration</item>
+        <item type="xml">com.mfh.framework.configure.XMLConfiguration</item>
+    </class>
+    <!--
+    merge-rule: 合并规则
+        * order: 对default location 和 extends location 按照顺序查找, 找到第一个就返回
+        * replace: 对default location 和 extends location 按照 1 + N 合并(返回最后一个N配置),于order正好相反。
+        * merge: 对default location 和 extends location 读取为配置列表(仅针对XML, 合并Document)
+        * 缺省规则: replace
+    location可以是：
+        assets:代表是assets目录下,是默认位置； intern:代表android程序私有目录；
+        extern:使用外部存储目录下的;raw:代表res/raw目录下的,但需要提供一个整形值，麻烦。
+        classpath:代表是类路径下
+        assets、intern、extern、raw
+    -->
+    <!--
+    type: 配置类型
+    * properties: Properties属性文件 (未实现)
+    * xml: XML文档 (已实现)
+     -->
+    <config domain="COMMON" description="春晨终端公共平台配置项" merge-rule="default">
+        <default type="properties" location="mfh_config_common.properties" />
+    </config>
+    <config domain="APP" description="春晨终端应用配置项" merge-rule="default">
+        <!--<default type="properties" location="mfh_owner.properties" />-->
+        <!--<extends type="properties" location="intern:custom/mfh_owner.properties" />-->
+    </config>
+    <config domain="DB.UPGRADE" description="平台数据库升级配置" merge-rule="merge">
+        <default type="xml" location="assets:upgrade/database.xml" />
+    </config>
+</configs>

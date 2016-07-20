@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@drawable/divider_horizontal_line"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+    <com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView
+        android:id="@+id/eqv_barcode"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:editLabelView_inputTextColorHint="@color/black_35"
+        app:editLabelView_rightImageButtonSrc="@mipmap/ic_edit_search_normal"
+        app:editQueryView_inputHint="@string/hint_input_barcode"
+        app:editQueryView_inputTextColor="@color/black"
+        app:editQueryView_inputTextSize="18px"/>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/mf_scrolview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_submit"
+        android:layout_below="@+id/eqv_barcode">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_barcodee"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:textLabelView_leftText="商品条码:"
+                app:rightTextSingleLine="false"/>
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_productName"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:textLabelView_leftText="商品名称:"
+                app:rightTextSingleLine="false"/>
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView
+                android:id="@+id/label_costPrice"
+                style="@style/mfh_editlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:editLabelView_leftText="零售价:"
+                app:editLabelView_rightHint="请输入零售价格"/>
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_quantity"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="库存:"/>
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView
+                android:id="@+id/label_upperLimit"
+                style="@style/mfh_editlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:editLabelView_leftText="排面库存:"
+                app:editLabelView_rightHint="请输入排面库存"/>
+
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView
+                android:id="@+id/label_lowwerLimit"
+                style="@style/mfh_editlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:editLabelView_leftText="安全库存:"
+                app:editLabelView_rightHint="请输入安全库存"/>
+
+            <!--<com.mfh.framework.uikit.compound.CustomSearchView-->
+                <!--android:id="@+id/searchView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="52dp"/>-->
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_rectange_primary"
+        android:gravity="center"
+        android:text="@string/button_modify"
+        android:textColor="@color/material_white"
+        android:textSize="18sp"/>
+
+
+</RelativeLayout>

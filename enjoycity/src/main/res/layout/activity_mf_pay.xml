@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/ll_payInfo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/dialog_background">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/button_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_dialog_close"
+                        android:background="@null"
+                        android:padding="8dp"
+                        android:layout_margin="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="满分账户支付"
+                        android:padding="12dp"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:drawableStart="@drawable/ic_dialog_title"
+                        android:drawablePadding="4dp"
+                        android:layout_gravity="center_horizontal"/>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/mf_colorPrimary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="付款金额"
+                    android:padding="8dp"
+                    android:textColor="@color/black_70"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"/>
+
+                <TextView
+                    android:id="@+id/tv_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$12.00"
+                    android:padding="8dp"
+                    android:textColor="@color/material_black"
+                    android:textSize="36sp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:singleLine="true"
+                    android:ellipsize="end"/>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="8dp">
+
+                    <include layout="@layout/line"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_wxpay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="微信支付"
+                            android:padding="12dp"
+                            android:textColor="@color/black_60"
+                            android:textSize="14sp"
+                            android:gravity="start"
+                            android:drawableEnd="@drawable/ic_dialog_wxpay"/>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_arrow_right"/>
+                    </LinearLayout>
+
+                    <include layout="@layout/line"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_alipay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="支付宝支付"
+                            android:padding="12dp"
+                            android:textColor="@color/black_60"
+                            android:textSize="14sp"
+                            android:gravity="start"
+                            android:drawableEnd="@drawable/ic_dialog_alipay"/>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/icon_arrow_right"/>
+                    </LinearLayout>
+
+
+                    <include layout="@layout/line"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <EditText
+                            android:id="@+id/et_number_0"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_pay_passphase"
+                            android:singleLine="true"
+                            android:inputType="textPassword"
+                            android:maxEms="1"
+                            android:textColor="@color/material_black"
+                            android:gravity="center"
+                            android:focusable="false"/>
+                        <EditText
+                            android:id="@+id/et_number_1"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_pay_passphase"
+                            android:singleLine="true"
+                            android:maxEms="1"
+                            android:textColor="@color/material_black"
+                            android:inputType="textPassword"
+                            android:gravity="center"
+                            android:focusable="false"/>
+                        <EditText
+                            android:id="@+id/et_number_2"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_pay_passphase"
+                            android:singleLine="true"
+                            android:maxEms="1"
+                            android:textColor="@color/material_black"
+                            android:inputType="textPassword"
+                            android:gravity="center"
+                            android:focusable="false"/>
+                        <EditText
+                            android:id="@+id/et_number_3"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_pay_passphase"
+                            android:singleLine="true"
+                            android:maxEms="1"
+                            android:textColor="@color/material_black"
+                            android:inputType="textPassword"
+                            android:gravity="center"
+                            android:focusable="false"/>
+                        <EditText
+                            android:id="@+id/et_number_4"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_pay_passphase"
+                            android:singleLine="true"
+                            android:maxEms="1"
+                            android:textColor="@color/material_black"
+                            android:inputType="textPassword"
+                            android:gravity="center"
+                            android:focusable="false"/>
+                        <EditText
+                            android:id="@+id/et_number_5"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_pay_passphase"
+                            android:singleLine="true"
+                            android:maxEms="1"
+                            android:textColor="@color/material_black"
+                            android:inputType="textPassword"
+                            android:gravity="center"
+                            android:focusable="false"/>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="默认支付密码为手机后6位"
+                        android:textSize="12sp"
+                        android:textColor="@color/black_50"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <include layout="@layout/view_mf_pay_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/animProgress"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        style="@style/loading"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+</FrameLayout>

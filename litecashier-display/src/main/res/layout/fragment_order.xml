@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <!--会员信息-->
+    <FrameLayout
+        android:id="@+id/frame_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mfhtheme_maskPrimary">
+        <!--会员信息-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <!--头像-->
+            <com.mfh.framework.uikit.widget.AvatarView
+                android:id="@+id/iv_member_header"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/chat_tmp_user_head" />
+
+            <!--用户信息-->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal">
+
+                <TextView
+                    android:id="@+id/tv_member_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="余额:"
+                    android:textColor="@color/material_black"
+                    android:textSize="@dimen/textsize_normal" />
+
+                <TextView
+                    android:id="@+id/tv_member_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_member_balance"
+                    android:layout_marginTop="4dp"
+                    android:text="积分：0"
+                    android:textColor="@color/material_black"
+                    android:textSize="@dimen/textsize_normal" />
+            </RelativeLayout>
+
+        </LinearLayout>
+        <!--应收金额-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="12sp">
+
+            <TextView
+                android:id="@+id/tv_handle_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="00.00"
+                android:textColor="#FE5000"
+                android:textSize="64sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="4dp"
+                android:drawableStart="@mipmap/ic_marker_money_small"
+                android:text="应收金额"
+                android:textColor="@color/mf_colorPrimary"
+                android:textSize="@dimen/textsize_normal" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="0dp"
+        android:background="#D2D2D2" />
+
+    <!--商品金额-->
+    <LinearLayout
+        android:id="@+id/ll_orderInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:baselineAligned="false"
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:dividerPadding="12dp"
+        android:padding="12dp"
+        android:elevation="3dp"
+        android:showDividers="middle">
+        <!--商品金额-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_total_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="00.00"
+                android:textColor="@color/material_black"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="商品金额"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textsize_normal" />
+        </LinearLayout>
+        <!--会员优惠-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_discount_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="00.00"
+                android:textColor="@color/mf_colorPrimary"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="会员优惠"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textsize_normal" />
+        </LinearLayout>
+        <!--代金券-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_coupon_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="00.00"
+                android:textColor="@color/mf_colorPrimary"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="代金券"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textsize_normal" />
+        </LinearLayout>
+        <!--已付-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_paid_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="00.00"
+                android:textColor="@color/mf_colorPrimary"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已付金额"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textsize_normal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--订单明细-->
+    <include
+        android:id="@+id/ll_procuct_header"
+        layout="@layout/itemview_orderitem_header"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        />
+
+</LinearLayout>
+

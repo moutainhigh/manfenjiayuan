@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@null"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/iv_header"
+        android:layout_width="122dp"
+        android:layout_height="122dp"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null"/>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="冰珊孤雪"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:lines="2"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:layout_gravity="center"
+        android:layout_below="@+id/iv_header"/>
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_amount_unit"
+        android:textColor="@color/material_white"
+        android:background="#7f93c1"
+        android:textSize="16sp"
+        android:gravity="end"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:padding="4dp"/>
+
+    <ImageButton
+        android:id="@+id/ib_remove"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_remove_red_solid_large"
+        android:scaleType="center"
+        android:background="#34000000"
+        android:layout_alignTop="@+id/iv_header"
+        android:layout_alignBottom="@+id/tv_name"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:contentDescription="@null"
+        android:visibility="gone"/>
+
+</RelativeLayout>

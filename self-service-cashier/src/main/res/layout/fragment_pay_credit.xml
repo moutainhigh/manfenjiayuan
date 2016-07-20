@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center">
+
+    <!--支付金额-->
+    <!--<LinearLayout-->
+        <!--android:layout_width="400dp"-->
+        <!--android:layout_height="44dp"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:gravity="center_vertical">-->
+
+        <!-- -->
+    <!--</LinearLayout>-->
+    <TextView
+        android:layout_width="72dp"
+        android:layout_height="44dp"
+        android:text="收取金额"
+        android:textColor="@color/black_70"
+        android:textSize="18sp"
+        android:gravity="center_vertical"/>
+
+    <com.mfh.litecashier.ui.widget.InputNumberLabelView
+        android:id="@+id/inlv_paidmoney"
+        android:layout_width="296dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="32dp"
+        app:inputNumberLabelView_inputTextColor="@color/black"
+        app:inputNumberLabelView_inputTextColorHint="@color/black_35"
+        app:inputNumberLabelView_inputHint="@string/hint_money"
+        app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_search_del"/>
+
+</LinearLayout>

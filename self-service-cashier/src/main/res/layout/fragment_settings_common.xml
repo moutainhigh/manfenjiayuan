@@ -1,0 +1,135 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_normal">
+
+        <!--商品-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_posgoods"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="top"
+            app:subText=""
+            app:text="商品库"/>
+        <!--米西生鲜-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_mixi_fresh"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="top"
+            app:subText=""
+            app:text="米西生鲜"/>
+
+        <!--设备-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_terminal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="center"
+            app:subText=""
+            app:text="设备编号"/>
+
+        <!--LED客显-->
+        <com.mfh.framework.uikit.compound.ToggleSettingItem
+            android:id="@+id/toggleItem_leddisplay"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:text="LED客显"
+            app:position="center"/>
+
+        <!--打印机-->
+        <com.mfh.framework.uikit.compound.ToggleSettingItem
+            android:id="@+id/toggleItem_printer"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:text="Gprinter打印机(RS232)"
+            app:position="center"/>
+
+        <!--爱华电子秤-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_ahscale_rs232"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="center"
+            app:subText=""
+            android:visibility="gone"
+            app:text="爱华电子秤(RS232)"/>
+
+        <!--寺冈电子秤-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_smscale_rs232"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="center"
+            app:subText=""
+            app:text="寺冈电子秤(RS232)"/>
+
+        <!--寺冈电子秤-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_smscale_ftp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="bottom"
+            app:subText=""
+            app:text="寺冈电子秤(FTP)"/>
+
+        <!--绿泰电子价签-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_greentags_webservice"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:isLogoVisible="false"
+            app:position="center"
+            app:subText=""
+            app:text="绿泰电子价签"/>
+
+
+        <!--系统键盘-->
+        <com.mfh.framework.uikit.compound.ToggleSettingItem
+            android:id="@+id/toggleItem_softkeyboard"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:text="系统键盘"
+            app:position="center"/>
+
+
+        <!--内存-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_momory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="@dimen/sectioin_divider_height"
+            app:isLogoVisible="false"
+            app:position="center"
+            app:subText=""
+            app:text="内存"/>
+
+        <!--版本-->
+        <com.mfh.framework.uikit.compound.SettingsItem
+            android:id="@+id/item_version"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="@dimen/sectioin_divider_height"
+            app:isLogoVisible="false"
+            app:position="bottom"
+            app:subText=""
+            app:text="应用版本"/>
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

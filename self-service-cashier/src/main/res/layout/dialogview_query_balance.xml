@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="@dimen/mf_simple_dialog_width"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <include layout="@layout/contentview_dialog_header"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/spacing_double">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <RelativeLayout
+                android:id="@+id/cardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_card_id"
+                    android:layout_width="0.1dp"
+                    android:layout_height="0.1dp"
+                    android:layout_centerInParent="true"
+                    android:singleLine="true"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="@dimen/spacing_double"
+                    android:layout_marginTop="@dimen/spacing_double"
+                    android:scaleType="centerInside"
+                    android:src="@mipmap/card_mixicook"
+                    tools:ignore="ContentDescription"/>
+            </RelativeLayout>
+
+            <!--<com.mfh.framework.uikit.widget.AvatarView-->
+            <!--android:id="@+id/iv_header"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:src="@drawable/chat_tmp_user_head" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/tv_username"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:padding="16dp"-->
+            <!--android:singleLine="true"-->
+            <!--android:text=""-->
+            <!--android:textColor="@color/material_black"-->
+            <!--android:textSize="18sp" />-->
+
+            <TextView
+                android:id="@+id/tv_cash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_double"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="余额: 暂无数据"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textsize_normal"/>
+
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_double"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="积分: 暂无数据"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/textsize_normal"/>
+
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            style="@style/loading"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <!--按键-->
+    <include layout="@layout/view_dialog_footer"/>
+
+</LinearLayout>

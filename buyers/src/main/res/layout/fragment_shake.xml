@@ -1,0 +1,149 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@null">
+
+    <LinearLayout
+        android:id="@+id/shake_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/space_primary"
+        android:layout_marginEnd="@dimen/space_primary"
+        android:layout_marginBottom="@dimen/space_primary">
+
+        <!--广告-->
+        <RelativeLayout
+            android:id="@+id/shake_ad_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/shake_ad_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="#ccffffff"
+                android:layout_alignParentTop="true"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/shake_ad_title"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/shake_ad_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="#ccffffff"
+                    android:text=""
+                    android:maxWidth="200dp"
+                    android:drawablePadding="4dp"
+                    android:drawableEnd="@drawable/icon_play_small"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!--分割线-->
+        <View
+            android:id="@+id/shake_seperate_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#4dffffff"
+            android:layout_marginTop="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/space_primary">
+            <!--返回-->
+            <ImageButton
+                android:id="@+id/ib_back"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:scaleType="centerCrop"
+                android:background="@null"
+                android:src="@drawable/navi_shake_back_normal"
+                android:contentDescription="" />
+
+            <!--微店/小伙伴/红包-->
+            <LinearLayout
+                android:id="@+id/shake_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+
+                <TextView
+                    style="@style/shake_tab"
+                    android:id="@+id/tab_store"
+                    android:text="@string/bottombar_title_store"
+                    android:drawableTop="@drawable/shake_type_store"
+                    android:drawablePadding="3dp"/>
+                <TextView
+                    style="@style/shake_tab"
+                    android:id="@+id/tab_parcel"
+                    android:text="@string/bottombar_title_parcel"
+                    android:drawableTop="@drawable/shake_type_parcel"
+                    android:drawablePadding="3dp"/>
+                <TextView
+                    style="@style/shake_tab"
+                    android:id="@+id/tab_people"
+                    android:text="@string/bottombar_title_people"
+                    android:drawableTop="@drawable/shake_type_people"
+                    android:drawablePadding="3dp"/>
+                <TextView
+                    style="@style/shake_tab"
+                    android:id="@+id/tab_redenvelope"
+                    android:text="@string/bottombar_title_redenvelope"
+                    android:drawableTop="@drawable/shake_type_redenvelope"
+                    android:drawablePadding="3dp"/>
+
+            </LinearLayout>
+
+            <!--历史记录-->
+            <ImageButton
+                android:id="@+id/ib_more"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:scaleType="centerCrop"
+                android:background="@null"
+                android:src="@drawable/navi_shake_more_normal"
+                android:contentDescription="" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/shake_top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/shake_bottom"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_shake_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:contentDescription="@null"
+            android:src="@drawable/shake_icon_anim" />
+
+        <com.mfh.comna.comn.widgets.LoadingTextView
+            android:id="@+id/loadingTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_shake_icon"
+            android:layout_marginTop="@dimen/btn_fab_margins"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/mf_spac_horizontal_primary">
+
+    <ImageView
+        android:id="@+id/iv_shop_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/ic_shoptime"
+        android:layout_alignParentStart="true"
+        android:scaleType="centerInside"
+        android:contentDescription=""/>
+
+    <!--店铺名-->
+    <TextView
+        android:id="@+id/tv_shop_name"
+        android:layout_marginEnd="@dimen/default_margin_right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@id/iv_shop_icon"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_shop_icon"
+        android:layout_marginTop="8dp">
+        <Button
+            android:id="@+id/button_show_category"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="同品类"
+            android:textSize="12sp"
+            android:textColor="@color/black_60"
+            android:background="@drawable/bg_category_tab"
+            android:layout_margin="4dp"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="同品牌"
+            android:textSize="12sp"
+            android:textColor="@color/black_60"
+            android:visibility="gone"
+            android:background="@drawable/bg_category_tab"
+            android:layout_margin="4dp"/>
+        <Button
+            android:id="@+id/button_enter_shop"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="进入本店"
+            android:textSize="12sp"
+            android:textColor="@color/black_60"
+            android:background="@drawable/bg_category_tab"
+            android:layout_margin="4dp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

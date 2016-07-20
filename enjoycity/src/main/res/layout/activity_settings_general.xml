@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+        <include
+            android:id="@+id/tool_bar"
+            layout="@layout/tool_bar"
+            android:background="@color/transparent"
+            app:navigationIcon="@mipmap/ic_arrow_back_white_24dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scroll_view_custom"
+        android:layout_below="@+id/abl_toolbar">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mfh.framework.uikit.compound.ToggleSettingItem
+                android:id="@+id/item_1_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:text="@string/label_settings_location"
+                app:position="top"/>
+
+            <com.mfh.framework.uikit.compound.ToggleSettingItem
+                android:id="@+id/item_1_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                app:text="@string/label_settings_notification"
+                app:position="bottom"
+                />
+
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/item_2_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                android:layout_marginBottom="@dimen/default_margin_bottom"
+                app:logoSrc="@drawable/material_housekeeping"
+                app:text="@string/label_settings_clearcache"
+                app:subText="@string/label_settings_clearcache_description"/>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

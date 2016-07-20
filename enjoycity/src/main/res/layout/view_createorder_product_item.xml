@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@color/material_white"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_product_name"
+            android:layout_marginEnd="@dimen/space_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="冰珊孤雪"
+            android:gravity="top"
+            android:maxLines="2"
+            android:textSize="12sp"
+            android:textColor="@color/black_60"/>
+        <TextView
+            android:id="@+id/tv_product_description"
+            android:layout_marginEnd="@dimen/space_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="冰珊孤雪"
+            android:gravity="top"
+            android:textSize="12sp"
+            android:textColor="@color/black_40"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tv_product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="价格22222"
+            android:textSize="12sp"
+            android:textColor="@color/black_80"/>
+
+        <TextView
+            android:id="@+id/tv_product_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="数量"
+            android:textSize="12sp"
+            android:textColor="@color/black_40"/>
+    </LinearLayout>
+
+</LinearLayout>

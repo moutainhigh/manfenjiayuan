@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:background="@color/material_white"
+    android:padding="@dimen/spacing_double">
+
+    <!--批发商速记码-->
+    <com.mfh.litecashier.ui.widget.InputSearchView
+        android:id="@+id/inlv_shortCode"
+        android:layout_width="300dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center_horizontal"
+        app:inputNumberLabelView_inputTextColor="@color/black"
+        app:inputNumberLabelView_inputTextColorHint="@color/black_35"
+        app:inputNumberLabelView_inputHint="速记码"
+        android:layout_margin="@dimen/spacing_double"
+        android:layout_centerHorizontal="true"/>
+
+    <!--分割线-->
+    <View
+        android:id="@+id/horizontal_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/mf_colorPrimary"
+        android:layout_below="@+id/inlv_shortCode" />
+
+
+    <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+        android:id="@+id/company_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/horizontal_line"/>
+
+    <!--空视图-->
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/horizontal_line"
+        style="@style/mfh_textview_text"
+        android:text="@string/label_nodata_reload"
+        android:gravity="center"
+        android:clickable="true"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/animProgress"
+        style="@style/loading"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

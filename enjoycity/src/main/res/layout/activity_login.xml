@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <include
+        layout="@layout/topbar_custom"
+        android:id="@+id/top_bar" />
+
+    <EditText
+        android:id="@+id/login_name_txt"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="@string/hint_input_login_username"
+        android:gravity="left|center_vertical"
+        android:layout_below="@+id/top_bar"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:textSize="14sp"
+        android:inputType="none"
+        android:singleLine="true"
+        android:background="@drawable/widget_chat_message_editbox_background"
+        android:imeOptions="actionNext"
+        android:padding="8dp" />
+
+    <EditText
+        android:id="@+id/login_pwd_txt"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="@string/hint_input_login_password"
+        android:gravity="left|center_vertical"
+        android:inputType="textPassword"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/login_name_txt"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:textSize="14sp"
+        android:linksClickable="false"
+        android:singleLine="true"
+        android:background="@drawable/widget_chat_message_editbox_background"
+        android:imeOptions="actionDone"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/button_login"
+        android:text="@string/login_button_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/login_pwd_txt"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/green_button_select"
+        android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/tv_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_login_new_user"
+        android:layout_below="@+id/button_login"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="left" />
+
+    <Button
+        android:id="@+id/loginHelpBtn"
+        android:text="@string/login_button_help"
+        style="@style/ButtonLinkedStyle"
+        android:layout_below="@+id/button_login"
+        android:layout_marginTop="10dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="52dp"
+        android:src="@drawable/mfh_logo_green"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:contentDescription=""/>
+
+
+</RelativeLayout>

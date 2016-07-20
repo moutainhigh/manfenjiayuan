@@ -1,0 +1,128 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/frame_top"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/mfh_colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="start|center_vertical"
+            android:text="标签绑定"
+            android:textColor="@color/material_white"
+            android:textSize="20sp"/>
+
+        <ImageButton
+            android:id="@+id/button_settings"
+            android:layout_width="52dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_settings"
+            android:background="@null"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+    </RelativeLayout>
+
+
+    <com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView
+        android:id="@+id/eqv_tagno"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/frame_top"
+        app:editLabelView_inputTextColorHint="@color/black_35"
+        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
+        app:editQueryView_inputHint="请扫描标签条码"
+        app:editQueryView_inputTextColor="@color/black"
+        app:editQueryView_inputTextSize="18px"/>
+
+    <com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView
+        android:id="@+id/eqv_barcode"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/eqv_tagno"
+        android:layout_marginTop="@dimen/spacing_normal"
+        app:editLabelView_inputTextColorHint="@color/black_35"
+        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
+        app:editQueryView_inputHint="请扫描商品条码"
+        app:editQueryView_inputTextColor="@color/black"
+        app:editQueryView_inputTextSize="18px"/>
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/mf_scrolview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/eqv_barcode"
+        android:layout_above="@+id/line">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_barcodee"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="商品条码:"
+                style="@style/mfh_textlabelview"/>
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_productName"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="商品名称:"
+                style="@style/mfh_textlabelview"/>
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_costPrice"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="零售价:"
+                style="@style/mfh_textlabelview"/>
+
+
+            <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
+                android:id="@+id/label_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="当前库存:"
+                style="@style/mfh_textlabelview"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/mf_dividerColorPrimary"
+        android:layout_above="@+id/button_bind"/>
+
+
+
+    <Button
+        android:id="@+id/button_bind"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_rectange_primary"
+        android:gravity="center"
+        android:text="绑定"
+        android:textColor="@color/material_white"
+        android:textSize="18sp"/>
+
+</RelativeLayout>

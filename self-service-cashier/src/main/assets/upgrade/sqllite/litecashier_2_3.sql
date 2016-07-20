@@ -1,0 +1,1 @@
+ALTER TABLE tb_pos_order_pay_v1 ADD COLUMN outTradeNo VARCHAR;

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color" />
+        <attr name="pstsUnderlineColor" format="color" />
+        <attr name="pstsDividerColor" format="color" />
+        <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsDividerPadding" format="dimension" />
+        <attr name="pstsTabPaddingLeftRight" format="dimension" />
+        <attr name="pstsScrollOffset" format="dimension" />
+        <attr name="pstsTabBackground" format="reference" />
+        <attr name="pstsShouldExpand" format="boolean" />
+        <attr name="pstsTextAllCaps" format="boolean" />
+    </declare-styleable>
+
+    <!---->
+    <declare-styleable name="TextLabelView">
+        <attr name="textLabelView_leftText" format="string" />
+        <attr name="textLabelView_leftTextColor" format="color" />
+        <attr name="textLabelView_leftTextSize" format="dimension" />
+        <attr name="textLabelView_leftTextWidth" format="dimension" />
+
+        <attr name="textLabelView_rightText" format="string" />
+        <attr name="textLabelView_rightTextColor" format="color" />
+        <attr name="textLabelView_rightTextSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="EditLabelView">
+        <attr name="editLabelView_leftText" format="string" />
+        <attr name="editLabelView_leftTextColor" format="color" />
+        <attr name="editLabelView_leftTextSize" format="dimension" />
+        <attr name="editLabelView_leftTextWidth" format="dimension" />
+
+        <attr name="editLabelView_rightHint" format="string" />
+        <attr name="editLabelView_rightTextColor" format="color" />
+        <attr name="editLabelView_rightTextColorHint" format="color" />
+        <attr name="editLabelView_rightTextSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="EditQueryView">
+        <attr name="editQueryView_inputText" format="string" />
+        <attr name="editQueryView_inputTextColor" format="color" />
+        <attr name="editQueryView_inputTextSize" format="dimension" />
+        <attr name="editLabelView_inputTextColorHint" format="color" />
+        <attr name="editQueryView_inputHint" format="string" />
+
+        <attr name="editQueryView_rightButtonWidth" format="dimension" />
+        <attr name="editLabelView_rightImageButtonSrc" format="reference" />
+    </declare-styleable>
+
+
+</resources>

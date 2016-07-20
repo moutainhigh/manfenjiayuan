@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<item android:state_pressed="true">-->
+        <!--<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">-->
+            <!--&lt;!&ndash;<corners android:bottomLeftRadius="1.5dp" />&ndash;&gt;-->
+            <!--<solid android:color="@color/green_select" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item android:state_focused="true">-->
+        <!--<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">-->
+            <!--&lt;!&ndash;<corners android:radius="3dp" />&ndash;&gt;-->
+            <!--<solid android:color="@color/green_select" />-->
+        <!--</shape>-->
+    <!--</item>-->
+    <!--<item>-->
+        <!--<shape android:shape="rectangle">-->
+            <!--&lt;!&ndash;-->
+            <!--<stroke android:color="#FFC8C7CC" android:width="1px"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<solid android:color="@color/white" />&ndash;&gt;-->
+            <!--<corners android:radius="3dp" />-->
+        <!--</shape>-->
+    <!--</item>-->
+
+    <item android:state_pressed="true" android:drawable="@color/mf_colorPrimary" />
+    <item android:drawable="@android:color/transparent" />
+
+</selector>

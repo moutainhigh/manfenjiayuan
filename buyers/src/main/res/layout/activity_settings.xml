@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/topbar_custom"
+        android:id="@+id/rl_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topbar_height" />
+
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="@string/button_logout"
+        android:textSize="12sp"
+        android:background="@color/red_nomal"
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        style="@style/scroll_view_custom"
+        android:layout_below="@+id/rl_topbar"
+        android:layout_above="@+id/button_logout">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_1_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top" />
+
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_1_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height" />
+
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_1_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height" />
+
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_2_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                android:layout_marginBottom="@dimen/default_margin_bottom" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

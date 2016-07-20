@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="@dimen/spacing_normal">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="商品"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_finalPrice"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="成交价"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_quantity"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="数量"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_amount"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:text="价格"
+        android:textSize="@dimen/textsize_normal"
+        android:textColor="@color/material_black"
+        android:singleLine="true"
+        android:gravity="center"/>
+
+</LinearLayout>

@@ -1,0 +1,249 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E8E8E7">
+
+    <com.mfh.comna.comn.widgets.ReboundScrollView
+        android:id="@+id/reboundScrollView"
+        style="@style/scroll_view_custom">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--STATUS - 20DP -->
+            <RelativeLayout
+                android:id="@+id/ll_first_frame"
+                android:layout_width="match_parent"
+                android:layout_height="182dp"
+                android:background="@drawable/bg_white_shdow_bottom_gray">
+
+                <!--顶部背景图片-->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:id="@+id/iv_background_top"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/individual_header_background"
+                    android:contentDescription=""/>
+
+                <!--顶部button-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:gravity="end|center_vertical">
+
+                    <Button
+                        style="@style/corners_button"
+                        android:id="@+id/button_settings"
+                        android:layout_marginEnd="@dimen/default_margin_right"
+                        android:text="@string/button_settings" />
+                </LinearLayout>
+
+                <!--个人信息-->
+                <RelativeLayout
+                    android:id="@+id/top_frame_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="76dp"
+                    android:orientation="vertical"
+                    android:layout_alignParentBottom="true">
+
+                    <com.mfh.comna.comn.widgets.AvatarView
+                        android:id="@+id/iv_header"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/chat_tmp_user_head"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_first"
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="28dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toEndOf="@+id/iv_header"
+                        android:paddingStart="16dp"
+                        android:paddingBottom="6dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/tv_username"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="#ffffff"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:id="@+id/iv_vip"
+                            android:layout_width="23dp"
+                            android:layout_height="23dp"
+                            android:scaleType="centerInside"
+                            android:layout_marginStart="5dp"
+                            android:src="@drawable/vip_0"
+                            android:contentDescription=""/>
+                    </LinearLayout>
+
+                    <!--余额/会员积分/我的收藏-->
+                    <LinearLayout
+                        android:id="@+id/ll_second"
+                        android:layout_width="fill_parent"
+                        android:layout_height="48dp"
+                        android:padding="8dp"
+                        android:layout_alignStart="@+id/ll_first"
+                        android:layout_below="@+id/ll_first"
+                        android:gravity="center_vertical"
+                        android:divider="@drawable/divider_vertical"
+                        android:showDividers="middle">
+
+                        <LinearLayout
+                            android:id="@+id/ll_tab_balance"
+                            style="@style/me_top_tab">
+
+                            <TextView
+                                style="@style/me_top_tab_text_value"
+                                android:id="@+id/tv_balance"
+                                android:text="" />
+
+                            <TextView
+                                style="@style/me_top_tab_text"
+                                android:text="@string/label_balance" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_tab_points"
+                            style="@style/me_top_tab">
+
+                            <TextView
+                                style="@style/me_top_tab_text_value"
+                                android:id="@+id/tv_points"
+                                android:text="" />
+
+                            <TextView
+                                style="@style/me_top_tab_text"
+                                android:text="@string/label_points" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_tab_collection"
+                            style="@style/me_top_tab">
+
+                            <TextView
+                                style="@style/me_top_tab_text_value"
+                                android:id="@+id/tv_collection"
+                                android:text="" />
+
+                            <TextView
+                                style="@style/me_top_tab_text"
+                                android:text="@string/label_collection" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <!--待付款/待收货/待评价-->
+            <LinearLayout
+                android:id="@+id/ll_second_frame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sectioin_divider_height"
+                android:background="@drawable/bg_white_shdow_top_gray"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
+
+                <com.mfh.buyers.view.BadgeViewButton
+                    android:id="@+id/button_pending_payment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <com.mfh.buyers.view.BadgeViewButton
+                    android:id="@+id/button_pending_receipt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <com.mfh.buyers.view.BadgeViewButton
+                    android:id="@+id/button_pending_evaluation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <!--订单/购物车-->
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_1_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height" />
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_1_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height" />
+
+            <!--钱包/卡包/包裹-->
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_2_0"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height" />
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_2_1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height" />
+            <com.mfh.comna.comn.widgets.SettingsItem
+                android:id="@+id/item_2_2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_item_height"
+                android:layout_marginBottom="@dimen/sectioin_divider_height" />
+
+            <!--&lt;!&ndash;满分小伙伴&ndash;&gt;-->
+            <!--<com.mfh.comna.comn.widgets.SettingsItem-->
+                <!--android:id="@+id/item_3_0"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/setting_item_height"-->
+                <!--android:layout_marginBottom="@dimen/sectioin_divider_height" />-->
+
+            <!--&lt;!&ndash;反馈&ndash;&gt;-->
+            <!--<com.mfh.comna.comn.widgets.SettingsItem-->
+                <!--android:id="@+id/item_4_0"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/setting_item_height"-->
+                <!--android:layout_marginBottom="@dimen/sectioin_divider_height"-->
+                <!--android:visibility="gone"/>-->
+
+        </LinearLayout>
+    </com.mfh.comna.comn.widgets.ReboundScrollView>
+
+    <com.mfh.comna.widget.LoadingImageView
+        android:id="@+id/loadingImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/animProgress"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        style="@style/loading"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+
+    <com.mfh.comna.api.ui.view.EmptyLayout
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</RelativeLayout>

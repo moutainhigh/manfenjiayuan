@@ -1,0 +1,53 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- google 官方下拉刷新 -->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/my_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_white"
+            android:orientation="vertical">
+
+            <com.mfh.enjoycity.ui.advertise.AdvertisementViewPager
+                android:id="@+id/view_homebanners"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"/>
+
+            <Button
+                android:id="@+id/sticky_searchButton"
+                style="@style/searchButton"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/search_button_bg"
+                android:text="搜索 ** 的商品"
+                android:textColor="#8E8E93"
+                android:gravity="start|center_vertical"/>
+        </LinearLayout>
+    </FrameLayout>
+
+
+
+</FrameLayout>

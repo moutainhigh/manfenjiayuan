@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- application theme 日间模式 -->
+    <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
+        <!-- customize the color palette -->
+
+        <!--<item name="android:colorControlNormal">@color/mf_colorPrimary</item>-->
+        <!--<item name="android:colorControlActivated">@color/mf_colorPrimary</item>-->
+        <!--<item name="android:colorControlHighlight">@color/mf_colorPrimary</item>-->
+
+    </style>
+
+    <style name="NewFlow" parent="AppBaseTheme_Light">
+        <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
+    </style>
+
+    <!-- 加载滚动条样式 -->
+    <style name="syncbutton_progressbar">
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateDrawable">@drawable/syncdata_progressbar</item>
+        <item name="android:indeterminateDuration">1000</item>
+        <item name="android:indeterminateOnly">true</item>
+    </style>
+
+</resources>

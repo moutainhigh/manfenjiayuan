@@ -1,0 +1,31 @@
+<resources>
+    <!--表格头/高度-->
+    <dimen name="form_header_height_default">50dp</dimen>
+    <!--表格头/文字大小-->
+
+
+    <dimen name="textsize_default">16sp</dimen>
+    <dimen name="pagetab_height">70dp</dimen>
+
+
+    <!--首页左侧边栏-->
+    <dimen name="home_leftslide_width">64dp</dimen>
+    <dimen name="home_leftslide_height">84dp</dimen>
+    <dimen name="home_rightslide_width">64dp</dimen>
+
+    <!--服务面板宽度:945 = 105*9 =157.5*6
+    735 = 105*7 =122.5*6＝127*5
+    -->
+    <dimen name="service_panel_width">735dp</dimen>
+    <!--通用右侧面板宽度-->
+    <dimen name="common_right_panel_width">277dp</dimen>
+    <!--通用右侧面板宽度-->
+    <dimen name="order_riceipt_width">114dp</dimen>
+
+
+    <dimen name="mfh_normal_dialog_width">600dp</dimen>
+    <dimen name="mf_simple_dialog_width">800dp</dimen>
+    <dimen name="mf_simple_dialog_height">400dp</dimen>
+    <dimen name="mf_simple_dialog_height_footer">448dp</dimen>
+
+</resources>

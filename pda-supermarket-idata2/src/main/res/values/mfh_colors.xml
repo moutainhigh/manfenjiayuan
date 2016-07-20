@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="mfh_colorPrimary">@color/material_green_500</color>
+    <color name="mfh_colorPrimaryGrey">@color/material_grey_500</color>
+    <color name="mfh_colorPrimaryDark">@color/material_green_700</color>
+    <color name="mfh_colorAccent">#FF4081</color>
+
+
+    <color name="mf_dividerColorPrimary">#a0a0a0</color>
+    <color name="mf_dialog_frame">#64000000</color>
+    <color name="mf_red">#FE5000</color>
+    <!--灰色蒙板-->
+    <color name="mfhtheme_maskPrimary">#F4F5F9</color>
+
+
+    <color name="mfh_splash_startColor">#64ffffff</color>
+    <color name="mfh_splash_endColor">#64e5e5e5</color>
+
+</resources>

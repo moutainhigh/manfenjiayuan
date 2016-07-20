@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<upgrade-configs>
+    <upgrade-config>
+        <domain>BUYERS.CLIENT.DB.UPGRADE</domain>
+        <description>buyers client db upgrade config</description>
+        <!--<version>5</version> 在DbVersion中添加-->
+        <script-file-path>upgrade</script-file-path>
+        <script-file-prefix>buyers</script-file-prefix>
+        <datasource-id></datasource-id>
+        <className></className>
+    </upgrade-config>
+</upgrade-configs>

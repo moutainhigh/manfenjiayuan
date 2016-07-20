@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/topbar_custom"
+        android:id="@+id/rl_topbar"/>
+
+    <com.mfh.framework.uikit.compound.CustomSearchView
+        android:layout_below="@+id/rl_topbar"
+        android:id="@+id/searchBar_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        style="@style/separator_horizontal"
+        android:id="@+id/seperate_line"
+        android:layout_below="@+id/searchBar_category" />
+
+    <com.mfh.framework.uikit.widget.ReboundListView
+        android:id="@+id/listView_category"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/seperate_line"
+        android:divider="#3c767676"
+        android:dividerHeight="1dp"
+        android:scrollbars="none"
+        android:overScrollMode="always"
+        android:cacheColorHint="@android:color/transparent" />
+
+    <com.mfh.framework.uikit.widget.ReboundScrollView
+        android:id="@+id/scrollView_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/seperate_line"
+        android:layout_toEndOf="@+id/listView_category"
+        android:background="#ffffff"
+        android:padding="5dp"
+        android:scrollbars="none"
+        android:layout_alignParentBottom="true">
+
+        <com.mfh.framework.hybrid.HybridWebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"/>
+    </com.mfh.framework.uikit.widget.ReboundScrollView>
+
+
+</RelativeLayout>

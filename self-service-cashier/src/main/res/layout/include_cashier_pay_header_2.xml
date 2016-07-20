@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="12sp">
+
+    <TextView
+        android:id="@+id/tv_handle_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/default_amount"
+        android:textColor="#FE5000"
+        android:textSize="64sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="4dp"
+        android:drawableStart="@mipmap/ic_marker_money_small"
+        android:text="@string/label_handle_amount"
+        android:textColor="@color/mfh_colorPrimary"
+        android:textSize="@dimen/textsize_normal"/>
+
+</LinearLayout>
