@@ -96,10 +96,9 @@
             android:id="@+id/frame_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="40dp"
+            android:layout_margin="@dimen/spacing_double"
             android:baselineAligned="false"
+            android:gravity="center"
             android:divider="@drawable/divider_vertical_line_primary"
             android:dividerPadding="12dp"
             android:showDividers="middle">
@@ -159,9 +158,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="@dimen/spacing_double"
-            android:layout_marginStart="@dimen/spacing_double"
-            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_margin="@dimen/spacing_double"
             app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:inputNumberLabelView_inputTextColor="@color/black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"
@@ -171,8 +168,7 @@
             android:id="@+id/ll_procuct_header"
             layout="@layout/itemview_header_cashier"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_normal"/>
+            android:layout_height="wrap_content"/>
 
         <!--商品列表-->
         <android.support.v7.widget.RecyclerView

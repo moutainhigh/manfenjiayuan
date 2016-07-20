@@ -122,7 +122,7 @@ public class CashierApp extends MfhApplication {
         /**
          * 设置启动延时为1s（默认延时3s），APP启动1s后初始化SDK，避免影响APP启动速度;
          */
-        Beta.initDelay = 1000;
+        Beta.initDelay = 2 * 1000;
         /**
          * 设置通知栏大图标，largeIconId为项目中的图片资源;
          */

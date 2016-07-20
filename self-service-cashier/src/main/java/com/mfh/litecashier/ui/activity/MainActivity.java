@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -148,8 +148,8 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
     TextView tvLastCharge;
     @Bind(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
-    @Bind(R.id.button_settle)
-    Button btnSettle;
+    @Bind(R.id.fab_settle)
+    FloatingActionButton btnSettle;
     @Bind(R.id.product_list)
     RecyclerView productRecyclerView;
     @Bind(R.id.float_hangup)
@@ -229,8 +229,8 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         }
         List<AdvLocalPic> localAdvList = new ArrayList<>();
         localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb1));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb2));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb3));
+        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb4));
+        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb1));
         localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb4));
         mPictureAdvPagerAdapter = new AdvLocalPicAdapter(this, localAdvList, null);
         advertiseViewPager.setAdapter(mPictureAdvPagerAdapter);
@@ -980,7 +980,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
     /**
      * 结算(需要登录)
      */
-    @OnClick(R.id.button_settle)
+    @OnClick(R.id.fab_settle)
     public void settle() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         btnSettle.setEnabled(false);
