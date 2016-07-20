@@ -51,24 +51,21 @@ public class CashierAgent {
      * </ol>
      */
     public static boolean settle(String orderBarCode, List<CashierShopcartEntity> shopcartEntities) {
-        //Step 1 参数检查
-        if (shopcartEntities == null || shopcartEntities.size() <= 0) {
-            return false;
-        }
+        //Step 1 拆单
+        Map<Integer, List<CashierShopcartEntity>> splitMap = new HashMap<>();
+        if (shopcartEntities != null && shopcartEntities.size() > 0){
+            for (CashierShopcartEntity shopcartEntity : shopcartEntities) {
+                Integer subType = shopcartEntity.getCateType();
+                List<CashierShopcartEntity> tempEntities = splitMap.get(subType);
+                if (tempEntities == null) {
+                    tempEntities = new ArrayList<>();
+                }
+                tempEntities.add(shopcartEntity);
 
-        //Step 2拆单
-        Map<Integer, List<CashierShopcartEntity>> subTypeMap = new HashMap<>();
-        for (CashierShopcartEntity shopcartEntity : shopcartEntities) {
-            Integer subType = shopcartEntity.getCateType();
-            List<CashierShopcartEntity> tempEntities = subTypeMap.get(subType);
-            if (tempEntities == null) {
-                tempEntities = new ArrayList<>();
+                splitMap.put(subType, tempEntities);
+                ZLogger.df(String.format("拆单：%s(%d) %d个商品",
+                        BizSubType.name(subType), subType, tempEntities.size()));
             }
-            tempEntities.add(shopcartEntity);
-
-            subTypeMap.put(subType, tempEntities);
-            ZLogger.df(String.format("拆单：%s(%d) %d个商品",
-                    BizSubType.name(subType), subType, tempEntities.size()));
         }
 
         //Step 3.1 更新已有订单
@@ -76,7 +73,7 @@ public class CashierAgent {
         if (orderEntities != null && orderEntities.size() > 0) {
             for (PosOrderEntity orderEntity : orderEntities) {
                 Integer subType = orderEntity.getSubType();
-                if (subTypeMap.containsKey(subType)) {
+                if (splitMap.containsKey(subType)) {
                     orderEntity.setIsActive(1);
                     orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
                     PosOrderService.get().saveOrUpdate(orderEntity);
@@ -84,14 +81,14 @@ public class CashierAgent {
                     //更新订单明细
                     PosOrderItemService.get().deleteBy(String.format("orderId = '%d'",
                             orderEntity.getId()));
-                    List<CashierShopcartEntity> goodsEntities = subTypeMap.get(subType);
+                    List<CashierShopcartEntity> goodsEntities = splitMap.get(subType);
                     for (CashierShopcartEntity goods : goodsEntities) {
                         PosOrderItemService.get().saveOrUpdate(orderEntity.getBarCode(),
                                 orderEntity.getId(), goods);
                     }
 
                     // TODO: 7/7/16 订单明细统计数据保存到订单
-                    subTypeMap.remove(subType);
+                    splitMap.remove(subType);
                 } else {
                     //关闭订单，订单明细不清空
                     orderEntity.setIsActive(0);
@@ -104,7 +101,7 @@ public class CashierAgent {
         }
 
         //Step 3.2 保存新订单和商品明细
-        for (Integer subType : subTypeMap.keySet()) {
+        for (Integer subType : splitMap.keySet()) {
             PosOrderEntity orderEntity = new PosOrderEntity();
             orderEntity.setBarCode(orderBarCode);
             orderEntity.setBizType(BizType.POS);
@@ -120,7 +117,7 @@ public class CashierAgent {
             ZLogger.df(String.format("订单%s_%d:\n%s", orderBarCode,
                     orderEntity.getId(), JSONObject.toJSONString(orderEntity)));
 
-            List<CashierShopcartEntity> goodsEntities = subTypeMap.get(subType);
+            List<CashierShopcartEntity> goodsEntities = splitMap.get(subType);
             for (CashierShopcartEntity goods : goodsEntities) {
                 PosOrderItemService.get().saveOrUpdate(orderEntity.getBarCode(),
                         orderEntity.getId(), goods);
@@ -131,7 +128,11 @@ public class CashierAgent {
     }
 
 
-    public static CashierOrderInfo settle(String orderBarCode, int status, List<CashierShopcartEntity> shopcartEntities){
+    /**
+     * 结算
+     * */
+    public static CashierOrderInfo settle(String orderBarCode, int status,
+                                          List<CashierShopcartEntity> shopcartEntities){
         settle(orderBarCode, shopcartEntities);
         CashierOrderInfo cashierOrderInfo = CashierFactory.makeCashierOrderInfo(BizType.POS,
                 orderBarCode, null);
@@ -145,7 +146,8 @@ public class CashierAgent {
      * 调单1
      * */
     public static List<PosOrderItemEntity> resume(String orderBarCode){
-        List<PosOrderEntity> orderEntities = CashierFactory.fetchActiveOrderEntities(BizType.POS, orderBarCode);
+        List<PosOrderEntity> orderEntities = CashierFactory
+                .fetchActiveOrderEntities(BizType.POS, orderBarCode);
         if (orderEntities == null || orderEntities.size() < 1) {
             return null;
         }
@@ -159,7 +161,7 @@ public class CashierAgent {
 
             //加载订单明细
             List<PosOrderItemEntity> temp = PosOrderItemService.get()
-                    .queryAllBy(String.format("orderId = '%s'", orderEntity.getId()));
+                    .queryAllBy(String.format("orderId = '%d'", orderEntity.getId()));
             if (temp != null){
                 itemEntities.addAll(temp);
             }
