@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.HomeMenu;
-import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -40,14 +39,13 @@ public class HomeAdapter extends RegularAdapter<HomeMenu, HomeAdapter.MenuOptioi
         this.adapterListener = adapterListener;
     }
 
-
-
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater.inflate(
                 R.layout.itemview_homemenu, null, false);
-        v.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 105),
-                DensityUtil.dip2px(mContext, 122)));
+//        v.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 105),
+//                DensityUtil.dip2px(mContext, 122)));
+
 
 //            return new MenuOptioinViewHolder(mLayoutInflater.inflate(R.layout.itemview_homemenu_option, parent, false));
         return new MenuOptioinViewHolder(v);
