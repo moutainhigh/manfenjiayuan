@@ -215,16 +215,17 @@ public class PayByBandcardFragment extends BasePayFragment {
                         //签到成功，发起消费
                         //00交易成功622760******0655
                         // 0000000000010104中国银行0000490000021653175640983970050412898320554115217558772360412165317
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    createPayOrder(response.getTraceNo(), response.getBankCode(),
-                                            response.getCardNo(), response.getAmount(),
-                                            response.getMerchId(), response.getTermId());
-                                }
-                            });
-                        }
+//                        if (getActivity() != null) {
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                }
+//                            });
+//                        }
+
+                        createPayOrder(response.getTraceNo(), response.getBankCode(),
+                                response.getCardNo(), response.getAmount(),
+                                response.getMerchId(), response.getTermId());
 
                     } else {
                         //交易失败
@@ -233,7 +234,8 @@ public class PayByBandcardFragment extends BasePayFragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, response.getRspChin(), false);
+                                    onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED,
+                                            response.getRspChin(), false);
                                 }
                             });
                         }
@@ -247,7 +249,8 @@ public class PayByBandcardFragment extends BasePayFragment {
                                 .runOnUiThread(new Runnable() {
                                                    @Override
                                                    public void run() {
-                                                       onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, response.getRspChin(), true);
+                                                       onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED,
+                                                               response.getRspChin(), true);
                                                    }
                                                }
                                 );
@@ -374,7 +377,7 @@ public class PayByBandcardFragment extends BasePayFragment {
                 }
             }, 500);
         } catch (Exception ex) {
-            ZLogger.e(ex.toString());
+            ZLogger.ef(ex.toString());
         }
     }
 
@@ -383,6 +386,7 @@ public class PayByBandcardFragment extends BasePayFragment {
      */
     private void onBarpayFailed(int payStatus, String msg, boolean isException) {
         try {
+            ZLogger.df(String.format("银联支付失败：%s", msg));
             if (isException) {
                 payProcessView.setState(PayProcessView.STATE_ERROR, msg);
             } else {
@@ -399,7 +403,7 @@ public class PayByBandcardFragment extends BasePayFragment {
 
             bPayProcessing = false;
         } catch (Exception ex) {
-            ZLogger.e(ex.toString());
+            ZLogger.ef(ex.toString());
         }
 
 
@@ -454,6 +458,7 @@ public class PayByBandcardFragment extends BasePayFragment {
         //串口值(devPath)	String		50	是	串口值
         this.transCFX.setDevPath(SerialManager.getUmsipsPort());
         //波特率(baudRate)	int		8	是	波特率
+        //不同型号的波特率不同，9600&115200
         this.transCFX.setBaudRate(Integer.valueOf(SerialManager.getUmsipsBaudrate()));
 //        ZLogger.d("ums.transCFX: " + this.transCFX.toString());
     }

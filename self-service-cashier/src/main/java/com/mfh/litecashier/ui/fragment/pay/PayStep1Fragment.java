@@ -163,7 +163,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             break;
             //支付失败
             case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED:{
-                activeMode(false);
+                activeMode(true);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
                         .getSerializable(PayActionEvent.KEY_PAYMENT_INFO);
@@ -173,7 +173,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             break;
             //支付成功
             case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED:{
-                activeMode(false);
+                activeMode(true);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
                         .getSerializable(PayActionEvent.KEY_PAYMENT_INFO);

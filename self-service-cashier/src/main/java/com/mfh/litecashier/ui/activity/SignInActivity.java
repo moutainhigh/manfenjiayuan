@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,22 +12,20 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.manfenjiayuan.im.IMClient;
-import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.login.logic.LoginCallback;
-import com.mfh.framework.login.entity.UserMixInfo;
-import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.login.logic.LoginCallback;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.framework.network.NetWorkUtil;
-import com.mfh.framework.core.utils.StringUtils;
-
-import android.support.design.widget.Snackbar;
-import android.widget.ProgressBar;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -95,7 +94,8 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER ||
+                        event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP && curStep == STEP_NA) {
                         etPassword.requestFocus();
                     }
@@ -109,7 +109,8 @@ public class SignInActivity extends BaseActivity {
 
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER ||
+                        event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP && curStep == STEP_NA) {
                         signIn();
                     }
