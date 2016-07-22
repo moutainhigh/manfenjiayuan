@@ -417,41 +417,46 @@ public class ZLogger {
         calendar.set(Calendar.HOUR, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-//        ZLogger.d("deleteOldFiles--" + DATE_FORMAT.format(calendar.getTime()));
+//        ZLogger.d("" + DATE_FORMAT.format(calendar.getTime()));
 
         File file = new File(FileUtil.getSavePath(CRASH_FOLDER_PATH));
         if (!file.exists()) {
-//            ZLogger.d(String.format("deleteOldFiles--%s 不存在", file.getAbsolutePath()));
+//            ZLogger.d(String.format("%s 不存在", file.getAbsolutePath()));
             return;
         }
 
         if (!file.isDirectory()) {
-//            ZLogger.d(String.format("deleteOldFiles--%s 不是目录", file.getAbsolutePath()));
+//            ZLogger.d(String.format("%s 不是目录", file.getAbsolutePath()));
             return;
         }
 
         for (File child : file.listFiles()) {
             String name = child.getName();
             if (child.isDirectory()) {
-//                ZLogger.d(String.format("deleteOldFiles--%s是目录，不需要删除", child.getName()));
+//                ZLogger.d(String.format("%s是目录，不需要删除", child.getName()));
                 continue;
             }
 
             try {
+                //文件名格式是2016-01-01.log，所以格式不对的，也要删除。系统中可能存在很多2016-0001-01.log等等这样的文件。
+                if (StringUtils.isEmpty(name) || name.length() != 14) {
+                    ZLogger.df(String.format("删除无效日志文件 %s", name));
+                    child.delete();
+                    continue;
+                }
                 Date date = DATE_FORMAT.parse(name);
-//                ZLogger.d("deleteOldFiles-- child:" + DATE_FORMAT.format(date));
+//                ZLogger.d(" child:" + DATE_FORMAT.format(date));
                 if (date.before(calendar.getTime())) {
-                    ZLogger.d(String.format("deleteOldFiles--日志已经过期，删除%s", name));
+                    ZLogger.df(String.format("日志已经过期，删除%s", name));
                     child.delete();
                 } else {
-//                    ZLogger.d(String.format("deleteOldFiles--日志有效，%s", child.getName()));
+//                    ZLogger.d(String.format("日志有效，%s", child.getName()));
 //                    child.delete();
                 }
             } catch (ParseException e) {
-                ZLogger.d(String.format("deleteOldFiles--日志已经过期，删除%s", name));
                 child.delete();
 //                e.printStackTrace();
-                ZLogger.e(String.format("deleteOldFiles--%s", e.toString()));
+                ZLogger.ef(String.format("%s", e.toString()));
             }
         }
     }
