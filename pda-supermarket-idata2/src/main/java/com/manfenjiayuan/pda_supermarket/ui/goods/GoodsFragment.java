@@ -2,6 +2,8 @@ package com.manfenjiayuan.pda_supermarket.ui.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -114,6 +116,27 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
                 refresh(null);
             }
         });
+        labelCostPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (curGoods != null){
+                    //计算毛利率:(costPrice-buyPrice) / buyPrice
+                    String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getBuyPrice(),
+                            (calInputCostPrice() - curGoods.getBuyPrice()));
+                    labelGrossProfit.setTvSubTitle(grossProfit);
+                }
+            }
+        });
 //        labelCostPrice.setSoftKeyboardEnabled(false);
         labelUpperLimit.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelUpperLimit.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -142,6 +165,16 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
         });
         btnSubmit.setEnabled(false);
     }
+
+    private Double calInputCostPrice(){
+        String price = labelCostPrice.getEtContent();
+        if (StringUtils.isEmpty(price)) {
+            return 0D;
+        }
+
+         return Double.valueOf(price);
+    }
+
 
     /**
      * 查询商品信息
