@@ -17,6 +17,8 @@ import com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn.CreateInvReturnOr
 import com.manfenjiayuan.pda_supermarket.ui.fragment.receipt.InvRecvOrderSplashFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.InventoryCheckFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invio.CreateInvIoOrderFragment;
+import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -37,6 +39,8 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_CREATE_INV_RETURNORDER      = 0x11;//退货
     public static final int FT_CREATE_INV_LOSSORDER      = 0x12;//报损
     public static final int FT_INV_CONVERT      = 0x13;//库存转换
+    public static final int FT_INVIO_IN         = 0x21;//入库
+    public static final int FT_INVIO_OUT         = 0x22;//出库
 
 
     /**
@@ -217,6 +221,36 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = InvConvertFromFragment.newInstance(intent.getExtras());
             }else{
                 fragment = InvConvertFromFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }
+
+        else if(serviceType == FT_INVIO_IN){
+            CreateInvIoOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_IN);
+                fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CreateInvIoOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }
+
+        else if(serviceType == FT_INVIO_OUT){
+            CreateInvIoOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_OUT);
+                fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CreateInvIoOrderFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

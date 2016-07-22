@@ -1,4 +1,4 @@
-package com.mfh.litecashier.bean;
+package com.mfh.framework.api.invIoOrder;
 
 import com.mfh.comn.bean.ILongId;
 
@@ -7,14 +7,9 @@ import java.util.Date;
 
 /**
  *  批次流水
- * Created by kun on 15/9/22.
+ * Created by bingshanguxue on 15/9/22.
  */
 public class InvIoOrder implements ILongId, Serializable {
-    //0-入库 1-出库 2-直接设置
-    public static final int ORDER_TYPE_IN = 0;
-    public static final int ORDER_TYPE_OUT = 1;
-    public static final int ORDER_TYPE_SET = 2;
-
     private Long id;//订单编号
     private String orderName;//订单名称
     private String statusCaption;//状态

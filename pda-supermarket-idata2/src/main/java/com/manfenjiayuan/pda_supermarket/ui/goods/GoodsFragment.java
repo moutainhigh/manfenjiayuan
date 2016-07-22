@@ -169,8 +169,8 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
     }
 
     @OnClick(R.id.label_provider)
-    public void queryProvider(){
-        if (curGoods == null){
+    public void queryProvider() {
+        if (curGoods == null) {
             return;
         }
 
@@ -180,6 +180,7 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
         extras.putString(ChainGoodsSkuFragment.EXTRA_KEY_BARCODE, curGoods.getBarcode());
         PrimaryActivity.actionStart(getActivity(), extras);
     }
+
     @OnClick(R.id.button_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
@@ -265,19 +266,22 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
+            labelBuyprice.setTvSubTitle("");
             labelCostPrice.setEtContent("");
             labelCostPrice.setEnabled(false);
+            labelGrossProfit.setTvSubTitle("");
+            labelSellMonthNum.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
             labelUpperLimit.setEtContent("");
             labelUpperLimit.setEnabled(false);
 //            labelLowerLimit.setEtContent("");
 //            labelLowerLimit.setEnabled(false);
-
-            btnSubmit.setEnabled(false);
-
             eqvBarcode.clear();
             eqvBarcode.requestFocus();
             labelProvider.setEnabled(false);
+
+            btnSubmit.setEnabled(false);
+
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
@@ -298,11 +302,11 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
             labelGrossProfit.setTvSubTitle(grossProfit);
             labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
             labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
-            btnSubmit.setEnabled(true);
 
             labelCostPrice.requestFocusEnd();
 
             labelProvider.setEnabled(true);
+            btnSubmit.setEnabled(true);
         }
 
         isAcceptBarcodeEnabled = true;
@@ -319,16 +323,17 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
     public void onIGoodsViewError(String errorMsg) {
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
+        DialogUtil.showHint("未找到商品");
         refresh(null);
     }
 
     @Override
     public void onIGoodsViewSuccess(List<ScGoodsSku> scGoodsSkus) {
-        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
+        if (scGoodsSkus != null && scGoodsSkus.size() > 0) {
             ScGoodsSku scGoodsSku = scGoodsSkus.get(0);
             refresh(scGoodsSku);
-        }
-        else{
+        } else {
+            DialogUtil.showHint("未找到商品");
             refresh(null);
         }
 
