@@ -52,7 +52,7 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
     private int mPasswordLength;
     private String mPasswordTransformation;
     private int mPasswordType;
-    private boolean softInputEnableInTouchMode = true;
+    private boolean softInputEnableInTouchMode = false;
 
     private String[] mPasswordArr;
     private TextView[] mViewArr;
