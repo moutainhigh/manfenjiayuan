@@ -137,8 +137,8 @@
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="sensorocloud-3.2.1" level="project" />
     <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
-    <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
     <orderEntry type="module" module-name="im" exported="" />
     <orderEntry type="module" module-name="mfh-framework-all" exported="" />
     <orderEntry type="module" module-name="mfh-framework-android" exported="" />
