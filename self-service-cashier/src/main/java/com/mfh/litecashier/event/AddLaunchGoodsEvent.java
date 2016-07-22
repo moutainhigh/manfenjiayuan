@@ -1,6 +1,6 @@
 package com.mfh.litecashier.event;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 
 /**
  * 事务

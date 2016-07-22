@@ -1,13 +1,13 @@
 package com.manfenjiayuan.business.bean;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.MerchandiseApi;
+import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApi;
 
 import java.util.Date;
 
 /**
  * 盘点商品/报损商品
- * {@link MerchandiseApi.URL_SCGOODSSKU_FINDBY_BARCODE,}
+ * {@link ScChainGoodsSkuApi.URL_SCGOODSSKU_FINDBY_BARCODE,}
  * Created by Nat.ZZN(bingshanguxue) on 2015/8/18.
  */
 public class StockTakeGoods implements ILongId, java.io.Serializable {

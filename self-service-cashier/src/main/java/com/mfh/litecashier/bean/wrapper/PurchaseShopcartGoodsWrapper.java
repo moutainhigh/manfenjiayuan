@@ -1,9 +1,9 @@
 package com.mfh.litecashier.bean.wrapper;
 
 import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
+import com.mfh.framework.api.GoodsSupplyInfo;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 
 import java.io.Serializable;
 import java.util.Date;

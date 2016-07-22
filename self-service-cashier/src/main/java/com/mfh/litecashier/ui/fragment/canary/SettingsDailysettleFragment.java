@@ -19,13 +19,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.service.DailysettleService;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.AccItem;
@@ -33,14 +38,9 @@ import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.com.SerialManager;
-import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
-import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.mfh.litecashier.event.SettingsDailysettleEvent;
 import com.mfh.litecashier.ui.adapter.SettingsDailysettleAdapter;
 import com.mfh.litecashier.ui.widget.InputSearchView;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
-import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
-import com.mfh.litecashier.utils.AnalysisHelper;
 
 import java.util.List;
 
@@ -407,7 +407,8 @@ public class SettingsDailysettleFragment extends BaseFragment {
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover(),
-                            AnalysisHelper.retrieveFormatedGrossMargin(aggItem.getTurnover(), aggItem.getGrossProfit())));
+                            MUtils.retrieveFormatedGrossMargin(aggItem.getTurnover(),
+                                    aggItem.getGrossProfit())));
                     index++;
                 }
             }

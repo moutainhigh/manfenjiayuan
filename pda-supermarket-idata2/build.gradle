@@ -17,6 +17,7 @@ android {
 
     defaultConfig {
         applicationId "com.manfenjiayuan.pda_supermarket"
+
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 15
@@ -114,4 +115,6 @@ dependencies {
     compile project(':mfh-framework-business')
     debugCompile rootProject.ext.dependencies["support-v4"]
     compile project(':pda')
+    compile project(path: ':vector_user')
+    compile rootProject.ext.dependencies["cardview-v7"]
 }

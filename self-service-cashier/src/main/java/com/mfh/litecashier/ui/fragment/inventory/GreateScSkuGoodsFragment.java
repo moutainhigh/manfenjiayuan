@@ -31,7 +31,7 @@ import com.mfh.framework.uikit.compound.OptionalLabel;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.framework.api.constant.PriceType;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
 

@@ -1,6 +1,6 @@
 package com.mfh.litecashier.event;
 
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 
 /**
  * 事务

@@ -63,11 +63,15 @@
                 android:layout_height="52dp"
                 app:editLabelView_leftText="签收数量:"
                 app:editLabelView_leftTextSize="18px"
-                app:editLabelView_leftTextColor="@color/black"
+                app:editLabelView_leftTextColor="@color/material_black"
                 app:editLabelView_rightTextSize="18px"
-                app:editLabelView_rightTextColor="@color/black"
+                app:editLabelView_rightTextColor="@color/material_black"
                 app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightHint="请输入签收数量"/>
+                app:editLabelView_rightHint="请输入签收数量"
+                app:endTextVisible="true"
+                app:endTextSize="18px"
+                app:endTextColor="@color/black_35"
+                />
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_receive_amount"
@@ -75,11 +79,15 @@
                 android:layout_height="52dp"
                 app:editLabelView_leftText="收货金额:"
                 app:editLabelView_leftTextSize="18px"
-                app:editLabelView_leftTextColor="@color/black"
+                app:editLabelView_leftTextColor="@color/material_black"
                 app:editLabelView_rightTextSize="18px"
-                app:editLabelView_rightTextColor="@color/black"
+                app:editLabelView_rightTextColor="@color/material_black"
                 app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightHint="请输入收货金额"/>
+                app:editLabelView_rightHint="请输入收货金额"
+                app:endTextVisible="true"
+                app:endTextSize="18px"
+                app:endTextColor="@color/black_35"
+                />
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_receive_price"

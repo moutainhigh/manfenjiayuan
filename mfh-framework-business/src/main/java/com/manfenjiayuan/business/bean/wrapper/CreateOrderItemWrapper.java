@@ -1,12 +1,12 @@
 package com.manfenjiayuan.business.bean.wrapper;
 
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.bean.InvFindOrderItem;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.utils.ObjectsCompact;

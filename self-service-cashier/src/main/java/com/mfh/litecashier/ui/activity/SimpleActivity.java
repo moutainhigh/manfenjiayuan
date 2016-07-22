@@ -25,10 +25,7 @@ import com.mfh.litecashier.ui.fragment.orderflow.StoreOrderFlowFragment;
 import com.mfh.litecashier.ui.fragment.purchase.IntelligentShopcartFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFreshEvent;
-import com.mfh.litecashier.ui.fragment.purchase.PurchaseFreshFragment;
-import com.mfh.litecashier.ui.fragment.purchase.PurchaseFruitFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFruitShopcartFragment;
-import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseShopcartFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseShopcartFragment;
@@ -45,9 +42,6 @@ public class SimpleActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
     public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
 
-    public static final int FT_PURSHACE_STANDARD_GOODS = 0x01;//申请商品
-    public static final int FT_PURCHASE_FRESH_GOODS = 0x02;//
-    public static final int FT_PURCHASE_FRUIT_GOODS = 0x03;//
     public static final int FT_PURCHASE_FRUIT_SHOPCART = 0x04;//采购生鲜－购物车
     public static final int FT_PURCHASE_STANDARD_SHOPCART = 0x05;//采购商品－购物车
     public static final int FT_PURCHASE_MANUAL = 0x06;//手动订货
@@ -173,13 +167,6 @@ public class SimpleActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         switch (fragmentType) {
-            case FT_PURCHASE_FRESH_GOODS:
-            case FT_PURCHASE_FRUIT_GOODS: {
-                getMenuInflater().inflate(R.menu.menu_purchase_fresh, menu);
-//                freshShopcartMenu = menu.findItem(R.id.action_fresh_shopcart);
-            }
-            break;
-            case FT_PURSHACE_STANDARD_GOODS:
             case FT_PURCHASE_STANDARD_SHOPCART:
             case FT_PURCHASE_FRUIT_SHOPCART:
             case FT_ORDERFLOW:
@@ -229,39 +216,6 @@ public class SimpleActivity extends BaseActivity {
      */
     private void initFragments() {
         switch (fragmentType) {
-            case FT_PURCHASE_FRESH_GOODS: {
-                toolbar.setTitle("生鲜");
-                PurchaseFreshFragment fragment = new PurchaseFreshFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_PURCHASE_FRUIT_GOODS: {
-                toolbar.setTitle("水果");
-                PurchaseFruitFragment fragment = new PurchaseFruitFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_PURSHACE_STANDARD_GOODS: {
-                toolbar.setTitle("普货");
-                PurchaseGoodsFragment fragment;
-                Intent intent = this.getIntent();
-                if (intent != null) {
-                    fragment = PurchaseGoodsFragment.newInstance(intent.getExtras());
-                } else {
-                    fragment = PurchaseGoodsFragment.newInstance(null);
-                }
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseGoodsFragment).show(purchaseGoodsFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
             case FT_PURCHASE_MANUAL: {
                 toolbar.setTitle("手动订货");
                 ManualPurchaseFragment fragment;

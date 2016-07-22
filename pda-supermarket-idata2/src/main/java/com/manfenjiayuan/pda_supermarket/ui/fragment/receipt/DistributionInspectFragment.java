@@ -15,7 +15,7 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
@@ -52,7 +52,6 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
 
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
-
     @Bind(R.id.label_barcode)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
@@ -320,6 +319,7 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
             labelSendQuantity.setTvSubTitle("");
             labelSendPrice.setTvSubTitle("");
             labelReceiveQuantity.setEtContent("");
+            labelReceiveQuantity.setEndText("");
             labelReceiveAmount.setEtContent("");
             labelReceivePrice.setTvSubTitle("");
 
@@ -336,6 +336,8 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
             labelSendPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getSendPrice(), ""));
             //默认签收数量为空，根据实际情况填写
             labelReceiveQuantity.setEtContent("");
+            labelReceiveQuantity.setEndText(curGoods.getUnitSpec());
+//            labelReceiveAmount.setEndText(curGoods.getUnitSpec());
             labelReceiveAmount.setEtContent("");
             labelReceivePrice.setTvSubTitle(MUtils.formatDouble(calculateReceivePrice(), ""));
 

@@ -163,7 +163,8 @@ public class LaundryFragment extends BaseFragment {
             args.putLong("parentId", category.getParentId());
             args.putLong("categoryId", category.getId());
 
-            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), LaundryGoodsFragment.class, args));
+            mTabs.add(new ViewPageInfo(category.getNameCn(),
+                    category.getNameCn(), LaundryGoodsFragment.class, args));
 //            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), FrontCategoryGoodsFragment.class, args));
         }
         categoryGoodsPagerAdapter.removeAll();

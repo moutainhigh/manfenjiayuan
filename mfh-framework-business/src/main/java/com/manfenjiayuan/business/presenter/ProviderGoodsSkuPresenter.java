@@ -1,6 +1,5 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
 import com.manfenjiayuan.business.bean.InvSkuProvider;
 import com.manfenjiayuan.business.mode.ProviderGoodsSkuMode;
 import com.manfenjiayuan.business.view.IProviderGoodsSkuView;

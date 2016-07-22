@@ -4,6 +4,7 @@
                 android:layout_height="match_parent"
                 android:divider="@drawable/divider_horizontal_line"
                 android:orientation="vertical"
+                android:background="@color/material_white"
                 android:showDividers="middle">
 
     <com.bingshanguxue.pda.widget.EditQueryView
@@ -16,9 +17,8 @@
         app:editQueryView_inputTextColor="@color/black"
         app:editQueryView_inputTextSize="18px"/>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        style="@style/mf_scrolview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button_submit"
@@ -28,16 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_barcodee"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="44dp"
-                app:textLabelView_leftText="商品条码:"
-                app:rightTextSingleLine="false"/>
-
+            <!--商品名称-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_productName"
                 style="@style/mfh_textlabelview"
@@ -46,7 +37,25 @@
                 android:minHeight="44dp"
                 app:textLabelView_leftText="商品名称:"
                 app:rightTextSingleLine="false"/>
-
+            <!--条码-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_barcodee"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:textLabelView_leftText="条码:"
+                app:rightTextSingleLine="false"/>
+            <!--采购价-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_buyprice"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:textLabelView_leftText="采购价:"
+                app:rightTextSingleLine="false"/>
+            <!--零售价（可编辑）-->
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_costPrice"
                 style="@style/mfh_editlabelview"
@@ -54,14 +63,28 @@
                 android:layout_height="52dp"
                 app:editLabelView_leftText="零售价:"
                 app:editLabelView_rightHint="请输入零售价格"/>
-
+            <!--毛利率-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_grossProfit"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="毛利率:"/>
+            <!--30天平均销量-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_sellMonthNum"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="30天销量:"/>
+            <!--库存-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_quantity"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:textLabelView_leftText="库存:"/>
-
+            <!--排面库存（可编辑）-->
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_upperLimit"
                 style="@style/mfh_editlabelview"
@@ -71,22 +94,26 @@
                 app:editLabelView_rightHint="请输入排面库存"/>
 
 
-            <com.bingshanguxue.pda.widget.EditLabelView
-                android:id="@+id/label_lowwerLimit"
-                style="@style/mfh_editlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                app:editLabelView_leftText="安全库存:"
-                app:editLabelView_rightHint="请输入安全库存"/>
-
-            <!--<com.mfh.framework.uikit.compound.CustomSearchView-->
-                <!--android:id="@+id/searchView"-->
+            <!--<com.bingshanguxue.pda.widget.EditLabelView-->
+                <!--android:id="@+id/label_lowwerLimit"-->
+                <!--style="@style/mfh_editlabelview"-->
                 <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="52dp"/>-->
+                <!--android:layout_height="52dp"-->
+                <!--app:editLabelView_leftText="安全库存:"-->
+                <!--app:editLabelView_rightHint="请输入安全库存"/>-->
 
+            <!--批发商-->
+            <com.mfh.framework.uikit.compound.SettingsItem
+                android:id="@+id/label_provider"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:isLogoVisible="false"
+                app:position="center"
+                app:subText=""
+                app:text="供应商"/>
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     <Button
         android:id="@+id/button_submit"

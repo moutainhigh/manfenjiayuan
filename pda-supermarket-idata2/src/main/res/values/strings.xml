@@ -4,15 +4,6 @@
     <string name="app_name">MixiCook PDA</string>
 
     <!--提示文字-->
-    <string name="hint_login_account">账号</string>
-    <string name="hint_login_password">密码</string>
-    <string name="hint_input_password">请输入密码</string>
-    <string name="hint_input_package_no">请扫描面单号</string>
-    <string name="hint_input_barcode">请扫描商品条码</string>
-    <string name="hint_input_shelf_number">请扫描货架编号</string>
-    <string name="username_field_required">用户名不能为空</string>
-    <string name="password_field_required">密码不能为空</string>
-
     <string name="label_no_office">未找到网点</string>
     <string name="label_select_office">请选择网点</string>
     <string name="label_no_data">暂无数据</string>
@@ -34,6 +25,5 @@
     <string name="button_sync">同步</string>
 
     <string name="action_settings">Settings</string>
-
 
 </resources>

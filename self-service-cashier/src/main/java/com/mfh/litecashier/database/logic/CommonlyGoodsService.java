@@ -5,8 +5,8 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.litecashier.database.dao.CommonlyGoodsDao;
 import com.mfh.litecashier.database.entity.CommonlyGoodsEntity;
 

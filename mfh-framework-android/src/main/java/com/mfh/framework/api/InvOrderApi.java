@@ -76,7 +76,6 @@ public class InvOrderApi {
 
     //收发单：收货单&发货单
     private final static String URL_INVSENDIOORDER = MfhApi.URL_BASE_SERVER + "/invSendIoOrder/";
-    private final static String URL_INVIOORDER = MfhApi.URL_BASE_SERVER + "/invIoOrder/";
     private final static String URL_INVIOORDER_ITEM = MfhApi.URL_BASE_SERVER + "/invIoOrderItem/";
     //拣货单
     private final static String URL_INVFINDORDER = MfhApi.URL_BASE_SERVER + "/invFindOrder/";
@@ -211,10 +210,6 @@ public class InvOrderApi {
      */
     public final static String URL_INVSENDIOORDER_DOPAY = URL_INVSENDIOORDER + "doPay";
 
-    /**
-     * 查询批次流水
-     */
-    public final static String URL_INVIOORDER_LIST = URL_INVIOORDER + "list";
     /**
      * 查询批次流水明细
      */

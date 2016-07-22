@@ -236,19 +236,6 @@ public class InvOrderApiImpl extends InvOrderApi {
         AfinalFactory.getHttp(true).post(URL_INVLOSSORDERITEM_BATCHCOMMIT, params, responseCallback);
     }
 
-    /**
-     * 查询批次流水：出库/入库单
-     *
-     * @param orderType orderType=0|1|2  0-入库 1-出库 2-直接设置
-     */
-    public static void queryInvIoOrder(int orderType, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("orderType", String.valueOf(orderType));
-        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_INVIOORDER_LIST, params, responseCallback);
-    }
 
     /**
      * 根据拣货单编号或条码检索一个拣货单及其所有明细

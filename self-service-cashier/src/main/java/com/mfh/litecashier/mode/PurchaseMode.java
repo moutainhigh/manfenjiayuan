@@ -3,7 +3,7 @@ package com.mfh.litecashier.mode;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.ScGoodsSkuApi;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;

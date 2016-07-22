@@ -123,6 +123,7 @@ public static final int *;
 -keep class com.manfenjiayuan.pda_supermarket.** { * ; }
 -keep class com.bingshanguxue.pda.** { * ; }
 -keep class com.bingshanguxue.vector_user.** { * ; }
+-keep class com.bingshanguxue.vector_uikit.** { * ; }
 -keep class android.serialport.api.** { * ; }
 -keep class com.zkc.** { * ; }
 -keep class org.century.** { * ; }

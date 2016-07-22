@@ -13,7 +13,7 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;

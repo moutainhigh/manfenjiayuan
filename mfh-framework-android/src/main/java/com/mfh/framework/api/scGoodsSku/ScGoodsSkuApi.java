@@ -1,4 +1,6 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.scGoodsSku;
+
+import com.mfh.framework.api.MfhApi;
 
 /**
  * 商超

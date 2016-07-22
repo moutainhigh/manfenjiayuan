@@ -3,7 +3,7 @@ package com.mfh.litecashier.service;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.CateApi;
-import com.mfh.framework.api.impl.ScGoodsSkuApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;

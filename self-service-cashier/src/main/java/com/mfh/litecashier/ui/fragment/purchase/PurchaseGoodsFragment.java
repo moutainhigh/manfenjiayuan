@@ -22,8 +22,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.logger.ZLogger;

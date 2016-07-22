@@ -6,30 +6,9 @@ import java.io.Serializable;
 
 /**
  *  批次流水明细
- * Created by kun on 15/9/22.
+ * Created by bingshanguxue on 15/9/22.
  */
 public class InvIoOrderItem implements ILongId, Serializable {
-
-//    {
-//        "singleCount": null,
-//            "quantityPack": null,
-//            "price": 0,
-//            "tenantSkuId": null,
-//            "proSkuId": 19374,
-//            "productName": "水天堂“福月”",
-//            "barcode": "1111",
-//            "quantityCheck": 1,
-//            "netId": 132079,
-//            "posId": null,
-//            "orderId": 1253,
-//            "orderType": 1,
-//            "tenantId": 134221,
-//            "id": 104592,
-//            "createdBy": "",
-//            "createdDate": "2016-01-20 23:32:53",
-//            "updatedBy": "",
-//            "updatedDate": "2016-01-20 23:32:53"
-//    }
 
     private Long id;//订单编号
     private String productName;//商品名称

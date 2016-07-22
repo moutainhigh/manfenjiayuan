@@ -1,7 +1,6 @@
-package com.mfh.framework.api.impl;
+package com.mfh.framework.api.scChainGoodsSku;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.MerchandiseApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
@@ -13,7 +12,7 @@ import net.tsz.afinal.http.AjaxParams;
 /**
  * Created by bingshanguxue on 4/26/16.
  */
-public class MerchandiseApiImpl extends MerchandiseApi {
+public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
 
 
     /**
@@ -66,7 +65,10 @@ public class MerchandiseApiImpl extends MerchandiseApi {
 
     /**
      * 查询供应链商品,解决不在采购计划内的商品也能被收货
-     * 适用场景：
+     * <ol>
+     *     适用场景
+     *     <li>查询洗衣类目商品商品</li>
+     * </ol>
      */
     public static void findPublicChainGoodsSku(Long frontCategoryId, Long netId, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
@@ -78,9 +80,15 @@ public class MerchandiseApiImpl extends MerchandiseApi {
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        AfinalFactory.getHttp(true).post(URL_CHAINGOODSSKU_FIND_PUBLICCHAINGOODSSKU, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_FIND_PUBLICCHAINGOODSSKU, params, responseCallback);
     }
-
+    /**
+     * 查询供应链商品
+     * <ol>
+     *     适用场景
+     *     <li>门店商品预定</li>
+     * </ol>
+     */
     public static void findPublicChainGoodsSku2(Long frontCategoryId, Long companyId, String barcode,
                                                 PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
@@ -95,7 +103,30 @@ public class MerchandiseApiImpl extends MerchandiseApi {
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        AfinalFactory.getHttp(true).post(URL_CHAINGOODSSKU_FIND_PUBLICCHAINGOODSSKU, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_FIND_PUBLICCHAINGOODSSKU, params, responseCallback);
+    }
+    /**
+     * 查询供应链商品
+     * <ol>
+     *     适用场景
+     *     <li>门店or批发商PDA商品管理</li>
+     * </ol>
+     */
+    public static void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike,
+                                                AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (!StringUtils.isEmpty(barcode)){
+            params.put("barcode", barcode);
+        }
+        if (proSkuId != null) {
+            params.put("companyId", String.valueOf(proSkuId));
+        }
+        if (!StringUtils.isEmpty(nameLike)){
+            params.put("nameLike", nameLike);
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_FIND_SUPPLYCHAINGOODSSKU, params, responseCallback);
     }
     /**
      * 批量查询供应链商品
