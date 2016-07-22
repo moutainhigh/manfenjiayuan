@@ -14,10 +14,10 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
 

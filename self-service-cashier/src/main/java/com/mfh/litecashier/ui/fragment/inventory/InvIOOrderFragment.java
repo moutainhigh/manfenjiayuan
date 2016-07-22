@@ -13,11 +13,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -25,7 +23,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.InvIoOrder;
+import com.mfh.framework.api.invIoOrder.InvIoOrder;
 import com.mfh.litecashier.event.InvIOOrderEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.ui.adapter.InvIOOrderAdapter;
@@ -33,7 +31,6 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import net.tsz.afinal.core.AsyncTask;
-import net.tsz.afinal.http.AjaxParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +72,7 @@ public class InvIOOrderFragment extends BaseFragment {
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 //    private List<InvIoOrder> orderList = new ArrayList<>();
 
-    private String orderType;
+    private int orderType;
     private String cacheKey;
 
     @Override
@@ -94,7 +91,7 @@ public class InvIOOrderFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         if (args != null) {
-            orderType = args.getString(EXTRA_KEY_ORDER_TYPE, "");
+            orderType = args.getInt(EXTRA_KEY_ORDER_TYPE);
             cacheKey = args.getString(EXTRA_KEY_CACHE_KEY, "");
         }
 
@@ -179,11 +176,11 @@ public class InvIOOrderFragment extends BaseFragment {
         if (event.getEventId() == InvIOOrderEvent.EVENT_ID_RELOAD_DATA) {
             Bundle args = event.getArgs();
             if (args != null) {
-                if (orderType.equals(args.getString(EXTRA_KEY_ORDER_TYPE, ""))) {
+                if (orderType == args.getInt(EXTRA_KEY_ORDER_TYPE)) {
                     boolean isNeedReload = true;
-                    if (orderType.equals(String.valueOf(InvIoOrder.ORDER_TYPE_IN))) {
+                    if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
                         isNeedReload = SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_INVIOORDER_IN_ENABLED, true);
-                    } else if (orderType.equals(String.valueOf(InvIoOrder.ORDER_TYPE_OUT))) {
+                    } else if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
                         isNeedReload = SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_INVIOORDER_OUT_ENABLED, true);
                     }
 
@@ -247,17 +244,6 @@ public class InvIOOrderFragment extends BaseFragment {
     /**
      * */
     private void load(PageInfo pageInfo) {
-        AjaxParams params = new AjaxParams();
-        params.put("orderType", orderType);
-        params.put("wrapper", "true");
-//        params.put("receiveNetId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
-
-        ZLogger.d(String.format("加载库存批次开始:page=%d／%d(%d)",
-                mPageInfo.getPageNo(), mPageInfo.getTotalPage(), mPageInfo.getPageSize()));
 
         NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<InvIoOrder>(pageInfo) {
             @Override
@@ -275,7 +261,11 @@ public class InvIOOrderFragment extends BaseFragment {
         }, InvIoOrder.class, CashierApp.getAppContext());
 
 
-        AfinalFactory.postDefault(InvOrderApiImpl.URL_INVIOORDER_LIST, params, queryRsCallBack);
+
+        ZLogger.d(String.format("加载库存批次开始:page=%d／%d(%d)",
+                mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
+                mPageInfo.getPageSize()));
+        InvIoOrderApi.list(orderType, pageInfo, queryRsCallBack);
     }
 
     public class QueryAsyncTask extends AsyncTask<RspQueryResult<InvIoOrder>, Integer, Long> {
@@ -317,9 +307,9 @@ public class InvIOOrderFragment extends BaseFragment {
 //                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
 //                    (orderList == null ? 0 : orderList.size()), mPageInfo.getTotalCount()));
 
-            if (orderType.equals(String.valueOf(InvIoOrder.ORDER_TYPE_IN))) {
+            if (orderType.equals(String.valueOf(InvIoOrderApi.ORDER_TYPE_IN))) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVIOORDER_IN_ENABLED, false);
-            } else if (orderType.equals(String.valueOf(InvIoOrder.ORDER_TYPE_OUT))) {
+            } else if (orderType.equals(String.valueOf(InvIoOrderApi.ORDER_TYPE_OUT))) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVIOORDER_OUT_ENABLED, false);
             }
             onLoadFinished();

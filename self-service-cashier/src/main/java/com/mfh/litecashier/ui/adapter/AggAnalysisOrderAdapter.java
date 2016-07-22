@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
-import com.mfh.litecashier.utils.AnalysisHelper;
 
 import java.util.List;
 
@@ -57,7 +57,8 @@ public class AggAnalysisOrderAdapter
         holder.tvBizType.setText(entity.getCaption());
         holder.tvQuantity.setText(String.format("%.2f", entity.getOrderNum()));
         holder.tvAmount.setText(String.format("%.2f", entity.getTurnover()));
-        holder.tvGrossMargin.setText(AnalysisHelper.retrieveFormatedGrossMargin(entity.getTurnover(), entity.getGrossProfit()));
+        holder.tvGrossMargin.setText(MUtils.retrieveFormatedGrossMargin(entity.getTurnover(),
+                entity.getGrossProfit()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {

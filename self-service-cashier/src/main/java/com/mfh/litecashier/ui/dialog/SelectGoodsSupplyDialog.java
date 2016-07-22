@@ -16,12 +16,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.impl.ScGoodsSkuApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetWorkUtil;

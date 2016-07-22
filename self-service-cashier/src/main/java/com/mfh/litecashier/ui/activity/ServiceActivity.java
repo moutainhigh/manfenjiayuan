@@ -16,7 +16,6 @@ import com.mfh.litecashier.ui.fragment.GrouponFragment;
 import com.mfh.litecashier.ui.fragment.cashier.StockDetailFragment;
 import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryIOOrderFragment;
 import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryTransOrderFragment;
-import com.mfh.litecashier.ui.fragment.purchase.MallFragment;
 
 import butterknife.Bind;
 
@@ -29,7 +28,6 @@ public class ServiceActivity extends BaseActivity {
     public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
 
     public static final int FRAGMENT_TYPE_STOCK_DETAIL = 0x02;
-    public static final int FRAGMENT_TYPE_COMMODITY_CENTER = 0x05;  //商品中心
     public static final int FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER = 0x20;//新建库存调拨单
     public static final int FRAGMENT_TYPE_CREATE_INVENTORY_IO_ORDER     = 0x21;     //新建库存出入库单
     public static final int FT_GROUPON_DETAIL = 0x22;  //团购详情页
@@ -136,17 +134,6 @@ public class ServiceActivity extends BaseActivity {
             StockDetailFragment stockDetailFragment = new StockDetailFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, stockDetailFragment).show(stockDetailFragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_COMMODITY_CENTER) {
-            MallFragment mallFragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                mallFragment = MallFragment.newInstance(intent.getExtras());
-            } else {
-                mallFragment = MallFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, mallFragment).show(mallFragment)
                     .commit();
         }
         //新建库存调拨单

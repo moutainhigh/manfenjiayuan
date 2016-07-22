@@ -15,14 +15,15 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetFactory;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -31,7 +32,7 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.InvIoOrder;
+import com.mfh.framework.api.invIoOrder.InvIoOrder;
 import com.mfh.litecashier.bean.InvIoOrderItem;
 import com.mfh.litecashier.event.InvIOOrderEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
@@ -156,14 +157,16 @@ public class InventoryIOFragment extends BaseFragment {
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
 
         Bundle args2 = new Bundle();
-        args2.putString(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, String.valueOf(InvIoOrder.ORDER_TYPE_OUT));
-        args2.putString(InvIOOrderFragment.EXTRA_KEY_CACHE_KEY, String.format("%s_%d", ACacheHelper.CK_INVENTORY_IO, InvIoOrder.ORDER_TYPE_OUT));
+        args2.putInt(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_OUT);
+        args2.putString(InvIOOrderFragment.EXTRA_KEY_CACHE_KEY,
+                String.format("%s_%d", ACacheHelper.CK_INVENTORY_IO, InvIoOrderApi.ORDER_TYPE_OUT));
         mTabs.add(new ViewPageInfo("出库", "出库", InvIOOrderFragment.class,
                 args2));
 
         Bundle args3 = new Bundle();
-        args3.putString(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, String.valueOf(InvIoOrder.ORDER_TYPE_IN));
-        args2.putString(InvIOOrderFragment.EXTRA_KEY_CACHE_KEY, String.format("%s_%d", ACacheHelper.CK_INVENTORY_IO, InvIoOrder.ORDER_TYPE_IN));
+        args3.putInt(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_IN);
+        args2.putString(InvIOOrderFragment.EXTRA_KEY_CACHE_KEY,
+                String.format("%s_%d", ACacheHelper.CK_INVENTORY_IO, InvIoOrderApi.ORDER_TYPE_IN));
         mTabs.add(new ViewPageInfo("入库", "入库", InvIOOrderFragment.class,
                 args3));
 
@@ -177,9 +180,9 @@ public class InventoryIOFragment extends BaseFragment {
 //            args.putString(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, String.valueOf(InvIoOrder.ORDER_TYPE_SET));
 //        } else
         if (index == 0) {
-            args.putString(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, String.valueOf(InvIoOrder.ORDER_TYPE_OUT));
+            args.putInt(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_OUT);
         } else if (index == 1) {
-            args.putString(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, String.valueOf(InvIoOrder.ORDER_TYPE_IN));
+            args.putInt(InvIOOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_IN);
         }
         EventBus.getDefault().post(new InvIOOrderEvent(InvIOOrderEvent.EVENT_ID_RELOAD_DATA, args));
     }

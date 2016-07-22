@@ -1,6 +1,6 @@
 package com.manfenjiayuan.pda_wholesaler.database.logic;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.InvSkuProvider;

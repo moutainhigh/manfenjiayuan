@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.constant.AbilityItem;

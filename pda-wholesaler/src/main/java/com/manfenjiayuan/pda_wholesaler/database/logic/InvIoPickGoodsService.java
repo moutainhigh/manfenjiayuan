@@ -1,7 +1,7 @@
 package com.manfenjiayuan.pda_wholesaler.database.logic;
 
 import com.manfenjiayuan.business.bean.InvFindOrderItem;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.pda_wholesaler.database.dao.InvIoPickGoodsDao;
 import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
 import com.mfh.comn.bean.PageInfo;

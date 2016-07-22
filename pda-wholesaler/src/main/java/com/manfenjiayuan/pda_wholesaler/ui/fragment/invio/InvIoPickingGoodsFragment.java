@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
 import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;
 import com.manfenjiayuan.business.view.IInvFindOrderView;
@@ -35,7 +35,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.api.impl.MerchandiseApiImpl;
+import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -456,7 +456,7 @@ public class InvIoPickingGoodsFragment extends PDAScanFragment
             }
         }, ScGoodsSku.class, MfhApplication.getAppContext());
 
-        MerchandiseApiImpl.scChainGoodsSkuList(sb.toString(), retrievePriceRC);
+        ScChainGoodsSkuApiImpl.scChainGoodsSkuList(sb.toString(), retrievePriceRC);
     }
 
     /**

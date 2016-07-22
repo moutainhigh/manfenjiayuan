@@ -438,13 +438,7 @@ public class AdministratorActivity extends BaseActivity {
             return;
         }
 
-        if (id.compareTo(CashierFunctional.ADMIN_MENU_FRESH) == 0 ) {
-            purchaseFreshGoods();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_FRUIT) == 0) {
-            purchaseFruitGoods();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_STANDARD_GOODS) == 0) {
-            purchaseStandardGoods();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
+        if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
             manualPurchase();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT) == 0) {
             purchaseIntelligent();
@@ -469,37 +463,6 @@ public class AdministratorActivity extends BaseActivity {
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }
-    }
-
-    /**
-     * 生鲜采购
-     */
-    private void purchaseFreshGoods() {
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_FRESH_GOODS);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 水果采购
-     */
-    private void purchaseFruitGoods() {
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_FRUIT_GOODS);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 普货采购
-     */
-    private void purchaseStandardGoods() {
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_PURSHACE_STANDARD_GOODS);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
 
     /**
@@ -737,19 +700,6 @@ public class AdministratorActivity extends BaseActivity {
             showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", false);
             DataSyncManager.get().sync();
         }
-    }
-
-
-    public void redirectToShopcart() {
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_STANDARD_SHOPCART);
-
-//        SimpleActivity.actionStart(getActivity(), extras);
-
-        Intent intent = new Intent(this, SimpleActivity.class);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_APPLY_SHOPCART);
     }
 
 }

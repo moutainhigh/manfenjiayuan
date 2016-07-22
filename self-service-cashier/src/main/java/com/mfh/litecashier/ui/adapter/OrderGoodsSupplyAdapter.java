@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
+import com.mfh.framework.api.GoodsSupplyInfo;
 
 import java.util.List;
 

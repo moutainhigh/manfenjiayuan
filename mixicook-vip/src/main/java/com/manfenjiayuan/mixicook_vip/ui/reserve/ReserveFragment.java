@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.CategoryInfo;
 import com.manfenjiayuan.business.bean.CategoryOption;
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;

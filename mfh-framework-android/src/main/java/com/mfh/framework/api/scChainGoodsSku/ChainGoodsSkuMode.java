@@ -1,13 +1,11 @@
-package com.manfenjiayuan.business.mode;
+package com.mfh.framework.api.scChainGoodsSku;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.MerchandiseApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
@@ -21,11 +19,10 @@ import java.util.List;
  * 库存商品：库存成本，批次流水，库存调拨
  * Created by bingshanguxue on 16/3/17.
  */
-public class ChainGoodsSkuMode implements IChainGoodsSkuMode<ChainGoodsSku> {
+public class ChainGoodsSkuMode {
 
-    @Override
-    public void loadLaundryGoods(PageInfo pageInfo, Long frontCategoryId, Long netId,
-                                 final OnPageModeListener<ChainGoodsSku> listener) {
+    public void findPublicChainGoodsSku(PageInfo pageInfo, Long frontCategoryId, Long netId,
+                                        final OnPageModeListener<ChainGoodsSku> listener) {
 
         if (listener != null) {
             listener.onProcess();
@@ -64,14 +61,13 @@ public class ChainGoodsSkuMode implements IChainGoodsSkuMode<ChainGoodsSku> {
             }
         }, ChainGoodsSku.class, MfhApplication.getAppContext());
 
-        MerchandiseApiImpl.findPublicChainGoodsSku(frontCategoryId, netId, pageInfo, queryRsCallBack);
+        ScChainGoodsSkuApiImpl.findPublicChainGoodsSku(frontCategoryId, netId, pageInfo, queryRsCallBack);
     }
 
 
-    @Override
-    public void loadCompanyChainSkuGoods(PageInfo pageInfo, Long frontCategoryId, Long companyId,
+    public void findPublicChainGoodsSku2(PageInfo pageInfo, Long frontCategoryId, Long companyId,
                                          String barcode,
-                                 final OnPageModeListener<ChainGoodsSku> listener) {
+                                         final OnPageModeListener<ChainGoodsSku> listener) {
 
         if (listener != null) {
             listener.onProcess();
@@ -110,14 +106,50 @@ public class ChainGoodsSkuMode implements IChainGoodsSkuMode<ChainGoodsSku> {
             }
         }, ChainGoodsSku.class, MfhApplication.getAppContext());
 
-        MerchandiseApiImpl.findPublicChainGoodsSku2(frontCategoryId, companyId, barcode, pageInfo,
+        ScChainGoodsSkuApiImpl.findPublicChainGoodsSku2(frontCategoryId, companyId, barcode, pageInfo,
+                queryRsCallBack);
+    }
+
+    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike,
+                                        final OnPageModeListener<ChainGoodsSku> listener) {
+
+        if (listener != null) {
+            listener.onProcess();
+        }
+
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<ChainGoodsSku>(new PageInfo(1, 50)) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<ChainGoodsSku> rs) {
+                        //此处在主线程中执行。
+                        List<ChainGoodsSku> entityList = new ArrayList<>();
+                        if (rs != null) {
+                            for (EntityWrapper<ChainGoodsSku> wrapper : rs.getRowDatas()) {
+                                entityList.add(wrapper.getBean());
+                            }
+                        }
+                        if (listener != null) {
+                            listener.onSuccess(pageInfo, entityList);
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.d("加载洗衣类目商品失败:" + errMsg);
+                        if (listener != null) {
+                            listener.onError(errMsg);
+                        }
+                    }
+                }, ChainGoodsSku.class, MfhApplication.getAppContext());
+
+        ScChainGoodsSkuApiImpl.findSupplyChainGoodsSku(barcode, proSkuId, nameLike,
                 queryRsCallBack);
     }
 
 
-    @Override
     public void findTenantSku(PageInfo pageInfo, Long companyId, String barcode,
-                                  final OnPageModeListener<ChainGoodsSku> listener) {
+                              final OnPageModeListener<ChainGoodsSku> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -155,11 +187,11 @@ public class ChainGoodsSkuMode implements IChainGoodsSkuMode<ChainGoodsSku> {
             }
         }, ChainGoodsSku.class, MfhApplication.getAppContext());
 
-        MerchandiseApiImpl.findTenantSku(barcode, companyId, pageInfo, queryRsCallBack);
+        ScChainGoodsSkuApiImpl.findTenantSku(barcode, companyId, pageInfo, queryRsCallBack);
     }
 
     public void getTenantSkuMust(Long tenantId, String barcode,
-                              final OnModeListener<ChainGoodsSku> listener) {
+                                 final OnModeListener<ChainGoodsSku> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -205,6 +237,6 @@ public class ChainGoodsSkuMode implements IChainGoodsSkuMode<ChainGoodsSku> {
                 , MfhApplication.getAppContext()) {
         };
 
-        MerchandiseApiImpl.getTenantSkuMust(barcode, tenantId, responseCallback);
+        ScChainGoodsSkuApiImpl.getTenantSkuMust(barcode, tenantId, responseCallback);
     }
 }

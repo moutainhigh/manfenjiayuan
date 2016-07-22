@@ -413,8 +413,6 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         } else if (id.compareTo(CashierFunctional.OPTION_ID_FEEDPAPER) == 0) {
             //走纸
             SerialManager.feedPaper();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_MALL) == 0) {
-            commodityCenterService();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_INVENTORY_TRANS_IN) == 0) {
             Bundle extras = new Bundle();
             extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -463,17 +461,6 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_STOCK_DETAIL);
-        ServiceActivity.actionStart(this, extras);
-    }
-
-    /**
-     * 商城
-     */
-    private void commodityCenterService() {
-        //直接根据取货码查询
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_COMMODITY_CENTER);
         ServiceActivity.actionStart(this, extras);
     }
 

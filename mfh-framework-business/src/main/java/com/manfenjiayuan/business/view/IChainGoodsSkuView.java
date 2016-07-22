@@ -1,6 +1,6 @@
 package com.manfenjiayuan.business.view;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpView;
 

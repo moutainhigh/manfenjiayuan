@@ -1,7 +1,7 @@
 package com.mfh.litecashier.bean;
 
-import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.bean.ILongId;
 
 import java.io.Serializable;

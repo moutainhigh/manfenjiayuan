@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.litecashier.bean.InvIoOrder;
+import com.mfh.framework.api.invIoOrder.InvIoOrder;
 
 import java.util.List;
 

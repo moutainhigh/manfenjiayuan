@@ -1,7 +1,6 @@
-package com.mfh.framework.api.impl;
+package com.mfh.framework.api.scGoodsSku;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.ScGoodsSkuApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
@@ -25,11 +24,26 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_GETLOCAL_BYBARCODE, params, responseCallback);
     }
 
-    public static void findGoodsList(Long categoryId, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
+    public static void findGoodsList(Long categoryId, PageInfo pageInfo,
+                                     AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (categoryId != null) {
             params.put("categoryId", String.valueOf(categoryId));
         }
+        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put("page", Integer.toString(pageInfo.getPageNo()));
+        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_FINDGOODSLIST, params, responseCallback);
+    }
+
+    public static void findGoodsList(String barcode, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (!StringUtils.isEmpty(barcode)) {
+            params.put("barcode", barcode);
+        }
+        params.put("needSellNum", "true");
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
         params.put("page", Integer.toString(pageInfo.getPageNo()));
         params.put("rows", Integer.toString(pageInfo.getPageSize()));

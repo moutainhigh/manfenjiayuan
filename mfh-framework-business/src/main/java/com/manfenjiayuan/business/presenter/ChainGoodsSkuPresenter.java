@@ -1,7 +1,7 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
-import com.manfenjiayuan.business.mode.ChainGoodsSkuMode;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSkuMode;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.OnModeListener;
@@ -27,7 +27,7 @@ public class ChainGoodsSkuPresenter {
      * @param frontCategoryId 类目编号
      * */
     public void loadLaundryGoods(PageInfo pageInfo, Long frontCategoryId, Long netId){
-        iChainGoodsSkuMode.loadLaundryGoods(pageInfo, frontCategoryId, netId, new OnPageModeListener<ChainGoodsSku>() {
+        iChainGoodsSkuMode.findPublicChainGoodsSku(pageInfo, frontCategoryId, netId, new OnPageModeListener<ChainGoodsSku>() {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
@@ -51,8 +51,12 @@ public class ChainGoodsSkuPresenter {
         });
     }
 
+    /**
+     * 查询批发商商品
+     * @param frontCategoryId 类目编号
+     * */
     public void loadCompanyChainSkuGoods(PageInfo pageInfo, Long frontCategoryId, Long companyId, String barcode){
-        iChainGoodsSkuMode.loadCompanyChainSkuGoods(pageInfo, frontCategoryId, companyId, barcode,
+        iChainGoodsSkuMode.findPublicChainGoodsSku2(pageInfo, frontCategoryId, companyId, barcode,
                 new OnPageModeListener<ChainGoodsSku>() {
             @Override
             public void onProcess() {

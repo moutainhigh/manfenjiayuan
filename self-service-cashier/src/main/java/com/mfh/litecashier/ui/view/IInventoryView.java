@@ -2,7 +2,7 @@ package com.mfh.litecashier.ui.view;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpView;
-import com.manfenjiayuan.business.bean.ScGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 
 import java.util.List;
 

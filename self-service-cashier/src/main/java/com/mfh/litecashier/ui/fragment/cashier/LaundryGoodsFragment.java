@@ -20,7 +20,7 @@ import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.litecashier.event.AddLaunchGoodsEvent;
 import com.mfh.litecashier.event.LaundryGoodsEvent;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;

@@ -360,22 +360,6 @@ public class AnalysisHelper {
     }
 
 
-    /**
-     * 计算毛利率
-     * 公式：毛利率＝毛利／营业额
-     * */
-    public static Double retrieveGrossMargin(Double turnover, Double grossProfit){
-        if (grossProfit == 0D) {
-            return 0D;
-        }
-
-        if (turnover == 0D) {
-            return Double.valueOf(String.valueOf(Integer.MAX_VALUE));
-        } else {
-            return grossProfit / turnover;
-        }
-    }
-
     public static String retrieveFormatedGrossMargin(Double turnover, Double grossProfit){
         Double grossMargin = retrieveGrossMargin(turnover, grossProfit);
 
