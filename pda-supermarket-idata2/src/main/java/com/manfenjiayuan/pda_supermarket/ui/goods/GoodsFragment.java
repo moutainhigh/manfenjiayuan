@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment;
+package com.manfenjiayuan.pda_supermarket.ui.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,16 +11,15 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -29,7 +28,10 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.compound.SettingsItem;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -39,29 +41,35 @@ import butterknife.OnClick;
  * 库存商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
+public class GoodsFragment extends PDAScanFragment implements IGoodsView {
     private static final String TAG = "GoodsFragment";
 
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
-    @Bind(R.id.label_barcodee)
-    TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_quantity)
-    TextLabelView labelQuantity;
+    @Bind(R.id.label_barcodee)
+    TextLabelView labelBarcode;
+    @Bind(R.id.label_buyprice)
+    TextLabelView labelBuyprice;
     @Bind(R.id.label_costPrice)
     EditLabelView labelCostPrice;
+    @Bind(R.id.label_sellMonthNum)
+    TextLabelView labelSellMonthNum;
+    @Bind(R.id.label_grossProfit)
+    TextLabelView labelGrossProfit;
+    @Bind(R.id.label_quantity)
+    TextLabelView labelQuantity;
     @Bind(R.id.label_upperLimit)
     EditLabelView labelUpperLimit;
-    @Bind(R.id.label_lowwerLimit)
-    EditLabelView labelLowerLimit;
+    @Bind(R.id.label_provider)
+    SettingsItem labelProvider;
 
     @Bind(R.id.button_submit)
     Button btnSubmit;
 
-    private InvSkuGoods curGoods = null;
-    private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
+    private ScGoodsSku curGoods = null;
+    private GoodsPresenter mGoodsPresenter = null;
 
     public static GoodsFragment newInstance(Bundle args) {
         GoodsFragment fragment = new GoodsFragment();
@@ -89,7 +97,7 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mInvSkuGoodsPresenter = new InvSkuGoodsPresenter(this);
+        mGoodsPresenter = new GoodsPresenter(this);
     }
 
     @Override
@@ -111,30 +119,15 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
         labelUpperLimit.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
-                labelLowerLimit.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
-
-        labelLowerLimit.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
-        labelLowerLimit.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
                 submit();
+//                labelLowerLimit.requestFocusEnd();
             }
 
             @Override
             public void onScan() {
                 refresh(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
             }
         });
-//        labelLowerLimit.setSoftKeyboardEnabled(false);
 
         eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
         eqvBarcode.setSoftKeyboardEnabled(true);
@@ -150,12 +143,6 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
         btnSubmit.setEnabled(false);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        refresh(null);
-    }
-
     /**
      * 查询商品信息
      */
@@ -167,22 +154,32 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             isAcceptBarcodeEnabled = true;
             refresh(null);
             return;
         }
 
-        if (mInvSkuGoodsPresenter != null){
-            mInvSkuGoodsPresenter.getByBarcodeMust(barcode);
-        }
-        else{
+        if (mGoodsPresenter != null) {
+            mGoodsPresenter.findGoodsList(barcode);
+        } else {
             refresh(null);
         }
-
     }
 
+    @OnClick(R.id.label_provider)
+    public void queryProvider(){
+        if (curGoods == null){
+            return;
+        }
+
+        Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_GOODS_PROVIDER);
+        extras.putString(ChainGoodsSkuFragment.EXTRA_KEY_BARCODE, curGoods.getBarcode());
+        PrimaryActivity.actionStart(getActivity(), extras);
+    }
     @OnClick(R.id.button_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
@@ -193,7 +190,7 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSubmit.setEnabled(true);
             isAcceptBarcodeEnabled = true;
@@ -207,19 +204,19 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
             return;
         }
 
-        if (StringUtils.isEmpty(labelLowerLimit.getEtContent())) {
-            DialogUtil.showHint("安全库存不能为空");
-            btnSubmit.setEnabled(true);
-            isAcceptBarcodeEnabled = true;
-            return;
-        }
+//        if (StringUtils.isEmpty(labelLowerLimit.getEtContent())) {
+//            DialogUtil.showHint("安全库存不能为空");
+//            btnSubmit.setEnabled(true);
+//            isAcceptBarcodeEnabled = true;
+//            return;
+//        }
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在提交信息...", false);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", curGoods.getId());
         jsonObject.put("costPrice", labelCostPrice.getEtContent());
         jsonObject.put("upperLimit", labelUpperLimit.getEtContent());
-        jsonObject.put("lowerLimit", labelLowerLimit.getEtContent());
+//        jsonObject.put("lowerLimit", labelLowerLimit.getEtContent());
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
 //        animProgress.setVisibility(View.VISIBLE);
@@ -263,7 +260,7 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
     /**
      * 刷新信息
      */
-    private void refresh(InvSkuGoods invSkuGoods) {
+    private void refresh(ScGoodsSku invSkuGoods) {
         curGoods = invSkuGoods;
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
@@ -273,51 +270,69 @@ public class GoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
             labelQuantity.setTvSubTitle("");
             labelUpperLimit.setEtContent("");
             labelUpperLimit.setEnabled(false);
-            labelLowerLimit.setEtContent("");
-            labelLowerLimit.setEnabled(false);
+//            labelLowerLimit.setEtContent("");
+//            labelLowerLimit.setEnabled(false);
 
             btnSubmit.setEnabled(false);
 
             eqvBarcode.clear();
             eqvBarcode.requestFocus();
+            labelProvider.setEnabled(false);
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
+            labelProductName.setTvSubTitle(curGoods.getSkuName());
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
-            labelProductName.setTvSubTitle(curGoods.getName());
             labelCostPrice.setEtContent(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelCostPrice.setEnabled(true);
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
             labelUpperLimit.setEtContent(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
             labelUpperLimit.setEnabled(true);
-            labelLowerLimit.setEtContent(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
-            labelLowerLimit.setEnabled(true);
+//            labelLowerLimit.setEtContent(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
+//            labelLowerLimit.setEnabled(true);
 
+
+            //计算毛利率:(costPrice-buyPrice) / buyPrice
+            String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getBuyPrice(),
+                    (curGoods.getCostPrice() - curGoods.getBuyPrice()));
+            labelGrossProfit.setTvSubTitle(grossProfit);
+            labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
+            labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
             btnSubmit.setEnabled(true);
 
             labelCostPrice.requestFocusEnd();
+
+            labelProvider.setEnabled(true);
         }
 
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), labelCostPrice);
     }
 
+
     @Override
-    public void onProcess() {
+    public void onIGoodsViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onIGoodsViewError(String errorMsg) {
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
         refresh(null);
     }
 
     @Override
-    public void onSuccess(InvSkuGoods invSkuGoods) {
+    public void onIGoodsViewSuccess(List<ScGoodsSku> scGoodsSkus) {
+        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
+            ScGoodsSku scGoodsSku = scGoodsSkus.get(0);
+            refresh(scGoodsSku);
+        }
+        else{
+            refresh(null);
+        }
+
         hideProgressDialog();
 
-        refresh(invSkuGoods);
     }
 }

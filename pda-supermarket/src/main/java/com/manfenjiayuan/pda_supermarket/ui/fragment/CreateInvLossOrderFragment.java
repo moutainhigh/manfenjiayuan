@@ -24,7 +24,7 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.api.impl.ScGoodsSkuApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetWorkUtil;

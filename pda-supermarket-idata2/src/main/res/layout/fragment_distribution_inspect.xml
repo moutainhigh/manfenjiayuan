@@ -67,7 +67,8 @@
                 app:editLabelView_rightTextSize="18px"
                 app:editLabelView_rightTextColor="@color/black"
                 app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightHint="请输入签收数量"/>
+                app:editLabelView_rightHint="请输入签收数量"
+                app:endTextVisible="true"/>
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_receive_amount"

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.manfenjiayuan.business.bean.ChainGoodsSku;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
@@ -19,9 +19,6 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
 import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
-import com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;

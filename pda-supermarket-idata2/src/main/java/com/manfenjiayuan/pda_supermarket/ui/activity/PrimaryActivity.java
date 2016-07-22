@@ -10,12 +10,13 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvLossOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.GoodsFragment;
+import com.manfenjiayuan.pda_supermarket.ui.goods.GoodsFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn.CreateInvReturnOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.receipt.InvRecvOrderSplashFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.InventoryCheckFragment;
+import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -26,15 +27,16 @@ import com.mfh.framework.uikit.base.BaseFragment;
 public class PrimaryActivity extends IData95Activity implements BackHandledInterface {
 
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
-    public static final int FRAGMENT_TYPE_NONE = -1;
-    public static final int FRAGMENT_TYPE_GOODS         = 1;
-    public static final int FRAGMENT_TYPE_PACKAGE = 2;
-    public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 3;//盘点订单列表
-    public static final int FRAGMENT_TYPE_DISTRIBUTION = 5;
-    public static final int FT_BIND_GOODS_2_TAGS      = 10;//货架绑定商品
-    public static final int FT_CREATE_INV_RETURNORDER      = 11;//退货
-    public static final int FT_CREATE_INV_LOSSORDER      = 12;//报损
-    public static final int FT_INV_CONVERT      = 13;//库存转换
+    public static final int FRAGMENT_TYPE_NONE = 0x00;
+    public static final int FRAGMENT_TYPE_GOODS         = 0x01;
+    public static final int FRAGMENT_TYPE_GOODS_PROVIDER         = 0x02;
+    public static final int FRAGMENT_TYPE_PACKAGE = 0x03;
+    public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 0x04;//盘点订单列表
+    public static final int FRAGMENT_TYPE_DISTRIBUTION = 0x05;
+    public static final int FT_BIND_GOODS_2_TAGS      = 0x10;//货架绑定商品
+    public static final int FT_CREATE_INV_RETURNORDER      = 0x11;//退货
+    public static final int FT_CREATE_INV_LOSSORDER      = 0x12;//报损
+    public static final int FT_INV_CONVERT      = 0x13;//库存转换
 
 
     /**
@@ -123,36 +125,49 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                .commit();
 
         if(serviceType == FRAGMENT_TYPE_PACKAGE){
-            PackageFragment packageFragment = new PackageFragment();
+            PackageFragment fragment = new PackageFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, packageFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, packageFragment).show(packageFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_GOODS){
-            GoodsFragment goodsFragment = new GoodsFragment();
+            GoodsFragment fragment = new GoodsFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, goodsFragment)
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
+                    .commit();
+        }
+        else if(serviceType == FRAGMENT_TYPE_GOODS_PROVIDER){
+            ChainGoodsSkuFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = ChainGoodsSkuFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = ChainGoodsSkuFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_DISTRIBUTION){
-            InvRecvOrderSplashFragment invRecvOrderSplashFragment = new InvRecvOrderSplashFragment();
+            InvRecvOrderSplashFragment fragment = new InvRecvOrderSplashFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, invRecvOrderSplashFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, invRecvOrderSplashFragment).show(invRecvOrderSplashFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_INVENTORY_CHECK){
-            InventoryCheckFragment inventoryCheckFragment;
+            InventoryCheckFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                inventoryCheckFragment = InventoryCheckFragment.newInstance(intent.getExtras());
+                fragment = InventoryCheckFragment.newInstance(intent.getExtras());
             }else{
-                inventoryCheckFragment = InventoryCheckFragment.newInstance(null);
+                fragment = InventoryCheckFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, inventoryCheckFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, inventoryCheckFragment).show(inventoryCheckFragment)
                     .commit();
         }
