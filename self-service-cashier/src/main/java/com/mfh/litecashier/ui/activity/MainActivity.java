@@ -39,6 +39,7 @@ import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
@@ -441,7 +442,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         } else if (id.compareTo(CashierFunctional.OPTION_ID_CLEAR_ORDER) == 0) {
             EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_RESET_CASHIER));
         } else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
-            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_HANGUPORDER));
+            hangUpOrder();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_SETTINGS) == 0) {
             redirectToSettings();
         } else {
@@ -889,8 +890,6 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             initCashierOrder();
         } else if (event.getAffairId() == CashierAffairEvent.EVENT_ID_OPEN_MONEYBOX) {
             openMoneyBox();
-        } else if (event.getAffairId() == CashierAffairEvent.EVENT_ID_HANGUPORDER) {
-            hangUpOrder();
         }
     }
 
@@ -1153,8 +1152,8 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         if (cashierOrderInfo == null) {
             return;
         }
-        ZLogger.df(String.format("处理收银订单支付结果：%s\n%s",
-                cashierOrderInfo.getPosTradeNo(),
+        ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
+                WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
                 JSONObject.toJSONString(cashierOrderInfo)));
 
         // TODO: 7/5/16 下个版本放到支付页面去 
@@ -1468,6 +1467,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         SerialManager.clear();
         //TODO,清除客显屏幕
         //Step 1:
+        ZLogger.d(String.format("挂单：%s", curPosTradeNo));
         CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
                 productAdapter.getEntityList());
 //刷新挂单
@@ -1493,7 +1493,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
                 productAdapter.getEntityList());
 
-        ZLogger.d(String.format("调单：%s", posTradeNo));
+        ZLogger.df(String.format("调单：%s", posTradeNo));
 
         //加载新订单
         obtaincurPosTradeNo(posTradeNo);
@@ -1640,7 +1640,6 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
      * 日结－
      */
     private void dailySettle(String datetime, boolean cancelable) {
-//        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));
         Intent intent = new Intent(this, SimpleDialogActivity.class);
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);

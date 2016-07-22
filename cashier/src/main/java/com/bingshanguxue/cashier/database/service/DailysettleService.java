@@ -1,11 +1,11 @@
-package com.mfh.litecashier.database.logic;
+package com.bingshanguxue.cashier.database.service;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.litecashier.database.dao.DailysettleDao;
-import com.mfh.litecashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.dao.DailysettleDao;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 
 import java.util.List;
 

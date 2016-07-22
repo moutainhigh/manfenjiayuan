@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
@@ -35,7 +36,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.database.logic.CommonlyGoodsService;
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.event.CashierAffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
@@ -390,13 +390,15 @@ public class AdministratorActivity extends BaseActivity {
 
     public synchronized List<CashierFunctional> getAdminMenus() {
         List<CashierFunctional> functionalList = new ArrayList<>();
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRESH,
-                "生鲜", R.mipmap.ic_admin_menu_fresh));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRUIT,
-                "水果", R.mipmap.ic_admin_menu_fruit));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_STANDARD_GOODS,
-                "普货", R.mipmap.ic_admin_menu_standard_goods));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INTELLIGENT_PURCHASE,
+//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRESH,
+//                "生鲜", R.mipmap.ic_admin_menu_fresh));
+//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRUIT,
+//                "水果", R.mipmap.ic_admin_menu_fruit));
+//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_STANDARD_GOODS,
+//                "普货", R.mipmap.ic_admin_menu_standard_goods));
+        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL,
+                "手动订货", R.mipmap.ic_admin_purchase_manual));
+        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT,
                 "智能订货", R.mipmap.ic_admin_menu_intellegent_purchase));
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRECVORDER,
 //                "收货", R.mipmap.ic_admin_menu_invrecvorder));
@@ -406,8 +408,6 @@ public class AdministratorActivity extends BaseActivity {
                 "流水", R.mipmap.ic_admin_menu_orderflow));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_RECEIPT,
                 "单据", R.mipmap.ic_admin_menu_receipt));
-
-
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRETURNORDER,
 //                "退货", R.mipmap.ic_admin_menu_invreturnorder));
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ONLINEORDER,
@@ -422,8 +422,8 @@ public class AdministratorActivity extends BaseActivity {
 //                "充值", R.mipmap.ic_service_recharge));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_EXCEPTION_ORDERS,
-                "异常订单", R.mipmap.ic_admin_menu_settings));
+//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_EXCEPTION_ORDERS,
+//                "异常订单", R.mipmap.ic_admin_menu_settings));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CANARY,
                 "金丝雀", R.mipmap.ic_canary));
 
@@ -444,7 +444,9 @@ public class AdministratorActivity extends BaseActivity {
             purchaseFruitGoods();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_STANDARD_GOODS) == 0) {
             purchaseStandardGoods();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_INTELLIGENT_PURCHASE) == 0) {
+        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
+            manualPurchase();
+        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT) == 0) {
             purchaseIntelligent();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_INVENTORY) == 0) {
             redirect2Inventory();
@@ -495,7 +497,18 @@ public class AdministratorActivity extends BaseActivity {
     private void purchaseStandardGoods() {
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURSHACE_STANDARD_GOODS);
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_PURSHACE_STANDARD_GOODS);
+        UIHelper.startActivity(this, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 手动订货
+     */
+    public void manualPurchase() {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_PURCHASE_MANUAL);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
 

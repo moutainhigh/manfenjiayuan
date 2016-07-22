@@ -200,6 +200,7 @@ public class CashierPayActivity extends BaseActivity {
      * 取消支付
      * */
     public void cancelSettle() {
+        // TODO: 7/21/16 这里要做判断，当前是不是正在支付订单，正在支付订单的时候不能关闭窗口 
 //        setResult(Activity.RESULT_CANCELED);
 //        finish();
         if (cancelPayDialog == null) {

@@ -43,7 +43,8 @@ public class CommodityCategoryAdapter
 
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CategoryViewHolder(mLayoutInflater.inflate(R.layout.itemview_commodity_category, parent, false));
+        return new CategoryViewHolder(mLayoutInflater.inflate(R.layout.itemview_commodity_category,
+                parent, false));
     }
 
     @Override

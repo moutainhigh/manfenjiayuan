@@ -11,8 +11,8 @@ package com.mfh.litecashier.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
@@ -25,9 +25,8 @@ import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
 import com.mfh.litecashier.bean.wrapper.HandOverBill;
-import com.mfh.litecashier.database.entity.DailysettleEntity;
-import com.mfh.litecashier.database.logic.DailysettleService;
-import com.bingshanguxue.cashier.database.service.PosOrderPayService;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.service.DailysettleService;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -144,7 +143,7 @@ public class AnalysisHelper {
                 dailySettleDate, "yyyyMMdd");
         List<DailysettleEntity> entityList  = DailysettleService.get()
                 .queryAllDesc(String.format("officeId = '%d' and barCode = '%s'",
-                        MfhLoginService.get().getCurOfficeId(), barcode), new PageInfo(1, 10));
+                        MfhLoginService.get().getCurOfficeId(), barcode), null);
 
         DailysettleEntity dailysettleEntity;
         if (entityList != null && entityList.size() > 0){
@@ -184,7 +183,7 @@ public class AnalysisHelper {
         }
         DailysettleService.get().deleteById(String.valueOf(orderEntity.getId()));
         //删除支付记录
-        PosOrderPayService.get().deleteBy(String.format("orderId = '%s'",
+        PosOrderPayService.get().deleteBy(String.format("orderId = '%d'",
                 orderEntity.getId()));
     }
 

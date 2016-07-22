@@ -124,7 +124,7 @@ public class OrderSyncManager2 extends OrderSyncManager{
             return;
         }
         uploadProcess(String.format("查询到 %d 个订单需要同步，" +
-                        "当前页数 %d/%d,每页最多 %d 个商品(%s)",
+                        "当前页数 %d/%d,每页最多 %d 个订单(%s)",
                 pageInfo.getTotalCount(), pageInfo.getPageNo(), pageInfo.getTotalPage(),
                 pageInfo.getPageSize(), startCursor));
 

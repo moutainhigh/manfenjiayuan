@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    style="@style/mfh_form_header"
-    android:gravity="center"
-    android:orientation="horizontal">
+              android:id="@+id/rootview"
+              style="@style/mfh_form_header"
+              android:gravity="center"
+              android:orientation="horizontal">
 
     <TextView
         style="@style/mfh_form_header_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:text="商品" />
+        android:text="商品"/>
 
     <TextView
         android:id="@+id/tv_header_purchaseprice"
@@ -20,7 +20,8 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="库存成本价" />
+        android:text="库存成本价"/>
+
     <TextView
         android:id="@+id/tv_header_packagenum"
         style="@style/mfh_form_header_text"
@@ -29,16 +30,16 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="@string/label_packageNum" />
+        android:text="@string/label_packageNum"/>
     <!--<TextView-->
-        <!--android:id="@+id/tv_header_minimum_order_quantity"-->
-        <!--style="@style/mfh_form_header_text"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_weight="1"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:singleLine="true"-->
-        <!--android:text="@string/label_minimum_order_quantity" />-->
+    <!--android:id="@+id/tv_header_minimum_order_quantity"-->
+    <!--style="@style/mfh_form_header_text"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:singleLine="true"-->
+    <!--android:text="@string/label_minimum_order_quantity" />-->
 
     <!--库存-->
     <TextView
@@ -49,22 +50,17 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="@string/label_stock_quantity" />
-
-    <TextView
-        android:id="@+id/tv_order_goods"
-        style="@style/mfh_form_header_text"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="操作" />
+        android:text="@string/label_stock_quantity"/>
 
     <View
         android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
 
 
 </LinearLayout>

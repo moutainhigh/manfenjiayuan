@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="ScannerInterface">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/pda-supermarket/libs/ScannerInterface.jar!/" />
+      <root url="jar://$PROJECT_DIR$/pda/libs/ScannerInterface.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

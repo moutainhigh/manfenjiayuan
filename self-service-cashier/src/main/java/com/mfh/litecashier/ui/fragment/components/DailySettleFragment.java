@@ -37,10 +37,11 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -51,8 +52,8 @@ import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.com.SerialManager;
-import com.mfh.litecashier.database.entity.DailysettleEntity;
-import com.mfh.litecashier.database.logic.DailysettleService;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
@@ -142,11 +143,11 @@ public class DailySettleFragment extends BaseProgressFragment {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
+        ZLogger.df(String.format(">>开始日结：%s", StringUtils.decodeBundle(args)));
         if (args != null) {
             cancelable = args.getBoolean(EXTRA_KEY_CANCELABLE, true);
             dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
         }
-        ZLogger.df(String.format("Dailysettle--cancelable＝%b, dailySettleDatetime=%s", cancelable, dailySettleDatetime));
 
         tvHeaderTitle.setText("日结");
         initAggRecyclerView();
@@ -250,12 +251,13 @@ public class DailySettleFragment extends BaseProgressFragment {
                     dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_PROCESS);
                     DailysettleService.get().saveOrUpdate(dailysettleEntity);
 
-                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
+                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
+                            WayType.ALI_F2F,
                             PosOrderPayEntity.PAY_STATUS_PROCESS, amount, amount, 0D);
                     ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
 
-
-                    PaymentInfoImpl.split(paymentInfo, BizType.DAILYSETTLE,
+                    //保存支付记录
+                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
                             dailysettleEntity.getBarCode(), null);
                 }
             }
@@ -271,7 +273,7 @@ public class DailySettleFragment extends BaseProgressFragment {
                             PosOrderPayEntity.PAY_STATUS_FINISH, amount, amount, 0D);
                     ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
 
-                    PaymentInfoImpl.split(paymentInfo, BizType.DAILYSETTLE,
+                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
                             dailysettleEntity.getBarCode(), null);
                 }
 
@@ -290,7 +292,7 @@ public class DailySettleFragment extends BaseProgressFragment {
                             PosOrderPayEntity.PAY_STATUS_EXCEPTION, amount, amount, 0D);
                     ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
 
-                    PaymentInfoImpl.split(paymentInfo, BizType.DAILYSETTLE,
+                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
                             dailysettleEntity.getBarCode(), null);
                 }
             }
@@ -306,7 +308,7 @@ public class DailySettleFragment extends BaseProgressFragment {
                             PosOrderPayEntity.PAY_STATUS_FAILED, amount, amount, 0D);
                     ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
 
-                    PaymentInfoImpl.split(paymentInfo, BizType.DAILYSETTLE,
+                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
                             dailysettleEntity.getBarCode(), null);
                 }
             }
@@ -526,7 +528,6 @@ public class DailySettleFragment extends BaseProgressFragment {
      */
     private void saveAggData(RspQueryResult<AggItem> rs) {
         try {
-            ZLogger.df("日结--保存经营分析数据");
             List<AggItem> entityList = new ArrayList<>();
             if (rs != null && rs.getReturnNum() > 0) {
                 for (EntityWrapper<AggItem> wrapper : rs.getRowDatas()) {
@@ -542,10 +543,11 @@ public class DailySettleFragment extends BaseProgressFragment {
             this.dailysettleEntity.setAggData(JSON.toJSONString(aggWrapper));
             this.dailysettleEntity.setUpdatedDate(new Date());
             DailysettleService.get().saveOrUpdate(this.dailysettleEntity);
+            ZLogger.df(String.format("保存经营分析数据:\n%s", JSON.toJSONString(dailysettleEntity)));
 
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("日结--保存流水分析数据失败:" + ex.toString());
+            ZLogger.d("保存流水分析数据失败:" + ex.toString());
         }
 
     }
@@ -587,7 +589,6 @@ public class DailySettleFragment extends BaseProgressFragment {
      */
     private void saveAccData(RspQueryResult<AccItem> rs) {
         try {
-            ZLogger.df("日结--保存流水分析数据");
             List<AccItem> entityList = new ArrayList<>();
             if (rs != null && rs.getReturnNum() > 0) {
                 for (EntityWrapper<AccItem> wrapper : rs.getRowDatas()) {
@@ -604,6 +605,7 @@ public class DailySettleFragment extends BaseProgressFragment {
             this.dailysettleEntity.setAccData(JSON.toJSONString(accWrapper));
 //            this.dailysettleEntity.setUpdatedDate(new Date());
             DailysettleService.get().saveOrUpdate(this.dailysettleEntity);
+            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(dailysettleEntity)));
 
             refresh();
         } catch (Exception ex) {

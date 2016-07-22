@@ -226,6 +226,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
      */
     private void refreshVipMemberInfo(Human memberInfo) {
         mMemberInfo = memberInfo;
+        ZLogger.df(String.format("刷新会员信息：%s", JSON.toJSONString(memberInfo)));
         if (memberInfo != null) {
             ivMemberHeader.setAvatarUrl(memberInfo.getHeadimageUrl());
             tvVipBrief.setText(String.format("%s/%s", memberInfo.getName(),
@@ -400,6 +401,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
+                        ZLogger.ef(errMsg);
                         if (couponRule != null) {
                             couponRule.toggleSelected();
                             couponAdapter.notifyDataSetChanged();

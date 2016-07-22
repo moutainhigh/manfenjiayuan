@@ -1,4 +1,4 @@
-package com.mfh.litecashier.utils;
+package com.mfh.framework.core.utils;
 
 import net.tsz.afinal.core.Arrays;
 

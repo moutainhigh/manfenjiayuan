@@ -315,7 +315,8 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder> implement
             return;
         }
 
-        if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
+        // && mPageInfo.getPageNo() <= MAX_PAGE
+        if (mPageInfo.hasNextPage()) {
             mPageInfo.moveToNext();
 
             orderflowPresenter.loadOrders(BizType.POS, String.valueOf(Constants.ORDER_STATUS_RECEIVED),

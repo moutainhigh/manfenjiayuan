@@ -18,8 +18,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
+import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.impl.CashierApiImpl;
@@ -40,6 +42,7 @@ import com.mfh.litecashier.ui.adapter.ExceptionOrderflowAdapter;
 import com.mfh.litecashier.ui.dialog.DailysettlePreviewDialog;
 import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
 import com.mfh.litecashier.ui.dialog.OrderPrintPreviewDialog;
+import com.mfh.litecashier.ui.dialog.PosOrderDetailDialog;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
 import java.util.Calendar;
@@ -240,7 +243,7 @@ public class OrderFlowFragment extends BaseFragment {
 
             @Override
             public void onProcessClick(PosOrderEntity entity) {
-
+                showOrderDetail(entity);
             }
 
             @Override
@@ -279,6 +282,35 @@ public class OrderFlowFragment extends BaseFragment {
             }
         }
     };
+
+    private PosOrderDetailDialog mPosOrderDetailDialog = null;
+    private void showOrderDetail(PosOrderEntity orderEntity){
+        if (orderEntity == null || orderEntity.getStatus() != PosOrderEntity.ORDER_STATUS_EXCEPTION){
+            DialogUtil.showHint("开发君失踪了...");
+            return;
+        }
+
+        CashierOrderInfo cashierOrderInfo = CashierFactory
+                .makeCashierOrderInfo(orderEntity.getBizType(), orderEntity.getBarCode(), null);
+
+        if (mPosOrderDetailDialog == null) {
+            mPosOrderDetailDialog = new PosOrderDetailDialog(getActivity());
+            mPosOrderDetailDialog.setCancelable(false);
+            mPosOrderDetailDialog.setCanceledOnTouchOutside(false);
+        }
+//        CashierOrderInfo cashierOrderInfo = CashierHelper.getCashierOrderItemInfo()
+        mPosOrderDetailDialog.init(cashierOrderInfo, new PosOrderDetailDialog.onDialogClickListener() {
+            @Override
+            public void onDatasetChanged() {
+                reload();
+                OrderSyncManager2.get().sync();
+            }
+        });
+        if (!mPosOrderDetailDialog.isShowing()) {
+            mPosOrderDetailDialog.show();
+        }
+    }
+
 
     /**
      * 同步订单

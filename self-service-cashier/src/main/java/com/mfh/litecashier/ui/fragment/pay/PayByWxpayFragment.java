@@ -329,7 +329,6 @@ public class PayByWxpayFragment extends BasePayFragment {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         //当商户后台、网络、服务器等出现异常，商户系统最终未接收到支付通知
-                        ZLogger.df("微信条码支付异常:" + errMsg);
                         onBarpayFailed(errMsg, AppHelper.getErrorTextColor(), true);
                     }
                 }
@@ -508,6 +507,7 @@ public class PayByWxpayFragment extends BasePayFragment {
      * 交易失败
      */
     private void onBarpayFailed(String msg, int color, boolean isException) {
+        ZLogger.df("微信条码支付失败:" + msg);
         tvProcess.setText(msg);
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);

@@ -79,7 +79,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
         if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
                 && paymentInfo.getPaidAmount() > 0) {
             SerialManager.openMoneyBox();
-            ZLogger.df(String.format("开钱箱：收银：%.2f,找零:%.2f",
+            ZLogger.df(String.format(">>开钱箱：收银：%.2f,找零:%.2f",
                     paymentInfo.getPaidAmount(), paymentInfo.getChange()));
         }
 

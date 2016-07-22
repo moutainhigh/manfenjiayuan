@@ -292,7 +292,8 @@ public class AlipayDialog extends CommonDialog {
 
                     @Override
                     public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
+                        ZLogger.df(String.format("支付宝条码支付:%s--%s",
+                                rspBody.getRetCode(), rspBody.getReturnInfo()));
                         switch (rspBody.getRetCode()){
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
@@ -433,7 +434,8 @@ public class AlipayDialog extends CommonDialog {
 
                     @Override
                     public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付取消订单:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
+                        ZLogger.df(String.format("支付宝条码支付取消订单:%s--%s",
+                                rspBody.getRetCode(), rspBody.getReturnInfo()));
 
                         //业务处理成功
                         // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功

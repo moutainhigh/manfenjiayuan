@@ -743,8 +743,10 @@ public class DataSyncManager {
         }
 
         ZLogger.df("下载后台类目树开始");
-        CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD, CateApi.BACKEND_CATE_BTYPE_NORMAL,
-                CateApi.CATE_POSITION_BACKEND, 2, backendCategoryInfoRspCallback);
+        CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD,
+                "",//CateApi.BACKEND_CATE_BTYPE_NORMAL,
+                CateApi.CATE_POSITION_BACKEND, 2,
+                backendCategoryInfoRspCallback);
     }
 
     private NetCallBack.NetTaskCallBack backendCategoryInfoRspCallback = new NetCallBack.NetTaskCallBack<CategoryInfo,
@@ -825,7 +827,8 @@ public class DataSyncManager {
         }
 
         ZLogger.df("下载后台生鲜类目树开始");
-        CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD, CateApi.BACKEND_CATE_BTYPE_FRESH,
+        CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD,
+                CateApi.BACKEND_CATE_BTYPE_FRESH,
                 CateApi.CATE_POSITION_BACKEND, 2, freshBackendCategoryInfoRspCallback);
     }
 

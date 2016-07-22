@@ -44,7 +44,8 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long ADMIN_MENU_FRESH = 51L;//生鲜
     public static final Long ADMIN_MENU_FRUIT = 52L;//水果
     public static final Long ADMIN_MENU_STANDARD_GOODS = 53L;//普货
-    public static final Long ADMIN_MENU_INTELLIGENT_PURCHASE= 54L;//智能订货
+    public static final Long ADMIN_MENU_PURCHASE_MANUAL = 54L;//手动订货
+    public static final Long ADMIN_MENU_PURCHASE_INTELLIGENT = 55L;//智能订货
 //    public static final Long ADMIN_MENU_INVRECVORDER= 55L;//收货
     public static final Long ADMIN_MENU_INVENTORY= 56L;//库存
     public static final Long ADMIN_MENU_ORDERFLOW= 57L;//流水

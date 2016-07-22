@@ -156,10 +156,12 @@ public class PurchaseShopcartOrder implements Serializable {
 
 
     /**
-     * 判断是否相等
+     * 判断订单是否相等
      * */
     public static boolean isEqual(PurchaseShopcartOrder a, PurchaseShopcartOrder b) {
-        return !(a == null || b == null) && (ObjectsCompact.equals(a.getIsPrivate(), b.getIsPrivate()) && ObjectsCompact.equals(a.getSupplyId(), b.getSupplyId()));
+        return !(a == null || b == null)
+                && (ObjectsCompact.equals(a.getIsPrivate(), b.getIsPrivate())
+                && ObjectsCompact.equals(a.getSupplyId(), b.getSupplyId()));
 
     }
 }

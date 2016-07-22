@@ -7,7 +7,7 @@ import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
-import com.mfh.litecashier.mode.CashierMode;
+import com.bingshanguxue.cashier.mode.CashierMode;
 import com.mfh.litecashier.ui.view.ICashierView;
 
 import java.util.ArrayList;
@@ -40,8 +40,8 @@ public class CashierPresenter {
             findFreshGoods(barcode);
             return;
         }
+        ZLogger.df(String.format("搜索生鲜商品 条码：%s", barcode));
 
-        ZLogger.df(String.format("搜索标品：%s", barcode));
         int packFlag = 0;//是否是箱规：0不是；1是
         //Step 1:查询商品
         PosProductEntity entity = this.iCashierMode.findGoods(barcode);
@@ -86,7 +86,7 @@ public class CashierPresenter {
             String plu = barcode.substring(1, 7);
             String weightStr = String.format("%s.%s", barcode.substring(7, 9), barcode.substring(9, 12));
             Double weight = Double.valueOf(weightStr);
-            ZLogger.df(String.format("搜索生鲜商品条码：%s, PLU码：%s, 重量：%f",
+            ZLogger.df(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",
                     barcode, plu, weight));
 
             int packFlag = 0;//是否是箱规：0不是；1是
@@ -144,14 +144,12 @@ public class CashierPresenter {
                 "退货", R.mipmap.ic_service_returngoods));
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_FEEDPAPER,
                 "走纸", R.mipmap.ic_service_feedpaper));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_PACKAGE,
-                "包裹", R.mipmap.ic_service_package));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_CLEAR_ORDER,
-//                "清空", R.mipmap.ic_service_clear_order));
+//        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_PACKAGE,
+//                "包裹", R.mipmap.ic_service_package));
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_MONEYBOX,
                 "钱箱", R.mipmap.ic_service_moneybox));
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_BALANCE_QUERY,
-                "余额查询", R.mipmap.ic_service_register_vip));
+                "余额查询", R.mipmap.ic_service_balance));
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_SETTINGS,
                 "设置", R.mipmap.ic_service_settings));
 

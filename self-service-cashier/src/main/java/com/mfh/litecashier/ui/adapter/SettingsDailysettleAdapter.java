@@ -11,7 +11,7 @@ import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.litecashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.mfh.litecashier.ui.dialog.PayHistoryDialog;
 import com.mfh.litecashier.utils.AnalysisHelper;
 

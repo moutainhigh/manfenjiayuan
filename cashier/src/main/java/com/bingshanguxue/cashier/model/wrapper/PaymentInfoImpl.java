@@ -2,11 +2,15 @@ package com.bingshanguxue.cashier.model.wrapper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -128,5 +132,43 @@ public class PaymentInfoImpl{
 
             startIndex++;
         }
+    }
+
+    public static void saveOrUpdate(PaymentInfo paymentInfo, Integer bizType,
+                             String orderBarCode, Human member){
+
+        //日结支付记录
+        if (BizType.DAILYSETTLE.equals(bizType)){
+            List<DailysettleEntity> orderEntities  = DailysettleService.get()
+                    .queryAllDesc(String.format("officeId = '%d' and barCode = '%s'",
+                            MfhLoginService.get().getCurOfficeId(), orderBarCode), null);
+            if (orderEntities == null || orderEntities.size() <= 0) {
+                ZLogger.df("保存日结订单支付记录失败，订单不存在");
+                return;
+            }
+
+            DailysettleEntity orderEntity = orderEntities.get(0);
+
+
+            //商户交易订单号
+            String outTradeNo = paymentInfo.getOutTradeNo();
+            //订单实际分配金额=实际支付金额－找零金额
+            Double denominatorAmount = paymentInfo.getPayableAmount();//分母
+            Double paidFactor = paymentInfo.getPaidAmount();//实际支付
+//            Double paidRemain = paymentInfo.getPaidAmount();
+            Double changeFactor = paymentInfo.getChange();//找零
+//            Double changeRemain = paymentInfo.getChange();
+            //支付状态
+            int status = paymentInfo.getStatus();
+
+            //保存实际支付金额
+            PosOrderPayService.get().saveOrUpdate(orderEntity.getId(),
+                    outTradeNo, paymentInfo.getPayType(),
+                    PosOrderPayEntity.AMOUNT_TYPE_IN, paidFactor,
+                    status, member);
+            return;
+        }
+
+        split(paymentInfo, bizType, orderBarCode, member);
     }
 }

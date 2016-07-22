@@ -64,7 +64,6 @@ public class SerialPortFinder {
 		}
 	}
 
-
 	private Vector<Driver> mDrivers = null;
 
 	Vector<Driver> getDrivers() throws IOException {
@@ -79,7 +78,7 @@ public class SerialPortFinder {
 					String drivername = l.substring(0, 0x15).trim();
 					String[] w = l.split(" +");
 					if ((w.length >= 5) && (w[w.length-1].equals("serial"))) {
-						ZLogger.df("Found new driver " + drivername + " on " + w[w.length-4]);
+//						ZLogger.d("Found new driver " + drivername + " on " + w[w.length-4]);
 						mDrivers.add(new Driver(drivername, w[w.length-4]));
 					}
 				}

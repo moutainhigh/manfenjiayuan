@@ -11,7 +11,6 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.DebugHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -57,15 +56,12 @@ public class CashierApp extends MfhApplication {
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
             ACacheHelper.CACHE_NAME = "ACache_Dev";
+
+            debugPrint();
         }
-
-
-        debugPrint();
-        DebugHelper.debug();
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);
-//
 
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);

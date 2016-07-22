@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.manfenjiayuan.business.bean.CategoryOption;
 import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
 import com.manfenjiayuan.business.bean.ScGoodsSku;
 import com.mfh.comn.bean.PageInfo;
@@ -38,10 +39,10 @@ import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.impl.StockApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -49,9 +50,9 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.bean.CategoryOption;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
+import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.event.CommodityStockEvent;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
@@ -63,12 +64,12 @@ import com.mfh.litecashier.ui.adapter.InventoryCostGoodsAdapter;
 import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
+import com.mfh.litecashier.ui.fragment.purchase.manual.PurchaseHelper;
 import com.mfh.litecashier.ui.view.IInventoryView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.ui.widget.MOrderLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -299,7 +300,7 @@ public class InventoryCostFragment extends BaseProgressFragment
         fabShopcart.setEnabled(false);
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_STANDARD_SHOPCART);
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_MANUAL_SHOPCART);
 
 //        SimpleActivity.actionStart(getActivity(), extras);
 
@@ -569,13 +570,13 @@ public class InventoryCostFragment extends BaseProgressFragment
      * 刷新购物车
      */
     private void refreshFabShopcart() {
-        if (PurchaseShopcartHelper.getInstance().getItemCount() <= 0) {
+        int count = PurchaseHelper.getInstance()
+                .getOrderItemCount(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL);
+        if (count <= 0) {
             fabShopcart.setImageResource(R.mipmap.ic_fab_shopcart_white);
         } else {
-            fabShopcart.setImageDrawable(CashierHelper
-                    .createFabDrawable(PurchaseShopcartHelper.getInstance().getItemCount()));
+            fabShopcart.setImageDrawable(CashierHelper.createFabDrawable(count));
         }
-//        fabShopcart.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -995,7 +996,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                 }
 
                 wrapper.setQuantityCheck(quantity);
-                PurchaseShopcartHelper.getInstance().addToShopcart(wrapper);
+                PurchaseHelper.getInstance().addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
 
                 //刷新购物车
                 refreshFabShopcart();

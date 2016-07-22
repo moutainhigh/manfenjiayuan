@@ -54,7 +54,6 @@ import com.mfh.litecashier.ui.activity.AdministratorActivity;
 import com.mfh.litecashier.ui.activity.ServiceActivity;
 import com.mfh.litecashier.ui.activity.SignInActivity;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
-import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.AdvertisementPagerAdapter;
 import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
 import com.mfh.litecashier.ui.adapter.GrouponGridAdapter;
@@ -67,7 +66,6 @@ import com.mfh.litecashier.ui.dialog.ReceiveGoodsDialog;
 import com.mfh.litecashier.ui.dialog.RegisterUserDialog;
 import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
-import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryTransOrderFragment;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.FreshShopcartHelper;
@@ -303,10 +301,6 @@ public class CashierServiceFragment extends BaseFragment {
 //                redirectToLogin();
             }
             break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE: {
-                dailySettle(args != null ? args.getString("dailysettleDatetime") : null, false);
-            }
-            break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
                 //验证结束开始加载数据
 //                dataSync(false);
@@ -369,21 +363,6 @@ public class CashierServiceFragment extends BaseFragment {
         Intent intent = new Intent(getActivity(), SignInActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
-    }
-
-    /**
-     * 日结－
-     */
-    private void dailySettle(String datetime, boolean cancelable) {
-//        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));
-        Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
-        Bundle extras = new Bundle();
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FRAGMENT_TYPE_DAILY_SETTLE);
-        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
-        extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
-        intent.putExtras(extras);
-        startActivity(intent);
     }
 
     @Override
@@ -555,8 +534,6 @@ public class CashierServiceFragment extends BaseFragment {
             EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_OPEN_MONEYBOX));
         } else if (id.compareTo(CashierFunctional.OPTION_ID_CLEAR_ORDER) == 0) {
             EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_RESET_CASHIER));
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
-            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_HANGUPORDER));
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }

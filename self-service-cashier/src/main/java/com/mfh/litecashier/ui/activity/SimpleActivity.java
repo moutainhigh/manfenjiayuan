@@ -30,6 +30,8 @@ import com.mfh.litecashier.ui.fragment.purchase.PurchaseFruitFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFruitShopcartFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseShopcartFragment;
+import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;
+import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseShopcartFragment;
 import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
 
 import butterknife.Bind;
@@ -48,7 +50,9 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_PURCHASE_FRUIT_GOODS = 0x03;//
     public static final int FT_PURCHASE_FRUIT_SHOPCART = 0x04;//采购生鲜－购物车
     public static final int FT_PURCHASE_STANDARD_SHOPCART = 0x05;//采购商品－购物车
-    public static final int FT_PURCHASE_INTELLIGENT_SHOPCART = 0x06;//智能订货－购物车
+    public static final int FT_PURCHASE_MANUAL = 0x06;//手动订货
+    public static final int FT_PURCHASE_MANUAL_SHOPCART = 0x07;//采购商品－购物车
+    public static final int FT_PURCHASE_INTELLIGENT_SHOPCART = 0x08;//智能订货－购物车
 
     public static final int FT_INVENTORY = 0x11;//库存
     public static final int FT_ORDERFLOW = 0x12;//POS流水
@@ -89,7 +93,7 @@ public class SimpleActivity extends BaseActivity {
 
     @Override
     protected boolean isBackKeyEnabled() {
-        return false;
+        return true;
     }
 
     @Override
@@ -182,6 +186,8 @@ public class SimpleActivity extends BaseActivity {
             case FT_RECEIPT:
             case FT_EXCEPTION_ORDERS:
             case FT_SETTINGS:
+            case FT_PURCHASE_MANUAL:
+            case FT_PURCHASE_MANUAL_SHOPCART:
             case FT_PURCHASE_INTELLIGENT_SHOPCART:
             case FT_CANARY_GOODS:
             case FT_CANARY_ORDERFLOW:
@@ -252,6 +258,30 @@ public class SimpleActivity extends BaseActivity {
                 }
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseGoodsFragment).show(purchaseGoodsFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_PURCHASE_MANUAL: {
+                toolbar.setTitle("手动订货");
+                ManualPurchaseFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = ManualPurchaseFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = ManualPurchaseFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseGoodsFragment).show(purchaseGoodsFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_PURCHASE_MANUAL_SHOPCART: {
+                toolbar.setTitle("购物车");
+                ManualPurchaseShopcartFragment fragment = new ManualPurchaseShopcartFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }

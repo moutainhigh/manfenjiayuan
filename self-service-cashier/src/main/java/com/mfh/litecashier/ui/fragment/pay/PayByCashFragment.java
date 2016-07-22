@@ -188,7 +188,7 @@ public class PayByCashFragment extends BasePayFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            ZLogger.df("取消现金支付");
+                            ZLogger.df("收取金额过大，取消现金支付");
                         }
                     });
         } else {
@@ -238,7 +238,8 @@ public class PayByCashFragment extends BasePayFragment {
         PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
                 PosOrderPayEntity.PAY_STATUS_FINISH,
                 handleAmount, handleAmount, rechargeAmount);
-        ZLogger.df(String.format("现金支付成功:\n%s", JSON.toJSONString(paymentInfo)));
+        ZLogger.df(String.format("现金支付成功，收取金额：%.2f\n%s",
+                paidAmount, JSON.toJSONString(paymentInfo)));
 
         Bundle args = new Bundle();
         args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,

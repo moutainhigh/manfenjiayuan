@@ -63,8 +63,9 @@ public class CashierAgent {
                 tempEntities.add(shopcartEntity);
 
                 splitMap.put(subType, tempEntities);
-                ZLogger.df(String.format("拆单：%s(%d) %d个商品",
-                        BizSubType.name(subType), subType, tempEntities.size()));
+                ZLogger.df(String.format("拆单：%s(%d) %s/%s",
+                        BizSubType.name(subType), subType,
+                        shopcartEntity.getBarcode(), shopcartEntity.getName()));
             }
         }
 

@@ -4,15 +4,16 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import com.mfh.framework.BizConfig;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.litecashier.hardware.SMScale.DS781A;
-import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.com.ComBean;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.SerialPortEvent;
+import com.mfh.litecashier.hardware.SMScale.DS781A;
+import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.utils.DataCacheHelper;
 
 import java.io.IOException;
@@ -207,26 +208,40 @@ public abstract class SerialPortActivity extends BaseActivity {
         setControls();
     }
 
+    private class OpenPortRunnable implements Runnable{
+        private SerialHelper serialHelper;
+
+        public OpenPortRunnable(SerialHelper serialHelper) {
+            this.serialHelper = serialHelper;
+        }
+
+        @Override
+        public void run() {
+            try {
+                if (serialHelper == null || serialHelper.isOpen()){
+                    return;
+                }
+
+                serialHelper.open();
+            } catch (SecurityException e) {
+                ZLogger.e("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
+//            DialogUtil.showHint("打开串口失败:没有串口读/写权限!" + ComPort.getPort());
+            } catch (IOException e) {
+                ZLogger.e("打开串口失败:未知错误!" + serialHelper.getPort());
+//            DialogUtil.showHint("打开串口失败:未知错误!" + ComPort.getPort());
+            } catch (InvalidParameterException e) {
+                ZLogger.e("打开串口失败:参数错误!");
+//            DialogUtil.showHint("打开串口失败:参数错误!" + ComPort.getPort());
+            }
+        }
+    }
+
     /**
      * 打开串口
      */
     public void OpenComPort(SerialHelper serialHelper) {
-        try {
-            if (serialHelper == null || serialHelper.isOpen()){
-                return;
-            }
-
-            serialHelper.open();
-        } catch (SecurityException e) {
-            ZLogger.e("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
-//            DialogUtil.showHint("打开串口失败:没有串口读/写权限!" + ComPort.getPort());
-        } catch (IOException e) {
-            ZLogger.e("打开串口失败:未知错误!" + serialHelper.getPort());
-//            DialogUtil.showHint("打开串口失败:未知错误!" + ComPort.getPort());
-        } catch (InvalidParameterException e) {
-            ZLogger.e("打开串口失败:参数错误!");
-//            DialogUtil.showHint("打开串口失败:参数错误!" + ComPort.getPort());
-        }
+        //使用线程，避免界面卡顿
+        new Thread(new OpenPortRunnable(serialHelper)).start();
     }
 
     /**
@@ -269,21 +284,22 @@ public abstract class SerialPortActivity extends BaseActivity {
     public void setControls() {
         mSerialPortFinder = new SerialPortFinder();
 
-        String[] entryValues2 = mSerialPortFinder.getAllDevices();
-        List<String> allDevices2 = new ArrayList<>();
-        if (entryValues2 != null) {
-            Collections.addAll(allDevices2, entryValues2);
-        }
-        ZLogger.df("devices:" + allDevices2.toString());
-
-
         String[] entryValues = mSerialPortFinder.getAllDevicesPath();
         List<String> allDevices = new ArrayList<>();
         if (entryValues != null) {
             Collections.addAll(allDevices, entryValues);
         }
-        ZLogger.df("devices:" + allDevices.toString());
+        ZLogger.d("devicePath:" + allDevices.toString());
         DataCacheHelper.getInstance().setComDevicesPath(allDevices);//保存devices
+
+        if (!BizConfig.RELEASE){
+            String[] entryValues2 = mSerialPortFinder.getAllDevices();
+            List<String> allDevices2 = new ArrayList<>();
+            if (entryValues2 != null) {
+                Collections.addAll(allDevices2, entryValues2);
+            }
+            ZLogger.d("devices:" + allDevices2.toString());
+        }
 
         if (allDevices.contains(SerialManager.PORT_PRINTER)) {
             OpenComPort(comPrint);
@@ -291,7 +307,8 @@ public abstract class SerialPortActivity extends BaseActivity {
         if (allDevices.contains(SerialManager.PORT_SCREEN)) {
             OpenComPort(comDisplay);
         }
-        if (!StringUtils.isEmpty(DigiDS781Agent.PORT_SCALE_DS781) && allDevices.contains(DigiDS781Agent.PORT_SCALE_DS781)) {
+        if (!StringUtils.isEmpty(DigiDS781Agent.PORT_SCALE_DS781)
+                && allDevices.contains(DigiDS781Agent.PORT_SCALE_DS781)) {
             OpenComPort(comScale);
         }
     }

@@ -1,10 +1,10 @@
-package com.mfh.litecashier.database.dao;
+package com.bingshanguxue.cashier.database.dao;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
-import com.mfh.litecashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 
 import java.util.List;
 

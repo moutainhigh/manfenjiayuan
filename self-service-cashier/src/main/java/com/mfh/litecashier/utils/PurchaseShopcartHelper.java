@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 采购商品－－购物车
- * Created by kun on 15/12/15.
+ * Created by bingshanguxue on 15/12/15.
  */
 public class PurchaseShopcartHelper {
     private List<PurchaseShopcartOrder> orderList;

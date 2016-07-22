@@ -95,6 +95,10 @@ public class SplashActivity extends InitActivity {
          *
          首次启动(由于应用程序{@link com.mfh.litecashier.CashierApp}可能会被多次执行在不同的进程中，所以这里在启动页调用，)
          */
+        ZLogger.df(String.format("application running: %s_%s-%s",
+                CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
+                CashierApp.getVersionName(), CashierApp.getVersionCode()));
+
         if(SharedPreferencesManager.isAppFirstStart()){
             ZLogger.df(String.format("application first running: %s-%s(%s)",
                     CashierApp.getVersionName(), CashierApp.getVersionCode(),
@@ -108,10 +112,6 @@ public class SplashActivity extends InitActivity {
 
             SharedPreferencesManager.setAppFirstStart(false);
         }else{
-            ZLogger.df(String.format("application running: %s-%s(%s)",
-                    CashierApp.getVersionName(), CashierApp.getVersionCode(),
-                    CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
-
             //清空旧缓存
 //            AppHelper.clearAppCache();
             //清除数据缓存
@@ -155,7 +155,6 @@ public class SplashActivity extends InitActivity {
      * 注册设备
      * */
     protected void registerTerminal(){
-        //TODO 请求设备终端编号
         if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())
                 && NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -166,7 +165,7 @@ public class SplashActivity extends InitActivity {
                             if (rspData != null) {
                                 RspValue<String> retValue = (RspValue<String>) rspData;
                                 String retStr = retValue.getValue();
-                                ZLogger.df("get terminal id success:" + retStr);
+                                ZLogger.df("注册设备成功:" + retStr);
                                 SharedPreferencesManager.setTerminalId(retStr);
                                 onInitializedCompleted();
                             }
@@ -201,10 +200,8 @@ public class SplashActivity extends InitActivity {
         //验证登录状态是否有效
         if (MfhLoginService.get().haveLogined()) {
             if (NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-                ZLogger.df("login already，validate session");
                 validSession();
             } else {
-                ZLogger.df("login already，redirect to main page");
                 redirectToMain(true);
             }
         } else {
@@ -232,6 +229,7 @@ public class SplashActivity extends InitActivity {
      * 跳转至首页
      */
     private void redirectToMain(boolean delayed) {
+        ZLogger.df("准备跳转到首页");
         if (delayed) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -275,6 +273,7 @@ public class SplashActivity extends InitActivity {
                 , CashierApp.getAppContext()) {
         };
 
+        ZLogger.df(">>检查会话是否有效");
         UserApiImpl.validSession(responseCallback);
     }
 }

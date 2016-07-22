@@ -1,4 +1,4 @@
-package com.mfh.litecashier.database.entity;
+package com.bingshanguxue.cashier.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
@@ -31,7 +31,6 @@ public class DailysettleEntity extends MfhEntity<Long> implements ILongId {
     //流水分析数据
     private Double cash = 0D;//现金收取金额
     private String accData;
-
 
     public static final int CONFIRM_STATUS_NO = 0;//未确认
     public static final int CONFIRM_STATUS_YES = 1;//已确认

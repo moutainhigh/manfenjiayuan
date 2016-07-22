@@ -18,7 +18,7 @@ import com.mfh.litecashier.bean.StockOutItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.bean.wrapper.HandOverBill;
-import com.mfh.litecashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.mfh.litecashier.event.SerialPortEvent;
 
 import org.apache.commons.lang3.ArrayUtils;

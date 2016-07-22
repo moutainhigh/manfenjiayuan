@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
-import com.mfh.litecashier.utils.EncryptUtil;
+import com.mfh.framework.core.utils.EncryptUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.core.utils.DialogUtil;

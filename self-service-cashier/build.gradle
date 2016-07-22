@@ -22,8 +22,8 @@ android {
         applicationId "com.mfh.litecashier"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 281
-        versionName "1.20.18"
+        versionCode 282
+        versionName "1.21.1"
 
         multiDexEnabled true
 

@@ -15,7 +15,6 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     /**POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo*/
     private String barCode;
 
-
     public static final Integer DEACTIVE = 0;
     public static final Integer ACTIVE = 1;
     /**是否激活状态，0 已关闭；1 已激活（默认值）
@@ -26,7 +25,6 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     private Integer subType;//业务子类型，根据商品而定
 
     private String posId; //POS编号
-
 
     /**
      * 订单状态
