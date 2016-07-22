@@ -47,14 +47,14 @@ public class SerialPortFinder {
 					if (files != null && files.length > 0){
 						for (File file : files){
 							if (file.getAbsolutePath().startsWith(mDeviceRoot)) {
-								Log.d(TAG, "Found new device: " + file);
+								ZLogger.d(TAG, "Found new device: " + file);
 								mDevices.add(file);
 							}
 						}
 					}
 				}
 				catch (Exception e){
-					ZLogger.d("getDevices failed" + e.toString());
+					ZLogger.e("getDevices failed" + e.toString());
 				}
 			}
 
@@ -83,14 +83,14 @@ public class SerialPortFinder {
 					String drivername = l.substring(0, 0x15).trim();
 					String[] w = l.split(" +");
 					if ((w.length >= 5) && (w[w.length-1].equals("serial"))) {
-						Log.d(TAG, "Found new driver " + drivername + " on " + w[w.length-4]);
+						ZLogger.d(TAG, "Found new driver " + drivername + " on " + w[w.length-4]);
 						mDrivers.add(new Driver(drivername, w[w.length-4]));
 					}
 				}
 				r.close();
 			}
 			catch (Exception e){
-				ZLogger.d("getDrivers failed" + e.toString());
+				ZLogger.e("getDrivers failed" + e.toString());
 				return new Vector<>();
 			}
 

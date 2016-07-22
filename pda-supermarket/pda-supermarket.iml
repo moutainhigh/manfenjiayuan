@@ -58,14 +58,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/mixicook/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/mixicook/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/mixicook/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/assets" type="java-test-resource" />
@@ -74,6 +66,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/assets" type="java-resource" />

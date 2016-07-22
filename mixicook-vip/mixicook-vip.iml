@@ -58,14 +58,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/bingshanguxue/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bingshanguxue/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/bingshanguxue/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testBingshanguxue/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testBingshanguxue/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testBingshanguxue/assets" type="java-test-resource" />
@@ -74,6 +66,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testBingshanguxue/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testBingshanguxue/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testBingshanguxue/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestBingshanguxue/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/assets" type="java-resource" />
@@ -125,8 +125,8 @@
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="crashreport_upgrade-1.1.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
     <orderEntry type="module" module-name="im" exported="" />
     <orderEntry type="module" module-name="mfh-framework-all" exported="" />

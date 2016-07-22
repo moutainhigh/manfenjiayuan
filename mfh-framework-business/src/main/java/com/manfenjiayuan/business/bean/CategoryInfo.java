@@ -1,6 +1,5 @@
 package com.manfenjiayuan.business.bean;
 
-import com.manfenjiayuan.business.bean.CategoryOption;
 
 import java.util.List;
 
@@ -32,5 +31,4 @@ public class CategoryInfo implements java.io.Serializable{
     public void setOptions(List<CategoryOption> options) {
         this.options = options;
     }
-
 }
