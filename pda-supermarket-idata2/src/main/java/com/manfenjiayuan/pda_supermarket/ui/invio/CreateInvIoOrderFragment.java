@@ -230,7 +230,7 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
      * 创建订单
      */
     private void doCreateTask() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
         List<InvIoGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
@@ -247,7 +247,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
             hideProgressDialog();
             return;
         }
-
 
         JSONArray items = new JSONArray();
         for (InvIoGoodsEntity goods : goodsList) {
@@ -291,7 +290,7 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
                      * */
                     ZLogger.df("新建出入库订单成功:");
                     if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
-//                        doCommitTask();
+                        doCommitTask();
                     } else {
                         DialogUtil.showHint("订单创建成功");
                         hideProgressDialog();
@@ -304,6 +303,17 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
             , MfhApplication.getAppContext()) {
     };
 
+    /**
+     * 提交订单
+     * */
+    private void doCommitTask(){
+        hideProgressDialog();
+        DialogUtil.showHint("准备提交订单");
+    }
+
+    /**
+     * 验货
+     * */
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -314,7 +324,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

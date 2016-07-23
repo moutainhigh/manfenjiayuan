@@ -35,7 +35,7 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGoodsView {
-    private static final String TAG = "GoodsFragment";
+    private static final String TAG = "ScGoodsSkuFragment";
 
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;

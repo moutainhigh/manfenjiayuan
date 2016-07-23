@@ -10,14 +10,15 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvLossOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.goods.GoodsFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn.CreateInvReturnOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.receipt.InvRecvOrderSplashFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.InventoryCheckFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
+import com.manfenjiayuan.pda_supermarket.ui.goods.ScGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invio.CreateInvIoOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invlabel.InvLabelFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -41,6 +42,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_INV_CONVERT      = 0x13;//库存转换
     public static final int FT_INVIO_IN         = 0x21;//入库
     public static final int FT_INVIO_OUT         = 0x22;//出库
+    public static final int FT_PRINT_PRICETAGS         = 0x23;//价签
 
 
     /**
@@ -136,7 +138,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_GOODS){
-            GoodsFragment fragment = new GoodsFragment();
+            ScGoodsSkuFragment fragment = new ScGoodsSkuFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
@@ -227,7 +229,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-
         else if(serviceType == FT_INVIO_IN){
             CreateInvIoOrderFragment fragment;
             Intent intent = this.getIntent();
@@ -242,7 +243,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-
         else if(serviceType == FT_INVIO_OUT){
             CreateInvIoOrderFragment fragment;
             Intent intent = this.getIntent();
@@ -251,6 +251,19 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
             }else{
                 fragment = CreateInvIoOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }
+        else if(serviceType == FT_PRINT_PRICETAGS){
+            InvLabelFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = InvLabelFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = InvLabelFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

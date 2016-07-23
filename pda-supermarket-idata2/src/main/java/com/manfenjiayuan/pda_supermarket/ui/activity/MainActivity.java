@@ -419,6 +419,11 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
+        }  else if (id.compareTo(HomeMenu.OPTION_ID_PRINT_TAGS) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_PRINT_PRICETAGS);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
         }  else {
             DialogUtil.showHint("开发君失踪了...");
         }
