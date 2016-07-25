@@ -155,18 +155,18 @@ public static final int *;
 #eventbus end
 
 
-#umeng start
--keepclassmembers class * {
-   public <init>(org.json.JSONObject);
-}
--keep class com.umeng.**
--keep public class com.umeng.fb.ui.ThreadView {
-}
--dontwarn com.umeng.**
--dontwarn org.apache.commons.**
--keep public class * extends com.umeng.**
--keep class com.umeng.** {*; }
-#umeng end
+##umeng start
+#-keepclassmembers class * {
+#   public <init>(org.json.JSONObject);
+#}
+#-keep class com.umeng.**
+#-keep public class com.umeng.fb.ui.ThreadView {
+#}
+#-dontwarn com.umeng.**
+#-dontwarn org.apache.commons.**
+#-keep public class * extends com.umeng.**
+#-keep class com.umeng.** {*; }
+##umeng end
 
 #glide start
 -keep public class * implements com.bumptech.glide.module.GlideModule

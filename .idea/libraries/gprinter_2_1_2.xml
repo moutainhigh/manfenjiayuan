@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="gprinter-2.1.2">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/self-service-cashier/libs/gprinter-2.1.2.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

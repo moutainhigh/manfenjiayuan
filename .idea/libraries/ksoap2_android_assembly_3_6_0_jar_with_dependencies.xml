@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="ksoap2-android-assembly-3.6.0-jar-with-dependencies">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/mfh-framework-business/libs/ksoap2-android-assembly-3.6.0-jar-with-dependencies.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

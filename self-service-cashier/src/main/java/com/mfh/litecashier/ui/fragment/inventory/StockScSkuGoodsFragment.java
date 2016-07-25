@@ -285,7 +285,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        ScGoodsSkuApiImpl.findGoodsByBarcode(barcode, responseCallback);
+        ScGoodsSkuApiImpl.getByBarcode(barcode, responseCallback);
     }
 
     private void refresh(ScGoodsSku stockGoods) {

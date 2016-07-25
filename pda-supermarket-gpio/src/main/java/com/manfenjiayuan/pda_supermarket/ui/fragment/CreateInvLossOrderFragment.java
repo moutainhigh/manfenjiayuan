@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.InvLossOrder;
-import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.manfenjiayuan.business.dialog.InputNumberDialog;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -24,14 +23,15 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -346,13 +346,13 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
 
         isQueryProcessing = true;
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-        ScGoodsSkuApiImpl.findStockTakeGoodsByBarcode(barcode, queryResCallback);
+        ScGoodsSkuApiImpl.getGoodsByBarCode(barcode, queryResCallback);
     }
 
 
-    private NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<StockTakeGoods,
-            NetProcessor.Processor<StockTakeGoods>>(
-            new NetProcessor.Processor<StockTakeGoods>() {
+    private NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
+            NetProcessor.Processor<ScGoodsSku>>(
+            new NetProcessor.Processor<ScGoodsSku>() {
                 @Override
                 public void processResult(IResponseData rspData) {
                     //{"code":"0","msg":"操作成功!","version":"1","data":""}
@@ -365,7 +365,7 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
                         DialogUtil.showHint("未找到商品");
                     }
                     else{
-                        RspBean<StockTakeGoods> retValue = (RspBean<StockTakeGoods>) rspData;
+                        RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
                         changeQuantityCheck(retValue.getValue());
                     }
                 }
@@ -380,11 +380,11 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
                     isQueryProcessing = false;
                 }
             }
-            , StockTakeGoods.class
+            , ScGoodsSku.class
             , MfhApplication.getAppContext()) {
     };
 
-    public void changeQuantityCheck(final StockTakeGoods chainGoodsSku) {
+    public void changeQuantityCheck(final ScGoodsSku chainGoodsSku) {
         if (chainGoodsSku == null){
             DialogUtil.showHint("商品信息不完整");
             return;

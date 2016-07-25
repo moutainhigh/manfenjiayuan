@@ -43,8 +43,8 @@ import butterknife.OnClick;
  * 库存商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class GoodsFragment extends PDAScanFragment implements IGoodsView {
-    private static final String TAG = "GoodsFragment";
+public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
+    private static final String TAG = "ScGoodsSkuFragment";
 
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
@@ -71,10 +71,10 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
     Button btnSubmit;
 
     private ScGoodsSku curGoods = null;
-    private GoodsPresenter mGoodsPresenter = null;
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
 
-    public static GoodsFragment newInstance(Bundle args) {
-        GoodsFragment fragment = new GoodsFragment();
+    public static ScGoodsSkuFragment newInstance(Bundle args) {
+        ScGoodsSkuFragment fragment = new ScGoodsSkuFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -99,7 +99,7 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mGoodsPresenter = new GoodsPresenter(this);
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -194,8 +194,8 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
             return;
         }
 
-        if (mGoodsPresenter != null) {
-            mGoodsPresenter.findGoodsList(barcode);
+        if (mScGoodsSkuPresenter != null) {
+            mScGoodsSkuPresenter.findGoodsList(barcode);
         } else {
             refresh(null);
         }
@@ -348,12 +348,14 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
 
 
     @Override
-    public void onIGoodsViewProcess() {
+    public void onIScGoodsSkuViewProcess() {
+
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
     }
 
     @Override
-    public void onIGoodsViewError(String errorMsg) {
+    public void onIScGoodsSkuViewError(String errorMsg) {
+
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
         DialogUtil.showHint("未找到商品");
@@ -361,7 +363,7 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
     }
 
     @Override
-    public void onIGoodsViewSuccess(List<ScGoodsSku> scGoodsSkus) {
+    public void onIScGoodsSkuViewSuccess(List<ScGoodsSku> scGoodsSkus) {
         if (scGoodsSkus != null && scGoodsSkus.size() > 0) {
             ScGoodsSku scGoodsSku = scGoodsSkus.get(0);
             refresh(scGoodsSku);
@@ -371,6 +373,10 @@ public class GoodsFragment extends PDAScanFragment implements IGoodsView {
         }
 
         hideProgressDialog();
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
 
     }
 }

@@ -23,6 +23,12 @@
         <attr name="editLabelView_rightTextColor" format="color" />
         <attr name="editLabelView_rightTextColorHint" format="color" />
         <attr name="editLabelView_rightTextSize" format="dimension" />
+
+        <attr name="endTextVisible" format="boolean" />
+        <attr name="endText" format="string" />
+        <attr name="endTextColor" format="color" />
+        <attr name="endTextSize" format="dimension" />
+        <attr name="endTextWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="EditQueryView">

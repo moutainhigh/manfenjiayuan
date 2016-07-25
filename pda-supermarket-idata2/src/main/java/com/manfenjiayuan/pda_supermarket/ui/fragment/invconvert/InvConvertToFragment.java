@@ -42,7 +42,7 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGoodsView {
-    private static final String TAG = "GoodsFragment";
+    private static final String TAG = "ScGoodsSkuFragment";
 
     public static final String EXTRA_KEY_CONVERT_SKUGOODS = "convertSkuGoods";
 

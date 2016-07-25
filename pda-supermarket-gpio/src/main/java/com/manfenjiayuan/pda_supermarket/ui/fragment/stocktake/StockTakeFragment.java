@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -65,7 +64,7 @@ public class StockTakeFragment extends PDAScanFragment {
 
     private Long curOrderId;//当前盘点批次编号
     private Long curShelfNumber = 0L;//当前盘点货架
-    private StockTakeGoods curGoods = null;//当前盘点商品
+    private ScGoodsSku curGoods = null;//当前盘点商品
 //    private boolean isPackage = false;//查询到的商品是否是有规格的，true,显示箱包总数，否则按单品计算
 
     public static StockTakeFragment newInstance(Bundle args) {
@@ -216,12 +215,12 @@ public class StockTakeFragment extends PDAScanFragment {
             return;
         }
 
-        ScGoodsSkuApiImpl.findStockTakeGoodsByBarcode(barcode, queryResponseCallback);
+        ScGoodsSkuApiImpl.getGoodsByBarCode(barcode, queryResponseCallback);
     }
 
-    NetCallBack.NetTaskCallBack queryResponseCallback = new NetCallBack.NetTaskCallBack<StockTakeGoods,
-            NetProcessor.Processor<StockTakeGoods>>(
-            new NetProcessor.Processor<StockTakeGoods>() {
+    NetCallBack.NetTaskCallBack queryResponseCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
+            NetProcessor.Processor<ScGoodsSku>>(
+            new NetProcessor.Processor<ScGoodsSku>() {
                 @Override
                 public void processResult(IResponseData rspData) {
 
@@ -233,7 +232,7 @@ public class StockTakeFragment extends PDAScanFragment {
                         DialogUtil.showHint("未找到商品");
                         refresh(null);
                     } else {
-                        RspBean<StockTakeGoods> retValue = (RspBean<StockTakeGoods>) rspData;
+                        RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
                         refresh(retValue.getValue());
                     }
                 }
@@ -247,7 +246,7 @@ public class StockTakeFragment extends PDAScanFragment {
                     refresh(null);
                 }
             }
-            , StockTakeGoods.class
+            , ScGoodsSku.class
             , AppContext.getAppContext()) {
     };
 
@@ -286,7 +285,7 @@ public class StockTakeFragment extends PDAScanFragment {
     /**
      * 刷新信息
      */
-    private void refresh(StockTakeGoods stockTakeGoods) {
+    private void refresh(ScGoodsSku stockTakeGoods) {
         curGoods = stockTakeGoods;
         if (curGoods == null) {
             labelViews.get(0).setTvSubTitle("");

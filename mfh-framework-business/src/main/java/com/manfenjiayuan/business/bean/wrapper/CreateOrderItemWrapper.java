@@ -7,7 +7,6 @@ import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.utils.ObjectsCompact;
 
@@ -265,7 +264,7 @@ public class CreateOrderItemWrapper implements Serializable {
     }
 
 
-    public static CreateOrderItemWrapper fromStockTakeGoods(StockTakeGoods goods, Double quantityCheck) {
+    public static CreateOrderItemWrapper fromStockTakeGoods(ScGoodsSku goods, Double quantityCheck) {
         if (goods == null) {
             return null;
         }

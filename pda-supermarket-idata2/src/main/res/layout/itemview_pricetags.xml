@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rootview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/material_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal">
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/mfh_textview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="名称"/>
+
+    <TextView
+        android:id="@+id/tv_barcode"
+        style="@style/mfh_textview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:layout_below="@+id/tv_name"
+        android:singleLine="true"
+        android:text="条码"/>
+
+    <TextView
+        android:id="@+id/tv_price"
+        style="@style/mfh_textview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:layout_below="@+id/tv_barcode"
+        android:singleLine="true"
+        android:text="价格"/>
+
+
+</RelativeLayout>

@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
@@ -134,7 +134,7 @@ public class InvLossOrderGoodsAdapter extends RegularAdapter<CreateOrderItemWrap
     /**
      * 添加批发商商品
      * */
-    public boolean appendStockTakeGoods(StockTakeGoods goods, Double quantityCheck){
+    public boolean appendStockTakeGoods(ScGoodsSku goods, Double quantityCheck){
         if (goods == null) {
             ZLogger.d("参数无效");
             return false;

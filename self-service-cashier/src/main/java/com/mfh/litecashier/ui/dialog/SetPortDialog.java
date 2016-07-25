@@ -22,7 +22,7 @@ import com.mfh.litecashier.utils.DataCacheHelper;
 /**
  * 设置串口
  * 
- * @author NAT.ZZN
+ * @author bingshanguxue
  * 
  */
 public class SetPortDialog extends CommonDialog {

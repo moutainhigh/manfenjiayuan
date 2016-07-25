@@ -65,7 +65,7 @@ public class StockTakeFragment extends GpioFragment {
 
     private Long curOrderId;//当前盘点批次编号
     private Long curShelfNumber = 0L;//当前盘点货架
-    private StockTakeGoods curGoods = null;//当前盘点商品
+    private ScGoodsSku curGoods = null;//当前盘点商品
     private boolean isPackage = false;//查询到的商品是否是有规格的，true,显示箱包总数，否则按单品计算
 
     public static StockTakeFragment newInstance(Bundle args) {
@@ -239,9 +239,9 @@ public class StockTakeFragment extends GpioFragment {
             return;
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<StockTakeGoods,
-                NetProcessor.Processor<StockTakeGoods>>(
-                new NetProcessor.Processor<StockTakeGoods>() {
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
+                NetProcessor.Processor<ScGoodsSku>>(
+                new NetProcessor.Processor<ScGoodsSku>() {
                     @Override
                     public void processResult(IResponseData rspData) {
                         //{"code":"0","msg":"操作成功!","version":"1","data":""}
@@ -249,7 +249,7 @@ public class StockTakeFragment extends GpioFragment {
                         if (rspData == null) {
                             DialogUtil.showHint("未找到商品");
                         } else {
-                            RspBean<StockTakeGoods> retValue = (RspBean<StockTakeGoods>) rspData;
+                            RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
                             curGoods = retValue.getValue();
                             if (!curGoods.getBarcode().equals(barcode)) {
                                 isPackage = true;
@@ -267,7 +267,7 @@ public class StockTakeFragment extends GpioFragment {
                         refresh();
                     }
                 }
-                , StockTakeGoods.class
+                , ScGoodsSku.class
                 , AppContext.getAppContext()) {
         };
 

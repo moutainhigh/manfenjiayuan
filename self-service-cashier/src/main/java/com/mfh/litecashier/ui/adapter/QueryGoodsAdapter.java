@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.StockTakeGoods;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN on 15/8/5.
  */
 public class QueryGoodsAdapter
-        extends SwipAdapter<StockTakeGoods, QueryGoodsAdapter.ProductViewHolder> {
+        extends SwipAdapter<ScGoodsSku, QueryGoodsAdapter.ProductViewHolder> {
 
     public interface OnAdapterListener {
         void onDataSetChanged(boolean needScroll);
@@ -37,7 +37,7 @@ public class QueryGoodsAdapter
         this.adapterListener = adapterListener;
     }
 
-    public QueryGoodsAdapter(Context context, List<StockTakeGoods> entityList) {
+    public QueryGoodsAdapter(Context context, List<ScGoodsSku> entityList) {
         super(context, entityList);
     }
 
@@ -48,7 +48,7 @@ public class QueryGoodsAdapter
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
-        StockTakeGoods entity = entityList.get(position);
+        ScGoodsSku entity = entityList.get(position);
 
         holder.tvName.setText(entity.getSkuName());
 
@@ -82,7 +82,7 @@ public class QueryGoodsAdapter
     }
 
     @Override
-    public void setEntityList(List<StockTakeGoods> entityList) {
+    public void setEntityList(List<ScGoodsSku> entityList) {
         super.setEntityList(entityList);
         notifyDataSetChanged();
         if (adapterListener != null) {
@@ -114,21 +114,21 @@ public class QueryGoodsAdapter
             return;
         }
 
-        Collections.sort(entityList, new Comparator<StockTakeGoods>() {
+        Collections.sort(entityList, new Comparator<ScGoodsSku>() {
             @Override
-            public int compare(StockTakeGoods order1, StockTakeGoods order2) {
+            public int compare(ScGoodsSku order1, ScGoodsSku order2) {
                 return 0 - order1.getUpdatedDate().compareTo(order2.getUpdatedDate());
             }
         });
     }
 
-    public void append(StockTakeGoods goods) {
+    public void append(ScGoodsSku goods) {
         if (goods == null) {
             ZLogger.d("商品无效");
             return;
         }
 
-        StockTakeGoods entity = query(goods.getBarcode());
+        ScGoodsSku entity = query(goods.getBarcode());
         if (entity == null) {
             entityList.add(goods);
         }
@@ -140,13 +140,13 @@ public class QueryGoodsAdapter
         }
     }
 
-    private StockTakeGoods query(String barcode) {
+    private ScGoodsSku query(String barcode) {
         if (StringUtils.isEmpty(barcode)) {
             return null;
         }
 
         if (entityList != null && entityList.size() > 0) {
-            for (StockTakeGoods entity : entityList) {
+            for (ScGoodsSku entity : entityList) {
                 if (entity.getBarcode().equals(barcode)) {
                     return entity;
                 }
