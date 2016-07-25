@@ -128,18 +128,19 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
      * <li>PDA商品绑定货架</li>
      * </ol>
      */
-    public static void findStockTakeGoodsByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
+    public static void getGoodsByBarCode(String barcode,
+                                                   AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("barcode", barcode);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_FINDBY_BARCODE, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_GETGOODS_BYBARCODE, params, responseCallback);
     }
 
     /**
      * 根据条码查找租户是否已经发布过该商品，若存在返回信息
      * 适用场景：门店收银自采商品（建档&入库）
      */
-    public static void findGoodsByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
+    public static void getByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("barcode", barcode);
 

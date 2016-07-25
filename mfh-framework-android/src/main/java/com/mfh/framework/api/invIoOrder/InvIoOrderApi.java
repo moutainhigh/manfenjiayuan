@@ -89,12 +89,14 @@ public class InvIoOrderApi {
      * @param transHumanId 司机（可空）
      * @param vehicle 车辆
      */
-    public static void commitOrder(Long orderId, Long transHumanId, String vehicle,
+    public static void commitOrder(String orderId, Long transHumanId, String vehicle,
                                    AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        params.put("orderId", String.valueOf(orderId));
-        params.put("orderId", String.valueOf(transHumanId));
-        params.put("wrapper", vehicle);
+        params.put("orderId", orderId);
+        if (transHumanId != null){
+            params.put("transHumanId", String.valueOf(transHumanId));
+        }
+        params.put("vehicle", vehicle);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_COMMIT_ORDER, params, responseCallback);
     }
