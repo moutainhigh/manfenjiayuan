@@ -26,7 +26,7 @@ import com.mfh.litecashier.R;
 /**
  * 修改数量
  *
- * @author NAT.ZZN(bingshanguxue)
+ * @author bingshanguxue
  */
 public class DoubleInputDialog extends CommonDialog {
 
@@ -42,9 +42,10 @@ public class DoubleInputDialog extends CommonDialog {
     private OnResponseCallback mListener;
     private View rootView;
     private TextView tvTitle;
-    private EditText etQuantity;
-
+    private EditText etValue;
+    private TextView tvUnit;
     private Double hintValue = 0D;
+    private String unit;
     private boolean minimumIntCheckEnabled = false;
     private int minimumIntCheckValue = 0;
     private boolean minimumDoubleCheckEnabled = false;
@@ -58,17 +59,17 @@ public class DoubleInputDialog extends CommonDialog {
     private DoubleInputDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_changequantity, null);
+                R.layout.dialogview_input_double, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         tvTitle.setText("数量");
-        etQuantity = (EditText) rootView.findViewById(R.id.et_quantity);
-        etQuantity.setCursorVisible(false);//隐藏光标
-        etQuantity.setFocusable(true);
-        etQuantity.setFocusableInTouchMode(true);
-        etQuantity.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
-        etQuantity.setOnKeyListener(new View.OnKeyListener() {
+        etValue = (EditText) rootView.findViewById(R.id.et_quantity);
+        etValue.setCursorVisible(false);//隐藏光标
+        etValue.setFocusable(true);
+        etValue.setFocusableInTouchMode(true);
+        etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
+        etValue.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
@@ -83,104 +84,106 @@ public class DoubleInputDialog extends CommonDialog {
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
-        etQuantity.setOnTouchListener(new View.OnTouchListener() {
+        etValue.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etQuantity);
+                        DeviceUtils.showSoftInput(getContext(), etValue);
                     } else {
-                        DeviceUtils.hideSoftInput(getContext(), etQuantity);
+                        DeviceUtils.hideSoftInput(getContext(), etValue);
                     }
                 }
-                etQuantity.requestFocus();
-                etQuantity.setSelection(etQuantity.length());
+                etValue.requestFocus();
+                etValue.setSelection(etValue.length());
                 //返回true,不再继续传递事件
                 return true;
             }
         });
 
+        tvUnit = (TextView) rootView.findViewById(R.id.tv_unit);
+
         rootView.findViewById(R.id.key_0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 直接设置文字，不会触发filter
-                etQuantity.append("0");
+                etValue.append("0");
             }
         });
         rootView.findViewById(R.id.key_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("1");
+                etValue.append("1");
             }
         });
         rootView.findViewById(R.id.key_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("2");
+                etValue.append("2");
             }
         });
         rootView.findViewById(R.id.key_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("3");
+                etValue.append("3");
             }
         });
         rootView.findViewById(R.id.key_4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("4");
+                etValue.append("4");
             }
         });
         rootView.findViewById(R.id.key_5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("5");
+                etValue.append("5");
             }
         });
         rootView.findViewById(R.id.key_6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("6");
+                etValue.append("6");
             }
         });
         rootView.findViewById(R.id.key_7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("7");
+                etValue.append("7");
             }
         });
         rootView.findViewById(R.id.key_8).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("8");
+                etValue.append("8");
             }
         });
         rootView.findViewById(R.id.key_dot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append(".");
+                etValue.append(".");
             }
         });
         rootView.findViewById(R.id.key_9).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etQuantity.append("9");
+                etValue.append("9");
             }
         });
         rootView.findViewById(R.id.key_del).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int len = etQuantity.length();
+                int len = etValue.length();
                 if (len > 0) {
-                    String text = etQuantity.getText().toString();
-                    etQuantity.setText(text.substring(0, Math.max(0, len - 1)));
+                    String text = etValue.getText().toString();
+                    etValue.setText(text.substring(0, Math.max(0, len - 1)));
                 }
             }
         });
         rootView.findViewById(R.id.key_del).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                etQuantity.setText("");
+                etValue.setText("");
                 return true;
             }
         });
@@ -227,17 +230,31 @@ public class DoubleInputDialog extends CommonDialog {
     }
 
     public void init(String title, int decimalDigits, Double hintValue, OnResponseCallback callback) {
+        initialzie(title, decimalDigits, hintValue, null, callback);
+    }
+
+    public void initialzie(String title, int decimalDigits, Double hintValue, String unit,
+                     OnResponseCallback callback) {
         this.hintValue = hintValue;
+        this.unit = unit;
         this.mListener = callback;
         DECIMAL_DIGITS = decimalDigits;
 
         tvTitle.setText(title);
-//        etQuantity.setText(hintValue.toString());
-        etQuantity.getText().clear();
-        etQuantity.setHint(String.format("%.2f", hintValue));
-        etQuantity.setSelection(etQuantity.length());
-        etQuantity.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
-        etQuantity.requestFocus();
+//        etValue.setText(hintValue.toString());
+        etValue.getText().clear();
+        etValue.setHint(String.format("%.2f", hintValue));
+        etValue.setSelection(etValue.length());
+        etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
+        etValue.requestFocus();
+
+        if (StringUtils.isEmpty(unit)){
+            tvUnit.setVisibility(View.GONE);
+        }
+        else{
+            tvUnit.setText(unit);
+            tvUnit.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -252,7 +269,7 @@ public class DoubleInputDialog extends CommonDialog {
     }
 
     private void submit() {
-        String quantityStr = etQuantity.getText().toString();
+        String quantityStr = etValue.getText().toString();
         if (StringUtils.isEmpty(quantityStr)) {
             return;
         }
