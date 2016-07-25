@@ -25,8 +25,8 @@ public class ScGoodsSku implements ILongId, Serializable {
     //产品本身信息
     private Long productId;//所属产品spu编号
     private String imgUrl;//图片链接
-    private String skuName; // 商品名称
-    private String shortName;//规格
+    private String skuName; // 产品名称
+    private String shortName;//产品主规格
     private String unit;            //销售单位，单位，如箱、瓶
     private Integer priceType;      //销售计价类型0-计件 1-计重
     private String buyUnit;         //采购单位
@@ -34,18 +34,22 @@ public class ScGoodsSku implements ILongId, Serializable {
 
     //产品sku信息
     private Long proSkuId;//产品sku编号
-    private String barcode; //最小商品库存单元的条形码
+    private String barcode; //产品条形码
     private Integer skuMask;//
     private Double packageNum;//箱规
+    private String prodArea; //产地
+    private String prodLevel; //等级
 
     //租户商品sku信息
+    private Integer storeType;//仓储类型
     private Long tenantSkuId;//租户商品SKU编号
     private Double quantity;     // 商品数量(库存)
     //    private Double sellNumber;//销量
     private Double sellMonthNum;//月销量
     //    private Double sellDayNum;//日销量
     private Double buyPrice;    //采购价,配销价，平均采购价，也就是预计采购价
-    private Double costPrice; // 零售价
+    private Double costPrice; // 商品售价
+    private Double costScore;//商品积分
     private Double startNum;//起配量
     private Long tenantId;// 租户信息，即微超公司id
 
@@ -67,6 +71,38 @@ public class ScGoodsSku implements ILongId, Serializable {
     private Long providerId;//供应商编号
     private List<GoodsSupplyInfo> supplyItems;//批发商信息
 
+
+    public Integer getStoreType() {
+        return storeType;
+    }
+
+    public void setStoreType(Integer storeType) {
+        this.storeType = storeType;
+    }
+
+    public Double getCostScore() {
+        return costScore;
+    }
+
+    public void setCostScore(Double costScore) {
+        this.costScore = costScore;
+    }
+
+    public String getProdArea() {
+        return prodArea;
+    }
+
+    public void setProdArea(String prodArea) {
+        this.prodArea = prodArea;
+    }
+
+    public String getProdLevel() {
+        return prodLevel;
+    }
+
+    public void setProdLevel(String prodLevel) {
+        this.prodLevel = prodLevel;
+    }
 
     public Long getId() {
         return id;

@@ -56,7 +56,7 @@ public class ScGoodsSkuApi {
      * <li>收银机－－根据条码查询库存商品，报损商品</li>
      * </ul>
      */
-    public final static String URL_SCGOODSSKU_FINDBY_BARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
+    public final static String URL_GETGOODS_BYBARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
 
     /**
      * 查询库存商品:库存成本，批次流水，库存调拨－－
