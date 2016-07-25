@@ -61,7 +61,7 @@ import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.adapter.InventoryCostGoodsAdapter;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.PurchaseHelper;
@@ -123,8 +123,8 @@ public class InventoryCostFragment extends BaseProgressFragment
     //搜索条件
     private SearchParamsWrapper searchParams;
 
-    private ChangeQuantityDialog changeDialog = null;
-    private ChangeQuantityDialog quantityCheckDialog = null;
+    private DoubleInputDialog changeDialog = null;
+    private DoubleInputDialog quantityCheckDialog = null;
 
     private boolean isLoadingMore;
     private boolean bSyncInProgress = false;//是否正在同步
@@ -811,11 +811,11 @@ public class InventoryCostFragment extends BaseProgressFragment
      */
     private void updateCostPrice(final ScGoodsSku goods) {
         if (changeDialog == null) {
-            changeDialog = new ChangeQuantityDialog(getActivity());
+            changeDialog = new DoubleInputDialog(getActivity());
             changeDialog.setCancelable(false);
             changeDialog.setCanceledOnTouchOutside(false);
         }
-        changeDialog.init("零售价", 2, goods.getCostPrice(), new ChangeQuantityDialog.OnResponseCallback() {
+        changeDialog.init("零售价", 2, goods.getCostPrice(), new DoubleInputDialog.OnResponseCallback() {
             @Override
             public void onQuantityChanged(final Double quantity) {
                 if (quantity == null || quantity.compareTo(goods.getCostPrice()) == 0) {
@@ -875,11 +875,11 @@ public class InventoryCostFragment extends BaseProgressFragment
      */
     private void updateUpperLimit(final ScGoodsSku goods) {
         if (changeDialog == null) {
-            changeDialog = new ChangeQuantityDialog(getActivity());
+            changeDialog = new DoubleInputDialog(getActivity());
             changeDialog.setCancelable(false);
             changeDialog.setCanceledOnTouchOutside(false);
         }
-        changeDialog.init("排面库存", 2, goods.getCostPrice(), new ChangeQuantityDialog.OnResponseCallback() {
+        changeDialog.init("排面库存", 2, goods.getCostPrice(), new DoubleInputDialog.OnResponseCallback() {
             @Override
             public void onQuantityChanged(final Double quantity) {
                 if (quantity == null || quantity.compareTo(goods.getCostPrice()) == 0) {
@@ -978,12 +978,12 @@ public class InventoryCostFragment extends BaseProgressFragment
             return;
         }
         if (quantityCheckDialog == null) {
-            quantityCheckDialog = new ChangeQuantityDialog(getActivity());
+            quantityCheckDialog = new DoubleInputDialog(getActivity());
             quantityCheckDialog.setCancelable(false);
             quantityCheckDialog.setCanceledOnTouchOutside(false);
         }
 //        wrapper.getQuantityCheck()
-        quantityCheckDialog.init("采购量", 2, 0D, new ChangeQuantityDialog.OnResponseCallback() {
+        quantityCheckDialog.init("采购量", 2, 0D, new DoubleInputDialog.OnResponseCallback() {
             @Override
             public void onQuantityChanged(Double quantity) {
                 if (quantity < 0D) {

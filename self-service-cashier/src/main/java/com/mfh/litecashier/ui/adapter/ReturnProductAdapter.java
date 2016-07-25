@@ -11,7 +11,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +28,7 @@ import butterknife.OnClick;
 public class ReturnProductAdapter
         extends SwipAdapter<CashierShopcartEntity, ReturnProductAdapter.ProductViewHolder> {
 
-    private ChangeQuantityDialog changeQuantityDialog;
+    private DoubleInputDialog changeQuantityDialog;
 
     public interface OnAdapterListener {
         void onDataSetChanged(boolean needScroll);
@@ -99,11 +99,11 @@ public class ReturnProductAdapter
             }
 
             if (changeQuantityDialog == null) {
-                changeQuantityDialog = new ChangeQuantityDialog(mContext);
+                changeQuantityDialog = new DoubleInputDialog(mContext);
                 changeQuantityDialog.setCancelable(true);
                 changeQuantityDialog.setCanceledOnTouchOutside(true);
             }
-            changeQuantityDialog.init("数量", 2, Math.abs(original.getBcount()), new ChangeQuantityDialog.OnResponseCallback() {
+            changeQuantityDialog.init("数量", 2, Math.abs(original.getBcount()), new DoubleInputDialog.OnResponseCallback() {
                 @Override
                 public void onQuantityChanged(Double quantity) {
                     original.setBcount(0-quantity);

@@ -307,9 +307,9 @@ public class InvIOOrderFragment extends BaseFragment {
 //                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
 //                    (orderList == null ? 0 : orderList.size()), mPageInfo.getTotalCount()));
 
-            if (orderType.equals(String.valueOf(InvIoOrderApi.ORDER_TYPE_IN))) {
+            if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVIOORDER_IN_ENABLED, false);
-            } else if (orderType.equals(String.valueOf(InvIoOrderApi.ORDER_TYPE_OUT))) {
+            } else if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVIOORDER_OUT_ENABLED, false);
             }
             onLoadFinished();

@@ -54,6 +54,7 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_EXCEPTION_ORDERS = 0x15;//POS异常订单
     public static final int FT_RECEIPT = 0x16;//单据
     public static final int FT_SETTINGS = 0x17;//设置
+    public static final int FT_GOODS_LIST = 0x18;//商品列表
 
 
     public static final int FT_CANARY_GOODS = 0x20;//商品
@@ -179,6 +180,7 @@ public class SimpleActivity extends BaseActivity {
             case FT_CANARY_GOODS:
             case FT_CANARY_ORDERFLOW:
             case FT_CANARY_CANARY:
+            case FT_GOODS_LIST:
             case FT_CANARY_DAILYSETTLE: {
                 getMenuInflater().inflate(R.menu.menu_empty, menu);
             }

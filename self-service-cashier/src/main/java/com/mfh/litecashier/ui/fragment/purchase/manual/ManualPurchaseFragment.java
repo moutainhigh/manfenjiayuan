@@ -47,7 +47,7 @@ import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
@@ -111,7 +111,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
     //搜索条件
     private SearchParamsWrapper searchParams;
-    private ChangeQuantityDialog quanticyCheckDialog = null;
+    private DoubleInputDialog quanticyCheckDialog = null;
 
     private boolean isLoadingMore;
     private static final int MAX_PAGE = 10;
@@ -560,12 +560,12 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             return;
         }
         if (quanticyCheckDialog == null) {
-            quanticyCheckDialog = new ChangeQuantityDialog(getActivity());
+            quanticyCheckDialog = new DoubleInputDialog(getActivity());
             quanticyCheckDialog.setCancelable(false);
             quanticyCheckDialog.setCanceledOnTouchOutside(false);
         }
         //goods.getQuantityCheck()
-        quanticyCheckDialog.init("采购量", 2, 0D, new ChangeQuantityDialog.OnResponseCallback() {
+        quanticyCheckDialog.init("采购量", 2, 0D, new DoubleInputDialog.OnResponseCallback() {
             @Override
             public void onQuantityChanged(Double quantity) {
                 if (quantity < 0D) {

@@ -20,24 +20,20 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long OPTION_ID_EXPRESS = 9L;//寄快递
     public static final Long OPTION_ID_FEEDPAPER= 12L;//走纸
     public static final Long OPTION_ID_RETURN_GOODS= 13L;//退货
-    public static final Long OPTION_ID_PRIVATE= 16L;//我的
-    public static final Long OPTION_ID_PAYBACK= 17L;//返货
-    public static final Long OPTION_ID_RESET_ORDER= 18L;//重置订单
     public static final Long OPTION_ID_RECEIVE_GOODS= 23L;//商品领取
-    public static final Long OPTION_ID_STORE_PROMOTION= 24L;//门店促销
     public static final Long OPTION_ID_INVENTORY_TRANS_IN= 26L;//调拨－调入
     public static final Long OPTION_ID_INVENTORY_TRANS_OUT= 27L;//调拨－调出
     public static final Long OPTION_ID_SYNC= 30L;//同步
     public static final Long OPTION_ID_MONEYBOX= 31L;//钱箱
-    public static final Long OPTION_ID_MORE= 32L;//更多
     public static final Long OPTION_ID_HANGUP_ORDER= 33L;//挂单
     public static final Long OPTION_ID_CLEAR_ORDER= 34L;//清空并开始新的收银流水
 
     public static final Long OPTION_ID_ONLINE_ORDER     = 40L;//线上订单
-    public static final Long OPTION_ID_REGISTER_VIP     = 41L;//注册
-    public static final Long OPTION_ID_BALANCE_QUERY    = 42L;//余额查询
-    public static final Long OPTION_ID_MEMBER_CARD      = 43L;//会员卡（开卡）
-    public static final Long OPTION_ID_SETTINGS         = 44L;//设置
+    public static final Long OPTION_ID_GOODS_LIST       = 41L;//注册
+    public static final Long OPTION_ID_REGISTER_VIP     = 42L;//注册
+    public static final Long OPTION_ID_BALANCE_QUERY    = 43L;//余额查询
+    public static final Long OPTION_ID_MEMBER_CARD      = 44L;//会员卡（开卡）
+    public static final Long OPTION_ID_SETTINGS         = 45L;//设置
 
     //管理者控制台
     public static final Long ADMIN_MENU_FRESH = 51L;//生鲜
@@ -50,9 +46,7 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long ADMIN_MENU_ORDERFLOW= 57L;//流水
     public static final Long ADMIN_MENU_RECEIPT= 58L;//单据
 
-//    public static final Long ADMIN_MENU_INVRETURNORDER= 59L;//退货
     public static final Long ADMIN_MENU_ONLINEORDER= 60L;//线上订单
-    public static final Long ADMIN_MENU_INVLOSSORDER= 61L;//报损
     public static final Long ADMIN_MENU_ANALYSIS= 62L;//统计
     public static final Long ADMIN_MENU_DAILYSETTLE= 63L;//日结
     public static final Long ADMIN_MENU_TOPUP = 64L;//充值

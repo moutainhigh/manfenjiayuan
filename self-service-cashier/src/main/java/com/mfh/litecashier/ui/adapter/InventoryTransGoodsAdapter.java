@@ -13,7 +13,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class InventoryTransGoodsAdapter
 
     private boolean isItemEditabled;//是否可以修改
 
-    private ChangeQuantityDialog changeQuantityDialog;
+    private DoubleInputDialog changeQuantityDialog;
 
     public InventoryTransGoodsAdapter(Context context, List<InvSendIoOrderItem> entityList) {
         super(context, entityList);
@@ -132,11 +132,11 @@ public class InventoryTransGoodsAdapter
             }
 
             if (changeQuantityDialog == null) {
-                changeQuantityDialog = new ChangeQuantityDialog(mContext);
+                changeQuantityDialog = new DoubleInputDialog(mContext);
                 changeQuantityDialog.setCancelable(true);
                 changeQuantityDialog.setCanceledOnTouchOutside(true);
             }
-            changeQuantityDialog.init("采购量", 2, original.getQuantityCheck(), new ChangeQuantityDialog.OnResponseCallback() {
+            changeQuantityDialog.init("采购量", 2, original.getQuantityCheck(), new DoubleInputDialog.OnResponseCallback() {
                 @Override
                 public void onQuantityChanged(Double quantity) {
                     original.setQuantityCheck(quantity);

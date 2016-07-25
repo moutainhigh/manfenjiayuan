@@ -15,7 +15,7 @@ import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.entity.PurchaseGoodsEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import butterknife.OnClick;
 public class ManualPurchaseShopcartGoodsAdapter
         extends SwipAdapter<PurchaseGoodsEntity, ManualPurchaseShopcartGoodsAdapter.ProductViewHolder> {
 
-    private ChangeQuantityDialog changeQuantityDialog;
+    private DoubleInputDialog changeQuantityDialog;
 
     public interface OnAdapterListener {
         void onDataSetChanged(boolean isNeedReloadOrder);
@@ -121,11 +121,11 @@ public class ManualPurchaseShopcartGoodsAdapter
             }
 
             if (changeQuantityDialog == null) {
-                changeQuantityDialog = new ChangeQuantityDialog(mContext);
+                changeQuantityDialog = new DoubleInputDialog(mContext);
                 changeQuantityDialog.setCancelable(true);
                 changeQuantityDialog.setCanceledOnTouchOutside(true);
             }
-            changeQuantityDialog.init("采购量", 2, original.getQuantityCheck(), new ChangeQuantityDialog.OnResponseCallback() {
+            changeQuantityDialog.init("采购量", 2, original.getQuantityCheck(), new DoubleInputDialog.OnResponseCallback() {
                 @Override
                 public void onQuantityChanged(Double quantity) {
                     if (quantity < 1D){

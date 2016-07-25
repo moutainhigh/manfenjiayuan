@@ -28,7 +28,7 @@ import com.mfh.litecashier.R;
  *
  * @author NAT.ZZN(bingshanguxue)
  */
-public class ChangeQuantityDialog extends CommonDialog {
+public class DoubleInputDialog extends CommonDialog {
 
     /**
      * 输入框小数的位数
@@ -36,7 +36,7 @@ public class ChangeQuantityDialog extends CommonDialog {
     private static int DECIMAL_DIGITS = 2;
 
     public interface OnResponseCallback {
-        void onQuantityChanged(Double quantity);
+        void onQuantityChanged(Double value);
     }
 
     private OnResponseCallback mListener;
@@ -44,18 +44,18 @@ public class ChangeQuantityDialog extends CommonDialog {
     private TextView tvTitle;
     private EditText etQuantity;
 
-    private Double hintValue;
+    private Double hintValue = 0D;
     private boolean minimumIntCheckEnabled = false;
     private int minimumIntCheckValue = 0;
     private boolean minimumDoubleCheckEnabled = false;
     private Double minimumDoubleCheckValue = 0D;
 
-    private ChangeQuantityDialog(Context context, boolean flag, OnCancelListener listener) {
+    private DoubleInputDialog(Context context, boolean flag, OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private ChangeQuantityDialog(Context context, int defStyle) {
+    private DoubleInputDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
                 R.layout.dialogview_changequantity, null);
@@ -201,7 +201,7 @@ public class ChangeQuantityDialog extends CommonDialog {
         setContent(rootView, 0);
     }
 
-    public ChangeQuantityDialog(Context context) {
+    public DoubleInputDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 

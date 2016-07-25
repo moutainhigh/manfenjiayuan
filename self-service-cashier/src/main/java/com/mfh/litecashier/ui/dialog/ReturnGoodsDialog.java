@@ -248,7 +248,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         dismiss();
     }
 
-    private ChangeQuantityDialog changeQuantityDialog = null;
+    private DoubleInputDialog changeQuantityDialog = null;
 
     @Override
     public void onFindGoods(final PosProductEntity goods, int packFlag) {
@@ -275,11 +275,11 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
             }
             else{
                 if (changeQuantityDialog == null) {
-                    changeQuantityDialog = new ChangeQuantityDialog(getContext());
+                    changeQuantityDialog = new DoubleInputDialog(getContext());
                     changeQuantityDialog.setCancelable(true);
                     changeQuantityDialog.setCanceledOnTouchOutside(true);
                 }
-                changeQuantityDialog.init("重量", 3, weightVal, new ChangeQuantityDialog.OnResponseCallback() {
+                changeQuantityDialog.init("重量", 3, weightVal, new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
 

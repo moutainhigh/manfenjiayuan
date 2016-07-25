@@ -82,7 +82,7 @@ import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
 import com.mfh.litecashier.ui.adapter.CashierSwipAdapter;
 import com.mfh.litecashier.ui.dialog.AdministratorSigninDialog;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.ExpressDialog;
 import com.mfh.litecashier.ui.dialog.HangupOrderDialog;
 import com.mfh.litecashier.ui.dialog.InitCardByStepDialog;
@@ -147,21 +147,24 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
     TextView tvLastDiscount;
     @Bind(R.id.tv_last_charge)
     TextView tvLastCharge;
+    @Bind(R.id.tv_quota)
+    TextView tvQuota;
     @Bind(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
-    @Bind(R.id.fab_settle)
-    FloatingActionButton btnSettle;
     @Bind(R.id.product_list)
     RecyclerView productRecyclerView;
+    private ItemTouchHelper itemTouchHelper;
+    private CashierSwipAdapter productAdapter;
+    @Bind(R.id.fab_settle)
+    FloatingActionButton btnSettle;
     @Bind(R.id.float_hangup)
     TextView fabHangup;
 
-    private ItemTouchHelper itemTouchHelper;
-    private CashierSwipAdapter productAdapter;
-    private ChangeQuantityDialog changePriceDialog = null;
-    private ChangeQuantityDialog changeQuantityDialog = null;
+    private DoubleInputDialog changePriceDialog = null;
+    private DoubleInputDialog changeDiscountDialog = null;
+    private DoubleInputDialog changeQuantityDialog = null;
 
-    private ChangeQuantityDialog quantityCheckDialog = null;
+    private DoubleInputDialog quantityCheckDialog = null;
     private HangupOrderDialog hangupOrderDialog = null;
 
     /**
@@ -394,7 +397,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 
         if (id.compareTo(CashierFunctional.OPTION_ID_ONLINE_ORDER) == 0) {
             redirectToOnlineOrder();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_PACKAGE) == 0) {
+        } else if (id.compareTo(CashierFunctional.OPTION_ID_GOODS_LIST) == 0) {
+            redirectToGoodsList();
+        }  else if (id.compareTo(CashierFunctional.OPTION_ID_PACKAGE) == 0) {
             packageService();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_REGISTER_VIP) == 0) {
             registerVIPStep1();
@@ -498,6 +503,17 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
         SimpleActivity.actionStart(this, extras);
+    }
+
+    /**
+     * 跳转到商品列表
+     */
+    public void redirectToGoodsList() {
+        DialogUtil.showHint("商品列表");
+//        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+//        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_GOODS_LIST);
+//        SimpleActivity.actionStart(this, extras);
     }
 
     /**
@@ -1216,6 +1232,11 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             }
 
             @Override
+            public void onDiscountClicked(int position) {
+                changeGoodsDiscount(position);
+            }
+
+            @Override
             public void onQuantityClicked(int position) {
                 changeGoodsQuantity(position);
             }
@@ -1332,12 +1353,12 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         }
 
         if (changePriceDialog == null) {
-            changePriceDialog = new ChangeQuantityDialog(this);
+            changePriceDialog = new DoubleInputDialog(this);
             changePriceDialog.setCancelable(true);
             changePriceDialog.setCanceledOnTouchOutside(true);
         }
         changePriceDialog.init("成交价", 2, entity.getFinalPrice(),
-                new ChangeQuantityDialog.OnResponseCallback() {
+                new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
                         entity.setFinalPrice(quantity);
@@ -1351,6 +1372,36 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
                 });
         changePriceDialog.show();
     }
+    /**
+     * 修改商品价格折扣
+     */
+    private void changeGoodsDiscount(final int position) {
+        final CashierShopcartEntity entity = productAdapter.getEntity(position);
+        if (entity == null) {
+            return;
+        }
+
+        if (changeDiscountDialog == null) {
+            changeDiscountDialog = new DoubleInputDialog(this);
+            changeDiscountDialog.setCancelable(true);
+            changeDiscountDialog.setCanceledOnTouchOutside(true);
+        }
+        changeDiscountDialog.init("折扣", 0,
+                CashierAgent.calculatePriceDiscount(entity.getCostPrice(), entity.getFinalPrice()),
+                new DoubleInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onQuantityChanged(Double value) {
+                        entity.setFinalPrice(entity.getCostPrice() * value / 100);
+                        entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+                        CashierShopcartService.getInstance().saveOrUpdate(entity);
+
+                        if (productAdapter != null) {
+                            productAdapter.notifyDataSetChanged(position, false);
+                        }
+                    }
+                });
+        changeDiscountDialog.show();
+    }
 
     /**
      * 修改商品数量
@@ -1362,12 +1413,12 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         }
 
         if (changeQuantityDialog == null) {
-            changeQuantityDialog = new ChangeQuantityDialog(this);
+            changeQuantityDialog = new DoubleInputDialog(this);
             changeQuantityDialog.setCancelable(true);
             changeQuantityDialog.setCanceledOnTouchOutside(true);
         }
         changeQuantityDialog.init("数量", 2, entity.getBcount(),
-                new ChangeQuantityDialog.OnResponseCallback() {
+                new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
                         entity.setBcount(quantity);
@@ -1542,11 +1593,11 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 
             } else {
                 if (quantityCheckDialog == null) {
-                    quantityCheckDialog = new ChangeQuantityDialog(this);
+                    quantityCheckDialog = new DoubleInputDialog(this);
                     quantityCheckDialog.setCancelable(true);
                     quantityCheckDialog.setCanceledOnTouchOutside(true);
                 }
-                quantityCheckDialog.init("重量", 3, weightVal, new ChangeQuantityDialog.OnResponseCallback() {
+                quantityCheckDialog.init("重量", 3, weightVal, new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
                         productAdapter.append(curPosTradeNo, goods, quantity);

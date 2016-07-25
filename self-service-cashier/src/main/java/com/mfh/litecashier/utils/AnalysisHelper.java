@@ -359,13 +359,6 @@ public class AnalysisHelper {
         return getAccAnalysisList(accWrapper);
     }
 
-
-    public static String retrieveFormatedGrossMargin(Double turnover, Double grossProfit){
-        Double grossMargin = retrieveGrossMargin(turnover, grossProfit);
-
-        return String.format("%.2f%%", 100 * grossMargin);
-    }
-
     public static AccItem constructorAccItem(Integer payType, String payTypeCaption) {
         AccItem accItem = new AccItem();
         accItem.setPayType(payType);

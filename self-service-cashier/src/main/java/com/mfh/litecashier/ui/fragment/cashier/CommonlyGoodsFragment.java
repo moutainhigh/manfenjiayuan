@@ -18,7 +18,7 @@ import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.event.AddCommonlyGoodsEvent;
 import com.mfh.litecashier.event.CommonlyGoodsEvent;
 import com.mfh.litecashier.ui.adapter.CommonlyGoodsAdapter;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -45,7 +45,7 @@ public class CommonlyGoodsFragment extends BaseFragment {
 
     private Long categoryId;
 
-    private ChangeQuantityDialog changeQuantityDialog = null;
+    private DoubleInputDialog changeQuantityDialog = null;
 
     @Override
     protected int getLayoutResId() {
@@ -147,11 +147,11 @@ public class CommonlyGoodsFragment extends BaseFragment {
                 }
 
                 if (changeQuantityDialog == null) {
-                    changeQuantityDialog = new ChangeQuantityDialog(getActivity());
+                    changeQuantityDialog = new DoubleInputDialog(getActivity());
                     changeQuantityDialog.setCancelable(true);
                     changeQuantityDialog.setCanceledOnTouchOutside(true);
                 }
-                changeQuantityDialog.init("修改价格", 2, goods.getCostPrice(), new ChangeQuantityDialog.OnResponseCallback() {
+                changeQuantityDialog.init("修改价格", 2, goods.getCostPrice(), new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
                         goods.setCostPrice(quantity);

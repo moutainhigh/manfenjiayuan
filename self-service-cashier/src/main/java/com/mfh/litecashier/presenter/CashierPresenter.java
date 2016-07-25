@@ -134,6 +134,8 @@ public class CashierPresenter {
         List<CashierFunctional> functionalList = new ArrayList<>();
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                 "线上订单", R.mipmap.ic_service_online_order));
+        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_GOODS_LIST,
+                "商品列表", R.mipmap.ic_service_goodslist));
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_REGISTER_VIP,
                 "注册", R.mipmap.ic_service_register_vip));
         functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_MEMBER_CARD,

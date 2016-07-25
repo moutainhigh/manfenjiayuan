@@ -6,11 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
+import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LossOrderItem;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
 public class DefectiveAdapter
         extends SwipAdapter<LossOrderItem, DefectiveAdapter.ProductViewHolder> {
 
-    private ChangeQuantityDialog changeQuantityDialog;
+    private DoubleInputDialog changeQuantityDialog;
 
     public DefectiveAdapter(Context context, List<LossOrderItem> entityList) {
         super(context, entityList);
@@ -94,11 +95,11 @@ public class DefectiveAdapter
             }
 
             if (changeQuantityDialog == null) {
-                changeQuantityDialog = new ChangeQuantityDialog(mContext);
+                changeQuantityDialog = new DoubleInputDialog(mContext);
                 changeQuantityDialog.setCancelable(true);
                 changeQuantityDialog.setCanceledOnTouchOutside(true);
             }
-            changeQuantityDialog.init("数量", 2, Math.abs(original.getQuantity()), new ChangeQuantityDialog.OnResponseCallback() {
+            changeQuantityDialog.init("数量", 2, Math.abs(original.getQuantity()), new DoubleInputDialog.OnResponseCallback() {
                 @Override
                 public void onQuantityChanged(Double quantity) {
                     original.setQuantity(quantity);

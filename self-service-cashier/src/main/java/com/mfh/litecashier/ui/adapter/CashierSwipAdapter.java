@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
@@ -24,9 +25,6 @@ import butterknife.OnClick;
 
 /**
  * <h1>收银商品适</h1>
- * <ul>
- * <li>支持滑动删除</li>
- * </ul>
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class CashierSwipAdapter
@@ -34,6 +32,7 @@ public class CashierSwipAdapter
 
     public interface OnAdapterListener {
         void onPriceClicked(int position);
+        void onDiscountClicked(int position);
 
         void onQuantityClicked(int position);
 
@@ -54,6 +53,8 @@ public class CashierSwipAdapter
         TextView tvName;
         @Bind(R.id.tv_finalPrice)
         TextView tvFinalPrice;
+        @Bind(R.id.tv_discount)
+        TextView tvDiscount;
         @Bind(R.id.tv_quantity)
         TextView tvCount;
         @Bind(R.id.tv_amount)
@@ -86,6 +87,22 @@ public class CashierSwipAdapter
 //            }
             if (adapterListener != null) {
                 adapterListener.onPriceClicked(getAdapterPosition());
+            }
+        }
+
+        /**
+         * 修改折扣
+         */
+        @OnClick(R.id.ll_discount)
+        public void changeDiscount() {
+//            final int position = getAdapterPosition();
+////
+//            final CashierShopcartEntity original = entityList.get(position);
+//            if (original == null) {
+//                return;
+//            }
+            if (adapterListener != null) {
+                adapterListener.onDiscountClicked(getAdapterPosition());
             }
         }
 
@@ -127,21 +144,23 @@ public class CashierSwipAdapter
             CashierShopcartEntity entity = getEntity(position);
             if (entity != null){
                 // - replace the contents of the view with that element
-                holder.tvAmount.setText(String.format("%.2f", entity.getFinalAmount()));
                 holder.tvName.setText(entity.getName());
                 holder.tvFinalPrice.setText(String.format("%.2f", entity.getFinalPrice()));
+                holder.tvDiscount.setText(String.format("%.0f%%",
+                        CashierAgent.calculatePriceDiscount(entity.getCostPrice(),
+                        entity.getFinalPrice()) * 100));
                 //计件：整数；记重：3位小数
                 if (entity.getPriceType() == PriceType.WEIGHT) {
                     holder.tvCount.setText(String.format("%.3f", entity.getBcount()));
                 } else {
                     holder.tvCount.setText(String.format("%.2f", entity.getBcount()));
                 }
+                holder.tvAmount.setText(String.format("%.2f", entity.getFinalAmount()));
             }
 
         } catch (Exception e) {
             ZLogger.ef(e.toString());
         }
-
     }
 
     @Override

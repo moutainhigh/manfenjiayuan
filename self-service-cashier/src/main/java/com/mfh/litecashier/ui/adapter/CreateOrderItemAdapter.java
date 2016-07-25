@@ -19,7 +19,7 @@ import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
-import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
+import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +38,7 @@ import butterknife.OnClick;
 public class CreateOrderItemAdapter
         extends SwipAdapter<CreateOrderItemWrapper, CreateOrderItemAdapter.ProductViewHolder> {
 
-    private ChangeQuantityDialog changeQuantityDialog;
+    private DoubleInputDialog changeQuantityDialog;
 
     private boolean isPriceEnabled;//是否可以修改
     private boolean isQuantityEnabled;
@@ -160,11 +160,11 @@ public class CreateOrderItemAdapter
             }
 
             if (changeQuantityDialog == null) {
-                changeQuantityDialog = new ChangeQuantityDialog(mContext);
+                changeQuantityDialog = new DoubleInputDialog(mContext);
                 changeQuantityDialog.setCancelable(true);
                 changeQuantityDialog.setCanceledOnTouchOutside(true);
             }
-            changeQuantityDialog.init("采购价", 2, original.getPrice(), new ChangeQuantityDialog.OnResponseCallback() {
+            changeQuantityDialog.init("采购价", 2, original.getPrice(), new DoubleInputDialog.OnResponseCallback() {
                 @Override
                 public void onQuantityChanged(Double quantity) {
                     original.setPrice(quantity);
@@ -193,11 +193,11 @@ public class CreateOrderItemAdapter
             }
 
             if (changeQuantityDialog == null) {
-                changeQuantityDialog = new ChangeQuantityDialog(mContext);
+                changeQuantityDialog = new DoubleInputDialog(mContext);
                 changeQuantityDialog.setCancelable(true);
                 changeQuantityDialog.setCanceledOnTouchOutside(true);
             }
-            changeQuantityDialog.init("修改数量", 2, original.getQuantityCheck(), new ChangeQuantityDialog.OnResponseCallback() {
+            changeQuantityDialog.init("修改数量", 2, original.getQuantityCheck(), new DoubleInputDialog.OnResponseCallback() {
                 @Override
                 public void onQuantityChanged(Double quantity) {
                     original.setQuantityCheck(quantity);

@@ -228,7 +228,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
 
                     //尾部:订单支付信息
                     Double payableAmount = mPosOrderEntity.getFinalAmount() - payWrapper.getRuleDiscount();
-                    if (payableAmount < 0.01){
+                    if (payableAmount < 0.01) {
                         payableAmount = 0D;
                     }
                     sbHtml.append(String.format("<p>" +
@@ -244,7 +244,9 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                             mPosOrderEntity.getFinalAmount(),
                             payWrapper.getRuleDiscount(),
                             payableAmount,
-                            mPosOrderEntity.getPaidAmount() - payWrapper.getRuleDiscount(),
+                            mPosOrderEntity.getPaidAmount()
+                                    - payWrapper.getRuleDiscount()
+                                    + payWrapper.getChange(),
                             payWrapper.getChange()));
                 }
 

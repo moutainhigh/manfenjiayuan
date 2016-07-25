@@ -214,7 +214,7 @@ public class PrintManager {
             ZLogger.df(JSONObject.toJSONString(orderEntity));
             finalAmount += orderEntity.getFinalAmount();
             ruleDis += orderEntity.getRuleDiscountAmount();
-            paidAmount += orderEntity.getPaidAmount();
+            paidAmount += orderEntity.getPaidAmount() + orderEntity.getChange();
             Double payableTemp = orderEntity.getFinalAmount() - orderEntity.getRuleDiscountAmount();
             if (payableTemp < 0.01){
                 payableTemp = 0D;
@@ -309,8 +309,11 @@ public class PrintManager {
         esc.addText(String.format("合计:%.2f\n", posOrderEntity.getFinalAmount()));
         esc.addText(String.format("优惠:%.2f\n", posOrderEntity.getRuleDiscountAmount()));
 //        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
-        esc.addText(String.format("应收:%.2f\n", posOrderEntity.getFinalAmount() - posOrderEntity.getRuleDiscountAmount()));
-        esc.addText(String.format("付款:%.2f\n", posOrderEntity.getPaidAmount() - posOrderEntity.getRuleDiscountAmount()));
+        esc.addText(String.format("应收:%.2f\n",
+                posOrderEntity.getFinalAmount() - posOrderEntity.getRuleDiscountAmount()));
+        esc.addText(String.format("付款:%.2f\n",
+                posOrderEntity.getPaidAmount() - posOrderEntity.getRuleDiscountAmount()
+                        + posOrderEntity.getChange()));
         esc.addText(String.format("找零:%.2f\n", Math.abs(posOrderEntity.getChange())));
 
         /**
@@ -351,7 +354,8 @@ public class PrintManager {
      * esc.addText("货号/品名       单价 数量   小计\n");
      * esc.addText("业务类型            数量    金额\n");
      * */
-    private static EscCommand makePosOrderLine(EscCommand rawEsc, String name, String price, String bcount, String amount){
+    private static EscCommand makePosOrderLine(EscCommand rawEsc, String name,
+                                               String price, String bcount, String amount){
         EscCommand esc = rawEsc;
         if (esc == null){
             esc = new EscCommand();
