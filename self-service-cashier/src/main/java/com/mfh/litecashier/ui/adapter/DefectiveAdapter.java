@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
-import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.mfh.litecashier.bean.wrapper.LossOrderItem;
 import com.mfh.litecashier.ui.dialog.ChangeQuantityDialog;
 
@@ -127,7 +126,7 @@ public class DefectiveAdapter
     }
 
     //TODO,重复的项需要累加
-    public void addEntity(StockTakeGoods goods) {
+    public void addEntity(ScGoodsSku goods) {
         if (goods == null) {
             return;
         }

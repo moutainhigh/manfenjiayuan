@@ -51,7 +51,7 @@ public class GoodsShelvesFragment extends GpioFragment {
     @Bind(R.id.button_bind)
     Button btnBind;
 
-    private StockTakeGoods curGoods = null;//当前盘点商品
+    private ScGoodsSku curGoods = null;//当前盘点商品
     private boolean isPackage = false;//查询到的商品是否是有规格的，true,显示箱包总数，否则按单品计算
 
     public static GoodsShelvesFragment newInstance(Bundle args) {
@@ -258,9 +258,9 @@ public class GoodsShelvesFragment extends GpioFragment {
         curGoods = null;
         isPackage = false;
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<StockTakeGoods,
-                NetProcessor.Processor<StockTakeGoods>>(
-                new NetProcessor.Processor<StockTakeGoods>() {
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
+                NetProcessor.Processor<ScGoodsSku>>(
+                new NetProcessor.Processor<ScGoodsSku>() {
                     @Override
                     public void processResult(IResponseData rspData) {
                         //{"code":"0","msg":"操作成功!","version":"1","data":""}
@@ -269,8 +269,8 @@ public class GoodsShelvesFragment extends GpioFragment {
                             DialogUtil.showHint("未找到商品");
                             refreshGoodsInfo(null);
                         } else {
-                            RspBean<StockTakeGoods> retValue = (RspBean<StockTakeGoods>) rspData;
-                            StockTakeGoods goods = retValue.getValue();
+                            RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
+                            ScGoodsSku goods = retValue.getValue();
                             if (!goods.getBarcode().equals(barcode)) {
                                 isPackage = true;
                             }
@@ -286,7 +286,7 @@ public class GoodsShelvesFragment extends GpioFragment {
                         refreshGoodsInfo(null);
                     }
                 }
-                , StockTakeGoods.class
+                , ScGoodsSku.class
                 , AppContext.getAppContext()) {
         };
 
@@ -310,7 +310,7 @@ public class GoodsShelvesFragment extends GpioFragment {
         DeviceUtils.hideSoftInput(getActivity(), eqvShelve);
     }
 
-    private void refreshGoodsInfo(StockTakeGoods goods) {
+    private void refreshGoodsInfo(ScGoodsSku goods) {
         curGoods = goods;
         if (goods != null) {
 //            eqvShelve.clear();

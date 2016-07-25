@@ -120,7 +120,7 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
     /**
      * 添加新商品
      * */
-    public void addNewEntity(Long orderId, Long shelfNumber, StockTakeGoods productEntity,
+    public void addNewEntity(Long orderId, Long shelfNumber, ScGoodsSku productEntity,
                              Double quantity){
         if (StringUtils.isEmpty(orderId) || productEntity == null){
             return;
