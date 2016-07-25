@@ -22,6 +22,7 @@ import com.manfenjiayuan.pda_supermarket.database.logic.InvIoGoodsService;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.comn.net.data.IResponseData;
+import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.logger.ZLogger;
@@ -290,7 +291,9 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
                      * */
                     ZLogger.df("新建出入库订单成功:");
                     if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
-                        doCommitTask();
+                        RspValue<String> retValue = (RspValue<String>) rspData;
+
+                        doCommitTask(retValue.getValue());
                     } else {
                         DialogUtil.showHint("订单创建成功");
                         hideProgressDialog();
@@ -303,13 +306,75 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
             , MfhApplication.getAppContext()) {
     };
 
+    private CommitInvIoOrderDialog commitDialog = null;
     /**
      * 提交订单
      * */
-    private void doCommitTask(){
-        hideProgressDialog();
+    private void doCommitTask(final String orderId){
+//        hideProgressDialog();
         DialogUtil.showHint("准备提交订单");
+
+        if (commitDialog == null) {
+            commitDialog = new CommitInvIoOrderDialog(getActivity());
+            commitDialog.setCancelable(true);
+            commitDialog.setCanceledOnTouchOutside(false);
+        }
+        commitDialog.init(new CommitInvIoOrderDialog.DialogListener() {
+            @Override
+            public void onNextStep(String vehicle, String phonenumber) {
+                if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+                    DialogUtil.showHint(R.string.toast_network_error);
+//            animProgress.setVisibility(View.GONE);
+                    btnSubmit.setEnabled(true);
+                    hideProgressDialog();
+                    return;
+                }
+                InvIoOrderApi.commitOrder(orderId, null,
+                        vehicle, commitRC);
+            }
+
+        });
+        if (!commitDialog.isShowing()) {
+            commitDialog.show();
+        }
     }
+
+
+    private NetCallBack.NetTaskCallBack commitRC = new NetCallBack.NetTaskCallBack<String,
+            NetProcessor.Processor<String>>(
+            new NetProcessor.Processor<String>() {
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    ZLogger.df("提交出入库订单失败: " + errMsg);
+//                    {"code":"1","msg":"132079网点有仓储单正在处理中...","version":"1","data":null}
+                    //查询失败
+//                        animProgress.setVisibility(View.GONE);
+//                    DialogUtil.showHint("新建退货单失败" + errMsg);
+                    DialogUtil.showHint(errMsg);
+                    hideProgressDialog();
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                }
+
+                @Override
+                public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
+//                        animProgress.setVisibility(View.GONE);
+                    /**
+                     * 新建退货单成功，更新采购单列表
+                     * */
+                    ZLogger.df("提交出入库订单成功:");
+                    DialogUtil.showHint("提交订单成功");
+                    hideProgressDialog();
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                }
+            }
+            , String.class
+            , MfhApplication.getAppContext()) {
+    };
+
 
     /**
      * 验货

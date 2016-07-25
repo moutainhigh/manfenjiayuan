@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="ScannerInterface">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/pda/libs/ScannerInterface.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

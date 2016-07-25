@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="mfh-framework-all.mfh-framework-all">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/mfh-framework-all/build/libs/mfh-framework-all.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
