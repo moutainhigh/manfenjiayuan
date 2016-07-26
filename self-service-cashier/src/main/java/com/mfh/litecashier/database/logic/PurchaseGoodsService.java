@@ -4,6 +4,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.database.dao.PurchaseGoodsDao;
 import com.mfh.litecashier.database.entity.PurchaseGoodsEntity;
 
@@ -123,36 +124,6 @@ public class PurchaseGoodsService extends BaseService<PurchaseGoodsEntity, Strin
         }
     }
 
-//    /**
-//     * 获取购物车中的所有生鲜商品
-//     * */
-//    public List<PurchaseGoodsEntity> getFreshGoodsList(){
-//        return queryAllBy(String.format("purchaseType = '%d'",
-//                PurchaseOrderEntity.PURCHASE_TYPE_FRESH));
-//    }
-//    public void clearFreshGoodsList(){
-//        deleteBy(String.format("purchaseType = '%d'",
-//                PurchaseGoodsEntity.PURCHASE_TYPE_FRESH));
-//    }
-//
-//    /**
-//     * 获取指定批发商的商品列表*/
-//    public List<PurchaseGoodsEntity> getFreshGoodsList(Long providerId){
-//        try{
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(String.format("purchaseType = '%d'",
-//                    PurchaseGoodsEntity.PURCHASE_TYPE_FRESH));
-//            if (providerId != null){
-//                sb.append(String.format("and providerId = '%d'",
-//                        providerId));
-//            }
-//
-//            return getDao().queryAllBy(sb.toString(), "updatedDate desc");
-//        } catch (Exception e){
-//            ZLogger.e(e.toString());
-//            return null;
-//        }
-//    }
 
     /**
      * 查询采购订单明细
@@ -176,6 +147,29 @@ public class PurchaseGoodsService extends BaseService<PurchaseGoodsEntity, Strin
         return null;
     }
 
+    /**
+     * 查询采购订单明细
+     * */
+    public PurchaseGoodsEntity fetchGoods(Integer purchaseType, Long providerId, String barcode){
+        try{
+            if (purchaseType == null || providerId == null || StringUtils.isEmpty(barcode)){
+                return null;
+            }
+
+            String sqlWhere = String.format("purchaseType = '%d' and providerId = '%d' " +
+                    "and barcode = '%d'", purchaseType, providerId, barcode);
+            List<PurchaseGoodsEntity> entityList =  getDao().queryAllBy(sqlWhere);
+            if (entityList != null && entityList.size() > 0){
+                return entityList.get(0);
+            }
+        }catch (Exception e){
+            ZLogger.e( e.toString());
+        }
+
+        return null;
+    }
+
+
     public List<PurchaseGoodsEntity> fetchGoodsEntities(Integer purchaseType, Long providerId){
         try{
             if (purchaseType == null || providerId == null){
@@ -192,56 +186,5 @@ public class PurchaseGoodsService extends BaseService<PurchaseGoodsEntity, Strin
         return null;
     }
 
-
-//    /**
-//     * 保存生鲜商品
-//     * */
-//    public void saveOrUpdateFreshGoods(ChainGoodsSku goods, Double quantity){
-//        if (goods == null || StringUtils.isEmpty(goods.getBarcode())){
-//            ZLogger.d("保存生鲜商品失败，商品无效或商品条码为空");
-//            return;
-//        }
-//
-//        PurchaseGoodsEntity PurchaseGoodsEntity = PurchaseGoodsService
-//                .getInstance().getFreshGoods(goods.getTenantId(),
-//                        goods.getBarcode());
-//
-//        if (PurchaseGoodsEntity == null){
-//            ZLogger.d(String.format("添加新的生鲜商品到购物车:%s", goods.getBarcode()));
-//            PurchaseGoodsEntity = new PurchaseGoodsEntity();
-//            PurchaseGoodsEntity.setCreatedDate(new Date());
-//            PurchaseGoodsEntity.setPurchaseType(PurchaseGoodsEntity.PURCHASE_TYPE_FRESH);
-//            PurchaseGoodsEntity.setProviderId(goods.getTenantId());
-//            PurchaseGoodsEntity.setProviderName(goods.getCompanyName());
-//            PurchaseGoodsEntity.setChainSkuId(goods.getId());
-//            PurchaseGoodsEntity.setIsPrivate(IsPrivate.PLATFORM);
-//            PurchaseGoodsEntity.setProSkuId(goods.getProSkuId());
-//            PurchaseGoodsEntity.setBarcode(goods.getBarcode());
-//        }
-//        else{
-//            ZLogger.d(String.format("更新购物车中生鲜商品:%s", goods.getBarcode()));
-//        }
-//
-//        PurchaseGoodsEntity.setImgUrl(goods.getImgUrl());
-//        PurchaseGoodsEntity.setName(goods.getSkuName());
-//        PurchaseGoodsEntity.setUnit(goods.getBuyUnit());
-//        PurchaseGoodsEntity.setPrice(goods.getHintPrice());
-//        PurchaseGoodsEntity.setQuantity(quantity);
-//        PurchaseGoodsEntity.setUpdatedDate(new Date());
-//        saveOrUpdate(PurchaseGoodsEntity);
-//    }
-
-//    public void saveOrUpdateFreshGoods(PurchaseGoodsEntity PurchaseGoodsEntity,
-//                                       Double quantity, boolean saveUpdatedDate){
-//        if (PurchaseGoodsEntity == null || quantity == null){
-//           return;
-//        }
-//
-//        PurchaseGoodsEntity.setQuantity(quantity);
-//        if (saveUpdatedDate){
-//            PurchaseGoodsEntity.setUpdatedDate(new Date());
-//        }
-//        saveOrUpdate(PurchaseGoodsEntity);
-//    }
 
 }

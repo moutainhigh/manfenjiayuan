@@ -72,6 +72,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/spacing_double"
                 android:layout_weight="1"
+                app:mLabelView_rightImageButtonEnabled="false"
                 app:mLabelView_inputHint="所有批发商"
                 app:mLabelView_inputTextColor="@color/black"
                 app:mLabelView_inputTextColorHint="@color/black_35"

@@ -8,20 +8,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.manfenjiayuan.business.widget.NumberPickerView;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.entity.PurchaseGoodsEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
-import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * 商品采购－购物车商品明细
@@ -29,8 +27,6 @@ import butterknife.OnClick;
  */
 public class ManualPurchaseShopcartGoodsAdapter
         extends SwipAdapter<PurchaseGoodsEntity, ManualPurchaseShopcartGoodsAdapter.ProductViewHolder> {
-
-    private DoubleInputDialog changeQuantityDialog;
 
     public interface OnAdapterListener {
         void onDataSetChanged(boolean isNeedReloadOrder);
@@ -67,7 +63,7 @@ public class ManualPurchaseShopcartGoodsAdapter
         holder.tvStartNum.setText(String.format("%.2f", 0D));
 
         //TODO,注意采购量和库存区分
-        holder.tvQuantity.setText(String.format("%.2f", entity.getQuantityCheck()));
+        holder.mNumberPickerView.setValue(String.format("%.0f", entity.getQuantityCheck()));
         holder.tvAmount.setText(String.format("%.2f", entity.getQuantityCheck() * entity.getBuyPrice()));
      }
 
@@ -82,8 +78,8 @@ public class ManualPurchaseShopcartGoodsAdapter
         TextView tvStartNum;
         @Bind(R.id.tv_buyprice)
         TextView tvBuyPrice;
-        @Bind(R.id.tv_quantity)
-        TextView tvQuantity;
+        @Bind(R.id.numberPickerView)
+        NumberPickerView mNumberPickerView;
         @Bind(R.id.tv_amount)
         TextView tvAmount;
 
@@ -107,48 +103,48 @@ public class ManualPurchaseShopcartGoodsAdapter
 ////                    }
 //                }
 //            });
-        }
 
-        /**
-         * 修改采购量
-         * */
-        @OnClick(R.id.ll_quantity)
-        public void changeQuantity() {
-            final int position = getAdapterPosition();
-            final PurchaseGoodsEntity original = getEntity(position);
-            if (original == null) {
-                return;
-            }
-
-            if (changeQuantityDialog == null) {
-                changeQuantityDialog = new DoubleInputDialog(mContext);
-                changeQuantityDialog.setCancelable(true);
-                changeQuantityDialog.setCanceledOnTouchOutside(true);
-            }
-            changeQuantityDialog.init("采购量", 2, original.getQuantityCheck(), new DoubleInputDialog.OnResponseCallback() {
+            mNumberPickerView.setonOptionListener(new NumberPickerView.onOptionListener() {
                 @Override
-                public void onQuantityChanged(Double quantity) {
-                    if (quantity < 1D){
-                        DialogUtil.showHint("采购量不能为空");
-                        return;
-                    }
-//                    if (quantity < original.getStartNum()){
-//                        DialogUtil.showHint("采购量不能低于起配量");
-//                        return;
-//                    }
+                public void onPreIncrease() {
 
-                    original.setQuantityCheck(quantity);
-                    PurchaseGoodsService.getInstance().saveOrUpdate(original);
-                    PurchaseHelper.getInstance().arrange(original.getPurchaseType(),
-                            original.getProviderId());
-                    notifyDataSetChanged();
+                }
 
-                    if (adapterListener != null) {
-                        adapterListener.onDataSetChanged(true);
+                @Override
+                public void onPreDecrease() {
+
+                }
+
+                @Override
+                public void onValueChanged(int value) {
+                    // TODO: 6/3/16
+                    try {
+                        int position = getAdapterPosition();
+
+                        if (value == 0) {
+                            removeEntity(position);
+                        }
+                        else{
+                            PurchaseGoodsEntity entity = getEntity(position);
+                            if (entity == null) {
+                                return;
+                            }
+
+                            entity.setQuantityCheck(Double.valueOf(String.valueOf(value)));
+                            PurchaseGoodsService.getInstance().saveOrUpdate(entity);
+                            PurchaseHelper.getInstance().arrange(entity.getPurchaseType(),
+                                    entity.getProviderId());
+                            notifyDataSetChanged();
+
+                            if (adapterListener != null) {
+                                adapterListener.onDataSetChanged(true);
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ZLogger.e(ex.toString());
                     }
                 }
             });
-            changeQuantityDialog.show();
         }
     }
 

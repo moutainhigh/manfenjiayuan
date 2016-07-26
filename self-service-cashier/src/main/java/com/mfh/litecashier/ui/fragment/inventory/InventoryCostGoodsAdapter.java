@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.adapter;
+package com.mfh.litecashier.ui.fragment.inventory;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,10 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mfh.litecashier.R;
-import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.uikit.recyclerview.RegularAdapter;
+import com.mfh.litecashier.R;
 
 import java.util.List;
 
@@ -34,7 +34,6 @@ public class InventoryCostGoodsAdapter
         void onDataSetChanged();
         void onUpdateCostPrice(ScGoodsSku goods);
         void onUpdateUpperLimit(ScGoodsSku goods);
-        void onOrderItem(ScGoodsSku goods);
         void onShowDetail(ScGoodsSku goods);
     }
 
@@ -46,7 +45,8 @@ public class InventoryCostGoodsAdapter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_stockcost_goods, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_stockcost_goods,
+                parent, false));
     }
 
     @Override
@@ -58,12 +58,15 @@ public class InventoryCostGoodsAdapter
 
         holder.tvName.setText(entity.getSkuName());
         holder.tvBarcode.setText(entity.getBarcode());
-        holder.tvUpperLimit.setText(MUtils.formatDouble(null, null, entity.getUpperLimit(), "无", null, null));
+        holder.tvUpperLimit.setText(MUtils.formatDouble(null, null,
+                entity.getUpperLimit(), "无", null, null));
         holder.tvQuantity.setText(MUtils.formatDouble(entity.getQuantity(), "无"));
         holder.tvMonthlySales.setText(String.format("%.2f", entity.getSellMonthNum()));
 
-        holder.tvBuyPrice.setText(MUtils.formatDouble(null, null, entity.getBuyPrice(), "无", "/", entity.getUnit()));
-        holder.tvCostPrice.setText(MUtils.formatDouble(null, null, entity.getCostPrice(), "无", "/", entity.getUnit()));
+        holder.tvBuyPrice.setText(MUtils.formatDouble(null, null,
+                entity.getBuyPrice(), "无", "/", entity.getUnit()));
+        holder.tvCostPrice.setText(MUtils.formatDouble(null, null,
+                entity.getCostPrice(), "无", "/", entity.getUnit()));
 //        holder.tvSuppliers.setText(entity.getSupplyName());
     }
 
@@ -168,22 +171,6 @@ public class InventoryCostGoodsAdapter
 
             if (adapterListener != null){
                 adapterListener.onUpdateUpperLimit(original);
-            }
-        }
-
-        /**
-         * 订货
-         * */
-        @OnClick(R.id.ib_order_goods)
-        public void orderGoods() {
-            final int position = getAdapterPosition();
-            if (entityList == null || position < 0 || position >= entityList.size()){
-//                ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-                return;
-            }
-
-            if (adapterListener != null) {
-                adapterListener.onOrderItem(entityList.get(position));
             }
         }
     }

@@ -9,10 +9,8 @@
 
 package com.mfh.litecashier.ui.fragment.inventory;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,13 +28,11 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.CategoryOption;
-import com.mfh.framework.api.GoodsSupplyInfo;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -48,28 +44,19 @@ import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
-import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.event.CommodityStockEvent;
-import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
-import com.mfh.litecashier.ui.adapter.InventoryCostGoodsAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
-import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
-import com.mfh.litecashier.ui.fragment.purchase.manual.PurchaseHelper;
 import com.mfh.litecashier.ui.view.IInventoryView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.ui.widget.MOrderLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -112,8 +99,6 @@ public class InventoryCostFragment extends BaseProgressFragment
 
     @Bind(R.id.empty_view)
     TextView emptyView;
-    @Bind(R.id.fab_shopcart)
-    FloatingActionButton fabShopcart;
 
     private List<CategoryOption> rootOptions = new ArrayList<>();
     //使用ArrayMap替代HashMap,提高效率
@@ -131,7 +116,6 @@ public class InventoryCostFragment extends BaseProgressFragment
     private static final int MAX_PAGE = 10;
     private static final int MAX_SYNC_PAGESIZE = 30;
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-    private List<ScGoodsSku> goodsList = new ArrayList<>();
 
     private InventoryGoodsPresenter inventoryGoodsPresenter;
 
@@ -295,32 +279,6 @@ public class InventoryCostFragment extends BaseProgressFragment
         loadGoodsList();
     }
 
-    @OnClick(R.id.fab_shopcart)
-    public void redirectToShopcart() {
-        fabShopcart.setEnabled(false);
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_MANUAL_SHOPCART);
-
-//        SimpleActivity.actionStart(getActivity(), extras);
-
-        Intent intent = new Intent(getActivity(), SimpleActivity.class);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_APPLY_SHOPCART);
-        fabShopcart.setEnabled(true);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Constants.ARC_APPLY_SHOPCART: {
-                inlvBarcode.requestFocus();
-            }
-            break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     /**
      * 初始化条码输入
      */
@@ -453,13 +411,11 @@ public class InventoryCostFragment extends BaseProgressFragment
                 // dy>0 表示向下滑动
 //                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
                 if (dy > 0) {
-//                    fabShopcart.setVisibility(View.VISIBLE);
                     if ((lastVisibleItem >= totalItemCount - 4) && !isLoadingMore) {
                         loadMore();
                     }
                 } else if (dy < 0) {
                     isLoadingMore = false;
-//                    fabShopcart.setVisibility(View.GONE);
                 }
             }
         });
@@ -482,11 +438,6 @@ public class InventoryCostFragment extends BaseProgressFragment
                                                   }
 
                                                   @Override
-                                                  public void onOrderItem(ScGoodsSku goods) {
-                                                      orderGoods(goods);
-                                                  }
-
-                                                  @Override
                                                   public void onShowDetail(ScGoodsSku goods) {
                                                       Bundle extras = new Bundle();
                                                       extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -496,7 +447,6 @@ public class InventoryCostFragment extends BaseProgressFragment
                                                       extras.putString(PurchaseGoodsDetailFragment.EXTRA_KEY_IMAGE_URL, goods.getImgUrl());
                                                       SimpleDialogActivity.actionStart(getActivity(), extras);
                                                   }
-
                                               }
 
         );
@@ -557,34 +507,10 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    public void onEventMainThread(PurchaseShopcartSyncEvent event) {
-        ZLogger.d(String.format("InventoryCostFragment: PurchaseShopcartSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == PurchaseShopcartSyncEvent.EVENT_ID_DATASET_CHANGED
-                || event.getEventId() == PurchaseShopcartSyncEvent.EVENT_ID_ORDER_SUCCESS) {
-            refreshFabShopcart();
-        }
-    }
-
-
-    /**
-     * 刷新购物车
-     */
-    private void refreshFabShopcart() {
-        int count = PurchaseHelper.getInstance()
-                .getOrderItemCount(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL);
-        if (count <= 0) {
-            fabShopcart.setImageResource(R.mipmap.ic_fab_shopcart_white);
-        } else {
-            fabShopcart.setImageDrawable(CashierHelper.createFabDrawable(count));
-        }
-    }
-
     /**
      * 加载商品类目
      */
     public void loadData() {
-        refreshFabShopcart();
-
         //加载后台类目树
         if (!readCategoryInfoCache()) {
             DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
@@ -668,7 +594,8 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
         if (searchParams != null) {
 //            tvCategoryTitle.setText(String.format("%s(%d)", curOption.getValue(), goodsListAdapter.getItemCount()));
-            tvCategoryTitle.setText(String.format("%s(%d)", searchParams.getCategoryName(), mPageInfo.getTotalCount()));
+            tvCategoryTitle.setText(String.format("%s(%d)",
+                    searchParams.getCategoryName(), mPageInfo.getTotalCount()));
         } else {
             tvCategoryTitle.setText(String.format("全部(%d)", mPageInfo.getTotalCount()));
         }
@@ -779,28 +706,20 @@ public class InventoryCostFragment extends BaseProgressFragment
         mPageInfo = pageInfo;
         //第一页，清空数据
         if (mPageInfo.getPageNo() == 1) {
-            if (goodsList == null) {
-                goodsList = new ArrayList<>();
-            } else {
-                goodsList.clear();
+            if (goodsListAdapter != null) {
+                goodsListAdapter.setEntityList(dataList);
             }
         } else {
-            if (goodsList == null) {
-                goodsList = new ArrayList<>();
+            if (goodsListAdapter != null) {
+                goodsListAdapter.appendEntityList(dataList);
             }
         }
-        if (dataList != null) {
-            goodsList.addAll(dataList);
-        }
 
-        if (goodsListAdapter != null) {
-            goodsListAdapter.setEntityList(goodsList);
-            refreshCategoryTitle();
-        }
+        refreshCategoryTitle();
         onLoadFinished();
         ZLogger.d(String.format("保存库存商品,pageInfo':page=%d,rows=%d(%d/%d)",
                 mPageInfo.getPageNo(), mPageInfo.getPageSize(),
-                (goodsList == null ? 0 : goodsList.size()), mPageInfo.getTotalCount()));
+                goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
 
 //        inlvBarcode.clear(false);
 //        resetSearchParams();
@@ -935,73 +854,4 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    /**
-     * 订购商品
-     */
-    private void orderGoods(ScGoodsSku goods) {
-        if (goods == null) {
-            DialogUtil.showHint("商品无效");
-            return;
-        }
-
-        List<GoodsSupplyInfo> supplyInfos = goods.getSupplyItems();
-        if (supplyInfos != null && supplyInfos.size() == 1) {
-            PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
-                    .fromSupplyGoods(goods, supplyInfos.get(0), IsPrivate.PLATFORM);
-            changeQuantity(wrapper);
-        } else {
-            querySupply(goods, supplyInfos);
-        }
-    }
-
-    private SelectGoodsSupplyDialog selectGoodsSupplyDialog = null;
-
-    private void querySupply(ScGoodsSku scGoodsSku, List<GoodsSupplyInfo> supplyInfos) {
-        if (selectGoodsSupplyDialog == null) {
-            selectGoodsSupplyDialog = new SelectGoodsSupplyDialog(getActivity());
-            selectGoodsSupplyDialog.setCancelable(false);
-            selectGoodsSupplyDialog.setCanceledOnTouchOutside(false);
-        }
-        selectGoodsSupplyDialog.init(scGoodsSku, supplyInfos,
-                new SelectGoodsSupplyDialog.OnDialogListener() {
-                    @Override
-                    public void onSupplySelected(PurchaseShopcartGoodsWrapper goodsWrapper, GoodsSupplyInfo supplyInfo) {
-                        changeQuantity(goodsWrapper);
-                    }
-                });
-
-        selectGoodsSupplyDialog.show();
-    }
-
-    private void changeQuantity(final PurchaseShopcartGoodsWrapper wrapper) {
-        if (wrapper == null) {
-            return;
-        }
-        if (quantityCheckDialog == null) {
-            quantityCheckDialog = new DoubleInputDialog(getActivity());
-            quantityCheckDialog.setCancelable(false);
-            quantityCheckDialog.setCanceledOnTouchOutside(false);
-        }
-//        wrapper.getQuantityCheck()
-        quantityCheckDialog.init("采购量", 2, 0D, new DoubleInputDialog.OnResponseCallback() {
-            @Override
-            public void onQuantityChanged(Double quantity) {
-                if (quantity < 0D) {
-                    DialogUtil.showHint("采购量不能为空");
-                    return;
-                }
-                if (quantity < wrapper.getStartNum()) {
-                    DialogUtil.showHint("采购量不能低于起配量");
-                    return;
-                }
-
-                wrapper.setQuantityCheck(quantity);
-                PurchaseHelper.getInstance().addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
-
-                //刷新购物车
-                refreshFabShopcart();
-            }
-        });
-        quantityCheckDialog.show();
-    }
 }

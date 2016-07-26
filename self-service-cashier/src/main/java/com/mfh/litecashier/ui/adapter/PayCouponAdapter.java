@@ -18,7 +18,6 @@ import com.bingshanguxue.cashier.model.RuleBean;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ObjectsCompact;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
@@ -309,7 +308,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Long splitOrderId = orderMarketRules.getSplitOrderId();
             Double finalAmount = orderMarketRules.getFinalAmount();
             List<MarketRules> marketRulesList = orderMarketRules.getResults();
-            if (StringUtils.isEmpty(splitOrderId) ||
+            if (splitOrderId == null ||
                     marketRulesList == null || marketRulesList.size() <= 0){
                 ZLogger.d("marketRulesList无效");
                 continue;

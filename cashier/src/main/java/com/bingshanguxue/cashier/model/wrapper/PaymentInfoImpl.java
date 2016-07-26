@@ -149,7 +149,6 @@ public class PaymentInfoImpl{
 
             DailysettleEntity orderEntity = orderEntities.get(0);
 
-
             //商户交易订单号
             String outTradeNo = paymentInfo.getOutTradeNo();
             //订单实际分配金额=实际支付金额－找零金额

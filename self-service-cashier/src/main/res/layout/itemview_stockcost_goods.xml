@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="8dp">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="72dp"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:padding="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -19,8 +20,8 @@
             android:id="@+id/iv_header"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:src="@mipmap/ic_image_error"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_image_error"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,8 +36,8 @@
                 style="@style/mfh_form_content_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
+                android:singleLine="true"
                 android:text="名称"/>
 
             <!--条码-->
@@ -45,10 +46,10 @@
                 style="@style/mfh_form_content_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
-                android:textColor="@color/black_65"
-                android:text="条码" />
+                android:singleLine="true"
+                android:text="条码"
+                android:textColor="@color/black_65"/>
 
         </LinearLayout>
 
@@ -70,8 +71,8 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:singleLine="true"
-            android:textColor="@color/material_black"
-            android:text="排面库存" />
+            android:text="排面库存"
+            android:textColor="@color/material_black"/>
     </LinearLayout>
 
     <TextView
@@ -81,10 +82,10 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
-        android:textColor="@color/material_black"
-        android:text="库存" />
+        android:singleLine="true"
+        android:text="库存"
+        android:textColor="@color/material_black"/>
 
     <TextView
         android:id="@+id/tv_monthlysales"
@@ -93,10 +94,10 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
-        android:textColor="@color/material_black"
-        android:text="月销量" />
+        android:singleLine="true"
+        android:text="月销量"
+        android:textColor="@color/material_black"/>
 
 
     <!--库存成本价-->
@@ -107,11 +108,10 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
-        android:textColor="@color/material_black"
-        android:text="成本价"/>
-
+        android:singleLine="true"
+        android:text="成本价"
+        android:textColor="@color/material_black"/>
 
     <LinearLayout
         android:id="@+id/ll_costprice"
@@ -129,20 +129,9 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:singleLine="true"
-            android:textColor="@color/material_black"
-            android:text="零售价" />
+            android:text="零售价"
+            android:textColor="@color/material_black"/>
     </LinearLayout>
 
-
-
-    <ImageButton
-        android:id="@+id/ib_order_goods"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:background="@null"
-        android:contentDescription="@null"
-        android:src="@drawable/ic_shopcart_add_large"/>
 
 </LinearLayout>

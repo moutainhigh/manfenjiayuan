@@ -1,5 +1,7 @@
 package com.mfh.litecashier.bean.wrapper;
 
+import com.manfenjiayuan.business.bean.CompanyInfo;
+
 import java.io.Serializable;
 
 /**
@@ -27,8 +29,10 @@ public class SearchParamsWrapper implements Serializable {
     private String categoryName = "";
     //价格类型0-计件 1-计重
     private String priceType = PRICE_TYPE_NAME_NA;//价格类型
-    private Long providerId = null;//供应商编号
-    private String providerName = "";//供应商名称
+
+    //批发商信息
+    private CompanyInfo mCompanyInfo = null;
+
     private int sortType = SORT_BY_NONE;
 
     public String getBarcode() {
@@ -85,23 +89,13 @@ public class SearchParamsWrapper implements Serializable {
         this.priceType = priceType;
     }
 
-    public Long getProviderId() {
-        return providerId;
+
+    public CompanyInfo getCompanyInfo() {
+        return mCompanyInfo;
     }
 
-    public void setProviderId(Long providerId) {
-        this.providerId = providerId;
-    }
-
-    public String getProviderName() {
-        if (providerName == null) {
-            return "";
-        }
-        return providerName;
-    }
-
-    public void setProviderName(String providerName) {
-        this.providerName = providerName;
+    public void setCompanyInfo(CompanyInfo companyInfo) {
+        mCompanyInfo = companyInfo;
     }
 
     public int getSortType() {

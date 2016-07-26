@@ -31,9 +31,9 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     private int priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double costPrice = 0D; //商品零售价格
     private Double amount = 0D; //总价.按零售价计算得出
+
     private Double finalPrice = 0D;//成交价
     private Double finalAmount = 0D; //总价.按成交价计算得出
-
 
     public String getPosTradeNo() {
         return posTradeNo;

@@ -176,9 +176,9 @@ public class QueryGoodsDialog extends CommonDialog {
         ScGoodsSkuApiImpl.findStockTakeGoodsByBarcode(barcode, queryResCallback);
     }
 
-    private NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<StockTakeGoods,
-            NetProcessor.Processor<StockTakeGoods>>(
-            new NetProcessor.Processor<StockTakeGoods>() {
+    private NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
+            NetProcessor.Processor<ScGoodsSku>>(
+            new NetProcessor.Processor<ScGoodsSku>() {
                 @Override
                 public void processResult(IResponseData rspData) {
                     //{"code":"0","msg":"操作成功!","version":"1","data":""}
@@ -187,7 +187,7 @@ public class QueryGoodsDialog extends CommonDialog {
                         DialogUtil.showHint("未找到商品");
                     }
                     else{
-                        RspBean<StockTakeGoods> retValue = (RspBean<StockTakeGoods>) rspData;
+                        RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
 
                         productAdapter.append(retValue.getValue());
                     }
@@ -200,7 +200,7 @@ public class QueryGoodsDialog extends CommonDialog {
                     DialogUtil.showHint("未找到商品");
                 }
             }
-            , StockTakeGoods.class
+            , ScGoodsSku.class
             , CashierApp.getAppContext()) {
     };
 

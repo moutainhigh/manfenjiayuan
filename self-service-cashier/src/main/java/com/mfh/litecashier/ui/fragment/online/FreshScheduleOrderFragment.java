@@ -225,7 +225,7 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(InvSendOrderEvent event) {
-        ZLogger.d(String.format("InvSendOrderFragment: InvSendOrderEvent(%d)", event.getEventId()));
+        ZLogger.df(String.format("InvSendOrderEvent(%d)", event.getEventId()));
         if (event.getEventId() == InvSendOrderEvent.EVENT_ID_RELOAD_DATA) {
             Bundle args = event.getArgs();
             if (args != null) {

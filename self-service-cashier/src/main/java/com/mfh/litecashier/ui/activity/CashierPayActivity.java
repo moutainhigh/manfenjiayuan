@@ -166,7 +166,6 @@ public class CashierPayActivity extends BaseActivity {
                 .commit();
     }
 
-
     public void showStep2(int payType, int paySubType, String cardId, Human memberInfo) {
         if (curStep == 1){
             ZLogger.df("已经是会员支付页面，跳转无效。");

@@ -347,4 +347,17 @@ public class CashierAgent {
         return sb.toString();
     }
 
+    /**
+     * 计算价格折扣
+     * */
+    public static Double calculatePriceDiscount(Double costPrice, Double finalPrice){
+
+        Double discount = 0D;
+        if (costPrice != null && costPrice != 0D){
+            discount = finalPrice / costPrice;
+        }
+
+        return discount;
+    }
+
 }

@@ -51,7 +51,6 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long ADMIN_MENU_DAILYSETTLE= 63L;//日结
     public static final Long ADMIN_MENU_TOPUP = 64L;//充值
     public static final Long ADMIN_MENU_SETTINGS= 65L;//设置
-    public static final Long ADMIN_MENU_EXCEPTION_ORDERS    = 66L;//异常订单
 
     public static final Long ADMIN_MENU_CANARY    = 70L;//异常订单
     public static final Long CANARY_MENU_GOODS    = 71L;//商品

@@ -3,9 +3,12 @@ package com.mfh.litecashier.service;
 
 import android.os.Bundle;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.vector_user.UserApiImpl;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.bean.PageInfo;
@@ -14,11 +17,13 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.core.DeviceUuidFactory;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
@@ -27,6 +32,8 @@ import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.service.DailysettleService;
+import com.mfh.litecashier.database.entity.QuotaEntity;
+import com.mfh.litecashier.database.logic.QuotaService;
 import com.mfh.litecashier.utils.AlarmManagerHelper;
 import com.mfh.litecashier.utils.AnalysisHelper;
 
@@ -53,6 +60,8 @@ public class ValidateManager {
     public static final int STEP_REGISTER_PLAT = 1;//
     public static final int STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND = 2;// 检查是否日结
     public static final int STEP_VALIDATE_ANALYSISACCDATE_NEEDDATEEND = 3;// 检查是否需要日结
+    public static final int STEP_VALIDATE_ANALISIS_QUOTA = 4;//统计分析现金授权额度
+
 
     private boolean bSyncInProgress = false;//是否正在同步
     private int nextStep = STEP_VALIDATE_NA;
@@ -132,6 +141,10 @@ public class ValidateManager {
                 AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext());
             }
             break;
+            case STEP_VALIDATE_ANALISIS_QUOTA: {
+                analysisQuota(new Date());
+            }
+            break;
             default: {
                 validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null, "验证结束");
             }
@@ -149,7 +162,6 @@ public class ValidateManager {
         bSyncInProgress = false;
         EventBus.getDefault().post(new ValidateManagerEvent(eventId, args));
     }
-
 
     /**
      * 登录状态验证:进入需要登录的功能时需要
@@ -491,6 +503,74 @@ public class ValidateManager {
         return null;
     }
 
+
+    /**
+     * 统计分析,同时只能存在一条未支付的额度表，若存在多条，则默认取第一条。
+     * */
+    public void analysisQuota(Date analysisDate){
+        try{
+            QuotaEntity quotaEntity;
+
+            String sqlWhere = String.format("payStatus != '%d'",
+                    QuotaEntity.PAY_STATYS_PAID);
+            List<QuotaEntity> entities = QuotaService.get().queryAllBy(sqlWhere, "updatedDate desc");
+            if (entities != null && entities.size() > 0){
+                quotaEntity = entities.get(0);
+            }
+            else{
+                quotaEntity = new QuotaEntity();
+                quotaEntity.setCreatedDate(new Date());
+            }
+
+            Double cashAmount = 0D;
+            String orderSql = String.format("updatedDate >= '%s' and updatedDate < '%s' and sellerId = '%d' " +
+                            "and status = '%d' and isActive = '%d'",
+                    TimeUtil.format(quotaEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                    TimeUtil.format(analysisDate, TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                    MfhLoginService.get().getSpid(),
+                    PosOrderEntity.ORDER_STATUS_FINISH, PosOrderEntity.ACTIVE);
+            List<PosOrderEntity> orderEntities = PosOrderService.get().queryAllBy(orderSql);
+            if (orderEntities != null && orderEntities.size() > 0){
+                for (PosOrderEntity orderEntity : orderEntities){
+                    OrderPayInfo orderPayInfo = OrderPayInfo.deSerialize(orderEntity.getId());
+                    if (orderPayInfo == null){
+                        continue;
+                    }
+
+                    List<PayWay> payWays = orderPayInfo.getPayWays();
+                    if (payWays != null && payWays.size() > 0) {
+                        for (PayWay payWay : payWays) {
+                            if (WayType.CASH.equals(payWay.getPayType())) {
+                                cashAmount += payWay.getAmount();
+                            }
+                        }
+                    }
+                }
+            }
+
+            quotaEntity.setAmount(cashAmount);
+            quotaEntity.setUpdatedDate(analysisDate);
+
+            QuotaService.get().saveOrUpdate(quotaEntity);
+            ZLogger.d("现金金额授权更新:\n" + JSON.toJSONString(quotaEntity));
+
+            Bundle args = new Bundle();
+            args.putLong("orderId", quotaEntity.getId());
+            args.putDouble("quotaAmount", cashAmount);
+            if (cashAmount >= QuotaEntity.MAX_QUOTA){
+                args.putBoolean("isNeedPay", false);
+            }
+            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_QUOTA_UPDATE,
+                    args, String.format("现金额度金额更新: %.2f", cashAmount));
+        }
+        catch(Exception e){
+            ZLogger.e(String.format("统计分析现金额度失败, %s", e.toString()));
+        }
+
+        nextStep();
+    }
+
+
     public class ValidateManagerEvent {
         public static final int EVENT_ID_VALIDATE_START             = 0X01;//验证开始
         public static final int EVENT_ID_VALIDATE_NEED_LOGIN        = 0X02;//需要登录
@@ -498,6 +578,7 @@ public class ValidateManager {
         public static final int EVENT_ID_VALIDATE_PLAT_NOT_REGISTER = 0X04;//设备未注册
         public static final int EVENT_ID_VALIDATE_NEED_DAILYSETTLE  = 0X05;//需要日结
         public static final int EVENT_ID_VALIDATE_FINISHED          = 0X06;//验证结束
+        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE     = 0X07;//额度发生变化
 
         private int eventId;
         private Bundle args;//参数

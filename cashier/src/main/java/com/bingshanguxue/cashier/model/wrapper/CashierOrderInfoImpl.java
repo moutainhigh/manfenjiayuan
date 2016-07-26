@@ -108,9 +108,12 @@ public class CashierOrderInfoImpl{
 
         Double amount = 0D;
         for (CashierOrderItemInfo itemInfo : cashierOrderItemInfos) {
+            Double temp = itemInfo.getFinalAmount() - itemInfo.getPaidAmount();
             DiscountInfo discountInfo = itemInfo.getDiscountInfo();
-            Double temp = itemInfo.getFinalAmount() - itemInfo.getPaidAmount()
-                    - discountInfo.getEffectAmount();
+            if (discountInfo != null){
+                temp -= discountInfo.getEffectAmount();
+            }
+
             //实际场景中应付金额不会小于1分钱，所以这里要保留两位小数
             //2016-07-04，判断需要放在循环里，因为折扣券是对拆分后的子订单生效，不是整个大订单
             if (temp < 0.01){

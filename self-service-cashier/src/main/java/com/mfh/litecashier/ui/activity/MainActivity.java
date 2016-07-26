@@ -22,11 +22,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierAgent;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
@@ -35,6 +38,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
+import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.api.constant.BizType;
@@ -46,6 +50,7 @@ import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
@@ -68,8 +73,10 @@ import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.database.entity.QuotaEntity;
 import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
+import com.mfh.litecashier.database.logic.QuotaService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.event.CashierAffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
@@ -82,6 +89,7 @@ import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
 import com.mfh.litecashier.ui.adapter.CashierSwipAdapter;
 import com.mfh.litecashier.ui.dialog.AdministratorSigninDialog;
+import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.ExpressDialog;
 import com.mfh.litecashier.ui.dialog.HangupOrderDialog;
@@ -163,9 +171,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
     private DoubleInputDialog changePriceDialog = null;
     private DoubleInputDialog changeDiscountDialog = null;
     private DoubleInputDialog changeQuantityDialog = null;
-
     private DoubleInputDialog quantityCheckDialog = null;
     private HangupOrderDialog hangupOrderDialog = null;
+    private AlipayDialog alipayDialog = null;
 
     /**
      * POS唯一订单号，由POS机本地生成的12位字符串
@@ -278,8 +286,10 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         }
 
         int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
-        menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
-                count);
+        if (menuAdapter != null){
+            menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
+                    count);
+        }
     }
 
     @Override
@@ -399,7 +409,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             redirectToOnlineOrder();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_GOODS_LIST) == 0) {
             redirectToGoodsList();
-        }  else if (id.compareTo(CashierFunctional.OPTION_ID_PACKAGE) == 0) {
+        } else if (id.compareTo(CashierFunctional.OPTION_ID_PACKAGE) == 0) {
             packageService();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_REGISTER_VIP) == 0) {
             registerVIPStep1();
@@ -499,6 +509,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
      * 跳转到线上订单
      */
     public void redirectToOnlineOrder() {
+        ZLogger.df(">>>打开线上订单页面");
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
@@ -840,7 +851,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
     }
 
     public void onEventMainThread(AffairEvent event) {
-        //有新订单
+        ZLogger.d(String.format("AffairEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE) {
             if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
                 DialogUtil.showHint(R.string.toast_network_error);
@@ -937,6 +948,25 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE: {
                 dailySettle(args != null ? args.getString("dailysettleDatetime") : null, false);
+            }
+            break;
+            //现金额度发生变化，更新界面，并判断是否需要支付
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_QUOTA_UPDATE: {
+
+                if (args != null){
+                    Long orderId = args.getLong("orderId");
+                    QuotaEntity entity = QuotaService.get().getEntityById(String.valueOf(orderId));
+                    if (entity != null){
+                        Double amount = entity.getAmount();
+                        tvQuota.setText(String.format("额度：%.2f", amount));
+                        if (amount.compareTo(QuotaEntity.MAX_QUOTA) >= 0){
+                            quotaPay(entity);
+                        }
+                    }
+                    else{
+                        tvQuota.setText(MUtils.formatDouble(0D, ""));
+                    }
+                }
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
@@ -1185,6 +1215,8 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 
         //打印订单
         PrintManager.printPosOrder(orderEntities, true);
+
+        ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALISIS_QUOTA);
     }
 
     @OnClick(R.id.float_hangup)
@@ -1357,7 +1389,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             changePriceDialog.setCancelable(true);
             changePriceDialog.setCanceledOnTouchOutside(true);
         }
-        changePriceDialog.init("成交价", 2, entity.getFinalPrice(),
+        changePriceDialog.initialzie("成交价", 2, entity.getFinalPrice(), "元",
                 new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
@@ -1372,6 +1404,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
                 });
         changePriceDialog.show();
     }
+
     /**
      * 修改商品价格折扣
      */
@@ -1386,9 +1419,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             changeDiscountDialog.setCancelable(true);
             changeDiscountDialog.setCanceledOnTouchOutside(true);
         }
-        changeDiscountDialog.init("折扣", 0,
+        changeDiscountDialog.initialzie("折扣", 0,
                 CashierAgent.calculatePriceDiscount(entity.getCostPrice(), entity.getFinalPrice()),
-                new DoubleInputDialog.OnResponseCallback() {
+                "%", new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double value) {
                         entity.setFinalPrice(entity.getCostPrice() * value / 100);
@@ -1417,7 +1450,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             changeQuantityDialog.setCancelable(true);
             changeQuantityDialog.setCanceledOnTouchOutside(true);
         }
-        changeQuantityDialog.init("数量", 2, entity.getBcount(),
+        changeQuantityDialog.initialzie("数量", 2, entity.getBcount(), entity.getUnit(),
                 new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
@@ -1597,12 +1630,13 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
                     quantityCheckDialog.setCancelable(true);
                     quantityCheckDialog.setCanceledOnTouchOutside(true);
                 }
-                quantityCheckDialog.init("重量", 3, weightVal, new DoubleInputDialog.OnResponseCallback() {
-                    @Override
-                    public void onQuantityChanged(Double quantity) {
-                        productAdapter.append(curPosTradeNo, goods, quantity);
-                    }
-                });
+                quantityCheckDialog.initialzie("重量", 3, weightVal, goods.getUnit(),
+                        new DoubleInputDialog.OnResponseCallback() {
+                            @Override
+                            public void onQuantityChanged(Double quantity) {
+                                productAdapter.append(curPosTradeNo, goods, quantity);
+                            }
+                        });
                 quantityCheckDialog.show();
             }
 
@@ -1686,6 +1720,109 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
         intent.putExtras(extras);
         startActivity(intent);
+    }
+
+    /**
+     * 金额授权模式支付
+     * */
+    private void quotaPay(final QuotaEntity entity){
+        ZLogger.df(">>>准备支付现金授权");
+        List<CashierOrderItemInfo> cashierOrderItemInfoList = new ArrayList<>();
+        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
+        cashierOrderItemInfo.setOrderId(entity.getId());
+        cashierOrderItemInfo.setbCount(1D);
+        cashierOrderItemInfo.setRetailAmount(entity.getAmount());
+        cashierOrderItemInfo.setFinalAmount(entity.getAmount());
+        cashierOrderItemInfo.setAdjustDiscountAmount(0D);
+        cashierOrderItemInfo.setDiscountRate(1D);
+        cashierOrderItemInfo.setBrief("金额授权模式支付" +
+                TimeUtil.format(entity.getUpdatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMMSS));
+        cashierOrderItemInfo.setProductsInfo(null);
+        cashierOrderItemInfo.setDiscountInfo(new DiscountInfo(entity.getId()));
+        cashierOrderItemInfoList.add(cashierOrderItemInfo);
+
+        CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
+        cashierOrderInfo.initQuickPayment(BizType.DAILYSETTLE,
+                "", cashierOrderItemInfoList, "现金授权支付", null);
+
+        if (alipayDialog == null) {
+            alipayDialog = new AlipayDialog(this);
+            alipayDialog.setCancelable(false);
+            alipayDialog.setCanceledOnTouchOutside(false);
+        }
+        alipayDialog.init(cashierOrderInfo, new AlipayDialog.DialogClickListener() {
+            @Override
+            public void onPayProcess(Double amount, String outTradeNo) {
+//                ZLogger.d("支付处理中");
+                entity.setPayStatus(QuotaEntity.PAY_STATYS_PROCESS);
+                QuotaService.get().saveOrUpdate(entity);
+
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
+//                        WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_PROCESS, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                //保存支付记录
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.POS_QUOTA,
+//                        null, null);
+            }
+
+            @Override
+            public void onPaySucceed(Double amount, String outTradeNo) {
+                entity.setPayStatus(QuotaEntity.PAY_STATYS_PAID);
+                QuotaService.get().saveOrUpdate(entity);
+
+                //保存支付记录
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
+//                        WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_FINISH, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.POS_QUOTA,
+//                        null, null);
+
+                ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALISIS_QUOTA);
+            }
+
+            @Override
+            public void onPayException(Double amount, String outTradeNo) {
+//                ZLogger.d("支付异常");
+                entity.setPayStatus(QuotaEntity.PAY_STATYS_FAILED);
+                QuotaService.get().saveOrUpdate(entity);
+
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
+//                        WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_EXCEPTION, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.POS_QUOTA,
+//                        null, null);
+            }
+
+            @Override
+            public void onPayFailed(Double amount, String outTradeNo) {
+//                ZLogger.d("支付失败");
+                entity.setPayStatus(DailysettleEntity.PAY_STATUS_FAILED);
+                QuotaService.get().saveOrUpdate(entity);
+
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
+//                        WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_FAILED, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.POS_QUOTA,
+//                        null, null);
+            }
+
+            @Override
+            public void onPayCanceled() {
+            }
+
+        });
+
+        if (!alipayDialog.isShowing()) {
+            alipayDialog.show();
+        }
     }
 
 }

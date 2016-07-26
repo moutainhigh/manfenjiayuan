@@ -127,7 +127,7 @@ public class DefectiveAdapter
     }
 
     //TODO,重复的项需要累加
-    public void addEntity(StockTakeGoods goods) {
+    public void addEntity(ScGoodsSku goods) {
         if (goods == null) {
             return;
         }

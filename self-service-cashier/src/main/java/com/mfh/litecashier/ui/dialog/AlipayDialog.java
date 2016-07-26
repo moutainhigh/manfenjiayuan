@@ -518,8 +518,6 @@ public class AlipayDialog extends CommonDialog {
 
         etAuthCode.getText().clear();//清空授权码
 
-
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -536,6 +534,7 @@ public class AlipayDialog extends CommonDialog {
         this.cashierOrderInfo = cashierOrderInfo;
         this.mListener = callback;
 
-        this.tvHandleAmount.setText(String.format("%.2f", CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo)));
+        this.tvHandleAmount.setText(String.format("%.2f",
+                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo)));
     }
 }

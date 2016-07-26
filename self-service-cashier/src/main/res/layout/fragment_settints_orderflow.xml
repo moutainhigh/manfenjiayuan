@@ -73,7 +73,7 @@
 
         <!--订单编号-->
         <com.mfh.litecashier.ui.widget.InputSearchView
-            android:id="@+id/insv_order_barcode"
+            android:id="@+id/inlv_order_id"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="center_horizontal"
@@ -83,6 +83,20 @@
             app:inputNumberLabelView_inputHint="订单编号"
             app:inputNumberLabelView_inputTextColor="@color/black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+
+        <!--订单流水号-->
+        <com.mfh.litecashier.ui.widget.InputSearchView
+            android:id="@+id/insv_order_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:orientation="horizontal"
+            app:inputNumberLabelView_inputHint="订单流水号"
+            app:inputNumberLabelView_inputTextColor="@color/black"
+            app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+
 
         <!--日结-->
         <Button

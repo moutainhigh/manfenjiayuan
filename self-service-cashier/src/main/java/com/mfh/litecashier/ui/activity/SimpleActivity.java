@@ -12,7 +12,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.canary.OrderFlowFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsDailysettleFragment;
@@ -20,19 +19,14 @@ import com.mfh.litecashier.ui.fragment.canary.SettingsGoodsFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsTestFragment;
 import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
 import com.mfh.litecashier.ui.fragment.online.OnlineFragment;
-import com.mfh.litecashier.ui.fragment.orderflow.ExceptionOrdersFragment;
 import com.mfh.litecashier.ui.fragment.orderflow.StoreOrderFlowFragment;
-import com.mfh.litecashier.ui.fragment.purchase.IntelligentShopcartFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFragment;
-import com.mfh.litecashier.ui.fragment.purchase.PurchaseFreshEvent;
-import com.mfh.litecashier.ui.fragment.purchase.PurchaseFruitShopcartFragment;
-import com.mfh.litecashier.ui.fragment.purchase.PurchaseShopcartFragment;
+import com.mfh.litecashier.ui.fragment.purchase.intelligent.IntelligentShopcartFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseShopcartFragment;
 import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
 
 import butterknife.Bind;
-import de.greenrobot.event.EventBus;
 
 /**
  * 服务
@@ -42,8 +36,6 @@ public class SimpleActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
     public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
 
-    public static final int FT_PURCHASE_FRUIT_SHOPCART = 0x04;//采购生鲜－购物车
-    public static final int FT_PURCHASE_STANDARD_SHOPCART = 0x05;//采购商品－购物车
     public static final int FT_PURCHASE_MANUAL = 0x06;//手动订货
     public static final int FT_PURCHASE_MANUAL_SHOPCART = 0x07;//采购商品－购物车
     public static final int FT_PURCHASE_INTELLIGENT_SHOPCART = 0x08;//智能订货－购物车
@@ -51,7 +43,6 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_INVENTORY = 0x11;//库存
     public static final int FT_ORDERFLOW = 0x12;//POS流水
     public static final int FT_ONLINE_ORDER = 0x14;//线上订单:(生鲜预定)
-    public static final int FT_EXCEPTION_ORDERS = 0x15;//POS异常订单
     public static final int FT_RECEIPT = 0x16;//单据
     public static final int FT_SETTINGS = 0x17;//设置
     public static final int FT_GOODS_LIST = 0x18;//商品列表
@@ -115,12 +106,6 @@ public class SimpleActivity extends BaseActivity {
                 int id = item.getItemId();
                 if (id == R.id.action_close) {
                     finish();
-                } else if (id == R.id.action_sync_products) {
-                    EventBus.getDefault().post(new PurchaseFreshEvent(PurchaseFreshEvent.EVENT_ID_SYNC_START));
-//                } else if (id == R.id.action_fresh_shopcart) {
-//                    redirectToFruitShopcart();
-                } else if (id == R.id.action_shopcart_standard) {
-                    redirectToStandardShopcart();
                 }
                 return true;
             }
@@ -168,11 +153,8 @@ public class SimpleActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         switch (fragmentType) {
-            case FT_PURCHASE_STANDARD_SHOPCART:
-            case FT_PURCHASE_FRUIT_SHOPCART:
             case FT_ORDERFLOW:
             case FT_RECEIPT:
-            case FT_EXCEPTION_ORDERS:
             case FT_SETTINGS:
             case FT_PURCHASE_MANUAL:
             case FT_PURCHASE_MANUAL_SHOPCART:
@@ -287,33 +269,6 @@ public class SimpleActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_EXCEPTION_ORDERS: {
-                toolbar.setTitle("异常订单");
-                ExceptionOrdersFragment fragment = new ExceptionOrdersFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_PURCHASE_STANDARD_SHOPCART: {
-                toolbar.setTitle("购物车");
-                PurchaseShopcartFragment fragment = new PurchaseShopcartFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_PURCHASE_FRUIT_SHOPCART: {
-                toolbar.setTitle("购物车");
-                PurchaseFruitShopcartFragment fragment = new PurchaseFruitShopcartFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
             case FT_SETTINGS: {
                 toolbar.setTitle("设置");
                 SettingsFragment fragment = new SettingsFragment();
@@ -362,35 +317,4 @@ public class SimpleActivity extends BaseActivity {
         }
     }
 
-    public void redirectToFruitShopcart() {
-//        if (freshShopcartMenu != null) {
-//            freshShopcartMenu.setEnabled(false);
-//        }
-
-//        DialogUtil.showHint("跳转到购物车");
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_FRUIT_SHOPCART);
-
-        Intent intent = new Intent(this, SimpleActivity.class);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_APPLY_SHOPCART);
-//        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    public void redirectToStandardShopcart() {
-        if (standardShopcartMenu != null) {
-            standardShopcartMenu.setEnabled(false);
-        }
-
-//        DialogUtil.showHint("跳转到购物车");
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_PURCHASE_STANDARD_SHOPCART);
-
-        Intent intent = new Intent(this, SimpleActivity.class);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_APPLY_SHOPCART);
-//        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
 }

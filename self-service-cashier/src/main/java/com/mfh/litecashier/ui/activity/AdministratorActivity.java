@@ -454,9 +454,7 @@ public class AdministratorActivity extends BaseActivity {
             dailySettle(null, true);
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_TOPUP) == 0) {
             topupService();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_EXCEPTION_ORDERS) == 0) {
-            redirect2ExceptionOrders();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_SETTINGS) == 0) {
+        }else if (id.compareTo(CashierFunctional.ADMIN_MENU_SETTINGS) == 0) {
             redirect2Settings();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CANARY) == 0) {
             redirect2Canary();
@@ -524,21 +522,11 @@ public class AdministratorActivity extends BaseActivity {
                 SimpleActivity.FT_ONLINE_ORDER);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
-    /**
-     * 异常订单
-     */
-    public void redirect2ExceptionOrders() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_EXCEPTION_ORDERS);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
 
     /**
      * 充值
      */
     private void topupService() {
-        //充值
         if (topupDialog == null) {
             topupDialog = new TopupDialog(this);
             topupDialog.setCancelable(false);

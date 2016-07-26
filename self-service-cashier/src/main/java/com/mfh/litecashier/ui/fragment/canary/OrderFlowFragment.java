@@ -27,6 +27,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
@@ -79,6 +80,8 @@ public class OrderFlowFragment extends BaseFragment {
     Spinner spinnerTenant;
     @Bind(R.id.spinner_status)
     Spinner spinnerStatus;
+    @Bind(R.id.inlv_order_id)
+    InputSearchView insvOrderId;
     @Bind(R.id.insv_order_barcode)
     InputSearchView insvOrderBarcode;
 
@@ -142,6 +145,7 @@ public class OrderFlowFragment extends BaseFragment {
         });
         spinnerStatus.setSelection(0);
 
+        initOrderIdView();
         initOrderBarcodeView();
         setupSwipeRefresh();
         initOrderRecyclerView();
@@ -157,6 +161,61 @@ public class OrderFlowFragment extends BaseFragment {
         }
 
         EventBus.getDefault().unregister(this);
+    }
+
+    private void initOrderIdView() {
+        insvOrderId.setInputSubmitEnabled(true);
+        insvOrderId.setSoftKeyboardEnabled(false);
+        insvOrderId.config(InputSearchView.INPUT_TYPE_TEXT);
+        insvOrderId.setSearchButtonVisible(false);
+//        inlvProductName.requestFocus();
+        insvOrderId.setOnInoutKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
+                //Press “Enter”
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                    //条码枪扫描结束后会自动触发回车键
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        reload();
+                    }
+
+                    return true;
+                }
+
+                return (keyCode == KeyEvent.KEYCODE_TAB
+                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
+            }
+        });
+        insvOrderId.setOnViewListener(new InputSearchView.OnViewListener() {
+            @Override
+            public void onSubmit(String text) {
+                reload();
+            }
+        });
+        insvOrderId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+//                reload();
+            }
+        });
+//        labelShortcode.setOnViewListener(new InputSearchView.OnViewListener() {
+//            @Override
+//            public void onSubmit(String text) {
+//                reload();
+//            }
+//        });
     }
 
     private void initOrderBarcodeView() {
@@ -464,10 +523,16 @@ public class OrderFlowFragment extends BaseFragment {
      * 加载数据
      */
     private void load(PageInfo pageInfo) {
-        String orderBarCode = insvOrderBarcode != null ? insvOrderBarcode.getInputString() : "";
 
         StringBuilder sbWhere = new StringBuilder();
+
+        String orderBarCode = insvOrderBarcode != null ? insvOrderBarcode.getInputString() : "";
         sbWhere.append(String.format("barCode like '%%%s%%'", orderBarCode));
+
+        String orderId = insvOrderId.getInputString();
+        if (!StringUtils.isEmpty(orderId)){
+            sbWhere.append(String.format(" and id = '%s'", orderId));
+        }
 
         String tenantStr = spinnerTenant != null ? spinnerTenant.getSelectedItem().toString() : "";
         if (tenantStr.equals("当前租户")) {

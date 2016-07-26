@@ -23,12 +23,6 @@ public class PosProductSkuService extends BaseService<PosProductSkuEntity, Strin
      * @return
      */
     public static PosProductSkuService get() {
-//        String lsName = PosProductSkuService.class.getName();
-//        if (ServiceFactory.checkService(lsName))
-//            instance = ServiceFactory.getService(lsName);
-//        else {
-//            instance = new PosProductSkuService();
-//        }
         if (instance == null) {
             synchronized (PosProductSkuService.class) {
                 if (instance == null) {

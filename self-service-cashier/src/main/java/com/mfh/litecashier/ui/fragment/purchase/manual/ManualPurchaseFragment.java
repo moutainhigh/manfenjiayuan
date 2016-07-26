@@ -1,5 +1,6 @@
 package com.mfh.litecashier.ui.fragment.purchase.manual;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.CategoryOption;
 import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.IsPrivate;
@@ -87,7 +89,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     private SelectWholesalerDialog selectPlatformProviderDialog;
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
-    private PurchaseGoodsAdapter goodsListAdapter;
+    private ManualPurchaseGoodsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
 
     @Bind(R.id.button_category_back)
@@ -117,7 +119,6 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     private static final int MAX_PAGE = 10;
     private static final int MAX_SYNC_PAGESIZE = 30;
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-    private List<ScGoodsSku> goodsList = new ArrayList<>();
 
     private InventoryGoodsPresenter inventoryGoodsPresenter;
 
@@ -132,7 +133,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_purchase_goods;
+        return R.layout.fragment_purchase_manual;
     }
 
     @Override
@@ -176,8 +177,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
                 if (searchParams == null) {
                     searchParams = new SearchParamsWrapper();
                 }
-                searchParams.setProviderId(null);
-                searchParams.setProviderName("");
+                searchParams.setCompanyInfo(null);
                 loadGoodsList();
             }
         });
@@ -188,7 +188,10 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         inlvBarcode.requestFocus();
 
         refreshFabShopcart();
+
         loadData();
+
+        selectPlatformProvider();
     }
 
     @Override
@@ -268,33 +271,45 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             selectPlatformProviderDialog.setCancelable(false);
             selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
         }
-        selectPlatformProviderDialog.init(null, new SelectWholesalerDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(CompanyInfo companyInfo) {
+        selectPlatformProviderDialog.init(String.valueOf(AbilityItem.PROVIDER),
+                new SelectWholesalerDialog.OnDialogListener() {
+                    @Override
+                    public void onItemSelected(CompanyInfo companyInfo) {
+                        if (companyInfo == null) {
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            getActivity().finish();
+                        } else {
+                            if (searchParams == null) {
+                                searchParams = new SearchParamsWrapper();
+                            }
+                            searchParams.setCompanyInfo(companyInfo);
+                            labelPlatformProvider.setLabelText(companyInfo.getName());
+                            loadGoodsList();
+                        }
+                    }
 
-                if (companyInfo == null) {
-                    return;
-                }
-                if (searchParams == null) {
-                    searchParams = new SearchParamsWrapper();
-                }
-                searchParams.setProviderId(companyInfo.getId());
-                searchParams.setProviderName(companyInfo.getName());
-                labelPlatformProvider.setLabelText(searchParams.getProviderName());
-                loadGoodsList();
-            }
+                    @Override
+                    public void onCancel() {
+                        if (searchParams == null) {
+                            searchParams = new SearchParamsWrapper();
+                        }
+                        CompanyInfo companyInfo = searchParams.getCompanyInfo();
 
-            @Override
-            public void onCancel() {
+                        if (companyInfo == null) {
+                            getActivity().setResult(Activity.RESULT_CANCELED);
+                            getActivity().finish();
+                        }
+//                        else {
+//                            labelPlatformProvider.setLabelText(companyInfo.getName());
+//                            loadGoodsList();
+//                        }
+                    }
 
-            }
-
-        });
+                });
         if (!selectPlatformProviderDialog.isShowing()) {
             selectPlatformProviderDialog.show();
         }
     }
-
 
     /**
      * 渲染搜索条件
@@ -307,7 +322,12 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
         inlvBarcode.setInputString(searchParams.getBarcode());
         inlvProductName.setInputString(searchParams.getProductName());
-        labelPlatformProvider.setLabelText(searchParams.getProviderName());
+        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+        if (companyInfo != null) {
+            labelPlatformProvider.setLabelText(companyInfo.getName());
+        } else {
+            labelPlatformProvider.setLabelText("");
+        }
 
         switch (searchParams.getPriceType()) {
             case SearchParamsWrapper.PRICE_TYPE_NAME_NA: {
@@ -471,14 +491,15 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             }
         });
 
-        goodsListAdapter = new PurchaseGoodsAdapter(CashierApp.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListener(new PurchaseGoodsAdapter.OnAdapterListener() {
-                                                  @Override
-                                                  public void addToShopcart(ScGoodsSku goods) {
-                                                      addGoodsToShopcart(goods);
-                                                  }
+        goodsListAdapter = new ManualPurchaseGoodsAdapter(CashierApp.getAppContext(), null);
+        goodsListAdapter.setOnAdapterListener(new ManualPurchaseGoodsAdapter.OnAdapterListener() {
 
-                                                  @Override
+            @Override
+            public void addToShopcart(ScGoodsSku goods, int quantity) {
+                addGoodsToShopcart(goods, quantity);
+            }
+
+            @Override
                                                   public void onShowDetail(ScGoodsSku goods) {
                                                       Bundle extras = new Bundle();
                                                       extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -502,37 +523,43 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     /**
      * 添加到购物车
      */
-    private void addGoodsToShopcart(final ScGoodsSku goods) {
+    private void addGoodsToShopcart(final ScGoodsSku goods, int quantity) {
         if (goods == null) {
             DialogUtil.showHint("商品无效");
             return;
         }
 
         List<GoodsSupplyInfo> supplyInfos = goods.getSupplyItems();
-        if (supplyInfos != null){
-            if (supplyInfos.size() == 1){
+        if (supplyInfos != null) {
+            if (supplyInfos.size() == 1) {
                 PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
                         .fromSupplyGoods(goods, supplyInfos.get(0), IsPrivate.PLATFORM);
-                changeQuantity(wrapper);
-            }
-            else{
-                if (searchParams.getProviderId() != null){
-                    for (GoodsSupplyInfo supplyInfo : supplyInfos){
-                        if (searchParams.getProviderId().equals(supplyInfo.getSupplyId())){
+                wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
+                PurchaseHelper.getInstance()
+                        .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
+//                changeQuantity(wrapper);
+            } else {
+                CompanyInfo companyInfo = searchParams.getCompanyInfo();
+                if (companyInfo != null && companyInfo.getTenantId() != null) {
+                    for (GoodsSupplyInfo supplyInfo : supplyInfos) {
+                        if (companyInfo.getTenantId().equals(supplyInfo.getSupplyId())) {
 
                             PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
                                     .fromSupplyGoods(goods, supplyInfo, IsPrivate.PLATFORM);
-                            changeQuantity(wrapper);
+                            wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
+                            PurchaseHelper.getInstance()
+                                    .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
+//                            changeQuantity(wrapper);
                             return;
                         }
                     }
                 }
-                querySupply(goods, supplyInfos);
+//                querySupply(goods, supplyInfos);
             }
         }
-        else{
-            querySupply(goods, supplyInfos);
-        }
+//        else {
+//            querySupply(goods, supplyInfos);
+//        }
     }
 
     private SelectGoodsSupplyDialog selectGoodsSupplyDialog = null;
@@ -786,7 +813,12 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     }
 
     public Long getOtherTenantId() {
-        return searchParams.getProviderId();
+        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+        if (companyInfo != null) {
+            return companyInfo.getTenantId();
+        } else {
+            return null;
+        }
     }
 
     public String getCategoryId() {
@@ -835,29 +867,19 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         mPageInfo = pageInfo;
         //第一页，清空数据
         if (mPageInfo.getPageNo() == 1) {
-            if (goodsList == null) {
-                goodsList = new ArrayList<>();
-            } else {
-                goodsList.clear();
+            if (goodsListAdapter != null) {
+                goodsListAdapter.setEntityList(dataList);
             }
-        }
-        else{
-            if (goodsList == null) {
-                goodsList = new ArrayList<>();
+        } else {
+            if (goodsListAdapter != null) {
+                goodsListAdapter.appendEntityList(dataList);
             }
         }
 
-        if (dataList != null) {
-            goodsList.addAll(dataList);
-        }
-
-        if (goodsListAdapter != null) {
-            goodsListAdapter.setEntityList(goodsList);
-        }
         onLoadFinished();
         ZLogger.d(String.format("保存采购商品,pageInfo':page=%d,rows=%d(%d/%d)",
                 mPageInfo.getPageNo(), mPageInfo.getPageSize(),
-                (goodsList == null ? 0 : goodsList.size()), mPageInfo.getTotalCount()));
+                goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
     }
 
     /**

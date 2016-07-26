@@ -83,7 +83,6 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
 
 
-
     /**
      * 支付方式<br>
      * {@link WayType#CASH 1 现金}<br>

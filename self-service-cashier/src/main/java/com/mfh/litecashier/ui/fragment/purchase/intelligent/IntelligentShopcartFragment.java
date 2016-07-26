@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.purchase;
+package com.mfh.litecashier.ui.fragment.purchase.intelligent;
 
 
 import android.app.Activity;
@@ -39,7 +39,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartOrder;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
-import com.mfh.litecashier.ui.adapter.PurchaseIntelligentShopcartGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.PurchaseShopcartOrderAdapter;
 import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
 import com.mfh.litecashier.utils.IntelligentShopcartHelper;

@@ -26,6 +26,8 @@ public class PurchaseShopcartGoodsWrapper implements Serializable {
     private String barcode; //最小商品库存单元的条形码
     private Double packageNum;//箱规
 
+
+    private Long tenantId;// 租户信息，即微超公司id
     private Long chainSkuId;//批发商产品spu编号，otherTenantSkuId
     private Double quantity = 0D; // 商品数量(库存)
 //    private Double sellNum = 0D;//销量
@@ -33,7 +35,6 @@ public class PurchaseShopcartGoodsWrapper implements Serializable {
     private Long supplyId;//批发商编号
     private String supplyName;//批发商名称
     private Integer isPrivate;//（0：平台 1：自采 3:统采）
-    private Long tenantId;// 租户信息，即微超公司id
     private Date createdDate;
     private Date updatedDate;
 
