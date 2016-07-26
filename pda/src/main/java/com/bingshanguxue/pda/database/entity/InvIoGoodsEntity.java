@@ -8,7 +8,7 @@ import com.mfh.framework.core.MfhEntity;
  * 出入库订单
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_supermarket_invio_goods_v1")
+@Table(name="pda_invio_goods_v1")
 public class InvIoGoodsEntity extends MfhEntity<Long> implements ILongId{
 //    private String id;
     private Long proSkuId;

@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_user.bean.Human;
-import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;

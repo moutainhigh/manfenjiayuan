@@ -145,7 +145,6 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
 //            eqvBarcode.setInputString(barcode);
             query(barcode);
         }
-
     }
 
     /**

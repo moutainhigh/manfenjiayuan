@@ -3,7 +3,6 @@
     android:id="@+id/rootview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="horizontal"
     android:padding="4dp">
 
@@ -19,8 +18,9 @@
     <EditText
         android:id="@+id/et_content"
         style="@style/mf_edittext_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:hint=""
@@ -28,5 +28,15 @@
         android:paddingStart="@dimen/spacing_normal"
         android:singleLine="true"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_endText"
+        style="@style/mfh_textview_text"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="start|center_vertical"
+        android:maxWidth="100dp"
+        android:singleLine="true"
+        android:text="" />
 
 </LinearLayout>

@@ -1,5 +1,9 @@
 package com.manfenjiayuan.pda_wholesaler.ui.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -9,6 +13,7 @@ import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.AppHelper;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.upgrade.DbVersion;
+import com.mfh.framework.Constants;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.InitActivity;
@@ -29,8 +34,13 @@ public class SplashActivity extends InitActivity {
         return R.layout.activity_splash;
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestPermissions(new String[]{Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                Constants.REQUEST_CODE_PERMISSIONS);
         super.onCreate(savedInstanceState);
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
@@ -38,7 +48,8 @@ public class SplashActivity extends InitActivity {
         ZLogger.df("initializing getui sdk...");
         PushManager.getInstance().initialize(AppContext.getAppContext());
 
-        tvVersion.setText(String.format("%s-%d", AppContext.getVersionName(), AppContext.getVersionCode()));
+        tvVersion.setText(String.format("%s-%d",
+                AppContext.getVersionName(), AppContext.getVersionCode()));
     }
 
     @Override
@@ -86,5 +97,30 @@ public class SplashActivity extends InitActivity {
                 finish();
             }
         }, 500);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.REQUEST_CODE_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }

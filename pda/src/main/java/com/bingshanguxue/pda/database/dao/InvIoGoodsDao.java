@@ -1,7 +1,6 @@
 package com.bingshanguxue.pda.database.dao;
 
-import com.bingshanguxue.pda.database.InvIoGoodsEntity;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
 import com.mfh.framework.core.logger.ZLogger;
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public class InvIoGoodsDao extends BaseSeqAbleDao<InvIoGoodsEntity, String> {
 
-    private static final String TABLE_NAME = "pda_supermarket_invio_goods_v1";
+    private static final String TABLE_NAME = "pda_invio_goods_v1";
 
     @Override
     protected Pair<String, String> initTableChName() {

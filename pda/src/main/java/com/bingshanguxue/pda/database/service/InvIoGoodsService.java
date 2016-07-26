@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 出入库订单
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 public class InvIoGoodsService extends BaseService<InvIoGoodsEntity, String, InvIoGoodsDao> {
     @Override

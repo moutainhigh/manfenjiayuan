@@ -4,21 +4,21 @@ package com.manfenjiayuan.pda_wholesaler;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.vector_user.UserApiImpl;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.impl.MfhApiImpl;
-import com.mfh.framework.api.impl.UserApiImpl;
 import com.mfh.framework.core.DeviceUuidFactory;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 
 import de.greenrobot.event.EventBus;
 

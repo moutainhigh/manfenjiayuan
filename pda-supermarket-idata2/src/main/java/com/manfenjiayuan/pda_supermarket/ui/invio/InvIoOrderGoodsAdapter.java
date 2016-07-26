@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.Collections;

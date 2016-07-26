@@ -46,7 +46,7 @@ public class InvLossOrderGoodsAdapter extends RegularAdapter<CreateOrderItemWrap
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_invreturnorder_goods, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_invlossorder_goods, parent, false));
     }
 
     @Override
@@ -54,12 +54,15 @@ public class InvLossOrderGoodsAdapter extends RegularAdapter<CreateOrderItemWrap
         CreateOrderItemWrapper entity = entityList.get(position);
 
         holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
+        holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
         holder.tvQuantity.setText(String.format("数量：%.2f", entity.getQuantityCheck()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_name)
         TextView tvName;
+        @Bind(R.id.tv_barcode)
+        TextView tvBarcode;
         @Bind(R.id.tv_quantity)
         TextView tvQuantity;
 

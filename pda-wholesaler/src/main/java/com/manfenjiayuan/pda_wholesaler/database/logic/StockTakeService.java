@@ -1,11 +1,11 @@
 package com.manfenjiayuan.pda_wholesaler.database.logic;
 
 import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.bean.StockTakeGoods;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_wholesaler.database.dao.StockTakeDao;
 import com.manfenjiayuan.pda_wholesaler.database.entity.StockTakeEntity;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.BaseService;
@@ -122,7 +122,7 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
     /**
      * 添加新商品
      * */
-    public void addNewEntity(Long orderId, Long shelfNumber, StockTakeGoods productEntity,
+    public void addNewEntity(Long orderId, Long shelfNumber, ScGoodsSku productEntity,
                              Double quantity){
         if (StringUtils.isEmpty(orderId) || productEntity == null){
             return;

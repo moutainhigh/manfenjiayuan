@@ -327,8 +327,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         List<HomeMenu> menus = new ArrayList<>();
 
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_GOOODS, "商品", R.mipmap.ic_goods));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_TAKE, "盘点", R.mipmap.ic_stocktake));
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_GOODS,
+                "商品", R.mipmap.ic_goods));
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_TAKE,
+                "盘点", R.mipmap.ic_stocktake));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_BIND_GOODS_2_TAGS,
                 "电子价签", R.mipmap.ic_bind_tags));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_DISTRIBUTION,
@@ -362,7 +364,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             DialogUtil.showHint("请先登录");
             return;
         }
-        if (id.compareTo(HomeMenu.OPTION_ID_GOOODS) == 0) {
+        if (id.compareTo(HomeMenu.OPTION_ID_GOODS) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_GOODS);

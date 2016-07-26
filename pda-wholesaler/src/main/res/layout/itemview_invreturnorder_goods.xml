@@ -17,13 +17,34 @@
         android:text="名称"/>
 
     <TextView
-        android:id="@+id/tv_quantity"
+        android:id="@+id/tv_barcode"
         style="@style/mfh_textview_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_micro"
         android:layout_below="@+id/tv_name"
         android:singleLine="true"
+        android:text="条码"/>
+
+    <TextView
+        android:id="@+id/tv_price"
+        style="@style/mfh_textview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:layout_below="@+id/tv_barcode"
+        android:singleLine="true"
+        android:text="价格"/>
+
+    <TextView
+        android:id="@+id/tv_quantity"
+        style="@style/mfh_textview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:layout_below="@+id/tv_price"
+        android:singleLine="true"
         android:text="数量"/>
+
 
 </RelativeLayout>

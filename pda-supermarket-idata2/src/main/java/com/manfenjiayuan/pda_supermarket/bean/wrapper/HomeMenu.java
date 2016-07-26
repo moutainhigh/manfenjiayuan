@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class HomeMenu implements Serializable {
 
-    public static final Long OPTION_ID_GOOODS = 1L;//商品（修改售价和标准库存）
+    public static final Long OPTION_ID_GOODS = 1L;//商品（修改售价和标准库存）
     public static final Long OPTION_ID_PACKAGE = 2L;//包裹(取快递)
     public static final Long OPTION_ID_STOCK_TAKE = 3L;//盘点（修改当前库存）
     public static final Long OPTION_ID_DISTRIBUTION = 4L;//收货（商品配送）

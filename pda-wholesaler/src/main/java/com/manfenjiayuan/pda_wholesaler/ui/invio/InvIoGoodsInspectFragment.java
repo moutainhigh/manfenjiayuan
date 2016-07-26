@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvIoGoodsEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.InvIoGoodsService;
+import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;

@@ -5,14 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.manfenjiayuan.pda_wholesaler.R;
 import com.bingshanguxue.pda.IData95Activity;
+import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.ChainGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.invio.InvIoPickingGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.stocktake.InventoryCheckFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.invio.CreateInvIoOrderFragment;
+import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -23,13 +25,15 @@ import com.mfh.framework.uikit.base.BaseFragment;
 public class PrimaryActivity extends IData95Activity implements BackHandledInterface {
 
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
-    public static final int FRAGMENT_TYPE_NONE = -1;
-    public static final int FRAGMENT_TYPE_PACKAGE = 0;
-    public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 6;//盘点订单列表
-    public static final int FT_WHOLESALER_GOODS             = 7;//商品
-    public static final int FT_WHOLESALER_GOODSSHELVES      = 8;//货架绑定商品
-	public static final int FT_CREATE_INV_RETURNORDER      = 11;//退货
-    public static final int FT_CREATE_INV_LOSSORDER      = 12;//报损
+    public static final int FRAGMENT_TYPE_NONE = 0x00;
+    public static final int FRAGMENT_TYPE_PACKAGE = 0x1;
+    public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 0x06;//盘点订单列表
+    public static final int FT_WHOLESALER_GOODS             = 0x07;//商品
+    public static final int FT_WHOLESALER_GOODSSHELVES      = 0x08;//货架绑定商品
+	public static final int FT_CREATE_INV_RETURNORDER      = 0x11;//退货
+    public static final int FT_CREATE_INV_LOSSORDER      = 0x12;//报损
+    public static final int FT_INVIO_IN         = 0x21;//入库
+    public static final int FT_INVIO_OUT         = 0x22;//出库
 
     public static final int FT_CREATE_INVIOORDER_BYFINDORDER = 0x02;//拣货发货
 
@@ -186,6 +190,33 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = CreateInvLossOrderFragment.newInstance(intent.getExtras());
             }else{
                 fragment = CreateInvLossOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }else if(fragmentType == FT_INVIO_IN){
+            CreateInvIoOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_IN);
+                fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CreateInvIoOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }
+        else if(fragmentType == FT_INVIO_OUT){
+            CreateInvIoOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_OUT);
+                fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CreateInvIoOrderFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

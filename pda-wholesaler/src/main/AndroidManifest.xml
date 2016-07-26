@@ -37,6 +37,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- 本地数据库、SDK离线地图和cache功能需要读写外部存储器 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <!-- 手机震动 -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- <uses-permission android:name="android.hardware.sensor.accelerometer"/> -->

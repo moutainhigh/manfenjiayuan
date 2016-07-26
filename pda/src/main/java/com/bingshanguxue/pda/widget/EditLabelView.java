@@ -34,6 +34,7 @@ public class EditLabelView extends LinearLayout {
 
     private TextView tvLeftText;
     private EditText etContent;
+    private TextView tvEndText;
 
     private boolean softKeyboardEnabled;//是否支持软键盘
     private int[] interceptKeyCodes;
@@ -55,32 +56,37 @@ public class EditLabelView extends LinearLayout {
         super(context, attrs);
 
         View rootView = View.inflate(getContext(), R.layout.itemview_edit, this);
+        tvLeftText = (TextView) rootView.findViewById(R.id.tv_lefttext);
+        etContent = (EditText) rootView.findViewById(R.id.et_content);
+        tvEndText = (TextView) rootView.findViewById(R.id.tv_endText);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditLabelView);
-        String leftText = ta.getString(R.styleable.EditLabelView_editLabelView_leftText);
-//		int leftTextSize = ta.getDimensionPixelSize(R.styleable.EditLabelView_editLabelView_leftTextSize, 12);//像素
-        float leftTextSize = ta.getDimension(R.styleable.EditLabelView_editLabelView_leftTextSize, 12);//像素
-        int leftTextColor = ta.getColor(R.styleable.EditLabelView_editLabelView_leftTextColor, 0);
-        int leftTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_editLabelView_leftTextWidth, 80);//px
-
-        float rightTextSize = ta.getDimension(R.styleable.EditLabelView_editLabelView_rightTextSize, 12);
-        int rightTextColor = ta.getColor(R.styleable.EditLabelView_editLabelView_rightTextColor, 0);
-        int rightTextColorHint = ta.getColor(R.styleable.EditLabelView_editLabelView_rightTextColorHint, 0);
-        String rightHint = ta.getString(R.styleable.EditLabelView_editLabelView_rightHint);
-        ta.recycle();
-
-        tvLeftText = (TextView) rootView.findViewById(R.id.tv_lefttext);
-        tvLeftText.setText(leftText);
-        tvLeftText.setTextSize(leftTextSize);
+        tvLeftText.setText(ta.getString(R.styleable.EditLabelView_editLabelView_leftText));
+        //像素
+        tvLeftText.setTextSize(ta.getDimension(R.styleable.EditLabelView_editLabelView_leftTextSize, 12));
 //        tvLeftText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
-        tvLeftText.setTextColor(leftTextColor);
-        tvLeftText.setWidth(leftTextWidth);
+        tvLeftText.setTextColor(ta.getColor(R.styleable.EditLabelView_editLabelView_leftTextColor, 0));
+        //px
+        tvLeftText.setWidth(ta.getDimensionPixelSize(R.styleable.EditLabelView_editLabelView_leftTextWidth, 80));
 
-		etContent = (EditText) rootView.findViewById(R.id.et_content);
-        etContent.setHint(rightHint);
-        etContent.setTextSize(rightTextSize);
-        etContent.setTextColor(rightTextColor);
-        etContent.setHintTextColor(rightTextColorHint);
+        etContent.setHint(ta.getString(R.styleable.EditLabelView_editLabelView_rightHint));
+        etContent.setTextSize(ta.getDimension(R.styleable.EditLabelView_editLabelView_rightTextSize, 12));
+        etContent.setTextColor(ta.getColor(R.styleable.EditLabelView_editLabelView_rightTextColor, 0));
+        etContent.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editLabelView_rightTextColorHint, 0));
+
+        if (ta.getBoolean(R.styleable.EditLabelView_endTextVisible, false)){
+            tvEndText.setVisibility(VISIBLE);
+        }
+        else{
+            tvEndText.setVisibility(GONE);
+        }
+        tvEndText.setText(ta.getString(R.styleable.EditLabelView_endText));
+        tvEndText.setTextSize(ta.getDimension(R.styleable.EditLabelView_endTextSize, 12));
+//        tvLeftText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
+        tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0));
+        tvEndText.setWidth(ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextWidth, 80));
+
+        ta.recycle();
 
         etContent.setInputType(InputType.TYPE_NULL);
 
@@ -176,6 +182,9 @@ public class EditLabelView extends LinearLayout {
         return etContent.getText().toString();
     }
 
+    public void setEndText(String text){
+        tvEndText.setText(text);
+    }
     public boolean isSoftKeyboardEnabled() {
         return softKeyboardEnabled;
     }

@@ -15,9 +15,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
+import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
@@ -27,7 +26,6 @@ import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ValidateManager;
 import com.manfenjiayuan.pda_wholesaler.bean.wrapper.HomeMenu;
-import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.HomeAdapter;
 import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectOfficeDialog;
 import com.manfenjiayuan.pda_wholesaler.utils.DataCacheHelper;
@@ -77,6 +75,11 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             intent.putExtras(extras);
         }
         context.startActivity(intent);
+    }
+
+    @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
     }
 
     @Override
@@ -138,8 +141,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 //        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
 //        hideSystemUI();
@@ -319,7 +321,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         MfhUserManager.getInstance().updateModules();
 
         List<HomeMenu> menus = new ArrayList<>();
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_WHOLESALER_GOODS,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_GOODS,
                 "商品", R.mipmap.ic_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_TAKE,
                 "盘点", R.mipmap.ic_stocktake));
@@ -331,9 +333,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 "收货", R.mipmap.ic_receive_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_ALPHA,
                 "退货", R.mipmap.ic_return_goods));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_ALPHA,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_OUT,
                 "出库", R.mipmap.ic_stock_out));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_ALPHA,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_IN,
                 "入库", R.mipmap.ic_stock_in));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER,
                 "报损", R.mipmap.ic_report_loss));
@@ -351,7 +353,18 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             return;
         }
 
-        if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
+        if (id.compareTo(HomeMenu.OPTION_ID_GOODS) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODS);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        } else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_GOODS_SHELVES) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODSSHELVES);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        }
+        else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
             Office office = DataCacheHelper.getInstance().getCurrentOffice();
             if (office == null) {
                 //TODO,请先选择网点。。。
@@ -365,17 +378,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             PrimaryActivity.actionStart(MainActivity.this, extras);
         }else if (id.compareTo(HomeMenu.OPTION_ID_DISTRIBUTION) == 0) {
             selectReceiveOrderType();
-        } else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_GOODS) == 0) {
-            Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODS);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_GOODS_SHELVES) == 0) {
-            Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODSSHELVES);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
-        }  else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_PICKING_GOODS) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_PICKING_GOODS) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(SimpleDialogActivity.EXTRA_KEY_FRAGMENT_TYPE, SimpleDialogActivity.FT_CREATE_INVIOORDER_SPLASH);
@@ -384,6 +387,16 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         }  else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER) == 0) {    Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_LOSSORDER);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_IN) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_IN);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        }  else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else {
             DialogUtil.showHint("开发君失踪了...");

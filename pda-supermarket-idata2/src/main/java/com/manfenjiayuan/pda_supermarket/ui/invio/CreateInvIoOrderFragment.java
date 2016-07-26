@@ -14,13 +14,12 @@ import android.widget.Button;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvIoGoodsEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.InvIoGoodsService;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
@@ -383,7 +382,7 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVIO_INSPECTGOODS);
-        extras.putString(InvReturnGoodsInspectFragment.EXTRA_KEY_BARCODE, barcode);
+        extras.putString(InvIoGoodsInspectFragment.EXTRA_KEY_BARCODE, barcode);
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
