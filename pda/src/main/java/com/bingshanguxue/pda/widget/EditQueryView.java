@@ -17,10 +17,6 @@ import com.bingshanguxue.pda.R;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 
-//import butterknife.Bind;
-//import butterknife.ButterKnife;
-//import butterknife.OnClick;
-
 
 /**
  * 复合控件－－（输入框 + 按键）
@@ -41,9 +37,7 @@ public class EditQueryView extends LinearLayout {
     public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;
     public static final int INPUT_TYPE_TEXT = 2;
 
-//    @Bind(R.id.et_input)
     private EditText etInput;
-//    @Bind(R.id.ib_search)
     private ImageButton ibRight;
 
     private boolean softKeyboardEnabled;//是否支持软键盘

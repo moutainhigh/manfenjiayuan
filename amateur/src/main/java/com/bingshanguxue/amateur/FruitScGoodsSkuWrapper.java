@@ -1,10 +1,11 @@
-package com.mfh.litecashier.bean;
+package com.mfh.litecashier.bean.wrapper;
 
 import com.mfh.framework.api.GoodsSupplyInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.comn.bean.ILongId;
+import com.mfh.litecashier.bean.FruitScGoodsSku;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * {@link ScGoodsSku 的扩展，自动转取第一个批发商信息}
  * Created by bingshanguxue on 6/6/16.
  */
-public class FruitScGoodsSku implements ILongId, Serializable {
+public class FruitScGoodsSkuWrapper implements Serializable {
     private Long id;//本店最小商品库存单元编号
 
     //产品本身信息
@@ -55,6 +56,10 @@ public class FruitScGoodsSku implements ILongId, Serializable {
 //    private String supplyName;//批发商名称
     private Long providerId;//供应商编号
     private List<GoodsSupplyInfo> supplyItems;//批发商信息
+
+
+    //商品所属批发商信息
+    private GoodsSupplyInfo mGoodsSupplyInfo;
 
     public Long getId() {
         return id;
@@ -128,6 +133,7 @@ public class FruitScGoodsSku implements ILongId, Serializable {
     public void setSellMonthNum(Double sellMonthNum) {
         this.sellMonthNum = sellMonthNum;
     }
+
 
     public Double getLowerLimit() {
         return lowerLimit;
@@ -243,6 +249,14 @@ public class FruitScGoodsSku implements ILongId, Serializable {
 
     public void setSupplyItems(List<GoodsSupplyInfo> supplyItems) {
         this.supplyItems = supplyItems;
+
+        if (supplyItems != null && supplyItems.size() > 0){
+            // TODO: 6/14/16 取第一个批发商信息也是有问题
+            setGoodsSupplyInfo(supplyItems.get(0));
+        }
+        else{
+            setGoodsSupplyInfo(null);
+        }
     }
 
     public String getBuyUnit() {
@@ -267,6 +281,46 @@ public class FruitScGoodsSku implements ILongId, Serializable {
 
     public void setUpperLimit(Double upperLimit) {
         this.upperLimit = upperLimit;
+    }
+
+    public GoodsSupplyInfo getGoodsSupplyInfo() {
+        return mGoodsSupplyInfo;
+    }
+
+    public void setGoodsSupplyInfo(GoodsSupplyInfo goodsSupplyInfo) {
+        mGoodsSupplyInfo = goodsSupplyInfo;
+    }
+
+    public static FruitScGoodsSkuWrapper build(FruitScGoodsSku goodsSku){
+        if (goodsSku == null){
+            return null;
+        }
+
+        FruitScGoodsSkuWrapper wrapper = new FruitScGoodsSkuWrapper();
+        //设置批发商信息，预计采购价
+        wrapper.setSupplyItems(goodsSku.getSupplyItems());
+        wrapper.setImgUrl(goodsSku.getImgUrl());
+        wrapper.setSkuName(goodsSku.getSkuName());
+        wrapper.setBarcode(goodsSku.getBarcode());
+        wrapper.setBuyUnit(goodsSku.getBuyUnit());
+        wrapper.setQuantity(goodsSku.getQuantity());
+        wrapper.setProSkuId(goodsSku.getProSkuId());
+        return wrapper;
+    }
+
+    public static List<FruitScGoodsSkuWrapper> buildList(List<FruitScGoodsSku> goodsSkuList){
+        if (goodsSkuList == null || goodsSkuList.size() < 1){
+            return null;
+        }
+
+        List<FruitScGoodsSkuWrapper> wrapperList = new ArrayList<>();
+        for (FruitScGoodsSku good : goodsSkuList){
+            FruitScGoodsSkuWrapper wrapper = build(good);
+            if (good != null){
+                wrapperList.add(wrapper);
+            }
+        }
+        return wrapperList;
     }
 
 

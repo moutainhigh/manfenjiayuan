@@ -101,6 +101,7 @@ public class OptionalLabel extends RelativeLayout {
                 }
             }
         });
+
         ibDel.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

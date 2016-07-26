@@ -22,7 +22,6 @@ import de.greenrobot.event.EventBus;
  */
 public abstract class IData95Activity extends BaseActivity {
 
-    private IntentFilter intentFilter;
     private BroadcastReceiver scanReceiver;
 
     private ScannerInerface scanner;
@@ -110,7 +109,7 @@ public abstract class IData95Activity extends BaseActivity {
 
         //初始化意图过滤器
         //扫描结果的意图过滤器的动作一定要使用"android.intent.action.SCANRESULT"
-        intentFilter = new IntentFilter(PDAScanManager.IDATA_ACTION_SCANRESULT);
+        IntentFilter intentFilter = new IntentFilter(PDAScanManager.IDATA_ACTION_SCANRESULT);
         intentFilter.addAction("com.idatachina.SCANKEYEVENT");
         intentFilter.addAction("android.intent.action.BARCODESTOPSCAN");
 //注册广播接受者

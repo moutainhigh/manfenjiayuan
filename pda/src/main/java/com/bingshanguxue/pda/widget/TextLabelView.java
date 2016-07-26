@@ -16,9 +16,7 @@ import com.bingshanguxue.pda.R;
  * {@link TextLabelView }
  */
 public class TextLabelView extends LinearLayout {
-//	@Bind(R.id.tv_lefttext)
 	TextView tvLeftText;
-//	@Bind(R.id.tv_righttext)
 	TextView tvRightText;
 
 	public TextLabelView(Context context) {

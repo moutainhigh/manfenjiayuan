@@ -25,8 +25,8 @@ public class InvIoOrderApi {
     public static final int ORDER_TYPE_SET = 2;
 
     /**商品的仓储类型，0-代表是零售 1-是批发*/
-    public static final int STORE_TYPE_RETAIL = 1;
-    public static final int STORE_TYPE_WHOLESALE = 2;
+    public static final int STORE_TYPE_RETAIL = 0;
+    public static final int STORE_TYPE_WHOLESALE = 1;
 
     /**
      * 查询出入库批次流水

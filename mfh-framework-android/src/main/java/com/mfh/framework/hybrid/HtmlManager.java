@@ -23,7 +23,7 @@ public class HtmlManager {
     public static final String HOME = "HOME";
 
     // /storage/emulated/0/Android/data/packagename
-    public static final String ROOT_DIR = FileUtil.SDCARD
+    public static final String ROOT_DIR = FileUtil.getSDCardPath()
 //            + "Android" + File.separator + "data"
              + File.separator + MfhApplication.getAppContext().getPackageName();
     //默认保存目录Environment.getExternalStorageDirectory()

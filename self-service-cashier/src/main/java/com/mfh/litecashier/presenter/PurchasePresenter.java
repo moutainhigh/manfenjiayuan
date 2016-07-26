@@ -1,8 +1,8 @@
 package com.mfh.litecashier.presenter;
 
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.litecashier.bean.FruitScGoodsSku;
 import com.mfh.litecashier.mode.PurchaseMode;
 import com.mfh.litecashier.ui.view.IPurchaseView;
 
@@ -27,7 +27,7 @@ public class PurchasePresenter {
     public void loadPurchaseGoods(PageInfo pageInfo, String categoryId, Long otherTenantId,
                                   String barcode, String nameLike, int sortType, String priceType){
         mPurchaseMode.loadPurchaseGoods(pageInfo, categoryId, otherTenantId, barcode,
-                nameLike, sortType, priceType, new OnPageModeListener<FruitScGoodsSku>() {
+                nameLike, sortType, priceType, new OnPageModeListener<ScGoodsSku>() {
                     @Override
                     public void onProcess() {
                         if (mIPurchaseView != null) {
@@ -36,7 +36,7 @@ public class PurchasePresenter {
                     }
 
                     @Override
-                    public void onSuccess(PageInfo pageInfo, List<FruitScGoodsSku> dataList) {
+                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
                         if (mIPurchaseView != null) {
                             mIPurchaseView.onLoadPurchaseGoodsFinished(pageInfo, dataList);
                         }

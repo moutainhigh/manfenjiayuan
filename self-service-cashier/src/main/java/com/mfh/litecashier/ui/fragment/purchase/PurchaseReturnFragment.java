@@ -17,11 +17,11 @@ import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -421,7 +421,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
         tvGoodsQunatity.setText(String.format("商品数：%.2f", curOrder.getCommitGoodsNum()));
         tvTotalAmount.setText(String.format("商品金额：%.2f", curOrder.getCommitPrice()));
 
-        InvOrderApiImpl.getInvSendIoOrderById(curOrder.getId(), orderdetailRespCallback);
+        InvSendIoOrderApiImpl.getInvSendIoOrderById(curOrder.getId(), orderdetailRespCallback);
     }
 
     NetCallBack.NetTaskCallBack orderdetailRespCallback = new NetCallBack.NetTaskCallBack<InvSendIoOrderItemBrief,

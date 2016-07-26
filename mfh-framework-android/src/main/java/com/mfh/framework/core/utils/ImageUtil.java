@@ -381,13 +381,13 @@ public class ImageUtil {
         String mUriString = mUri.toString();
         mUriString = Uri.decode(mUriString);
 
-        String pre1 = "file://" + FileUtil.SDCARD;
+        String pre1 = "file://" + FileUtil.getSDCardPath();
         String pre2 = "file://" + FileUtil.SDCARD_MNT + File.separator;
 
         if (mUriString.startsWith(pre1)) {
-            filePath = FileUtil.SDCARD + File.separator + mUriString.substring(pre1.length());
+            filePath = FileUtil.getSDCardPath() + File.separator + mUriString.substring(pre1.length());
         } else if (mUriString.startsWith(pre2)) {
-            filePath = FileUtil.SDCARD + File.separator + mUriString.substring(pre2.length());
+            filePath = FileUtil.getSDCardPath() + File.separator + mUriString.substring(pre2.length());
         }
         return filePath;
     }

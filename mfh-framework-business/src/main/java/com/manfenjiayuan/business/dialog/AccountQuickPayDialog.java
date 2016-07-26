@@ -23,13 +23,14 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.widget.FontFitTextView;
 
@@ -224,11 +225,11 @@ public class AccountQuickPayDialog extends CommonDialog {
 
         //支付并签收调拨单
         if (dialogType == 1){
-            InvOrderApiImpl.doReceiveInvSendIoOrder(orderId, password, receiveResponseCallback);
+            InvSendIoOrderApiImpl.doReceiveInvSendIoOrder(orderId, password, receiveResponseCallback);
         }
         //支付订单
         else {
-            InvOrderApiImpl.doPayInvSendIoOrder(orderId, password, payResponseCallback);
+            InvSendIoOrderApiImpl.doPayInvSendIoOrder(orderId, password, payResponseCallback);
         }
     }
 

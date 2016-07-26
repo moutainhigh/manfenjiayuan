@@ -2,20 +2,20 @@ package com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.PDAScanFragment;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.DistributionSignEntity;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.constant.StoreType;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 
 import java.util.List;
 
@@ -86,7 +86,7 @@ public abstract class BaseReceiveOrderFragment extends PDAScanFragment {
         jsonStrObject.put("items", itemsArray);
         totalAmount = amount;
 
-        InvOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
+        InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
                 jsonStrObject.toJSONString(), signResponseCallback);
     }
 

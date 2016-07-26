@@ -13,14 +13,14 @@ import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.constant.StoreType;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
@@ -118,7 +118,7 @@ public abstract class BaseReceiveOrderFragment extends PDAScanFragment {
         totalAmount = amount;
 
 //        ZLogger.d("jsonStr:\n " + JSON.toJSONString(jsonStrObject));
-        InvOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
+        InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
                 jsonStrObject.toJSONString(), signResponseCallback);
     }
 

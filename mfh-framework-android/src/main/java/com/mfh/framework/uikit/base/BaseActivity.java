@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.core.logger.ZLogger;
@@ -50,6 +52,14 @@ public class BaseActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog = null;
     //确认对话框
     private CommonDialog confirmDialog = null;
+
+
+    /**
+     * 是否全屏显示
+     */
+    protected boolean isFullscreenEnabled() {
+        return false;
+    }
 
     /**
      * 设置主题
@@ -106,6 +116,12 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (isFullscreenEnabled()){
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
+
         retrieveAnimations();
 
 //        setTheme();

@@ -17,26 +17,26 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.constant.AbilityItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.OptionalLabel;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
 import com.mfh.litecashier.ui.adapter.CreateOrderItemAdapter;
@@ -398,7 +398,7 @@ public class CreateInventoryTransOrderFragment extends BaseFragment implements I
         }
         jsonStrObject.put("items", itemsArray);
 
-        InvOrderApiImpl.createInvSendIoOrder(true, jsonStrObject.toJSONString(), responseCallback);
+        InvSendIoOrderApiImpl.createInvSendIoOrder(true, jsonStrObject.toJSONString(), responseCallback);
     }
 
     private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,

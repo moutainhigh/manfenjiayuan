@@ -22,7 +22,7 @@ public class BarcodeFactory {
         try {
             int preIndex = src.indexOf(prefix);
             int suffixIndex = src.lastIndexOf(suffix);//(0, count]
-            ZLogger.d(String.format("%d,%d", preIndex, suffixIndex));
+//            ZLogger.d(String.format("%d,%d", preIndex, suffixIndex));
             if (preIndex >= 0 && suffixIndex >= 0 && preIndex <= suffixIndex - 2) {
                 return src.substring(preIndex + 1, suffixIndex - 1);
             }

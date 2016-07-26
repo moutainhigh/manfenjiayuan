@@ -22,7 +22,7 @@ public class BizConfig {
 
     //com.mfh.owner "manfenhome"
     public static final String DEFAULT_ROOT_FOLDER = MfhApplication.getAppContext().getPackageName();
-    public final static String DEFAULT_SAVE_PATH = FileUtil.SDCARD + File.separator + DEFAULT_ROOT_FOLDER + File.separator;
+    public final static String DEFAULT_SAVE_PATH = FileUtil.getSDCardPath() + File.separator + DEFAULT_ROOT_FOLDER + File.separator;
 
     // 默认缓存路径
     public final static String DEFAULT_CACHE_PATH = DEFAULT_SAVE_PATH + "cache" + File.separator;

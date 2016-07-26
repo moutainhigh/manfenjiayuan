@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment.invio;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

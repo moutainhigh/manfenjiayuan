@@ -4,12 +4,19 @@ import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
+import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetCallBack;
+import com.mfh.framework.net.NetFactory;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.litecashier.CashierApp;
+
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +72,8 @@ public class InvSendIoOrderItemMode implements IInvSendIoOrderItemMode<InvSendIo
                 , CashierApp.getAppContext()) {
         };
 
-        InvOrderApiImpl.getInvSendIoOrderById(id, responseCallback);
+        InvSendIoOrderApiImpl.getInvSendIoOrderById(id, responseCallback);
     }
+
+
 }

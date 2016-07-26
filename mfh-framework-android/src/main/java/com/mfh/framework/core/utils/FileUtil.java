@@ -29,10 +29,6 @@ import java.util.Map;
  */
 public class FileUtil {
 
-	// "/scard/" or "/storage/emulated/0", without File.seperator, without File.separator
-	public static final String SDCARD = Environment.getExternalStorageDirectory().getPath();
-	// SD卡的根目录 "/scard" or "/storage/emulated/0", without File.separator
-	public static final String SDCARD_ABS = Environment.getExternalStorageDirectory().getAbsolutePath();
 	// /data/data/ or "/data/data/package_name/files", without File.seperator
 //	public static final String DATA = ComnApplication.getAppContext().getFilesDir().getPath();
 	public final static String SDCARD_MNT = "/mnt/sdcard";
@@ -40,12 +36,36 @@ public class FileUtil {
 	static {
 	}
 
-    /**
-     * 判断是否存在SD卡
-     * determine whether sd card is exist
-     * */
-    public final static boolean IS_SDCARD_EXIST = Environment.getExternalStorageState().equals(
-            Environment.MEDIA_MOUNTED);
+	/**
+	 * 判断是否存在SD卡
+	 * determine whether sd card is exist
+	 * */
+	public final static boolean IS_SDCARD_EXIST = Environment.getExternalStorageState().equals(
+			Environment.MEDIA_MOUNTED);
+
+	/**
+	 * 获取SD卡的根目录
+	 * <ol>
+	 *     <li>
+	 *         返回 "/scard" or "/storage/emulated/0"，以'/'结尾.
+	 *     </li>
+	 * </ol>
+	 * */
+	public static String getSDCardPath() {
+		return Environment.getExternalStorageDirectory().getPath();
+	}
+
+	/**
+	 * 获取SD卡的根目录
+	 * <ol>
+	 *     <li>
+	 *         返回 "/scard" or "/storage/emulated/0"，不以'/'结尾.
+	 *     </li>
+	 * </ol>
+	 * */
+	public static String getSDCardAbsPath() {
+		return Environment.getExternalStorageDirectory().getAbsolutePath();
+	}
 
 	public static File getSaveFile(String folderPath, String fileNmae) {
 		File file = new File(getSavePath(folderPath) + File.separator + fileNmae);
@@ -65,13 +85,9 @@ public class FileUtil {
 	}
 
 	public static File getSaveFolder(String folderName) {
-		File file = new File(getSDCardPath() + File.separator + folderName + File.separator);
+		File file = new File(getSDCardAbsPath() + File.separator + folderName + File.separator);
 		file.mkdirs();
 		return file;
-	}
-
-	public static String getSDCardPath() {
-		return Environment.getExternalStorageDirectory().getAbsolutePath();
 	}
 
     /**

@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn;
+package com.manfenjiayuan.pda_supermarket.ui.invreturn;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.dialog.InputNumberDialog;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
@@ -24,7 +23,7 @@ import com.manfenjiayuan.pda_supermarket.ui.adapter.InvReturnOrderGoodsAdapter;
 import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectWholesalerDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -63,7 +62,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
     View btnSubmit;
 
     private SelectWholesalerDialog selectPlatformProviderDialog = null;
-    private InputNumberDialog mInputNumberDialog = null;
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
@@ -261,7 +259,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         }
         jsonStrObject.put("items", itemsArray);
 
-        InvOrderApiImpl.createInvSendIoBackOrder(null, true,
+        InvSendIoOrderApiImpl.createInvSendIoBackOrder(null, true,
                 jsonStrObject.toJSONString(), responseCallback);
     }
 

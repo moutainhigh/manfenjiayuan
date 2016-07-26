@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment.invio;
+package com.manfenjiayuan.pda_supermarket.ui.invreturn;
 
 
 import android.content.DialogInterface;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
@@ -16,10 +17,9 @@ import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
-import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.BaseReceiveOrderFragment;
+import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
+import com.manfenjiayuan.pda_supermarket.database.logic.InvReturnGoodsService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;
@@ -39,46 +39,44 @@ import butterknife.OnClick;
 
 
 /**
- * 拣货单发货－验货
+ * 商品退货－－验货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvIoGoodsFragment extends BaseReceiveOrderFragment
-        implements IChainGoodsSkuView {
+public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IChainGoodsSkuView {
 
-    private static final String TAG = "DistributionInspectFragment";
+    private static final String TAG = "InvReturnGoodsInspectFragment";
     public static final String EXTRA_KEY_INSPECTMODE = "inspectMode";
-//    public static final String EXTRA_KEY_COMPANYID = "companyId";
+    public static final String EXTRA_KEY_COMPANYID = "companyId";
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
 
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
 
-    @Bind(R.id.label_productName)
-    TextLabelView labelName;
-    @Bind(R.id.label_barcode)
-    TextLabelView labelBarcode;
+    private final static int LABELVIEW_INDEX_BARCODE = 0;
+    private final static int LABELVIEW_INDEX_NAME = 1;
+    private final static int LABELVIEW_INDEX_TOTALCOUNT = 2;
+    @Bind({R.id.label_barcode, R.id.label_productName, R.id.label_totalcount })
+    List<TextLabelView> labelViews;
     @Bind(R.id.label_price)
     EditLabelView labelPrice;
-    @Bind(R.id.label_pickedQuantity)
-    TextLabelView labelPickedQuantity;
     @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
 
-    @Bind(R.id.button_reject)
-    Button btnReject;
+    @Bind(R.id.button_reject) Button btnReject;
     @Bind(R.id.button_submit)
     Button btnSubmit;
 
     private int inspectMode = 0;
-    private InvIoPickGoodsEntity curGoods = null;
+    private Long companyId;
+    private InvReturnGoodsEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
     private boolean isQueryProcessing;
 
 
-    public static InvIoGoodsFragment newInstance(Bundle args) {
-        InvIoGoodsFragment fragment = new InvIoGoodsFragment();
+    public static InvReturnGoodsInspectFragment newInstance(Bundle args) {
+        InvReturnGoodsInspectFragment fragment = new InvReturnGoodsInspectFragment();
 
-        if (args != null) {
+        if (args != null){
             fragment.setArguments(args);
         }
         return fragment;
@@ -86,7 +84,7 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_invio_goods_inspect;
+        return R.layout.fragment_inspect_invreturn_goods;
     }
 
     @Override
@@ -149,20 +147,22 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
         Bundle args = getArguments();
         if (args != null) {
             inspectMode = args.getInt(EXTRA_KEY_INSPECTMODE, 0);
+            companyId = args.getLong(EXTRA_KEY_COMPANYID);
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
 //            eqvBarcode.setInputString(barcode);
             query(barcode);
         }
+
     }
 
     /**
      * 查询包裹信息
-     */
-    public void query(String barcode) {
+     * */
+    public void query(String barcode){
         eqvBarcode.clear();
 
-        if (isQueryProcessing || StringUtils.isEmpty(barcode)) {
+        if (isQueryProcessing || StringUtils.isEmpty(barcode)){
             return;
         }
 
@@ -171,8 +171,8 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
     }
 
     @OnClick(R.id.button_reject)
-    public void reject() {
-        InvIoPickGoodsService.get().reject(curGoods);
+    public void reject(){
+        InvReturnGoodsService.get().reject(curGoods);
 
         refreshPackage(null);
     }
@@ -180,8 +180,8 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
     @OnClick(R.id.button_submit)
     public void submit() {
         String price = labelPrice.getEtContent();
-        if (StringUtils.isEmpty(price)) {
-            DialogUtil.showHint("请输入收货价格");
+        if (StringUtils.isEmpty(price)){
+            DialogUtil.showHint("请输入发货价格");
             return;
         }
 
@@ -196,7 +196,8 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             quantityCheckConfirmDialog(curGoods, Double.valueOf(price), quantityCheck);
         }
         else{
-            InvIoPickGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
+            InvReturnGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
+
             refreshPackage(null);
         }
     }
@@ -204,14 +205,14 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
 
     /**
      * 刷新信息
-     */
-    private void refreshPackage(InvIoPickGoodsEntity goods) {
+     * */
+    private void refreshPackage(InvReturnGoodsEntity goods){
         curGoods = goods;
-        if (curGoods == null) {
-            labelBarcode.setTvSubTitle("");
-            labelName.setTvSubTitle("");
+        if (curGoods == null){
+            labelViews.get(LABELVIEW_INDEX_BARCODE).setTvSubTitle("");
+            labelViews.get(LABELVIEW_INDEX_NAME).setTvSubTitle("");
+            labelViews.get(LABELVIEW_INDEX_TOTALCOUNT).setTvSubTitle("");
             labelPrice.setEtContent("");
-            labelPickedQuantity.setTvSubTitle("");
             labelSignQuantity.setEtContent("");
 
             btnReject.setEnabled(false);
@@ -221,9 +222,9 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             eqvBarcode.requestFocus();
         }
         else {
-            labelBarcode.setTvSubTitle(curGoods.getBarcode());
-            labelName.setTvSubTitle(curGoods.getProductName());
-            labelPickedQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantityCheck(), ""));
+            labelViews.get(LABELVIEW_INDEX_BARCODE).setTvSubTitle(curGoods.getBarcode());
+            labelViews.get(LABELVIEW_INDEX_NAME).setTvSubTitle(curGoods.getProductName());
+            labelViews.get(LABELVIEW_INDEX_TOTALCOUNT).setTvSubTitle(MUtils.formatDouble(curGoods.getTotalCount(), ""));
 //            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
             labelPrice.setEtContent(MUtils.formatDouble(curGoods.getPrice(), ""));
             //默认签收数量为空，根据实际情况填写
@@ -240,7 +241,7 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
 
     class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
         private String barcode;
-        private InvIoPickGoodsEntity goodsEntity;
+        private InvReturnGoodsEntity goodsEntity;
 
         public QueryGoodsAsyncTask( String barcode) {
             this.barcode = barcode;
@@ -249,7 +250,7 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
         @Override
         protected Boolean doInBackground(String... params) {
             try{
-                goodsEntity = InvIoPickGoodsService.get().queryEntityBy(barcode);
+                goodsEntity = InvReturnGoodsService.get().queryEntityBy(barcode);
                 if (goodsEntity != null){
                     return true;
                 }
@@ -266,7 +267,7 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             super.onPostExecute(aBoolean);
             if (aBoolean){
                 onError("");
-                saveInvIoPickGoodsEntity(goodsEntity);
+                saveInvReturnGoodsEntity(goodsEntity);
             }
             else{
                 if (inspectMode == 0){
@@ -291,13 +292,15 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
         }
     }
 
-    private void queryNetGoods(String barcode) {
+    private void queryNetGoods(String barcode){
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             onError(getString(R.string.toast_network_error));
             return;
         }
 
-        // TODO: 5/31/16 这里的companyId使用null,查询所有供应商的商品，如果要查询指定批发商的商品，需要传入companyId的值
+//        chainGoodsSkuPresenter.findTenantSku(new PageInfo(-1, 10),
+//                null, barcode);
+
         chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
 
@@ -338,18 +341,19 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
         }
     }
 
-
-    public void saveInvIoPickGoodsEntity(InvIoPickGoodsEntity goods) {
+    public void saveInvReturnGoodsEntity(InvReturnGoodsEntity goods){
         if (goods == null) {
             DialogUtil.showHint("商品无效");
             return;
         }
 
-        InvIoPickGoodsEntity entity = InvIoPickGoodsService.get().queryEntityBy(goods.getBarcode());
-        if (entity == null) {
-            entity = new InvIoPickGoodsEntity();
+        InvReturnGoodsEntity entity = InvReturnGoodsService.get().queryEntityBy(goods.getBarcode());
+        if (entity == null){
+            entity = new InvReturnGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
+//        entity.setOrderId(productEntity.getOrderId());
+            entity.setProductId(goods.getProductId());
             entity.setProSkuId(goods.getProSkuId());
             entity.setChainSkuId(goods.getChainSkuId());
             entity.setProductName(goods.getProductName());
@@ -359,7 +363,9 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             entity.setProviderId(goods.getProviderId());
             entity.setIsPrivate(goods.getIsPrivate());
 
-            entity.setQuantityCheck(1D);
+            entity.setTotalCount(1D);
+            entity.setQuantityCheck(entity.getTotalCount());
+            entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
 
             //设置金额
             if (entity.getQuantityCheck() == null || entity.getPrice() == null) {
@@ -369,7 +375,8 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             }
             entity.setUpdatedDate(new Date());
 
-            InvIoPickGoodsService.get().saveOrUpdate(entity);
+            InvReturnGoodsService.get().saveOrUpdate(entity);
+
         }
         refreshPackage(entity);
     }
@@ -384,11 +391,19 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             return;
         }
 
-        InvIoPickGoodsEntity entity = InvIoPickGoodsService.get().queryEntityBy(goods.getBarcode());
-        if (entity == null) {
-            entity = new InvIoPickGoodsEntity();
+//        if (goods.getSingleCostPrice() == null) {
+//            //“如果singleCostPrice值为null，说明缺少箱规数，信息不完整，这种情况你不允许进行采购或收货
+//            DialogUtil.showHint("商品未设置单件批发价，无法采购货收货");
+//            return;
+//        }
+
+        InvReturnGoodsEntity entity = InvReturnGoodsService.get().queryEntityBy(goods.getBarcode());
+        if (entity == null){
+            entity = new InvReturnGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
+//        entity.setOrderId(productEntity.getOrderId());
+            entity.setProductId(goods.getId());
             entity.setProSkuId(goods.getProSkuId());
             entity.setChainSkuId(goods.getId());
             entity.setProductName(goods.getSkuName());
@@ -398,7 +413,9 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             entity.setProviderId(goods.getTenantId());
             entity.setIsPrivate(IsPrivate.PLATFORM);
 
+            entity.setTotalCount(0D);
             entity.setQuantityCheck(0D);
+            entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
 
             //设置金额
             if (entity.getQuantityCheck() == null || entity.getPrice() == null) {
@@ -408,27 +425,27 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             }
             entity.setUpdatedDate(new Date());
 
-            InvIoPickGoodsService.get().saveOrUpdate(entity);
-
+            InvReturnGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;
-    private void quantityCheckConfirmDialog(final InvIoPickGoodsEntity entity,
+    private void quantityCheckConfirmDialog(final InvReturnGoodsEntity entity,
                                             final Double price, final Double quantity){
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
             quantityCheckConfirmDialog.setCancelable(true);
         }
-        quantityCheckConfirmDialog.setMessage(String.format("已经拣货%.2f件，请选择[覆盖]还是[累加]",
+        quantityCheckConfirmDialog.setMessage(String.format("已经签收%.2f件，请选择[覆盖]还是[累加]",
                 entity.getQuantityCheck()));
         quantityCheckConfirmDialog.setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                InvIoPickGoodsService.get().inspect(entity, price, quantity);
+                InvReturnGoodsService.get().inspect(entity, price, quantity);
+
                 refreshPackage(null);
             }
         });
@@ -437,8 +454,8 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                InvIoPickGoodsService.get().inspect(entity, price,
-                        entity.getQuantityCheck() + quantity);
+                InvReturnGoodsService.get().inspect(entity, price, entity.getQuantityCheck() + quantity);
+
                 refreshPackage(null);
             }
         });
@@ -446,6 +463,4 @@ public class InvIoGoodsFragment extends BaseReceiveOrderFragment
             quantityCheckConfirmDialog.show();
         }
     }
-
-
 }

@@ -24,11 +24,11 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.CategoryOption;
 import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.GoodsSupplyInfo;
 import com.mfh.framework.api.constant.AbilityItem;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetWorkUtil;
@@ -44,7 +44,7 @@ import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
-import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
+import com.mfh.litecashier.presenter.PurchasePresenter;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
@@ -53,7 +53,7 @@ import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
-import com.mfh.litecashier.ui.view.IInventoryView;
+import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
@@ -71,7 +71,7 @@ import de.greenrobot.event.EventBus;
  * Created by bingshanguxue on 17/07/20.
  */
 public class ManualPurchaseFragment extends BaseProgressFragment
-        implements IInventoryView {
+        implements IPurchaseView {
 
     @Bind(R.id.inlv_barcode)
     InputSearchView inlvBarcode;
@@ -120,7 +120,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     private static final int MAX_SYNC_PAGESIZE = 30;
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 
-    private InventoryGoodsPresenter inventoryGoodsPresenter;
+    private PurchasePresenter mPurchasePresenter;
 
     public static ManualPurchaseFragment newInstance(Bundle args) {
         ManualPurchaseFragment fragment = new ManualPurchaseFragment();
@@ -142,7 +142,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
         EventBus.getDefault().register(this);
 
-        inventoryGoodsPresenter = new InventoryGoodsPresenter(this);
+        mPurchasePresenter = new PurchasePresenter(this);
     }
 
     @Override
@@ -494,12 +494,12 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         goodsListAdapter = new ManualPurchaseGoodsAdapter(CashierApp.getAppContext(), null);
         goodsListAdapter.setOnAdapterListener(new ManualPurchaseGoodsAdapter.OnAdapterListener() {
 
-            @Override
-            public void addToShopcart(ScGoodsSku goods, int quantity) {
-                addGoodsToShopcart(goods, quantity);
-            }
+                                                  @Override
+                                                  public void addToShopcart(ScGoodsSku goods, int quantity) {
+                                                      addGoodsToShopcart(goods, quantity);
+                                                  }
 
-            @Override
+                                                  @Override
                                                   public void onShowDetail(ScGoodsSku goods) {
                                                       Bundle extras = new Bundle();
                                                       extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -780,7 +780,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         //初始化
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        inventoryGoodsPresenter.loadPurchaseGoods(mPageInfo, getCategoryId(), getOtherTenantId(),
+        mPurchasePresenter.loadPurchaseGoods(mPageInfo, getCategoryId(), getOtherTenantId(),
                 getBarcode(), getName(), getSortType(), getPriceType());
         mPageInfo.setPageNo(1);
     }
@@ -804,7 +804,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            inventoryGoodsPresenter.loadPurchaseGoods(mPageInfo, getCategoryId(), getOtherTenantId(),
+            mPurchasePresenter.loadPurchaseGoods(mPageInfo, getCategoryId(), getOtherTenantId(),
                     getBarcode(), getName(), getSortType(), getPriceType());
         } else {
             ZLogger.d("加载商品列表，已经是最后一页。");
@@ -847,41 +847,6 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         return searchParams.getSortType();
     }
 
-    @Override
-    public void onProcess() {
-        onLoadProcess("正在加载数据...");
-    }
-
-    @Override
-    public void onError(String errorMsg) {
-        onLoadFinished();
-    }
-
-    @Override
-    public void onData(ScGoodsSku data) {
-
-    }
-
-    @Override
-    public void onList(PageInfo pageInfo, List<ScGoodsSku> dataList) {
-        mPageInfo = pageInfo;
-        //第一页，清空数据
-        if (mPageInfo.getPageNo() == 1) {
-            if (goodsListAdapter != null) {
-                goodsListAdapter.setEntityList(dataList);
-            }
-        } else {
-            if (goodsListAdapter != null) {
-                goodsListAdapter.appendEntityList(dataList);
-            }
-        }
-
-        onLoadFinished();
-        ZLogger.d(String.format("保存采购商品,pageInfo':page=%d,rows=%d(%d/%d)",
-                mPageInfo.getPageNo(), mPageInfo.getPageSize(),
-                goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
-    }
-
     /**
      * 加载后台类目树
      */
@@ -902,4 +867,33 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         return false;
     }
 
+    @Override
+    public void onLoadPurchaseGoodsProcess() {
+        onLoadProcess("正在加载数据...");
+    }
+
+    @Override
+    public void onLoadPurchaseGoodsError(String errorMsg) {
+        onLoadFinished();
+    }
+
+    @Override
+    public void onLoadPurchaseGoodsFinished(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+        mPageInfo = pageInfo;
+        //第一页，清空数据
+        if (mPageInfo.getPageNo() == 1) {
+            if (goodsListAdapter != null) {
+                goodsListAdapter.setEntityList(dataList);
+            }
+        } else {
+            if (goodsListAdapter != null) {
+                goodsListAdapter.appendEntityList(dataList);
+            }
+        }
+
+        onLoadFinished();
+        ZLogger.d(String.format("保存采购商品,pageInfo':page=%d,rows=%d(%d/%d)",
+                mPageInfo.getPageNo(), mPageInfo.getPageSize(),
+                goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
+    }
 }

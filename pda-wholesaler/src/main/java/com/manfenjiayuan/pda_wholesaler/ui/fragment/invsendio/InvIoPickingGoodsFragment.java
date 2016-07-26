@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment.invio;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
 import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;
 import com.manfenjiayuan.business.view.IInvFindOrderView;
@@ -22,7 +22,6 @@ import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.PickingGoodsAdapter;
 import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectTenantDialog;
@@ -34,8 +33,9 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.AbilityItem;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -330,7 +330,7 @@ public class InvIoPickingGoodsFragment extends PDAScanFragment
         }
         jsonStrObject.put("items", itemsArray);
 
-        InvOrderApiImpl.createInvSendIoOrder(true, jsonStrObject.toJSONString(), submitRC);
+        InvSendIoOrderApiImpl.createInvSendIoOrder(true, jsonStrObject.toJSONString(), submitRC);
     }
 
     private NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,

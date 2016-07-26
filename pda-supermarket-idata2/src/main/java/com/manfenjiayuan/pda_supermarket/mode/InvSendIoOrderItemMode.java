@@ -1,15 +1,15 @@
 package com.manfenjiayuan.pda_supermarket.mode;
 
+import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 
 /**
  * 采购订单明细
@@ -64,7 +64,7 @@ public class InvSendIoOrderItemMode implements IInvSendIoOrderItemMode<InvSendIo
                 , MfhApplication.getAppContext()) {
         };
 
-        InvOrderApiImpl.getInvSendIoOrderByBarcode(barcode, responseCallback);
+        InvSendIoOrderApiImpl.getInvSendIoOrderByBarcode(barcode, responseCallback);
     }
 
 }

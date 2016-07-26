@@ -41,8 +41,9 @@ public class ScGoodsSku implements ILongId, Serializable {
     private String prodLevel; //等级
 
     //租户商品sku信息
-    private Integer storeType;//仓储类型
+    private Long tenantId;// 租户信息，即微超公司id
     private Long tenantSkuId;//租户商品SKU编号
+    private Integer storeType;//仓储类型
     private Double quantity;     // 商品数量(库存)
     //    private Double sellNumber;//销量
     private Double sellMonthNum;//月销量
@@ -51,7 +52,6 @@ public class ScGoodsSku implements ILongId, Serializable {
     private Double costPrice; // 商品售价
     private Double costScore;//商品积分
     private Double startNum;//起配量
-    private Long tenantId;// 租户信息，即微超公司id
 
     private Double upperLimit;//排面库存
     private Double lowerLimit;//安全库存
@@ -65,7 +65,8 @@ public class ScGoodsSku implements ILongId, Serializable {
     //有以下属性，其他暂时没有
 
 
-    //chainSkuId: 采购相关功能使用otherTenantSkuId字段值，门店库存相关功能使用HtenantSkuId字段值。
+    //批发商信息
+    //chainSkuId: 采购相关功能使用otherTenantSkuId字段值，门店库存相关功能使用tenantSkuId字段值。
 //    private Long otherTenantSkuId;//批发商商品SKU编号,chainSkuId
 //    private String supplyName;//批发商名称
     private Long providerId;//供应商编号

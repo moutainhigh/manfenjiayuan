@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.IBaseViewComponent;
@@ -26,10 +24,12 @@ public abstract class InitActivity extends BaseActivity implements OnClickListen
     private Handler mHandler = null;//用于异步更新界面
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //SDK在统计Fragment时，需要关闭Activity自带的页面统计，

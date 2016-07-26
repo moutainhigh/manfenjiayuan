@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn;
+package com.manfenjiayuan.pda_supermarket.ui.invreturn;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -24,13 +24,13 @@ import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectWholesalerDialog;
 import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -261,7 +261,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
         }
         jsonStrObject.put("items", itemsArray);
 
-        InvOrderApiImpl.createInvSendIoBackOrder(null, true,
+        InvSendIoOrderApiImpl.createInvSendIoBackOrder(null, true,
                 jsonStrObject.toJSONString(), responseCallback);
     }
 

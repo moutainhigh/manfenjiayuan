@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
+import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.bean.InvSendIoOrder;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
@@ -20,8 +21,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
@@ -294,7 +294,7 @@ public class PurchaseReceiptFragment extends BaseFragment {
         }
 
         //加载订单明细
-        InvOrderApiImpl.getInvSendIoOrderById(curOrder.getId(), orderdetailRespCallback);
+        InvSendIoOrderApiImpl.getInvSendIoOrderById(curOrder.getId(), orderdetailRespCallback);
     }
 
     NetCallBack.NetTaskCallBack orderdetailRespCallback = new NetCallBack.NetTaskCallBack<InvSendIoOrderItemBrief,

@@ -18,9 +18,6 @@ import com.bingshanguxue.pda.R;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 
-//import butterknife.Bind;
-//import butterknife.ButterKnife;
-
 
 /**
  * 复合控件－－（文本＋输入框）
@@ -118,7 +115,8 @@ public class EditLabelView extends LinearLayout {
         etContent.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("setOnKeyListener(%s.%s):%d", TAG, etContent.getClass().getSimpleName(), event.getKeyCode()));
+                ZLogger.d(String.format("(%s):%d", etContent.getClass().getSimpleName(),
+                        event.getKeyCode()));
                 //Press “Enter”
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {

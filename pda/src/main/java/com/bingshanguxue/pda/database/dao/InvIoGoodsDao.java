@@ -34,8 +34,8 @@ public class InvIoGoodsDao extends BaseSeqAbleDao<InvIoGoodsEntity, String> {
 
     /**
      * 查询指定session下的消息类比，按照逆序
-     * @param pageInfo
-     * @return
+     * @param pageInfo 翻页信息
+     * @return List<InvIoGoodsEntity>
      */
     public List<InvIoGoodsEntity> queryAll(PageInfo pageInfo) {
         return queryAll(null, pageInfo);

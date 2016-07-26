@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn;
+package com.manfenjiayuan.pda_supermarket.ui.invreturn;
 
 
 import android.content.DialogInterface;

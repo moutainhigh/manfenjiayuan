@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.bingshanguxue.pda.IData95Activity;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.invio.InvIoOrderSplashFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio.InvIoOrderSplashFragment;
 
 import butterknife.Bind;
 
