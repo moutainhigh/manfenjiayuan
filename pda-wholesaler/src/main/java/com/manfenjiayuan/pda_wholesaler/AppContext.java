@@ -29,7 +29,6 @@ public class AppContext extends MfhApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
         AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();

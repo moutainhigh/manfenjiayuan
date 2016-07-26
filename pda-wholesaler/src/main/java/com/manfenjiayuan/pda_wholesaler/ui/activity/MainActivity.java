@@ -33,6 +33,7 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.entity.Office;
 import com.mfh.framework.login.entity.UserMixInfo;
@@ -469,7 +470,18 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         Office office = null;
         List<Office> offices = MfhLoginService.get().getOffices();
         if (offices != null && offices.size() > 0) {
-            office = offices.get(0);
+
+            for (Office office1 : offices){
+                ZLogger.d(String.format("%d,%d", office1.getCode(), MfhLoginService.get().getCurOfficeId()));
+                if (ObjectsCompact.equals(office1.getCode(), MfhLoginService.get().getCurOfficeId())){
+                    office = office1;
+                    break;
+                }
+            }
+
+            if (office == null){
+                office = offices.get(0);
+            }
         }
 
         DataCacheHelper.getInstance().setCurrentOffice(office);
