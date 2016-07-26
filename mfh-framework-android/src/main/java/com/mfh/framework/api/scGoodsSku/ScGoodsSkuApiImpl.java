@@ -35,10 +35,11 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_FINDGOODSLIST, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
     }
 
-    public static void findGoodsList(String barcode, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
+    public static void findGoodsList(String barcode, PageInfo pageInfo,
+                                     AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (!StringUtils.isEmpty(barcode)) {
             params.put("barcode", barcode);
@@ -49,7 +50,25 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_FINDGOODSLIST, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
+    }
+
+    /**
+     * 根据商品名称查询商品，模糊查询
+     * */
+    public static void findGoodsListByName(String name, PageInfo pageInfo,
+                                     AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (!StringUtils.isEmpty(name)) {
+            params.put("name", name);
+        }
+        params.put("needSellNum", "true");
+        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put("page", Integer.toString(pageInfo.getPageNo()));
+        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
     }
 
     /**

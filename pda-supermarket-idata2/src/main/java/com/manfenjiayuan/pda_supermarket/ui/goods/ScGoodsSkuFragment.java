@@ -92,7 +92,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 //        eqvBarcode.setInputString(code);
         eqvBarcode.requestFocus();
         eqvBarcode.clear();
-        query(code);
+        queryByBarcode(code);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             public void onSubmit(String text) {
                 eqvBarcode.requestFocus();
                 eqvBarcode.clear();
-                query(text);
+                queryByName(text);
             }
         });
         btnSubmit.setEnabled(false);
@@ -179,7 +179,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     /**
      * 查询商品信息
      */
-    public void query(String barcode) {
+    public void queryByBarcode(String barcode) {
         isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
             eqvBarcode.requestFocus();
@@ -196,6 +196,31 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
         if (mScGoodsSkuPresenter != null) {
             mScGoodsSkuPresenter.findGoodsList(barcode);
+        } else {
+            refresh(null);
+        }
+    }
+
+    /**
+     * 查询商品信息
+     */
+    public void queryByName(String name) {
+        isAcceptBarcodeEnabled = false;
+        if (StringUtils.isEmpty(name)) {
+            eqvBarcode.requestFocus();
+            isAcceptBarcodeEnabled = true;
+            return;
+        }
+
+        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            isAcceptBarcodeEnabled = true;
+            refresh(null);
+            return;
+        }
+
+        if (mScGoodsSkuPresenter != null) {
+            mScGoodsSkuPresenter.findGoodsListByName(name);
         } else {
             refresh(null);
         }

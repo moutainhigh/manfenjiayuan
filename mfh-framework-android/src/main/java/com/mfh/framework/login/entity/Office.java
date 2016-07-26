@@ -3,7 +3,7 @@ package com.mfh.framework.login.entity;
 import java.io.Serializable;
 
 /**
- * Created by 李潇阳 on 2014/9/11.
+ * Created by bingshanguxue on 2014/9/11.
  */
 public class Office implements Serializable{
     private String stockId;

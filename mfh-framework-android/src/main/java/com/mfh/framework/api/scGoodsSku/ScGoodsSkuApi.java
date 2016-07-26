@@ -21,7 +21,7 @@ public class ScGoodsSkuApi {
     /**
      * 加载POS前台类目商品：/scGoodsSku/findGoodsList?categoryId=&netId=&barcode=&name=
      */
-    public final static String URL_SCGOODSSKU_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
+    public final static String URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
     /**
      * 查询库存商品－－
      */
