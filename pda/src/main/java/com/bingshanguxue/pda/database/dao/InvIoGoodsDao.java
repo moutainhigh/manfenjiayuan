@@ -1,5 +1,6 @@
-package com.manfenjiayuan.pda_supermarket.database.dao;
+package com.bingshanguxue.pda.database.dao;
 
+import com.bingshanguxue.pda.database.InvIoGoodsEntity;
 import com.manfenjiayuan.pda_supermarket.database.entity.InvIoGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;

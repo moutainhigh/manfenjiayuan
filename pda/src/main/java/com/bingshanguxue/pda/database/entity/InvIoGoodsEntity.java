@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.database.entity;
+package com.bingshanguxue.pda.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;

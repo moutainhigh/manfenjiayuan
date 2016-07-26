@@ -1,7 +1,7 @@
-package com.manfenjiayuan.pda_supermarket.database.logic;
+package com.bingshanguxue.pda.database.service;
 
-import com.manfenjiayuan.pda_supermarket.database.dao.InvIoGoodsDao;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.dao.InvIoGoodsDao;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
