@@ -1,14 +1,14 @@
-package com.manfenjiayuan.pda_supermarket.database.entity;
+package com.bingshanguxue.pda.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.core.MfhEntity;
 
 /**
- * POS--商品--签收
+ * 退货
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_supermarket_invreturn_goods_v1")
+@Table(name="pda_invreturn_goods_v1")
 public class InvReturnGoodsEntity extends MfhEntity<Long> implements ILongId{
 //    private String id;
     private Long orderId;//订单编号

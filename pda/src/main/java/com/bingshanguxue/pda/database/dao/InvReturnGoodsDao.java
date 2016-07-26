@@ -1,6 +1,6 @@
-package com.manfenjiayuan.pda_supermarket.database.dao;
+package com.bingshanguxue.pda.database.dao;
 
-import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
+import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
 import com.mfh.framework.core.logger.ZLogger;
@@ -9,17 +9,17 @@ import com.mfh.framework.database.dao.BaseSeqAbleDao;
 import java.util.List;
 
 /**
- * 商品配送－－签收
+ * 退货
  * 主键：自增
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public class InvReturnGoodsDao extends BaseSeqAbleDao<InvReturnGoodsEntity, String> {
 
-    private static final String TABLE_NAME = "pda_supermarket_invreturn_goods_v1";
+    private static final String TABLE_NAME = "pda_invreturn_goods_v1";
 
     @Override
     protected Pair<String, String> initTableChName() {
-        return new Pair<>("收货", TABLE_NAME);
+        return new Pair<>("退货", TABLE_NAME);
     }
 
     @Override

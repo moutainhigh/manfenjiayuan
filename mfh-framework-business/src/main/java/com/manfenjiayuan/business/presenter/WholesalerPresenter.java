@@ -30,7 +30,7 @@ public class WholesalerPresenter {
     }
 
     /**
-     * 获取批发商
+     * 获取门店批发商
      * */
     public void getWholesalers(String abilityItem, PageInfo pageInfo, String shortCodeLike){
         iWholesalerMode.getWholesalers(abilityItem, pageInfo, shortCodeLike, new OnPageModeListener<CompanyInfo>() {

@@ -32,7 +32,7 @@ public class InvSendIoOrderApi {
      * /invSendIoOrder/createBackOrder?otherOrderId=&checkOk=true&transHumanId=&vehicle=&jsonStr={"receiveNetId":111, "tenantId":111,items:[{}]}
      * 其中receiveNetId和tenantId是退货收货方的网点和租户，可以为空；若为空系统后台自动从otherOrderId对应的收发单中读取。
      */
-    public final static String URL_INVSENDIOORDER_CREATE_BACKORDER = URL_INVSENDIOORDER + "createBackOrder";
+    public final static String URL_CREATE_BACKORDER = URL_INVSENDIOORDER + "createBackOrder";
     /**
      * 由发货方创建调拨单
      * /invSendIoOrder/createTransOrder?checkOk=true&transHumanId=&vehicle=&jsonStr={"sendNetId":11, "receiveNetId":132079, "sendTenantId":222, items:[{"chainSkuId":280,"proSkuId":1264,"productName":"狗粮", "giveCount":0,"quantityCheck":2, "price":11, "amount":22, "barcode":"32131234524"}, {"chainSkuId":281,"proSkuId":1266,"productName":"蒜泥生菜", "quantityCheck":3, "price":5, "amount":15, "barcode":"qu75745555"}]}

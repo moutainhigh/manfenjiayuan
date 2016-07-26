@@ -331,7 +331,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 "发货", R.mipmap.ic_packing_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_DISTRIBUTION,
                 "收货", R.mipmap.ic_receive_goods));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_ALPHA,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
                 "退货", R.mipmap.ic_return_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_OUT,
                 "出库", R.mipmap.ic_stock_out));
@@ -398,7 +398,14 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else {
+        }
+        else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_RETURNORDER);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        }
+        else {
             DialogUtil.showHint("开发君失踪了...");
         }
     }

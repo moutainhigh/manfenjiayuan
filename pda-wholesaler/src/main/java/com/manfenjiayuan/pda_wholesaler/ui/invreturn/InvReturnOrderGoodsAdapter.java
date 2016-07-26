@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.adapter;
+package com.manfenjiayuan.pda_wholesaler.ui.invreturn;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
+import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 

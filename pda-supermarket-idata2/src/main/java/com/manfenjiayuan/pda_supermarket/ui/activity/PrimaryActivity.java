@@ -12,7 +12,7 @@ import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.invreturn.CreateInvReturnOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.receipt.InvRecvOrderSplashFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.InventoryCheckFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
@@ -233,7 +233,10 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             CreateInvIoOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_IN);
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE,
+                        InvIoOrderApi.ORDER_TYPE_IN);
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_STORE_TYPE,
+                        InvIoOrderApi.STORE_TYPE_RETAIL);
                 fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
             }else{
                 fragment = CreateInvIoOrderFragment.newInstance(null);
@@ -247,7 +250,10 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             CreateInvIoOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE, InvIoOrderApi.ORDER_TYPE_OUT);
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_ORDER_TYPE,
+                        InvIoOrderApi.ORDER_TYPE_OUT);
+                intent.putExtra(CreateInvIoOrderFragment.EXTRA_KEY_STORE_TYPE,
+                        InvIoOrderApi.STORE_TYPE_RETAIL);
                 fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
             }else{
                 fragment = CreateInvIoOrderFragment.newInstance(null);

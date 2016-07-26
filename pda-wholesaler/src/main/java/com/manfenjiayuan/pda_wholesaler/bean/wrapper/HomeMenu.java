@@ -15,6 +15,7 @@ public static final Long OPTION_ID_CREATE_INV_LOSSORDER    = 13L;//报损订单
     public static final Long OPTION_ID_STOCK_IN = 20L;//入库
     public static final Long OPTION_ID_STOCK_OUT = 21L;//出库
     public static final Long OPTION_ID_ALPHA    = 22L;//
+    public static final Long OPTION_ID_CREATE_INV_RETURNORDER = 23L;//采购退货
 
 
     private Long id;

@@ -26,7 +26,6 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,7 +49,6 @@ public class SelectWholesalerDialog extends CommonDialog
     private static final int MAX_SYNC_PAGESIZE = 30;
     private boolean bSyncInProgress = false;//是否正在同步
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-    private List<MyProvider> orderList = new ArrayList<>();
 
     private WholesalerPresenter wholesalerPresenter;
 

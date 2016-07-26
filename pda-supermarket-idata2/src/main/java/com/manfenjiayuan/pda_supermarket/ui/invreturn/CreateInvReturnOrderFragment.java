@@ -16,10 +16,9 @@ import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.InvReturnGoodsService;
+import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.adapter.InvReturnOrderGoodsAdapter;
 import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectWholesalerDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
@@ -259,7 +258,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         }
         jsonStrObject.put("items", itemsArray);
 
-        InvSendIoOrderApiImpl.createInvSendIoBackOrder(null, true,
+        InvSendIoOrderApiImpl.createBackOrder(null, true,
                 jsonStrObject.toJSONString(), responseCallback);
     }
 

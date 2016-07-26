@@ -1,9 +1,7 @@
-package com.manfenjiayuan.pda_supermarket.database.logic;
+package com.bingshanguxue.pda.database.service;
 
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
-import com.manfenjiayuan.pda_supermarket.database.dao.InvReturnGoodsDao;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
+import com.bingshanguxue.pda.database.dao.InvReturnGoodsDao;
+import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
@@ -16,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * POS--商品--签收
+ * 退货
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public class InvReturnGoodsService extends BaseService<InvReturnGoodsEntity, String, InvReturnGoodsDao> {
@@ -138,95 +136,95 @@ public class InvReturnGoodsService extends BaseService<InvReturnGoodsEntity, Str
         return null;
     }
 
-    /**
-     * 保存采购订单明细
-     */
-    private void saveInvSendOrderItem(InvSendOrderItem productEntity) {
-        InvReturnGoodsEntity entity = new InvReturnGoodsEntity();
-        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
-        entity.setUpdatedDate(new Date());
-
-        entity.setOrderId(productEntity.getOrderId());
-        entity.setProductId(productEntity.getId());
-        entity.setProSkuId(productEntity.getProSkuId());
-        entity.setChainSkuId(productEntity.getChainSkuId());
-        entity.setProductName(productEntity.getProductName());
-        entity.setUnitSpec(productEntity.getUnit());
-
-        entity.setPrice(productEntity.getPrice());
-        if (ObjectsCompact.equals(productEntity.getUnit(), productEntity.getBuyUnit()) &&
-                ObjectsCompact.equals(productEntity.getPriceType(), productEntity.getBuyPriceType())) {
-            entity.setTotalCount(productEntity.getAskTotalCount());
-        } else {
-            entity.setTotalCount(0D);
-        }
-        if (entity.getTotalCount() == null || entity.getPrice() == null) {
-            entity.setAmount(0D);
-        } else {
-            entity.setAmount(entity.getPrice() * entity.getTotalCount());
-        }
-
-        entity.setBarcode(productEntity.getBarcode());
-        entity.setProviderId(productEntity.getProviderId());
-        entity.setIsPrivate(productEntity.getIsPrivate());
-
-        entity.setQuantityCheck(entity.getTotalCount());
-        entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
-
-        saveOrUpdate(entity);
-    }
-
-    /**
-     * 保存发货单明细
-     */
-    private void saveInvSendIoOrderItem(InvSendIoOrderItem productEntity) {
-        InvReturnGoodsEntity entity = new InvReturnGoodsEntity();
-        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
-        entity.setUpdatedDate(new Date());
-
+//    /**
+//     * 保存采购订单明细
+//     */
+//    private void saveInvSendOrderItem(InvSendOrderItem productEntity) {
+//        InvReturnGoodsEntity entity = new InvReturnGoodsEntity();
+//        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+//        entity.setUpdatedDate(new Date());
+//
 //        entity.setOrderId(productEntity.getOrderId());
-        entity.setProductId(productEntity.getId());
-        entity.setProSkuId(productEntity.getProSkuId());
-        entity.setChainSkuId(productEntity.getChainSkuId());
-        entity.setProductName(productEntity.getProductName());
-        entity.setTotalCount(productEntity.getQuantityCheck());
-        entity.setPrice(productEntity.getPrice());
-        entity.setAmount(productEntity.getAmount());
-        entity.setUnitSpec(productEntity.getUnitSpec());
-        entity.setBarcode(productEntity.getBarcode());
-        entity.setProviderId(productEntity.getProviderId());
-        entity.setIsPrivate(productEntity.getIsPrivate());
-
-        entity.setQuantityCheck(entity.getTotalCount());
-        entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
-
-        saveOrUpdate(entity);
-    }
-
-
-    /**
-     * 保存发货单明细
-     */
-    public void saveSendOrderItems(List<InvSendOrderItem> entityList) {
-        clear();
-        if (entityList != null && entityList.size() > 0) {
-            for (InvSendOrderItem entity : entityList) {
-                saveInvSendOrderItem(entity);
-            }
-        }
-    }
-
-    /**
-     * 保存采购单明细
-     */
-    public void saveSendIoOrdersItems(List<InvSendIoOrderItem> entityList) {
-        clear();
-        if (entityList != null && entityList.size() > 0) {
-            for (InvSendIoOrderItem entity : entityList) {
-                saveInvSendIoOrderItem(entity);
-            }
-        }
-    }
+//        entity.setProductId(productEntity.getId());
+//        entity.setProSkuId(productEntity.getProSkuId());
+//        entity.setChainSkuId(productEntity.getChainSkuId());
+//        entity.setProductName(productEntity.getProductName());
+//        entity.setUnitSpec(productEntity.getUnit());
+//
+//        entity.setPrice(productEntity.getPrice());
+//        if (ObjectsCompact.equals(productEntity.getUnit(), productEntity.getBuyUnit()) &&
+//                ObjectsCompact.equals(productEntity.getPriceType(), productEntity.getBuyPriceType())) {
+//            entity.setTotalCount(productEntity.getAskTotalCount());
+//        } else {
+//            entity.setTotalCount(0D);
+//        }
+//        if (entity.getTotalCount() == null || entity.getPrice() == null) {
+//            entity.setAmount(0D);
+//        } else {
+//            entity.setAmount(entity.getPrice() * entity.getTotalCount());
+//        }
+//
+//        entity.setBarcode(productEntity.getBarcode());
+//        entity.setProviderId(productEntity.getProviderId());
+//        entity.setIsPrivate(productEntity.getIsPrivate());
+//
+//        entity.setQuantityCheck(entity.getTotalCount());
+//        entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
+//
+//        saveOrUpdate(entity);
+//    }
+//
+//    /**
+//     * 保存发货单明细
+//     */
+//    private void saveInvSendIoOrderItem(InvSendIoOrderItem productEntity) {
+//        InvReturnGoodsEntity entity = new InvReturnGoodsEntity();
+//        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+//        entity.setUpdatedDate(new Date());
+//
+////        entity.setOrderId(productEntity.getOrderId());
+//        entity.setProductId(productEntity.getId());
+//        entity.setProSkuId(productEntity.getProSkuId());
+//        entity.setChainSkuId(productEntity.getChainSkuId());
+//        entity.setProductName(productEntity.getProductName());
+//        entity.setTotalCount(productEntity.getQuantityCheck());
+//        entity.setPrice(productEntity.getPrice());
+//        entity.setAmount(productEntity.getAmount());
+//        entity.setUnitSpec(productEntity.getUnitSpec());
+//        entity.setBarcode(productEntity.getBarcode());
+//        entity.setProviderId(productEntity.getProviderId());
+//        entity.setIsPrivate(productEntity.getIsPrivate());
+//
+//        entity.setQuantityCheck(entity.getTotalCount());
+//        entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
+//
+//        saveOrUpdate(entity);
+//    }
+//
+//
+//    /**
+//     * 保存发货单明细
+//     */
+//    public void saveSendOrderItems(List<InvSendOrderItem> entityList) {
+//        clear();
+//        if (entityList != null && entityList.size() > 0) {
+//            for (InvSendOrderItem entity : entityList) {
+//                saveInvSendOrderItem(entity);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * 保存采购单明细
+//     */
+//    public void saveSendIoOrdersItems(List<InvSendIoOrderItem> entityList) {
+//        clear();
+//        if (entityList != null && entityList.size() > 0) {
+//            for (InvSendIoOrderItem entity : entityList) {
+//                saveInvSendIoOrderItem(entity);
+//            }
+//        }
+//    }
 
     /**
      * 验收商品

@@ -52,7 +52,7 @@ public class InvSendIoOrderApiImpl extends InvSendIoOrderApi{
     /**
      * 新建退货单
      */
-    public static void createInvSendIoBackOrder(Long otherOrderId, boolean checkOk, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
+    public static void createBackOrder(Long otherOrderId, boolean checkOk, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (otherOrderId != null) {
             params.put("otherOrderId", String.valueOf(otherOrderId));
@@ -60,7 +60,7 @@ public class InvSendIoOrderApiImpl extends InvSendIoOrderApi{
         params.put("checkOk", String.valueOf(checkOk));
         params.put("jsonStr", jsonStr);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_INVSENDIOORDER_CREATE_BACKORDER, params, responseCallback);
+        AfinalFactory.postDefault(URL_CREATE_BACKORDER, params, responseCallback);
     }
 
     /**

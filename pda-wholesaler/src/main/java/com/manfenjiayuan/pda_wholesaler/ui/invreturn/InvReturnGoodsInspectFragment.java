@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.invreturn;
+package com.manfenjiayuan.pda_wholesaler.ui.invreturn;
 
 
 import android.content.DialogInterface;
@@ -10,19 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
-import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
+import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

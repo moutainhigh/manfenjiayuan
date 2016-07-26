@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.invreturn;
+package com.manfenjiayuan.pda_wholesaler.ui.invreturn;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -11,17 +11,15 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.dialog.InputNumberDialog;
-import com.manfenjiayuan.pda_supermarket.Constants;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.InvReturnGoodsService;
-import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
-import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.adapter.InvReturnOrderGoodsAdapter;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectWholesalerDialog;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
+import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
+import com.bingshanguxue.pda.widget.EditQueryView;
+import com.manfenjiayuan.business.bean.MyProvider;
+import com.manfenjiayuan.pda_wholesaler.Constants;
+import com.manfenjiayuan.pda_wholesaler.R;
+import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
+import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectWholesalerDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
@@ -46,7 +44,7 @@ import butterknife.OnClick;
  * 新建退货单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvReturnOrderFragment extends PDAScanFragment{
+public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
@@ -63,10 +61,9 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
     View btnSubmit;
 
     private SelectWholesalerDialog selectPlatformProviderDialog = null;
-    private InputNumberDialog mInputNumberDialog = null;
 
     /*供应商*/
-    private CompanyInfo companyInfo = null;//当前私有供应商
+    private MyProvider companyInfo = null;//当前私有供应商
 //    private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
 //    private boolean isQueryProcessing;
 
@@ -180,7 +177,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
     /**
      * 切换发货方
      */
-    private void changeSendCompany(CompanyInfo companyInfo) {
+    private void changeSendCompany(MyProvider companyInfo) {
         this.companyInfo = companyInfo;
 //        this.mLabelProvider.setLabelText(companyInfo != null ? companyInfo.getName() : "");
         this.mProviderView.setText(companyInfo != null ? companyInfo.getName() : "");
@@ -211,7 +208,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
 //                        btnSubmit.setEnabled(true);
 //                    }
 //                });
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候", true);
 
         List<InvReturnGoodsEntity> goodsList = officeAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
@@ -240,7 +237,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
 //        jsonStrObject.put("sendNetId", MfhLoginService.get().getCurOfficeId());
         jsonStrObject.put("sendTenantId", MfhLoginService.get().getSpid());
         jsonStrObject.put("receiveStoreType", 1);
-        jsonStrObject.put("tenantId", companyInfo.getTenantId());
+        jsonStrObject.put("tenantId", companyInfo.getId());
         jsonStrObject.put("remark", "");
 
         JSONArray itemsArray = new JSONArray();
@@ -421,9 +418,9 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
             selectPlatformProviderDialog.setCancelable(true);
             selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
         }
-        selectPlatformProviderDialog.init(null, new SelectWholesalerDialog.OnDialogListener() {
+        selectPlatformProviderDialog.init(new SelectWholesalerDialog.OnDialogListener() {
             @Override
-            public void onItemSelected(CompanyInfo companyInfo) {
+            public void onItemSelected(MyProvider companyInfo) {
                 changeSendCompany(companyInfo);
             }
 

@@ -13,6 +13,7 @@ import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.DistributionInspectF
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.ReceiveSendOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.invio.InvIoGoodsInspectFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -29,6 +30,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FRAGMENT_TYPE_DISTRIBUTION_INSPECT = 0x05;//验货
     public static final int FT_INVIO_PICK_GOODS = 0x20;//发货－拣货
+    public static final int FT_INVRETURN_INSPECTGOODS = 0x21;//退货验货
 
 
     /**
@@ -146,13 +148,12 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
 //                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-        }
-        else if(serviceType == FT_INVIO_INSPECTGOODS){
+        } else if (serviceType == FT_INVIO_INSPECTGOODS) {
             InvIoGoodsInspectFragment fragment;
             Intent intent = this.getIntent();
-            if (intent != null){
+            if (intent != null) {
                 fragment = InvIoGoodsInspectFragment.newInstance(intent.getExtras());
-            }else{
+            } else {
                 fragment = InvIoGoodsInspectFragment.newInstance(null);
             }
 
@@ -160,8 +161,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
 //                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-        }
-        else if (serviceType == FT_INVIO_PICK_GOODS) {
+        } else if (serviceType == FT_INVIO_PICK_GOODS) {
             InvIoGoodsFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
@@ -194,6 +194,19 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = CreateNewReceiveOrderFragment.newInstance(intent.getExtras());
             } else {
                 fragment = CreateNewReceiveOrderFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (serviceType == FT_INVRETURN_INSPECTGOODS) {
+            InvReturnGoodsInspectFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvReturnGoodsInspectFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvReturnGoodsInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

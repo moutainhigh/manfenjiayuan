@@ -261,7 +261,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
         }
         jsonStrObject.put("items", itemsArray);
 
-        InvSendIoOrderApiImpl.createInvSendIoBackOrder(null, true,
+        InvSendIoOrderApiImpl.createBackOrder(null, true,
                 jsonStrObject.toJSONString(), responseCallback);
     }
 

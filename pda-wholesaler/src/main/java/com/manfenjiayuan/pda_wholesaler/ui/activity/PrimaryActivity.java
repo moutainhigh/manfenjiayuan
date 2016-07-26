@@ -14,6 +14,7 @@ import com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio.InvIoPickingGoodsF
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.stocktake.InventoryCheckFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.invio.CreateInvIoOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.invreturn.CreateInvReturnOrderFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -230,6 +231,20 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = CreateInvIoOrderFragment.newInstance(intent.getExtras());
             }else{
                 fragment = CreateInvIoOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }
+
+        else if(fragmentType == FT_CREATE_INV_RETURNORDER){
+            CreateInvReturnOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = CreateInvReturnOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CreateInvReturnOrderFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
