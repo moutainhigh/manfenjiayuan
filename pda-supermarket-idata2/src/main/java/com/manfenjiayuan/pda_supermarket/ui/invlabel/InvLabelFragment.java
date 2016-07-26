@@ -1,7 +1,6 @@
 package com.manfenjiayuan.pda_supermarket.ui.invlabel;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -54,10 +52,16 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_price)
-    EditLabelView labelPrice;
-    @Bind(R.id.label_sign_quantity)
-    EditLabelView labelSignQuantity;
+    @Bind(R.id.label_shortname)
+    TextLabelView labelShortName;
+    @Bind(R.id.label_costPrice)
+    TextLabelView labelCostPrice;
+    @Bind(R.id.label_costScore)
+    TextLabelView labelCostScore;
+    @Bind(R.id.label_prodArea)
+    TextLabelView labelProdArea;
+    @Bind(R.id.label_prodLevel)
+    TextLabelView labelProdLevel;
 
     @Bind(R.id.button_submit)
     Button btnSubmit;
@@ -78,7 +82,7 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_inspect_invio_goods;
+        return R.layout.fragment_invlabel;
     }
 
     @Override
@@ -97,37 +101,6 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        labelPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelSignQuantity.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-        labelSignQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-
         eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
         eqvBarcode.setSoftKeyboardEnabled(true);
         eqvBarcode.setInputSubmitEnabled(true);
@@ -221,10 +194,8 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
                      * 新建退货单成功，更新采购单列表
                      * */
                     ZLogger.df("创建待打印价签成功:");
-                    DialogUtil.showHint("创建待打印价签成功");
-                    hideProgressDialog();
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
+                    showProgressDialog(ProgressDialog.STATUS_DONE, "上传成功", true);
+                    refreshPackage(null);
                 }
             }
             , String.class
@@ -239,8 +210,11 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
         if (curGoods == null){
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
-            labelPrice.setEtContent("");
-            labelSignQuantity.setEtContent("");
+            labelShortName.setTvSubTitle("");
+            labelCostPrice.setTvSubTitle("");
+            labelCostScore.setTvSubTitle("");
+            labelProdArea.setTvSubTitle("");
+            labelProdLevel.setTvSubTitle("");
 
             btnSubmit.setEnabled(false);
 
@@ -250,17 +224,17 @@ public class InvLabelFragment extends PDAScanFragment implements IScGoodsSkuView
         else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getSkuName());
-//            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
-            labelPrice.setEtContent(MUtils.formatDouble(curGoods.getCostPrice(), ""));
-            //默认签收数量为空，根据实际情况填写
-            labelSignQuantity.setEtContent("");
+            labelShortName.setTvSubTitle(curGoods.getShortName());
+            labelCostPrice.setTvSubTitle(MUtils.formatDouble(null, null,
+                    curGoods.getCostPrice(), "", "/", curGoods.getUnit()));
+            labelCostScore.setTvSubTitle(MUtils.formatDouble(curGoods.getCostScore(), ""));
+            labelProdArea.setTvSubTitle(curGoods.getProdArea());
+            labelProdLevel.setTvSubTitle(curGoods.getProdLevel());
 
             btnSubmit.setEnabled(true);
-
-            labelSignQuantity.requestFocus();
         }
 
-        DeviceUtils.hideSoftInput(getActivity(), labelSignQuantity);
+        DeviceUtils.hideSoftInput(getActivity(), eqvBarcode);
     }
 
     @Override

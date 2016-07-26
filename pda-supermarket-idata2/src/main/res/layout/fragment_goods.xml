@@ -13,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         app:editLabelView_inputTextColorHint="@color/black_35"
         app:editLabelView_rightImageButtonSrc="@mipmap/ic_edit_search_normal"
-        app:editQueryView_inputHint="@string/hint_input_barcode"
+        app:editQueryView_inputHint="请输入商品名称"
         app:editQueryView_inputTextColor="@color/black"
         app:editQueryView_inputTextSize="18px"/>
 
