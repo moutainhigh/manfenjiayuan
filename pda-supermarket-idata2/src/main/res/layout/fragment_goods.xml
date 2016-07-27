@@ -107,10 +107,12 @@
                 android:id="@+id/label_provider"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:layout_margin="@dimen/spacing_micro"
                 app:isLogoVisible="false"
                 app:position="center"
                 app:subText=""
-                app:text="供应商"/>
+                app:text="供应商"
+                app:textSize="18px"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

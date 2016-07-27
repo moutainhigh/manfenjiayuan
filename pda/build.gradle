@@ -23,4 +23,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile rootProject.ext.dependencies["appcompat-v7"]
     compile project(':mfh-framework-android')
+    compile project(path: ':vector_user')
 }
