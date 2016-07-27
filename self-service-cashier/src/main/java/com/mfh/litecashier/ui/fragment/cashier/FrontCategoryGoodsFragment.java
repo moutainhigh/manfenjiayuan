@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.fragment.cashier;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -138,9 +139,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
         mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
-                getActivity().getResources().getColor(R.color.mf_dividerColorPrimary), 0,
-                getActivity().getResources().getColor(R.color.mf_dividerColorPrimary), 0.1f,
-                getActivity().getResources().getColor(R.color.mf_dividerColorPrimary), 0f));
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0f));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

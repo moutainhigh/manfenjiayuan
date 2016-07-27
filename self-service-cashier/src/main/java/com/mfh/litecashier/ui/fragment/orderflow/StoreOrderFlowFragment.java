@@ -12,16 +12,16 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.litecashier.bean.PosOrder;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.StoreOrderFlowEvent;
@@ -32,7 +32,6 @@ import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -41,7 +40,7 @@ import de.greenrobot.event.EventBus;
 
 /**
  * 线下门店订单流水
- * Created by kun on 15/8/31.
+ * Created by bingshanguxue on 15/8/31.
  */
 public class StoreOrderFlowFragment extends BaseListFragment<PosOrder> implements IOrderflowView {
     @Bind(R.id.swiperefreshlayout)
@@ -242,26 +241,23 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder> implement
 
             //第一页，缓存数据
             if (mPageInfo.getPageNo() == 1) {
-                if (entityList == null) {
-                    entityList = new ArrayList<>();
-                }
-                else{
-                    entityList.clear();
-                }
 //                    ZLogger.d("缓存线下门店订单流水第一页数据");
-                JSONArray cacheArrays = new JSONArray();
+                if (orderListAdapter != null) {
+                    orderListAdapter.setEntityList(dataList);
+                }
 
-                cacheArrays.addAll(dataList);
-                entityList.addAll(dataList);
+                JSONArray cacheArrays = new JSONArray();
+                if (dataList != null){
+                    cacheArrays.addAll(dataList);
+                }
 //                if (orderListAdapter != null) {
 //                    orderListAdapter.notifyDataSetChanged();
 //                }
                 ACacheHelper.put(ACacheHelper.CK_ORDERFLOW_STORE, cacheArrays.toJSONString());
             } else {
-                if (entityList == null) {
-                    entityList = new ArrayList<>();
+                if (orderListAdapter != null) {
+                    orderListAdapter.appendEntityList(dataList);
                 }
-                entityList.addAll(dataList);
             }
 
             //下次进入不自动更新
@@ -274,10 +270,7 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder> implement
 
         ZLogger.d(String.format("更新线下门店订单流水, 请求%d/%d ,已加载(%d/%d)",
                 mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
-                (entityList == null ? 0 : entityList.size()), mPageInfo.getTotalCount()));
-        if (orderListAdapter != null) {
-            orderListAdapter.setEntityList(entityList);
-        }
+                orderListAdapter.getItemCount(), mPageInfo.getTotalCount()));
         onLoadFinished();
     }
 

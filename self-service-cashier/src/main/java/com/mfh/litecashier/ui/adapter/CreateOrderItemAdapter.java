@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
+import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class CreateOrderItemAdapter
         holder.tvName.setText(entity.getProductName());
         holder.tvBarcode.setText(entity.getBarcode());
         if (isPriceEnabled){
-            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.ic_marker_edit);
+            Drawable drawable = ContextCompat.getDrawable(mContext,R.mipmap.ic_marker_edit);
             holder.tvBuyprice.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
 //            holder.tvQuantity.setCompoundDrawables(null, null, drawable, null);
 //            holder.tvQuantity.setCompoundDrawablesRelative(null, null, drawable, null);
@@ -93,7 +94,7 @@ public class CreateOrderItemAdapter
         }
 
         if (isQuantityEnabled){
-            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.ic_marker_edit);
+            Drawable drawable = ContextCompat.getDrawable(mContext,R.mipmap.ic_marker_edit);
             holder.tvQuantity.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
         }
         else{

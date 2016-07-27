@@ -19,7 +19,6 @@ import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

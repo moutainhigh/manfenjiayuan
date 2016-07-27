@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -97,9 +98,9 @@ public class SettingsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         icon.setBackgroundResource(info.resId);
         //使用mute()，避免将使用同一个资源的图片都修改了。
         icon.setBackground(DrawableUtils.tintDrawable(icon.getBackground().mutate(),
-                mContext.getResources().getColorStateList(R.color.settings_tab_tint_colors)));
+                ContextCompat.getColorStateList(mContext, R.color.settings_tab_tint_colors)));
 
-        mPagerStrip.addTab(v);
+                mPagerStrip.addTab(v);
 
         mTabs.add(info);
         notifyDataSetChanged();

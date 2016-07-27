@@ -47,7 +47,7 @@ public class AppHelper {
                 SharedPreferencesManager.setAppDayFirstStartupDateTime(TimeCursor.InnerFormat.format(currentDate));
             }
         }
-        ZLogger.d(String.format("Initialize--application startup datetime: %s application day first startup datetime: %s",
+        ZLogger.d(String.format("application startup datetime: %s application day first startup datetime: %s",
                 SharedPreferencesManager.getAppStartupDateTime(), SharedPreferencesManager.getAppDayFirstStartupDateTime()));
 
     }

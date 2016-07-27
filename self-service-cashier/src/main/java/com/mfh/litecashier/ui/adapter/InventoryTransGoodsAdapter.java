@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class InventoryTransGoodsAdapter
         }
         holder.tvQuantity.setText(String.format("%.2f", entity.getQuantityCheck()));
         if (isItemEditabled){
-            Drawable drawable = mContext.getResources().getDrawable(R.mipmap.ic_marker_edit);
+            Drawable drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_marker_edit);
             holder.tvQuantity.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
 //            holder.tvQuantity.setCompoundDrawables(null, null, drawable, null);
 //            holder.tvQuantity.setCompoundDrawablesRelative(null, null, drawable, null);

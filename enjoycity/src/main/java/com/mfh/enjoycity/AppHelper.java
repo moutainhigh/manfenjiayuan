@@ -26,7 +26,6 @@ import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.umeng.analytics.MobclickAgent;
 
 import java.lang.reflect.Field;
 import java.util.Timer;

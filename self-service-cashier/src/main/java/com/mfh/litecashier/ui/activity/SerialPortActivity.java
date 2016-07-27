@@ -184,12 +184,10 @@ public abstract class SerialPortActivity extends BaseActivity {
             }
         }
         else{
-            StringBuilder sMsg = new StringBuilder();
-            sMsg.append(String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
+            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
                     comBean.sRecTime, comBean.sComPort,
-                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec)));
-            ZLogger.d("COM RECV:" + sMsg.toString());
-//            ZLogger.d("忽略没有被监听的串口数据。");
+                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
+            ZLogger.d("COM RECV:" + sMsg);
         }
     }
 

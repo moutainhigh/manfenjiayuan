@@ -894,7 +894,9 @@ public class SerialManager {
             String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, getLength(nameTemp)));
 //            String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, nameTemp.toCharArray().length));
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
-            nameTemp = nameTemp.substring(sub2.length(), nameTemp != null ? nameTemp.length() : 0).trim();
+            if (nameTemp != null){
+                nameTemp = nameTemp.substring(sub2.length(), nameTemp.length()).trim();
+            }
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
 //            line.append(formatLong(sub2, 8));
             line.append(sub2).append(addBlank(Math.max(PRINT_PRODUCT_NAME_MAX_LEN - getLength(sub2), 0)));
@@ -1024,6 +1026,7 @@ public class SerialManager {
             String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, getLength(nameTemp)));
 //            String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, nameTemp.toCharArray().length));
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
+            assert nameTemp != null;
             nameTemp = nameTemp.substring(sub2.length(),
                     nameTemp != null ? nameTemp.length() : 0).trim();
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));

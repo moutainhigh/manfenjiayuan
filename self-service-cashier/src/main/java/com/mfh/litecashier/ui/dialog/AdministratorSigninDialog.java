@@ -28,7 +28,7 @@ import com.mfh.litecashier.R;
 
 
 /**
- * 修改数量
+ * 管理员登录
  *
  * @author NAT.ZZN(bingshanguxue)
  */
@@ -36,7 +36,6 @@ public class AdministratorSigninDialog extends CommonDialog {
 
     public interface OnResponseCallback {
         void onSignInSuccess();
-        void onGuestSignIn();
     }
 
     private OnResponseCallback mListener;
@@ -249,8 +248,7 @@ public class AdministratorSigninDialog extends CommonDialog {
                 pwdStr, responseCallback);
     }
 
-
-    NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
             NetProcessor.Processor<String>>(
             new NetProcessor.Processor<String>() {
                 @Override

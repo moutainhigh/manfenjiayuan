@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -103,7 +104,7 @@ public class ExceptionOrderflowAdapter
                 new BadgeDrawable.Builder()
                         .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
 //                        .badgeColor(0xFF5722)
-                        .badgeColor(mContext.getResources().getColor(R.color.material_purple_500))
+                        .badgeColor(ContextCompat.getColor(mContext, R.color.material_purple_500))
                         .text1("")
                         .build();
 
@@ -119,51 +120,51 @@ public class ExceptionOrderflowAdapter
         switch (entity.getStatus()) {
             case PosOrderEntity.ORDER_STATUS_INIT: {
                 drawableOrderStatus.setText1(String.format("待确认(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.lightskyblue));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue));
             }
             break;
             case PosOrderEntity.ORDER_STATUS_HANGUP: {
                 drawableOrderStatus.setText1(String.format("挂单(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.orange));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.orange));
             }
             break;
             case PosOrderEntity.ORDER_STATUS_STAY_PAY: {
                 drawableOrderStatus.setText1(String.format("等待支付(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.material_cyan_500));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.material_cyan_500));
             }
             break;
             case PosOrderEntity.ORDER_STATUS_PROCESS: {
                 drawableOrderStatus.setText1(String.format("支付处理中(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.orangered));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.orangered));
             }
             break;
             case PosOrderEntity.ORDER_STATUS_EXCEPTION: {
                 drawableOrderStatus.setText1(String.format("支付异常(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.red));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.red));
             }
             break;
             case PosOrderEntity.ORDER_STATUS_FINISH: {
                 drawableOrderStatus.setText1(String.format("支付完成(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.mfh_colorPrimary));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
             }
             break;
             default: {
                 drawableOrderStatus.setText1(String.format("未知(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(mContext.getResources().getColor(R.color.material_black));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.material_black));
             }
             break;
         }
         //同步状态
         if (entity.getSyncStatus() == PosOrderEntity.SYNC_STATUS_SYNCED) {
             drawableSyncStatus.setText1(String.format("已同步(%d)", entity.getSyncStatus()));
-            drawableSyncStatus.setBadgeColor(mContext.getResources().getColor(R.color.mfh_colorPrimary));
+            drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
         } else {
 
             drawableSyncStatus.setText1(String.format("(%d)", entity.getSyncStatus()));
         }
         if (PosOrderEntity.ACTIVE.equals(entity.getIsActive())) {
             drawableActive.setText1(String.format("开启(%d)", entity.getIsActive()));
-            drawableActive.setBadgeColor(mContext.getResources().getColor(R.color.mfh_colorPrimary));
+            drawableActive.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
         } else {
             drawableActive.setText1(String.format("关闭(%d)", entity.getIsActive()));
         }

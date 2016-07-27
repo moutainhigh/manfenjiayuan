@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,7 @@ public class StockLossOrderAdapter
         holder.tvCreateDate.setText(String.format("报损时间：%s", TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
         holder.tvOrderStatus.setText(String.format("状态: %s", entity.getStatusCaption()));
         if (entity.getStatus().equals(InvLossOrder.INVLOSS_ORDERSTATUS_PROCESSING)){
-            holder.tvOrderStatus.setTextColor(mContext.getResources().getColor(R.color.mfh_colorPrimary));
+            holder.tvOrderStatus.setTextColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
         }
         else{
             holder.tvOrderStatus.setTextColor(Color.BLACK);

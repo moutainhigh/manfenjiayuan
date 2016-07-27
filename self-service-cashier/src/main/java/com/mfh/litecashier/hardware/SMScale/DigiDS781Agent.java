@@ -153,21 +153,13 @@ public class DigiDS781Agent {
 
         try {
             byte[] bNetWeight = new byte[6];
-            for (int i = 0; i < 6; i++) {
-                bNetWeight[i] = data[2 + i];
-            }
+            System.arraycopy(data, 2, bNetWeight, 0, 6);
             byte[] bTareWeight = new byte[6];
-            for (int i = 0; i < 6; i++) {
-                bTareWeight[i] = data[10 + i];
-            }
+            System.arraycopy(data, 10, bTareWeight, 0, 6);
             byte[] bUnitPrice = new byte[6];
-            for (int i = 0; i < 6; i++) {
-                bUnitPrice[i] = data[18 + i];
-            }
+            System.arraycopy(data, 18, bUnitPrice, 0, 6);
             byte[] bTotalPrice = new byte[7];
-            for (int i = 0; i < 7; i++) {
-                bTotalPrice[i] = data[26 + i];
-            }
+            System.arraycopy(data, 26, bTotalPrice, 0, 7);
 
             return generateDS781A(bNetWeight, bTareWeight, bUnitPrice, bTotalPrice);
         } catch (Exception e) {

@@ -4,6 +4,7 @@ package com.mfh.litecashier.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -127,9 +128,9 @@ public class SelectCompanyHumanDialog extends CommonDialog {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
         mRecyclerView.addItemDecoration(new GridItemDecoration2(getContext(), 1,
-                getContext().getResources().getColor(R.color.mf_dividerColorPrimary), 0.1f,
-                getContext().getResources().getColor(R.color.transparent), 0.1f,
-                getContext().getResources().getColor(R.color.transparent), 0.1f));
+                ContextCompat.getColor(getContext(), R.color.mf_dividerColorPrimary), 0.1f,
+                ContextCompat.getColor(getContext(), R.color.transparent), 0.1f,
+                ContextCompat.getColor(getContext(), R.color.transparent), 0.1f));
 //        menuRecyclerView.addItemDecoration(new GridItemDecoration(
 //                4, 2, false));
 

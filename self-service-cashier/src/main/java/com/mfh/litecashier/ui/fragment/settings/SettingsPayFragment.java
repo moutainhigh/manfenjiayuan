@@ -138,19 +138,18 @@ public class SettingsPayFragment extends BaseFragment {
         mUmsipsDialog.init(new UmsipsDialog.onDialogClickListener() {
             @Override
             public void onDatasetChanged() {
-                StringBuilder sb = new StringBuilder();
-                sb.append("参数（点击可修改）：\n");
-                sb.append(String.format("主机IP：%s\n",
-                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP)));
-                sb.append(String.format("主机端口号：%s\n",
-                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT)));
-                sb.append(String.format("商户号：%s\n",
-                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID)));
-                sb.append(String.format("终端号：%s\n",
-                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID)));
-                sb.append(String.format("串口值：%s\n", SerialManager.getUmsipsPort()));
-                sb.append(String.format("波特率：%s\n", SerialManager.getUmsipsBaudrate()));
-                tvUmsipsConfigs.setText(sb.toString());
+                String sb = "参数（点击可修改）：\n" +
+                        String.format("主机IP：%s\n",
+                                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP)) +
+                        String.format("主机端口号：%s\n",
+                                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT)) +
+                        String.format("商户号：%s\n",
+                                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID)) +
+                        String.format("终端号：%s\n",
+                                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID)) +
+                        String.format("串口值：%s\n", SerialManager.getUmsipsPort()) +
+                        String.format("波特率：%s\n", SerialManager.getUmsipsBaudrate());
+                tvUmsipsConfigs.setText(sb);
             }
         });
         if (!mUmsipsDialog.isShowing()) {
@@ -162,19 +161,18 @@ public class SettingsPayFragment extends BaseFragment {
         scHybridPayment.setChecked(SharedPreferencesHelper
                 .getBoolean(SharedPreferencesHelper.PREF_KEY_HYBRID_PAYMENT_ENABLED, false));
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("参数（点击可修改）：\n");
-        sb.append(String.format("主机IP：%s\n",
-                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP)));
-        sb.append(String.format("主机端口号：%s\n",
-                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT)));
-        sb.append(String.format("商户号：%s\n",
-                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID)));
-        sb.append(String.format("终端号：%s\n",
-                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID)));
-        sb.append(String.format("串口值：%s\n", SerialManager.getUmsipsPort()));
-        sb.append(String.format("波特率：%s\n", SerialManager.getUmsipsBaudrate()));
-        tvUmsipsConfigs.setText(sb.toString());
+        String sb = "参数（点击可修改）：\n" +
+                String.format("主机IP：%s\n",
+                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP)) +
+                String.format("主机端口号：%s\n",
+                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT)) +
+                String.format("商户号：%s\n",
+                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID)) +
+                String.format("终端号：%s\n",
+                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID)) +
+                String.format("串口值：%s\n", SerialManager.getUmsipsPort()) +
+                String.format("波特率：%s\n", SerialManager.getUmsipsBaudrate());
+        tvUmsipsConfigs.setText(sb);
     }
 
     /**

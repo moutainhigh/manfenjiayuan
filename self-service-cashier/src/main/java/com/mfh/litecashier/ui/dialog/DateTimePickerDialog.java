@@ -84,11 +84,13 @@ public class DateTimePickerDialog extends CommonDialog {
 
                 if (mTimeSetCallback != null) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                        mTimeSetCallback.onDateTimeSet(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
+                        mTimeSetCallback.onDateTimeSet(mDatePicker.getYear(),
+                                mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
                                 mTimePicker.getHour(), mTimePicker.getMinute());
                     }
                     else{
-                        mTimeSetCallback.onDateTimeSet(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
+                        mTimeSetCallback.onDateTimeSet(mDatePicker.getYear(),
+                                mDatePicker.getMonth(), mDatePicker.getDayOfMonth(),
                                 mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute());
                     }
                 }
