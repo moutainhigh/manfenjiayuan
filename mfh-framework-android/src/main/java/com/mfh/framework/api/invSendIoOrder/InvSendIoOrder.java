@@ -1,37 +1,41 @@
-package com.mfh.litecashier.bean;
+package com.mfh.framework.api.invSendIoOrder;
 
 import com.mfh.comn.bean.ILongId;
+import com.mfh.framework.api.InvOrderApi;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 调拨单
- * Created by Nat.ZZN(bingshanguxue) on 15/9/22.
+ * 收发单：采购收货单/采购退货单/调拨单
+ * Created by bingshanguxue on 15/9/22.
  */
-public class InvTransOrder implements ILongId, Serializable {
+public class InvSendIoOrder implements ILongId, Serializable {
     private Long id;//订单编号
     private String orderName;//订单名称
-    private Double commitPrice;//商品金额
-//    private Double transFee;//配送费
-//    private Double totalFee;//总金额
+    private Double commitPrice = 0D;//商品金额
+    private Double commitGoodsNum;//订单商品总数
     //订单状态:0-"已下单",1-"待发货",2-"配送中",3-"已到达",4-"已签收",100-"已经取消"
     private Integer status;
     private String statusCaption;//状态
-    private String contact;//收货方联系人
     private String receiveMobile;//电话
-    private String sendCompanyName;//发货方－供应商
-    private Double commitGoodsNum;//订单商品总数
     private Date createdDate;//下单时间
-    //    private Long receiveNetId;//收货网点
-    private String receiveNetName;//调入网点名称
-//    private Long tenantId;//收货网点所属租户
-//    private Long sendNetId;//发货网点
-    private String auditHumanName;//发货放联系人
-    private Long sendTenantId;//发货网点所属租户
-    private String sendNetName;//调出网点名称
+
     //支付状态，0-未支付，1-已支付
-    private Integer payStatus;
+    private Integer payStatus = InvOrderApi.PAY_STATUS_NOT_PAID;
+
+    private Long sendTenantId;//发货网点
+    private String sendCompanyName;//发货方－供应商
+
+    //以下是采购收货单特有属性
+    private String contact;//收货方联系人
+    private Long sendNetId;//发货网点
+    private String sendNetName;//发货网点名称
+
+    //以下是采购退货单特有属性
+    private String auditHumanName;//经手人
+    private String receiveNetName;//收货网点名称
+
 
     public Long getId() {
         return id;
@@ -40,6 +44,7 @@ public class InvTransOrder implements ILongId, Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public Double getCommitPrice() {
         if (commitPrice == null){
@@ -51,25 +56,6 @@ public class InvTransOrder implements ILongId, Serializable {
     public void setCommitPrice(Double commitPrice) {
         this.commitPrice = commitPrice;
     }
-
-//    public Double getTransFee() {
-//        if (transFee == null){
-//            return 0D;
-//        }
-//        return transFee;
-//    }
-//
-//    public void setTransFee(Double transFee) {
-//        this.transFee = transFee;
-//    }
-//
-//    public Double getTotalFee() {
-//        return totalFee;
-//    }
-//
-//    public void setTotalFee(Double totalFee) {
-//        this.totalFee = totalFee;
-//    }
 
     public Integer getStatus() {
         return status;
@@ -138,6 +124,22 @@ public class InvTransOrder implements ILongId, Serializable {
         this.statusCaption = statusCaption;
     }
 
+    public Long getSendNetId() {
+        return sendNetId;
+    }
+
+    public void setSendNetId(Long sendNetId) {
+        this.sendNetId = sendNetId;
+    }
+
+    public String getSendNetName() {
+        return sendNetName;
+    }
+
+    public void setSendNetName(String sendNetName) {
+        this.sendNetName = sendNetName;
+    }
+
     public Long getSendTenantId() {
         return sendTenantId;
     }
@@ -154,27 +156,19 @@ public class InvTransOrder implements ILongId, Serializable {
         this.payStatus = payStatus;
     }
 
-    public String getReceiveNetName() {
-        return receiveNetName;
-    }
-
-    public void setReceiveNetName(String receiveNetName) {
-        this.receiveNetName = receiveNetName;
-    }
-
-    public String getSendNetName() {
-        return sendNetName;
-    }
-
-    public void setSendNetName(String sendNetName) {
-        this.sendNetName = sendNetName;
-    }
-
     public String getAuditHumanName() {
         return auditHumanName;
     }
 
     public void setAuditHumanName(String auditHumanName) {
         this.auditHumanName = auditHumanName;
+    }
+
+    public String getReceiveNetName() {
+        return receiveNetName;
+    }
+
+    public void setReceiveNetName(String receiveNetName) {
+        this.receiveNetName = receiveNetName;
     }
 }

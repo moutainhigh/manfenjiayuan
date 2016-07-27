@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.litecashier.bean.InvTransOrder;
 
 import java.util.List;
 
@@ -22,16 +22,16 @@ import butterknife.ButterKnife;
  * Created by bingshanguxue on 15/8/5.
  */
 public class InvTransOrderAdapter
-        extends RegularAdapter<InvTransOrder, InvTransOrderAdapter.ProductViewHolder> {
+        extends RegularAdapter<InvSendIoOrder, InvTransOrderAdapter.ProductViewHolder> {
 
     private boolean netFlag;
-    private InvTransOrder curOrder = null;
+    private InvSendIoOrder curOrder = null;
 
-    public InvTransOrderAdapter(Context context, List<InvTransOrder> entityList) {
+    public InvTransOrderAdapter(Context context, List<InvSendIoOrder> entityList) {
         super(context, entityList);
     }
 
-    public InvTransOrderAdapter(Context context, List<InvTransOrder> entityList, boolean netFlag) {
+    public InvTransOrderAdapter(Context context, List<InvSendIoOrder> entityList, boolean netFlag) {
         super(context, entityList);
         this.netFlag = netFlag;
     }
@@ -55,7 +55,7 @@ public class InvTransOrderAdapter
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
-        InvTransOrder entity = entityList.get(position);
+        InvSendIoOrder entity = entityList.get(position);
 
         if (curOrder != null && curOrder.getId().compareTo(entity.getId()) == 0) {
             holder.rootView.setSelected(true);
@@ -125,7 +125,7 @@ public class InvTransOrderAdapter
     }
 
     @Override
-    public void setEntityList(List<InvTransOrder> entityList) {
+    public void setEntityList(List<InvSendIoOrder> entityList) {
         this.entityList = entityList;
 
         if (this.entityList != null && this.entityList.size() > 0){
@@ -141,11 +141,11 @@ public class InvTransOrderAdapter
         }
     }
 
-    public InvTransOrder getCurOrder() {
+    public InvSendIoOrder getCurOrder() {
         return curOrder;
     }
 
-    public void remove(InvTransOrder order) {
+    public void remove(InvSendIoOrder order) {
         if (order == null) {
             return;
         }
@@ -165,13 +165,13 @@ public class InvTransOrderAdapter
         remove(query(id));
     }
 
-    private InvTransOrder query(Long id){
+    private InvSendIoOrder query(Long id){
         if (id == null) {
             return null;
         }
 
         if (entityList != null && entityList.size() > 0){
-            for (InvTransOrder entity : entityList){
+            for (InvSendIoOrder entity : entityList){
                 if (entity.getId().compareTo(id) == 0){
                     return entity;
                 }

@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -22,9 +24,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.PurchaseReturnCreateEvent;
-import com.mfh.litecashier.presenter.InvRecvOrderPresenter;
 import com.mfh.litecashier.ui.adapter.SelectRecvOrderAdapter;
-import com.mfh.litecashier.ui.view.IInvRecvOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -38,7 +38,8 @@ import de.greenrobot.event.EventBus;
  * 对话框－－ 选择收货订单
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
-public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> implements IInvRecvOrderView {
+public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
+        implements IInvSendIoOrderView {
     public static final String EXTRA_KEY_STATUS = "status";
     public static final String EXTRA_KEY_CACHEKEY = "cacheKey";
     public static final String EK_SENDTENANTID = "sendTenantId";
@@ -61,7 +62,7 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
     private String cacheKey;
     private String sendTenantId = "";
 
-    private InvRecvOrderPresenter invRecvOrderPresenter;
+    private InvSendIoOrderPresenter invRecvOrderPresenter;
 
     public static SelectInvRecvOrderFragment newInstance(Bundle args) {
         SelectInvRecvOrderFragment fragment = new SelectInvRecvOrderFragment();
@@ -83,7 +84,7 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
 
 //        EventBus.getDefault().register(this);
 
-        invRecvOrderPresenter = new InvRecvOrderPresenter(this);
+        invRecvOrderPresenter = new InvSendIoOrderPresenter(this);
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -37,7 +38,6 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.InvTransOrder;
 import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.ui.activity.ServiceActivity;
@@ -86,7 +86,7 @@ public class InventoryTransFragment extends BaseFragment {
     @Bind(R.id.button_stockIn)
     Button btnStockIn;
 
-    private InvTransOrder curOrder;
+    private InvSendIoOrder curOrder;
 
     @Override
     protected int getLayoutResId() {
@@ -137,7 +137,7 @@ public class InventoryTransFragment extends BaseFragment {
     public void doReceive() {
         btnStockIn.setEnabled(false);
 
-        final InvTransOrder invTransOrder = curOrder;
+        final InvSendIoOrder invTransOrder = curOrder;
         if (invTransOrder == null || invTransOrder.getId() == null) {
             ZLogger.d("订单无效");
             btnStockIn.setEnabled(true);
@@ -204,7 +204,7 @@ public class InventoryTransFragment extends BaseFragment {
     public void doPay() {
         btnPay.setEnabled(false);
 
-        final InvTransOrder invTransOrder = curOrder;
+        final InvSendIoOrder invTransOrder = curOrder;
         if (invTransOrder == null || invTransOrder.getId() == null) {
             ZLogger.d("订单无效");
             btnPay.setEnabled(true);
@@ -382,7 +382,7 @@ public class InventoryTransFragment extends BaseFragment {
         } else if (event.getAffairId() == InventoryTransEvent.EVENT_ID_RELAOD_ITEM_DATA) {
             Bundle args = event.getArgs();
             if (args != null) {
-                loadGoodsList(args.getBoolean("netFlag"), (InvTransOrder) args.getSerializable("order"));
+                loadGoodsList(args.getBoolean("netFlag"), (InvSendIoOrder) args.getSerializable("order"));
             }
         }
     }
@@ -390,7 +390,7 @@ public class InventoryTransFragment extends BaseFragment {
     /**
      * 加载订单明细
      */
-    private void loadGoodsList(boolean netFlag, InvTransOrder order) {
+    private void loadGoodsList(boolean netFlag, InvSendIoOrder order) {
         curOrder = order;
         if (order == null) {
             tvGoodsQunatity.setText(String.format("商品数：%.2f", 0D));

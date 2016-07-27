@@ -14,9 +14,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -24,9 +26,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.presenter.InvRecvOrderPresenter;
 import com.mfh.litecashier.ui.adapter.SelectRecvOrderAdapter;
-import com.mfh.litecashier.ui.view.IInvRecvOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -38,7 +38,7 @@ import java.util.List;
  * 对话框 -- 选择采购收货订单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvRecvOrderView {
+public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendIoOrderView {
 
     private View rootView;
     private ImageButton btnClose;
@@ -66,7 +66,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvRecvO
     private String status;
     private String cacheKey;
 
-    private InvRecvOrderPresenter invRecvOrderPresenter;
+    private InvSendIoOrderPresenter invRecvOrderPresenter;
 
     @Override
     public void onQueryOrderProcess() {
@@ -141,7 +141,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvRecvO
 //        ButterKnife.bind(rootView);
 
 
-        invRecvOrderPresenter = new InvRecvOrderPresenter(this);
+        invRecvOrderPresenter = new InvSendIoOrderPresenter(this);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);

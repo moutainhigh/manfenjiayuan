@@ -15,7 +15,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;

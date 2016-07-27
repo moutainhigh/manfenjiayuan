@@ -11,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
@@ -28,10 +30,8 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.PurchaseReturnEvent;
-import com.mfh.litecashier.presenter.InvReturnOrderPresenter;
 import com.mfh.litecashier.ui.adapter.InvReturnOrderAdapter;
 import com.mfh.litecashier.ui.adapter.PurchaseReturnGoodsAdapter;
-import com.mfh.litecashier.ui.view.IInvReturnOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -46,7 +46,7 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/09/24.
  */
 public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
-        implements IInvReturnOrderView {
+        implements IInvSendIoOrderView {
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -67,7 +67,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
     TextView tvTotalAmount;
 
     private InvSendIoOrder curOrder;
-    private InvReturnOrderPresenter invReturnOrderPresenter;
+    private InvSendIoOrderPresenter invReturnOrderPresenter;
 
     public static PurchaseReturnFragment newInstance(Bundle args) {
         PurchaseReturnFragment fragment = new PurchaseReturnFragment();
@@ -86,7 +86,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
-        invReturnOrderPresenter = new InvReturnOrderPresenter(this);
+        invReturnOrderPresenter = new InvSendIoOrderPresenter(this);
     }
 
     @Override

@@ -46,8 +46,9 @@ public class InvSendIoOrderApi {
      *  /invSendIoOrder/getById?id=&barcode=
      */
     public final static String URL_INVSENDIOORDER_GETBYID = URL_INVSENDIOORDER + "getById";
+
     /**
-     * 查询收发单（收货单或发货单）
+     * 查询收发单（收货单/发货单/调拨单/退货单）
      * /invSendIoOrder/list?wrapper=true&bizType=0&orderType=0&sendNetId=&receiveNetId=&statuss=&status=&payStatus=&barcode=
      * 其中bizType=0代表采购业务，orderType=0代表正常收发;
      * sendNetId-发货网点
@@ -58,7 +59,7 @@ public class InvSendIoOrderApi {
      * payStatus-支付状态
      * statuss-查询多个状态；status-查询一个状态(0-生成 1-审核通过 2-已发货 3-在途中 4-已签收 9-已取消)
      */
-    public final static String URL_INVSENDIOORDER_LIST = URL_INVSENDIOORDER + "list";
+    public final static String URL_LIST = URL_INVSENDIOORDER + "list";
     /**
      * 对指定的发货单或收货单进行审核确认操作,若当前操作人员所属网点与单据的发货网点或收货网点一致，还会自动进行出库或入库操作。/invSendIoOrder/doConfirm?id=1
      */

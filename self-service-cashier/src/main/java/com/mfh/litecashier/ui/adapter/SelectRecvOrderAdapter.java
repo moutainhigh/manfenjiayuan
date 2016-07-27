@@ -10,7 +10,7 @@ import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 
 import java.util.List;
 

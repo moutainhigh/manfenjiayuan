@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -19,12 +22,9 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.InvTransOrder;
 import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
-import com.mfh.litecashier.presenter.InvTransOrderPresenter;
 import com.mfh.litecashier.ui.adapter.InvTransOrderAdapter;
-import com.mfh.litecashier.ui.view.IInvTransOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -38,7 +38,7 @@ import de.greenrobot.event.EventBus;
  * 库存调拨单－调入/调出
  * Created by bingshanguxue on 15/8/31.
  */
-public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> implements IInvTransOrderView{
+public class InvTransOrderFragment extends BaseListFragment<InvSendIoOrder> implements IInvSendIoOrderView {
     public static final String EXTRA_KEY_STATUS = "status";
     public static final String EXTRA_KEY_CACHEKEY = "cacheKey";
     public static final String EXTRA_KEY_ID = "id";
@@ -57,7 +57,7 @@ public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> imple
     private boolean netFlag;
     private String cacheKey;
 
-    private InvTransOrderPresenter invTransOrderPresenter;
+    private InvSendIoOrderPresenter invTransOrderPresenter;
 
     @Override
     protected int getLayoutResId() {
@@ -70,7 +70,7 @@ public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> imple
 
         EventBus.getDefault().register(this);
 
-        invTransOrderPresenter = new InvTransOrderPresenter(this);
+        invTransOrderPresenter = new InvSendIoOrderPresenter(this);
     }
 
     @Override
@@ -205,7 +205,7 @@ public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> imple
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        invTransOrderPresenter.loadOrders(mPageInfo, netFlag);
+        invTransOrderPresenter.loadTransOrders(mPageInfo, netFlag);
         mPageInfo.setPageNo(1);
     }
 
@@ -222,7 +222,7 @@ public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> imple
     }
 
     @Override
-    public void onQueryOrderSuccess(PageInfo pageInfo, List<InvTransOrder> dataList) {
+    public void onQueryOrderSuccess(PageInfo pageInfo, List<InvSendIoOrder> dataList) {
         try {
             mPageInfo = pageInfo;
 
@@ -276,7 +276,7 @@ public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> imple
     public synchronized boolean readCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(cacheKey);
-        List<InvTransOrder> cacheData = JSONArray.parseArray(cacheStr, InvTransOrder.class);
+        List<InvSendIoOrder> cacheData = JSONArray.parseArray(cacheStr, InvSendIoOrder.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载缓存数据(%s): %d条调拨单", cacheKey, cacheData.size()));
 //            refreshCategoryGoodsTab(entity.getCategoryId(), cacheData);
@@ -307,7 +307,7 @@ public class InvTransOrderFragment extends BaseListFragment<InvTransOrder> imple
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            invTransOrderPresenter.loadOrders(mPageInfo, netFlag);
+            invTransOrderPresenter.loadTransOrders(mPageInfo, netFlag);
         } else {
             ZLogger.d("加载调拨单，已经是最后一页。");
             onLoadFinished();

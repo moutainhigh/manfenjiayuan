@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -22,9 +24,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvReturnOrderEvent;
 import com.mfh.litecashier.event.PurchaseReturnEvent;
-import com.mfh.litecashier.presenter.InvReturnOrderPresenter;
 import com.mfh.litecashier.ui.adapter.InvReturnOrderAdapter;
-import com.mfh.litecashier.ui.view.IInvReturnOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -39,7 +39,7 @@ import de.greenrobot.event.EventBus;
  * Created by kun on 15/8/31.
  */
 public class InvReturnOrderFragment extends BaseListFragment<InvSendIoOrder>
-        implements IInvReturnOrderView {
+        implements IInvSendIoOrderView {
     public static final String EXTRA_KEY_STATUS = "status";
     public static final String EXTRA_KEY_CACHEKEY = "cacheKey";
     public static final String EXTRA_KEY_ID = "id";
@@ -55,7 +55,7 @@ public class InvReturnOrderFragment extends BaseListFragment<InvSendIoOrder>
 
     private String status;
     private String cacheKey;
-    private InvReturnOrderPresenter invReturnOrderPresenter;
+    private InvSendIoOrderPresenter invReturnOrderPresenter;
 
     @Override
     protected int getLayoutResId() {
@@ -68,7 +68,7 @@ public class InvReturnOrderFragment extends BaseListFragment<InvSendIoOrder>
 
         EventBus.getDefault().register(this);
 
-        invReturnOrderPresenter = new InvReturnOrderPresenter(this);
+        invReturnOrderPresenter = new InvSendIoOrderPresenter(this);
     }
 
     @Override

@@ -959,9 +959,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
                     if (entity != null){
                         Double amount = entity.getAmount();
                         tvQuota.setText(String.format("额度：%.2f", amount));
-                        if (amount.compareTo(QuotaEntity.MAX_QUOTA) >= 0){
-                            quotaPay(entity);
-                        }
+//                        if (amount.compareTo(QuotaEntity.MAX_QUOTA) >= 0){
+//                            quotaPay(entity);
+//                        }
                     }
                     else{
                         tvQuota.setText(MUtils.formatDouble(0D, ""));

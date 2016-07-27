@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.manfenjiayuan.business.bean;
+package com.mfh.framework.api.invSendIoOrder;
 
 
 import java.io.Serializable;
@@ -8,33 +8,6 @@ import java.io.Serializable;
  * Created by bingshanguxue on 15/9/22.
  */
 public class InvSendIoOrderItem implements Serializable {
-//
-//    {
-//        "imgUrl": "http://chunchunimage.b0.upaiyun.com/product/1962.png!small",
-//            "chainSkuId": "260",
-//            "unitSpec": null,
-//            "singleCount": null,
-//            "packCount": null,
-//            "giveCount": null,
-//            "price": 2,
-//            "amount": 2,
-//            "remark": null,
-//            "proSkuId": "1226",
-//            "productName": "0909商品6_30",
-//            "barcode": "1",
-//            "quantityCheck": 1,
-//            "netId": "132079",
-//            "posId": null,
-//            "orderId": "24",
-//            "orderType": 0,
-//            "tenantId": "132079",
-//            "id": "28",
-//            "createdBy": "",
-//            "createdDate": "2016-01-06 17:32:25",
-//            "updatedBy": "",
-//            "updatedDate": null
-//    }
-
 //    private String orderId;//订单编号
     private Long id;
     private Long chainSkuId;//

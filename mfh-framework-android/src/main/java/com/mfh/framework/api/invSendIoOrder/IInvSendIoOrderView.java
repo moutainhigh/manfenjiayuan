@@ -1,17 +1,15 @@
-package com.mfh.litecashier.ui.view;
+package com.mfh.framework.api.invSendIoOrder;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpView;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 
 import java.util.List;
 
 /**
- * 采购退货订单
+ * 收发单
  * Created by bingshanguxue on 16/3/21.
  */
-public interface IInvReturnOrderView extends MvpView {
+public interface IInvSendIoOrderView extends MvpView {
     void onQueryOrderProcess();
     void onQueryOrderError(String errorMsg);
     void onQueryOrderSuccess(PageInfo pageInfo, List<InvSendIoOrder> dataList);

@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendIoOrder;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -22,9 +24,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvRecvOrderEvent;
 import com.mfh.litecashier.event.PurchaseReceiptEvent;
-import com.mfh.litecashier.presenter.InvRecvOrderPresenter;
 import com.mfh.litecashier.ui.adapter.InvRecvOrderAdapter;
-import com.mfh.litecashier.ui.view.IInvRecvOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import de.greenrobot.event.EventBus;
  * 采购收货－待审核/待收货/已收货
  * Created by kun on 15/8/31.
  */
-public class InvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> implements IInvRecvOrderView {
+public class InvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> implements IInvSendIoOrderView {
     public static final String EXTRA_KEY_STATUS = "status";//订单状态
     public static final String EXTRA_KEY_PAYSTATUS = "payStatus";// 支付状态
     public static final String EXTRA_KEY_CACHEKEY = "cacheKey";
@@ -56,7 +56,7 @@ public class InvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> imple
     private String payStatus;
     private String cacheKey;
 
-    private InvRecvOrderPresenter invRecvOrderPresenter;
+    private InvSendIoOrderPresenter invRecvOrderPresenter;
 
     @Override
     protected int getLayoutResId() {
@@ -68,7 +68,7 @@ public class InvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> imple
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
-        invRecvOrderPresenter = new InvRecvOrderPresenter(this);
+        invRecvOrderPresenter = new InvSendIoOrderPresenter(this);
     }
 
     @Override

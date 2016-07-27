@@ -1,6 +1,6 @@
 package com.manfenjiayuan.pda_supermarket.database.logic;
 
-import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.manfenjiayuan.pda_supermarket.database.dao.InvReturnGoodsDao;
 import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;

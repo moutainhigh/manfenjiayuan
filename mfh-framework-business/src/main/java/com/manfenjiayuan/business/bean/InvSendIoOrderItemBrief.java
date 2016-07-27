@@ -2,6 +2,7 @@ package com.manfenjiayuan.business.bean;
 
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 
 import java.io.Serializable;
 import java.util.List;
