@@ -133,7 +133,7 @@ import de.greenrobot.event.EventBus;
  * 首页
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class MainActivity extends SerialPortActivity implements ICashierView {
+public class MainActivity extends IflyTekActivity implements ICashierView {
 
     @Bind(R.id.slideMenu)
     RecyclerView menuRecyclerView;
@@ -266,6 +266,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 
         //打开秤的串口
         OpenComPort(comScale);
+
+        cloudSpeak("欢迎使用米西厨房智能收银系统");
+        ZLogger.d("小版本标记：2016-07-27-001");
     }
 
     @Override
@@ -286,7 +289,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         }
 
         int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
-        if (menuAdapter != null){
+        if (menuAdapter != null) {
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
         }
@@ -451,9 +454,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 //                    intent.putExtras(extras);
 //                    startActivity(intent);
         } else if (id.compareTo(CashierFunctional.OPTION_ID_MONEYBOX) == 0) {
-            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_OPEN_MONEYBOX));
+            openMoneyBox();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_CLEAR_ORDER) == 0) {
-            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_RESET_CASHIER));
+            initCashierOrder();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
             hangUpOrder();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_SETTINGS) == 0) {
@@ -822,11 +825,6 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 // TODO: 5/19/16
 //                UIHelper.startActivity(this, SettingsActivity.class);
             }
-
-            @Override
-            public void onGuestSignIn() {
-
-            }
         });
         mAdministratorSigninDialog.show();
     }
@@ -902,8 +900,6 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
         ZLogger.d(String.format("CashierAffairEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == CashierAffairEvent.EVENT_ID_RESET_CASHIER) {
             initCashierOrder();
-        } else if (event.getAffairId() == CashierAffairEvent.EVENT_ID_OPEN_MONEYBOX) {
-            openMoneyBox();
         }
     }
 
@@ -953,17 +949,16 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             //现金额度发生变化，更新界面，并判断是否需要支付
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_QUOTA_UPDATE: {
 
-                if (args != null){
+                if (args != null) {
                     Long orderId = args.getLong("orderId");
                     QuotaEntity entity = QuotaService.get().getEntityById(String.valueOf(orderId));
-                    if (entity != null){
+                    if (entity != null) {
                         Double amount = entity.getAmount();
                         tvQuota.setText(String.format("额度：%.2f", amount));
 //                        if (amount.compareTo(QuotaEntity.MAX_QUOTA) >= 0){
 //                            quotaPay(entity);
 //                        }
-                    }
-                    else{
+                    } else {
                         tvQuota.setText(MUtils.formatDouble(0D, ""));
                     }
                 }
@@ -1161,7 +1156,7 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     //初始化收银
-                    EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_RESET_CASHIER));
+                    initCashierOrder();
                     reload(true);
                 }
             }
@@ -1205,6 +1200,8 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
                 changeAmount += payWrapper.getChange();
             }
             refreshLastOrder(finalAmount, bCount, discountAmount, changeAmount);
+
+            cloudSpeak(String.format("找零 %.2f 元，欢迎下次光临！", changeAmount));
 
             //显示找零
 //        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
@@ -1724,8 +1721,8 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
 
     /**
      * 金额授权模式支付
-     * */
-    private void quotaPay(final QuotaEntity entity){
+     */
+    private void quotaPay(final QuotaEntity entity) {
         ZLogger.df(">>>准备支付现金授权");
         List<CashierOrderItemInfo> cashierOrderItemInfoList = new ArrayList<>();
         CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
@@ -1824,5 +1821,9 @@ public class MainActivity extends SerialPortActivity implements ICashierView {
             alipayDialog.show();
         }
     }
+
+
+
+
 
 }

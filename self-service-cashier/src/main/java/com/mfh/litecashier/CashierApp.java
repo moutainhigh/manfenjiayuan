@@ -3,6 +3,8 @@ package com.mfh.litecashier;
 import android.content.ComponentCallbacks2;
 import android.os.Environment;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
@@ -35,6 +37,8 @@ public class CashierApp extends MfhApplication {
 
     @Override
     public void onCreate() {
+        initIflytek();
+
         AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();
@@ -45,13 +49,12 @@ public class CashierApp extends MfhApplication {
 
         configBugly();
 
-        if (BizConfig.RELEASE){
+        if (BizConfig.RELEASE) {
 //            ZLogger.d("正式版本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
 //            Constants.CACHE_NAME = "ACache_Release";
-        }
-        else{
+        } else {
 //            ZLogger.d("测试版本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
@@ -94,11 +97,15 @@ public class CashierApp extends MfhApplication {
         }
     }
 
-    @Override public void onTerminate() {
+    @Override
+    public void onTerminate() {
         super.onTerminate();
     }
 
-    private void configBugly(){
+    /**
+     * Beta高级设置
+     */
+    private void configBugly() {
         ZLogger.d("configBugly...");
         /***** Beta高级设置 *****/
         /**
@@ -157,5 +164,24 @@ public class CashierApp extends MfhApplication {
 //        Bugly.init(this, APP_ID, true, strategy);
         //Bugly SDK初始化
         Bugly.init(getApplicationContext(), "900030108", false);
+    }
+
+
+    /**
+     * 初始化科大讯飞MSC
+     * <p/>
+     * 应用程序入口处调用，避免手机内存过小，杀死后台进程后通过历史intent进入Activity造成SpeechUtility对象为null
+     * 如在Application中调用初始化，需要在Mainifest中注册该Applicaiton
+     * 注意：此接口在非主进程调用会返回null对象，如需在非主进程使用语音功能，
+     * 请增加参数：SpeechConstant.FORCE_LOGIN+"=true"
+     * 参数间使用半角“,”分隔。
+     * 设置你申请的应用appid,请勿在'='与appid之间添加空格及空转义符
+     * <p/>
+     * 注意： appid 必须和下载的SDK保持一致，否则会出现10407错误
+     */
+    private void initIflytek() {
+
+        SpeechUtility.createUtility(getApplicationContext(), SpeechConstant.APPID + "=57982371");
+
     }
 }
