@@ -29,7 +29,7 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long OPTION_ID_CLEAR_ORDER= 34L;//清空并开始新的收银流水
 
     public static final Long OPTION_ID_ONLINE_ORDER     = 40L;//线上订单
-    public static final Long OPTION_ID_GOODS_LIST       = 41L;//注册
+    public static final Long OPTION_ID_GOODS_LIST       = 41L;//商品列表
     public static final Long OPTION_ID_REGISTER_VIP     = 42L;//注册
     public static final Long OPTION_ID_BALANCE_QUERY    = 43L;//余额查询
     public static final Long OPTION_ID_MEMBER_CARD      = 44L;//会员卡（开卡）

@@ -2,57 +2,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:divider="@drawable/divider_horizontal_line_primary"
     android:showDividers="middle"
     android:background="@color/material_white">
 
-    <!--导航-->
-    <RelativeLayout
-        android:id="@+id/ll_service_navibar"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="#35363B"
-        android:orientation="horizontal"
-        android:padding="8dp">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <!--导航-->
+        <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
+            android:id="@+id/tab_category_goods"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/material_white"
+            app:allowWidthFull="false"
+            app:slidingBlock="@drawable/slidingblock_white_greenline" />
+        <!--内容区-->
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_category_goods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_service_back"
-            android:layout_width="wrap_content"
-            android:minWidth="60dp"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:drawableStart="@mipmap/ic_back_white_normal"
-            android:text="@string/btn_service_back"
-            android:gravity="center_vertical"
-            android:textColor="@color/material_white"
-            android:textSize="16sp"
-            android:singleLine="true"
-            android:drawablePadding="4dp"/>
 
-        <TextView
-            android:id="@+id/tv_service_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/title_fragment_cashier_commonly"
-            android:textColor="@color/material_white"
-            android:textSize="20sp" />
-
-    </RelativeLayout>
-
-    <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
-        android:id="@+id/tab_category_goods"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/material_white"
-        app:allowWidthFull="false"
-        app:slidingBlock="@drawable/slidingblock_white_greenline" />
-    <!--内容区-->
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager_category_goods"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/letter_list"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"/>-->
 
 </LinearLayout>

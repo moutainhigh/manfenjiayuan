@@ -137,4 +137,7 @@ public class TopFragmentPagerAdapter extends FragmentStatePagerAdapter {
         return mTabs.get(position).title;
     }
 
+    public ViewPageInfo getTab(int position) {
+        return mTabs.get(position);
+    }
 }

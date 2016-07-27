@@ -523,11 +523,11 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
      * 跳转到商品列表
      */
     public void redirectToGoodsList() {
-        DialogUtil.showHint("商品列表");
-//        Bundle extras = new Bundle();
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-//        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_GOODS_LIST);
-//        SimpleActivity.actionStart(this, extras);
+        ZLogger.df(">>>打开商品列表");
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_GOODS_LIST);
+        SimpleActivity.actionStart(this, extras);
     }
 
     /**
@@ -888,7 +888,9 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
-
+            if (count > 0){
+                cloudSpeak("您有新订单");
+            }
 //            shopcartBadgeView.setBadgeNumber(DataCacheHelper.getInstance().getUnreadOrder());
         }
     }

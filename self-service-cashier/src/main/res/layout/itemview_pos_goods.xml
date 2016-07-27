@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@null"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+
+        android:text="冰珊孤雪"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:lines="2"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_barcode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/default_amount_unit"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:gravity="end"
+        android:padding="4dp"/>
+
+    <TextView
+        android:id="@+id/tv_pricetype"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/default_amount_unit"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:gravity="end"
+        android:padding="4dp"/>
+
+
+    <TextView
+        android:id="@+id/tv_costprice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/default_amount_unit"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:gravity="end"
+        android:padding="4dp"/>
+
+</LinearLayout>
