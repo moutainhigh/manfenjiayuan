@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.widget.EditQueryView;
-import com.manfenjiayuan.business.bean.MyProvider;
+import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.DistributionSignEntity;

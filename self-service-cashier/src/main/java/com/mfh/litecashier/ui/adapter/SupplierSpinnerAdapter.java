@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.litecashier.R;
 
 import java.util.ArrayList;

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 

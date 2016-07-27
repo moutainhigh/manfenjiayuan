@@ -13,9 +13,9 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.presenter.WholesalerPresenter;
-import com.manfenjiayuan.business.view.IWholesalerView;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.invCompany.InvCompanyPresenter;
+import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.SelectPlatformProviderAdapter;
 import com.mfh.comn.bean.PageInfo;
@@ -34,8 +34,8 @@ import java.util.List;
  * 选择批发商
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class SelectWholesalerDialog extends CommonDialog
-        implements IWholesalerView {
+public class SelectInvCompanyInfoDialog extends CommonDialog
+        implements IInvCompanyInfoView {
 
     private View rootView;
     private RecyclerViewEmptySupport mRecyclerView;
@@ -52,13 +52,7 @@ public class SelectWholesalerDialog extends CommonDialog
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
     private List<CompanyInfo> orderList = new ArrayList<>();
 
-    private WholesalerPresenter wholesalerPresenter;
-    private String abilityItem = "";
-
-    @Override
-    public String getShortCodeLike() {
-        return null;
-    }
+    private InvCompanyPresenter mInvCompanyPresenter;
 
     @Override
     public void onProcess() {
@@ -94,12 +88,12 @@ public class SelectWholesalerDialog extends CommonDialog
     private OnDialogListener listener;
 
 
-    private SelectWholesalerDialog(Context context, boolean flag, DialogInterface.OnCancelListener listener) {
+    private SelectInvCompanyInfoDialog(Context context, boolean flag, DialogInterface.OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private SelectWholesalerDialog(Context context, int defStyle) {
+    private SelectInvCompanyInfoDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
                 R.layout.include_simple_recyclerview, null);
@@ -125,12 +119,12 @@ public class SelectWholesalerDialog extends CommonDialog
 //            }
 //        });
 
-        wholesalerPresenter = new WholesalerPresenter(this);
+        mInvCompanyPresenter = new InvCompanyPresenter(this);
 
         setContent(rootView, 0);
     }
 
-    public SelectWholesalerDialog(Context context) {
+    public SelectInvCompanyInfoDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 
@@ -260,7 +254,7 @@ public class SelectWholesalerDialog extends CommonDialog
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        wholesalerPresenter.getWholesalers(abilityItem, mPageInfo, getShortCodeLike());
+        mInvCompanyPresenter.list(mPageInfo, null);
         mPageInfo.setPageNo(1);
     }
 
@@ -283,7 +277,7 @@ public class SelectWholesalerDialog extends CommonDialog
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            wholesalerPresenter.getWholesalers(abilityItem, mPageInfo, getShortCodeLike());
+            mInvCompanyPresenter.list(mPageInfo, null);
         } else {
             ZLogger.d("加载批发商，已经是最后一页。");
             onLoadFinished();

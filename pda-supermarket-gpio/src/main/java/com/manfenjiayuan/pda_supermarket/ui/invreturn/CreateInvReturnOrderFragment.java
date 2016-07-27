@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.manfenjiayuan.business.dialog.InputNumberDialog;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -20,7 +20,7 @@ import com.manfenjiayuan.pda_supermarket.database.logic.InvReturnGoodsService;
 import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.InvReturnOrderGoodsAdapter;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectWholesalerDialog;
+import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
 import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
@@ -62,7 +62,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
     @Bind(R.id.button_submit)
     View btnSubmit;
 
-    private SelectWholesalerDialog selectPlatformProviderDialog = null;
+    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
     private InputNumberDialog mInputNumberDialog = null;
 
     /*供应商*/
@@ -417,11 +417,11 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment{
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
         if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectWholesalerDialog(getActivity());
+            selectPlatformProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
             selectPlatformProviderDialog.setCancelable(true);
             selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
         }
-        selectPlatformProviderDialog.init(null, new SelectWholesalerDialog.OnDialogListener() {
+        selectPlatformProviderDialog.init(null, new SelectInvCompanyInfoDialog.OnDialogListener() {
             @Override
             public void onItemSelected(CompanyInfo companyInfo) {
                 changeSendCompany(companyInfo);

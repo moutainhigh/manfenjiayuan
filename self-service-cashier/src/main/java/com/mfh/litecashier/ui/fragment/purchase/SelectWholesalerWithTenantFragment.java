@@ -107,9 +107,9 @@ public class SelectWholesalerWithTenantFragment extends BaseFragment {
 //        tabViewPager.setPageTransformer(true, new ZoomOutPageTransformer());//设置动画切换效果
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        mTabs.add(new ViewPageInfo("批发商", "批发商", SelectWholesalerFragment.class,
+        mTabs.add(new ViewPageInfo("批发商", "批发商", SelectInvCompanyInfoFragment.class,
                 null));
-        mTabs.add(new ViewPageInfo("门店", "门店", SelectTenantFragment.class,
+        mTabs.add(new ViewPageInfo("门店", "门店", SelectCompanyInfoFragment.class,
                 null));
 
         viewPagerAdapter.addAllTab(mTabs);

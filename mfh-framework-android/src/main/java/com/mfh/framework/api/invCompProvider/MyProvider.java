@@ -1,6 +1,9 @@
-package com.manfenjiayuan.business.bean;
+package com.mfh.framework.api.invCompProvider;
 
 import com.mfh.framework.api.CashierApi;
+
+import java.security.Provider;
+
 
 /**
  * Created by bingshanguxue on 5/29/16.

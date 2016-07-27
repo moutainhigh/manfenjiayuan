@@ -1,6 +1,6 @@
 package com.mfh.litecashier.bean.wrapper;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.GoodsSupplyInfo;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;

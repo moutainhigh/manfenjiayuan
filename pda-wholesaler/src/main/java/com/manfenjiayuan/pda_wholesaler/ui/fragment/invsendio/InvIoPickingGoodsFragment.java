@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditQueryView;
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
 import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;
@@ -24,7 +24,7 @@ import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.PickingGoodsAdapter;
-import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectTenantDialog;
+import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectCompanyInfoDialog;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.DistributionInspectFragment;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
@@ -77,7 +77,7 @@ public class InvIoPickingGoodsFragment extends PDAScanFragment
     @Bind(R.id.button_submit)
     View btnSign;
 
-    private SelectTenantDialog mSelectTenantDialog = null;
+    private SelectCompanyInfoDialog mSelectTenantDialog = null;
 
     /**
      * 接收方网点信息
@@ -480,11 +480,11 @@ public class InvIoPickingGoodsFragment extends PDAScanFragment
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
         if (mSelectTenantDialog == null) {
-            mSelectTenantDialog = new SelectTenantDialog(getActivity());
+            mSelectTenantDialog = new SelectCompanyInfoDialog(getActivity());
             mSelectTenantDialog.setCancelable(true);
             mSelectTenantDialog.setCanceledOnTouchOutside(false);
         }
-        mSelectTenantDialog.init(AbilityItem.TENANT, new SelectTenantDialog.OnDialogListener() {
+        mSelectTenantDialog.init(AbilityItem.TENANT, new SelectCompanyInfoDialog.OnDialogListener() {
             @Override
             public void onItemSelected(CompanyInfo companyInfo) {
                 changeSendCompany(companyInfo);

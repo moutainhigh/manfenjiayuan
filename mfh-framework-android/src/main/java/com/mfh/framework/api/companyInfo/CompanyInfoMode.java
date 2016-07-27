@@ -1,11 +1,9 @@
-package com.manfenjiayuan.business.mode;
+package com.mfh.framework.api.companyInfo;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.net.NetCallBack;
@@ -17,10 +15,9 @@ import java.util.List;
 /**
  * Created by bingshanguxue on 16/3/17.
  */
-public class TenantMode implements ITenantMode<CompanyInfo> {
+public class CompanyInfoMode {
 
-    @Override
-    public void getTenants(PageInfo pageInfo, String nameLike, Integer abilityItem, final OnPageModeListener<CompanyInfo> listener) {
+    public void findPublicCompanyInfo(PageInfo pageInfo, String nameLike, Integer abilityItem, final OnPageModeListener<CompanyInfo> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -50,6 +47,6 @@ public class TenantMode implements ITenantMode<CompanyInfo> {
             }
         }, CompanyInfo.class, MfhApplication.getAppContext());
 
-        CashierApiImpl.findPublicCompanyInfo(nameLike, abilityItem, pageInfo, queryRsCallBack);
+        CompanyInfoApi.findPublicCompanyInfo(nameLike, abilityItem, pageInfo, queryRsCallBack);
     }
 }

@@ -1,8 +1,9 @@
-package com.manfenjiayuan.pda_wholesaler.ui.dialog;
+package com.manfenjiayuan.pda_supermarket.ui.dialog;
 
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,14 +13,13 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.presenter.TenantPresenter;
-import com.manfenjiayuan.business.view.ITenantView;
-import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.SelectPlatformProviderAdapter;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.invCompany.InvCompanyPresenter;
+import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
+import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.adapter.SelectPlatformProviderAdapter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -30,11 +30,11 @@ import java.util.List;
 
 
 /**
- * 选择门店
+ * 选择批发商
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class SelectTenantDialog extends CommonDialog
-        implements ITenantView {
+public class SelectInvCompanyInfoDialog extends CommonDialog
+        implements IInvCompanyInfoView {
 
     private View rootView;
     private RecyclerViewEmptySupport mRecyclerView;
@@ -50,21 +50,7 @@ public class SelectTenantDialog extends CommonDialog
     private boolean bSyncInProgress = false;//是否正在同步
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 
-    private TenantPresenter tenantPresenter;
-    private Integer abilityItem = AbilityItem.TENANT;
-
-
-    public interface OnDialogListener {
-        void onItemSelected(CompanyInfo companyInfo);
-    }
-
-    private OnDialogListener listener;
-
-
-    @Override
-    public String getNameLike() {
-        return null;
-    }
+    private InvCompanyPresenter mInvCompanyPresenter;
 
     @Override
     public void onProcess() {
@@ -79,38 +65,37 @@ public class SelectTenantDialog extends CommonDialog
     @Override
     public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
         mPageInfo = pageInfo;
-
         //第一页，缓存数据
         if (mPageInfo.getPageNo() == 1) {
             if (productAdapter != null) {
                 productAdapter.setEntityList(dataList);
             }
-
-        } else {
+      } else {
             if (productAdapter != null) {
                 productAdapter.appendEntityList(dataList);
             }
         }
-
-        ZLogger.d(String.format("保存关联租户:page=%d/%d(%d/%d)",
-                mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
-                productAdapter.getItemCount(), mPageInfo.getTotalCount()));
-
         onLoadFinished();
     }
 
 
-    private SelectTenantDialog(Context context, boolean flag, OnCancelListener listener) {
+    public interface OnDialogListener {
+        void onItemSelected(CompanyInfo companyInfo);
+    }
+
+    private OnDialogListener listener;
+
+
+    private SelectInvCompanyInfoDialog(Context context, boolean flag, DialogInterface.OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private SelectTenantDialog(Context context, int defStyle) {
+    private SelectInvCompanyInfoDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
                 R.layout.include_simple_recyclerview, null);
 //        ButterKnife.bind(rootView);
-
 
         mRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.recyclerViewEmptySupport);
         emptyView = (TextView) rootView.findViewById(R.id.empty_view);
@@ -118,15 +103,26 @@ public class SelectTenantDialog extends CommonDialog
 
         initRecyclerView();
 
-        emptyView.setOnClickListener(dialogClickListener);
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reload();
+            }
+        });
+//
+//        btnClose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dismiss();
+//            }
+//        });
 
-
-        tenantPresenter = new TenantPresenter(this);
+        mInvCompanyPresenter = new InvCompanyPresenter(this);
 
         setContent(rootView, 0);
     }
 
-    public SelectTenantDialog(Context context) {
+    public SelectInvCompanyInfoDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 
@@ -140,9 +136,10 @@ public class SelectTenantDialog extends CommonDialog
 //        WindowManager m = getWindow().getWindowManager();
 //        Display d = m.getDefaultDisplay();
 //        WindowManager.LayoutParams p = getWindow().getAttributes();
-////        p.width = d.getWidth() * 2 / 3;
-////        p.y = DensityUtil.dip2px(getContext(), 44);
-//
+//////        p.width = d.getWidth() * 2 / 3;
+//////        p.y = DensityUtil.dip2px(getContext(), 44);
+//        p.height = d.getHeight();
+////
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
 //        getWindow().setAttributes(p);
@@ -159,24 +156,8 @@ public class SelectTenantDialog extends CommonDialog
         reload();
     }
 
-    private View.OnClickListener dialogClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.button_header_close: {
-                    dismiss();
-                }
-                break;
-                case R.id.empty_view: {
-                    reload();
-                }
-                break;
-            }
-        }
-    };
 
-    public void init(Integer abilityItem, OnDialogListener listener) {
-        this.abilityItem = abilityItem;
+    public void init( OnDialogListener listener) {
         this.listener = listener;
         this.productAdapter.setEntityList(null);
     }
@@ -235,6 +216,7 @@ public class SelectTenantDialog extends CommonDialog
         mRecyclerView.setAdapter(productAdapter);
     }
 
+
     /**
      * 开始加载
      */
@@ -257,22 +239,19 @@ public class SelectTenantDialog extends CommonDialog
      * 重新加载数据
      */
     public void reload() {
-
         if (bSyncInProgress) {
-            ZLogger.d("正在加载关联租户。");
+            ZLogger.d("正在加载批发商。");
 //            onLoadFinished();
             return;
         }
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载关联租户。");
+            ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-//        onLoadStart();
-//        load(mPageInfo);
-        tenantPresenter.getTenants(mPageInfo, getNameLike(), abilityItem);
+        mInvCompanyPresenter.list(mPageInfo, null);
         mPageInfo.setPageNo(1);
     }
 
@@ -280,13 +259,14 @@ public class SelectTenantDialog extends CommonDialog
      * 翻页加载更多数据
      */
     public void loadMore() {
+
         if (bSyncInProgress) {
-            ZLogger.d("正在加载关联租户。");
+            ZLogger.d("正在加载批发商。");
 //            onLoadFinished();
             return;
         }
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载关联租户。");
+            ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;
         }
@@ -294,13 +274,12 @@ public class SelectTenantDialog extends CommonDialog
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-//            onLoadStart();
-//            load(mPageInfo);
-            tenantPresenter.getTenants(mPageInfo, getNameLike(), abilityItem);
+            mInvCompanyPresenter.list(mPageInfo, null);
         } else {
-            ZLogger.d("加载关联租户，已经是最后一页。");
+            ZLogger.d("加载批发商，已经是最后一页。");
             onLoadFinished();
         }
     }
+
 
 }

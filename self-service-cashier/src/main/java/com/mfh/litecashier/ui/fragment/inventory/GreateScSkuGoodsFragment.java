@@ -16,7 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
@@ -33,7 +33,7 @@ import com.mfh.litecashier.R;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
+import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -62,7 +62,7 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
 
     /*供应商*/
     private CompanyInfo curInvCompProvider = null;//当前私有供应商
-    private SelectWholesalerDialog selectInvCompProviderDialog;
+    private SelectInvCompanyInfoDialog selectInvCompProviderDialog;
     @Bind(R.id.et_buyprice)
     EditText etBuyPrice;
     @Bind(R.id.et_quantity)
@@ -315,11 +315,11 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
     public void selectInvCompProvider() {
         //TODO,判断商品是否存在多个供应链，若存在多个，则提示选择供应链
         if (selectInvCompProviderDialog == null) {
-            selectInvCompProviderDialog = new SelectWholesalerDialog(getActivity());
+            selectInvCompProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
             selectInvCompProviderDialog.setCancelable(false);
             selectInvCompProviderDialog.setCanceledOnTouchOutside(false);
         }
-        selectInvCompProviderDialog.init(null, new SelectWholesalerDialog.OnDialogListener() {
+        selectInvCompProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
             @Override
             public void onItemSelected(CompanyInfo companyInfo) {
                 curInvCompProvider = companyInfo;

@@ -2,10 +2,8 @@ package com.mfh.framework.api.impl;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.CashierApi;
-import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
@@ -83,7 +81,6 @@ public class CashierApiImpl extends CashierApi {
 
         AfinalFactory.postDefault(URL_STOCK_RECEIVEORDER_STOCKINITEMS, params, responseCallback);
     }
-
 
 
     /**
@@ -197,6 +194,7 @@ public class CashierApiImpl extends CashierApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_GET_PAYAMOUNT_BY_ORDERINFO, params, responseCallback);
     }
+
     public static void getPayAmountByOrderInfos(Integer bizType, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("bizType", String.valueOf(bizType));
@@ -205,44 +203,8 @@ public class CashierApiImpl extends CashierApi {
         AfinalFactory.postDefault(URL_GET_PAYAMOUNT_BY_ORDERINFOS, params, responseCallback);
     }
 
-    /**
-     * 查询租户
-     *
-     * @param abilityItem {@link AbilityItem}
-     */
-    public static void findPublicCompanyInfo(String nameLike, Integer abilityItem, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(nameLike)) {
-            params.put("nameLike", nameLike);
-        }
-        params.put("abilityItem", String.valueOf(abilityItem));//能力
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_COMPANYINFO_FIND_PUBLICCOMPANYINFO, params, responseCallback);
-    }
 
 
-    /**
-     * 查询租户
-     *
-     * @param abilityItem {@link AbilityItem}
-     */
-    public static void bizSupplyInfoFindPublicCompanyInfo(String shortCodeLike, String abilityItem, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(shortCodeLike)) {
-            params.put("shortCodeLike", shortCodeLike);
-        }
-        //retTenantId＝1，返回租户，不传retTenantId，返回网点
-        params.put("retTenantId", "1");
-        if (!StringUtils.isEmpty(abilityItem)) {
-            params.put("abilityItem", abilityItem);//能力
-        }
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_BIZSUPPLYINFO_FIND_PUBLICCOMPANYINFO, params, responseCallback);
-    }
 
     /**
      * 收货时租户sku档案登记,参数同上，除了没有库存信息
@@ -262,15 +224,6 @@ public class CashierApiImpl extends CashierApi {
 
 
 
-
-    public static void getNetInfoById(String id, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("id", id);
-//        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_COMPANYINFO_GETNETINFO_BYID, params, responseCallback);
-    }
 
 
     /**
@@ -439,7 +392,6 @@ public class CashierApiImpl extends CashierApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_ANALYSISACCDATE_GETLASTAGGDATE, params, responseCallback);
     }
-
 
 
     /**

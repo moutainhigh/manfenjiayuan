@@ -16,7 +16,7 @@ import com.manfenjiayuan.business.dialog.InputNumberDialog;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.InvLossOrderGoodsAdapter;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectWholesalerDialog;
+import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
 import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
@@ -63,7 +63,7 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
     @Bind(R.id.button_submit)
     View btnSubmit;
 
-    private SelectWholesalerDialog selectPlatformProviderDialog = null;
+    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
     private InputNumberDialog mInputNumberDialog = null;
 
     private InvLossOrder invLossOrder = null;

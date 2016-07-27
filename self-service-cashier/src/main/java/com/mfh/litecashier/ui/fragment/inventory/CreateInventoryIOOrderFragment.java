@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
@@ -39,7 +39,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
 import com.mfh.litecashier.ui.adapter.CreateOrderItemAdapter;
-import com.mfh.litecashier.ui.dialog.SelectTenantDialog;
+import com.mfh.litecashier.ui.dialog.SelectCompanyInfoDialog;
 import com.mfh.litecashier.ui.view.IInventoryView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -88,7 +88,7 @@ implements IInventoryView {
 
     private ItemTouchHelper itemTouchHelper;
     private CreateOrderItemAdapter productAdapter;
-    private SelectTenantDialog selectTenantDialog;
+    private SelectCompanyInfoDialog selectTenantDialog;
 
 
     private InventoryGoodsPresenter inventoryGoodsPresenter;
@@ -178,11 +178,11 @@ implements IInventoryView {
     @OnClick(R.id.label_allocation_out)
     public void selectOutCompany() {
         if (selectTenantDialog == null) {
-            selectTenantDialog = new SelectTenantDialog(getActivity());
+            selectTenantDialog = new SelectCompanyInfoDialog(getActivity());
             selectTenantDialog.setCancelable(false);
             selectTenantDialog.setCanceledOnTouchOutside(false);
         }
-        selectTenantDialog.init(AbilityItem.TENANT, new SelectTenantDialog.OnDialogListener() {
+        selectTenantDialog.init(AbilityItem.TENANT, new SelectCompanyInfoDialog.OnDialogListener() {
             @Override
             public void onItemSelected(CompanyInfo companyInfo) {
                 outCompanyInfo = companyInfo;
@@ -200,11 +200,11 @@ implements IInventoryView {
     @OnClick(R.id.label_allocation_in)
     public void selectInCompany() {
         if (selectTenantDialog == null) {
-            selectTenantDialog = new SelectTenantDialog(getActivity());
+            selectTenantDialog = new SelectCompanyInfoDialog(getActivity());
             selectTenantDialog.setCancelable(false);
             selectTenantDialog.setCanceledOnTouchOutside(false);
         }
-        selectTenantDialog.init(AbilityItem.TENANT, new SelectTenantDialog.OnDialogListener() {
+        selectTenantDialog.init(AbilityItem.TENANT, new SelectCompanyInfoDialog.OnDialogListener() {
             @Override
             public void onItemSelected(CompanyInfo companyInfo) {
                 if (outCompanyInfo != null && companyInfo != null && outCompanyInfo.getId().equals(companyInfo.getId())) {

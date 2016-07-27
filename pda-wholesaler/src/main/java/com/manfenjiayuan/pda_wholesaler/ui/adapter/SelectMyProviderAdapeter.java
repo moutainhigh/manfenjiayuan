@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.MyProvider;
+import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 

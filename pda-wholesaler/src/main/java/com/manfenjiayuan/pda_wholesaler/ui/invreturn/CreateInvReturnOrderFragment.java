@@ -15,7 +15,7 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
 import com.bingshanguxue.pda.widget.EditQueryView;
-import com.manfenjiayuan.business.bean.MyProvider;
+import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;

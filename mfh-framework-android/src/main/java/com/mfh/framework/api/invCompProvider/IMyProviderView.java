@@ -1,6 +1,6 @@
-package com.manfenjiayuan.business.view;
+package com.mfh.framework.api.invCompProvider;
 
-import com.manfenjiayuan.business.bean.MyProvider;
+import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpView;
 

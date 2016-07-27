@@ -13,13 +13,13 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.MyProvider;
-import com.manfenjiayuan.business.presenter.WholesalerPresenter;
-import com.manfenjiayuan.business.view.IMyProviderView;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.SelectMyProviderAdapeter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.invCompProvider.IMyProviderView;
+import com.mfh.framework.api.invCompProvider.InvComProviderPresenter;
+import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -50,7 +50,7 @@ public class SelectWholesalerDialog extends CommonDialog
     private boolean bSyncInProgress = false;//是否正在同步
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 
-    private WholesalerPresenter wholesalerPresenter;
+    private InvComProviderPresenter wholesalerPresenter;
 
     @Override
     public void onProcess() {
@@ -118,7 +118,7 @@ public class SelectWholesalerDialog extends CommonDialog
 //            }
 //        });
 
-        wholesalerPresenter = new WholesalerPresenter(this);
+        wholesalerPresenter = new InvComProviderPresenter(this);
 
         setContent(rootView, 0);
     }
@@ -252,7 +252,7 @@ public class SelectWholesalerDialog extends CommonDialog
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-		wholesalerPresenter.invCompProviderFindMyProviders(mPageInfo);
+		wholesalerPresenter.findMyProviders(mPageInfo);
         mPageInfo.setPageNo(1);
     }
 
@@ -273,7 +273,7 @@ public class SelectWholesalerDialog extends CommonDialog
 
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
-			wholesalerPresenter.invCompProviderFindMyProviders(mPageInfo);
+			wholesalerPresenter.findMyProviders(mPageInfo);
         } else {
             ZLogger.d("加载批发商，已经是最后一页。");
             onLoadFinished();

@@ -13,10 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.presenter.WholesalerPresenter;
-import com.manfenjiayuan.business.view.IWholesalerView;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -24,7 +23,9 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.framework.api.companyInfo.CompanyInfoPresenter;
 import com.mfh.litecashier.ui.adapter.SelectPlatformProviderAdapter;
+import com.mfh.framework.api.companyInfo.ICompanyInfoView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
 import java.util.ArrayList;
@@ -37,11 +38,11 @@ import de.greenrobot.event.EventBus;
 import static com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment.SelectWholesalerWithTenantEvent;
 
 /**
- * 选择批发商
+ * 选择门店
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
-public class SelectWholesalerFragment extends BaseFragment
-implements IWholesalerView {
+public class SelectCompanyInfoFragment extends BaseFragment
+        implements ICompanyInfoView {
 
     @Bind(R.id.inlv_shortCode)
     InputSearchView labelShortcode;
@@ -62,10 +63,10 @@ implements IWholesalerView {
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
     private List<CompanyInfo> orderList = new ArrayList<>();
 
-    private WholesalerPresenter wholesalerPresenter;
+    private CompanyInfoPresenter mCompanyInfoPresenter;
 
-    public static SelectWholesalerFragment newInstance(Bundle args) {
-        SelectWholesalerFragment fragment = new SelectWholesalerFragment();
+    public static SelectCompanyInfoFragment newInstance(Bundle args) {
+        SelectCompanyInfoFragment fragment = new SelectCompanyInfoFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -83,8 +84,7 @@ implements IWholesalerView {
         super.onCreate(savedInstanceState);
 
 //        EventBus.getDefault().register(this);
-
-        wholesalerPresenter = new WholesalerPresenter(this);
+        mCompanyInfoPresenter = new CompanyInfoPresenter(this);
     }
 
     @Override
@@ -104,8 +104,9 @@ implements IWholesalerView {
 
     private void initShortcodeView() {
         labelShortcode.setInputSubmitEnabled(true);
-        labelShortcode.setSoftKeyboardEnabled(false);
+        labelShortcode.setSoftKeyboardEnabled(true);
         labelShortcode.config(InputSearchView.INPUT_TYPE_TEXT);
+        labelShortcode.setHintText("门店名称");
 //        inlvProductName.requestFocus();
         labelShortcode.setOnInoutKeyListener(new View.OnKeyListener() {
             @Override
@@ -220,12 +221,12 @@ implements IWholesalerView {
     @OnClick(R.id.empty_view)
     public void reload() {
         if (bSyncInProgress) {
-            ZLogger.d("正在加载批发商。");
+            ZLogger.d("正在加载关联租户。");
 //            onLoadFinished();
             return;
         }
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载批发商。");
+            ZLogger.d("网络未连接，暂停加载关联租户。");
             onLoadFinished();
             return;
         }
@@ -238,7 +239,7 @@ implements IWholesalerView {
             orderList.clear();
         }
 
-        wholesalerPresenter.getWholesalers(null, mPageInfo, getShortCodeLike());
+        mCompanyInfoPresenter.findPublicCompanyInfo(mPageInfo, labelShortcode.getInputString(), AbilityItem.TENANT);
         mPageInfo.setPageNo(1);
     }
 
@@ -247,13 +248,12 @@ implements IWholesalerView {
      */
     public void loadMore() {
         if (bSyncInProgress) {
-            ZLogger.d("正在加载批发商。");
+            ZLogger.d("正在加载关联租户。");
 //            onLoadFinished();
             return;
         }
-
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载批发商。");
+            ZLogger.d("网络未连接，暂停加载关联租户。");
             onLoadFinished();
             return;
         }
@@ -261,31 +261,11 @@ implements IWholesalerView {
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            wholesalerPresenter.getWholesalers(null, mPageInfo, getShortCodeLike());
+            mCompanyInfoPresenter.findPublicCompanyInfo(mPageInfo, labelShortcode.toString(), AbilityItem.TENANT);
         } else {
-            ZLogger.d("加载批发商，已经是最后一页。");
+            ZLogger.d("加载关联租户，已经是最后一页。");
             onLoadFinished();
         }
-    }
-
-
-    @Override
-    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
-        mPageInfo = pageInfo;
-        if (orderList == null) {
-            orderList = new ArrayList<>();
-        }
-        orderList.addAll(dataList);
-
-        if (productAdapter != null) {
-            productAdapter.setEntityList(orderList);
-        }
-        onLoadFinished();
-    }
-
-    @Override
-    public String getShortCodeLike() {
-        return labelShortcode.getInputString();
     }
 
     @Override
@@ -299,5 +279,19 @@ implements IWholesalerView {
     public void onError(String errorMsg) {
         onLoadFinished();
     }
+
+    @Override
+    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
+        mPageInfo = pageInfo;
+        if (orderList == null) {
+            orderList = new ArrayList<>();
+        }
+        orderList.addAll(dataList);
+        if (productAdapter != null) {
+            productAdapter.setEntityList(orderList);
+        }
+        onLoadFinished();
+    }
+
 
 }

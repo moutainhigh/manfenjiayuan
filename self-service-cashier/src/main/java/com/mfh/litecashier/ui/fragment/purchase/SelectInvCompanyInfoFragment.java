@@ -13,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.invCompany.InvCompanyPresenter;
+import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -23,9 +24,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.presenter.TenantPresenter;
 import com.mfh.litecashier.ui.adapter.SelectPlatformProviderAdapter;
-import com.manfenjiayuan.business.view.ITenantView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
 import java.util.ArrayList;
@@ -38,11 +37,11 @@ import de.greenrobot.event.EventBus;
 import static com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment.SelectWholesalerWithTenantEvent;
 
 /**
- * 选择门店
+ * 选择批发商
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
-public class SelectTenantFragment extends BaseFragment
-        implements ITenantView{
+public class SelectInvCompanyInfoFragment extends BaseFragment
+        implements IInvCompanyInfoView {
 
     @Bind(R.id.inlv_shortCode)
     InputSearchView labelShortcode;
@@ -63,10 +62,10 @@ public class SelectTenantFragment extends BaseFragment
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
     private List<CompanyInfo> orderList = new ArrayList<>();
 
-    private TenantPresenter tenantPresenter;
+    private InvCompanyPresenter mInvCompanyPresenter;
 
-    public static SelectTenantFragment newInstance(Bundle args) {
-        SelectTenantFragment fragment = new SelectTenantFragment();
+    public static SelectInvCompanyInfoFragment newInstance(Bundle args) {
+        SelectInvCompanyInfoFragment fragment = new SelectInvCompanyInfoFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -84,7 +83,8 @@ public class SelectTenantFragment extends BaseFragment
         super.onCreate(savedInstanceState);
 
 //        EventBus.getDefault().register(this);
-        tenantPresenter = new TenantPresenter(this);
+
+        mInvCompanyPresenter = new InvCompanyPresenter(this);
     }
 
     @Override
@@ -104,9 +104,8 @@ public class SelectTenantFragment extends BaseFragment
 
     private void initShortcodeView() {
         labelShortcode.setInputSubmitEnabled(true);
-        labelShortcode.setSoftKeyboardEnabled(true);
+        labelShortcode.setSoftKeyboardEnabled(false);
         labelShortcode.config(InputSearchView.INPUT_TYPE_TEXT);
-        labelShortcode.setHintText("门店名称");
 //        inlvProductName.requestFocus();
         labelShortcode.setOnInoutKeyListener(new View.OnKeyListener() {
             @Override
@@ -221,12 +220,12 @@ public class SelectTenantFragment extends BaseFragment
     @OnClick(R.id.empty_view)
     public void reload() {
         if (bSyncInProgress) {
-            ZLogger.d("正在加载关联租户。");
+            ZLogger.d("正在加载批发商。");
 //            onLoadFinished();
             return;
         }
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载关联租户。");
+            ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;
         }
@@ -239,7 +238,7 @@ public class SelectTenantFragment extends BaseFragment
             orderList.clear();
         }
 
-        tenantPresenter.getTenants(mPageInfo, getNameLike(), AbilityItem.TENANT);
+        mInvCompanyPresenter.list(mPageInfo, labelShortcode.getInputString());
         mPageInfo.setPageNo(1);
     }
 
@@ -248,12 +247,13 @@ public class SelectTenantFragment extends BaseFragment
      */
     public void loadMore() {
         if (bSyncInProgress) {
-            ZLogger.d("正在加载关联租户。");
+            ZLogger.d("正在加载批发商。");
 //            onLoadFinished();
             return;
         }
+
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载关联租户。");
+            ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;
         }
@@ -261,16 +261,26 @@ public class SelectTenantFragment extends BaseFragment
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            tenantPresenter.getTenants(mPageInfo, getNameLike(), AbilityItem.TENANT);
+            mInvCompanyPresenter.list(mPageInfo, labelShortcode.getInputString());
         } else {
-            ZLogger.d("加载关联租户，已经是最后一页。");
+            ZLogger.d("加载批发商，已经是最后一页。");
             onLoadFinished();
         }
     }
 
+
     @Override
-    public String getNameLike() {
-        return labelShortcode.getInputString();
+    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
+        mPageInfo = pageInfo;
+        if (orderList == null) {
+            orderList = new ArrayList<>();
+        }
+        orderList.addAll(dataList);
+
+        if (productAdapter != null) {
+            productAdapter.setEntityList(orderList);
+        }
+        onLoadFinished();
     }
 
     @Override
@@ -284,19 +294,5 @@ public class SelectTenantFragment extends BaseFragment
     public void onError(String errorMsg) {
         onLoadFinished();
     }
-
-    @Override
-    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
-        mPageInfo = pageInfo;
-        if (orderList == null) {
-            orderList = new ArrayList<>();
-        }
-        orderList.addAll(dataList);
-        if (productAdapter != null) {
-            productAdapter.setEntityList(orderList);
-        }
-        onLoadFinished();
-    }
-
 
 }

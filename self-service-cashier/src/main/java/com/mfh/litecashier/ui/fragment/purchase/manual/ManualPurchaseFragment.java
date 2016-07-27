@@ -23,10 +23,9 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.CategoryOption;
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.GoodsSupplyInfo;
-import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
@@ -51,7 +50,7 @@ import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
-import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
+import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
@@ -86,7 +85,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
     @Bind(R.id.label_platform_provider)
     OptionalLabel labelPlatformProvider;
-    private SelectWholesalerDialog selectPlatformProviderDialog;
+    private SelectInvCompanyInfoDialog selectPlatformProviderDialog;
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private ManualPurchaseGoodsAdapter goodsListAdapter;
@@ -267,12 +266,11 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     public void selectPlatformProvider() {
         //TODO,判断商品是否存在多个供应链，若存在多个，则提示选择供应链
         if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectWholesalerDialog(getActivity());
+            selectPlatformProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
             selectPlatformProviderDialog.setCancelable(false);
             selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
         }
-        selectPlatformProviderDialog.init(String.valueOf(AbilityItem.PROVIDER),
-                new SelectWholesalerDialog.OnDialogListener() {
+        selectPlatformProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
                     @Override
                     public void onItemSelected(CompanyInfo companyInfo) {
                         if (companyInfo == null) {

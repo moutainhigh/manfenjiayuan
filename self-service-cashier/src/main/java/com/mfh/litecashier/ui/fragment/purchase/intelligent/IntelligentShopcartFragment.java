@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.CompanyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItemBrief;
 import com.mfh.comn.net.data.IResponseData;
@@ -40,7 +40,7 @@ import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartOrder;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.ui.adapter.PurchaseShopcartOrderAdapter;
-import com.mfh.litecashier.ui.dialog.SelectWholesalerDialog;
+import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.litecashier.utils.IntelligentShopcartHelper;
 
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class IntelligentShopcartFragment extends BaseFragment {
     private ItemTouchHelper itemTouchHelper;
 
 
-    private SelectWholesalerDialog selectPlatformProviderDialog = null;
+    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
     private CompanyInfo mCompanyInfo = null;
 
     public static IntelligentShopcartFragment newInstance(Bundle args) {
@@ -129,11 +129,11 @@ public class IntelligentShopcartFragment extends BaseFragment {
     public void selectPlatformProvider() {
         //TODO,判断商品是否存在多个供应链，若存在多个，则提示选择供应链
         if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectWholesalerDialog(getActivity());
+            selectPlatformProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
             selectPlatformProviderDialog.setCancelable(false);
             selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
         }
-        selectPlatformProviderDialog.init(null, new SelectWholesalerDialog.OnDialogListener() {
+        selectPlatformProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
             @Override
             public void onItemSelected(CompanyInfo companyInfo) {
                 changeCompany(companyInfo);
