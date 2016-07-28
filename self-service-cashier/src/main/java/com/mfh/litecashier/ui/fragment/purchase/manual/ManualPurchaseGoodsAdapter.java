@@ -146,8 +146,10 @@ public class ManualPurchaseGoodsAdapter
                         int position = getAdapterPosition();
                         ScGoodsSku goods = getEntity(position);
                         if (goods == null) {
+                            ZLogger.d("选中商品无效");
                             return;
                         }
+
                         if (adapterListener != null) {
                             adapterListener.addToShopcart(goods, value);
                         }

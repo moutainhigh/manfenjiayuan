@@ -109,10 +109,42 @@ public class PurchaseHelper {
     }
 
     /**
+     * 移除商品
+     * */
+    public void removeGoods(Integer purchaseType, PurchaseShopcartGoodsWrapper goods){
+        //检查商品是否有效
+        if (purchaseType == null){
+            ZLogger.d("采购类型无效");
+            return;
+        }
+        if (goods == null){
+            ZLogger.d("移除商品失败，商品无效");
+            return;
+        }
+        if (goods.getChainSkuId() == null){
+            ZLogger.d("移除商品失败，商品chainSkuId为空");
+            return;
+        }
+        if (goods.getSupplyId() == null){
+            ZLogger.d("移除商品失败，商品无批发商信息，暂时无法移除商品");
+            return;
+        }
+
+        //更新订单明细
+        String sqlWhere = String.format("purchaseType = '%d' and providerId = '%d' " +
+                "and chainSkuId = '%d'", purchaseType, goods.getSupplyId(), goods.getChainSkuId());
+
+        PurchaseGoodsService.getInstance().deleteBy(sqlWhere);
+
+        PurchaseHelper.getInstance().arrange(purchaseType);
+    }
+
+    /**
      * 整理订单，删除无明细的空订单；更新订单统计数据
      * @param purchaseType 采购类型
      * */
     public void arrange(Integer purchaseType){
+        ZLogger.d("整理采购订单");
         List<PurchaseOrderEntity> orderEntities = PurchaseOrderService.getInstance()
                 .fetchOrders(purchaseType);
         if (orderEntities == null || orderEntities.size() <= 0){
@@ -122,7 +154,10 @@ public class PurchaseHelper {
         for (PurchaseOrderEntity orderEntity : orderEntities){
             List<PurchaseGoodsEntity> goodsEntities = PurchaseGoodsService.getInstance()
                     .fetchGoodsEntities(purchaseType, orderEntity.getProviderId());
+
             if (goodsEntities != null && goodsEntities.size() > 0){
+                ZLogger.d(String.format("%d 商品数：%d", orderEntity.getProviderId(), goodsEntities.size()));
+
                 Double amount = 0D;
                 for (PurchaseGoodsEntity goodsEntity : goodsEntities){
                     amount += goodsEntity.getBuyPrice() * goodsEntity.getQuantityCheck();
@@ -133,6 +168,7 @@ public class PurchaseHelper {
                 PurchaseOrderService.getInstance().saveOrUpdate(orderEntity);
             }
             else{
+                ZLogger.d(String.format("删除订单明细为空的批发商(%d)采购订单", orderEntity.getProviderId()));
                 PurchaseOrderService.getInstance().deleteById(String.valueOf(orderEntity.getId()));
             }
         }

@@ -100,7 +100,7 @@ public class IntelligentShopcartFragment extends BaseFragment {
         initGoodsRecyclerView();
 
         //购物车不为空
-        if (IntelligentShopcartHelper.getInstance().getItemCount() > 0){
+        if (IntelligentShopcartHelper.getInstance().getItemCount() > 0) {
             refresh();
             showConfirmDialog("购物车不为空，是否继续订货？",
                     "重新开始", new DialogInterface.OnClickListener() {
@@ -119,8 +119,7 @@ public class IntelligentShopcartFragment extends BaseFragment {
                             dialog.dismiss();
                         }
                     });
-        }
-        else{
+        } else {
             IntelligentShopcartHelper.getInstance().clear();
             selectPlatformProvider();
         }
@@ -272,7 +271,7 @@ public class IntelligentShopcartFragment extends BaseFragment {
                     for (PurchaseShopcartGoodsWrapper goods : goodsList) {
 
                         Double quantityCheck = goods.getQuantityCheck();
-                        if (quantityCheck == null || quantityCheck.compareTo(0D) <= 0){
+                        if (quantityCheck == null || quantityCheck.compareTo(0D) <= 0) {
                             isHasEmptyQuantity = true;
                         }
                         JSONObject item = new JSONObject();

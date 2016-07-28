@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:baselineAligned="false">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
     <!--android:background="@color/material_white"-->
 
@@ -16,19 +16,20 @@
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/order_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_normal"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <!--空视图-->
     <TextView
         android:id="@+id/empty_view"
+        style="@style/mfh_textview_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/mfh_textview_text"
-        android:text="@string/label_nodata_reload"
-        android:gravity="center"
         android:clickable="true"
+        android:gravity="center"
+        android:text="@string/label_nodata_reload"
         android:visibility="gone"/>
 
 </RelativeLayout>

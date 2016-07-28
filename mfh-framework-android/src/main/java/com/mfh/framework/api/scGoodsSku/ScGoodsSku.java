@@ -70,6 +70,7 @@ public class ScGoodsSku implements ILongId, Serializable {
 //    private Long otherTenantSkuId;//批发商商品SKU编号,chainSkuId
 //    private String supplyName;//批发商名称
     private Long providerId;//供应商编号
+    private GoodsSupplyInfo supplyItem;//批发商信息
     private List<GoodsSupplyInfo> supplyItems;//批发商信息
 
 
@@ -329,6 +330,14 @@ public class ScGoodsSku implements ILongId, Serializable {
 
     public void setProviderId(Long providerId) {
         this.providerId = providerId;
+    }
+
+    public GoodsSupplyInfo getSupplyItem() {
+        return supplyItem;
+    }
+
+    public void setSupplyItem(GoodsSupplyInfo supplyItem) {
+        this.supplyItem = supplyItem;
     }
 
     public List<GoodsSupplyInfo> getSupplyItems() {

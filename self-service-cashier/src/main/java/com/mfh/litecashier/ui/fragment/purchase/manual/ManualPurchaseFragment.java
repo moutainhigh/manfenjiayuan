@@ -42,6 +42,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
+import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.PurchasePresenter;
 import com.mfh.litecashier.service.DataSyncManager;
@@ -527,34 +528,46 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             return;
         }
 
-        List<GoodsSupplyInfo> supplyInfos = goods.getSupplyItems();
-        if (supplyInfos != null) {
-            if (supplyInfos.size() == 1) {
-                PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
-                        .fromSupplyGoods(goods, supplyInfos.get(0), IsPrivate.PLATFORM);
-                wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
-                PurchaseHelper.getInstance()
-                        .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
-//                changeQuantity(wrapper);
-            } else {
-                CompanyInfo companyInfo = searchParams.getCompanyInfo();
-                if (companyInfo != null && companyInfo.getTenantId() != null) {
-                    for (GoodsSupplyInfo supplyInfo : supplyInfos) {
-                        if (companyInfo.getTenantId().equals(supplyInfo.getSupplyId())) {
+        PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
+                .fromSupplyGoods(goods, goods.getSupplyItem(), IsPrivate.PLATFORM);
 
-                            PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
-                                    .fromSupplyGoods(goods, supplyInfo, IsPrivate.PLATFORM);
-                            wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
-                            PurchaseHelper.getInstance()
-                                    .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
-//                            changeQuantity(wrapper);
-                            return;
-                        }
-                    }
-                }
-//                querySupply(goods, supplyInfos);
-            }
+        if (quantity == 0){
+            PurchaseGoodsService.getInstance().deleteById(String.valueOf(goods.getId()));
+            PurchaseHelper.getInstance().removeGoods(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL,
+                    wrapper);
         }
+        else{
+            wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
+            PurchaseHelper.getInstance()
+                    .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
+        }
+
+        refreshFabShopcart();
+
+//        List<GoodsSupplyInfo> supplyInfos = goods.getSupplyItems();
+//        if (supplyInfos != null) {
+//            if (supplyInfos.size() == 1) {
+//                PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
+//                        .fromSupplyGoods(goods, supplyInfos.get(0), IsPrivate.PLATFORM);
+//                wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
+//                PurchaseHelper.getInstance()
+//                        .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
+////                changeQuantity(wrapper);
+//            } else {
+//                CompanyInfo companyInfo = searchParams.getCompanyInfo();
+//                if (companyInfo != null && companyInfo.getTenantId() != null) {
+//                    for (GoodsSupplyInfo supplyInfo : supplyInfos) {
+//                        if (companyInfo.getTenantId().equals(supplyInfo.getSupplyId())) {
+//
+//
+////                            changeQuantity(wrapper);
+//                            return;
+//                        }
+//                    }
+//                }
+////                querySupply(goods, supplyInfos);
+//            }
+//        }
 //        else {
 //            querySupply(goods, supplyInfos);
 //        }
@@ -714,7 +727,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
         optionsMap.clear();
         currentLevel = 0;
-        searchParams.setCategoryId("");
+        searchParams.setCategoryId(null);
         searchParams.setCategoryName("全部");
         refreshCategoryList();
     }
@@ -741,7 +754,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             btnCategoryBack.setVisibility(View.INVISIBLE);
 
 
-            searchParams.setCategoryId("");
+            searchParams.setCategoryId(null);
             searchParams.setCategoryName("全部");
 
             categoryListAdapter.setEntityList(rootOptions);
@@ -778,7 +791,8 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         //初始化
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        mPurchasePresenter.loadPurchaseGoods(mPageInfo, getCategoryId(), getOtherTenantId(),
+        mPurchasePresenter.loadPurchaseGoods(mPageInfo, searchParams.getCategoryId(),
+                getOtherTenantId(),
                 getBarcode(), getName(), getSortType(), getPriceType());
         mPageInfo.setPageNo(1);
     }
@@ -802,7 +816,8 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            mPurchasePresenter.loadPurchaseGoods(mPageInfo, getCategoryId(), getOtherTenantId(),
+            mPurchasePresenter.loadPurchaseGoods(mPageInfo, searchParams.getCategoryId(),
+                    getOtherTenantId(),
                     getBarcode(), getName(), getSortType(), getPriceType());
         } else {
             ZLogger.d("加载商品列表，已经是最后一页。");
@@ -817,10 +832,6 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         } else {
             return null;
         }
-    }
-
-    public String getCategoryId() {
-        return searchParams.getCategoryId();
     }
 
     public String getBarcode() {
