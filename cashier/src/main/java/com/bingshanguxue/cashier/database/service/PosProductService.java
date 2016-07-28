@@ -1,13 +1,12 @@
 package com.bingshanguxue.cashier.database.service;
 
 
+import com.bingshanguxue.cashier.database.dao.PosProductDao;
+import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.bingshanguxue.cashier.model.PosGoods;
-import com.bingshanguxue.cashier.database.dao.PosProductDao;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 
 import java.util.List;
 
@@ -61,47 +60,6 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 
     public void saveOrUpdate(PosProductEntity entity) {
         getDao().saveOrUpdate(entity);
-    }
-
-    /**
-     * 保存商品
-     */
-    public void saveOrUpdate(PosGoods posGoods) {
-        try {
-            if (posGoods == null || posGoods.getId() == null) {
-                ZLogger.d("保存POS商品库失败：商品参数无效。");
-                return;
-            }
-
-            Long id = posGoods.getId();
-            PosProductEntity entity = getEntityById(String.valueOf(id));
-            if (entity == null) {
-                entity = new PosProductEntity();
-                entity.setId(id);
-            }
-            //更新商品信息
-            entity.setCreatedDate(posGoods.getCreatedDate());
-            entity.setUpdatedDate(posGoods.getUpdatedDate());//使用商品的更新日期
-
-            entity.setProSkuId(posGoods.getProSkuId());
-            entity.setBarcode(posGoods.getBarcode());
-            entity.setProductId(posGoods.getProductId());
-            entity.setName(posGoods.getName());
-            entity.setUnit(posGoods.getUnit());
-            entity.setCostPrice(posGoods.getCostPrice());
-            entity.setQuantity(posGoods.getQuantity());
-            entity.setTenantId(posGoods.getTenantId());
-            entity.setProviderId(posGoods.getProviderId());
-            entity.setStatus(posGoods.getStatus());
-            entity.setPriceType(posGoods.getPriceType());
-            entity.setPackageNum(posGoods.getPackageNum());
-            entity.setProcateId(posGoods.getProcateId());
-            entity.setCateType(posGoods.getCateType());
-
-            getDao().saveOrUpdate(entity);
-        } catch (Exception e) {
-            ZLogger.ef(String.format("保存POS商品库失败：%s", e.toString()));
-        }
     }
 
     /**

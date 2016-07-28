@@ -15,14 +15,16 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     //SPU:Standard Product Unit
 //    private Long id;//最小商品库存单元编号
     private Long productId; //产品spu编号
-    private String name;    // 商品名称
+    private String name = "";    // 商品名称
+    private String namePinyin = "";//拼音
+    private String nameSortLetter = "";//排序字段
 
     //SKU:Stock Keeping Unit
     private Long proSkuId;  //产品sku编号
-    private String barcode; //最小商品库存单元的条形码
+    private String barcode = ""; //最小商品库存单元的条形码
     private Integer priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double costPrice    = 0D;  // 商品价格
-    private String unit;    // 单位，如箱、瓶
+    private String unit = "";    // 单位，如箱、瓶
     private Double packageNum = 0D;//箱规
 
     private Long tenantId;  // 租户信息，即微超公司id
@@ -36,12 +38,6 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     private Long procateId; //商品类目
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
-
-//    public static final int ORDER_STATUS_INIT       = 0;//初始
-//    public static final int ORDER_STATUS_HANGUP     = 1;//挂起
-//    public static final int ORDER_STATUS_STAY_PAY   = 2;//等待支付
-//    private Integer eslSyncStatus;//绿泰价签同步状态
-
 
     public Long getProSkuId() {
         return proSkuId;
@@ -73,6 +69,29 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNamePinyin() {
+        if (namePinyin == null){
+            return "";
+        }
+        return namePinyin;
+    }
+
+    public void setNamePinyin(String namePinyin) {
+        this.namePinyin = namePinyin;
+    }
+
+
+    public String getNameSortLetter() {
+        if (nameSortLetter == null){
+            return "";
+        }
+        return nameSortLetter;
+    }
+
+    public void setNameSortLetter(String nameSortLetter) {
+        this.nameSortLetter = nameSortLetter;
     }
 
     public String getUnit() {

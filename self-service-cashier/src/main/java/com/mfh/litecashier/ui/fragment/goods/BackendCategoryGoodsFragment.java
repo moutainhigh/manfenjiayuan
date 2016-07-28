@@ -12,15 +12,20 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.model.PosGoods;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.event.FrontCategoryGoodsEvent;
 
+import net.tsz.afinal.core.AsyncTask;
+
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -86,13 +91,34 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(FrontCategoryGoodsEvent event) {
-        ZLogger.d(String.format("FrontCategoryGoodsEvent(%d/%d)", event.getAffairId(), event.getCategoryId()));
-        if (event.getCategoryId().compareTo(categoryId) != 0) {
+    public void onEventMainThread(PosCategoryGoodsEvent event) {
+        ZLogger.d(String.format("PosCategoryGoodsEvent(%d/%s)",
+                event.getEventId(), StringUtils.decodeBundle(event.getArgs())));
+
+        Bundle args = event.getArgs();
+        Long categoryId = args.getLong("categoryId");
+
+        if (categoryId.compareTo(this.categoryId) != 0) {
             return;
         }
-        if (event.getAffairId() == FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
+        if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
             reload();
+        }
+        else if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_SORT_RESET) {
+            mRecyclerView.scrollToPosition(0);
+        }
+        else if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_SORT_UPDATE) {
+            String sortLetter = args.getString("sortLetter");
+            if (!StringUtils.isEmpty(sortLetter)){
+                // 该字母首次出现的位置
+                int position = adapter.getPositionForSelection(sortLetter.charAt(0));
+
+
+                if (position != -1) {
+                    mRecyclerView.scrollToPosition(position);
+                }
+            }
+
         }
     }
 
@@ -179,8 +205,10 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
 
         onLoadStart();
 
-        mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-
+        mPageInfo = new PageInfo(-1, 200);
+        if (adapter != null) {
+            adapter.setEntityList(null);
+        }
         //从第一页开始请求，每页最多50条记录
         load(mPageInfo);
         mPageInfo.setPageNo(1);
@@ -215,27 +243,67 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
     }
 
     private void load(PageInfo pageInfo) {
-         StringBuilder sbWhere = new StringBuilder();
-        if (categoryId != null){
-            sbWhere.append(String.format("procateId = '%d'", categoryId));
+        new QueryAsyncTask(pageInfo)
+                .execute();
+
+//         StringBuilder sbWhere = new StringBuilder();
+//        if (categoryId != null){
+//            sbWhere.append(String.format("procateId = '%d'", categoryId));
+//        }
+//
+//        List<PosProductEntity> entityList  = PosProductService.get()
+//                .queryAllBy(sbWhere.toString(), "updatedDate desc", pageInfo);
+//
+//        if (entityList == null || entityList.size() < 1) {
+//            ZLogger.d("没有找到商品。");
+//
+//            onLoadFinished();
+//            return;
+//        }
+//        ZLogger.d(String.format("共找到%d条商品(%d/%d-%d)", entityList.size(),
+//                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
+//
+//        if (adapter != null) {
+//            adapter.appendEntityList(entityList);
+//        }
+//        onLoadFinished();
+    }
+
+    private class QueryAsyncTask extends AsyncTask<RspQueryResult<PosGoods>, Integer, List<PosProductEntity>> {
+        private PageInfo pageInfo;
+        private String sqlWhere = "";//查询条件
+
+        public QueryAsyncTask(PageInfo pageInfo) {
+            this.pageInfo = pageInfo;
+            if (categoryId != null){
+                sqlWhere = String.format("procateId = '%d'", categoryId);
+            }
         }
 
-        List<PosProductEntity> entityList  = PosProductService.get()
-                .queryAllBy(sbWhere.toString(), "updatedDate desc", pageInfo);
+        @Override
+        protected List<PosProductEntity> doInBackground(RspQueryResult<PosGoods>... params) {
+            List<PosProductEntity> entityList  = PosProductService.get()
+                    .queryAllBy(sqlWhere, "updatedDate desc", pageInfo);
 
-        if (entityList == null || entityList.size() < 1) {
-            ZLogger.d("没有找到商品。");
+            mPageInfo = pageInfo;
 
+            if (entityList != null && entityList.size() > 0){
+                Collections.sort(entityList, new PinyinComparator());
+            }
+            return entityList;
+//        return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<PosProductEntity> posProductEntities) {
+            super.onPostExecute(posProductEntities);
+
+            if (adapter != null) {
+                adapter.appendEntityList(posProductEntities);
+            }
             onLoadFinished();
-            return;
         }
-        ZLogger.d(String.format("共找到%d条商品(%d/%d-%d)", entityList.size(),
-                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
-        if (adapter != null) {
-            adapter.appendEntityList(entityList);
-        }
-        onLoadFinished();
     }
 
     /**
@@ -294,7 +362,6 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(false);
             mSwipeRefreshLayout.setEnabled(true);
-
 
             mState = STATE_NONE;
         }

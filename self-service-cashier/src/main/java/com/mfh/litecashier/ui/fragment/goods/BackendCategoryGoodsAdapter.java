@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -60,11 +62,30 @@ public class BackendCategoryGoodsAdapter
 
     @Override
     public void setEntityList(List<PosProductEntity> entityList) {
-        super.setEntityList(entityList);
+//        super.setEntityList(entityList);
 
+        this.entityList = entityList;
+//        sortByPinyin();
+        notifyDataSetChanged();
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
         }
+    }
+
+    @Override
+    public void appendEntityList(List<PosProductEntity> entityList) {
+//        super.appendEntityList(entityList);
+        if (entityList == null){
+            return;
+        }
+
+        if (this.entityList == null){
+            this.entityList = new ArrayList<>();
+        }
+
+        this.entityList.addAll(entityList);
+//        sortByPinyin();
+        notifyDataSetChanged();
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
@@ -113,6 +134,20 @@ public class BackendCategoryGoodsAdapter
             });
 
         }
+    }
+
+    public int getPositionForSelection(int selection) {
+        for (int i = 0; i < entityList.size(); i++){
+            String sortLetter = entityList.get(i).getNameSortLetter();
+            ZLogger.d("sortLetter=" + sortLetter);
+            char letter = sortLetter.toUpperCase().charAt(0);
+            if (letter == selection){
+                return i;
+            }
+        }
+
+        return -1;
+
     }
 
 }
