@@ -6,6 +6,6 @@
         android:id="@+id/action_close"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@drawable/btn_toolbar_close"
+        android:icon="@drawable/ic_toolbar_close"
         android:title="退出"/>
 </menu>

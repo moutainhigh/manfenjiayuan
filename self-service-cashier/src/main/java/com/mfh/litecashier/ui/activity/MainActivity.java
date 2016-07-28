@@ -268,7 +268,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         OpenComPort(comScale);
 
 //        cloudSpeak("欢迎使用米西厨房智能收银系统");
-        ZLogger.d("小版本标记：2016-07-27-001");
+        ZLogger.d("小版本标记：2016-07-28-001");
     }
 
     @Override

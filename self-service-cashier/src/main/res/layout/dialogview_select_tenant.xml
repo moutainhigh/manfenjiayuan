@@ -10,7 +10,6 @@
     <include layout="@layout/contentview_dialog_header"
         android:id="@+id/frame_top"/>
 
-
     <!--批发商速记码-->
     <com.mfh.litecashier.ui.widget.InputSearchView
         android:id="@+id/inlv_shortCode"

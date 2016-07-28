@@ -24,4 +24,5 @@ dependencies {
     compile rootProject.ext.dependencies["appcompat-v7"]
     compile project(':mfh-framework-android')
     compile project(path: ':vector_user')
+    compile project(':mfh-framework-business')
 }

@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -67,29 +66,29 @@ public class CanaryActivity extends BaseActivity {
 
         toolbar.setTitle("Canary");
         setSupportActionBar(toolbar);
-//        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-//        toolbar.setNavigationOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        AdministratorActivity.this.onBackPressed();
-//                    }
-//                });
+        toolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CanaryActivity.this.onBackPressed();
+                    }
+                });
         // Set an OnMenuItemClickListener to handle menu item clicks
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_close) {
-                    CanaryActivity.this.onBackPressed();
-                }
-                return true;
-            }
-        });
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                // Handle the menu item
+//                int id = item.getItemId();
+//                if (id == R.id.action_close) {
+//                    CanaryActivity.this.onBackPressed();
+//                }
+//                return true;
+//            }
+//        });
 
         // Inflate a menu to be displayed in the toolbar
-        toolbar.inflateMenu(R.menu.menu_administrator);
+        toolbar.inflateMenu(R.menu.menu_empty);
     }
 
     @Override
@@ -117,7 +116,7 @@ public class CanaryActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_administrator, menu);
+        getMenuInflater().inflate(R.menu.menu_empty, menu);
 
         return super.onCreateOptionsMenu(menu);
     }

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
+                android:background="@color/mfh_toolbar_background"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -30,6 +30,6 @@
         android:layout_marginStart="16dp"
         android:background="@null"
         android:contentDescription="@null"
-        android:src="@drawable/btn_toolbar_close"/>
+        android:src="@drawable/ic_toolbar_close"/>
 
 </RelativeLayout>

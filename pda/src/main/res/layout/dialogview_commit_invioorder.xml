@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
     <include
         android:id="@+id/titleView"
         layout="@layout/contentview_dialog_header"
-             android:layout_width="match_parent"
-             android:layout_height="?attr/actionBarSize"
-             android:layout_alignParentTop="true" />
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"/>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                     android:singleLine="true"
                     android:text="车牌号"
                     android:textColor="@color/material_black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/et_vehicle"
@@ -45,7 +45,7 @@
                     android:layout_height="44dp"
                     android:layout_marginStart="16dp"
                     android:hint=""
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"/>
             </LinearLayout>
 
             <LinearLayout
@@ -59,7 +59,7 @@
                     android:singleLine="true"
                     android:text="司机手机号"
                     android:textColor="@color/material_black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/et_phonenumber"
@@ -68,7 +68,7 @@
                     android:layout_height="44dp"
                     android:layout_marginStart="16dp"
                     android:hint=""
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"/>
             </LinearLayout>
 
         </LinearLayout>

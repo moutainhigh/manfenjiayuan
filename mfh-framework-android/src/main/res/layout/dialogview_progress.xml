@@ -25,10 +25,18 @@
         android:layout_width="184dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:ellipsize="marquee"
         android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         android:text=""
         android:textColor="@color/material_white"
-        android:textSize="18sp"/>
+        android:textSize="18sp">
+
+        <requestFocus
+            android:duplicateParentState="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+    </TextView>
 
 </LinearLayout>
