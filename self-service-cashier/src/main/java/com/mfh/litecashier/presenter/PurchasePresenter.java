@@ -24,7 +24,7 @@ public class PurchasePresenter {
     /**
      * 加载采购商品
      * */
-    public void loadPurchaseGoods(PageInfo pageInfo, String categoryId, Long otherTenantId,
+    public void loadPurchaseGoods(PageInfo pageInfo, Long categoryId, Long otherTenantId,
                                   String barcode, String nameLike, int sortType, String priceType){
         mPurchaseMode.loadPurchaseGoods(pageInfo, categoryId, otherTenantId, barcode,
                 nameLike, sortType, priceType, new OnPageModeListener<ScGoodsSku>() {

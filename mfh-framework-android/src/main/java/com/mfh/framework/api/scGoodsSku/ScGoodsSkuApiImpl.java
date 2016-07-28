@@ -112,13 +112,13 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
      * </ul>
      * @param joinFlag false,只查网点商品
      */
-    public static void listScGoodsSku(PageInfo pageInfo, String categoryId, String barcode, String name,
+    public static void listScGoodsSku(PageInfo pageInfo, Long categoryId, String barcode, String name,
                                       String orderby, boolean orderbyDesc, boolean joinFlag,
                                       String priceType, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         //类目
-        if (!StringUtils.isEmpty(categoryId)) {
-            params.put("categoryId", categoryId);
+        if (categoryId != null) {
+            params.put("categoryId", String.valueOf(categoryId));
         }
 //        价格类型0-计件 1-计重
         params.put("priceType", priceType);

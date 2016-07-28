@@ -549,7 +549,7 @@ public class InventoryCostFragment extends BaseProgressFragment
 
         optionsMap.clear();
         currentLevel = 0;
-        searchParams.setCategoryId("");
+        searchParams.setCategoryId(null);
         searchParams.setCategoryName("全部");
         refreshCategoryList();
     }
@@ -577,7 +577,7 @@ public class InventoryCostFragment extends BaseProgressFragment
             btnCategoryBack.setVisibility(View.INVISIBLE);
 
 
-            searchParams.setCategoryId("");
+            searchParams.setCategoryId(null);
             searchParams.setCategoryName("全部");
 
             categoryListAdapter.setEntityList(rootOptions);
@@ -629,7 +629,8 @@ public class InventoryCostFragment extends BaseProgressFragment
         //初始化
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        inventoryGoodsPresenter.loadInventoryGoods(mPageInfo, getCategoryId(), getBarcode(),
+        inventoryGoodsPresenter.loadInventoryGoods(mPageInfo,
+                searchParams.getCategoryId(), getBarcode(),
                 getName(), getSortType(), getPriceType());
         mPageInfo.setPageNo(1);
     }
@@ -652,16 +653,13 @@ public class InventoryCostFragment extends BaseProgressFragment
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            inventoryGoodsPresenter.loadInventoryGoods(mPageInfo, getCategoryId(), getBarcode(),
+            inventoryGoodsPresenter.loadInventoryGoods(mPageInfo,
+                    searchParams.getCategoryId(), getBarcode(),
                     getName(), getSortType(), getPriceType());
         } else {
             ZLogger.d("加载库存商品，已经是最后一页。");
             onLoadFinished();
         }
-    }
-
-    public String getCategoryId() {
-        return searchParams.getCategoryId();
     }
 
     public String getBarcode() {

@@ -91,9 +91,9 @@ public class CateApiImpl extends CateApi{
      * 返回一级公共子目录
      * /scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
      * */
-    public static void listPublicCategory(String parentId, AjaxCallBack<? extends Object> responseCallback) {
+    public static void listPublicCategory(Long parentId, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        params.put("parentId", parentId);
+        params.put("parentId", String.valueOf(parentId));
 //        params.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
 //        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
 //        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));

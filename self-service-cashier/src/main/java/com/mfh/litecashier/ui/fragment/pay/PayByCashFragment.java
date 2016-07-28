@@ -174,6 +174,7 @@ public class PayByCashFragment extends BasePayFragment {
 
         if (rechargeAmount.compareTo(MAX_RECHARGE_AMOUNT) >= 0) {
             //找零超过100元，提示是否支付
+            ZLogger.df("收取金额过大，请确认是否支付");
             showConfirmDialog(String.format("找零: %.2f, 确认支付吗？", rechargeAmount),
                     getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
 
@@ -188,7 +189,7 @@ public class PayByCashFragment extends BasePayFragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            ZLogger.df("收取金额过大，取消现金支付");
+                            ZLogger.df("取消现金支付");
                         }
                     });
         } else {

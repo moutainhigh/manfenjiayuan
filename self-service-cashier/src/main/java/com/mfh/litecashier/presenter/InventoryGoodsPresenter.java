@@ -25,10 +25,10 @@ public class InventoryGoodsPresenter {
     /**
      * 加载库存商品
      */
-    public void loadInventoryGoods(PageInfo pageInfo, String categoryId, String barcode, String name,
+    public void loadInventoryGoods(PageInfo pageInfo, Long categoryId, String barcode, String name,
                            int sortType, String priceType) {
 
-        iInventoryGoodsMode.loadInventoryGoods(pageInfo, categoryId, barcode, name,
+        iInventoryGoodsMode.listScGoodsSku(pageInfo, categoryId, barcode, name,
                 sortType, priceType, new OnPageModeListener<ScGoodsSku>() {
                     @Override
                     public void onProcess() {

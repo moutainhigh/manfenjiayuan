@@ -294,8 +294,8 @@ implements IInventoryView {
             return;
         }
 
-        inventoryGoodsPresenter.loadInventoryGoods(new PageInfo(-1, 10), getCategoryId(), barcode,
-                getName(), getSortType(), getPriceType());
+        inventoryGoodsPresenter.loadInventoryGoods(new PageInfo(-1, 10), null, barcode,
+                null, getSortType(), null);
     }
 
     @OnClick(R.id.button_submit)
@@ -411,19 +411,7 @@ implements IInventoryView {
         return null;
     }
 
-    public String getCategoryId() {
-        return null;
-    }
-
     public String getBarcode() {
-        return null;
-    }
-
-    public String getName() {
-        return null;
-    }
-
-    public String getPriceType() {
         return null;
     }
 

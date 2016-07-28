@@ -65,8 +65,7 @@ public class BackendCategoryFragment extends BaseFragment {
             @Override
             public void onChanged(int page) {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(page);
-                
-//                mCategoryGoodsTabStrip.getchil
+
                 Long categoryId = viewPageInfo.args.getLong("categoryId");
                 EventBus.getDefault().post(new FrontCategoryGoodsEvent(FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
             }

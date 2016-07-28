@@ -30,7 +30,7 @@ public class PurchaseMode {
     /**
      * 加载采购商品
      */
-    public void loadPurchaseGoods(PageInfo pageInfo, String categoryId, Long otherTenantId,
+    public void loadPurchaseGoods(PageInfo pageInfo, Long categoryId, Long otherTenantId,
                                   String barcode, String nameLike, int sortType, String priceType,
                                   final OnPageModeListener<ScGoodsSku> listener) {
         if (listener != null) {
@@ -39,8 +39,8 @@ public class PurchaseMode {
         AjaxParams params = new AjaxParams();
 
         //类目
-        if (!StringUtils.isEmpty(categoryId)) {
-            params.put("categoryId", categoryId);
+        if (categoryId != null) {
+            params.put("categoryId", String.valueOf(categoryId));
         }
         //批发商
         if (otherTenantId != null) {

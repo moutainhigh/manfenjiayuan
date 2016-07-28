@@ -32,11 +32,12 @@ public class InventoryGoodsMode {
 
     /**
      * 获取库存商品
+     *
      * @param categoryId 类目编号
-     * */
-    public void loadInventoryGoods(PageInfo pageInfo, String categoryId, String barcode, String name,
-                     int sortType, String priceType, final OnPageModeListener<ScGoodsSku> listener) {
-        if (listener != null){
+     */
+    public void listScGoodsSku(PageInfo pageInfo, Long categoryId, String barcode, String name,
+                                   int sortType, String priceType, final OnPageModeListener<ScGoodsSku> listener) {
+        if (listener != null) {
             listener.onProcess();
         }
 
@@ -45,12 +46,12 @@ public class InventoryGoodsMode {
             public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
                 //此处在主线程中执行。
                 List<ScGoodsSku> entityList = new ArrayList<>();
-                if (rs != null){
+                if (rs != null) {
                     for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
                         entityList.add(wrapper.getBean());
                     }
                 }
-                if (listener != null){
+                if (listener != null) {
                     listener.onSuccess(pageInfo, entityList);
                 }
             }
@@ -59,11 +60,12 @@ public class InventoryGoodsMode {
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
                 ZLogger.df("加载库存商品失败:" + errMsg);
-                if (listener != null){
+                if (listener != null) {
                     listener.onError(errMsg);
                 }
             }
         }, ScGoodsSku.class, CashierApp.getAppContext());
+
         String orderby = null;
         boolean orderbydesc = false;
         if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_DESC) {
@@ -72,12 +74,10 @@ public class InventoryGoodsMode {
         } else if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_ASC) {
             orderby = "gku.quantity";
             orderbydesc = false;
-        }
-        else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_DESC){
+        } else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_DESC) {
             orderby = "gku.sell_month_num";
             orderbydesc = true;
-        }
-        else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_ASC){
+        } else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_ASC) {
             orderby = "gku.sell_month_num";
             orderbydesc = false;
         }
@@ -88,9 +88,9 @@ public class InventoryGoodsMode {
 
     /**
      * 根据条码查找租户是否已经发布过该商品，若存在返回信息
-     * */
+     */
     public void checkWithBuyInfoByBarcode(String barcode, final OnModeListener<ScGoodsSku> listener) {
-        if (listener != null){
+        if (listener != null) {
             listener.onProcess();
         }
         AjaxParams params = new AjaxParams();
@@ -105,7 +105,7 @@ public class InventoryGoodsMode {
                         super.processFailure(t, errMsg);
                         //查询失败
                         ZLogger.df("查询商品失败:" + errMsg);
-                        if (listener != null){
+                        if (listener != null) {
                             listener.onError(errMsg);
                         }
                     }
@@ -120,7 +120,7 @@ public class InventoryGoodsMode {
                             goods = retValue.getValue();
                         }
 
-                        if (listener != null){
+                        if (listener != null) {
                             listener.onSuccess(goods);
                         }
                     }

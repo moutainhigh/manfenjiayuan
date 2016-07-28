@@ -5,24 +5,23 @@ import java.util.List;
 /**
  * 类目查询
  * Created by Nat.ZZN(bingshanguxue) on 2015/8/18.
- *
  */
-public class CategoryOption implements java.io.Serializable{
+public class CategoryOption implements java.io.Serializable {
     private String access;
-    private String code;
+    private Long code;
     private boolean hasChild;
     private String levelName;
     private String value;//名称
     private List<CategoryOption> items;
 
-    public CategoryOption(){
+    public CategoryOption() {
     }
 
     public String getAccess() {
         return access;
     }
 
-    public String getCode() {
+    public Long getCode() {
         return code;
     }
 
@@ -42,7 +41,7 @@ public class CategoryOption implements java.io.Serializable{
         this.access = access;
     }
 
-    public void setCode(String code) {
+    public void setCode(Long code) {
         this.code = code;
     }
 

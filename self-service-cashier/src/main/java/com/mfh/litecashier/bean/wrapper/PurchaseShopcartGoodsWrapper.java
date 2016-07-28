@@ -231,7 +231,7 @@ public class PurchaseShopcartGoodsWrapper implements Serializable {
     }
 
     /**
-     * 采购批发商商品
+     * 批发商商品
      */
     public static PurchaseShopcartGoodsWrapper fromSupplyGoods(ScGoodsSku goods,
                                                                GoodsSupplyInfo supplyInfo, int isPrivate) {
@@ -266,7 +266,7 @@ public class PurchaseShopcartGoodsWrapper implements Serializable {
     }
 
     /**
-     * 智能订货
+     * 智能订货明细
      */
     public static PurchaseShopcartGoodsWrapper fromIntelligentOrderItem(InvSendOrderItem goods,
                                                                     CompanyInfo companyInfo, int isPrivate) {
