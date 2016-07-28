@@ -1,4 +1,6 @@
-package com.mfh.litecashier.utils;
+package com.mfh.litecashier.ui.fragment.purchase.intelligent;
+
+import com.mfh.litecashier.utils.ShopcartHelper;
 
 /**
  * Created by bingshanguxue on 5/5/16.

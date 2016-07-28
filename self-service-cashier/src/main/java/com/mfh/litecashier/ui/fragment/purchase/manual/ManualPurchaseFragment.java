@@ -23,10 +23,11 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.CategoryOption;
-import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -34,6 +35,7 @@ import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.compound.OptionalLabel;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -53,6 +55,8 @@ import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
+import com.mfh.litecashier.ui.fragment.purchase.intelligent.IIntelligentPurchaseView;
+import com.mfh.litecashier.ui.fragment.purchase.intelligent.IntelligentPurchasePresenter;
 import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -71,7 +75,7 @@ import de.greenrobot.event.EventBus;
  * Created by bingshanguxue on 17/07/20.
  */
 public class ManualPurchaseFragment extends BaseProgressFragment
-        implements IPurchaseView {
+        implements IPurchaseView, IIntelligentPurchaseView {
 
     @Bind(R.id.inlv_barcode)
     InputSearchView inlvBarcode;
@@ -121,6 +125,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 
     private PurchasePresenter mPurchasePresenter;
+    private IntelligentPurchasePresenter mIntelligentPurchasePresenter;
 
     public static ManualPurchaseFragment newInstance(Bundle args) {
         ManualPurchaseFragment fragment = new ManualPurchaseFragment();
@@ -143,6 +148,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         EventBus.getDefault().register(this);
 
         mPurchasePresenter = new PurchasePresenter(this);
+        mIntelligentPurchasePresenter = new IntelligentPurchasePresenter(this);
     }
 
     @Override
@@ -904,5 +910,49 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         ZLogger.d(String.format("保存采购商品,pageInfo':page=%d,rows=%d(%d/%d)",
                 mPageInfo.getPageNo(), mPageInfo.getPageSize(),
                 goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
+    }
+
+    /**
+     * 智能订货
+     * */
+    @OnClick(R.id.fab_intelligent)
+    public void intelligentPurchase(){
+        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+        if (companyInfo != null) {
+            mIntelligentPurchasePresenter.loadGoodsList(companyInfo.getId());
+        } else {
+            selectPlatformProvider();
+        }
+
+    }
+
+    @Override
+    public void onIntelligentPurchaseProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在为您智能订货...", false);
+    }
+
+    @Override
+    public void onIntelligentPurchaseError(String errorMsg) {
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+    }
+
+    @Override
+    public void onIntelligentPurchaseSuccess(List<InvSendOrderItem> dataList) {
+        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+        if (dataList != null && dataList.size() > 0 && companyInfo != null) {
+            for (InvSendOrderItem invSendOrderItem : dataList) {
+                PurchaseShopcartGoodsWrapper goodsWrapper = PurchaseShopcartGoodsWrapper
+                        .fromIntelligentOrderItem(invSendOrderItem, companyInfo,
+                                IsPrivate.PLATFORM);
+                PurchaseHelper.getInstance()
+                        .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, goodsWrapper);
+
+                refreshFabShopcart();
+
+                goodsListAdapter.notifyDataSetChanged();
+            }
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
     }
 }

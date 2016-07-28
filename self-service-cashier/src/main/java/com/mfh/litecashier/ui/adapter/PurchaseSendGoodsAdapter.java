@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.utils.MUtils;
 
 import java.util.List;

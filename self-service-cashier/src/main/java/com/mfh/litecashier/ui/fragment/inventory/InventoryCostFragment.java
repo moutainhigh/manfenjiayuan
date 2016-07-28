@@ -31,7 +31,7 @@ import com.manfenjiayuan.business.bean.CategoryOption;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -779,7 +779,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                         , String.class
                         , CashierApp.getAppContext()) {
                 };
-                StockApiImpl.updateStockGoods(jsonObject.toJSONString(), responseCallback);
+                InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), responseCallback);
             }
         });
         if (!changeDialog.isShowing()) {
@@ -844,7 +844,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                         , String.class
                         , CashierApp.getAppContext()) {
                 };
-                StockApiImpl.updateStockGoods(jsonObject.toJSONString(), responseCallback);
+                InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), responseCallback);
             }
         });
         if (!changeDialog.isShowing()) {

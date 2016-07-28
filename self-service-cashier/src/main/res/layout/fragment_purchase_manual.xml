@@ -185,7 +185,19 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
+    <!--智能订货-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_intelligent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/fab_shopcart"
+        android:layout_marginBottom="@dimen/spacing_micro"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:src="@mipmap/ic_fab_intelligent" />
 
+
+    <!--购物车-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_shopcart"
         android:layout_width="wrap_content"
@@ -193,7 +205,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:src="@mipmap/ic_fab_shopcart_white" />
 
 </RelativeLayout>

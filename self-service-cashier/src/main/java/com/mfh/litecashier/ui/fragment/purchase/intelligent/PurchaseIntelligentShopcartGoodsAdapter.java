@@ -14,7 +14,6 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
-import com.mfh.litecashier.utils.IntelligentShopcartHelper;
 
 import java.util.List;
 

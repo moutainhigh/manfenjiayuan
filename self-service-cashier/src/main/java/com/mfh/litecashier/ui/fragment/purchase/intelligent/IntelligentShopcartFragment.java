@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -15,21 +16,18 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.companyInfo.CompanyInfo;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
-import com.manfenjiayuan.business.bean.InvSendOrderItemBrief;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.impl.InvSendOrderApiImpl;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -41,9 +39,7 @@ import com.mfh.litecashier.bean.wrapper.PurchaseShopcartOrder;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.ui.adapter.PurchaseShopcartOrderAdapter;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
-import com.mfh.litecashier.utils.IntelligentShopcartHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -54,7 +50,7 @@ import de.greenrobot.event.EventBus;
  * 智能订货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class IntelligentShopcartFragment extends BaseFragment {
+public class IntelligentShopcartFragment extends BaseFragment implements IIntelligentPurchaseView{
 
     @Bind(R.id.tv_order_quantity)
     TextView tvOrderQuantity;
@@ -78,6 +74,8 @@ public class IntelligentShopcartFragment extends BaseFragment {
     private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
     private CompanyInfo mCompanyInfo = null;
 
+    private  IntelligentPurchasePresenter mIntelligentPurchasePresenter;
+
     public static IntelligentShopcartFragment newInstance(Bundle args) {
         IntelligentShopcartFragment fragment = new IntelligentShopcartFragment();
 
@@ -90,6 +88,13 @@ public class IntelligentShopcartFragment extends BaseFragment {
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_purchase_fresh_shopcart;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mIntelligentPurchasePresenter = new IntelligentPurchasePresenter(this);
     }
 
     @Override
@@ -167,50 +172,8 @@ public class IntelligentShopcartFragment extends BaseFragment {
             return;
         }
 
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在为您智能订货...", false);
-        StockApiImpl.autoAskSendOrder(mCompanyInfo.getId(), intelligentRespCallback);
+        mIntelligentPurchasePresenter.loadGoodsList(mCompanyInfo.getId());
     }
-
-    NetCallBack.NetTaskCallBack intelligentRespCallback = new NetCallBack.NetTaskCallBack<InvSendOrderItemBrief,
-            NetProcessor.Processor<InvSendOrderItemBrief>>(
-            new NetProcessor.Processor<InvSendOrderItemBrief>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-
-                    hideProgressDialog();
-                    List<InvSendOrderItem> orderItems = new ArrayList<>();
-
-                    if (rspData != null) {
-                        //com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-                        RspBean<InvSendOrderItemBrief> retValue = (RspBean<InvSendOrderItemBrief>) rspData;
-                        InvSendOrderItemBrief orderDetail = retValue.getValue();
-                        orderItems = orderDetail.getItems();
-                    }
-
-                    if (orderItems != null && orderItems.size() > 0) {
-                        for (InvSendOrderItem invSendOrderItem : orderItems) {
-                            PurchaseShopcartGoodsWrapper shopcartGoodsWrapper = PurchaseShopcartGoodsWrapper
-                                    .fromIntelligentOrderItem(invSendOrderItem, mCompanyInfo,
-                                            IsPrivate.PLATFORM);
-                            IntelligentShopcartHelper.getInstance().addToShopcart(shopcartGoodsWrapper);
-                        }
-                    }
-
-                    refresh();
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.d("智能订货失败：" + errMsg);
-
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                }
-            }
-            , InvSendOrderItemBrief.class
-            , CashierApp.getAppContext()) {
-    };
-
 
     @OnClick(R.id.button_submit)
     public void sendOrder() {
@@ -468,4 +431,31 @@ public class IntelligentShopcartFragment extends BaseFragment {
 //                SerialDisplayHelper.show(2, productAdapter.getProductAmount());
     }
 
+    @Override
+    public void onIntelligentPurchaseProcess() {
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在为您智能订货...", false);
+    }
+
+    @Override
+    public void onIntelligentPurchaseError(String errorMsg) {
+
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+    }
+
+    @Override
+    public void onIntelligentPurchaseSuccess(List<InvSendOrderItem> dataList) {
+        hideProgressDialog();
+
+        if (dataList != null && dataList.size() > 0) {
+            for (InvSendOrderItem invSendOrderItem : dataList) {
+                PurchaseShopcartGoodsWrapper shopcartGoodsWrapper = PurchaseShopcartGoodsWrapper
+                        .fromIntelligentOrderItem(invSendOrderItem, mCompanyInfo,
+                                IsPrivate.PLATFORM);
+                IntelligentShopcartHelper.getInstance().addToShopcart(shopcartGoodsWrapper);
+            }
+        }
+
+        refresh();
+    }
 }

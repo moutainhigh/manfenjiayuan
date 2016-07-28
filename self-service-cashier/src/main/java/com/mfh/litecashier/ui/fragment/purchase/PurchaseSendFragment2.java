@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.InvOrderApi;

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;

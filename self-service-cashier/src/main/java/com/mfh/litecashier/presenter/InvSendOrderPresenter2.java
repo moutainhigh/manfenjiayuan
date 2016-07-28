@@ -3,7 +3,7 @@ package com.mfh.litecashier.presenter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpBasePresenter;
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.manfenjiayuan.business.mode.InvSendOrderItemMode;
 import com.manfenjiayuan.business.mode.InvSendOrderMode;

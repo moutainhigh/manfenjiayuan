@@ -388,6 +388,9 @@ public class AdministratorActivity extends BaseActivity {
     }
 
 
+    /**
+     * 获取菜单
+     * */
     public synchronized List<CashierFunctional> getAdminMenus() {
         List<CashierFunctional> functionalList = new ArrayList<>();
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRESH,
@@ -398,8 +401,8 @@ public class AdministratorActivity extends BaseActivity {
 //                "普货", R.mipmap.ic_admin_menu_standard_goods));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL,
                 "手动订货", R.mipmap.ic_admin_purchase_manual));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT,
-                "智能订货", R.mipmap.ic_admin_menu_intellegent_purchase));
+//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT,
+//                "智能订货", R.mipmap.ic_admin_menu_intellegent_purchase));
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRECVORDER,
 //                "收货", R.mipmap.ic_admin_menu_invrecvorder));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVENTORY,
