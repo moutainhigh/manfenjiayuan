@@ -2,6 +2,11 @@ package com.mfh.litecashier.service;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.model.PosGoods;
+import com.manfenjiayuan.business.bean.CategoryInfo;
+import com.manfenjiayuan.business.bean.CategoryOption;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
@@ -15,26 +20,23 @@ import com.mfh.framework.api.impl.CateApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetFactory;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
-import com.manfenjiayuan.business.bean.CategoryInfo;
-import com.manfenjiayuan.business.bean.CategoryOption;
 import com.mfh.litecashier.bean.CompanyHuman;
 import com.mfh.litecashier.bean.PosCategory;
-import com.bingshanguxue.cashier.model.PosGoods;
 import com.mfh.litecashier.bean.ProductSkuBarcode;
 import com.mfh.litecashier.database.dao.PosProductNetDao;
 import com.mfh.litecashier.database.dao.PosProductSkuNetDao;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.litecashier.database.logic.CompanyHumanService;
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.utils.ACacheHelper;
+import com.mfh.litecashier.utils.PinyinUtils;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import net.tsz.afinal.core.AsyncTask;
@@ -320,11 +322,54 @@ public class DataSyncManager {
                 //使用事务
                 for (EntityWrapper<PosGoods> wrapper : rs.getRowDatas()) {
                     //保存商品到数据库
-                    PosGoods product = wrapper.getBean();
-                    PosProductService.get().saveOrUpdate(product);
+                    PosGoods posGoods = wrapper.getBean();
+                    if (posGoods == null || posGoods.getId() == null) {
+                        ZLogger.d("保存POS商品库失败：商品参数无效。");
+                        return;
+                    }
+
+                    Long id = posGoods.getId();
+                    PosProductEntity entity = PosProductService.get().getEntityById(String.valueOf(id));
+                    if (entity == null) {
+                        entity = new PosProductEntity();
+                        entity.setId(id);
+                    }
+                    //更新商品信息
+                    entity.setCreatedDate(posGoods.getCreatedDate());
+                    entity.setUpdatedDate(posGoods.getUpdatedDate());//使用商品的更新日期
+
+                    entity.setProSkuId(posGoods.getProSkuId());
+                    entity.setBarcode(posGoods.getBarcode());
+                    entity.setProductId(posGoods.getProductId());
+                    entity.setName(posGoods.getName());
+                    entity.setUnit(posGoods.getUnit());
+                    entity.setCostPrice(posGoods.getCostPrice());
+                    entity.setQuantity(posGoods.getQuantity());
+                    entity.setTenantId(posGoods.getTenantId());
+                    entity.setProviderId(posGoods.getProviderId());
+                    entity.setStatus(posGoods.getStatus());
+                    entity.setPriceType(posGoods.getPriceType());
+                    entity.setPackageNum(posGoods.getPackageNum());
+                    entity.setProcateId(posGoods.getProcateId());
+                    entity.setCateType(posGoods.getCateType());
+
+                    //设置商品名称的拼音和排序字母
+                    String namePinyin = PinyinUtils.getPingYin(posGoods.getName());
+                    entity.setNamePinyin(namePinyin);
+                    String sortLetter = null;
+                    if (!StringUtils.isEmpty(namePinyin)){
+                        sortLetter = namePinyin.substring(0, 1);
+                    }
+                    if (sortLetter != null && sortLetter.matches("[A-Z]")) {
+                        entity.setNameSortLetter(sortLetter);
+                    } else {
+                        entity.setNameSortLetter("#");
+                    }
+
+                    PosProductService.get().saveOrUpdate(entity);
 
                     //更新游标
-                    SharedPreferencesHelper.setSyncProductsCursor(product.getUpdatedDate());
+                    SharedPreferencesHelper.setSyncProductsCursor(entity.getUpdatedDate());
                     //设置增量更新
                     SharedPreferencesHelper.setSyncProductsMode(1);
                 }

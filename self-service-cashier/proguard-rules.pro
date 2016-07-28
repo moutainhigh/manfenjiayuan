@@ -154,6 +154,9 @@ public static final int *;
 }
 #eventbus end
 
+#iflytek start
+-keep class com.iflytek.**{*;}
+#iflytek end
 
 ##umeng start
 #-keepclassmembers class * {

@@ -136,7 +136,7 @@
         android:layout_width="@dimen/home_rightslide_width"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:background="#35363B"
+        android:background="@color/mfh_black"
         app:allowWidthFull="true"
         app:slidingBlock="@null" />
 

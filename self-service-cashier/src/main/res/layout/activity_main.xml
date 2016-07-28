@@ -16,13 +16,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#35363b"/>
+            android:background="@color/mfh_black"/>
 
         <com.bingshanguxue.vector_uikit.SyncButton
             android:id="@+id/button_sync"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#35363b"/>
+            android:background="@color/mfh_black"/>
 
     </LinearLayout>
 

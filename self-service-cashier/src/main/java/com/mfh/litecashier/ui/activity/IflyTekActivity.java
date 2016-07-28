@@ -118,7 +118,7 @@ public abstract class IflyTekActivity extends SerialPortActivity {
 // 仅支持保存为 pcm 格式,如果不需要保存合成音频,注释该行代码
             mTts.setParameter(SpeechConstant.TTS_AUDIO_PATH, "./sdcard/iflytek.pcm");
 //3.开始合成
-            mTts.startSpeaking("科大讯飞,让世界聆听我们的声音", mTtsListener);
+//            mTts.startSpeaking("科大讯飞,让世界聆听我们的声音", mTtsListener);
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
@@ -149,17 +149,17 @@ public abstract class IflyTekActivity extends SerialPortActivity {
 
         @Override
         public void onSpeakBegin() {
-            DialogUtil.showHint("开始播放");
+//            DialogUtil.showHint("开始播放");
         }
 
         @Override
         public void onSpeakPaused() {
-            DialogUtil.showHint("暂停播放");
+//            DialogUtil.showHint("暂停播放");
         }
 
         @Override
         public void onSpeakResumed() {
-            DialogUtil.showHint("继续播放");
+//            DialogUtil.showHint("继续播放");
         }
 
         @Override
@@ -167,22 +167,22 @@ public abstract class IflyTekActivity extends SerialPortActivity {
                                      String info) {
             // 合成进度
             mPercentForBuffering = percent;
-            DialogUtil.showHint(String.format(getString(R.string.tts_toast_format),
-                    mPercentForBuffering, mPercentForPlaying));
+//            DialogUtil.showHint(String.format(getString(R.string.tts_toast_format),
+//                    mPercentForBuffering, mPercentForPlaying));
         }
 
         @Override
         public void onSpeakProgress(int percent, int beginPos, int endPos) {
             // 播放进度
             mPercentForPlaying = percent;
-            DialogUtil.showHint(String.format(getString(R.string.tts_toast_format),
-                    mPercentForBuffering, mPercentForPlaying));
+//            DialogUtil.showHint(String.format(getString(R.string.tts_toast_format),
+//                    mPercentForBuffering, mPercentForPlaying));
         }
 
         @Override
         public void onCompleted(SpeechError error) {
             if (error == null) {
-                DialogUtil.showHint("播放完成");
+//                DialogUtil.showHint("播放完成");
             } else {
                 DialogUtil.showHint(error.getPlainDescription(true));
             }

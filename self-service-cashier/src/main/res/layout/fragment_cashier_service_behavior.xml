@@ -27,7 +27,7 @@
                     android:id="@+id/frame_navibar"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:background="#35363B"
+                    android:background="@color/mfh_black"
                     android:orientation="horizontal"
                     android:paddingEnd="@dimen/spacing_double"
                     android:paddingStart="@dimen/spacing_double">

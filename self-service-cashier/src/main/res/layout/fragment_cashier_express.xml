@@ -11,7 +11,7 @@
         android:id="@+id/ll_service_navibar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#35363B"
+        android:background="@color/mfh_black"
         android:orientation="horizontal"
         android:padding="8dp">
 

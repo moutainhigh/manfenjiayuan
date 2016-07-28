@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-      <string-array name="settings_goods_status">
+    <string-array name="settings_goods_status">
         <item>不限</item>
         <item>出售中</item>
         <item>已下架</item>
