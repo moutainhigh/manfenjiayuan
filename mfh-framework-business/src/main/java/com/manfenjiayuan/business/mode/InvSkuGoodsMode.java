@@ -4,7 +4,7 @@ import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.mvp.OnModeListener;
@@ -60,7 +60,7 @@ public class InvSkuGoodsMode {
                 , MfhApplication.getAppContext()) {
         };
 
-        StockApiImpl.getByBarcodeMust(barcode, queryRespCallback);
+        InvSkuStoreApiImpl.getByBarcodeMust(barcode, queryRespCallback);
     }
 
 

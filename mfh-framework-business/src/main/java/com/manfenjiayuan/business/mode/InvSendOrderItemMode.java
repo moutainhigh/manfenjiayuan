@@ -1,7 +1,7 @@
 package com.manfenjiayuan.business.mode;
 
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
-import com.manfenjiayuan.business.bean.InvSendOrderItemBrief;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItemBrief;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;

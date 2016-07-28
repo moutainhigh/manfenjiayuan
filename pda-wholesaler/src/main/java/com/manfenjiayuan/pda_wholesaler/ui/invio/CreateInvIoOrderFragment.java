@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
@@ -319,6 +320,12 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
             commitDialog.setCanceledOnTouchOutside(false);
         }
         commitDialog.init(new CommitInvIoOrderDialog.DialogListener() {
+            @Override
+            public void onCancel() {
+                btnSubmit.setEnabled(true);
+                hideProgressDialog();
+            }
+
             @Override
             public void onNextStep(String vehicle, String phonenumber) {
                 if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {

@@ -13,12 +13,12 @@ import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -323,7 +323,7 @@ public class DataSyncService {
                 , AppContext.getAppContext()) {
         };
 
-        StockApiImpl.bindRackNo(entity.getBarcode(), String.valueOf(entity.getRackNo()), responseCallback);
+        InvSkuStoreApiImpl.bindRackNo(entity.getBarcode(), String.valueOf(entity.getRackNo()), responseCallback);
 
     }
 

@@ -1,7 +1,6 @@
 package com.mfh.framework.api.scGoodsSku;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.CashierApi;
 import com.mfh.framework.api.GoodsSupplyInfo;
 
 import java.io.Serializable;
@@ -11,11 +10,6 @@ import java.util.List;
 /**
  * SKU商品
  * <p></p>
- * {@link CashierApi#URL_SCGOODSKU_FIND_STOREWITHCHAINSKU 查询批发商采购商品 /scGoodsSku/findStoreWithChainSku}<br>
- * {@link CashierApi#URL_SCGOODSSKU_GETBY_BARCODE 查询发布商品 /scGoodsSku/getByBarcode}<br>
- * {@link CashierApi#URL_SCGOODSSKU_FINDGOODSLIST 查询POS前台类目商品 /scGoodsSku/findGoodsList}<br>
- * {@link CashierApi#URL_SCGOODSSKU_LIST 查询库存商品 /scGoodsSku/list}<br>
- * {@link CashierApi#URL_SCGOODSSKU_GETLOCAL_BYBARCODE 查询库存商品 /scGoodsSku/getLocalByBarcode}<br>
  *
  * @author NAT.ZZN(bingshanguxue) created on 2015-9-6
  */
@@ -48,7 +42,7 @@ public class ScGoodsSku implements ILongId, Serializable {
     //    private Double sellNumber;//销量
     private Double sellMonthNum;//月销量
     //    private Double sellDayNum;//日销量
-    private Double buyPrice;    //采购价,配销价，平均采购价，也就是预计采购价
+    private Double buyPrice;    //采购价,配销价，平均采购价(库存成本价)，也就是预计采购价
     private Double costPrice; // 商品售价
     private Double costScore;//商品积分
     private Double startNum;//起配量

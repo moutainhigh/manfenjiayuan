@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.Constants;

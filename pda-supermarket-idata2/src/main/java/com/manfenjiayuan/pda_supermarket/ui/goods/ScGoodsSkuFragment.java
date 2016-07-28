@@ -20,7 +20,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -131,7 +131,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             public void afterTextChanged(Editable s) {
                 if (curGoods != null){
                     //计算毛利率:(costPrice-buyPrice) / buyPrice
-                    String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getBuyPrice(),
+                    String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
                             (calInputCostPrice() - curGoods.getBuyPrice()));
                     labelGrossProfit.setTvSubTitle(grossProfit);
                 }
@@ -281,7 +281,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 //        animProgress.setVisibility(View.VISIBLE);
 
         //回调
-        StockApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
+        InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
     }
 
     NetCallBack.NetTaskCallBack updateResponseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -340,7 +340,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
             btnSubmit.setEnabled(false);
 
-
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
             labelProductName.setTvSubTitle(curGoods.getSkuName());
@@ -354,8 +353,8 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 //            labelLowerLimit.setEnabled(true);
 
 
-            //计算毛利率:(costPrice-buyPrice) / buyPrice
-            String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getBuyPrice(),
+            //计算毛利率:(costPrice-buyPrice) / costPrice
+            String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
                     (curGoods.getCostPrice() - curGoods.getBuyPrice()));
             labelGrossProfit.setTvSubTitle(grossProfit);
             labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));

@@ -1,7 +1,7 @@
 package com.manfenjiayuan.business.presenter;
 
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.mode.InvSendOrderItemMode;
 import com.manfenjiayuan.business.mode.InvSendOrderMode;
 import com.manfenjiayuan.business.view.IInvSendOrderView;

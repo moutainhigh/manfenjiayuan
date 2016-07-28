@@ -3,7 +3,7 @@ package com.manfenjiayuan.business.view;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpView;
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.manfenjiayuan.pda_wholesaler.database.logic;
 
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.manfenjiayuan.business.bean.InvSendOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.InvSkuProvider;
 import com.manfenjiayuan.pda_wholesaler.database.dao.DistributionSignDao;
 import com.manfenjiayuan.pda_wholesaler.database.entity.DistributionSignEntity;

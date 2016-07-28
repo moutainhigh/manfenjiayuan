@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -285,6 +286,11 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
                 public void processResult(IResponseData rspData) {
 //                        {"code":"0","msg":"新增成功!","version":"1","data":""}
 //                        animProgress.setVisibility(View.GONE);
+
+
+                    InvIoGoodsService.get().clear();
+                    goodsAdapter.setEntityList(null);
+                    hideProgressDialog();
                     /**
                      * 新建退货单成功，更新采购单列表
                      * */
@@ -295,7 +301,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
                         doCommitTask(retValue.getValue());
                     } else {
                         DialogUtil.showHint("订单创建成功");
-                        hideProgressDialog();
                         getActivity().setResult(Activity.RESULT_OK);
                         getActivity().finish();
                     }
@@ -311,14 +316,20 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
      * */
     private void doCommitTask(final String orderId){
 //        hideProgressDialog();
-        DialogUtil.showHint("准备提交订单");
+//        DialogUtil.showHint("准备提交订单");
 
         if (commitDialog == null) {
             commitDialog = new CommitInvIoOrderDialog(getActivity());
-            commitDialog.setCancelable(true);
+            commitDialog.setCancelable(false);
             commitDialog.setCanceledOnTouchOutside(false);
         }
         commitDialog.init(new CommitInvIoOrderDialog.DialogListener() {
+            @Override
+            public void onCancel() {
+                btnSubmit.setEnabled(true);
+                hideProgressDialog();
+            }
+
             @Override
             public void onNextStep(String vehicle, String phonenumber) {
                 if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {

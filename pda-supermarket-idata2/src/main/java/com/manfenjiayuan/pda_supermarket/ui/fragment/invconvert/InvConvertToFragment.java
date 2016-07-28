@@ -23,7 +23,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -188,7 +188,7 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
         receiveItemJson.put("quantity", labelQuantityCheck.getEtContent());
 
         //回调
-        StockApiImpl.changeSkuStore(sendItemsJsonArray.toJSONString(),
+        InvSkuStoreApiImpl.changeSkuStore(sendItemsJsonArray.toJSONString(),
                 receiveItemJson.toJSONString(), updateResponseCallback);
     }
 
