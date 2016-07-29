@@ -44,8 +44,12 @@ public class PurchaseHelper {
 
     /**
      * 添加到购物车
+     * @param purchaseType
+     * @param goods
+     * @param isNeedArrange 是否整理订单数据,单个加入购物车需要立刻更新，多个循环要在循环外面更新。
      * */
-    public void addToShopcart(Integer purchaseType, PurchaseShopcartGoodsWrapper goods){
+    public void addToShopcart(Integer purchaseType, PurchaseShopcartGoodsWrapper goods,
+                              boolean isNeedArrange){
         //检查商品是否有效
         if (purchaseType == null){
             ZLogger.d("采购类型无效");
@@ -105,7 +109,9 @@ public class PurchaseHelper {
         ZLogger.df(String.format("保存or更新采购商品：\n%s", JSON.toJSONString(goodsEntity)));
 
         // 整理
-        arrange(purchaseType);
+        if (isNeedArrange){
+            arrange(purchaseType);
+        }
     }
 
     /**
