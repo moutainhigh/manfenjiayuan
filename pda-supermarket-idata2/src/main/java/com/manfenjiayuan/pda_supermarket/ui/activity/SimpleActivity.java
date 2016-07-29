@@ -3,7 +3,6 @@ package com.manfenjiayuan.pda_supermarket.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
@@ -47,9 +46,6 @@ public class SimpleActivity extends IData95Activity {
 //        hideSystemUI();
 
         handleIntent();
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
 

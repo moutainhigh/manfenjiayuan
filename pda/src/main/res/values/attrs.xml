@@ -43,4 +43,13 @@
     </declare-styleable>
 
 
+    <declare-styleable name="ScanBar">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="textColorHint"/>
+        <attr name="hint"/>
+        <attr name="inputType"/>
+    </declare-styleable>
+
 </resources>

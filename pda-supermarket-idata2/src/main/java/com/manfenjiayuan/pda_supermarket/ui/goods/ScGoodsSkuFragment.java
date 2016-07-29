@@ -2,16 +2,18 @@ package com.manfenjiayuan.pda_supermarket.ui.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
+import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
@@ -46,8 +48,13 @@ import butterknife.OnClick;
 public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
     private static final String TAG = "ScGoodsSkuFragment";
 
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+    @Bind(R.id.scanBar)
+    ScanBar mScanBar;
+    @Bind(R.id.iv_search)
+    ImageView ivSearch;
     @Bind(R.id.label_productName)
     TextLabelView labelProductName;
     @Bind(R.id.label_barcodee)
@@ -89,9 +96,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
     @Override
     protected void onScanCode(String code) {
-//        eqvBarcode.setInputString(code);
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
+        mScanBar.reset();
         queryByBarcode(code);
     }
 
@@ -104,6 +109,15 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+
         labelCostPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -152,19 +166,20 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             }
         });
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
+        mScanBar.setSoftKeyboardEnabled(true);
+
+        mScanBar.setOnViewListener(new ScanBar.OnViewListener() {
             @Override
-            public void onSubmit(String text) {
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
+            public void onKeycodeEnterClick(String text) {
+
+                mScanBar.reset();
                 queryByName(text);
             }
+
         });
         btnSubmit.setEnabled(false);
     }
+
 
     private Double calInputCostPrice(){
         String price = labelCostPrice.getEtContent();
@@ -182,7 +197,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     public void queryByBarcode(String barcode) {
         isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
-            eqvBarcode.requestFocus();
+            mScanBar.requestFocus();
             isAcceptBarcodeEnabled = true;
             return;
         }
@@ -207,7 +222,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     public void queryByName(String name) {
         isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(name)) {
-            eqvBarcode.requestFocus();
+            mScanBar.requestFocus();
             isAcceptBarcodeEnabled = true;
             return;
         }
@@ -322,6 +337,8 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     private void refresh(ScGoodsSku invSkuGoods) {
         curGoods = invSkuGoods;
         if (curGoods == null) {
+            mScanBar.reset();
+
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelBuyprice.setTvSubTitle("");
@@ -334,8 +351,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             labelUpperLimit.setEnabled(false);
 //            labelLowerLimit.setEtContent("");
 //            labelLowerLimit.setEnabled(false);
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
             labelProvider.setEnabled(false);
 
             btnSubmit.setEnabled(false);

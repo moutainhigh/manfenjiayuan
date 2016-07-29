@@ -118,7 +118,7 @@ public class EditLabelView extends LinearLayout {
                 ZLogger.d(String.format("(%s):%d", etContent.getClass().getSimpleName(),
                         event.getKeyCode()));
                 //Press “Enter”
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         if (onViewListener != null){
                             onViewListener.onKeycodeEnterClick(etContent.getText().toString());

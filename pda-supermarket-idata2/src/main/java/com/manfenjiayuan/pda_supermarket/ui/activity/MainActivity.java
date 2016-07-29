@@ -15,8 +15,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
@@ -95,12 +93,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     protected void setupThirdParty() {
         super.setupThirdParty();
-
-//        EventBus.getDefault().register(this);
-//        MobclickAgent.onProfileSignIn(MfhLoginService.get().getCurrentGuId());
-//
-//        //初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
-//        PushManager.getInstance().initialize(getApplicationContext());
     }
 
     MenuItem menuLogin = null;
@@ -146,16 +138,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        hideSystemUI();
         super.onCreate(savedInstanceState);
 
         //hide soft input
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
 
         EventBus.getDefault().register(this);
 

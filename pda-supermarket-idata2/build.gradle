@@ -20,7 +20,7 @@ android {
 
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 15
+        versionCode 16
         versionName "0.0.4"
         multiDexEnabled true
 

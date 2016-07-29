@@ -70,9 +70,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 
         handleIntent();
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         super.onCreate(savedInstanceState);
 
         //hide soft input

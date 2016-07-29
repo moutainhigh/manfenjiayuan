@@ -29,6 +29,7 @@ android:orientation="vertical">
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/mfh_toolbar_background"
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
