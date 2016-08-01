@@ -76,7 +76,7 @@ public class ScGoodsSkuApi {
      * 若仅在产品中心中存在则返回信息中proSkuId、productId不为空, costPrice为空，quantity为0；
      * 若产品中心也不存在，则返回null
      */
-    public final static String URL_SCGOODSSKU_GETBY_BARCODE = URL_SCGOODSSKU + "getByBarcode";
+    public final static String URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
 
     /**
      * 从批发商导入某个类目的商品到当前门店,

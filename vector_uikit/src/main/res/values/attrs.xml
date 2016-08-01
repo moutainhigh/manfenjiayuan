@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--自定义输入类型-->
+    <attr name="mfh_inputType">
+        <enum name="text" value="0"/>
+        <enum name="barcode" value="1"/>
+    </attr>
+
+</resources>

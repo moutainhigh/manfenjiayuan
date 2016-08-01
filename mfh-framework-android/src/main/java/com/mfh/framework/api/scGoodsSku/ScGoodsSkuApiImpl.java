@@ -138,7 +138,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
     }
 
     /**
-     * 查询盘点商品
+     * 查询租户的商品档案
      * <ol>
      * 适用场景
      * <li>门店商品报损</li>
@@ -157,14 +157,20 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
 
     /**
      * 根据条码查找租户是否已经发布过该商品，若存在返回信息
-     * 适用场景：门店收银自采商品（建档&入库）
+     * 适用场景：
+     * <ol>
+     *     <li>
+     *         门店收银自采商品（建档&入库）
+     *     </li>
+     *     <li>价签打印</li>
+     * </ol>
      */
     public static void getByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("barcode", barcode);
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_GETBY_BARCODE, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_GET_BYBARCODE, params, responseCallback);
     }
 
     /**
