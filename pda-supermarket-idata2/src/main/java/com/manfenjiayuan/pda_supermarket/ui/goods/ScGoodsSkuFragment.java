@@ -2,30 +2,25 @@ package com.manfenjiayuan.pda_supermarket.ui.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -45,16 +40,8 @@ import butterknife.OnClick;
  * 库存商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
-    private static final String TAG = "ScGoodsSkuFragment";
+public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoodsSkuView {
 
-
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-    @Bind(R.id.scanBar)
-    ScanBar mScanBar;
-    @Bind(R.id.iv_search)
-    ImageView ivSearch;
     @Bind(R.id.label_productName)
     TextLabelView labelProductName;
     @Bind(R.id.label_barcodee)
@@ -74,9 +61,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     @Bind(R.id.label_provider)
     SettingsItem labelProvider;
 
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
-
     private ScGoodsSku curGoods = null;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
 
@@ -95,12 +79,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     }
 
     @Override
-    protected void onScanCode(String code) {
-        mScanBar.reset();
-        queryByBarcode(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -109,14 +87,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-        mToolbar.setNavigationOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getActivity().onBackPressed();
-                    }
-                });
+        super.createViewInner(rootView, container, savedInstanceState);
 
         labelCostPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -165,19 +136,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                 refresh(null);
             }
         });
-
-        mScanBar.setSoftKeyboardEnabled(true);
-
-        mScanBar.setOnViewListener(new ScanBar.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-
-                mScanBar.reset();
-                queryByName(text);
-            }
-
-        });
-        btnSubmit.setEnabled(false);
     }
 
 
@@ -191,21 +149,17 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     }
 
 
-    /**
-     * 查询商品信息
-     */
-    public void queryByBarcode(String barcode) {
-        isAcceptBarcodeEnabled = false;
+    @Override
+    public void sendQueryReq(String barcode) {
+        super.sendQueryReq(barcode);
+
         if (StringUtils.isEmpty(barcode)) {
-            mScanBar.requestFocus();
-            isAcceptBarcodeEnabled = true;
+            onQueryError("请先扫描商品条码");
             return;
         }
 
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            isAcceptBarcodeEnabled = true;
-            refresh(null);
+            onQueryError(getString(R.string.toast_network_error));
             return;
         }
 
@@ -241,6 +195,12 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         }
     }
 
+    @Override
+    public void onQueryError(String errorMsg) {
+        super.onQueryError(errorMsg);
+        refresh(null);
+    }
+
     @OnClick(R.id.label_provider)
     public void queryProvider() {
         if (curGoods == null) {
@@ -254,10 +214,10 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         PrimaryActivity.actionStart(getActivity(), extras);
     }
 
-    @OnClick(R.id.button_submit)
+    @Override
     public void submit() {
-        btnSubmit.setEnabled(false);
-        isAcceptBarcodeEnabled = false;
+        super.submit();
+
         if (curGoods == null) {
             btnSubmit.setEnabled(true);
             isAcceptBarcodeEnabled = true;
@@ -293,8 +253,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 //        jsonObject.put("lowerLimit", labelLowerLimit.getEtContent());
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
-//        animProgress.setVisibility(View.VISIBLE);
-
         //回调
         InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
     }
@@ -310,11 +268,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
                     //出库成功:1-556637
                     ZLogger.d("修改成功:" + retStr);
-//                        DialogUtil.showHint("修改成功");
-
-//                    hideProgressDialog();
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, "修改成功", true);
-                    refresh(null);
+                    onSubmitSuccess();
 
                     DataSyncManager.getInstance().notifyUpdateSku();
                 }
@@ -322,14 +276,18 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.d("修改失败：" + errMsg);
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
+                    onSubmitError(errMsg);
                 }
             }
             , String.class
             , AppContext.getAppContext()) {
     };
+
+    @Override
+    public void onSubmitSuccess() {
+        super.onSubmitSuccess();
+        refresh(null);
+    }
 
     /**
      * 刷新信息
@@ -381,24 +339,18 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             btnSubmit.setEnabled(true);
         }
 
-        isAcceptBarcodeEnabled = true;
-        DeviceUtils.hideSoftInput(getActivity(), labelCostPrice);
+        refresh();
     }
 
 
     @Override
     public void onIScGoodsSkuViewProcess() {
-
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
     }
 
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
-
-        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
-
-        DialogUtil.showHint("未找到商品");
-        refresh(null);
+        onQueryError(errorMsg);
     }
 
     @Override

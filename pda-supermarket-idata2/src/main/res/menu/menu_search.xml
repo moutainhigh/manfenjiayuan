@@ -3,15 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
-        android:id="@+id/action_sign_in"
+        android:id="@+id/action_search"
         android:orderInCategory="100"
-        android:icon="@mipmap/ic_login_white"
-        android:title="@string/action_settings"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/action_sign_out"
-        android:orderInCategory="100"
-        android:icon="@mipmap/ic_logout"
+        android:icon="@mipmap/ic_toolbar_search_white"
         android:title="@string/action_settings"
         app:showAsAction="always" />
 </menu>

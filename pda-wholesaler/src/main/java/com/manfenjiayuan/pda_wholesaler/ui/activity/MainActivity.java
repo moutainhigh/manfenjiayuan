@@ -79,11 +79,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     }
 
     @Override
-    protected boolean isFullscreenEnabled() {
-        return true;
-    }
-
-    @Override
     protected int getLayoutResId() {
         return R.layout.activity_main;
     }
@@ -142,15 +137,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-//        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        hideSystemUI();
         super.onCreate(savedInstanceState);
 
         //hide soft input
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
 
         EventBus.getDefault().register(this);
 
@@ -201,7 +191,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        ZLogger.d("onCreateOptionsMenu");
         menuLogin = menu.findItem(R.id.action_sign_in);
         menuLogout = menu.findItem(R.id.action_sign_out);
 //        MenuItemCompat.setActionView(settings, R.layout.view_corner_button);

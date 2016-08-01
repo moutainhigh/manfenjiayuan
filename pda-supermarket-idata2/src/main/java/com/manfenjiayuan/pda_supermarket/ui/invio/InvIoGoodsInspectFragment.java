@@ -7,18 +7,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
-import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
@@ -42,14 +40,12 @@ import butterknife.OnClick;
  * 出入库商品检查
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChainGoodsSkuView {
+public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
+        implements IChainGoodsSkuView {
 
     private static final String TAG = "InvReturnGoodsInspectFragment";
     public static final String EXTRA_KEY_COMPANYID = "companyId";
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
-
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
 
     @Bind(R.id.label_barcode)
     TextLabelView labelBarcode;
@@ -60,12 +56,8 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
     @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
 
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
-
     private InvIoGoodsEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
-    private boolean isQueryProcessing;
 
 
     public static InvIoGoodsInspectFragment newInstance(Bundle args) {
@@ -80,12 +72,6 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_inspect_invio_goods;
-    }
-
-    @Override
-    protected void onScanCode(String code) {
-//        eqvBarcode.setInputString(code);
-        query(code);
     }
 
 
@@ -129,39 +115,30 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
             }
         });
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                query(text);
-            }
-        });
-
         Bundle args = getArguments();
         if (args != null) {
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
-//            eqvBarcode.setInputString(barcode);
-            query(barcode);
+            queryByBarcode(barcode);
         }
 
     }
 
     /**
-     * 查询包裹信息
+     * 查询商品
      * */
-    public void query(String barcode){
-        eqvBarcode.clear();
+    @Override
+    public void sendQueryReq(String barcode) {
+        super.sendQueryReq(barcode);
 
-        if (isQueryProcessing || StringUtils.isEmpty(barcode)){
+        if (StringUtils.isEmpty(barcode)){
             return;
         }
 
         QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
         queryGoodsAsyncTask.execute();
     }
+
 
     @OnClick(R.id.button_submit)
     public void submit() {
@@ -201,9 +178,6 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
             labelSignQuantity.setEtContent("");
 
             btnSubmit.setEnabled(false);
-
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
         }
         else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
@@ -219,6 +193,41 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
         }
 
         DeviceUtils.hideSoftInput(getActivity(), labelSignQuantity);
+
+        refresh();
+    }
+
+    @Override
+    public void onChainGoodsSkuViewProcess() {
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
+    }
+
+    @Override
+    public void onChainGoodsSkuViewError(String errorMsg) {
+        hideProgressDialog();
+        refreshPackage(null);
+    }
+
+    @Override
+    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+        hideProgressDialog();
+        if (dataList != null && dataList.size() > 0) {
+            saveChainGoodsSku(dataList.get(0));
+        } else {
+            DialogUtil.showHint("未找到商品");
+        }
+    }
+
+    @Override
+    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
+        hideProgressDialog();
+
+        if (data != null) {
+            saveChainGoodsSku(data);
+        } else {
+            DialogUtil.showHint("未找到商品");
+        }
     }
 
     class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
@@ -248,7 +257,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean){
-                onError("");
+                onQuerySuccess();
                 saveInvIoGoodsEntity(goodsEntity);
             }
             else{
@@ -259,7 +268,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
         @Override
         protected void onPreExecute() {
             ZLogger.d("onPreExecute");
-            onProcess();
+            onQueryProcess();
         }
 
         @Override
@@ -270,7 +279,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
 
     private void queryNetGoods(String barcode){
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            onError(getString(R.string.toast_network_error));
+            onQueryError(getString(R.string.toast_network_error));
             return;
         }
 
@@ -280,42 +289,14 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment implements IChain
         chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
 
-    @Override
-    public void onProcess() {
-        isQueryProcessing = true;
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-    }
 
     @Override
-    public void onError(String errorMsg) {
-        hideProgressDialog();
-        isQueryProcessing = false;
+    public void onQuerySuccess() {
+        super.onQuerySuccess();
+
         refreshPackage(null);
     }
 
-    @Override
-    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-        hideProgressDialog();
-        isQueryProcessing = false;
-
-        if (dataList != null && dataList.size() > 0) {
-            saveChainGoodsSku(dataList.get(0));
-        } else {
-            DialogUtil.showHint("未找到商品");
-        }
-    }
-
-    @Override
-    public void onQueryChainGoodsSku(ChainGoodsSku chainGoodsSku) {
-        hideProgressDialog();
-        isQueryProcessing = false;
-
-        if (chainGoodsSku != null) {
-            saveChainGoodsSku(chainGoodsSku);
-        } else {
-            DialogUtil.showHint("未找到商品");
-        }
-    }
 
     public void saveInvIoGoodsEntity(InvIoGoodsEntity goods){
         if (goods == null) {

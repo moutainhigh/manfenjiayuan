@@ -11,20 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
+import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -44,14 +43,12 @@ import butterknife.OnClick;
  * 商品配送－－验货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class DistributionInspectFragment extends PDAScanFragment implements IChainGoodsSkuView {
+public class DistributionInspectFragment extends QueryBarcodeFragment implements IChainGoodsSkuView {
 
     private static final String TAG = "DistributionInspectFragment";
     public static final String EXTRA_KEY_INSPECTMODE = "inspectMode";
     public static final String EXTRA_KEY_BARCODE = "barcode";
 
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.label_barcode)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
@@ -75,7 +72,6 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
     private int inspectMode = 0;
     private DistributionSignEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
-    private boolean isQueryProcessing;
 
 
     public static DistributionInspectFragment newInstance(Bundle args) {
@@ -96,16 +92,6 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_distribution_inspect;
-    }
-
-    @Override
-    protected void onScanCode(String code) {
-//        eqvBarcode.setInputString(code);
-        if (!isAcceptBarcodeEnabled){
-            return;
-        }
-        isAcceptBarcodeEnabled = false;
-        query(code);
     }
 
 
@@ -183,25 +169,13 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
             }
         });
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                query(text);
-            }
-        });
-
-//        labelReceivePrice.setVisibility(View.INVISIBLE);
-
         Bundle args = getArguments();
         if (args != null) {
             inspectMode = args.getInt(EXTRA_KEY_INSPECTMODE, 0);
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
 //            eqvBarcode.setInputString(barcode);
-            query(barcode);
+            queryByBarcode(barcode);
         }
     }
 
@@ -260,16 +234,10 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
             return amountVal / quantityVal;
         }
     }
-    /**
-     * 查询包裹信息
-     * */
-    public void query(String barcode){
-        eqvBarcode.clear();
 
-        if (isQueryProcessing || StringUtils.isEmpty(barcode)){
-            isAcceptBarcodeEnabled = true;
-            return;
-        }
+    @Override
+    public void sendQueryReq(String barcode) {
+        super.sendQueryReq(barcode);
 
         QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
         queryGoodsAsyncTask.execute();
@@ -326,8 +294,6 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
             btnReject.setEnabled(false);
             btnSubmit.setEnabled(false);
 
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
         } else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getProductName());
@@ -348,6 +314,43 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
         }
 
         DeviceUtils.hideSoftInput(getActivity(), labelReceiveQuantity);
+        refresh();
+    }
+
+    @Override
+    public void onChainGoodsSkuViewProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
+    }
+
+    @Override
+    public void onChainGoodsSkuViewError(String errorMsg) {
+        hideProgressDialog();
+        refreshPackage(null);
+        isAcceptBarcodeEnabled = true;
+    }
+
+    @Override
+    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+        hideProgressDialog();
+        isAcceptBarcodeEnabled = true;
+
+        if (dataList != null && dataList.size() > 0) {
+            saveChainGoodsSku(dataList.get(0));
+        } else {
+            DialogUtil.showHint("未找到商品");
+        }
+    }
+
+    @Override
+    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
+        hideProgressDialog();
+        isAcceptBarcodeEnabled = true;
+
+        if (data != null) {
+            saveChainGoodsSku(data);
+        } else {
+            DialogUtil.showHint("未找到商品");
+        }
     }
 
     class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
@@ -382,7 +385,7 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
                     queryNetGoods(barcode);
                 } else {
                     DialogUtil.showHint("未找到商品");
-                    onError("");
+                    onQueryError("");
                 }
             }
         }
@@ -390,7 +393,7 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
         @Override
         protected void onPreExecute() {
             ZLogger.d("onPreExecute");
-            onProcess();
+            onQueryProcess();
         }
 
         @Override
@@ -401,7 +404,7 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
 
     private void queryNetGoods(String barcode){
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            onError(getString(R.string.toast_network_error));
+            onQueryError(getString(R.string.toast_network_error));
             return;
         }
 
@@ -411,49 +414,9 @@ public class DistributionInspectFragment extends PDAScanFragment implements ICha
         chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
 
-    @Override
-    public void onProcess() {
-        isQueryProcessing = true;
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-    }
-
-    @Override
-    public void onError(String errorMsg) {
-        hideProgressDialog();
-        isQueryProcessing = false;
-        refreshPackage(null);
-        isAcceptBarcodeEnabled = true;
-    }
-
-    @Override
-    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-        hideProgressDialog();
-        isQueryProcessing = false;
-        isAcceptBarcodeEnabled = true;
-
-        if (dataList != null && dataList.size() > 0) {
-            saveChainGoodsSku(dataList.get(0));
-        } else {
-            DialogUtil.showHint("未找到商品");
-        }
-    }
-
-    @Override
-    public void onQueryChainGoodsSku(ChainGoodsSku chainGoodsSku) {
-        hideProgressDialog();
-        isQueryProcessing = false;
-        isAcceptBarcodeEnabled = true;
-
-        if (chainGoodsSku != null) {
-            saveChainGoodsSku(chainGoodsSku);
-        } else {
-            DialogUtil.showHint("未找到商品");
-        }
-    }
 
     public void saveDistributionSignEntity(DistributionSignEntity goods) {
         hideProgressDialog();
-        isQueryProcessing = false;
         refreshPackage(goods);
     }
 

@@ -2,27 +2,62 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@drawable/divider_horizontal_line"
-                android:orientation="vertical"
                 android:background="@color/material_white"
-                android:showDividers="middle">
+                android:orientation="vertical">
 
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_edit_search_normal"
-        app:editQueryView_inputHint="请输入商品名称"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="18px"/>
+        android:background="@color/mfh_toolbar_background"
+        android:elevation="@dimen/spacing_micro"
+        app:layout_collapseMode="pin"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/spacing_micro"
+            android:padding="@dimen/spacing_micro">
+
+            <com.bingshanguxue.pda.widget.ScanBar
+                android:id="@+id/scanBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:layout_toStartOf="@+id/iv_search"
+                android:weightSum="1"
+                app:hint="请扫描商品条码"
+                app:textColor="@color/black"
+                app:textColorHint="@color/black_35"
+                app:textSize="16px"
+                app:mfh_inputType="barcode"/>
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:background="@null"
+                android:src="@mipmap/ic_toolbar_search_white"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button_submit"
-        android:layout_below="@+id/eqv_barcode">
+        android:layout_below="@+id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,8 +70,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:textLabelView_leftText="商品名称:"
-                app:rightTextSingleLine="false"/>
+                app:rightTextSingleLine="false"
+                app:textLabelView_leftText="商品名称:"/>
             <!--条码-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_barcodee"
@@ -44,8 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:textLabelView_leftText="条码:"
-                app:rightTextSingleLine="false"/>
+                app:rightTextSingleLine="false"
+                app:textLabelView_leftText="条码:"/>
             <!--采购价-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_buyprice"
@@ -53,8 +88,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:textLabelView_leftText="采购价:"
-                app:rightTextSingleLine="false"/>
+                app:rightTextSingleLine="false"
+                app:textLabelView_leftText="采购价:"/>
             <!--零售价（可编辑）-->
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_costPrice"
@@ -95,12 +130,12 @@
 
 
             <!--<com.bingshanguxue.pda.widget.EditLabelView-->
-                <!--android:id="@+id/label_lowwerLimit"-->
-                <!--style="@style/mfh_editlabelview"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="52dp"-->
-                <!--app:editLabelView_leftText="安全库存:"-->
-                <!--app:editLabelView_rightHint="请输入安全库存"/>-->
+            <!--android:id="@+id/label_lowwerLimit"-->
+            <!--style="@style/mfh_editlabelview"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="52dp"-->
+            <!--app:editLabelView_leftText="安全库存:"-->
+            <!--app:editLabelView_rightHint="请输入安全库存"/>-->
 
             <!--批发商-->
             <com.mfh.framework.uikit.compound.SettingsItem

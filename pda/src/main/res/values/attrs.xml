@@ -49,7 +49,7 @@
         <attr name="textSize"/>
         <attr name="textColorHint"/>
         <attr name="hint"/>
-        <attr name="inputType"/>
+        <attr name="mfh_inputType"/>
     </declare-styleable>
 
 </resources>

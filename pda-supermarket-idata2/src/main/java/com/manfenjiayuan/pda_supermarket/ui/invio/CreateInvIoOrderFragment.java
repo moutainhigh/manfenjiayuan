@@ -13,11 +13,9 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
@@ -30,6 +28,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -44,14 +43,14 @@ import butterknife.OnClick;
  * 新建出库/入库订单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvIoOrderFragment extends PDAScanFragment {
+public class CreateInvIoOrderFragment extends BaseFragment {
+    //出入库类型
     public static final String EXTRA_KEY_ORDER_TYPE = "orderType";
+    //仓储类型
     public static final String EXTRA_KEY_STORE_TYPE = "storeType";
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private InvIoOrderGoodsAdapter goodsAdapter;
@@ -85,13 +84,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
-        inspect(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -109,19 +101,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
             storeType = args.getInt(EXTRA_KEY_STORE_TYPE);
         }
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setHoldFocusEnable(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                inspect(text);
-            }
-        });
-
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
         if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
             btnSubmit.setText("入库");
             mToolbar.setTitle("新建入库单");
@@ -131,13 +110,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        eqvBarcode.requestFocusEnd();
-        eqvBarcode.clear();
-    }
 
     @Override
     public boolean onBackPressed() {
@@ -184,16 +156,14 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
         goodsAdapter.setOnAdapterListener(new InvIoOrderGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                CreateOrderItemWrapper entity = goodsAdapter.getEntity(position);
-//                inspect(entity.getBarcode());
-//                changeQuantityCheck();
+                InvIoGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (entity != null){
+                    inspect(entity.getBarcode());
+                }
             }
 
             @Override
             public void onDataSetChanged() {
-//                isLoadingMore = false;
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
             }
         });
 
@@ -389,6 +359,11 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
     /**
      * 验货
      * */
+    @OnClick(R.id.fab_add)
+    public void inspect() {
+        inspect(null);
+    }
+
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -404,7 +379,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                eqvBarcode.requestFocusEnd();
                 goodsAdapter.setEntityList(InvIoGoodsService.get().queryAll());
             }
             break;

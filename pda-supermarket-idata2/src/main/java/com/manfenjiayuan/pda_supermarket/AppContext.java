@@ -62,6 +62,7 @@ public class AppContext extends MfhApplication {
             IMClient.getInstance().init(getApplicationContext());
         }
 
+        ZLogger.d("adb 0003");
         debugPrint();
 
 //        //注册应用id到微信

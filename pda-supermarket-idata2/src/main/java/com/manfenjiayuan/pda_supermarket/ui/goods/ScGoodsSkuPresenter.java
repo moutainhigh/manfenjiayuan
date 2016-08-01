@@ -77,28 +77,54 @@ public class ScGoodsSkuPresenter {
 
     public void getGoodsByBarCode(String barcode) {
         mScGoodsSkuMode.getGoodsByBarCode(barcode, new OnModeListener<ScGoodsSku>() {
-                    @Override
-                    public void onProcess() {
-                        if (mIScGoodsSkuView != null) {
-                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
-                        }
-                    }
+            @Override
+            public void onProcess() {
+                if (mIScGoodsSkuView != null) {
+                    mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                }
+            }
 
-                    @Override
-                    public void onSuccess(ScGoodsSku data) {
-                        if (mIScGoodsSkuView != null) {
-                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(data);
-                        }
-                    }
+            @Override
+            public void onSuccess(ScGoodsSku data) {
+                if (mIScGoodsSkuView != null) {
+                    mIScGoodsSkuView.onIScGoodsSkuViewSuccess(data);
+                }
+            }
 
-                    @Override
-                    public void onError(String errorMsg) {
-                        if (mIScGoodsSkuView != null) {
-                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
-                        }
-                    }
+            @Override
+            public void onError(String errorMsg) {
+                if (mIScGoodsSkuView != null) {
+                    mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                }
+            }
 
-                });
+        });
+    }
+
+    public void getByBarcode(String barcode) {
+        mScGoodsSkuMode.getByBarcode(barcode, new OnModeListener<ScGoodsSku>() {
+            @Override
+            public void onProcess() {
+                if (mIScGoodsSkuView != null) {
+                    mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                }
+            }
+
+            @Override
+            public void onSuccess(ScGoodsSku data) {
+                if (mIScGoodsSkuView != null) {
+                    mIScGoodsSkuView.onIScGoodsSkuViewSuccess(data);
+                }
+            }
+
+            @Override
+            public void onError(String errorMsg) {
+                if (mIScGoodsSkuView != null) {
+                    mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                }
+            }
+
+        });
     }
 
 }

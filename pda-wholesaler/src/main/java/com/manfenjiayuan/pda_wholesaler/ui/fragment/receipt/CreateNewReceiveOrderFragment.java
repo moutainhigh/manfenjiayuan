@@ -214,10 +214,10 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
             selectInvCompProvider();
         }
         else{
-            doSignWork(officeAdapter.getEntityList(), null, companyInfo.getId(), IsPrivate.PLATFORM);
+            doSignWork(officeAdapter.getEntityList(), null,
+                    companyInfo.getId(), IsPrivate.PLATFORM);
         }
     }
-
 
     /**
      * 验货

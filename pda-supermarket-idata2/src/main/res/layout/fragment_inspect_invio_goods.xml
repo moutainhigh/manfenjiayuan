@@ -1,49 +1,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:divider="@drawable/divider_horizontal_line"
-              android:showDividers="middle"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:showDividers="middle">
 
 
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_edit_search_normal"
-        app:editQueryView_inputTextSize="18px"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editQueryView_inputHint="@string/hint_input_barcode"/>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_scan_barcode"/>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        style="@style/mf_scrolview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_productName"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="商品名称:"
-                style="@style/mfh_textlabelview"/>
+                app:textLabelView_leftText="商品名称:"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_barcode"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="商品条码:"
-                style="@style/mfh_textlabelview"/>
+                app:textLabelView_leftText="商品条码:"/>
 
 
             <com.bingshanguxue.pda.widget.EditLabelView
@@ -51,37 +43,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:editLabelView_leftText="价格:"
-                app:editLabelView_leftTextSize="18px"
                 app:editLabelView_leftTextColor="@color/black"
-                app:editLabelView_rightTextSize="18px"
+                app:editLabelView_leftTextSize="18px"
+                app:editLabelView_rightHint="请输入价格"
                 app:editLabelView_rightTextColor="@color/black"
                 app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightHint="请输入价格"/>
+                app:editLabelView_rightTextSize="18px"/>
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_sign_quantity"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:editLabelView_leftText="数量:"
-                app:editLabelView_leftTextSize="18px"
                 app:editLabelView_leftTextColor="@color/black"
-                app:editLabelView_rightTextSize="18px"
+                app:editLabelView_leftTextSize="18px"
+                app:editLabelView_rightHint="请输入数量"
                 app:editLabelView_rightTextColor="@color/black"
                 app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightHint="请输入数量"/>
+                app:editLabelView_rightTextSize="18px"/>
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:text="确定"
-        android:textColor="@color/material_white"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:background="@drawable/btn_rectange_primary"/>
+    <!--确认-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        app:backgroundTint="@color/mfh_colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
 
 
 </LinearLayout>

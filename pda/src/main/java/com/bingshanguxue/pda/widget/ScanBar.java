@@ -59,7 +59,16 @@ public class ScanBar extends LinearLayout {
         etInput.setTextColor(ta.getColor(R.styleable.ScanBar_textColor, 0));
         etInput.setHint(ta.getString(R.styleable.ScanBar_hint));
         etInput.setHintTextColor(ta.getColor(R.styleable.ScanBar_textColorHint, 0));
-        etInput.setInputType(ta.getInteger(R.styleable.ScanBar_inputType, InputType.TYPE_CLASS_TEXT));
+        int inputType = ta.getInteger(R.styleable.ScanBar_mfh_inputType, 0);
+        if (inputType == 1){
+//            etInput.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+
+        }
+        else{
+            etInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+
 
         ta.recycle();
 
@@ -92,8 +101,8 @@ public class ScanBar extends LinearLayout {
         etInput.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("(%s):%d", etInput.getClass().getSimpleName(),
-                        event.getKeyCode()));
+                ZLogger.d(String.format("(%s):%d,%d", etInput.getClass().getSimpleName(),
+                        event.getKeyCode(), event.getAction()));
                 //Press “Enter”
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER
                         || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {

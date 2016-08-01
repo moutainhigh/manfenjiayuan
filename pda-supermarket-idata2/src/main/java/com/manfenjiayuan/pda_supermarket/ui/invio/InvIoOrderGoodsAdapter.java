@@ -43,7 +43,8 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_invreturnorder_goods, parent, false));
+        return new ProductViewHolder(mLayoutInflater
+                .inflate(R.layout.itemview_invreturnorder_goods, parent, false));
     }
 
     @Override
@@ -52,9 +53,10 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
 
         holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
         holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
-        holder.tvPrice.setText(MUtils.formatDouble("发货价格:", "",
+        holder.tvPrice.setText(MUtils.formatDouble("价格:", "",
                 entity.getPrice(), "无", null, null));
-        holder.tvQuantity.setText(String.format("数量：%.2f", entity.getQuantityCheck()));
+        holder.tvQuantity.setText(MUtils.formatDouble("数量:", "",
+                entity.getPrice(), "无", "/", entity.getUnit()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {

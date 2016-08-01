@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.PageInfo;
@@ -126,24 +127,25 @@ public class ChainGoodsSkuFragment extends BaseFragment implements IChainGoodsSk
 
 
     @Override
-    public void onProcess() {
+    public void onChainGoodsSkuViewProcess() {
+
         animProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onChainGoodsSkuViewError(String errorMsg) {
         animProgress.setVisibility(View.GONE);
         goodsAdapter.setEntityList(null);
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
         animProgress.setVisibility(View.GONE);
         goodsAdapter.setEntityList(dataList);
     }
 
     @Override
-    public void onQueryChainGoodsSku(ChainGoodsSku chainGoodsSku) {
+    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
         animProgress.setVisibility(View.GONE);
     }
 }

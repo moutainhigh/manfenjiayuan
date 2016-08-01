@@ -69,6 +69,11 @@ public abstract class BaseReceiveOrderFragment extends PDAScanFragment {
         JSONArray itemsArray = new JSONArray();
         Double amount = 0D;
         for (DistributionSignEntity goods : goodsList) {
+            //价格不能为空
+            if (goods.getPrice() == null){
+                continue;
+            }
+
             JSONObject item = new JSONObject();
             item.put("chainSkuId", goods.getChainSkuId());//查询供应链
             item.put("proSkuId", goods.getProSkuId());

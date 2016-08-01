@@ -1,70 +1,61 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/material_white"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary">
-
-        <!--<com.mfh.framework.uikit.compound.NaviAddressView-->
-            <!--android:id="@+id/providerView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:gravity="center_vertical"-->
-            <!--app:hint="请选择批发商"-->
-            <!--app:textColor="@color/material_white"/>-->
-
-    </android.support.v7.widget.Toolbar>
-
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_below="@+id/toolbar"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
-        app:editQueryView_inputHint="@string/hint_input_barcode"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="18px"/>
+    <include layout="@layout/appbar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button_submit"
-        android:layout_below="@+id/eqv_barcode"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/material_white">
         <!--空视图-->
-        <TextView
+        <ImageView
             android:id="@+id/empty_view"
-            style="@style/mfh_textview_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:text="@string/label_no_data"/>
+            android:layout_above="@+id/button_submit"
+            android:scaleType="centerInside"
+            android:src="@mipmap/emptyimage_no_goods"/>
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/office_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_above="@+id/button_submit"/>
+
+        <!--结算-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_above="@+id/button_submit"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/spacing_double"
+            android:src="@mipmap/ic_add_white"
+            app:backgroundTint="@color/mfh_colorPrimary"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            app:rippleColor="@color/material_green_800"/>
+
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/btn_rectange_primary"
+            android:gravity="center"
+            android:text="出/入库"
+            android:textColor="@color/material_white"
+            android:textSize="18sp"/>
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_rectange_primary"
-        android:gravity="center"
-        android:text="出/入库"
-        android:textColor="@color/material_white"
-        android:textSize="18sp"/>
 
-</RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
