@@ -100,7 +100,6 @@ import com.mfh.litecashier.ui.dialog.RegisterUserDialog;
 import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
-import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryTransOrderFragment;
 import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -251,13 +250,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         refreshFloatHangup();
 
         ValidateManager.get().batchValidate();
-
-        /**
-         * @param isManual  用户手动点击检查，非用户点击操作请传false
-         * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
-         */
-        Beta.checkUpgrade(false, false);
-
 
         reload(true);
 
@@ -429,28 +421,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         } else if (id.compareTo(CashierFunctional.OPTION_ID_FEEDPAPER) == 0) {
             //走纸
             SerialManager.feedPaper();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_INVENTORY_TRANS_IN) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER);
-            extras.putInt(CreateInventoryTransOrderFragment.EK_ENTERMODE, 2);
-
-            ServiceActivity.actionStart(this, extras);
-
-//                    Intent intent = new Intent(this, ServiceActivity.class);
-//                    intent.putExtras(extras);
-//                    startActivity(intent);
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_INVENTORY_TRANS_OUT) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER);
-            extras.putInt(CreateInventoryTransOrderFragment.EK_ENTERMODE, 2);
-
-            ServiceActivity.actionStart(this, extras);
-
-//                    Intent intent = new Intent(this, ServiceActivity.class);
-//                    intent.putExtras(extras);
-//                    startActivity(intent);
         } else if (id.compareTo(CashierFunctional.OPTION_ID_MONEYBOX) == 0) {
             openMoneyBox();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_CLEAR_ORDER) == 0) {
@@ -794,6 +764,12 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         }
         btnSync.startSync();
         DataSyncManager.get().sync();
+
+        /**
+         * @param isManual  用户手动点击检查，非用户点击操作请传false
+         * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
+         */
+        Beta.checkUpgrade(false, false);
     }
 
     public void redirectToSettings() {
