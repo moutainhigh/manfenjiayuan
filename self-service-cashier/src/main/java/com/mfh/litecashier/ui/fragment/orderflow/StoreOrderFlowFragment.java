@@ -42,7 +42,8 @@ import de.greenrobot.event.EventBus;
  * 线下门店订单流水
  * Created by bingshanguxue on 15/8/31.
  */
-public class StoreOrderFlowFragment extends BaseListFragment<PosOrder> implements IOrderflowView {
+public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
+        implements IOrderflowView {
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.order_list)

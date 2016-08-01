@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class CashierShopcartDao extends BaseSeqAbleDao<CashierShopcartEntity, String> {
 
-    private static final String TABLE_NAME = "tb_cashier_shopcart_v01000";
+    private static final String TABLE_NAME = "tb_cashier_shopcart_v01001";
 
     @Override
     protected Pair<String, String> initTableChName() {

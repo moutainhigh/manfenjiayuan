@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.fragment.purchase.manual;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,8 +23,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.model.PosGoods;
 import com.manfenjiayuan.business.bean.CategoryOption;
+import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.GoodsSupplyInfo;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
@@ -61,6 +67,7 @@ import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
+import com.mfh.litecashier.utils.PinyinUtils;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -545,7 +552,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         else{
             wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
             PurchaseHelper.getInstance()
-                    .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
+                    .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper, true);
         }
 
         refreshFabShopcart();
@@ -622,7 +629,8 @@ public class ManualPurchaseFragment extends BaseProgressFragment
                 }
 
                 wrapper.setQuantityCheck(quantity);
-                PurchaseHelper.getInstance().addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper);
+                PurchaseHelper.getInstance()
+                        .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper, true);
 
                 //刷新购物车
                 refreshFabShopcart();
@@ -939,20 +947,64 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     @Override
     public void onIntelligentPurchaseSuccess(List<InvSendOrderItem> dataList) {
         CompanyInfo companyInfo = searchParams.getCompanyInfo();
+
         if (dataList != null && dataList.size() > 0 && companyInfo != null) {
-            for (InvSendOrderItem invSendOrderItem : dataList) {
-                PurchaseShopcartGoodsWrapper goodsWrapper = PurchaseShopcartGoodsWrapper
-                        .fromIntelligentOrderItem(invSendOrderItem, companyInfo,
-                                IsPrivate.PLATFORM);
-                PurchaseHelper.getInstance()
-                        .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, goodsWrapper);
-
-                refreshFabShopcart();
-
-                goodsListAdapter.notifyDataSetChanged();
-            }
+            new IntelligentAsyncTask(companyInfo)
+                    .execute(dataList);
+        }
+        else{
+            showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
         }
 
-        showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
+    }
+
+
+    private class IntelligentAsyncTask extends AsyncTask<List<InvSendOrderItem>, Integer, Long> {
+        private CompanyInfo companyInfo;
+
+
+        public IntelligentAsyncTask(CompanyInfo companyInfo) {
+            this.companyInfo = companyInfo;
+        }
+
+        @Override
+        protected Long doInBackground(List<InvSendOrderItem>... params) {
+            saveQueryResult(params[0], companyInfo);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+
+            refreshFabShopcart();
+
+            goodsListAdapter.notifyDataSetChanged();
+            showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
+        }
+
+        /**
+         * 将后台返回的结果集保存到本地,同步执行
+         *
+         * @param rs       结果集
+         * @param pageInfo 分页信息
+         */
+        private void saveQueryResult(List<InvSendOrderItem> goodsList, CompanyInfo companyInfo) {//此处在主线程中执行。
+            try {
+                for (InvSendOrderItem invSendOrderItem : goodsList) {
+                    PurchaseShopcartGoodsWrapper goodsWrapper = PurchaseShopcartGoodsWrapper
+                            .fromIntelligentOrderItem(invSendOrderItem, companyInfo,
+                                    IsPrivate.PLATFORM);
+                    PurchaseHelper.getInstance()
+                            .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, goodsWrapper, false);
+
+                }
+                PurchaseHelper.getInstance().arrange(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL);
+
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.e(String.format("保存智能订货商品失败: %s", ex.toString()));
+            }
+        }
     }
 }

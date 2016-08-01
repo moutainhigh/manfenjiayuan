@@ -396,20 +396,6 @@ public class SMScaleSyncManager extends FTPManager {
         }
     }
 
-    private List<String[]> genFileData(List<PosProductEntity> goodsList) {
-//        beanToCsv.write()
-        List<String[]> allElements = new ArrayList<>();
-//        PLU号码,单价,品名信息,称重标识（1非称重，0称重）,标签格式,分类,表示位（F1，F2)
-        allElements.add(TEMPLATE_COLUMNS);
-        for (PosProductEntity goods : goodsList) {
-            allElements.add(new String[]{goods.getBarcode(),
-                    String.format("%.0f", goods.getCostPrice() * 100), goods.getBarcode(),
-                    "20", String.valueOf(goods.getCateType()),
-                    goods.getName()});
-        }
-
-        return allElements;
-    }
 
     /**
      * 获取CSV文件，提交成功后需要手动删除文件，程序内部采用增量的方式更新。

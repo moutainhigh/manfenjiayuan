@@ -34,10 +34,14 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     // 当云端下架或删除一个商品时，并未真正删除商品，而是相当于把status修改成0。
     // 如果是物理删除目前没有办法增量同步到pos端。pos端下单时需要自行判断注意只有status=1的商品才能购买
-    private Integer status;//1-有效，默认，0-无效
+    private Integer status = 1;//1-有效，默认，0-无效
 
     private Long procateId; //商品类目
+
+    //2016-08-01，改用产品线编号统计商品，cateType将被废弃掉。
+    @Deprecated
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
+    private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
 
     public Long getProSkuId() {
         return proSkuId;
@@ -142,6 +146,9 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Integer getStatus() {
+        if (status == null){
+            return 1;
+        }
         return status;
     }
 
@@ -185,5 +192,16 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     public void setCateType(Integer cateType) {
         this.cateType = cateType;
+    }
+
+    public Integer getProdLineId() {
+        if (procateId == null){
+            return 0;
+        }
+        return prodLineId;
+    }
+
+    public void setProdLineId(Integer prodLineId) {
+        this.prodLineId = prodLineId;
     }
 }

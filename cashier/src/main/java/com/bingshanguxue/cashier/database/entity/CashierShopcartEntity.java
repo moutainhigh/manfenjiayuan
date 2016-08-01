@@ -2,7 +2,6 @@ package com.bingshanguxue.cashier.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.constant.BizSubType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.MfhEntity;
 
@@ -10,13 +9,16 @@ import com.mfh.framework.core.MfhEntity;
  * POS--收银台／购物车商品
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name = "tb_cashier_shopcart_v01000")
+@Table(name = "tb_cashier_shopcart_v01001")
 public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
-    /**POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo*/
+    /**
+     * POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo
+     */
     private String posTradeNo;
 
     // 5/19/16 新增商品类目类型字段，支持按类目进行账务清分
-    private Integer cateType = BizSubType.POS_STANDARD;
+//    private Integer cateType = BizSubType.POS_STANDARD;
+    private Integer prodLineId = 0;//产品线编号
 
     private String barcode; //商品条形码,最小商品库存单元的条形码
     private String name; // 商品名称
@@ -137,7 +139,7 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Double getFinalPrice() {
-        if (finalPrice == null){
+        if (finalPrice == null) {
             return 0D;
         }
         return finalPrice;
@@ -148,7 +150,7 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Double getFinalAmount() {
-        if (finalAmount == null){
+        if (finalAmount == null) {
             return 0D;
         }
         return finalAmount;
@@ -166,14 +168,14 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
         this.priceType = priceType;
     }
 
-    public Integer getCateType() {
-        if (cateType == null){
-            return BizSubType.POS_STANDARD;
+    public Integer getProdLineId() {
+        if (prodLineId == null) {
+            return 0;
         }
-        return cateType;
+        return prodLineId;
     }
 
-    public void setCateType(Integer cateType) {
-        this.cateType = cateType;
+    public void setProdLineId(Integer prodLineId) {
+        this.prodLineId = prodLineId;
     }
 }

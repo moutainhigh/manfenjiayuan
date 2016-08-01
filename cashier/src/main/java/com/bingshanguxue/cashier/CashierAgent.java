@@ -51,20 +51,19 @@ public class CashierAgent {
      * </ol>
      */
     public static boolean settle(String orderBarCode, List<CashierShopcartEntity> shopcartEntities) {
-        //Step 1 拆单
+        //Step 1 按产品线拆单
         Map<Integer, List<CashierShopcartEntity>> splitMap = new HashMap<>();
         if (shopcartEntities != null && shopcartEntities.size() > 0){
             for (CashierShopcartEntity shopcartEntity : shopcartEntities) {
-                Integer subType = shopcartEntity.getCateType();
-                List<CashierShopcartEntity> tempEntities = splitMap.get(subType);
+                Integer prodLineId = shopcartEntity.getProdLineId();
+                List<CashierShopcartEntity> tempEntities = splitMap.get(prodLineId);
                 if (tempEntities == null) {
                     tempEntities = new ArrayList<>();
                 }
                 tempEntities.add(shopcartEntity);
 
-                splitMap.put(subType, tempEntities);
-                ZLogger.df(String.format("拆单：%s(%d) %s/%s",
-                        BizSubType.name(subType), subType,
+                splitMap.put(prodLineId, tempEntities);
+                ZLogger.df(String.format("拆单--产品线编号:%d, %s/%s", prodLineId,
                         shopcartEntity.getBarcode(), shopcartEntity.getName()));
             }
         }

@@ -17,7 +17,6 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -140,10 +139,26 @@ public class BackendCategoryFragment extends BaseFragment {
     /**
      * 加载数据
      */
-    public void reload() {
-        if (!readCategoryInfoCache()) {
-            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
-        }
+    private void reload() {
+//        if (!readCategoryInfoCache()) {
+//            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
+//        }
+
+        List<CategoryOption> categoryOptions = new ArrayList<>();
+        categoryOptions.add(makeSimpleCategoryInstance(3891L, "蔬菜豆菇"));
+        categoryOptions.add(makeSimpleCategoryInstance(3903L, "海鲜水产"));
+        categoryOptions.add(makeSimpleCategoryInstance(3942L, "肉禽蛋品"));
+        categoryOptions.add(makeSimpleCategoryInstance(3958L, "熟食料理"));
+        categoryOptions.add(makeSimpleCategoryInstance(3977L, "水台饮品"));
+        categoryOptions.add(makeSimpleCategoryInstance(3175L, "烘焙面包"));
+        refreshCategoryTab(categoryOptions);
+    }
+
+    private CategoryOption makeSimpleCategoryInstance(Long code, String value){
+        CategoryOption option = new CategoryOption();
+        option.setCode(code);
+        option.setValue(value);
+        return option;
     }
 
     /**
@@ -171,12 +186,6 @@ public class BackendCategoryFragment extends BaseFragment {
      * 刷新类目TAB
      */
     private void refreshCategoryTab(List<CategoryOption> items) {
-//        PosCategory rootClone = new PosCategory();
-//        rootClone.setNameCn("全部");
-//        rootClone.setId(categoryId);
-//        rootClone.setParentId(categoryId);
-//        curCategoryList.add(rootClone);
-
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         if (items != null && items.size() > 0) {
             for (CategoryOption category : items) {

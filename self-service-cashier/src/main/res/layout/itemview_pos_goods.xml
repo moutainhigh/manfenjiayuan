@@ -29,20 +29,8 @@
         android:text="@string/default_amount_unit"
         android:textColor="@color/material_black"
         android:textSize="16sp"
-        android:gravity="end"
+        android:gravity="start"
         android:padding="4dp"/>
-
-    <TextView
-        android:id="@+id/tv_pricetype"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/default_amount_unit"
-        android:textColor="@color/material_black"
-        android:textSize="16sp"
-        android:gravity="end"
-        android:padding="4dp"/>
-
 
     <TextView
         android:id="@+id/tv_costprice"
@@ -52,7 +40,7 @@
         android:text="@string/default_amount_unit"
         android:textColor="@color/material_black"
         android:textSize="16sp"
-        android:gravity="end"
+        android:gravity="center"
         android:padding="4dp"/>
 
 </LinearLayout>

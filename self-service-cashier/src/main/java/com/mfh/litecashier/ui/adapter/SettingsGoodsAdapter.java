@@ -2,22 +2,25 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.framework.api.constant.PriceType;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.mfh.framework.uikit.widget.BadgeDrawable;
+import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,8 @@ public class SettingsGoodsAdapter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_settings_goods_card, parent, false));
+        return new ProductViewHolder(mLayoutInflater
+                .inflate(R.layout.itemview_settings_goods_card, parent, false));
     }
 
     @Override
@@ -68,6 +72,39 @@ public class SettingsGoodsAdapter
 //        } else {
 //            holder.rootView.setSelected(false);
 //        }
+        BadgeDrawable drawablePriceType =
+                new BadgeDrawable.Builder()
+                        .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
+//                        .badgeColor(0xFF5722)
+                        .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
+                        .text1(PriceType.name(entity.getPriceType()))
+                        .build();
+        BadgeDrawable drawableProLine =
+                new BadgeDrawable.Builder()
+                        .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
+//                        .badgeColor(0xFF5722)
+                        .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
+                        .text1(String.valueOf(entity.getProdLineId()))
+                        .text2("产品线")
+                        .build();
+
+        BadgeDrawable drawableStatus =
+                new BadgeDrawable.Builder()
+                        .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
+//                        .badgeColor(0xFF5722)
+                        .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
+                        .text2(String.valueOf(entity.getStatus()))
+                        .build();
+        if (entity.getStatus() != null && entity.getStatus().equals(1)) {
+            drawableStatus.setText1("出售中");
+        } else {
+            drawableStatus.setText1("已下架");
+        }
+
+        SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawablePriceType.toSpannable())
+                + " " + TextUtils.concat(drawableProLine.toSpannable())
+                + " " + TextUtils.concat(drawableStatus.toSpannable()));
+        holder.tvBadge.setText(badgeBrief);
 
         holder.tvId.setText(String.format("编号：%d", entity.getId()));
         holder.tvName.setText(String.format("商品：(%s)/%s", entity.getBarcode(), entity.getName()));
@@ -75,24 +112,17 @@ public class SettingsGoodsAdapter
         holder.tvSkuId.setText(String.format("SKU编号：%d", entity.getProSkuId()));
         holder.tvCostPrice.setText(MUtils.formatDouble("零售价：", "",
                 entity.getCostPrice(), "", "/", entity.getUnit()));
-        holder.tvPriceType.setText(PriceType.name(entity.getPriceType()));
         holder.tvPackageNum.setText(String.format("箱规：%.2f", entity.getPackageNum()));
         holder.tvTenantId.setText(String.format("租户编号：%d", entity.getTenantId()));
         holder.tvStockQuantity.setText(String.format("库存：%.2f", entity.getQuantity()));
         holder.tvProviderId.setText(String.format("批发商编号：%d", entity.getProviderId()));
-        if (entity.getStatus() != null && entity.getStatus().equals(1)){
-            holder.tvStatus.setText("出售中");
-        }
-        else{
-            holder.tvStatus.setText("已下架");
-        }
-
-        holder.tvCateType.setText(CateApi.backendCatetypeName(entity.getCateType()));
+        holder.tvProcateId.setText(String.format("类目编号：%d", entity.getProcateId()));
 
         holder.tvCreateDate.setText(String.format("创建时间：%s",
                 TimeUtil.format(entity.getCreatedDate(), TimeCursor.InnerFormat)));
         holder.tvUpdateDate.setText(String.format("更新时间：%s",
                 TimeUtil.format(entity.getUpdatedDate(), TimeCursor.InnerFormat)));
+
     }
 
     @Override
@@ -106,8 +136,10 @@ public class SettingsGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.rootview)
+        //        @Bind(R.id.rootview)
 //        View rootView;
+        @Bind(R.id.tv_badge)
+        TextView tvBadge;
         @Bind(R.id.tv_id)
         TextView tvId;
         @Bind(R.id.tv_spu_id)
@@ -126,14 +158,8 @@ public class SettingsGoodsAdapter
         TextView tvStockQuantity;
         @Bind(R.id.tv_provider_id)
         TextView tvProviderId;
-
-        @Bind(R.id.tv_catetype)
-        TextView tvCateType;
-        @Bind(R.id.tv_pricetype)
-        TextView tvPriceType;
-        @Bind(R.id.tv_status)
-        TextView tvStatus;
-
+        @Bind(R.id.tv_procateId)
+        TextView tvProcateId;
         @Bind(R.id.tv_createDate)
         TextView tvCreateDate;
         @Bind(R.id.tv_updatedate)

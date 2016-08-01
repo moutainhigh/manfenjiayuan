@@ -10,66 +10,26 @@
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="@dimen/spacing_normal">
+        <!-- 标签-->
+        <TextView
+            android:id="@+id/tv_badge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_normal"/>
+
         <!--编号-->
         <TextView
             android:id="@+id/tv_id"
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/tv_pricetype"
             android:singleLine="true"
             android:text="编号" />
-
-        <!-- 类目类型-->
-        <TextView
-            android:id="@+id/tv_catetype"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:layout_toStartOf="@+id/tv_pricetype"
-            android:background="@color/material_blue_500"
-            android:ellipsize="end"
-            android:padding="@dimen/spacing_micro"
-            android:singleLine="true"
-            android:text="类目类型"
-            android:textColor="@color/material_white"
-            android:textSize="16sp" />
-
-        <!-- 计价方式-->
-        <TextView
-            android:id="@+id/tv_pricetype"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:layout_toStartOf="@+id/tv_status"
-            android:background="@color/material_orange_500"
-            android:ellipsize="end"
-            android:padding="@dimen/spacing_micro"
-            android:singleLine="true"
-            android:text="计价方式"
-            android:textColor="@color/material_white"
-            android:textSize="16sp" />
-
-        <!-- 状态-->
-        <TextView
-            android:id="@+id/tv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:background="@color/material_deep_orange_500"
-            android:ellipsize="end"
-            android:padding="@dimen/spacing_micro"
-            android:singleLine="true"
-            android:text="状态"
-            android:textColor="@color/material_white"
-            android:textSize="16sp" />
 
         <!--商品条码&商品名称-->
         <TextView
@@ -77,7 +37,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_id"
             android:singleLine="true"
             android:text="商品条码&amp;商品名称" />
 
@@ -87,7 +46,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name"
             android:singleLine="true"
             android:text="SPU编号" />
 
@@ -97,7 +55,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_spu_id"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="SKU编号" />
@@ -108,7 +65,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_sku_id"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="零售价&amp;单位" />
@@ -119,7 +75,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_costprice"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="箱规" />
@@ -129,7 +84,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_packageNum"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="租户编号" />
@@ -139,7 +93,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_tenant_id"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="库存" />
@@ -150,10 +103,19 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_stock_quantity"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="批发商编号" />
+
+        <!-- 类目编号-->
+        <TextView
+            android:id="@+id/tv_procateId"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="类目编号" />
 
 
         <!-- 创建时间-->
@@ -162,7 +124,6 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_provider_id"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="创建时间" />
@@ -173,9 +134,8 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_createDate"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="更新时间" />
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>

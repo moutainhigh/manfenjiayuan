@@ -351,14 +351,14 @@ public class DataSyncManager {
                     entity.setPriceType(posGoods.getPriceType());
                     entity.setPackageNum(posGoods.getPackageNum());
                     entity.setProcateId(posGoods.getProcateId());
-                    entity.setCateType(posGoods.getCateType());
+                    entity.setProdLineId(posGoods.getProdLineId());
 
                     //设置商品名称的拼音和排序字母
                     String namePinyin = PinyinUtils.getPingYin(posGoods.getName());
                     entity.setNamePinyin(namePinyin);
                     String sortLetter = null;
                     if (!StringUtils.isEmpty(namePinyin)){
-                        sortLetter = namePinyin.substring(0, 1);
+                        sortLetter = namePinyin.substring(0, 1).toUpperCase();
                     }
                     if (sortLetter != null && sortLetter.matches("[A-Z]")) {
                         entity.setNameSortLetter(sortLetter);

@@ -22,6 +22,7 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     private Integer isActive = ACTIVE;
 
     private Integer bizType;//业务类型
+    //实际取值为商品的产品线编号
     private Integer subType;//业务子类型，根据商品而定
 
     private String posId; //POS编号

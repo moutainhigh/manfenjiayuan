@@ -88,7 +88,7 @@
             android:text="现金收取："/>
     </LinearLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -164,7 +164,7 @@
             </FrameLayout>
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     <!--按键-->
     <include layout="@layout/view_dialog_footer"/>

@@ -24,7 +24,11 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_GETLOCAL_BYBARCODE, params, responseCallback);
     }
 
-    public static void findGoodsList(Long categoryId, PageInfo pageInfo,
+    /**
+     * 查询商品
+     * @param categoryId 类目编号
+     * */
+    public static void findGoodsListByCategory(Long categoryId, PageInfo pageInfo,
                                      AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (categoryId != null) {
@@ -38,7 +42,11 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
     }
 
-    public static void findGoodsList(String barcode, PageInfo pageInfo,
+    /**
+     * 查询商品
+     * @param barcode 商品条码
+     * */
+    public static void findGoodsListByBarcode(String barcode, PageInfo pageInfo,
                                      AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (!StringUtils.isEmpty(barcode)) {

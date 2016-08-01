@@ -255,7 +255,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                             String.format("%.0f", goods.getCostPrice() * 100),
                             plu,
                             FLAG_F12,
-                            String.valueOf(goods.getCateType()),
+                            String.valueOf(goods.getProdLineId()),
                             goods.getName(),
                             PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
                 }
@@ -298,7 +298,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                                 String.format("%.0f", goods.getCostPrice() * 100),
                                 plu,
                                 FLAG_F12,
-                                String.valueOf(goods.getCateType()),
+                                String.valueOf(goods.getProdLineId()),
                                 goods.getName(),
                                 PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
                     }
@@ -432,21 +432,6 @@ public class SMScaleSyncManager2 extends FTPManager {
 //                }
 //            });
         }
-    }
-
-    private List<String[]> genFileData(List<PosProductEntity> goodsList) {
-//        beanToCsv.write()
-        List<String[]> allElements = new ArrayList<>();
-//        PLU号码,单价,品名信息,称重标识（1非称重，0称重）,标签格式,分类,表示位（F1，F2)
-        allElements.add(TEMPLATE_COLUMNS);
-        for (PosProductEntity goods : goodsList) {
-            allElements.add(new String[]{goods.getBarcode(),
-                    String.format("%.0f", goods.getCostPrice() * 100), goods.getBarcode(),
-                    "20", String.valueOf(goods.getCateType()),
-                    goods.getName()});
-        }
-
-        return allElements;
     }
 
     /**

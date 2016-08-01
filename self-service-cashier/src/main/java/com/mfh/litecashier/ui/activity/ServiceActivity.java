@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -60,6 +59,11 @@ public class ServiceActivity extends BaseActivity {
     }
 
     @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
+
+    @Override
     protected void initToolBar() {
         super.initToolBar();
 
@@ -85,9 +89,6 @@ public class ServiceActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         handleIntent();
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
 
