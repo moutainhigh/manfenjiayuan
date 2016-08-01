@@ -11,6 +11,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:divider="@drawable/divider_horizontal_line_primary"
+        android:showDividers="middle"
         android:layout_weight="1">
         <!--导航-->
         <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
@@ -20,6 +22,12 @@
             android:background="@color/material_white"
             app:allowWidthFull="false"
             app:slidingBlock="@drawable/slidingblock_white_greenline" />
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_backendcategory_goods_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
         <!--内容区-->
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager_category_goods"

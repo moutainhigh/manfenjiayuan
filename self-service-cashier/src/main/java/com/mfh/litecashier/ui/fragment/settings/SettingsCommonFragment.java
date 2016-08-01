@@ -16,6 +16,7 @@ import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.SettingsItem;
 import com.mfh.framework.uikit.compound.ToggleSettingItem;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
@@ -44,8 +45,10 @@ import de.greenrobot.event.EventBus;
  * 设置－－通用
  * Created by kun on 15/8/31.
  */
-public class SettingsCommonFragment extends BaseFragment implements IPosRegisterView{
+public class SettingsCommonFragment extends BaseFragment implements IPosRegisterView {
 
+    @Bind(R.id.item_posgoods)
+    SettingsItem itemPosGoods;
     @Bind(R.id.item_mixi_fresh)
     SettingsItem itemMixiFresh;
     @Bind(R.id.item_terminal)
@@ -160,6 +163,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
+                        showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
                         EventBus.getDefault().post(
                                 new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE));
                     }
@@ -170,7 +174,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         dialog.dismiss();
                     }
                 });
-
     }
 
     /**
@@ -206,8 +209,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
      * 注册设备
      */
     @OnClick(R.id.item_terminal)
-    public void registerPlat(){
-        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())){
+    public void registerPlat() {
+        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
             showConfirmDialog("同步商品库到最新版本，同步过程中会先删除历史数据，可能会影响正常收银，确定要同步吗？",
                     "注册", new DialogInterface.OnClickListener() {
 
@@ -224,8 +227,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                             dialog.dismiss();
                         }
                     });
-        }
-        else{
+        } else {
             showConfirmDialog("同步商品库到最新版本，同步过程中会先删除历史数据，可能会影响正常收银，确定要同步吗？",
                     "更新", new DialogInterface.OnClickListener() {
 
@@ -332,7 +334,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     }
 
     @OnClick(R.id.item_smscale_rs232)
-    public void configureSmscaleRs232(){
+    public void configureSmscaleRs232() {
         if (setPortDialog == null) {
             setPortDialog = new SetPortDialog(getActivity());
             setPortDialog.setCancelable(false);
@@ -359,7 +361,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     }
 
     @OnClick(R.id.item_smscale_ftp)
-    public void configureSmscaleFtp(){
+    public void configureSmscaleFtp() {
         if (mSMScaleSettingsDialog == null) {
             mSMScaleSettingsDialog = new SMScaleSettingsDialog(getActivity());
             mSMScaleSettingsDialog.setCancelable(false);
@@ -377,7 +379,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     }
 
     @OnClick(R.id.item_greentags_webservice)
-    public void showGreenTagsDialog(){
+    public void showGreenTagsDialog() {
         if (mGreenTagsSettingsDialog == null) {
             mGreenTagsSettingsDialog = new GreenTagsSettingsDialog(getActivity());
             mGreenTagsSettingsDialog.setCancelable(false);
@@ -396,6 +398,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     private void refresh() {
         try {
+            itemPosGoods.setSubTitle(SharedPreferencesHelper.getSyncProductsCursor());
             //米西生鲜
             String cursorKey1 = String.format("%s_%d_%s",
                     SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,

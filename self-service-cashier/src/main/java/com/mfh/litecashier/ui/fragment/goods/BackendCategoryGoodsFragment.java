@@ -113,7 +113,6 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
                 // 该字母首次出现的位置
                 int position = adapter.getPositionForSelection(sortLetter.charAt(0));
 
-
                 if (position != -1) {
                     mRecyclerView.scrollToPosition(position);
                 }

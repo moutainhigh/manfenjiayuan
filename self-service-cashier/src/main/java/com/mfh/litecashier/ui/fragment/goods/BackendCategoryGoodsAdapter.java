@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
@@ -56,8 +55,8 @@ public class BackendCategoryGoodsAdapter
 //            holder.ivHeader.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 156), DensityUtil.dip2px(mContext, 156)));
         holder.tvName.setText(entity.getName());
         holder.tvBarcode.setText(entity.getBarcode());
-        holder.tvPriceType.setText(PriceType.name(entity.getPriceType()));
-        holder.tvCostPrice.setText(String.format("¥ %.2f", entity.getCostPrice()));
+        holder.tvCostPrice.setText(String.format("¥ %.2f/%s",
+                entity.getCostPrice(), entity.getUnit()));
     }
 
     @Override
@@ -93,8 +92,6 @@ public class BackendCategoryGoodsAdapter
         TextView tvName;
         @Bind(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_pricetype)
-        TextView tvPriceType;
         @Bind(R.id.tv_costprice)
         TextView tvCostPrice;
 

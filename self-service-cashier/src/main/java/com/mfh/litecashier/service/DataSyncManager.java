@@ -358,7 +358,7 @@ public class DataSyncManager {
                     entity.setNamePinyin(namePinyin);
                     String sortLetter = null;
                     if (!StringUtils.isEmpty(namePinyin)){
-                        sortLetter = namePinyin.substring(0, 1);
+                        sortLetter = namePinyin.substring(0, 1).toUpperCase();
                     }
                     if (sortLetter != null && sortLetter.matches("[A-Z]")) {
                         entity.setNameSortLetter(sortLetter);
