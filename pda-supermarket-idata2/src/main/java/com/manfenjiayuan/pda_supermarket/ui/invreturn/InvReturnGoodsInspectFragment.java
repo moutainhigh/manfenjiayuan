@@ -83,6 +83,8 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        super.createViewInner(rootView, container, savedInstanceState);
+
         labelPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {

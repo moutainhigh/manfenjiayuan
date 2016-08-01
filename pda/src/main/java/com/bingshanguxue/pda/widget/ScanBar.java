@@ -24,7 +24,6 @@ import com.mfh.framework.core.utils.StringUtils;
  * 自定义扫描条码控件
  */
 public class ScanBar extends LinearLayout {
-    private static final String TAG = "ScanBar";
 
     private EditText etInput;
     private ImageView ivDel;
