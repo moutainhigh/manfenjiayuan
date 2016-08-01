@@ -6,12 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,9 +22,10 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class BackendCategoryGoodsAdapter
-        extends RegularAdapter<PosProductEntity, BackendCategoryGoodsAdapter.MenuOptioinViewHolder> {
+        extends RegularAdapter<ScGoodsSkuWrapper,
+        BackendCategoryGoodsAdapter.MenuOptioinViewHolder> {
 
-    public BackendCategoryGoodsAdapter(Context context, List<PosProductEntity> entityList) {
+    public BackendCategoryGoodsAdapter(Context context, List<ScGoodsSkuWrapper> entityList) {
         super(context, entityList);
     }
 
@@ -51,16 +52,16 @@ public class BackendCategoryGoodsAdapter
 
     @Override
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
-        final PosProductEntity entity = entityList.get(position);
+        final ScGoodsSkuWrapper entity = entityList.get(position);
 //            holder.ivHeader.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 156), DensityUtil.dip2px(mContext, 156)));
-        holder.tvName.setText(entity.getName());
+        holder.tvName.setText(entity.getSkuName());
         holder.tvBarcode.setText(entity.getBarcode());
         holder.tvCostPrice.setText(String.format("¥ %.2f/%s",
                 entity.getCostPrice(), entity.getUnit()));
     }
 
     @Override
-    public void setEntityList(List<PosProductEntity> entityList) {
+    public void setEntityList(List<ScGoodsSkuWrapper> entityList) {
 //        super.setEntityList(entityList);
 
         this.entityList = entityList;
@@ -72,7 +73,7 @@ public class BackendCategoryGoodsAdapter
     }
 
     @Override
-    public void appendEntityList(List<PosProductEntity> entityList) {
+    public void appendEntityList(List<ScGoodsSkuWrapper> entityList) {
 //        super.appendEntityList(entityList);
         if (entityList == null){
             return;
@@ -83,6 +84,8 @@ public class BackendCategoryGoodsAdapter
         }
 
         this.entityList.addAll(entityList);
+
+        Collections.sort(entityList, new PinyinComparator());
 //        sortByPinyin();
         notifyDataSetChanged();
     }

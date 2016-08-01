@@ -10,11 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.bingshanguxue.cashier.database.service.PosProductService;
-import com.bingshanguxue.cashier.model.PosGoods;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
@@ -22,10 +21,9 @@ import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.utils.PinyinUtils;
 
-import net.tsz.afinal.core.AsyncTask;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -36,7 +34,8 @@ import de.greenrobot.event.EventBus;
  * 前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEntity> {
+public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWrapper>
+        implements IScGoodsSkuView {
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -49,6 +48,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
     private BackendCategoryGoodsAdapter adapter;
 
     private Long categoryId;
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
 
 
     @Override
@@ -61,6 +61,8 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
+
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -229,7 +231,6 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
             return;
         }
 
-
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
@@ -242,66 +243,53 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<PosProductEnt
     }
 
     private void load(PageInfo pageInfo) {
-        new QueryAsyncTask(pageInfo)
-                .execute();
-
-//         StringBuilder sbWhere = new StringBuilder();
-//        if (categoryId != null){
-//            sbWhere.append(String.format("procateId = '%d'", categoryId));
-//        }
-//
-//        List<PosProductEntity> entityList  = PosProductService.get()
-//                .queryAllBy(sbWhere.toString(), "updatedDate desc", pageInfo);
-//
-//        if (entityList == null || entityList.size() < 1) {
-//            ZLogger.d("没有找到商品。");
-//
-//            onLoadFinished();
-//            return;
-//        }
-//        ZLogger.d(String.format("共找到%d条商品(%d/%d-%d)", entityList.size(),
-//                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
-//
-//        if (adapter != null) {
-//            adapter.appendEntityList(entityList);
-//        }
-//        onLoadFinished();
+        mScGoodsSkuPresenter.findGoodsListByCategory(categoryId, pageInfo);
     }
 
-    private class QueryAsyncTask extends AsyncTask<RspQueryResult<PosGoods>, Integer, List<PosProductEntity>> {
-        private PageInfo pageInfo;
-        private String sqlWhere = "";//查询条件
+    @Override
+    public void onIScGoodsSkuViewProcess() {
+        onLoadStart();
+    }
 
-        public QueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-            if (categoryId != null){
-                sqlWhere = String.format("procateId = '%d'", categoryId);
+    @Override
+    public void onIScGoodsSkuViewError(String errorMsg) {
+
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
+        List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
+
+        mPageInfo = pageInfo;
+
+        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
+            for (ScGoodsSku sku : scGoodsSkus){
+                ScGoodsSkuWrapper wrapper = (ScGoodsSkuWrapper) scGoodsSkus;
+
+                //设置商品名称的拼音和排序字母
+                String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
+                wrapper.setNamePinyin(namePinyin);
+                String sortLetter = null;
+                if (!StringUtils.isEmpty(namePinyin)){
+                    sortLetter = namePinyin.substring(0, 1).toUpperCase();
+                }
+                if (sortLetter != null && sortLetter.matches("[A-Z]")) {
+                    wrapper.setNameSortLetter(sortLetter);
+                } else {
+                    wrapper.setNameSortLetter("#");
+                }
+                wrappers.add(wrapper);
             }
         }
 
-        @Override
-        protected List<PosProductEntity> doInBackground(RspQueryResult<PosGoods>... params) {
-            List<PosProductEntity> entityList  = PosProductService.get()
-                    .queryAllBy(sqlWhere, "updatedDate desc", pageInfo);
-
-            mPageInfo = pageInfo;
-
-            if (entityList != null && entityList.size() > 0){
-                Collections.sort(entityList, new PinyinComparator());
-            }
-            return entityList;
-//        return null;
+        if (adapter != null) {
+            adapter.appendEntityList(wrappers);
         }
+        onLoadFinished();
+    }
 
-        @Override
-        protected void onPostExecute(List<PosProductEntity> posProductEntities) {
-            super.onPostExecute(posProductEntities);
-
-            if (adapter != null) {
-                adapter.appendEntityList(posProductEntities);
-            }
-            onLoadFinished();
-        }
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
 
     }
 
