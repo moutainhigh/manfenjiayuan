@@ -10,6 +10,7 @@ public class AffairEvent {
     public static final int EVENT_ID_RESET_UNREAD_ORDER = 0X01;//清空未读订单数
     public static final int EVENT_ID_APPEND_UNREAD_ORDER = 0X02;//增加未读订单数
     public static final int EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER = 0X03;//预定订单更新
+    public static final int EVENT_ID_APPEND_UNREAD_SKU = 0X04;//预定订单更新
 
     //同步数据
     public static final int EVENT_ID_SYNC_DATA_INITIALIZE = 0X20;//恢复出厂设置

@@ -115,7 +115,11 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         else if (IMBizType.TENANT_SKU_UPDATE == bizType){
             //同步数据
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_START));
+            int count = SharedPreferencesHelper
+                    .getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+            SharedPreferencesHelper
+                    .set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, count+1);
+            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
         }
         else if (IMBizType.NEW_PURCHASE_ORDER == bizType){
             int count = SharedPreferencesHelper

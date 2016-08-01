@@ -51,6 +51,7 @@ public class SharedPreferencesHelper {
     public static final String PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR = "pk_import_from_startcursor";//时间戳
 
     //同步商品
+    public static final String PK_SKU_UPDATE_UNREADNUMBER = "pk_sku_update_unreadnumber";   //上一次交接班班次
     public static final String PK_SYNC_PRODUCTS_ENABLED = "pk_sync_products_enabled";//同步商品
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
     private static final String PK_SYNC_PRODUCTS_MODE = "pk_sync_products_mode";//同步方式：0全量，1增量。
