@@ -22,6 +22,9 @@ public class BizType {
     public final static Integer DAILYSETTLE     = 98;//日结
     public final static Integer RECHARGE        = 99;//代充值
 
+    //自定义业务类型
+    public final static Integer POS_QUOTA        = 201;//现金授权
+
     public static String name(Integer value) {
         if (value == null){
             return "";
@@ -68,6 +71,9 @@ public class BizType {
         }
         else if (value.equals(RECHARGE)) {
             return "代充值";
+        }
+        else if (value.equals(POS_QUOTA)) {
+            return "自定义－现金授权";
         }
         else{
             return "Unknow";

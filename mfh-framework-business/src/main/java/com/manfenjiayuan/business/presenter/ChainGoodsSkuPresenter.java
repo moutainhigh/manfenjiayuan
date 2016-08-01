@@ -31,21 +31,21 @@ public class ChainGoodsSkuPresenter {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onProcess();
+                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onSuccess(pageInfo, dataList);
+                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onError(errorMsg);
+                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
                 }
             }
         });
@@ -55,31 +55,63 @@ public class ChainGoodsSkuPresenter {
      * 查询批发商商品
      * @param frontCategoryId 类目编号
      * */
-    public void loadCompanyChainSkuGoods(PageInfo pageInfo, Long frontCategoryId, Long companyId, String barcode){
+    public void loadCompanyChainSkuGoods(PageInfo pageInfo, Long frontCategoryId,
+                                         Long companyId, String barcode){
         iChainGoodsSkuMode.findPublicChainGoodsSku2(pageInfo, frontCategoryId, companyId, barcode,
                 new OnPageModeListener<ChainGoodsSku>() {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onProcess();
+                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onSuccess(pageInfo, dataList);
+                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onError(errorMsg);
+                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
                 }
             }
         });
     }
+
+    /**
+     * 查询批发商商品
+     * @param barcode 商品条码
+     * */
+    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike){
+        iChainGoodsSkuMode.findSupplyChainGoodsSku(barcode, proSkuId, nameLike,
+                new OnPageModeListener<ChainGoodsSku>() {
+                    @Override
+                    public void onProcess() {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
+    }
+
 
     /**
      * 获取批发商商品
@@ -90,21 +122,21 @@ public class ChainGoodsSkuPresenter {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onProcess();
+                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onSuccess(pageInfo, dataList);
+                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onError(errorMsg);
+                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
                 }
             }
         });
@@ -118,21 +150,21 @@ public class ChainGoodsSkuPresenter {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onProcess();
+                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(ChainGoodsSku data) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onQueryChainGoodsSku(data);
+                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(data);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onError(errorMsg);
+                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
                 }
             }
         });
