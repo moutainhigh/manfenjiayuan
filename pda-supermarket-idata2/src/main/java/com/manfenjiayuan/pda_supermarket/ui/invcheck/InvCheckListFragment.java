@@ -1,9 +1,13 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake;
+package com.manfenjiayuan.pda_supermarket.ui.invcheck;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -41,7 +45,11 @@ import butterknife.OnClick;
  * 库存－－库存盘点
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InventoryCheckFragment extends BaseFragment {
+public class InvCheckListFragment extends BaseFragment {
+
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     private static final int STATE_NONE = 0;
     private static final int STATE_REFRESH = 1;
@@ -66,8 +74,8 @@ public class InventoryCheckFragment extends BaseFragment {
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
     private List<InvCheckOrder> orderList = new ArrayList<>();
 
-    public static InventoryCheckFragment newInstance(Bundle args) {
-        InventoryCheckFragment fragment = new InventoryCheckFragment();
+    public static InvCheckListFragment newInstance(Bundle args) {
+        InvCheckListFragment fragment = new InvCheckListFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -82,10 +90,42 @@ public class InventoryCheckFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+
+        mToolbar.setTitle("盘点批次");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_sync) {
+                    reloadInvCheckOrder();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_check);
+
         setupSwipeRefresh();
         initOrderRecyclerView();
 
         reloadInvCheckOrder();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_inv_check, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -195,7 +235,7 @@ public class InventoryCheckFragment extends BaseFragment {
     /**
      * 加载盘点订单列表列表
      */
-    @OnClick({R.id.order_empty_view, R.id.button_sync})
+    @OnClick({R.id.order_empty_view})
     public synchronized void reloadInvCheckOrder() {
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载盘点订单列表。");

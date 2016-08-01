@@ -7,7 +7,7 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.StockTakeFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invcheck.StockTakeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.StockTakeHistoryFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.StockTakeSettingsFragment;
 

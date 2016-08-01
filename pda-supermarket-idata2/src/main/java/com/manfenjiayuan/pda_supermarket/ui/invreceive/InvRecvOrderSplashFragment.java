@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.receipt;
+package com.manfenjiayuan.pda_supermarket.ui.invreceive;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

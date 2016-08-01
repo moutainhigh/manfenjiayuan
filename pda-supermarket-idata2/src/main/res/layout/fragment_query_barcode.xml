@@ -1,89 +1,58 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/material_white"
-                android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar_scan_barcode"/>
 
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/mfh_toolbar_background"
-        android:elevation="@dimen/spacing_micro"
-        app:layout_collapseMode="pin"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_margin="@dimen/spacing_micro"
-            android:padding="@dimen/spacing_micro">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <com.bingshanguxue.pda.widget.ScanBar
-                android:id="@+id/scanBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/spacing_normal"
-                android:layout_toStartOf="@+id/iv_search"
-                android:weightSum="1"
-                app:hint="请扫描商品条码"
-                app:textColor="@color/black"
-                app:textColorHint="@color/black_35"
-                app:textSize="16px"
-                app:mfh_inputType="barcode"/>
+            <!--内容区-->
 
-            <ImageView
-                android:id="@+id/iv_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/spacing_normal"
-                android:layout_marginEnd="@dimen/spacing_normal"
-                android:background="@null"
-                android:src="@mipmap/ic_toolbar_search_white"/>
-        </RelativeLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-    </android.support.v7.widget.Toolbar>
 
-    <!--加载界面-->
-    <!--<include layout="@layout/toolbar"/>-->
-
-    <!--取消-->
+    <!--结算-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_cancel"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
+        android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_fab_confirm"
-        app:backgroundTint="@color/mfh_colorPrimary"
+        android:src="@mipmap/ic_cancel_white_24"
+        app:backgroundTint="@color/mfh_negative_defalult"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"
-        android:visibility="gone"
         app:rippleColor="@color/material_green_800"/>
 
-
-    <!--确认-->
+    <!--结算-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_submit"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_double"
         android:src="@mipmap/ic_fab_confirm"
-        app:backgroundTint="@color/mfh_colorPrimary"
+        app:backgroundTint="@color/mfh_positive_default"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"
         app:rippleColor="@color/material_green_800"/>
+</android.support.design.widget.CoordinatorLayout>
 
-</RelativeLayout>

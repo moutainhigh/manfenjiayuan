@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake;
+package com.manfenjiayuan.pda_supermarket.ui.invcheck;
 
 import android.os.Bundle;
 import android.view.View;
@@ -66,7 +66,6 @@ public class StockTakeFragment extends PDAScanFragment {
     private Long curOrderId;//当前盘点批次编号
     private Long curShelfNumber = 0L;//当前盘点货架
     private ScGoodsSku curGoods = null;//当前盘点商品
-//    private boolean isPackage = false;//查询到的商品是否是有规格的，true,显示箱包总数，否则按单品计算
 
     public static StockTakeFragment newInstance(Bundle args) {
         StockTakeFragment fragment = new StockTakeFragment();

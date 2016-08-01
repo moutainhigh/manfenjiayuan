@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.receipt;
+package com.manfenjiayuan.pda_supermarket.ui.invreceive;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -9,23 +9,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.widget.EditQueryView;
-import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
+import com.manfenjiayuan.pda_supermarket.presenter.InvSendIoOrderPresenter;
+import com.manfenjiayuan.pda_supermarket.ui.IInvSendIoOrderView;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.DistributionSignAdapter;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
-import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -38,32 +39,35 @@ import butterknife.OnClick;
 
 
 /**
- * 商品配送－－签收页面
+ * 采购收货－－批发商的发货单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
+public class ReceiveMSendOrderFragment extends BaseReceiveOrderFragment
+        implements IInvSendIoOrderView {
 
-    @Bind(R.id.providerView)
-    NaviAddressView mProviderView;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
+    public static final String EXTRA_KEY_BARCODE = "barcode";
+
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private DistributionSignAdapter officeAdapter;
     private ItemTouchHelper itemTouchHelper;
 
+    @Bind(R.id.animProgress)
+    ProgressBar animProgress;
     @Bind(R.id.empty_view)
     View emptyView;
     @Bind(R.id.button_sign)
-    View btnSign;
+    Button btnSign;
+    @Bind(R.id.button_inspect)
+    Button btnInspect;
 
-    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
+    private InvSendIoOrderPresenter invSendIoOrderPresenter;
 
-    /*供应商*/
-    private CompanyInfo companyInfo = null;//当前私有供应商
+    private String barcode = null;
+    private InvSendIoOrderItemBrief mInvSendIoOrderItemBrief = null;
 
-    public static CreateNewReceiveOrderFragment newInstance(Bundle args) {
-        CreateNewReceiveOrderFragment fragment = new CreateNewReceiveOrderFragment();
+    public static ReceiveMSendOrderFragment newInstance(Bundle args) {
+        ReceiveMSendOrderFragment fragment = new ReceiveMSendOrderFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -78,73 +82,78 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
 
 
     @Override
-    protected int getLayoutResId() {
-        return R.layout.fragment_create_inv_receiveorder;
+    protected void onScanCode(String code) {
+        if (mInvSendIoOrderItemBrief != null){
+            inspect(barcode);
+        }
     }
 
     @Override
-    protected void onScanCode(String code) {
-        if (!isAcceptBarcodeEnabled){
-            return;
-        }
-        isAcceptBarcodeEnabled = false;
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
-        inspect(code);
+    protected int getLayoutResId() {
+        return R.layout.fragment_receive_m_sendorder;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //清空签收数据库
-        DistributionSignService.get().clear();
+        invSendIoOrderPresenter = new InvSendIoOrderPresenter(this);
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         initRecyclerView();
 
-//        Bundle args = getArguments();
-//        if (args != null) {
-////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
-//        }
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setHoldFocusEnable(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                onScanCode(text);
-            }
-        });
+        Bundle args = getArguments();
+        if (args != null) {
+            barcode = args.getString(EXTRA_KEY_BARCODE);
+        }
+
+        //清空签收数据库
+        DistributionSignService.get().clear();
+
+        if (StringUtils.isEmpty(barcode)) {
+            DialogUtil.showHint("订单条码无效");
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
+        } else {
+            load(barcode);
+        }
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onDestroy() {
+        super.onDestroy();
 
-        if (companyInfo == null) {
-            selectInvCompProvider();
-        } else {
-            eqvBarcode.requestFocus();
-            eqvBarcode.clear();
-        }
-
-        isAcceptBarcodeEnabled = true;
+        //清空签收数据库
+        DistributionSignService.get().clear();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                isAcceptBarcodeEnabled = true;
+                btnInspect.setEnabled(true);
                 officeAdapter.setEntityList(DistributionSignService.get().queryAll());
             }
             break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onReceiveOrderSucceed(String orderId) {
+        super.onReceiveOrderSucceed(orderId);
+        btnSign.setEnabled(true);
+        animProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onReceiveOrderInterrupted(String message) {
+        super.onReceiveOrderInterrupted(message);
+        btnSign.setEnabled(true);
+        animProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -167,7 +176,8 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
                             dialog.dismiss();
                         }
                     });
-        } else {
+        }
+        else{
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
@@ -176,29 +186,6 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
     }
 
 
-    /**
-     * 切换发货方
-     */
-    private void changeSendCompany(CompanyInfo companyInfo) {
-        this.companyInfo = companyInfo;
-//        this.mLabelProvider.setLabelText(companyInfo != null ? companyInfo.getName() : "");
-        this.mProviderView.setText(companyInfo != null ? companyInfo.getName() : "");
-
-//        officeAdapter.setEntityList(null);//清空商品
-//        DistributionSignService.get().clear();
-    }
-
-    @Override
-    public void onReceiveOrderSucceed(String orderId) {
-        super.onReceiveOrderSucceed(orderId);
-        btnSign.setEnabled(true);
-    }
-
-    @Override
-    public void onReceiveOrderInterrupted(String message) {
-        super.onReceiveOrderInterrupted(message);
-        btnSign.setEnabled(true);
-    }
 
     /**
      * 签收
@@ -207,11 +194,9 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
     public void sign() {
         btnSign.setEnabled(false);
 
-        if (companyInfo == null) {
-            DialogUtil.showHint("请选择发货方！");
+        if (mInvSendIoOrderItemBrief == null){
+            DialogUtil.showHint("发货单无效，请退出重新扫描发货单！");
             btnSign.setEnabled(true);
-            hideProgressDialog();
-            selectInvCompProvider();
             return;
         }
 
@@ -251,16 +236,22 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
         }
 
         final Double finalAmount = amount;
-        showConfirmDialog(String.format("总金额：%.2f \n请确认已经查验过所有商品。", amount),
+        showConfirmDialog(String.format("总金额：%.2f,\n请确认已经查验过所有商品。", amount),
                 "签收", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+
+                        animProgress.setVisibility(View.VISIBLE);
+
                         doSignWork(itemsArray, finalAmount, null,
-                                companyInfo.getTenantId(), IsPrivate.PLATFORM);
+                                mInvSendIoOrderItemBrief.getSendTenantId(),
+                                mInvSendIoOrderItemBrief.getIsPrivate());
+
 //                        doSignWork(officeAdapter.getEntityList(), null,
-//                                companyInfo.getTenantId(), IsPrivate.PLATFORM);
+//                                mInvSendIoOrderItemBrief.getSendTenantId(),
+//                                mInvSendIoOrderItemBrief.getIsPrivate());
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -272,12 +263,17 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
                 });
     }
 
-
     /**
      * 验货
      */
     @OnClick(R.id.button_inspect)
     public void inspect() {
+        btnInspect.setEnabled(false);
+        if (mInvSendIoOrderItemBrief == null){
+            DialogUtil.showHint("发货单无效，请退出重新扫描发货单！");
+            btnInspect.setEnabled(true);
+            return;
+        }
         inspect("");
     }
 
@@ -322,7 +318,7 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
                     operateDialog = new CommonDialog(getActivity());
                     operateDialog.setCancelable(true);
                 }
-                operateDialog.setMessage(String.format("%s\n%s", entity.getBarcode(), entity.getProductName()));
+                operateDialog.setMessage(String.format("%d, %s\n%s", position, entity.getBarcode(), entity.getProductName()));
                 operateDialog.setPositiveButton("拒收", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -350,45 +346,67 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
             @Override
             public void onDataSetChanged() {
 //                isLoadingMore = false;
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
+                animProgress.setVisibility(View.GONE);
             }
         });
 
         addressRecyclerView.setAdapter(officeAdapter);
+
 
         ItemTouchHelper.Callback callback = new MyItemTouchHelper(officeAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(addressRecyclerView);
     }
 
-    /**
-     * 选择批发商
-     */
-    @OnClick(R.id.providerView)
-    public void selectInvCompProvider() {
-        if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
-            selectPlatformProviderDialog.setCancelable(true);
-            selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
+    private void load(String barcode) {
+        if (StringUtils.isEmpty(barcode)) {
+            return;
         }
-        selectPlatformProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(CompanyInfo companyInfo) {
-                changeSendCompany(companyInfo);
-            }
 
-        });
-        selectPlatformProviderDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                eqvBarcode.requestFocusEnd();
-            }
-        });
-        if (!selectPlatformProviderDialog.isShowing()) {
-            selectPlatformProviderDialog.show();
+        if (!NetWorkUtil.isConnect(getActivity())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
         }
+
+//        if (barcode.startsWith("1")){
+//            invSendOrderPresenter.loadOrderItemsByBarcode(barcode);
+//        }
+//        else if (barcode.startsWith("2")){
+//            invSendIoOrderPresenter.loadOrderItemsByBarcode(barcode);
+//        }
+//        else {
+//            DialogUtil.showHint("订单编号无效");
+//        }
+        invSendIoOrderPresenter.loadOrderItemsByBarcode(barcode);
     }
 
+    @Override
+    public void onQueryInvSendIoOrderProcess() {
+        animProgress.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public void onQueryInvSendIoOrderError(String errorMsg) {
+        animProgress.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onQueryInvSendIoOrderSuccess(InvSendIoOrderItemBrief data) {
+        animProgress.setVisibility(View.GONE);
+
+        mInvSendIoOrderItemBrief = data;
+        if (data == null) {
+            DistributionSignService.get().saveSendIoOrdersItems(null);
+            officeAdapter.setEntityList(null);
+//            btnInspect.setEnabled(false);
+//            btnSign.setEnabled(false);
+        }
+        else{
+            //现保存到数据库，再从数据库里读取
+            DistributionSignService.get().saveSendIoOrdersItems(data.getItems());
+            officeAdapter.setEntityList(DistributionSignService.get().queryAll());
+//            btnInspect.setEnabled(true);
+//            btnSign.setEnabled(true);
+        }
+    }
 }

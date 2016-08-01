@@ -1,139 +1,112 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/material_white"
-                android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:fitsSystemWindows="true"
+                                                 android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar_scan_barcode"/>
 
 
-<android.support.v7.widget.Toolbar
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="@color/mfh_toolbar_background"
-    android:elevation="@dimen/spacing_micro"
-    app:layout_collapseMode="pin"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-    <RelativeLayout
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/spacing_micro"
-        android:padding="@dimen/spacing_micro">
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.bingshanguxue.pda.widget.ScanBar
-            android:id="@+id/scanBar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:layout_toStartOf="@+id/iv_search"
-            android:weightSum="1"
-            app:hint="请扫描商品条码"
-            app:textColor="@color/black"
-            app:textColorHint="@color/black_35"
-            app:textSize="16px"
-            app:mfh_inputType="barcode"/>
-
-        <ImageView
-            android:id="@+id/iv_search"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:layout_marginEnd="@dimen/spacing_normal"
-            android:background="@null"
-            android:src="@mipmap/ic_toolbar_search_white"/>
-    </RelativeLayout>
+            android:orientation="vertical">
 
-</android.support.v7.widget.Toolbar>
+            <!--内容区-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_productName"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="商品名称:"/>
 
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_barcode"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="商品条码:"/>
 
-<android.support.v4.widget.NestedScrollView
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_above="@+id/button_submit"
-    android:layout_below="@+id/toolbar">
+            <!--规格-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_shortname"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="规格:"/>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <!--价格&单位-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_costPrice"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="零售价:"/>
 
+            <!--商品积分-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_costScore"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="商品积分:"/>
+            <!--产地-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_prodArea"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="产地:"/>
+            <!--等级-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_prodLevel"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:textLabelView_leftText="等级:"/>
 
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_productName"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="商品名称:"
-            style="@style/mfh_textlabelview"/>
-
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_barcode"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="商品条码:"
-            style="@style/mfh_textlabelview"/>
-
-        <!--规格-->
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_shortname"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="规格:"
-            style="@style/mfh_textlabelview"/>
-
-        <!--价格&单位-->
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_costPrice"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="零售价:"
-            style="@style/mfh_textlabelview"/>
-
-        <!--商品积分-->
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_costScore"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="商品积分:"
-            style="@style/mfh_textlabelview"/>
-        <!--产地-->
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_prodArea"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="产地:"
-            style="@style/mfh_textlabelview"/>
-        <!--等级-->
-        <com.bingshanguxue.pda.widget.TextLabelView
-            android:id="@+id/label_prodLevel"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            app:textLabelView_leftText="等级:"
-            style="@style/mfh_textlabelview"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cancel"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_cancel_white_24"
+        app:backgroundTint="@color/mfh_negative_defalult"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        android:visibility="gone"
+        app:rippleColor="@color/material_green_800"/>
 
-    <!--确认-->
+    <!--结算-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_submit"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_double"
         android:src="@mipmap/ic_fab_confirm"
-        app:backgroundTint="@color/mfh_colorPrimary"
+        app:backgroundTint="@color/mfh_positive_default"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"
         app:rippleColor="@color/material_green_800"/>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
+

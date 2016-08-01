@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 
 
 /**
@@ -140,7 +139,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     }
 
 
-    @OnClick(R.id.button_submit)
+    @Override
     public void submit() {
         String price = labelPrice.getEtContent();
         if (StringUtils.isEmpty(price)){

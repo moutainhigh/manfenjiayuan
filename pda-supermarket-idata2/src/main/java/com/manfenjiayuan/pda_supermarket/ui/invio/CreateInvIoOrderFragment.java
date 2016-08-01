@@ -87,6 +87,8 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         //清空签收数据库
         InvIoGoodsService.get().clear();
     }

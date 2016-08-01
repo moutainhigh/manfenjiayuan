@@ -184,7 +184,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ZLogger.d("onConfigurationChanged");
     }
 
     @Override
@@ -192,7 +191,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        ZLogger.d("onCreateOptionsMenu");
         menuLogin = menu.findItem(R.id.action_sign_in);
         menuLogout = menu.findItem(R.id.action_sign_out);
 //        MenuItemCompat.setActionView(settings, R.layout.view_corner_button);
@@ -324,7 +322,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 "收货", R.mipmap.ic_receive_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
                 "退货", R.mipmap.ic_return_goods));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_PICK_GOODS,
                 "拣货", R.mipmap.ic_pick_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_OUT,
                 "出库", R.mipmap.ic_stock_out));

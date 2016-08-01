@@ -3,7 +3,6 @@ package com.manfenjiayuan.pda_supermarket.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
@@ -13,8 +12,8 @@ import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.receipt.InvRecvOrderSplashFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.InventoryCheckFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreceive.InvRecvOrderSplashFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ScGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invio.CreateInvIoOrderFragment;
@@ -162,12 +161,12 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_INVENTORY_CHECK){
-            InventoryCheckFragment fragment;
+            InvCheckListFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                fragment = InventoryCheckFragment.newInstance(intent.getExtras());
+                fragment = InvCheckListFragment.newInstance(intent.getExtras());
             }else{
-                fragment = InventoryCheckFragment.newInstance(null);
+                fragment = InvCheckListFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
