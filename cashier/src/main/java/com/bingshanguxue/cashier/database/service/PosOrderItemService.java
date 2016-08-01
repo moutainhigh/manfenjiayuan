@@ -121,7 +121,7 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
             entity = new PosOrderItemEntity();
             entity.setOrderBarCode(orderBarCode);
             entity.setOrderId(orderId);
-            entity.setCateType(goods.getCateType());
+            entity.setProdLineId(goods.getProdLineId());
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
             entity.setBarcode(goods.getBarcode());

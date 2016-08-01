@@ -13,7 +13,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -206,13 +205,11 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     }
 
     @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        hideSystemUI();
-
         super.onCreate(savedInstanceState);
 
         cashierPresenter = new CashierPresenter(this);
@@ -1716,6 +1713,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FRAGMENT_TYPE_DAILY_SETTLE);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
         extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
         extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
         intent.putExtras(extras);

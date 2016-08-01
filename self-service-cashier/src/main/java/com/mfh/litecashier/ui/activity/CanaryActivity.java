@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.mfh.framework.core.utils.DialogUtil;
@@ -59,6 +58,10 @@ public class CanaryActivity extends BaseActivity {
         return false;
     }
 
+    @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
 
     @Override
     protected void initToolBar() {
@@ -94,12 +97,6 @@ public class CanaryActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.setTheme(R.style.NewFlow);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        hideSystemUI();
 
         super.onCreate(savedInstanceState);
 

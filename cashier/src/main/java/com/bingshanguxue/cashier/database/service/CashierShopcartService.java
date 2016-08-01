@@ -140,7 +140,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             shopcartEntity.setProviderId(goods.getProviderId());
             shopcartEntity.setUnit(goods.getUnit());
             shopcartEntity.setPriceType(goods.getPriceType());
-            shopcartEntity.setCateType(goods.getCateType());
+            shopcartEntity.setProdLineId(goods.getProdLineId());
 
             //默认会员价使用标准单价计算，可以在后面售价时修改。
             shopcartEntity.setFinalPrice(goods.getCostPrice());
@@ -191,7 +191,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
                 shopcartEntity.setProviderId(goods.getProviderId());
                 shopcartEntity.setUnit(goods.getUnit());
                 shopcartEntity.setPriceType(goods.getPriceType());
-                shopcartEntity.setCateType(goods.getCateType());
+                shopcartEntity.setProdLineId(goods.getProdLineId());
 
                 shopcartEntity.setCostPrice(goods.getCostPrice());
                 shopcartEntity.setFinalPrice(goods.getFinalPrice());

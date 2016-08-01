@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,9 +68,12 @@ public class SignInActivity extends BaseActivity {
     }
 
     @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
 

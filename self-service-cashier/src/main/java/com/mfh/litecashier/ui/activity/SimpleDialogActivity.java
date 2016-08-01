@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -70,6 +69,11 @@ public class SimpleDialogActivity extends BaseActivity {
     }
 
     @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
+
+    @Override
     protected void initViews() {
         super.initViews();
 
@@ -94,9 +98,6 @@ public class SimpleDialogActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         handleIntent();
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
 

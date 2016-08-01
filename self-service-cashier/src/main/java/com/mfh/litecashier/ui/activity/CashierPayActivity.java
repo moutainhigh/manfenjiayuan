@@ -8,16 +8,15 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.WindowManager;
 
+import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.mfh.litecashier.ui.fragment.pay.PayActionEvent;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep2Fragment;
@@ -65,6 +64,11 @@ public class CashierPayActivity extends BaseActivity {
     }
 
     @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
+
+    @Override
     protected void initToolBar() {
         super.initToolBar();
 
@@ -89,12 +93,6 @@ public class CashierPayActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        hideSystemUI();
-
         handleIntent();
 
         super.onCreate(savedInstanceState);

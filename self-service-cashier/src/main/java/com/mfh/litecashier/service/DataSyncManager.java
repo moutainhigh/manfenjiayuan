@@ -351,7 +351,7 @@ public class DataSyncManager {
                     entity.setPriceType(posGoods.getPriceType());
                     entity.setPackageNum(posGoods.getPackageNum());
                     entity.setProcateId(posGoods.getProcateId());
-                    entity.setCateType(posGoods.getCateType());
+                    entity.setProdLineId(posGoods.getProdLineId());
 
                     //设置商品名称的拼音和排序字母
                     String namePinyin = PinyinUtils.getPingYin(posGoods.getName());

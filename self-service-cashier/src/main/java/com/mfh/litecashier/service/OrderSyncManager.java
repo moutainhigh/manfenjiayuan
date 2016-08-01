@@ -66,7 +66,8 @@ public class OrderSyncManager {
             item.put("bcount", entity.getBcount());
             item.put("price", entity.getCostPrice());
             item.put("amount", entity.getBcount() * entity.getCostPrice());
-            item.put("cateType", entity.getCateType());//按类目进行账务清分
+//            item.put("cateType", entity.getCateType());//按类目进行账务清分
+            item.put("prodLineId", entity.getProdLineId());//按产品线进行账务清分
             items.add(item);
         }
         order.put("items", items);
