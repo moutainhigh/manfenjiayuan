@@ -80,6 +80,7 @@ public class SplashActivity extends InitActivity {
 
 
         AppHelper.clearOldPosOrder(15);
+        ZLogger.deleteOldFiles(15);
 
         onInitializedCompleted();
     }
