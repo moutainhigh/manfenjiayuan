@@ -19,7 +19,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -231,6 +233,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                     if (payableAmount < 0.01) {
                         payableAmount = 0D;
                     }
+
                     sbHtml.append(String.format("<p>" +
                                     "--------------------------------\n" +
                                     "<div><font color=#000000>合计：%.2f</font></div>\n" +
@@ -248,6 +251,31 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                                     - payWrapper.getRuleDiscount()
                                     + payWrapper.getChange(),
                             payWrapper.getChange()));
+                    sbHtml.append(String.format("<p>" +
+                                    "--------------------------------\n"));
+                    sbHtml.append(String.format(
+                                    "<div><font color=#000000>合计：%.2f</font></div>\n",
+                            mPosOrderEntity.getFinalAmount()));
+                    sbHtml.append(String.format("<div><font color=#000000>会员/卡券/促销优惠：%.2f</font></div>\n",
+                            payWrapper.getRuleDiscount()));
+                    sbHtml.append(String.format("<div><font color=#000000>应收：%.2f</font></div>\n",
+                            payableAmount));
+                    List<PayWay> payWays = payWrapper.getPayWays();
+                    if (payWays != null && payWays.size() > 0){
+                        for (PayWay payWay : payWays){
+                            sbHtml.append(String.format("<div><font color=#000000>%s：%.2f</font></div>\n" ,
+                                    WayType.name(payWay.getPayType()), payWay.getAmount()));
+                        }
+                    }
+//                    sbHtml.append(String.format("<div><font color=#000000>付款：%.2f</font></div>\n" ,
+//                            mPosOrderEntity.getPaidAmount()
+//                                    - payWrapper.getRuleDiscount()
+//                                    + payWrapper.getChange()));
+                    sbHtml.append(String.format("<div><font color=#000000>找零：%.2f</font></div>\n",
+                            payWrapper.getChange()));
+                    sbHtml.append("<div><font color=#000000>谢谢惠顾</font></div>\n" +
+                                    "<div><font color=#000000>欢迎下次光临</font></div>\n" +
+                                    "</p>");
                 }
 
                 sbHtml.append("</body>\n" +

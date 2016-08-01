@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.gprinter.command.EscCommand;
 import com.manfenjiayuan.business.bean.InvSendOrder;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -20,6 +23,7 @@ import com.mfh.litecashier.event.SerialPortEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -210,11 +214,12 @@ public class PrintManager {
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
         esc.addText("--------------------------------\n");//32个
         Double finalAmount = 0D, ruleDis = 0D, paidAmount = 0D, payableAmount = 0D, change = 0D;
+        List<PayWay> payWays = new ArrayList<>();
         for (PosOrderEntity orderEntity : orderEntities){
             ZLogger.df(JSONObject.toJSONString(orderEntity));
             finalAmount += orderEntity.getFinalAmount();
             ruleDis += orderEntity.getRuleDiscountAmount();
-            paidAmount += orderEntity.getPaidAmount() + orderEntity.getChange();
+            paidAmount += (orderEntity.getPaidAmount() + orderEntity.getChange());
             Double payableTemp = orderEntity.getFinalAmount() - orderEntity.getRuleDiscountAmount();
             if (payableTemp < 0.01){
                 payableTemp = 0D;
@@ -222,12 +227,28 @@ public class PrintManager {
             payableAmount += payableTemp;
 
             change += orderEntity.getChange();
+
+            //支付记录
+            OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+            if (payWrapper.getPayWays() != null){
+                payWays.addAll(payWrapper.getPayWays());
+            }
         }
         esc.addText(String.format("合计:%.2f\n", finalAmount));
         esc.addText(String.format("优惠:%.2f\n", ruleDis));
 //        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
         esc.addText(String.format("应收:%.2f\n", payableAmount));
-        esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
+//        esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
+        if (payWays != null && payWays.size() > 0){
+            for (PayWay payWay : payWays){
+                // TODO: 8/2/16 ，以后如果考虑多种支付方式多次支付，应该要做一次合并统计，一种支付方式暂时可以不做。 
+                esc.addText(String.format("%s:%.2f\n", 
+                        WayType.name(payWay.getPayType()), payWay.getAmount()));
+            }
+        }
+        else{
+            esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis)); 
+        }
         esc.addText(String.format("找零:%.2f\n", Math.abs(change)));
 
         /**
