@@ -29,7 +29,6 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -40,7 +39,6 @@ import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
-import com.mfh.litecashier.ui.activity.ServiceActivity;
 import com.mfh.litecashier.ui.adapter.InventoryTransGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
@@ -112,22 +110,6 @@ public class InventoryTransFragment extends BaseFragment {
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
-    }
-
-    /**
-     * 新建调拨单
-     */
-    @OnClick(R.id.button_create_bill)
-    public void createNewTransOrder() {
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER);
-        extras.putInt(CreateInventoryTransOrderFragment.EK_ENTERMODE, 0);
-//        ServiceActivity.actionStart(getActivity(), extras);
-
-        Intent intent = new Intent(getActivity(), ServiceActivity.class);
-        intent.putExtras(extras);
-        startActivity(intent);
     }
 
     /**

@@ -37,10 +37,8 @@ import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.StockBatchEvent;
-import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
 import com.mfh.litecashier.ui.adapter.CreateOrderItemAdapter;
 import com.mfh.litecashier.ui.dialog.SelectCompanyInfoDialog;
-import com.mfh.litecashier.ui.view.IInventoryView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 

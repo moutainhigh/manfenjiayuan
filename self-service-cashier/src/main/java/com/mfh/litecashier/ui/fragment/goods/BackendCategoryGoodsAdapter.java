@@ -85,8 +85,7 @@ public class BackendCategoryGoodsAdapter
 
         this.entityList.addAll(entityList);
 
-        Collections.sort(entityList, new PinyinComparator());
-//        sortByPinyin();
+        Collections.sort(this.entityList, new PinyinComparator());
         notifyDataSetChanged();
     }
 

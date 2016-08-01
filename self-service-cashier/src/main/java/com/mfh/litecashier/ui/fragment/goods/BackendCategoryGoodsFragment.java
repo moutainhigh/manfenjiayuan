@@ -18,6 +18,7 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
+import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -139,6 +140,8 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
         mRecyclerView.setEmptyView(emptyView);
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
+        mRecyclerView.addItemDecoration(new LineItemDecoration(
+                getActivity(), LineItemDecoration.VERTICAL_LIST));
 //        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
 //                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
 //                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
@@ -243,7 +246,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
     }
 
     private void load(PageInfo pageInfo) {
-        mScGoodsSkuPresenter.findGoodsListByCategory(categoryId, pageInfo);
+        mScGoodsSkuPresenter.listScGoodsSku(categoryId, pageInfo);
     }
 
     @Override
@@ -264,7 +267,11 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
 
         if (scGoodsSkus != null && scGoodsSkus.size() > 0){
             for (ScGoodsSku sku : scGoodsSkus){
-                ScGoodsSkuWrapper wrapper = (ScGoodsSkuWrapper) scGoodsSkus;
+                ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
+                wrapper.setSkuName(sku.getSkuName());
+                wrapper.setBarcode(sku.getBarcode());
+                wrapper.setCostPrice(sku.getCostPrice());
+                wrapper.setUnit(sku.getUnit());
 
                 //设置商品名称的拼音和排序字母
                 String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());

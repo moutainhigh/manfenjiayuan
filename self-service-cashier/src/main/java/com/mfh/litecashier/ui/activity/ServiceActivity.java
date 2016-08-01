@@ -13,8 +13,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
 import com.mfh.litecashier.ui.fragment.cashier.StockDetailFragment;
-import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryIOOrderFragment;
-import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryTransOrderFragment;
 
 import butterknife.Bind;
 
@@ -27,8 +25,6 @@ public class ServiceActivity extends BaseActivity {
     public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
 
     public static final int FRAGMENT_TYPE_STOCK_DETAIL = 0x02;
-    public static final int FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER = 0x20;//新建库存调拨单
-    public static final int FRAGMENT_TYPE_CREATE_INVENTORY_IO_ORDER     = 0x21;     //新建库存出入库单
     public static final int FT_GROUPON_DETAIL = 0x22;  //团购详情页
 
 
@@ -137,32 +133,6 @@ public class ServiceActivity extends BaseActivity {
                     .add(R.id.fragment_container, stockDetailFragment).show(stockDetailFragment)
                     .commit();
         }
-        //新建库存调拨单
-        else if (serviceType == FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER) {
-            CreateInventoryTransOrderFragment createInventoryAllocationOrderFragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                createInventoryAllocationOrderFragment = CreateInventoryTransOrderFragment.newInstance(intent.getExtras());
-            } else {
-                createInventoryAllocationOrderFragment = CreateInventoryTransOrderFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, createInventoryAllocationOrderFragment).show(createInventoryAllocationOrderFragment)
-                    .commit();
-        }
-        //新建库存出入库单
-        else if (serviceType == FRAGMENT_TYPE_CREATE_INVENTORY_IO_ORDER) {
-            CreateInventoryIOOrderFragment createInventoryIOOrderFragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                createInventoryIOOrderFragment = CreateInventoryIOOrderFragment.newInstance(intent.getExtras());
-            } else {
-                createInventoryIOOrderFragment = CreateInventoryIOOrderFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, createInventoryIOOrderFragment).show(createInventoryIOOrderFragment)
-                    .commit();
-        }
         //团购详情页
         else if (serviceType == FT_GROUPON_DETAIL) {
             toolbar.setTitle("团购");
@@ -176,7 +146,6 @@ public class ServiceActivity extends BaseActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, fragment).show(fragment)
                     .commit();
-
         }
     }
 }
