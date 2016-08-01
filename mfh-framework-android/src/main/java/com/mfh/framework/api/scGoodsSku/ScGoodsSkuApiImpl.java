@@ -35,8 +35,10 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
             params.put("categoryId", String.valueOf(categoryId));
         }
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
