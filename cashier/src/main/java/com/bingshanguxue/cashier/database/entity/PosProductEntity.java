@@ -34,7 +34,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     // 当云端下架或删除一个商品时，并未真正删除商品，而是相当于把status修改成0。
     // 如果是物理删除目前没有办法增量同步到pos端。pos端下单时需要自行判断注意只有status=1的商品才能购买
-    private Integer status;//1-有效，默认，0-无效
+    private Integer status = 1;//1-有效，默认，0-无效
 
     private Long procateId; //商品类目
 
@@ -146,6 +146,9 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Integer getStatus() {
+        if (status == null){
+            return 1;
+        }
         return status;
     }
 
