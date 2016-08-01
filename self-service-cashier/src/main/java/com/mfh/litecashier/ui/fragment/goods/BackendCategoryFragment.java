@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -73,7 +74,8 @@ public class BackendCategoryFragment extends BaseFragment {
             public void onChanged(int page) {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(page);
 
-                EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, viewPageInfo.args));
+                EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
+                        viewPageInfo.args));
             }
         });
 
@@ -154,7 +156,7 @@ public class BackendCategoryFragment extends BaseFragment {
         refreshCategoryTab(categoryOptions);
     }
 
-    private CategoryOption makeSimpleCategoryInstance(Long code, String value){
+    private CategoryOption makeSimpleCategoryInstance(Long code, String value) {
         CategoryOption option = new CategoryOption();
         option.setCode(code);
         option.setValue(value);
@@ -200,15 +202,30 @@ public class BackendCategoryFragment extends BaseFragment {
         categoryGoodsPagerAdapter.addAllTab(mTabs);
 
         mCategoryGoodsViewPager.setOffscreenPageLimit(mTabs.size());
-//        if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ZLogger.d("加载采购订单");
+                ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(mCategoryGoodsTabStrip.getCurrentPosition());
+
+                EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
+                        viewPageInfo.args));
+            }
+        }, 1000);
+
+        if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
 //            //如果直接加载，可能会出现加载两次的问题
-//            if (curCategoryList != null && curCategoryList.size() > 0) {
+            if (mTabs.size() > 0) {
+                EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
+                        mTabs.get(0).args));
+
 //                EventBus.getDefault()
 //                        .post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
-//            }
-//        } else {
-        mCategoryGoodsViewPager.setCurrentItem(0, false);
-//        }
+            }
+        } else {
+            mCategoryGoodsViewPager.setCurrentItem(0, false);
+        }
     }
 
 }
