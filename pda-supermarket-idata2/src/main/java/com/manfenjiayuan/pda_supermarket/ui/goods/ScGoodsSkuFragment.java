@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.TextLabelView;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -164,7 +166,7 @@ public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoods
         }
 
         if (mScGoodsSkuPresenter != null) {
-            mScGoodsSkuPresenter.findGoodsList(barcode);
+            mScGoodsSkuPresenter.findGoodsListByBarcode(barcode);
         } else {
             refresh(null);
         }

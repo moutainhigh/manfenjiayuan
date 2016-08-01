@@ -62,15 +62,12 @@ public class ScanBar extends LinearLayout {
         if (inputType == 1){
 //            etInput.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-
         }
         else{
             etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
 
-
         ta.recycle();
-
 
 //        etInput.setFocusableInTouchMode(false);
         etInput.setOnClickListener(new OnClickListener() {
