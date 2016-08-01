@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_normal">
-        <!-- 业务类型-->
+        <!-- 标签-->
         <TextView
             android:id="@+id/tv_badge"
             android:layout_width="wrap_content"
@@ -32,13 +32,22 @@
             android:layout_below="@+id/tv_badge"
             android:singleLine="true"
             android:text="订单编号"/>
+        <!--订单流水编号-->
+        <TextView
+            android:id="@+id/tv_barcode"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_id"
+            android:singleLine="true"
+            android:text="订单编号"/>
 
         <TextView
             android:id="@+id/tv_createDate"
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_id"
+            android:layout_below="@+id/tv_barcode"
             android:singleLine="true"
             android:text="下单时间"/>
 

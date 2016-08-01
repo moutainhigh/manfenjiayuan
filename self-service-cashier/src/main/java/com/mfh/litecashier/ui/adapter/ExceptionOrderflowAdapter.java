@@ -115,6 +115,7 @@ public class ExceptionOrderflowAdapter
         }
 
         holder.tvId.setText(String.format("订单编号：%d", entity.getId()));
+        holder.tvBarcode.setText(String.format("流水编号：%s", entity.getBarCode()));
         holder.tvCreateDate.setText(String.format("下单时间：%s",
                 (entity.getCreatedDate() != null ? TimeCursor.InnerFormat.format(entity.getCreatedDate()) : "")));
         switch (entity.getStatus()) {
@@ -185,12 +186,14 @@ public class ExceptionOrderflowAdapter
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.rootview)
         View rootView;
+        @Bind(R.id.tv_badge)
+        TextView tvBadge;
         @Bind(R.id.tv_id)
         TextView tvId;
+        @Bind(R.id.tv_barcode)
+        TextView tvBarcode;
         @Bind(R.id.tv_createDate)
         TextView tvCreateDate;
-                @Bind(R.id.tv_badge)
-        TextView tvBadge;
         @Bind(R.id.tv_office)
         TextView tvOffice;
         @Bind(R.id.tv_tenant)
