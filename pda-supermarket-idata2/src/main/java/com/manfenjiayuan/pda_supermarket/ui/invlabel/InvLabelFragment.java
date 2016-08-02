@@ -14,6 +14,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvSkuLabelApi;
@@ -176,6 +177,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
      * 刷新信息
      * */
     private void refreshPackage(ScGoodsSku goods){
+        refresh();
         curGoods = goods;
         if (curGoods == null){
             labelBarcode.setTvSubTitle("");
@@ -201,7 +203,6 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             btnSubmit.setEnabled(true);
         }
 
-        refresh();
     }
 
     @Override
@@ -216,7 +217,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     }
 
     @Override
-    public void onIScGoodsSkuViewSuccess(List<ScGoodsSku> scGoodsSkus) {
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
 
     }
 

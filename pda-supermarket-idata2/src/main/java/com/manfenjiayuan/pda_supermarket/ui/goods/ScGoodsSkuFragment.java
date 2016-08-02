@@ -18,6 +18,7 @@ import com.manfenjiayuan.pda_supermarket.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
@@ -356,9 +357,9 @@ public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoods
     }
 
     @Override
-    public void onIScGoodsSkuViewSuccess(List<ScGoodsSku> scGoodsSkus) {
-        if (scGoodsSkus != null && scGoodsSkus.size() > 0) {
-            ScGoodsSku scGoodsSku = scGoodsSkus.get(0);
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+        if (dataList != null && dataList.size() > 0) {
+            ScGoodsSku scGoodsSku = dataList.get(0);
             refresh(scGoodsSku);
         } else {
             DialogUtil.showHint("未找到商品");

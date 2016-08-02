@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,23 +6,67 @@
               android:showDividers="middle"
               android:orientation="vertical">
 
-
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
-        app:editQueryView_inputTextSize="18px"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editQueryView_inputHint="@string/hint_input_package_no"/>
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <ScrollView
+        <!--app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/mfh_toolbar_background"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_micro"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_micro">
+
+                <com.bingshanguxue.pda.widget.ScanBar
+                    android:id="@+id/scanBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/spacing_normal"
+                    android:layout_toStartOf="@+id/iv_search"
+                    android:weightSum="1"
+                    app:hint="请扫描免单号"
+                    app:mfh_inputType="barcode"
+                    app:textColor="@color/black"
+                    app:textColorHint="@color/black_35"
+                    app:textSize="16px"/>
+
+                <ImageView
+                    android:id="@+id/iv_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/spacing_normal"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    android:background="@null"
+                    android:src="@mipmap/ic_toolbar_search_white"/>
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        style="@style/mf_scrolview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="vertical"
@@ -76,16 +120,35 @@
 
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:text="@string/button_package_stockout"
-        android:textColor="@color/material_white"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:background="@drawable/btn_rectange_primary"/>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cancel"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_cancel_white_24"
+        app:backgroundTint="@color/mfh_negative_defalult"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        android:visibility="gone"
+        app:rippleColor="@color/material_green_800"/>
 
-</LinearLayout>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        app:backgroundTint="@color/mfh_positive_default"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
+</android.support.design.widget.CoordinatorLayout>

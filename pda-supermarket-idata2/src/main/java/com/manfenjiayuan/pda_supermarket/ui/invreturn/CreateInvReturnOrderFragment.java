@@ -61,8 +61,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
-//    private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
-//    private boolean isQueryProcessing;
 
     public static CreateInvReturnOrderFragment newInstance(Bundle args) {
         CreateInvReturnOrderFragment fragment = new CreateInvReturnOrderFragment();
