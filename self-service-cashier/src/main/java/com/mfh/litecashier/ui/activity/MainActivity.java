@@ -100,7 +100,6 @@ import com.mfh.litecashier.ui.dialog.RegisterUserDialog;
 import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
-import com.mfh.litecashier.ui.fragment.inventory.CreateInventoryTransOrderFragment;
 import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -252,20 +251,13 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 
         ValidateManager.get().batchValidate();
 
-        /**
-         * @param isManual  用户手动点击检查，非用户点击操作请传false
-         * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
-         */
-        Beta.checkUpgrade(false, false);
-
-
         reload(true);
 
         //打开秤的串口
         OpenComPort(comScale);
 
-        cloudSpeak("hi");
-//        cloudSpeak("欢迎使用米西厨房智能收银系统");
+//        cloudSpeak("hi");
+        cloudSpeak("欢迎使用米西厨房智能收银系统");
         ZLogger.d("小版本标记：2016-07-28-001");
     }
 
@@ -429,28 +421,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         } else if (id.compareTo(CashierFunctional.OPTION_ID_FEEDPAPER) == 0) {
             //走纸
             SerialManager.feedPaper();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_INVENTORY_TRANS_IN) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER);
-            extras.putInt(CreateInventoryTransOrderFragment.EK_ENTERMODE, 2);
-
-            ServiceActivity.actionStart(this, extras);
-
-//                    Intent intent = new Intent(this, ServiceActivity.class);
-//                    intent.putExtras(extras);
-//                    startActivity(intent);
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_INVENTORY_TRANS_OUT) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_INVENTORY_ALLOCATION_ORDER);
-            extras.putInt(CreateInventoryTransOrderFragment.EK_ENTERMODE, 2);
-
-            ServiceActivity.actionStart(this, extras);
-
-//                    Intent intent = new Intent(this, ServiceActivity.class);
-//                    intent.putExtras(extras);
-//                    startActivity(intent);
         } else if (id.compareTo(CashierFunctional.OPTION_ID_MONEYBOX) == 0) {
             openMoneyBox();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_CLEAR_ORDER) == 0) {
@@ -766,8 +736,12 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
+
+        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+        btnSync.setBadgeEnabled(false);
+
         //同步数据
-        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_START));
+        DataSyncManager.get().sync();
     }
 
     /**
@@ -794,6 +768,12 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         }
         btnSync.startSync();
         DataSyncManager.get().sync();
+
+        /**
+         * @param isManual  用户手动点击检查，非用户点击操作请传false
+         * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
+         */
+        Beta.checkUpgrade(false, false);
     }
 
     public void redirectToSettings() {
@@ -866,28 +846,25 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 //            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", true, false);
             btnSync.startSync();
             DataSyncManager.get().sync();
-        } else if (event.getAffairId() == AffairEvent.EVENT_ID_SYNC_DATA_START) {
+        } else if (event.getAffairId() == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
 //            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", true, false);
-            btnSync.startSync();
-            DataSyncManager.get().sync();
 
-//            NetProcessor.ComnProcessor processor = new NetProcessor.ComnProcessor<EmbMsg>() {
-//                @Override
-//                protected void processOperResult(EmbMsg result) {
-////                doAfterSendSuccess(result);
-//                    ZLogger.d("测试更新SKU商品");
-//                }
-//            };
-//            EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class, getContext());
-//            msgService.sendText(MfhLoginService.get().getCurrentGuId(),
-//                    MfhLoginService.get().getCurrentGuId(),
-//                    IMBizType.TENANT_SKU_UPDATE, "test update sku", processor);
+            int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+            if (count > 2){
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+                btnSync.setBadgeEnabled(false);
+                btnSync.startSync();
+                DataSyncManager.get().sync();
+            }
+            else{
+                btnSync.setBadgeEnabled(true);
+            }
         } else if (event.getAffairId() == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
             if (count > 0){
-                cloudSpeak("您有新订单");
+                cloudSpeak("您有新订单,请注意查收");
             }
 //            shopcartBadgeView.setBadgeNumber(DataCacheHelper.getInstance().getUnreadOrder());
         }
@@ -1190,10 +1167,12 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         List<PosOrderEntity> orderEntities = CashierFactory
                 .fetchActiveOrderEntities(BizType.POS, cashierOrderInfo.getPosTradeNo());
         if (orderEntities != null && orderEntities.size() > 0) {
+            int payType = WayType.NA;
             Double finalAmount = 0D, bCount = 0D, discountAmount = 0D, changeAmount = 0D;
             for (PosOrderEntity orderEntity : orderEntities) {
                 OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
 
+                payType = payType | payWrapper.getPayType();
                 finalAmount += orderEntity.getFinalAmount();
                 bCount += orderEntity.getBcount();
                 discountAmount += payWrapper.getRuleDiscount();
@@ -1201,7 +1180,14 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             }
             refreshLastOrder(finalAmount, bCount, discountAmount, changeAmount);
 
-            cloudSpeak(String.format("找零 %.2f 元，欢迎下次光临！", changeAmount));
+            if (changeAmount >= 0.01){
+                cloudSpeak(String.format("订单金额 %.2f 元，支付方式 %s, 找零 %.2f 元，欢迎下次光临！",
+                        finalAmount, WayType.name(payType), changeAmount));
+            }
+            else{
+                cloudSpeak(String.format("订单金额 %.2f 元，支付方式 %s, 欢迎下次光临！",
+                        finalAmount, WayType.name(payType)));
+            }
 
             //显示找零
 //        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));

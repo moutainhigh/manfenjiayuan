@@ -28,6 +28,8 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.CategoryOption;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -47,13 +49,11 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.event.CommodityStockEvent;
-import com.mfh.litecashier.presenter.InventoryGoodsPresenter;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
-import com.mfh.litecashier.ui.view.IInventoryView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.ui.widget.MOrderLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -71,7 +71,7 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InventoryCostFragment extends BaseProgressFragment
-        implements IInventoryView {
+        implements IScGoodsSkuView {
 
     @Bind(R.id.inlv_barcode)
     InputSearchView inlvBarcode;
@@ -109,7 +109,6 @@ public class InventoryCostFragment extends BaseProgressFragment
     private SearchParamsWrapper searchParams;
 
     private DoubleInputDialog changeDialog = null;
-    private DoubleInputDialog quantityCheckDialog = null;
 
     private boolean isLoadingMore;
     private boolean bSyncInProgress = false;//是否正在同步
@@ -117,7 +116,7 @@ public class InventoryCostFragment extends BaseProgressFragment
     private static final int MAX_SYNC_PAGESIZE = 30;
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 
-    private InventoryGoodsPresenter inventoryGoodsPresenter;
+    private ScGoodsSkuPresenter inventoryGoodsPresenter;
 
     @Override
     protected int getLayoutResId() {
@@ -131,7 +130,7 @@ public class InventoryCostFragment extends BaseProgressFragment
         EventBus.getDefault().register(this);
 
         searchParams = new SearchParamsWrapper();
-        inventoryGoodsPresenter = new InventoryGoodsPresenter(this);
+        inventoryGoodsPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -629,9 +628,27 @@ public class InventoryCostFragment extends BaseProgressFragment
         //初始化
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        inventoryGoodsPresenter.loadInventoryGoods(mPageInfo,
+        int sortType = searchParams.getSortType();
+        String orderby = null;
+        boolean orderbydesc = false;
+        if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_DESC) {
+            orderby = "gku.quantity";
+            orderbydesc = true;
+        } else if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_ASC) {
+            orderby = "gku.quantity";
+            orderbydesc = false;
+        } else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_DESC) {
+            orderby = "gku.sell_month_num";
+            orderbydesc = true;
+        } else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_ASC) {
+            orderby = "gku.sell_month_num";
+            orderbydesc = false;
+        }
+
+        inventoryGoodsPresenter.listScGoodsSku(mPageInfo,
                 searchParams.getCategoryId(), getBarcode(),
-                getName(), getSortType(), getPriceType());
+                getName(), orderby, orderbydesc, getPriceType());
+
         mPageInfo.setPageNo(1);
     }
 
@@ -653,9 +670,27 @@ public class InventoryCostFragment extends BaseProgressFragment
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            inventoryGoodsPresenter.loadInventoryGoods(mPageInfo,
+
+            int sortType = searchParams.getSortType();
+            String orderby = null;
+            boolean orderbydesc = false;
+            if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_DESC) {
+                orderby = "gku.quantity";
+                orderbydesc = true;
+            } else if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_ASC) {
+                orderby = "gku.quantity";
+                orderbydesc = false;
+            } else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_DESC) {
+                orderby = "gku.sell_month_num";
+                orderbydesc = true;
+            } else if (sortType == SearchParamsWrapper.SORT_BY_MONTHLY_SALES_ASC) {
+                orderby = "gku.sell_month_num";
+                orderbydesc = false;
+            }
+
+            inventoryGoodsPresenter.listScGoodsSku(mPageInfo,
                     searchParams.getCategoryId(), getBarcode(),
-                    getName(), getSortType(), getPriceType());
+                    getName(), orderby, orderbydesc, getPriceType());
         } else {
             ZLogger.d("加载库存商品，已经是最后一页。");
             onLoadFinished();
@@ -678,49 +713,6 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
 
         return "";
-    }
-
-    public int getSortType() {
-        return searchParams.getSortType();
-    }
-
-    @Override
-    public void onProcess() {
-        onLoadProcess("正在加载数据...");
-    }
-
-    @Override
-    public void onError(String errorMsg) {
-        onLoadFinished();
-    }
-
-    @Override
-    public void onData(ScGoodsSku data) {
-
-    }
-
-    @Override
-    public void onList(PageInfo pageInfo, List<ScGoodsSku> dataList) {
-        mPageInfo = pageInfo;
-        //第一页，清空数据
-        if (mPageInfo.getPageNo() == 1) {
-            if (goodsListAdapter != null) {
-                goodsListAdapter.setEntityList(dataList);
-            }
-        } else {
-            if (goodsListAdapter != null) {
-                goodsListAdapter.appendEntityList(dataList);
-            }
-        }
-
-        refreshCategoryTitle();
-        onLoadFinished();
-        ZLogger.d(String.format("保存库存商品,pageInfo':page=%d,rows=%d(%d/%d)",
-                mPageInfo.getPageNo(), mPageInfo.getPageSize(),
-                goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
-
-//        inlvBarcode.clear(false);
-//        resetSearchParams();
     }
 
     /**
@@ -852,4 +844,39 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
+    @Override
+    public void onIScGoodsSkuViewProcess() {
+        onLoadProcess("正在加载数据...");
+    }
+
+    @Override
+    public void onIScGoodsSkuViewError(String errorMsg) {
+        onLoadFinished();
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
+        mPageInfo = pageInfo;
+        //第一页，清空数据
+        if (mPageInfo.getPageNo() == 1) {
+            if (goodsListAdapter != null) {
+                goodsListAdapter.setEntityList(scGoodsSkus);
+            }
+        } else {
+            if (goodsListAdapter != null) {
+                goodsListAdapter.appendEntityList(scGoodsSkus);
+            }
+        }
+
+        refreshCategoryTitle();
+        onLoadFinished();
+        ZLogger.d(String.format("保存库存商品,pageInfo':page=%d,rows=%d(%d/%d)",
+                mPageInfo.getPageNo(), mPageInfo.getPageSize(),
+                goodsListAdapter.getItemCount(), mPageInfo.getTotalCount()));
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
+
+    }
 }

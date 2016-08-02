@@ -1,21 +1,20 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.framework.core.logger.ZLogger;
 
 import java.util.Comparator;
 
-public class PinyinComparator implements Comparator<PosProductEntity> {
+public class PinyinComparator implements Comparator<ScGoodsSkuWrapper> {
 
     @Override
-    public int compare(PosProductEntity lhs, PosProductEntity rhs) {
+    public int compare(ScGoodsSkuWrapper lhs, ScGoodsSkuWrapper rhs) {
         // TODO Auto-generated method stub
         return sort(lhs, rhs);
     }
 
     /**
      * */
-    private int sort(PosProductEntity lhs, PosProductEntity rhs) {
+    private int sort(ScGoodsSkuWrapper lhs, ScGoodsSkuWrapper rhs) {
         try {
             ZLogger.d(String.format("lhs(%s-%s), rhs(%s-%s)",
                     lhs.getNameSortLetter(), lhs.getNamePinyin(),

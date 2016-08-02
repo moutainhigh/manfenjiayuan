@@ -21,8 +21,6 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long OPTION_ID_FEEDPAPER= 12L;//走纸
     public static final Long OPTION_ID_RETURN_GOODS= 13L;//退货
     public static final Long OPTION_ID_RECEIVE_GOODS= 23L;//商品领取
-    public static final Long OPTION_ID_INVENTORY_TRANS_IN= 26L;//调拨－调入
-    public static final Long OPTION_ID_INVENTORY_TRANS_OUT= 27L;//调拨－调出
     public static final Long OPTION_ID_SYNC= 30L;//同步
     public static final Long OPTION_ID_MONEYBOX= 31L;//钱箱
     public static final Long OPTION_ID_HANGUP_ORDER= 33L;//挂单

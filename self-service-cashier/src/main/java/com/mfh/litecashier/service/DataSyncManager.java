@@ -451,6 +451,9 @@ public class DataSyncManager {
             return;
         }
 
+        //清空同步标识
+        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+
         mPosSkuPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
         String lastCursor = SharedPreferencesHelper.getSyncProductSkuCursor();
