@@ -148,6 +148,7 @@ public class BackendCategoryFragment extends BaseFragment {
 
         List<CategoryOption> categoryOptions = new ArrayList<>();
         categoryOptions.add(makeSimpleCategoryInstance(3891L, "蔬菜豆菇"));
+        categoryOptions.add(makeSimpleCategoryInstance(2448L, "新鲜水果"));
         categoryOptions.add(makeSimpleCategoryInstance(3903L, "海鲜水产"));
         categoryOptions.add(makeSimpleCategoryInstance(3942L, "肉禽蛋品"));
         categoryOptions.add(makeSimpleCategoryInstance(3958L, "熟食料理"));
