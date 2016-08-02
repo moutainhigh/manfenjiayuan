@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertToFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateNewReceiveOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.DistributionInspectFragment;
@@ -33,7 +34,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FRAGMENT_TYPE_INV_SENDORDER = 0x06;//采购订单列表
     public static final int FRAGMENT_TYPE_INV_RECVDORDER_CREATE = 0x07;//新建采购收货单
     public static final int FT_SKUGOODS_CONVERT_TO = 0x08;//转换成商品
-
+    public static final int FT_INVLOSS_INSPECTGOODS = 0x09;//报损验货
 
     /**
      * 0: 快递代收
@@ -215,6 +216,19 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = InvConvertToFragment.newInstance(intent.getExtras());
             } else {
                 fragment = InvConvertToFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }else if (serviceType == FT_INVLOSS_INSPECTGOODS) {
+            InvLossInspectFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvLossInspectFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvLossInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

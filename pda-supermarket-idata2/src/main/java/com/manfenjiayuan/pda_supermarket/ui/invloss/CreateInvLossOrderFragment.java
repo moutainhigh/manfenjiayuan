@@ -1,37 +1,38 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment;
+package com.manfenjiayuan.pda_supermarket.ui.invloss;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditQueryView;
+import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.manfenjiayuan.business.bean.InvLossOrder;
-import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.manfenjiayuan.business.dialog.InputNumberDialog;
+import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.adapter.InvLossOrderGoodsAdapter;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
+import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
+import com.manfenjiayuan.pda_supermarket.ui.invio.InvIoGoodsInspectFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -47,28 +48,22 @@ import butterknife.OnClick;
  * 新建报损单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvLossOrderFragment extends PDAScanFragment {
+public class CreateInvLossOrderFragment extends BaseFragment {
 
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
-    private InvLossOrderGoodsAdapter officeAdapter;
+    private InvLossOrderGoodsAdapter goodsAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view)
     View emptyView;
     @Bind(R.id.button_submit)
-    View btnSubmit;
+    Button btnSubmit;
 
-    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
-    private InputNumberDialog mInputNumberDialog = null;
 
     private InvLossOrder invLossOrder = null;
-    private boolean isQueryProcessing;
-
     public static CreateInvLossOrderFragment newInstance(Bundle args) {
         CreateInvLossOrderFragment fragment = new CreateInvLossOrderFragment();
 
@@ -90,15 +85,10 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.setInputString(code);
-        eqvBarcode.requestFocus();
-        load(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        InvLossGoodsService.get().clear();
     }
 
     @Override
@@ -110,39 +100,18 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
 ////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
 //        }
 
-
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setHoldFocusEnable(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                load(text);
-            }
-        });
-
         loadLossOrder();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-//        if (companyInfo == null){
-//            selectInvCompProvider();
-//        }
-//        else{
-//            eqvBarcode.requestFocus();
-//            eqvBarcode.clear();
-//        }
-
     }
 
     @Override
     public boolean onBackPressed() {
 //        DialogUtil.showHint("onBackPressed");
-        if (officeAdapter.getItemCount() > 0) {
+        if (goodsAdapter.getItemCount() > 0) {
             showConfirmDialog("退出后商品列表将会清空，确定要退出吗？",
                     "退出", new DialogInterface.OnClickListener() {
 
@@ -226,9 +195,9 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
     @OnClick(R.id.button_submit)
     public void createInvLossOrder() {
         btnSubmit.setEnabled(false);
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在报损...", false);
 
-        List<CreateOrderItemWrapper> goodsList = officeAdapter.getEntityList();
+        List<InvLossGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
             btnSubmit.setEnabled(true);
             DialogUtil.showHint("商品不能为空");
@@ -253,7 +222,7 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
         }
 
         JSONArray items = new JSONArray();
-        for (CreateOrderItemWrapper goods : goodsList){
+        for (InvLossGoodsEntity goods : goodsList){
             JSONObject item = new JSONObject();
             item.put("proSkuId", goods.getProSkuId());
             item.put("barcode", goods.getBarcode());
@@ -272,7 +241,7 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.d("新建退货单失败: " + errMsg);
+                    ZLogger.d("新建报损单失败: " + errMsg);
 //                    {"code":"1","msg":"132079网点有仓储单正在处理中...","version":"1","data":null}
                     //查询失败
 //                        animProgress.setVisibility(View.GONE);
@@ -288,11 +257,9 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
                     /**
                      * 新建退货单成功，更新采购单列表
                      * */
-                    ZLogger.d("新建退货单成功: ");
+                    ZLogger.d("新建报损单成功: ");
                     hideProgressDialog();
                     getActivity().finish();
-
-//                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class
@@ -313,11 +280,11 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
         //设置列表为空时显示的视图
         addressRecyclerView.setEmptyView(emptyView);
 
-        officeAdapter = new InvLossOrderGoodsAdapter(getActivity(), null);
-        officeAdapter.setOnAdapterListener(new InvLossOrderGoodsAdapter.OnAdapterListener() {
+        goodsAdapter = new InvLossOrderGoodsAdapter(getActivity(), null);
+        goodsAdapter.setOnAdapterListener(new InvLossOrderGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                CreateOrderItemWrapper entity = officeAdapter.getEntity(position);
+//                CreateOrderItemWrapper entity = goodsAdapter.getEntity(position);
 //                inspect(entity.getBarcode());
 //                changeQuantityCheck();
             }
@@ -325,85 +292,40 @@ public class CreateInvLossOrderFragment extends PDAScanFragment {
             @Override
             public void onDataSetChanged() {
 //                isLoadingMore = false;
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
             }
         });
 
-        addressRecyclerView.setAdapter(officeAdapter);
+        addressRecyclerView.setAdapter(goodsAdapter);
     }
 
-    private void load(String barcode) {
-        eqvBarcode.clear();
-        if (isQueryProcessing || StringUtils.isEmpty(barcode)) {
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-
-        isQueryProcessing = true;
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-        ScGoodsSkuApiImpl.getGoodsByBarCode(barcode, queryResCallback);
+    /**
+     * 验货
+     * */
+    @OnClick(R.id.fab_add)
+    public void inspect() {
+        inspect(null);
     }
 
+    private void inspect(String barcode) {
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVLOSS_INSPECTGOODS);
+        extras.putString(InvLossInspectFragment.EXTRA_KEY_BARCODE, barcode);
 
-    private NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
-            NetProcessor.Processor<ScGoodsSku>>(
-            new NetProcessor.Processor<ScGoodsSku>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                    // {"code":"0","msg":"查询成功!","version":"1","data":null}
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+    }
 
-                    hideProgressDialog();
-                    isQueryProcessing = false;
-
-                    if (rspData == null){
-                        DialogUtil.showHint("未找到商品");
-                    }
-                    else{
-                        RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
-                        changeQuantityCheck(retValue.getValue());
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-//                    ZLogger.d("查询失败: " + errMsg);
-                    DialogUtil.showHint("未找到商品");
-
-                    hideProgressDialog();
-                    isQueryProcessing = false;
-                }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Constants.ARC_DISTRIBUTION_INSPECT: {
+                goodsAdapter.setEntityList(InvLossGoodsService.get().queryAll());
             }
-            , ScGoodsSku.class
-            , MfhApplication.getAppContext()) {
-    };
-
-    public void changeQuantityCheck(final ScGoodsSku chainGoodsSku) {
-        if (chainGoodsSku == null){
-            DialogUtil.showHint("商品信息不完整");
-            return;
+            break;
         }
-        if (mInputNumberDialog == null) {
-            mInputNumberDialog = new InputNumberDialog(getActivity());
-            mInputNumberDialog.setCancelable(true);
-            mInputNumberDialog.setCanceledOnTouchOutside(false);
-        }
-        mInputNumberDialog.init("报损数量", new InputNumberDialog.OnDialogListener() {
-            @Override
-            public void onConfirm(String numberInputStr) {
-                Double quantityCheck = Double.valueOf(numberInputStr);
-                officeAdapter.appendStockTakeGoods(chainGoodsSku, quantityCheck);
-            }
-        });
-        if (!mInputNumberDialog.isShowing()) {
-            mInputNumberDialog.show();
-        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

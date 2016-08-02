@@ -8,7 +8,7 @@ import android.view.WindowManager;
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvLossOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invloss.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;

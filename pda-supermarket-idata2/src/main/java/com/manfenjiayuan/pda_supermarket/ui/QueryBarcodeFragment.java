@@ -60,14 +60,19 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-        mToolbar.setNavigationOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getActivity().onBackPressed();
-                    }
-                });
+        if (mToolbar != null){
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+            mToolbar.setNavigationOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getActivity().onBackPressed();
+                        }
+                    });
+        }
+        else{
+            ZLogger.d("mToolbar is null");
+        }
 
         mScanBar.setSoftKeyboardEnabled(true);
         mScanBar.setOnViewListener(new ScanBar.OnViewListener() {

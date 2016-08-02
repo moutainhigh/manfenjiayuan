@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.invio;
+package com.manfenjiayuan.pda_supermarket.ui.invloss;
 
 
 import android.content.DialogInterface;
@@ -8,23 +8,28 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
-import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.TextLabelView;
+import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.view.IInvSkuGoodsView;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -36,31 +41,26 @@ import butterknife.Bind;
 
 
 /**
- * 出入库商品检查
+ * 报损－－验货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
-        implements IChainGoodsSkuView {
+public class InvLossInspectFragment extends QueryBarcodeFragment implements IScGoodsSkuView {
 
-    private static final String TAG = "InvReturnGoodsInspectFragment";
-    public static final String EXTRA_KEY_COMPANYID = "companyId";
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
 
     @Bind(R.id.label_barcode)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
-    TextLabelView labelProductName;
-    @Bind(R.id.label_price)
-    EditLabelView labelPrice;
+    TextLabelView labelName;
     @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
 
-    private InvIoGoodsEntity curGoods = null;
-    private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
+    private InvLossGoodsEntity curGoods = null;
+    private ScGoodsSkuPresenter chainGoodsSkuPresenter;
 
 
-    public static InvIoGoodsInspectFragment newInstance(Bundle args) {
-        InvIoGoodsInspectFragment fragment = new InvIoGoodsInspectFragment();
+    public static InvLossInspectFragment newInstance(Bundle args) {
+        InvLossInspectFragment fragment = new InvLossInspectFragment();
 
         if (args != null){
             fragment.setArguments(args);
@@ -70,36 +70,19 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_inspect_invio_goods;
+        return R.layout.fragment_inspect_invloss_goods;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        chainGoodsSkuPresenter = new ChainGoodsSkuPresenter(this);
+        chainGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
-
-        labelPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelSignQuantity.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
         labelSignQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -116,10 +99,13 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
             }
         });
 
+        fabCancel.setVisibility(View.VISIBLE);
+
         Bundle args = getArguments();
         if (args != null) {
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
+//            eqvBarcode.setInputString(barcode);
             queryByBarcode(barcode);
         }
 
@@ -131,102 +117,102 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     @Override
     public void sendQueryReq(String barcode) {
         super.sendQueryReq(barcode);
-
-        if (StringUtils.isEmpty(barcode)){
-            return;
-        }
-
         QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
         queryGoodsAsyncTask.execute();
     }
 
+    @Override
+    public void cancel() {
+        super.cancel();
+        InvLossGoodsService.get().reject(curGoods);
+
+        refreshPackage(null);
+    }
 
     @Override
     public void submit() {
         super.submit();
 
-        String price = labelPrice.getEtContent();
-        if (StringUtils.isEmpty(price)){
-            DialogUtil.showHint("请输入发货价格");
-            return;
-        }
-
         String quantityStr = labelSignQuantity.getEtContent();
         if (StringUtils.isEmpty(quantityStr)){
-            DialogUtil.showHint("请输入签收数量");
+            onSubmitError("请输入报损数量");
             return;
         }
         Double quantityCheck = Double.valueOf(quantityStr);
 
         if (curGoods != null && curGoods.getQuantityCheck() > 0){
-            quantityCheckConfirmDialog(curGoods, Double.valueOf(price), quantityCheck);
+            quantityCheckConfirmDialog(curGoods, quantityCheck);
         }
         else{
-            InvIoGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
+            InvLossGoodsService.get().inspect(curGoods, quantityCheck);
+            onSubmitSuccess();
 
-            refreshPackage(null);
         }
     }
 
+    @Override
+    public void onSubmitSuccess() {
+        super.onSubmitSuccess();
+        refreshPackage(null);
+    }
 
     /**
      * 刷新信息
      * */
-    private void refreshPackage(InvIoGoodsEntity goods){
-
+    private void refreshPackage(InvLossGoodsEntity goods){
         refresh();
         curGoods = goods;
         if (curGoods == null){
             labelBarcode.setTvSubTitle("");
-            labelProductName.setTvSubTitle("");
-            labelPrice.setEtContent("");
+            labelName.setTvSubTitle("");
             labelSignQuantity.setEtContent("");
 
+            fabCancel.setEnabled(false);
             btnSubmit.setEnabled(false);
         }
         else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
-            labelProductName.setTvSubTitle(curGoods.getProductName());
-//            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
-            labelPrice.setEtContent(MUtils.formatDouble(curGoods.getPrice(), ""));
+            labelName.setTvSubTitle(curGoods.getProductName());
+
             //默认签收数量为空，根据实际情况填写
             labelSignQuantity.setEtContent("");
 
+            fabCancel.setEnabled(true);
             btnSubmit.setEnabled(true);
 
             labelSignQuantity.requestFocus();
         }
-
     }
 
-    @Override
-    public void onChainGoodsSkuViewProcess() {
 
+    @Override
+    public void onIScGoodsSkuViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
     }
 
     @Override
-    public void onChainGoodsSkuViewError(String errorMsg) {
+    public void onIScGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
         refreshPackage(null);
     }
 
     @Override
-    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
         hideProgressDialog();
+
         if (dataList != null && dataList.size() > 0) {
-            saveChainGoodsSku(dataList.get(0));
+            saveScGoodsSku(dataList.get(0));
         } else {
             DialogUtil.showHint("未找到商品");
         }
     }
 
     @Override
-    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
         hideProgressDialog();
 
         if (data != null) {
-            saveChainGoodsSku(data);
+            saveScGoodsSku(data);
         } else {
             DialogUtil.showHint("未找到商品");
         }
@@ -234,7 +220,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 
     class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
         private String barcode;
-        private InvIoGoodsEntity goodsEntity;
+        private InvLossGoodsEntity goodsEntity;
 
         public QueryGoodsAsyncTask( String barcode) {
             this.barcode = barcode;
@@ -243,7 +229,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
         @Override
         protected Boolean doInBackground(String... params) {
             try{
-                goodsEntity = InvIoGoodsService.get().queryEntityBy(barcode);
+                goodsEntity = InvLossGoodsService.get().queryEntityBy(barcode);
                 if (goodsEntity != null){
                     return true;
                 }
@@ -260,7 +246,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
             super.onPostExecute(aBoolean);
             if (aBoolean){
                 onQuerySuccess();
-                saveInvIoGoodsEntity(goodsEntity);
+                saveInvLossGoodsEntity(goodsEntity);
             }
             else{
                 queryNetGoods(barcode);
@@ -285,44 +271,29 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
             return;
         }
 
-//        chainGoodsSkuPresenter.findTenantSku(new PageInfo(-1, 10),
-//                null, barcode);
-
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
+        chainGoodsSkuPresenter.getGoodsByBarCode(barcode);
     }
 
 
-    @Override
-    public void onQuerySuccess() {
-        super.onQuerySuccess();
-
-        refreshPackage(null);
-    }
-
-
-    public void saveInvIoGoodsEntity(InvIoGoodsEntity goods){
+    public void saveInvLossGoodsEntity(InvLossGoodsEntity goods){
         if (goods == null) {
             DialogUtil.showHint("商品无效");
             return;
         }
 
-        InvIoGoodsEntity entity = InvIoGoodsService.get().queryEntityBy(goods.getBarcode());
+        InvLossGoodsEntity entity = InvLossGoodsService.get().queryEntityBy(goods.getBarcode());
         if (entity == null){
-            entity = new InvIoGoodsEntity();
+            entity = new InvLossGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
-//        entity.setOrderId(productEntity.getOrderId());
             entity.setProSkuId(goods.getProSkuId());
             entity.setProductName(goods.getProductName());
-            entity.setPrice(goods.getPrice());
-            entity.setUnit(goods.getUnit());
             entity.setBarcode(goods.getBarcode());
-            entity.setQuantityCheck(goods.getQuantityCheck());
-            entity.setPosId(goods.getPosId());
 
+            entity.setQuantityCheck(1D);
             entity.setUpdatedDate(new Date());
 
-            InvIoGoodsService.get().saveOrUpdate(entity);
+            InvLossGoodsService.get().saveOrUpdate(entity);
 
         }
         refreshPackage(entity);
@@ -332,54 +303,47 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     /**
      * 保存搜索商品
      * */
-    private void saveChainGoodsSku(ChainGoodsSku goods){
+    private void saveScGoodsSku(ScGoodsSku goods){
         if (goods == null) {
             DialogUtil.showHint("商品无效");
             return;
         }
 
-        if (goods.getProSkuId() == null && StringUtils.isEmpty(goods.getBarcode())) {
-            DialogUtil.showHint(" proSkuId和barcode不能同时为空");
-            return;
-        }
-
-        InvIoGoodsEntity entity = InvIoGoodsService.get().queryEntityBy(goods.getBarcode());
+        InvLossGoodsEntity entity = InvLossGoodsService.get().queryEntityBy(goods.getBarcode());
         if (entity == null){
-            entity = new InvIoGoodsEntity();
+            entity = new InvLossGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
-//        entity.setOrderId(productEntity.getOrderId());
             entity.setProSkuId(goods.getProSkuId());
             entity.setProductName(goods.getSkuName());
-            entity.setPrice(goods.getSingleCostPrice());
-            entity.setUnit(goods.getUnit());
             entity.setBarcode(goods.getBarcode());
-            entity.setQuantityCheck(0D);
-            entity.setUpdatedDate(new Date());
-            entity.setPosId(SharedPreferencesManager.getTerminalId());
 
-            InvIoGoodsService.get().saveOrUpdate(entity);
+            //默认数量是0
+            entity.setQuantityCheck(0D);
+
+            entity.setUpdatedDate(new Date());
+
+            InvLossGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;
-    private void quantityCheckConfirmDialog(final InvIoGoodsEntity entity,
-                                            final Double price, final Double quantity){
+    private void quantityCheckConfirmDialog(final InvLossGoodsEntity entity, final Double quantity){
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
             quantityCheckConfirmDialog.setCancelable(true);
         }
-        quantityCheckConfirmDialog.setMessage(String.format("已经选择%.2f件，请选择[覆盖]还是[累加]",
+        quantityCheckConfirmDialog.setMessage(String.format("已经签收%.2f件，请选择[覆盖]还是[累加]",
                 entity.getQuantityCheck()));
         quantityCheckConfirmDialog.setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                InvIoGoodsService.get().inspect(entity, price, quantity);
+                InvLossGoodsService.get().inspect(entity, quantity);
 
-                refreshPackage(null);
+                onSubmitSuccess();
             }
         });
         quantityCheckConfirmDialog.setNegativeButton("累加", new DialogInterface.OnClickListener() {
@@ -387,9 +351,8 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                InvIoGoodsService.get().inspect(entity, price, entity.getQuantityCheck() + quantity);
-
-                refreshPackage(null);
+                InvLossGoodsService.get().inspect(entity, entity.getQuantityCheck() + quantity);
+                onSubmitSuccess();
             }
         });
         if (!quantityCheckConfirmDialog.isShowing()) {
