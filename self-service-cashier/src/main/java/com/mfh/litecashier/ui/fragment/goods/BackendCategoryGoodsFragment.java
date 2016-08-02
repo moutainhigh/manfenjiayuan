@@ -117,6 +117,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
                 int position = adapter.getPositionForSelection(sortLetter.charAt(0));
 
                 if (position != -1) {
+                    // TODO: 8/2/16 滚动到顶部显示 
                     mRecyclerView.scrollToPosition(position);
                 }
             }
