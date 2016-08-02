@@ -3,21 +3,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ic_sync"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/ic_syncdata_normal"
-        android:layout_centerInParent="true"
-        android:contentDescription="@null" />
+    <RelativeLayout
+        android:id="@+id/rl_badge"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@style/syncbutton_progressbar"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/iv_sync"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_syncdata_normal"
+            android:layout_centerInParent="true"
+            android:contentDescription="@null" />
+
+        <ImageView
+            android:id="@+id/iv_badge"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_oval_red_24"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/syncbutton_progressbar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

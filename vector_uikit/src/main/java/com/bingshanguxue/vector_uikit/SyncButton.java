@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 public class SyncButton extends RelativeLayout {
 
     private ImageView ivSync;
+    private ImageView ivBadge;
     private ProgressBar mProgressBar;
 
     public SyncButton(Context context) {
@@ -28,7 +29,8 @@ public class SyncButton extends RelativeLayout {
 
         View rootView = View.inflate(getContext(), R.layout.widget_sync_button, this);
 
-        ivSync = (ImageView)rootView.findViewById(R.id.ic_sync);
+        ivSync = (ImageView)rootView.findViewById(R.id.iv_sync);
+        ivBadge = (ImageView)rootView.findViewById(R.id.iv_badge);
         mProgressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
 
         if (attrs != null){
@@ -60,4 +62,15 @@ public class SyncButton extends RelativeLayout {
         mProgressBar.setVisibility(INVISIBLE);
     }
 
+    /**
+     * 设置红点是否可见
+     * */
+    public void setBadgeEnabled(boolean enabled){
+        if (enabled){
+            ivBadge.setVisibility(VISIBLE);
+        }
+        else{
+            ivBadge.setVisibility(GONE);
+        }
+    }
 }
