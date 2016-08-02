@@ -74,6 +74,11 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     }
 
     @Override
+    public boolean isRootFlow() {
+        return true;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

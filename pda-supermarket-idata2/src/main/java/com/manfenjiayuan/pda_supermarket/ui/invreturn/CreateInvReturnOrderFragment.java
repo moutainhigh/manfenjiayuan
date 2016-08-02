@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v7.widget.Toolbar;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -45,6 +47,9 @@ import butterknife.OnClick;
  */
 public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
@@ -54,8 +59,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_submit)
-    View btnSubmit;
 
     private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
 
@@ -91,6 +94,8 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         //清空签收数据库
         InvReturnGoodsService.get().clear();
 //        chainGoodsSkuPresenter = new ChainGoodsSkuPresenter(this);
@@ -98,6 +103,29 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+// Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+
         initRecyclerView();
 
 //        Bundle args = getArguments();
@@ -105,7 +133,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 ////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
 //        }
 
-        if (companyInfo == null){
+        if (companyInfo == null) {
             selectInvCompProvider();
         }
     }
@@ -135,8 +163,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
                             dialog.dismiss();
                         }
                     });
-        }
-        else{
+        } else {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
@@ -158,9 +185,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
     /**
      * 签收
      */
-    @OnClick(R.id.button_submit)
-    public void createInvReturnOrder() {
-        btnSubmit.setEnabled(false);
+    public void submit() {
 //        showConfirmDialog("确定要提交退货单吗？",
 //                "退货", new DialogInterface.OnClickListener() {
 //
@@ -182,15 +207,13 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
         List<InvReturnGoodsEntity> goodsList = officeAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            btnSubmit.setEnabled(true);
             DialogUtil.showHint("商品不能为空");
             hideProgressDialog();
             return;
         }
 
-        if (companyInfo == null){
+        if (companyInfo == null) {
             hideProgressDialog();
-            btnSubmit.setEnabled(true);
             selectInvCompProvider();
             return;
         }
@@ -198,7 +221,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
-            btnSubmit.setEnabled(true);
             hideProgressDialog();
             return;
         }
@@ -244,7 +266,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 //                        animProgress.setVisibility(View.GONE);
 //                    DialogUtil.showHint("新建退货单失败" + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
                 }
 
                 @Override
@@ -298,7 +319,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
     }
 
     @OnClick(R.id.fab_add)
-    public void inspect(){
+    public void inspect() {
         inspect(null);
     }
 

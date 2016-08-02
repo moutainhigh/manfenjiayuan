@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,7 +42,10 @@ import butterknife.OnClick;
  * 商品配送－－签收页面
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
+public class CreateInvReceiveOrderFragment extends BaseReceiveOrderFragment {
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
@@ -51,16 +56,14 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_submit)
-    View btnSign;
 
     private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
 
-    public static CreateNewReceiveOrderFragment newInstance(Bundle args) {
-        CreateNewReceiveOrderFragment fragment = new CreateNewReceiveOrderFragment();
+    public static CreateInvReceiveOrderFragment newInstance(Bundle args) {
+        CreateInvReceiveOrderFragment fragment = new CreateInvReceiveOrderFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -98,6 +101,29 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+
         initRecyclerView();
 
 //        Bundle args = getArguments();
@@ -173,25 +199,19 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
     @Override
     public void onReceiveOrderSucceed(String orderId) {
         super.onReceiveOrderSucceed(orderId);
-        btnSign.setEnabled(true);
     }
 
     @Override
     public void onReceiveOrderInterrupted(String message) {
         super.onReceiveOrderInterrupted(message);
-        btnSign.setEnabled(true);
     }
 
     /**
      * 签收
      */
-    @OnClick(R.id.button_submit)
-    public void sign() {
-        btnSign.setEnabled(false);
-
+    public void submit() {
         if (companyInfo == null) {
             DialogUtil.showHint("请选择发货方！");
-            btnSign.setEnabled(true);
             hideProgressDialog();
             selectInvCompProvider();
             return;
@@ -249,7 +269,6 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        btnSign.setEnabled(true);
                     }
                 });
     }

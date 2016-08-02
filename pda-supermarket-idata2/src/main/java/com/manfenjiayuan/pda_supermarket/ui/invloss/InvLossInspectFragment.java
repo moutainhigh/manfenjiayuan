@@ -12,22 +12,14 @@ import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
@@ -192,7 +184,7 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
 
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
-        hideProgressDialog();
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
         refreshPackage(null);
     }
 
@@ -334,7 +326,7 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
             quantityCheckConfirmDialog.setCancelable(true);
         }
-        quantityCheckConfirmDialog.setMessage(String.format("已经签收%.2f件，请选择[覆盖]还是[累加]",
+        quantityCheckConfirmDialog.setMessage(String.format("已经签收 %.2f 件，请选择 [覆盖] or [累加]",
                 entity.getQuantityCheck()));
         quantityCheckConfirmDialog.setPositiveButton("覆盖", new DialogInterface.OnClickListener() {
 

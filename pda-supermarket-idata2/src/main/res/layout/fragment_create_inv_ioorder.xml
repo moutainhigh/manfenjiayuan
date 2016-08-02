@@ -10,14 +10,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/material_white">
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--空视图-->
         <ImageView
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button_submit"
             android:scaleType="centerInside"
             android:src="@mipmap/emptyimage_no_goods"/>
 
@@ -25,35 +24,23 @@
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/office_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/button_submit"/>
+            android:layout_height="match_parent"/>
 
-        <!--结算-->
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_add"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_above="@+id/button_submit"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/spacing_double"
-            android:src="@mipmap/ic_add_white"
-            app:backgroundTint="@color/mfh_colorPrimary"
-            app:borderWidth="0dp"
-            app:elevation="0dp"
-            app:pressedTranslationZ="0dp"
-            app:rippleColor="@color/material_green_800"/>
 
-        <Button
-            android:id="@+id/button_submit"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/btn_rectange_primary"
-            android:gravity="center"
-            android:text="出/入库"
-            android:textColor="@color/material_white"
-            android:textSize="18sp"/>
     </RelativeLayout>
 
+    <!--添加-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_add_white"
+        app:backgroundTint="@color/mfh_colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
 
 </android.support.design.widget.CoordinatorLayout>

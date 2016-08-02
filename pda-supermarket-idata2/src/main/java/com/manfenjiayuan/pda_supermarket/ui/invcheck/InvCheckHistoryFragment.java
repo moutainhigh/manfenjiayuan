@@ -1,12 +1,16 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake;
+package com.manfenjiayuan.pda_supermarket.ui.invcheck;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.support.v7.widget.Toolbar;
 
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -32,18 +36,19 @@ import de.greenrobot.event.EventBus;
  * 盘点记录
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class StockTakeHistoryFragment extends BaseFragment {
+public class InvCheckHistoryFragment extends BaseFragment {
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private StockTakeAdapter orderListAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view) View emptyView;
-    @Bind(R.id.button_clear)
-    Button btnClear;
 
-    public static StockTakeHistoryFragment newInstance(Bundle args) {
-        StockTakeHistoryFragment fragment = new StockTakeHistoryFragment();
+    public static InvCheckHistoryFragment newInstance(Bundle args) {
+        InvCheckHistoryFragment fragment = new InvCheckHistoryFragment();
 
         if (args != null){
             fragment.setArguments(args);
@@ -66,9 +71,40 @@ public class StockTakeHistoryFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("盘点记录");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_sync) {
+                    sync();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_check);
+
         initGoodsRecyclerView();
 
         load();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_inv_check, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -79,12 +115,10 @@ public class StockTakeHistoryFragment extends BaseFragment {
     }
 
 
-    @OnClick(R.id.button_clear)
     public void removeAll(){
         orderListAdapter.removeAll();
     }
 
-    @OnClick(R.id.button_sync)
     public void sync() {
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
@@ -156,12 +190,6 @@ public class StockTakeHistoryFragment extends BaseFragment {
 
             @Override
             public void onDataSetChanged() {
-                if (orderListAdapter.getItemCount() > 0){
-                    btnClear.setEnabled(true);
-                }
-                else{
-                    btnClear.setEnabled(false);
-                }
             }
 
             @Override
@@ -184,7 +212,7 @@ public class StockTakeHistoryFragment extends BaseFragment {
     }
 
     public void onEventMainThread(DataSyncService.StockTakeSyncEvent event) {
-        ZLogger.d(String.format("StockTakeHistoryFragment: StockTakeSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("InvCheckHistoryFragment: StockTakeSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncService.StockTakeSyncEvent.EVENT_ID_SYNC_FINISHED) {
             showProgressDialog(ProgressDialog.STATUS_DONE, "同步成功", true);
         } else if (event.getEventId() == DataSyncService.StockTakeSyncEvent.EVENT_ID_SYNC_FAILED) {

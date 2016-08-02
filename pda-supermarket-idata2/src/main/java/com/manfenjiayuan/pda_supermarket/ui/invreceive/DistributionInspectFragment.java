@@ -66,7 +66,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
     public static DistributionInspectFragment newInstance(Bundle args) {
         DistributionInspectFragment fragment = new DistributionInspectFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -204,7 +204,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
     }
 
 
-    private Double calculateReceivePrice(){
+    private Double calculateReceivePrice() {
         String quantityStr = labelReceiveQuantity.getEtContent();
         if (StringUtils.isEmpty(quantityStr)) {
             return 0D;
@@ -217,10 +217,9 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 
         Double quantityVal = Double.valueOf(quantityStr);
         Double amountVal = Double.valueOf(amount);
-        if (quantityVal == 0){
+        if (quantityVal == 0) {
             return 0D;
-        }
-        else{
+        } else {
             return amountVal / quantityVal;
         }
     }
@@ -234,7 +233,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
     }
 
     @Override
-    public void cancel(){
+    public void cancel() {
         super.cancel();
         DistributionSignService.get().reject(curGoods);
 
@@ -246,13 +245,13 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         super.submit();
         String quantityStr = labelReceiveQuantity.getEtContent();
         if (StringUtils.isEmpty(quantityStr)) {
-            DialogUtil.showHint("请输入签收数量");
+            onSubmitError("请输入签收数量");
             return;
         }
 
         String amount = labelReceiveAmount.getEtContent();
         if (StringUtils.isEmpty(amount)) {
-            DialogUtil.showHint("请输入收货金额");
+            onSubmitError("请输入收货金额");
             return;
         }
 
@@ -262,7 +261,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         } else {
             DistributionSignService.get().inspect(curGoods, Double.valueOf(amount), quantityCheck);
 
-            DialogUtil.showHint("添加成功");
+            onSubmitSuccess();
             refreshPackage(null);
         }
     }
@@ -389,14 +388,11 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         }
     }
 
-    private void queryNetGoods(String barcode){
+    private void queryNetGoods(String barcode) {
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
             return;
         }
-
-//        chainGoodsSkuPresenter.findTenantSku(new PageInfo(-1, 10),
-//                null, barcode);
 
         chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
@@ -410,8 +406,8 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 
     /**
      * 保存搜索商品
-     * */
-    private void saveChainGoodsSku(ChainGoodsSku goods){
+     */
+    private void saveChainGoodsSku(ChainGoodsSku goods) {
         if (goods == null) {
             DialogUtil.showHint("商品无效");
             return;
@@ -424,12 +420,10 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 //        }
 
         DistributionSignEntity entity = DistributionSignService.get().queryEntityBy(goods.getBarcode());
-        if (entity == null){
+        if (entity == null) {
             entity = new DistributionSignEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
-//        entity.setOrderId(productEntity.getOrderId());
-            entity.setProductId(goods.getId());
             entity.setProSkuId(goods.getProSkuId());
             entity.setChainSkuId(goods.getId());
             entity.setProductName(goods.getSkuName());
@@ -467,7 +461,8 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 DistributionSignService.get().inspect(entity, amount, quantity);
-                DialogUtil.showHint("添加成功");
+
+                onSubmitSuccess();
                 refreshPackage(null);
             }
         });
@@ -479,7 +474,8 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
                 DistributionSignService.get().inspect(entity,
                         amount + entity.getReceiveAmount(),
                         entity.getReceiveQuantity() + quantity);
-                DialogUtil.showHint("添加成功");
+
+                onSubmitSuccess();
                 refreshPackage(null);
             }
         });

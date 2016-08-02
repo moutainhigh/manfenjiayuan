@@ -55,6 +55,11 @@ public class PackageFragment extends QueryBarcodeFragment {
 
 
     @Override
+    public boolean isRootFlow() {
+        return true;
+    }
+
+    @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
         btnSubmit.setEnabled(false);

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -52,14 +53,12 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvIoOrderGoodsAdapter goodsAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
 
     private int orderType = InvIoOrderApi.ORDER_TYPE_IN;
     private int storeType = InvIoOrderApi.STORE_TYPE_RETAIL;
@@ -95,8 +94,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        initRecyclerView();
-
         Bundle args = getArguments();
         if (args != null) {
             orderType = args.getInt(EXTRA_KEY_ORDER_TYPE);
@@ -104,12 +101,34 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         }
 
         if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
-            btnSubmit.setText("入库");
             mToolbar.setTitle("新建入库单");
         } else {
             mToolbar.setTitle("新建出库单");
-            btnSubmit.setText("出库");
         }
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+
+        initRecyclerView();
     }
 
 
@@ -142,18 +161,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
-        //enable optimizations if all item views are of the same height and width for
-        //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
-        //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
-
         goodsAdapter = new InvIoOrderGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvIoOrderGoodsAdapter.OnAdapterListener() {
             @Override
@@ -169,17 +176,28 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
+        //enable optimizations if all item views are of the same height and width for
+        //signficantly smoother scrolling
+        goodsRecyclerView.setHasFixedSize(true);
+        //添加分割线
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
+                getActivity(), LineItemDecoration.VERTICAL_LIST));
+        //设置列表为空时显示的视图
+        goodsRecyclerView.setEmptyView(emptyView);
+
+
+
+        goodsRecyclerView.setAdapter(goodsAdapter);
     }
 
 
     /**
      * 签收
      */
-    @OnClick(R.id.button_submit)
-    public void createInvReturnOrder() {
-        btnSubmit.setEnabled(false);
-
+    public void submit() {
         showConfirmDialog("确定要提交单据吗？",
                 "确定", new DialogInterface.OnClickListener() {
 
@@ -194,7 +212,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        btnSubmit.setEnabled(true);
                     }
                 });
     }
@@ -207,17 +224,13 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
         List<InvIoGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            btnSubmit.setEnabled(true);
-            DialogUtil.showHint("商品不能为空");
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
             return;
         }
 
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-//            animProgress.setVisibility(View.GONE);
-            btnSubmit.setEnabled(true);
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_ERROR,
+                    getString(R.string.toast_network_error), true);
             return;
         }
 
@@ -251,7 +264,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 //                        animProgress.setVisibility(View.GONE);
 //                    DialogUtil.showHint("新建退货单失败" + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
                 }
 
                 @Override
@@ -298,7 +310,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         commitDialog.init(new CommitInvIoOrderDialog.DialogListener() {
             @Override
             public void onCancel() {
-                btnSubmit.setEnabled(true);
                 hideProgressDialog();
             }
 
@@ -307,7 +318,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
                 if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
                     DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
-                    btnSubmit.setEnabled(true);
                     hideProgressDialog();
                     return;
                 }

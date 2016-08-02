@@ -67,6 +67,11 @@ public class InvConvertFromFragment extends QueryBarcodeFragment implements IInv
     }
 
     @Override
+    public boolean isRootFlow() {
+        return true;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

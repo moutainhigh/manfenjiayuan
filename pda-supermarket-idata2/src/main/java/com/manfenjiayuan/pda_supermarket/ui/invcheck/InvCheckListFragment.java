@@ -46,8 +46,6 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvCheckListFragment extends BaseFragment {
-
-
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -62,8 +60,8 @@ public class InvCheckListFragment extends BaseFragment {
     @Bind(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.order_empty_view)
-    TextView orderEmptyView;
+    @Bind(R.id.empty_view)
+    View emptyView;
     private StockCheckOrderAdapter orderListAdapter;
 
     private boolean isLoadingMore;
@@ -90,7 +88,6 @@ public class InvCheckListFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
         mToolbar.setTitle("盘点批次");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
         mToolbar.setNavigationOnClickListener(
@@ -142,7 +139,7 @@ public class InvCheckListFragment extends BaseFragment {
         orderRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST, 8));
         //设置列表为空时显示的视图
-        orderRecyclerView.setEmptyView(orderEmptyView);
+        orderRecyclerView.setEmptyView(emptyView);
         orderRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -184,7 +181,7 @@ public class InvCheckListFragment extends BaseFragment {
                     Bundle extras = new Bundle();
 //                        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
                     extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FRAGMENT_TYPE_STOCK_TAKE);
-                    extras.putLong(StockTakeFragment.EXTRA_KEY_ORDER_ID, invCheckOrder.getId());
+                    extras.putLong(InvCheckInspectFragment.EXTRA_KEY_ORDER_ID, invCheckOrder.getId());
                     UIHelper.startActivity(getActivity(), SimpleActivity.class, extras);
                 }
 //                else if (invCheckOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_FREEZE)){
@@ -235,7 +232,7 @@ public class InvCheckListFragment extends BaseFragment {
     /**
      * 加载盘点订单列表列表
      */
-    @OnClick({R.id.order_empty_view})
+    @OnClick({R.id.empty_view})
     public synchronized void reloadInvCheckOrder() {
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载盘点订单列表。");

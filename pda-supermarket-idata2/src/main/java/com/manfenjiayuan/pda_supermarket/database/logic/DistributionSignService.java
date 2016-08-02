@@ -145,9 +145,6 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         DistributionSignEntity entity = new DistributionSignEntity();
         entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
         entity.setUpdatedDate(new Date());
-
-        entity.setOrderId(goods.getOrderId());
-        entity.setProductId(goods.getId());
         entity.setProSkuId(goods.getProSkuId());
         entity.setChainSkuId(goods.getChainSkuId());
         entity.setProductName(goods.getProductName());
@@ -190,8 +187,6 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
         entity.setUpdatedDate(new Date());
 
-//        entity.setOrderId(goods.getOrderId());
-        entity.setProductId(goods.getId());
         entity.setProSkuId(goods.getProSkuId());
         entity.setChainSkuId(goods.getChainSkuId());
         entity.setProductName(goods.getProductName());

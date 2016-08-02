@@ -10,7 +10,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertToFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateNewReceiveOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.DistributionInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.ReceiveMSendOrderFragment;
@@ -197,12 +197,12 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (serviceType == FRAGMENT_TYPE_INV_RECVDORDER_CREATE) {
-            CreateNewReceiveOrderFragment fragment;
+            CreateInvReceiveOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = CreateNewReceiveOrderFragment.newInstance(intent.getExtras());
+                fragment = CreateInvReceiveOrderFragment.newInstance(intent.getExtras());
             } else {
-                fragment = CreateNewReceiveOrderFragment.newInstance(null);
+                fragment = CreateInvReceiveOrderFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

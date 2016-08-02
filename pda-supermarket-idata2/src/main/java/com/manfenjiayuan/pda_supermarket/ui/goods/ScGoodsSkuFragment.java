@@ -82,6 +82,11 @@ public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoods
     }
 
     @Override
+    public boolean isRootFlow() {
+        return true;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -222,22 +227,22 @@ public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoods
         super.submit();
 
         if (curGoods == null) {
-            btnSubmit.setEnabled(true);
-            isAcceptBarcodeEnabled = true;
+            onSubmitError("商品无效");
             return;
         }
 
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            btnSubmit.setEnabled(true);
-            isAcceptBarcodeEnabled = true;
+            onSubmitError(getString(R.string.toast_network_error));
             return;
         }
 
         if (StringUtils.isEmpty(labelCostPrice.getEtContent())) {
-            DialogUtil.showHint("销售价不能为空");
-            btnSubmit.setEnabled(true);
-            isAcceptBarcodeEnabled = true;
+            onSubmitError("销售价不能为空");
+            return;
+        }
+
+        if (StringUtils.isEmpty(labelUpperLimit.getEtContent())) {
+            onSubmitError("排面库存不能为空");
             return;
         }
 
@@ -296,6 +301,8 @@ public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoods
      * 刷新信息
      */
     private void refresh(ScGoodsSku invSkuGoods) {
+        refresh();
+
         curGoods = invSkuGoods;
         if (curGoods == null) {
             mScanBar.reset();
@@ -337,12 +344,9 @@ public class ScGoodsSkuFragment extends QueryBarcodeFragment implements IScGoods
             labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
 
             labelCostPrice.requestFocusEnd();
-
             labelProvider.setEnabled(true);
             btnSubmit.setEnabled(true);
         }
-
-        refresh();
     }
 
 

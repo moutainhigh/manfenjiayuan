@@ -10,9 +10,6 @@ import com.mfh.comn.bean.ILongId;
  */
 @Table(name = "pda_supermarket_distribution_sign_v002")
 public class DistributionSignEntity extends MfhEntity<Long> implements ILongId {
-    //    private String id;
-    private Long orderId;//订单编号
-    private Long productId;//
     private Long proSkuId;//
     private Long chainSkuId;//
     private String productName;//商品名称
@@ -37,22 +34,6 @@ public class DistributionSignEntity extends MfhEntity<Long> implements ILongId {
     public static final int INSPECT_STATUS_REJECT = 3;//已验货，拒收
     private int inspectStatus = INSPECT_STATUS_NONE;
 
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
 
     public String getProductName() {
         return productName;

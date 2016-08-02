@@ -7,9 +7,8 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.invcheck.StockTakeFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.StockTakeHistoryFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.StockTakeSettingsFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckHistoryFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckInspectFragment;
 
 /**
  * 服务
@@ -18,7 +17,6 @@ import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.StockTakeSettings
 public class SimpleActivity extends IData95Activity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
     public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
-    public static final int FRAGMENT_TYPE_STOCKTAKE_SETTINGS = 0;//盘点设置
     public static final int FRAGMENT_TYPE_STOCKTAKE_LIST = 1;//盘点记录
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 2;//盘点
 
@@ -89,44 +87,31 @@ public class SimpleActivity extends IData95Activity {
      * Caused by: java.lang.IllegalStateException: commit already called
      * */
     private void initFragments(){
-        if(serviceType == FRAGMENT_TYPE_STOCKTAKE_SETTINGS){
-            StockTakeSettingsFragment stockTakeSettingsFragment;
+        if(serviceType == FRAGMENT_TYPE_STOCKTAKE_LIST){
+            InvCheckHistoryFragment invCheckHistoryFragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                stockTakeSettingsFragment = StockTakeSettingsFragment.newInstance(intent.getExtras());
+                invCheckHistoryFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
             }else{
-                stockTakeSettingsFragment = StockTakeSettingsFragment.newInstance(null);
+                invCheckHistoryFragment = InvCheckHistoryFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stockTakeSettingsFragment)
-//                    .add(R.id.fragment_container, stockTakeSettingsFragment).show(stockTakeSettingsFragment)
-                    .commit();
-        }
-        else if(serviceType == FRAGMENT_TYPE_STOCKTAKE_LIST){
-            StockTakeHistoryFragment stockTakeHistoryFragment;
-            Intent intent = this.getIntent();
-            if (intent != null){
-                stockTakeHistoryFragment = StockTakeHistoryFragment.newInstance(intent.getExtras());
-            }else{
-                stockTakeHistoryFragment = StockTakeHistoryFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stockTakeHistoryFragment)
-//                    .add(R.id.fragment_container, stockTakeHistoryFragment).show(stockTakeHistoryFragment)
+                    .replace(R.id.fragment_container, invCheckHistoryFragment)
+//                    .add(R.id.fragment_container, invCheckHistoryFragment).show(invCheckHistoryFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_STOCK_TAKE){
-            StockTakeFragment stockTakeFragment;
+            InvCheckInspectFragment invCheckInspectFragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                stockTakeFragment = StockTakeFragment.newInstance(intent.getExtras());
+                invCheckInspectFragment = InvCheckInspectFragment.newInstance(intent.getExtras());
             }else{
-                stockTakeFragment = StockTakeFragment.newInstance(null);
+                invCheckInspectFragment = InvCheckInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stockTakeFragment)
-//                    .add(R.id.fragment_container, stockTakeFragment).show(stockTakeFragment)
+                    .replace(R.id.fragment_container, invCheckInspectFragment)
+//                    .add(R.id.fragment_container, invCheckInspectFragment).show(invCheckInspectFragment)
                     .commit();
         }
     }

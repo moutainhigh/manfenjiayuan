@@ -132,10 +132,6 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     public void sendQueryReq(String barcode) {
         super.sendQueryReq(barcode);
 
-        if (StringUtils.isEmpty(barcode)){
-            return;
-        }
-
         QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
         queryGoodsAsyncTask.execute();
     }
@@ -147,13 +143,13 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 
         String price = labelPrice.getEtContent();
         if (StringUtils.isEmpty(price)){
-            DialogUtil.showHint("请输入发货价格");
+            onSubmitError("请输入发货价格");
             return;
         }
 
         String quantityStr = labelSignQuantity.getEtContent();
         if (StringUtils.isEmpty(quantityStr)){
-            DialogUtil.showHint("请输入签收数量");
+            onSubmitError("请输入签收数量");
             return;
         }
         Double quantityCheck = Double.valueOf(quantityStr);
@@ -163,17 +159,21 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
         }
         else{
             InvIoGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
-
-            refreshPackage(null);
+            onSubmitSuccess();
         }
     }
 
+    @Override
+    public void onSubmitSuccess() {
+        super.onSubmitSuccess();
+
+        refreshPackage(null);
+    }
 
     /**
      * 刷新信息
      * */
     private void refreshPackage(InvIoGoodsEntity goods){
-
         refresh();
         curGoods = goods;
         if (curGoods == null){
@@ -269,13 +269,11 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 
         @Override
         protected void onPreExecute() {
-            ZLogger.d("onPreExecute");
             onQueryProcess();
         }
 
         @Override
         protected void onProgressUpdate(Void... values) {
-            ZLogger.d("onProgressUpdate");
         }
     }
 
@@ -289,14 +287,6 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 //                null, barcode);
 
         chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
-    }
-
-
-    @Override
-    public void onQuerySuccess() {
-        super.onQuerySuccess();
-
-        refreshPackage(null);
     }
 
 
@@ -379,7 +369,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
                 dialog.dismiss();
                 InvIoGoodsService.get().inspect(entity, price, quantity);
 
-                refreshPackage(null);
+                onSubmitSuccess();
             }
         });
         quantityCheckConfirmDialog.setNegativeButton("累加", new DialogInterface.OnClickListener() {
@@ -388,8 +378,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 InvIoGoodsService.get().inspect(entity, price, entity.getQuantityCheck() + quantity);
-
-                refreshPackage(null);
+                onSubmitSuccess();
             }
         });
         if (!quantityCheckConfirmDialog.isShowing()) {

@@ -18,8 +18,7 @@
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swiperefreshlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/frame_top">
+            android:layout_height="match_parent">
 
             <!--订单列表-->
             <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
@@ -30,16 +29,13 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <!--空视图-->
-        <TextView
-            android:id="@+id/order_empty_view"
+        <!--空视图-->
+        <ImageView
+            android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/frame_top"
-            style="@style/mfh_textview_text"
-            android:text="暂无数据，点击重试"
-            android:gravity="center"
-            android:clickable="true"
-            android:visibility="gone"/>
+            android:scaleType="centerInside"
+            android:src="@mipmap/emptyimage_no_goods"/>
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,33 +1,33 @@
 package com.manfenjiayuan.pda_supermarket.ui.invcheck;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.support.v7.widget.Toolbar;
 
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.Shelfnumber;
 import com.manfenjiayuan.pda_supermarket.database.logic.StockTakeService;
+import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SimpleActivity;
 import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectShelvesDialog;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
 import com.manfenjiayuan.pda_supermarket.utils.SharedPreferencesHelper;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.compound.NaviAddressView;
@@ -43,22 +43,16 @@ import butterknife.OnClick;
  * 盘点批次
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class StockTakeFragment extends PDAScanFragment {
+public class InvCheckInspectFragment extends QueryBarcodeFragment  implements IScGoodsSkuView {
 
-    private static final String TAG = "StockTakeFragment";
     public static final String EXTRA_KEY_ORDER_ID = "orderId";
 
     @Bind(R.id.shelvesNumberView)
     NaviAddressView shelvesNumberView;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind({R.id.label_barcodee, R.id.label_productName, R.id.label_spec, R.id.label_quantity})
     List<TextLabelView> labelViews;
     @Bind(R.id.label_newquantity)
     EditLabelView labelQuantity;
-
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
 
 
     private SelectShelvesDialog mSelectShelvesDialog = null;
@@ -66,9 +60,10 @@ public class StockTakeFragment extends PDAScanFragment {
     private Long curOrderId;//当前盘点批次编号
     private Long curShelfNumber = 0L;//当前盘点货架
     private ScGoodsSku curGoods = null;//当前盘点商品
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter;
 
-    public static StockTakeFragment newInstance(Bundle args) {
-        StockTakeFragment fragment = new StockTakeFragment();
+    public static InvCheckInspectFragment newInstance(Bundle args) {
+        InvCheckInspectFragment fragment = new InvCheckInspectFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -82,30 +77,38 @@ public class StockTakeFragment extends PDAScanFragment {
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.setInputString(code);
-        query(code);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        super.createViewInner(rootView, container, savedInstanceState);
+
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_sync) {
+                    uploadOrders();
+                }
+                else if (id == R.id.action_history) {
+                    redirectToStockTakeList();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_check_inspect);
 
         Bundle args = getArguments();
         if (args != null) {
             curOrderId = args.getLong(EXTRA_KEY_ORDER_ID);
         }
-
-//        initProgressDialog("正在同步数据", "同步成功", "同步失败");
-
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                query(text);
-            }
-        });
 
         labelQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -138,6 +141,13 @@ public class StockTakeFragment extends PDAScanFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_inv_check_inspect, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -167,7 +177,6 @@ public class StockTakeFragment extends PDAScanFragment {
     /**
      * 同步盘点数据
      */
-    @OnClick(R.id.button_sync)
     public void uploadOrders() {
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
@@ -178,7 +187,6 @@ public class StockTakeFragment extends PDAScanFragment {
         DataSyncService.get().sync();
     }
 
-    @OnClick(R.id.button_history)
     public void redirectToStockTakeList() {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -199,77 +207,35 @@ public class StockTakeFragment extends PDAScanFragment {
     }
 
 
-    /**
-     * 查询包裹信息
-     */
-    public void query(final String barcode) {
-        if (StringUtils.isEmpty(barcode)) {
-            return;
-        }
-
-        eqvBarcode.clear();
-
+    @Override
+    public void sendQueryReq(String barcode) {
+        super.sendQueryReq(barcode);
         if (!NetWorkUtil.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             refresh(null);
             return;
         }
 
-        ScGoodsSkuApiImpl.getGoodsByBarCode(barcode, queryResponseCallback);
+        mScGoodsSkuPresenter.getGoodsByBarCode(barcode);
     }
 
-    NetCallBack.NetTaskCallBack queryResponseCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
-            NetProcessor.Processor<ScGoodsSku>>(
-            new NetProcessor.Processor<ScGoodsSku>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-
-                    hideProgressDialog();
-
-                    //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                    // {"code":"0","msg":"查询成功!","version":"1","data":null}
-                    if (rspData == null) {
-                        DialogUtil.showHint("未找到商品");
-                        refresh(null);
-                    } else {
-                        RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
-                        refresh(retValue.getValue());
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.d("盘点失败: " + errMsg);
-
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    refresh(null);
-                }
-            }
-            , ScGoodsSku.class
-            , AppContext.getAppContext()) {
-    };
-
-
-    @OnClick(R.id.button_submit)
+    @Override
     public void submit() {
-        btnSubmit.setEnabled(false);
+        super.submit();
+
         if (curGoods == null) {
-//            DialogUtil.showHint("请先扫描商品条码，确认商品信息");
-            btnSubmit.setEnabled(true);
+            onSubmitError("请扫描商品条码");
             return;
         }
 
         String quantity = labelQuantity.getEtContent();
         if (StringUtils.isEmpty(quantity)) {
-            DialogUtil.showHint("请输入盘点数目");
-            btnSubmit.setEnabled(true);
+            onSubmitError("请输入盘点数目");
             return;
         }
 
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            btnSubmit.setEnabled(true);
+            onSubmitError(getString(R.string.toast_network_error));
             return;
         }
 
@@ -278,7 +244,7 @@ public class StockTakeFragment extends PDAScanFragment {
                 Double.valueOf(quantity));
         DataSyncService.get().sync(DataSyncService.SYNC_STEP_UPLOAD_STOCKTAKE);
 
-//        DialogUtil.showHint("提交成功");
+        DialogUtil.showHint("提交成功");
         refresh(null);
     }
 
@@ -286,6 +252,7 @@ public class StockTakeFragment extends PDAScanFragment {
      * 刷新信息
      */
     private void refresh(ScGoodsSku stockTakeGoods) {
+        refresh();
         curGoods = stockTakeGoods;
         if (curGoods == null) {
             labelViews.get(0).setTvSubTitle("");
@@ -295,9 +262,6 @@ public class StockTakeFragment extends PDAScanFragment {
             labelQuantity.setEtContent("");
 
             btnSubmit.setEnabled(false);
-
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
         } else {
             labelViews.get(0).setTvSubTitle(curGoods.getBarcode());
             labelViews.get(1).setTvSubTitle(curGoods.getSkuName());
@@ -307,10 +271,35 @@ public class StockTakeFragment extends PDAScanFragment {
 
             btnSubmit.setEnabled(true);
 
-            labelQuantity.requestFocus();
+            labelQuantity.requestFocusEnd();
         }
-
-        DeviceUtils.hideSoftInput(getActivity(), labelQuantity);
     }
 
+    @Override
+    public void onIScGoodsSkuViewProcess() {
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
+    }
+
+    @Override
+    public void onIScGoodsSkuViewError(String errorMsg) {
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+        refresh(null);
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
+        hideProgressDialog();
+
+        if (data != null) {
+            refresh(data);
+        } else {
+            DialogUtil.showHint("未找到商品");
+        }
+    }
 }

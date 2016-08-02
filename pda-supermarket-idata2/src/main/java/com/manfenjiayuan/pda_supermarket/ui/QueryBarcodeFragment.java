@@ -29,7 +29,7 @@ import butterknife.OnClick;
 public abstract class QueryBarcodeFragment extends PDAScanFragment{
 
     @Bind(R.id.toolbar)
-    Toolbar mToolbar;
+    public Toolbar mToolbar;
     @Bind(R.id.scanBar)
     public ScanBar mScanBar;
     @Bind(R.id.iv_search)
@@ -46,6 +46,8 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
         return R.layout.fragment_query_barcode;
     }
 
+    public boolean isRootFlow(){return false;}
+
     @Override
     protected void onScanCode(String code) {
         if (!isAcceptBarcodeEnabled){
@@ -60,7 +62,12 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         if (mToolbar != null){
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+            if (isRootFlow()){
+                mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+            }
+            else{
+                mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+            }
             mToolbar.setNavigationOnClickListener(
                     new View.OnClickListener() {
                         @Override
