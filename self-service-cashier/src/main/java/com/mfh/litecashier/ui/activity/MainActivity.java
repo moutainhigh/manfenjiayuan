@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -70,6 +71,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
+import com.mfh.litecashier.bean.wrapper.LastOrderInfo;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.database.entity.QuotaEntity;
@@ -189,7 +191,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     private LaundryDialog laundryDialog = null;
     private ReceiveGoodsDialog receiveGoodsDialog = null;
 
-
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
         if (extras != null) {
@@ -207,6 +208,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     protected boolean isFullscreenEnabled() {
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -850,20 +852,19 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 //            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", true, false);
 
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
-            if (count > 2){
+            if (count > 2) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
                 btnSync.setBadgeEnabled(false);
                 btnSync.startSync();
                 DataSyncManager.get().sync();
-            }
-            else{
+            } else {
                 btnSync.setBadgeEnabled(true);
             }
         } else if (event.getAffairId() == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
-            if (count > 0){
+            if (count > 0) {
                 cloudSpeak("您有新订单,请注意查收");
             }
 //            shopcartBadgeView.setBadgeNumber(DataCacheHelper.getInstance().getUnreadOrder());
@@ -988,6 +989,15 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     public void settle() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         btnSettle.setEnabled(false);
+
+        //判断是否登录
+        if (productAdapter.getItemCount() <= 0) {
+            DialogUtil.showHint("商品明细不能为空");
+            btnSettle.setEnabled(true);
+            hideProgressDialog();
+            return;
+        }
+
         //判断是否登录
         if (!MfhLoginService.get().haveLogined()) {
             DialogUtil.showHint("请先登录");
@@ -1095,8 +1105,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                         cashierOrderInfo = (CashierOrderInfo) data
                                 .getSerializableExtra(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO);
                     }
-
-                    processSettleResult(cashierOrderInfo);
+                    new SettleAsyncTask(curPosTradeNo).execute(cashierOrderInfo);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     ZLogger.df("取消收银订单支付");
                     boolean isClearOrder = false;
@@ -1114,12 +1123,14 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                         obtaincurPosTradeNo(null);
                         productAdapter.setEntityList(null);
                     }
+                    btnSettle.setEnabled(true);
 
                 } else {
                     ZLogger.df("取消收银订单支付2");
+                    btnSettle.setEnabled(true);
                 }
 
-                btnSettle.setEnabled(true);
+
             }
             break;
             case Constants.ARC_CREATE_PURCHASE_GOODS: {
@@ -1143,63 +1154,82 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     }
 
     /**
-     * 处理订单支付结果
+     * 异步处理订单支付结果
+     *
+     * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
-    private void processSettleResult(CashierOrderInfo cashierOrderInfo) {
-        //重新生成订单，清空购物车
-        if (!StringUtils.isEmpty(curPosTradeNo)) {
-            CashierShopcartService.getInstance()
-                    .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+    private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
+        private String posTradeNo;
+
+        public SettleAsyncTask(String posTradeNo) {
+            this.posTradeNo = posTradeNo;
         }
-        obtaincurPosTradeNo(null);
-        productAdapter.setEntityList(null);
 
-        if (cashierOrderInfo == null) {
-            return;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            //清空当前收银列表，开始新的订单
+            obtaincurPosTradeNo(null);
+            productAdapter.setEntityList(null);
         }
-        ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
-                WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
-                JSONObject.toJSONString(cashierOrderInfo)));
 
-        // TODO: 7/5/16 下个版本放到支付页面去 
-        updatePadDisplay(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
-
-        List<PosOrderEntity> orderEntities = CashierFactory
-                .fetchActiveOrderEntities(BizType.POS, cashierOrderInfo.getPosTradeNo());
-        if (orderEntities != null && orderEntities.size() > 0) {
-            int payType = WayType.NA;
-            Double finalAmount = 0D, bCount = 0D, discountAmount = 0D, changeAmount = 0D;
-            for (PosOrderEntity orderEntity : orderEntities) {
-                OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-
-                payType = payType | payWrapper.getPayType();
-                finalAmount += orderEntity.getFinalAmount();
-                bCount += orderEntity.getBcount();
-                discountAmount += payWrapper.getRuleDiscount();
-                changeAmount += payWrapper.getChange();
-            }
-            refreshLastOrder(finalAmount, bCount, discountAmount, changeAmount);
-
-            if (changeAmount >= 0.01){
-                cloudSpeak(String.format("订单金额 %.2f 元，支付方式 %s, 找零 %.2f 元，欢迎下次光临！",
-                        finalAmount, WayType.name(payType), changeAmount));
-            }
-            else{
-                cloudSpeak(String.format("订单金额 %.2f 元，支付方式 %s, 欢迎下次光临！",
-                        finalAmount, WayType.name(payType)));
+        @Override
+        protected LastOrderInfo doInBackground(CashierOrderInfo... params) {
+            //重新生成订单，清空购物车
+            if (!StringUtils.isEmpty(posTradeNo)) {
+                CashierShopcartService.getInstance()
+                        .deleteBy(String.format("posTradeNo = '%s'", posTradeNo));
             }
 
-            //显示找零
-//        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
-            SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
+            CashierOrderInfo cashierOrderInfo = params[0];
+            if (cashierOrderInfo == null) {
+                return null;
+            }
+            ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
+                    WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
+                    JSONObject.toJSONString(cashierOrderInfo)));
+
+            LastOrderInfo lastOrderInfo = null;
+            // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
+            updatePadDisplay(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
+
+            List<PosOrderEntity> orderEntities = CashierFactory
+                    .fetchActiveOrderEntities(BizType.POS, cashierOrderInfo.getPosTradeNo());
+            if (orderEntities != null && orderEntities.size() > 0) {
+
+                lastOrderInfo = new LastOrderInfo();
+                for (PosOrderEntity orderEntity : orderEntities) {
+                    OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+
+                    lastOrderInfo.setPayType(lastOrderInfo.getPayType() | payWrapper.getPayType());
+                    lastOrderInfo.setFinalAmount(lastOrderInfo.getFinalAmount() + orderEntity.getFinalAmount());
+                    lastOrderInfo.setbCount(lastOrderInfo.getbCount() + orderEntity.getBcount());
+                    lastOrderInfo.setDiscountAmount(lastOrderInfo.getDiscountAmount() + payWrapper.getRuleDiscount());
+                    lastOrderInfo.setChangeAmount(lastOrderInfo.getChangeAmount() + payWrapper.getChange());
+                }
+            }
+
+
+            //同步订单信息
+            OrderSyncManager2.get().stepUploadPosOrder(orderEntities);
+
+            //打印订单
+            PrintManager.printPosOrder(orderEntities, true);
+
+            //统计订单
+            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALISIS_QUOTA);
+            return null;
         }
-        //同步订单信息
-        OrderSyncManager2.get().stepUploadPosOrder(orderEntities);
 
-        //打印订单
-        PrintManager.printPosOrder(orderEntities, true);
+        @Override
+        protected void onPostExecute(LastOrderInfo lastOrderInfo) {
+            super.onPostExecute(lastOrderInfo);
+            refreshLastOrder(lastOrderInfo);
 
-        ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALISIS_QUOTA);
+            btnSettle.setEnabled(true);
+        }
+
     }
 
     @OnClick(R.id.float_hangup)
@@ -1388,6 +1418,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         changePriceDialog.show();
     }
 
+
     /**
      * 修改商品价格折扣
      */
@@ -1451,15 +1482,38 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         changeQuantityDialog.show();
     }
 
-
     /**
-     * 刷新上一单信息
+     * 刷新上一单信息,更新客显，语音播报
      */
-    private void refreshLastOrder(Double amount, Double count, Double discount, Double charge) {
-        tvLastAmount.setText(String.format("合计: ¥%.2f", amount));
-        tvLastQuantity.setText(String.format("数量: %.2f", count));
-        tvLastDiscount.setText(String.format("优惠: ¥%.2f", discount));
-        tvLastCharge.setText(String.format("找零: ¥%.2f", charge));
+    private void refreshLastOrder(LastOrderInfo lastOrderInfo) {
+        if (lastOrderInfo != null) {
+            Double finalAmount = lastOrderInfo.getFinalAmount();
+            Double changeAmount = lastOrderInfo.getChangeAmount();
+            Double bCount = lastOrderInfo.getbCount();
+
+            tvLastAmount.setText(String.format("合计: ¥%.2f", finalAmount));
+            tvLastQuantity.setText(String.format("数量: %.2f", lastOrderInfo.getbCount()));
+            tvLastDiscount.setText(String.format("优惠: ¥%.2f", lastOrderInfo.getDiscountAmount()));
+            tvLastCharge.setText(String.format("找零: ¥%.2f", changeAmount));
+
+            //显示找零
+//        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
+            SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
+
+            if (changeAmount >= 0.01) {
+                cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
+                        WayType.name(lastOrderInfo.getPayType()), finalAmount, changeAmount, bCount));
+            } else {
+                cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
+                        WayType.name(lastOrderInfo.getPayType()), finalAmount, bCount));
+            }
+        }
+        else{
+            tvLastAmount.setText(String.format("合计: ¥%.2f", 0D));
+            tvLastQuantity.setText(String.format("数量: %.2f", 0D));
+            tvLastDiscount.setText(String.format("优惠: ¥%.2f", 0D));
+            tvLastCharge.setText(String.format("找零: ¥%.2f", 0D));
+        }
     }
 
     /**
@@ -1487,7 +1541,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             }
 
             //刷新上一单数据
-            refreshLastOrder(0D, 0D, 0D, 0D);
+            refreshLastOrder(null);
 
             //加载订单
             if (StringUtils.isEmpty(curPosTradeNo)) {
@@ -1808,9 +1862,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             alipayDialog.show();
         }
     }
-
-
-
 
 
 }

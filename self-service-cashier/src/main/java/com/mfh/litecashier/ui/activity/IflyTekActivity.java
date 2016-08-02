@@ -184,7 +184,8 @@ public abstract class IflyTekActivity extends SerialPortActivity {
             if (error == null) {
 //                DialogUtil.showHint("播放完成");
             } else {
-                DialogUtil.showHint(error.getPlainDescription(true));
+                ZLogger.ef(error.getPlainDescription(true));
+//                DialogUtil.showHint(error.getPlainDescription(true));
             }
         }
 

@@ -1,5 +1,6 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,15 +14,22 @@ import android.widget.TextView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
+import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
+import com.mfh.litecashier.ui.fragment.purchase.manual.PurchaseHelper;
 import com.mfh.litecashier.utils.PinyinUtils;
 
 import java.util.ArrayList;
@@ -262,42 +270,107 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
 
     @Override
     public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
-        List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
 
         mPageInfo = pageInfo;
+        new SortAsyncTask().execute(scGoodsSkus);
 
-        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
-            for (ScGoodsSku sku : scGoodsSkus){
-                ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
-                wrapper.setSkuName(sku.getSkuName());
-                wrapper.setBarcode(sku.getBarcode());
-                wrapper.setCostPrice(sku.getCostPrice());
-                wrapper.setUnit(sku.getUnit());
-
-                //设置商品名称的拼音和排序字母
-                String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
-                wrapper.setNamePinyin(namePinyin);
-                String sortLetter = null;
-                if (!StringUtils.isEmpty(namePinyin)){
-                    sortLetter = namePinyin.substring(0, 1).toUpperCase();
-                }
-                if (sortLetter != null && sortLetter.matches("[A-Z]")) {
-                    wrapper.setNameSortLetter(sortLetter);
-                } else {
-                    wrapper.setNameSortLetter("#");
-                }
-                wrappers.add(wrapper);
-            }
-        }
-
-        if (adapter != null) {
-            adapter.appendEntityList(wrappers);
-        }
-        onLoadFinished();
+//        List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
+//
+//        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
+//            for (ScGoodsSku sku : scGoodsSkus){
+//                ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
+//                wrapper.setSkuName(sku.getSkuName());
+//                wrapper.setBarcode(sku.getBarcode());
+//                wrapper.setCostPrice(sku.getCostPrice());
+//                wrapper.setUnit(sku.getUnit());
+//
+//                //设置商品名称的拼音和排序字母
+//                String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
+//                wrapper.setNamePinyin(namePinyin);
+//                String sortLetter = null;
+//                if (!StringUtils.isEmpty(namePinyin)){
+//                    sortLetter = namePinyin.substring(0, 1).toUpperCase();
+//                }
+//                if (sortLetter != null && sortLetter.matches("[A-Z]")) {
+//                    wrapper.setNameSortLetter(sortLetter);
+//                } else {
+//                    wrapper.setNameSortLetter("#");
+//                }
+//                wrappers.add(wrapper);
+//            }
+//        }
+//
+//        if (adapter != null) {
+//            adapter.appendEntityList(wrappers);
+//        }
+//        onLoadFinished();
     }
 
     @Override
     public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
+
+    }
+
+    private class SortAsyncTask extends AsyncTask<List<ScGoodsSku>, Integer, List<ScGoodsSkuWrapper>> {
+
+        @Override
+        protected List<ScGoodsSkuWrapper> doInBackground(List<ScGoodsSku>... params) {
+            return saveQueryResult(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<ScGoodsSkuWrapper> scGoodsSkuWrappers) {
+            super.onPostExecute(scGoodsSkuWrappers);
+
+            if (adapter != null) {
+                adapter.appendEntityList(scGoodsSkuWrappers);
+            }
+
+            onLoadFinished();
+        }
+
+
+        /**
+         * 将后台返回的结果集保存到本地,同步执行
+         *
+         * @param rs       结果集
+         * @param pageInfo 分页信息
+         */
+        private List<ScGoodsSkuWrapper> saveQueryResult(List<ScGoodsSku> goodsList) {
+            try {
+                List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
+
+                if (goodsList != null && goodsList.size() > 0){
+                    for (ScGoodsSku sku : goodsList){
+                        ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
+                        wrapper.setSkuName(sku.getSkuName());
+                        wrapper.setBarcode(sku.getBarcode());
+                        wrapper.setCostPrice(sku.getCostPrice());
+                        wrapper.setUnit(sku.getUnit());
+
+                        //设置商品名称的拼音和排序字母
+                        String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
+                        wrapper.setNamePinyin(namePinyin);
+                        String sortLetter = null;
+                        if (!StringUtils.isEmpty(namePinyin)){
+                            sortLetter = namePinyin.substring(0, 1).toUpperCase();
+                        }
+                        if (sortLetter != null && sortLetter.matches("[A-Z]")) {
+                            wrapper.setNameSortLetter(sortLetter);
+                        } else {
+                            wrapper.setNameSortLetter("#");
+                        }
+                        wrappers.add(wrapper);
+                    }
+                }
+                return wrappers;
+
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.ef(ex.toString());
+                return null;
+            }
+        }
 
     }
 
