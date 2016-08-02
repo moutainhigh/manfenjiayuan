@@ -37,15 +37,13 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/material_white">
         <!--空视图-->
-        <TextView
+        <ImageView
             android:id="@+id/empty_view"
-            style="@style/mfh_textview_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/button_submit"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:text="@string/label_no_data"/>
+            android:scaleType="centerInside"
+            android:src="@mipmap/emptyimage_no_goods"/>
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport

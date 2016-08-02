@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert;
+package com.manfenjiayuan.pda_supermarket.ui.invconvert;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,21 +9,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
-import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
+import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
+import com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView;
+import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
+import com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -35,7 +35,7 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGoodsView {
-    private static final String TAG = "ScGoodsSkuFragment";
+    private static final String TAG = "GoodsFragment";
 
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;

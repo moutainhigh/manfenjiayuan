@@ -4,66 +4,15 @@
                                                  android:layout_height="match_parent"
                                                  android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <include
         android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="false"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <!--app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/mfh_toolbar_background"
-            app:layout_collapseMode="pin"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/spacing_micro"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_micro">
-
-                <com.bingshanguxue.pda.widget.ScanBar
-                    android:id="@+id/scanBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/spacing_normal"
-                    android:layout_toStartOf="@+id/iv_search"
-                    android:weightSum="1"
-                    app:hint="请扫描免单号"
-                    app:mfh_inputType="barcode"
-                    app:textColor="@color/black"
-                    app:textColorHint="@color/black_35"
-                    app:textSize="16px"/>
-
-                <ImageView
-                    android:id="@+id/iv_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/spacing_normal"
-                    android:layout_marginStart="@dimen/spacing_normal"
-                    android:background="@null"
-                    android:src="@mipmap/ic_toolbar_search_white"/>
-            </RelativeLayout>
-
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
+        layout="@layout/appbar_scan_barcode"/>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"

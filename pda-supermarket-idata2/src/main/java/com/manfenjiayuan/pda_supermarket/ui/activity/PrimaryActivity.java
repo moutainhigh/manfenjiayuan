@@ -10,7 +10,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invloss.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.InvRecvOrderSplashFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;

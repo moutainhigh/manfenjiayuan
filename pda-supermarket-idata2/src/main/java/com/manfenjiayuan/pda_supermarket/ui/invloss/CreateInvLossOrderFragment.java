@@ -12,15 +12,13 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
-import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.manfenjiayuan.business.bean.InvLossOrder;
-import com.manfenjiayuan.business.dialog.InputNumberDialog;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.invio.InvIoGoodsInspectFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
@@ -284,9 +282,10 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         goodsAdapter.setOnAdapterListener(new InvLossOrderGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                CreateOrderItemWrapper entity = goodsAdapter.getEntity(position);
-//                inspect(entity.getBarcode());
-//                changeQuantityCheck();
+                InvLossGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (entity != null){
+                    inspect(entity.getBarcode());
+                }
             }
 
             @Override

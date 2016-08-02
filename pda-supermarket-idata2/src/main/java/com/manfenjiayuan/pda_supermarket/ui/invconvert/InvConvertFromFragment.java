@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert;
+package com.manfenjiayuan.pda_supermarket.ui.invconvert;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,21 +9,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.widget.EditLabelView;
+import com.bingshanguxue.pda.widget.EditQueryView;
+import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
-import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
+import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
-import com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -34,11 +35,8 @@ import butterknife.OnClick;
  * 库存转换
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGoodsView {
-    private static final String TAG = "GoodsFragment";
+public class InvConvertFromFragment extends QueryBarcodeFragment implements IInvSkuGoodsView {
 
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.label_barcodee)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
@@ -50,8 +48,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     @Bind(R.id.tv_unit)
     TextView tvUnit;
 
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
 
     private InvSkuGoods curGoods = null;
     private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
@@ -71,12 +67,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.setInputString(code);
-        query(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -85,6 +75,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        super.createViewInner(rootView, container, savedInstanceState);
 
         labelQuantityCheck.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelQuantityCheck.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -99,34 +90,16 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             }
         });
         labelQuantityCheck.setSoftKeyboardEnabled(true);
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                query(text);
-            }
-        });
+
         btnSubmit.setEnabled(false);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     /**
-     * 查询包裹信息
+     * 查询商品信息
      */
-    public void query(String barcode) {
-        if (StringUtils.isEmpty(barcode)) {
-            eqvBarcode.requestFocus();
-            return;
-        }
-
-        eqvBarcode.clear();
-
+    @Override
+    public void sendQueryReq(String barcode) {
+        super.sendQueryReq(barcode);
         if (!NetWorkUtil.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             refresh(null);
@@ -142,6 +115,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
         switch (requestCode) {
             case REQUEST_CODE_INV_CONVERT_TO: {
                 //商品签收成功
+                hideProgressDialog();
                 if (resultCode == Activity.RESULT_OK) {
                     refresh(null);
                 }
@@ -151,18 +125,17 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnClick(R.id.button_submit)
+    @Override
     public void submit() {
-        btnSubmit.setEnabled(false);
+        super.submit();
+
         if (curGoods == null) {
-            btnSubmit.setEnabled(true);
-            DialogUtil.showHint("请先扫描商品");
+            onSubmitError("请先扫描商品");
             return;
         }
 
         if (StringUtils.isEmpty(labelQuantityCheck.getEtContent())) {
-            DialogUtil.showHint("库存数不能为空");
-            btnSubmit.setEnabled(true);
+            onSubmitError("库存数不能为空");
             return;
         }
 
@@ -185,6 +158,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
      * 刷新信息
      */
     private void refresh(InvSkuGoods invSkuGoods) {
+        refresh();
         curGoods = invSkuGoods;
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
@@ -194,9 +168,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             tvUnit.setText("");
 
             btnSubmit.setEnabled(false);
-
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
@@ -209,11 +180,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             btnSubmit.setEnabled(true);
 
             labelQuantityCheck.requestFocusEnd();
-
-//                etInput.setSelection(etInput.length());
         }
-
-        DeviceUtils.hideSoftInput(getActivity(), labelQuantityCheck);
     }
 
     @Override

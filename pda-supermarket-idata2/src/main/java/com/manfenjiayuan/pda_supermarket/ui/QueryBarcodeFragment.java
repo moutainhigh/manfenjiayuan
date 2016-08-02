@@ -27,7 +27,6 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public abstract class QueryBarcodeFragment extends PDAScanFragment{
-    private static final String TAG = "QueryBarcodeFragment";
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -74,16 +73,19 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
             ZLogger.d("mToolbar is null");
         }
 
-        mScanBar.setSoftKeyboardEnabled(true);
-        mScanBar.setOnViewListener(new ScanBar.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                mScanBar.reset();
-                queryByBarcode(text);
-            }
+        if (mScanBar != null){
+            mScanBar.setSoftKeyboardEnabled(true);
+            mScanBar.setOnViewListener(new ScanBar.OnViewListener() {
+                @Override
+                public void onKeycodeEnterClick(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
+                }
 
-        });
-        btnSubmit.setEnabled(false);
+            });
+        }else{
+            ZLogger.d("mScanBar is null");
+        }
     }
 
 
@@ -160,6 +162,7 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
      * 查询处理中
      * */
     public void onQueryProcess() {
+        isAcceptBarcodeEnabled = false;
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
     }
 
@@ -177,6 +180,7 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
     public void onQuerySuccess() {
 //        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
         hideProgressDialog();
+        isAcceptBarcodeEnabled = true;
     }
 
     /**
@@ -190,8 +194,13 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment{
      * 提交失败
      * */
     public void onSubmitError(String errorMsg) {
-        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
-        ZLogger.df(errorMsg);
+        if (!StringUtils.isEmpty(errorMsg)){
+            showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+            ZLogger.df(errorMsg);
+        }
+        else{
+            hideProgressDialog();
+        }
         isAcceptBarcodeEnabled = true;
         btnSubmit.setEnabled(true);
     }

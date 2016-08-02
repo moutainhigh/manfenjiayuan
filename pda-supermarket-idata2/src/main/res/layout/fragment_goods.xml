@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
                 app:rightTextSingleLine="false"
-                app:textLabelView_leftText="采购价:"/>
+                app:textLabelView_leftText="库存成本价:"/>
             <!--零售价（可编辑）-->
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_costPrice"

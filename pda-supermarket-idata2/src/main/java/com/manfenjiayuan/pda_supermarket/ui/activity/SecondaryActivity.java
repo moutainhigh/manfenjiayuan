@@ -7,7 +7,7 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertToFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertToFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateNewReceiveOrderFragment;

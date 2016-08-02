@@ -1,28 +1,18 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@drawable/divider_horizontal_line"
-                android:orientation="vertical"
-                android:showDividers="middle">
+                android:orientation="vertical">
 
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
-        app:editQueryView_inputHint="@string/hint_input_barcode"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="18px"/>
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar_scan_barcode"/>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        style="@style/mf_scrolview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/button_submit"
-        android:layout_below="@+id/eqv_barcode">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,8 +59,8 @@
                     android:id="@+id/tv_unit"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_marginStart="@dimen/spacing_micro"
+                    android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text=""
                     android:textColor="@color/material_black"
@@ -80,17 +70,35 @@
 
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_rectange_primary"
-        android:gravity="center"
-        android:text="确定转换"
-        android:textColor="@color/material_white"
-        android:textSize="18sp"/>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cancel"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_cancel_white_24"
+        android:visibility="gone"
+        app:backgroundTint="@color/mfh_negative_defalult"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
 
-</RelativeLayout>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        app:backgroundTint="@color/mfh_positive_default"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -90,21 +90,29 @@ public class PackageFragment extends QueryBarcodeFragment {
                                 DialogUtil.showHint("未查询到结果");
                                 refreshPackage(null);
                             }
-
-//                        animProgress.setVisibility(View.GONE);
+                            onQuerySuccess();
                         }
 
                         @Override
                         protected void processFailure(Throwable t, String errMsg) {
                             super.processFailure(t, errMsg);
 
-//                        animProgress.setVisibility(View.GONE);
-
-                            DialogUtil.showHint(errMsg);
-                            refreshPackage(null);
+                            onQueryError(errMsg);
                         }
                     }, StockOutItem.class, AppContext.getAppContext()));
         }
+    }
+
+    @Override
+    public void onQuerySuccess() {
+        super.onQuerySuccess();
+    }
+
+    @Override
+    public void onQueryError(String errorMsg) {
+        super.onQueryError(errorMsg);
+
+        refreshPackage(null);
     }
 
     @Override
