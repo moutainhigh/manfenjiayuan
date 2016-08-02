@@ -1,5 +1,6 @@
 package com.manfenjiayuan.business.view;
 
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.mvp.MvpView;
 
@@ -12,6 +13,6 @@ import java.util.List;
 public interface IScGoodsSkuView extends MvpView {
     void onIScGoodsSkuViewProcess();
     void onIScGoodsSkuViewError(String errorMsg);
-    void onIScGoodsSkuViewSuccess(List<ScGoodsSku> scGoodsSkus);
+    void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus);
     void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku);
 }

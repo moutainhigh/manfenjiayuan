@@ -25,14 +25,34 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
     }
 
     /**
-     * 查询商品
-     * @param categoryId 类目编号
+     * 查询前台类目商品
+     * @param categoryId 前台类目编号
      * */
-    public static void findGoodsListByCategory(Long categoryId, PageInfo pageInfo,
+    public static void findGoodsListByFrontCategory(Long categoryId, PageInfo pageInfo,
                                      AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (categoryId != null) {
             params.put("categoryId", String.valueOf(categoryId));
+        }
+        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
+    }
+
+    /**
+     * 查询后台类目商品
+     * @param procateId 后台类目编号
+     * */
+    public static void findGoodsListByBackendCategory(Long procateId, PageInfo pageInfo,
+                                                    AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (procateId != null) {
+            params.put("procateId", String.valueOf(procateId));
         }
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
         if (pageInfo != null){
@@ -145,6 +165,41 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_LIST, params, responseCallback);
+    }
+
+    public static void listScGoodsSku(Long categoryId, PageInfo pageInfo, boolean joinFlag,
+                                      AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        //类目
+        if (categoryId != null) {
+            params.put("categoryId", String.valueOf(categoryId));
+        }
+        //gku.sell_day_num
+        params.put("joinFlag", String.valueOf(joinFlag));// 只查网点商品
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_LIST, params, responseCallback);
+    }
+
+    /**
+     * 查询租户的商品档案
+     * <ol>
+     * 适用场景
+     * <li>门店商品报损</li>
+     * <li>门店发送商品</li>
+     * <li>PDA盘点商品</li>
+     * <li>PDA商品绑定货架</li>
+     * </ol>
+     */
+    public static void checkWithBuyInfoByBarcode(String barcode,
+                                         AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("barcode", barcode);
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.getHttp(true).post(URL_CHECKWITHBUYINFO_BYBARCODE, params, responseCallback);
     }
 
     /**

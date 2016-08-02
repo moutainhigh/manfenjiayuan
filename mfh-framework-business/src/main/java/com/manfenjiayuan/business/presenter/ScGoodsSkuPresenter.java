@@ -22,8 +22,8 @@ public class ScGoodsSkuPresenter {
         this.mScGoodsSkuMode = new ScGoodsSkuMode();
     }
 
-    public void findGoodsListByCategory(Long catogoryId, PageInfo pageInfo) {
-        mScGoodsSkuMode.findGoodsListByCategory(catogoryId, pageInfo,
+    public void findGoodsListByFrontCategory(Long catogoryId, PageInfo pageInfo) {
+        mScGoodsSkuMode.findGoodsListByFrontCategory(catogoryId, pageInfo,
                 new OnPageModeListener<ScGoodsSku>() {
                     @Override
                     public void onProcess() {
@@ -35,7 +35,33 @@ public class ScGoodsSkuPresenter {
                     @Override
                     public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
                         if (mIScGoodsSkuView != null) {
-                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(dataList);
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (mIScGoodsSkuView != null) {
+                            mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
+    }
+
+    public void findGoodsListByBackendCategory(Long procateId, PageInfo pageInfo) {
+        mScGoodsSkuMode.findGoodsListByBackendCategory(procateId, pageInfo,
+                new OnPageModeListener<ScGoodsSku>() {
+                    @Override
+                    public void onProcess() {
+                        if (mIScGoodsSkuView != null) {
+                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                        if (mIScGoodsSkuView != null) {
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
                         }
                     }
 
@@ -62,7 +88,7 @@ public class ScGoodsSkuPresenter {
                     @Override
                     public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
                         if (mIScGoodsSkuView != null) {
-                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(dataList);
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
                         }
                     }
 
@@ -88,7 +114,7 @@ public class ScGoodsSkuPresenter {
                     @Override
                     public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
                         if (mIScGoodsSkuView != null) {
-                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(dataList);
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
                         }
                     }
 
@@ -152,6 +178,63 @@ public class ScGoodsSkuPresenter {
             }
 
         });
+    }
+
+    /**
+     * 加载库存商品
+     */
+    public void listScGoodsSku(PageInfo pageInfo, Long categoryId, String barcode, String name,
+                               String orderby, boolean orderbydesc, String priceType) {
+
+        mScGoodsSkuMode.listScGoodsSku(pageInfo, categoryId, barcode, name,
+                orderby, orderbydesc, priceType, new OnPageModeListener<ScGoodsSku>() {
+                    @Override
+                    public void onProcess() {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
+    }
+
+    public void listScGoodsSku(Long categoryId, PageInfo pageInfo) {
+
+        mScGoodsSkuMode.listScGoodsSku(categoryId, pageInfo, new OnPageModeListener<ScGoodsSku>() {
+                    @Override
+                    public void onProcess() {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
     }
 
 }

@@ -34,8 +34,8 @@ public class ScGoodsSkuApi {
      * 若仅在产品中心中存在则返回信息中proSkuId、productId不为空, costPrice为空，quantity为0；
      * 若产品中心也不存在，则返回null
      */
-    public final static String URL_CHECKWITHBUYINFO_BYBARCODE = MfhApi.URL_BASE_SERVER
-            + "/scGoodsSku/checkWithBuyInfoByBarcode";
+    public final static String URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
+            + "checkWithBuyInfoByBarcode";
 
     /**
      * 查询批发商采购商品
