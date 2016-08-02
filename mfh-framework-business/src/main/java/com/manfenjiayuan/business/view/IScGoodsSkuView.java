@@ -13,6 +13,6 @@ import java.util.List;
 public interface IScGoodsSkuView extends MvpView {
     void onIScGoodsSkuViewProcess();
     void onIScGoodsSkuViewError(String errorMsg);
-    void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus);
-    void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku);
+    void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList);
+    void onIScGoodsSkuViewSuccess(ScGoodsSku data);
 }

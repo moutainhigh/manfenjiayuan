@@ -10,7 +10,7 @@ import com.mfh.framework.mvp.OnPageModeListener;
 import java.util.List;
 
 /**
- * 采购订单
+ * 商超库存商品
  * Created by bingshanguxue on 16/3/17.
  */
 public class ScGoodsSkuPresenter {
