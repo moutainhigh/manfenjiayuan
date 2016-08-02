@@ -20,7 +20,6 @@ import com.mfh.framework.api.impl.CateApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetCallBack;
@@ -36,13 +35,13 @@ import com.mfh.litecashier.database.dao.PosProductSkuNetDao;
 import com.mfh.litecashier.database.logic.CompanyHumanService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.PinyinUtils;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -319,13 +318,17 @@ public class DataSyncManager {
                     return;
                 }
 
+                ZLogger.df(String.format("同步 %d/%d 个商品（%s） 开始", rs.getReturnNum(),
+                        rs.getTotalNum(), SharedPreferencesHelper.getSyncProductsCursor()));
+
+                Date cussor = null;
                 //使用事务
                 for (EntityWrapper<PosGoods> wrapper : rs.getRowDatas()) {
                     //保存商品到数据库
                     PosGoods posGoods = wrapper.getBean();
                     if (posGoods == null || posGoods.getId() == null) {
                         ZLogger.d("保存POS商品库失败：商品参数无效。");
-                        return;
+                        continue;
                     }
 
                     Long id = posGoods.getId();
@@ -353,27 +356,30 @@ public class DataSyncManager {
                     entity.setProcateId(posGoods.getProcateId());
                     entity.setProdLineId(posGoods.getProdLineId());
 
-                    //设置商品名称的拼音和排序字母
-                    String namePinyin = PinyinUtils.getPingYin(posGoods.getName());
-                    entity.setNamePinyin(namePinyin);
-                    String sortLetter = null;
-                    if (!StringUtils.isEmpty(namePinyin)){
-                        sortLetter = namePinyin.substring(0, 1).toUpperCase();
-                    }
-                    if (sortLetter != null && sortLetter.matches("[A-Z]")) {
-                        entity.setNameSortLetter(sortLetter);
-                    } else {
-                        entity.setNameSortLetter("#");
-                    }
+                    // TODO: 8/2/16 用不到，影响效率，暂时忽略。
+//                    //设置商品名称的拼音和排序字母
+//                    String namePinyin = PinyinUtils.getPingYin(posGoods.getName());
+//                    entity.setNamePinyin(namePinyin);
+//                    String sortLetter = null;
+//                    if (!StringUtils.isEmpty(namePinyin)){
+//                        sortLetter = namePinyin.substring(0, 1).toUpperCase();
+//                    }
+//                    if (sortLetter != null && sortLetter.matches("[A-Z]")) {
+//                        entity.setNameSortLetter(sortLetter);
+//                    } else {
+//                        entity.setNameSortLetter("#");
+//                    }
 
                     PosProductService.get().saveOrUpdate(entity);
 
-                    //更新游标
-                    SharedPreferencesHelper.setSyncProductsCursor(entity.getUpdatedDate());
-                    //设置增量更新
-                    SharedPreferencesHelper.setSyncProductsMode(1);
+                    cussor = entity.getUpdatedDate();
                 }
-                ZLogger.df(String.format("同步 %d/%d 个商品（%s）", rs.getReturnNum(),
+
+                //更新游标
+                SharedPreferencesHelper.setSyncProductsCursor(cussor);
+                //设置增量更新
+                SharedPreferencesHelper.setSyncProductsMode(1);
+                ZLogger.df(String.format("同步 %d/%d 个商品（%s） 结束", rs.getReturnNum(),
                         rs.getTotalNum(), SharedPreferencesHelper.getSyncProductsCursor()));
             } catch (Throwable ex) {
 //            throw new RuntimeException(ex);

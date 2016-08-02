@@ -247,6 +247,7 @@ public abstract class IflyTekActivity extends SerialPortActivity {
         }
         // 设置参数
         setParam();
+        ZLogger.df("准备播放语音:" + text);
         int code = mTts.startSpeaking(text, mTtsListener);
 //			/**
 //			 * 只保存音频不进行播放接口,调用此接口请注释startSpeaking接口

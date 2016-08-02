@@ -1219,7 +1219,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 
             //统计订单
             ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALISIS_QUOTA);
-            return null;
+            return lastOrderInfo;
         }
 
         @Override
@@ -1487,6 +1487,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
      */
     private void refreshLastOrder(LastOrderInfo lastOrderInfo) {
         if (lastOrderInfo != null) {
+            int payType = lastOrderInfo.getPayType();
             Double finalAmount = lastOrderInfo.getFinalAmount();
             Double changeAmount = lastOrderInfo.getChangeAmount();
             Double bCount = lastOrderInfo.getbCount();
@@ -1502,10 +1503,10 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 
             if (changeAmount >= 0.01) {
                 cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
-                        WayType.name(lastOrderInfo.getPayType()), finalAmount, changeAmount, bCount));
+                        WayType.name(payType), finalAmount, changeAmount, bCount));
             } else {
                 cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
-                        WayType.name(lastOrderInfo.getPayType()), finalAmount, bCount));
+                        WayType.name(payType), finalAmount, bCount));
             }
         }
         else{
