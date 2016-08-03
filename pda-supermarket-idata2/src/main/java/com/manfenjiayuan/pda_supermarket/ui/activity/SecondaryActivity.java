@@ -7,13 +7,14 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.bizz.InvRecvInspectFragment;
+import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertToFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invio.InvIoGoodsInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
-import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -54,8 +55,6 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-//        hideSystemUI();
-
         handleIntent();
 
 
@@ -72,11 +71,14 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     protected void onResume() {
         super.onResume();
 //        hideSystemUI();
+
     }
 
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+
+        DeviceUtils.hideSoftInput(this);
 
         if (mBackHandedFragment == null || !mBackHandedFragment.onBackPressed()) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 0) {

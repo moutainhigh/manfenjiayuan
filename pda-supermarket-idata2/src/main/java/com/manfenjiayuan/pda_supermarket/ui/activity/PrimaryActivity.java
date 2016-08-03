@@ -9,7 +9,6 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
-import com.manfenjiayuan.pda_supermarket.ui.goods.GoodsChainFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ScGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertFromFragment;
@@ -19,6 +18,7 @@ import com.manfenjiayuan.pda_supermarket.ui.invloss.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -80,11 +80,14 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     protected void onResume() {
         super.onResume();
 //        hideSystemUI();
+
     }
 
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+
+        DeviceUtils.hideSoftInput(this);
 
         if(mBackHandedFragment == null || !mBackHandedFragment.onBackPressed()){
             if(getSupportFragmentManager().getBackStackEntryCount() == 0){
