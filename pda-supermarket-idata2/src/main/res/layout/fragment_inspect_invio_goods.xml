@@ -26,14 +26,14 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="商品名称:"/>
+                app:startText="商品名称:"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_barcode"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="商品条码:"/>
+                app:startText="商品条码:"/>
 
 
             <com.bingshanguxue.pda.widget.EditLabelView

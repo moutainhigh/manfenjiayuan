@@ -13,6 +13,8 @@ import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
@@ -22,13 +24,14 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import java.util.List;
 
 import butterknife.Bind;
+import de.greenrobot.event.EventBus;
 
 
 /**
  * 产品SKU批发商列表
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class ChainGoodsSkuFragment extends BaseFragment implements IChainGoodsSkuView {
+public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuView {
 
     public final static String EXTRA_KEY_BARCODE = "barCode";
 
@@ -40,11 +43,11 @@ public class ChainGoodsSkuFragment extends BaseFragment implements IChainGoodsSk
     @Bind(R.id.empty_view)
     View emptyView;
 
-    private String barcode;
+    private ScGoodsSku curGoods = null;
     private ChainGoodsSkuPresenter mChainGoodsSkuPresenter;
 
-    public static ChainGoodsSkuFragment newInstance(Bundle args) {
-        ChainGoodsSkuFragment fragment = new ChainGoodsSkuFragment();
+    public static GoodsChainFragment newInstance(Bundle args) {
+        GoodsChainFragment fragment = new GoodsChainFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -59,39 +62,63 @@ public class ChainGoodsSkuFragment extends BaseFragment implements IChainGoodsSk
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_chain_goodssku;
+        return R.layout.fragment_goods_chain;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        EventBus.getDefault().register(this);
         mChainGoodsSkuPresenter = new ChainGoodsSkuPresenter(this);
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        if (args != null) {
-            barcode = args.getString(EXTRA_KEY_BARCODE);
-        }
+//        Bundle args = getArguments();
+//        if (args != null) {
+//            barcode = args.getString(EXTRA_KEY_BARCODE);
+//        }
 
         initRecyclerView();
+    }
 
-        if (StringUtils.isEmpty(barcode)) {
-            DialogUtil.showHint("条码无效");
-            getActivity().setResult(Activity.RESULT_CANCELED);
-            getActivity().finish();
-        } else {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 验证
+     */
+    public void onEventMainThread(ScGoodsSkuEvent event) {
+        int eventId = event.getEventId();
+        Bundle args = event.getArgs();
+
+        ZLogger.d(String.format("ScGoodsSkuEvent(%d)", eventId));
+        switch (eventId) {
+            case ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE: {
+                curGoods = (ScGoodsSku) args.getSerializable("scGoodsSku");
+
+                reload();
+            }
+            break;
+
+        }
+    }
+
+    private void reload(){
+        if (curGoods != null){
             if (!NetWorkUtil.isConnect(getActivity())) {
                 DialogUtil.showHint(R.string.toast_network_error);
                 return;
             }
 
-            mChainGoodsSkuPresenter.findSupplyChainGoodsSku(barcode, null, null);
+            mChainGoodsSkuPresenter.findSupplyChainGoodsSku(curGoods.getBarcode(), null, null);
         }
     }
-
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

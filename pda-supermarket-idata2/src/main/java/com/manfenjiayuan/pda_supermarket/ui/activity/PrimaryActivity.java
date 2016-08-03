@@ -9,7 +9,7 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
-import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
+import com.manfenjiayuan.pda_supermarket.ui.goods.GoodsChainFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ScGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertFromFragment;
@@ -31,7 +31,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
     public static final int FRAGMENT_TYPE_NONE = 0x00;
     public static final int FRAGMENT_TYPE_GOODS         = 0x01;
-    public static final int FRAGMENT_TYPE_GOODS_PROVIDER         = 0x02;
     public static final int FRAGMENT_TYPE_PACKAGE = 0x03;
     public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 0x04;//盘点订单列表
     public static final int FRAGMENT_TYPE_DISTRIBUTION = 0x05;
@@ -135,19 +134,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
         }
         else if(serviceType == FRAGMENT_TYPE_GOODS){
             ScGoodsSkuFragment fragment = new ScGoodsSkuFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-//                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
-                    .commit();
-        }
-        else if(serviceType == FRAGMENT_TYPE_GOODS_PROVIDER){
-            ChainGoodsSkuFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null){
-                fragment = ChainGoodsSkuFragment.newInstance(intent.getExtras());
-            }else{
-                fragment = ChainGoodsSkuFragment.newInstance(null);
-            }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)

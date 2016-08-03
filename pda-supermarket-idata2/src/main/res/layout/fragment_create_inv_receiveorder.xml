@@ -64,7 +64,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:textColor="@color/material_white"
-                android:text="单击返回"/>
+                android:textSize="12sp"
+                android:text="请扫描发货单条码\n单击返回收货单列表"
+                android:layout_margin="@dimen/spacing_double"/>
 
             <ProgressBar
                 android:id="@+id/animProgress"
