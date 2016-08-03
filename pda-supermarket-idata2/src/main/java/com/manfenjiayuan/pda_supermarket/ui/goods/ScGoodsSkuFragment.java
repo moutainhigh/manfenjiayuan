@@ -15,7 +15,6 @@ import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
@@ -100,8 +98,9 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                 }
 
                 @Override
-                public void onAction1Click() {
-                    DialogUtil.showHint("点击了搜索");
+                public void onAction1Click(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
                 }
             });
         } else {

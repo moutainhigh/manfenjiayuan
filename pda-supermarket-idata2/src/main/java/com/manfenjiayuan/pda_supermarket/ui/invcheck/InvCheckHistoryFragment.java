@@ -9,13 +9,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.support.v7.widget.Toolbar;
 
+import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.StockTakeEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.StockTakeService;
+import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.StockTakeAdapter;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
 import com.mfh.framework.core.logger.ZLogger;
@@ -28,7 +27,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
@@ -147,8 +145,8 @@ public class InvCheckHistoryFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
 
-//                final StockTakeEntity entity = orderListAdapter.getEntityList().get(position);
-//                if (entity.getStatus() == StockTakeEntity.STATUS_CONFLICT) {
+//                final InvCheckGoodsEntity entity = orderListAdapter.getEntityList().get(position);
+//                if (entity.getStatus() == InvCheckGoodsEntity.STATUS_CONFLICT) {
                     //TODO,修改状态
 
 //                }
@@ -156,7 +154,7 @@ public class InvCheckHistoryFragment extends BaseFragment {
 
             @Override
             public void onItemLongClick(View view, int position) {
-                final StockTakeEntity entity = orderListAdapter.getEntityList().get(position);
+                final InvCheckGoodsEntity entity = orderListAdapter.getEntityList().get(position);
                 if (entity == null){
                     return;
                 }
@@ -167,9 +165,9 @@ public class InvCheckHistoryFragment extends BaseFragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        entity.setUpdateHint(StockTakeEntity.HINT_OVERRIDE);
-//                            entity.setStatus(StockTakeEntity.STATUS_NONE);
-                        StockTakeService.get().saveOrUpdate(entity);
+                        entity.setUpdateHint(InvCheckGoodsEntity.HINT_OVERRIDE);
+//                            entity.setStatus(InvCheckGoodsEntity.STATUS_NONE);
+                        InvCheckGoodsService.get().saveOrUpdate(entity);
                         orderListAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
@@ -178,9 +176,9 @@ public class InvCheckHistoryFragment extends BaseFragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        entity.setUpdateHint(StockTakeEntity.HINT_MERGER);
-//                            entity.setStatus(StockTakeEntity.STATUS_NONE);
-                        StockTakeService.get().saveOrUpdate(entity);
+                        entity.setUpdateHint(InvCheckGoodsEntity.HINT_MERGER);
+//                            entity.setStatus(InvCheckGoodsEntity.STATUS_NONE);
+                        InvCheckGoodsService.get().saveOrUpdate(entity);
                         orderListAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
@@ -206,8 +204,8 @@ public class InvCheckHistoryFragment extends BaseFragment {
     private void load(){
         //按更新日期，降序排列
         if (orderListAdapter != null){
-            orderListAdapter.setEntityList(StockTakeService.get()
-                    .queryAllByDesc(String.format("status != '%d'", StockTakeEntity.STATUS_FINISHED)));
+            orderListAdapter.setEntityList(InvCheckGoodsService.get()
+                    .queryAllByDesc(String.format("status != '%d'", InvCheckGoodsEntity.STATUS_FINISHED)));
         }
     }
 

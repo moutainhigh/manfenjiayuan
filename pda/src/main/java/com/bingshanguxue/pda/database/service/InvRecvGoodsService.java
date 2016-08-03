@@ -125,7 +125,7 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
     /**
      * 根据条码查商品
      */
-    public InvRecvGoodsEntity queryEntityBy(String barcode) {
+    public InvRecvGoodsEntity queryEntityByBarcode(String barcode) {
         if (StringUtils.isEmpty(barcode)) {
             return null;
         }
@@ -142,8 +142,13 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
      * 保存采购订单明细
      */
     public void saveInvSendOrderItem(InvSendOrderItem goods) {
-        InvRecvGoodsEntity entity = new InvRecvGoodsEntity();
-        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+        InvRecvGoodsEntity entity = queryEntityByBarcode(goods.getBarcode());
+        if (entity == null){
+            entity = new InvRecvGoodsEntity();
+            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+            entity.setBarcode(goods.getBarcode());
+        }
+
         entity.setUpdatedDate(new Date());
         entity.setProSkuId(goods.getProSkuId());
         entity.setChainSkuId(goods.getChainSkuId());
@@ -170,7 +175,6 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
             entity.setReceivePrice(entity.getReceiveAmount() / entity.getReceiveQuantity());
         }
 
-        entity.setBarcode(goods.getBarcode());
         entity.setProviderId(goods.getProviderId());
         entity.setIsPrivate(goods.getIsPrivate());
 
@@ -182,16 +186,31 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
     /**
      * 保存发货单明细
      */
+    public void saveSendOrderItems(List<InvSendOrderItem> entityList) {
+//        clear();
+        if (entityList != null && entityList.size() > 0) {
+            for (InvSendOrderItem entity : entityList) {
+                saveInvSendOrderItem(entity);
+            }
+        }
+    }
+
+    /**
+     * 保存发货单明细
+     */
     public void saveInvSendIoOrderItem(InvSendIoOrderItem goods) {
-        InvRecvGoodsEntity entity = new InvRecvGoodsEntity();
-        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+        InvRecvGoodsEntity entity = queryEntityByBarcode(goods.getBarcode());
+        if (entity == null){
+            entity = new InvRecvGoodsEntity();
+            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+            entity.setBarcode(goods.getBarcode());
+        }
         entity.setUpdatedDate(new Date());
 
         entity.setProSkuId(goods.getProSkuId());
         entity.setChainSkuId(goods.getChainSkuId());
         entity.setProductName(goods.getProductName());
         entity.setUnitSpec(goods.getUnitSpec());
-        entity.setBarcode(goods.getBarcode());
         entity.setProviderId(goods.getProviderId());
         entity.setIsPrivate(goods.getIsPrivate());
 
@@ -210,24 +229,11 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
         saveOrUpdate(entity);
     }
 
-
-    /**
-     * 保存发货单明细
-     */
-    public void saveSendOrderItems(List<InvSendOrderItem> entityList) {
-        clear();
-        if (entityList != null && entityList.size() > 0) {
-            for (InvSendOrderItem entity : entityList) {
-                saveInvSendOrderItem(entity);
-            }
-        }
-    }
-
     /**
      * 保存采购单明细
      */
-    public void saveSendIoOrdersItems(List<InvSendIoOrderItem> entityList) {
-        clear();
+    public void saveSendIoOrderItems(List<InvSendIoOrderItem> entityList) {
+//        clear();
         if (entityList != null && entityList.size() > 0) {
             for (InvSendIoOrderItem entity : entityList) {
                 saveInvSendIoOrderItem(entity);

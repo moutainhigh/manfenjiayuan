@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.manfenjiayuan.business.bean.InvCheckOrder;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.database.logic.StockTakeService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SimpleActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.StockCheckOrderAdapter;
 import com.mfh.comn.bean.EntityWrapper;
@@ -149,7 +148,7 @@ public class InventoryCheckFragment extends BaseFragment {
                 }
 //                else if (invCheckOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_FREEZE)){
 //                    DialogUtil.showHint("盘点已冻结");
-//                    StockTakeService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
+//                    InvCheckGoodsService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
 //                }
                 else if (invCheckOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_FINISHED)){
                     DialogUtil.showHint("盘点已结束");

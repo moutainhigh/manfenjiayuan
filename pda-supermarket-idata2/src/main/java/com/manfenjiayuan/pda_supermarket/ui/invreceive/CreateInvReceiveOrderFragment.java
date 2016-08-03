@@ -197,7 +197,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             break;
             case Constants.ARC_SENDORDER_LIST: {
                 // TODO: 8/2/16  
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
                 }
             }
@@ -235,7 +235,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     }
 
 
-
     /**
      * 切换发货方
      */
@@ -258,19 +257,19 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         setScanEnabled(true);
     }
 
-    public void setScanEnabled(boolean enabled){
+    public void setScanEnabled(boolean enabled) {
         isAcceptBarcodeEnabled = enabled;
-        if (enabled){
+        if (enabled) {
             rlScanSendIoOrder.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             rlScanSendIoOrder.setVisibility(View.GONE);
         }
     }
+
     /**
      * 扫描到发货单条码后，加载订单明细
-     * */
-    private void importSendIoOrder(String barcode){
+     */
+    private void importSendIoOrder(String barcode) {
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             isAcceptBarcodeEnabled = true;
@@ -281,7 +280,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     }
 
     @OnClick(R.id.rl_scan_sendioorder)
-    public void hideScanSendIoOrder(){
+    public void hideScanSendIoOrder() {
         setScanEnabled(false);
     }
 
@@ -302,8 +301,8 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     }
 
 
-    private void importInvSendOrder(InvSendOrder invSendOrder){
-        if (invSendOrder == null){
+    private void importInvSendOrder(InvSendOrder invSendOrder) {
+        if (invSendOrder == null) {
             return;
         }
 
@@ -442,7 +441,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             , AppContext.getAppContext()) {
     };
 
-    public void onReceiveOrderProcess(){
+    public void onReceiveOrderProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在处理订单，请稍后...", false);
     }
 
@@ -473,7 +472,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
      * 支付订单
      */
     public void doPayWork(String orderId, Double amount) {
-        if (amount <= 0){
+        if (amount <= 0) {
             onOrderPaySucceed();
             return;
         }
@@ -572,7 +571,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                final InvRecvGoodsEntity entity = goodsAdapter.getEntityList().get(position);
+                final InvRecvGoodsEntity entity = goodsAdapter.getEntity(position);
                 if (operateDialog == null) {
                     operateDialog = new CommonDialog(getActivity());
                     operateDialog.setCancelable(true);
@@ -666,21 +665,19 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
     @Override
     public void onIInvSendIoOrderViewProcess() {
-
         isAcceptBarcodeEnabled = false;
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "加载订单...", false);
     }
 
     @Override
     public void onIInvSendIoOrderViewError(String errorMsg) {
-
         isAcceptBarcodeEnabled = true;
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
     }
 
     @Override
     public void onIInvSendIoOrderViewSuccess(InvSendIoOrderItemBrief data) {
-        if (data != null){
+        if (data != null) {
             List<InvSendIoOrderItem> sendIoOrderItems = data.getItems();
             new SendIoOrderAsyncTask().execute(sendIoOrderItems);
         }
@@ -694,13 +691,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
         @Override
         protected List<InvRecvGoodsEntity> doInBackground(List<InvSendOrderItem>... params) {
-            List<InvSendOrderItem> items = params[0];
-
-            if (items != null && items.size() > 0) {
-                for (InvSendOrderItem entity : items) {
-                    InvRecvGoodsService.get().saveInvSendOrderItem(entity);
-                }
-            }
+            InvRecvGoodsService.get().saveSendOrderItems(params[0]);
 
             return InvRecvGoodsService.get().queryAll();
         }
@@ -719,14 +710,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
         @Override
         protected List<InvRecvGoodsEntity> doInBackground(List<InvSendIoOrderItem>... params) {
-            List<InvSendIoOrderItem> items = params[0];
-
-            if (items != null && items.size() > 0) {
-                for (InvSendIoOrderItem entity : items) {
-                    InvRecvGoodsService.get().saveInvSendIoOrderItem(entity);
-                }
-            }
-
+            InvRecvGoodsService.get().saveSendIoOrderItems(params[0]);
 
             return InvRecvGoodsService.get().queryAll();
         }

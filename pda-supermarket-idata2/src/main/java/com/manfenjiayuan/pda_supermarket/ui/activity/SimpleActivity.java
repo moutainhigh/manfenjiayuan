@@ -9,6 +9,7 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckHistoryFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckInspectFragment;
+import com.mfh.framework.core.utils.DeviceUtils;
 
 /**
  * 服务
@@ -16,7 +17,6 @@ import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckInspectFragment;
  */
 public class SimpleActivity extends IData95Activity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
-    public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
     public static final int FRAGMENT_TYPE_STOCKTAKE_LIST = 1;//盘点记录
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 2;//盘点
 
@@ -41,8 +41,6 @@ public class SimpleActivity extends IData95Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-//        hideSystemUI();
-
         handleIntent();
 
         super.onCreate(savedInstanceState);
@@ -60,7 +58,14 @@ public class SimpleActivity extends IData95Activity {
 //        hideSystemUI();
     }
 
-//    @Override
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        DeviceUtils.hideSoftInput(this);
+    }
+
+    //    @Override
 //    public boolean onKeyDown(int keyCode, KeyEvent event) {
 //        if (keyCode == KeyEvent.KEYCODE_BACK
 //                && event.getAction() == KeyEvent.ACTION_DOWN) {

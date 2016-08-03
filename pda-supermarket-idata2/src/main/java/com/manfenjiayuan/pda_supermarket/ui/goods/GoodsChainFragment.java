@@ -1,6 +1,5 @@
 package com.manfenjiayuan.pda_supermarket.ui.goods;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +15,6 @@ import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -43,7 +41,6 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
     @Bind(R.id.empty_view)
     View emptyView;
 
-    private ScGoodsSku curGoods = null;
     private ChainGoodsSkuPresenter mChainGoodsSkuPresenter;
 
     public static GoodsChainFragment newInstance(Bundle args) {
@@ -100,23 +97,25 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
         ZLogger.d(String.format("ScGoodsSkuEvent(%d)", eventId));
         switch (eventId) {
             case ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE: {
-                curGoods = (ScGoodsSku) args.getSerializable("scGoodsSku");
-
-                reload();
+                ScGoodsSku curGoods = (ScGoodsSku) args.getSerializable("scGoodsSku");
+                reload(curGoods);
             }
             break;
 
         }
     }
 
-    private void reload(){
-        if (curGoods != null){
+    private void reload(ScGoodsSku goods){
+        if (goods != null){
             if (!NetWorkUtil.isConnect(getActivity())) {
                 DialogUtil.showHint(R.string.toast_network_error);
                 return;
             }
 
-            mChainGoodsSkuPresenter.findSupplyChainGoodsSku(curGoods.getBarcode(), null, null);
+            mChainGoodsSkuPresenter.findSupplyChainGoodsSku(goods.getBarcode(), null, null);
+        }
+        else{
+            goodsAdapter.setEntityList(null);
         }
     }
     private void initRecyclerView() {
@@ -155,7 +154,6 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
 
     @Override
     public void onChainGoodsSkuViewProcess() {
-
         animProgress.setVisibility(View.VISIBLE);
     }
 

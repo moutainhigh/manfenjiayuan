@@ -5,7 +5,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.ScanBar;
@@ -13,7 +12,6 @@ import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -86,8 +84,9 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment {
                 }
 
                 @Override
-                public void onAction1Click() {
-                    DialogUtil.showHint("点击了搜索");
+                public void onAction1Click(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
                 }
             });
         } else {

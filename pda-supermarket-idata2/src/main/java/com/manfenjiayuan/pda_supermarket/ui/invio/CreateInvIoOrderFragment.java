@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -30,6 +29,7 @@ import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -59,6 +59,9 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
+
+
+    private CommonDialog operateDialog = null;
 
     private int orderType = InvIoOrderApi.ORDER_TYPE_IN;
     private int storeType = InvIoOrderApi.STORE_TYPE_RETAIL;
@@ -168,6 +171,34 @@ public class CreateInvIoOrderFragment extends BaseFragment {
                 InvIoGoodsEntity entity = goodsAdapter.getEntity(position);
                 if (entity != null){
                     inspect(entity.getBarcode());
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, final int position) {
+                final InvIoGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (operateDialog == null) {
+                    operateDialog = new CommonDialog(getActivity());
+                    operateDialog.setCancelable(true);
+                }
+                operateDialog.setMessage(String.format("%s\n%s", entity.getBarcode(), entity.getProductName()));
+                operateDialog.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        goodsAdapter.removeEntity(position);
+                    }
+                });
+                operateDialog.setNegativeButton("点错了", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                if (!operateDialog.isShowing()) {
+                    operateDialog.show();
                 }
             }
 

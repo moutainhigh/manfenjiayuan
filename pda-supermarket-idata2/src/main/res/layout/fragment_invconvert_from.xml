@@ -75,21 +75,6 @@
 
     <!--结算-->
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_cancel"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_cancel_white_24"
-        android:visibility="gone"
-        app:backgroundTint="@color/mfh_negative_defalult"
-        app:borderWidth="0dp"
-        app:elevation="0dp"
-        app:pressedTranslationZ="0dp"
-        app:rippleColor="@color/material_green_800"/>
-
-    <!--结算-->
-    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_submit"
         android:layout_width="64dp"
         android:layout_height="64dp"

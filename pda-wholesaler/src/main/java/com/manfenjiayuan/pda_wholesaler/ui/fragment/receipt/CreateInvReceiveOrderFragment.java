@@ -570,13 +570,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
         @Override
         protected List<InvRecvGoodsEntity> doInBackground(List<InvSendOrderItem>... params) {
-            List<InvSendOrderItem> items = params[0];
-
-            if (items != null && items.size() > 0) {
-                for (InvSendOrderItem entity : items) {
-                    InvRecvGoodsService.get().saveInvSendOrderItem(entity);
-                }
-            }
+            InvRecvGoodsService.get().saveSendOrderItems(params[0]);
 
             return InvRecvGoodsService.get().queryAll();
         }

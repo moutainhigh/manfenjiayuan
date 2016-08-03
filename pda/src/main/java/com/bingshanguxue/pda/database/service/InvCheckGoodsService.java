@@ -1,9 +1,8 @@
-package com.manfenjiayuan.pda_wholesaler.database.logic;
+package com.bingshanguxue.pda.database.service;
 
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
-import com.manfenjiayuan.pda_wholesaler.database.dao.StockTakeDao;
-import com.manfenjiayuan.pda_wholesaler.database.entity.StockTakeEntity;
+import com.bingshanguxue.pda.database.dao.InvCheckGoodsDao;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
@@ -19,10 +18,10 @@ import java.util.List;
  * 库存盘点
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class StockTakeService extends BaseService<StockTakeEntity, String, StockTakeDao> {
+public class InvCheckGoodsService extends BaseService<InvCheckGoodsEntity, String, InvCheckGoodsDao> {
     @Override
-    protected Class<StockTakeDao> getDaoClass() {
-        return StockTakeDao.class;
+    protected Class<InvCheckGoodsDao> getDaoClass() {
+        return InvCheckGoodsDao.class;
     }
 
     @Override
@@ -30,17 +29,17 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
         return null;
     }
 
-    private static StockTakeService instance = null;
+    private static InvCheckGoodsService instance = null;
     /**
      * 返回 IMConversationService 实例
      * @return
      */
-    public static StockTakeService get() {
-        String lsName = StockTakeService.class.getName();
+    public static InvCheckGoodsService get() {
+        String lsName = InvCheckGoodsService.class.getName();
         if (ServiceFactory.checkService(lsName))
             instance = ServiceFactory.getService(lsName);
         else {
-            instance = new StockTakeService();//初始化登录服务
+            instance = new InvCheckGoodsService();//初始化登录服务
         }
         return instance;
     }
@@ -55,7 +54,7 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
         }
     }
 
-    public StockTakeEntity getEntityById(String id){
+    public InvCheckGoodsEntity getEntityById(String id){
         try{
             return getDao().getEntityById(id);
         }
@@ -65,11 +64,11 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
         }
     }
 
-    public void save(StockTakeEntity msg) {
+    public void save(InvCheckGoodsEntity msg) {
         getDao().save(msg);
     }
 
-    public void saveOrUpdate(StockTakeEntity msg) {
+    public void saveOrUpdate(InvCheckGoodsEntity msg) {
         getDao().saveOrUpdate(msg);
     }
 
@@ -85,21 +84,21 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
      * @param pageInfo
      * @return
      */
-    public List<StockTakeEntity> queryAll(PageInfo pageInfo) {
+    public List<InvCheckGoodsEntity> queryAll(PageInfo pageInfo) {
         return getDao().queryAll(pageInfo);
     }
 
-    public List<StockTakeEntity> queryAll() {
+    public List<InvCheckGoodsEntity> queryAll() {
         return getDao().queryAll();
     }
 
-    public List<StockTakeEntity> queryAllBy(String strWhere) {
+    public List<InvCheckGoodsEntity> queryAllBy(String strWhere) {
         return getDao().queryAllBy(strWhere);
     }
-    public List<StockTakeEntity> queryAllBy(String strWhere, PageInfo pageInfo) {
+    public List<InvCheckGoodsEntity> queryAllBy(String strWhere, PageInfo pageInfo) {
         return getDao().queryAllBy(strWhere, pageInfo);
     }
-    public List<StockTakeEntity> queryAllByDesc(String strWhere) {
+    public List<InvCheckGoodsEntity> queryAllByDesc(String strWhere) {
         return getDao().queryAllByDesc(strWhere);
     }
 
@@ -128,17 +127,17 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
             return;
         }
 
-        StockTakeEntity entity;
+        InvCheckGoodsEntity entity;
         // 不再对同一商品合并，只保留盘点纪录。
-//        List<StockTakeEntity> entityList = queryAllBy(String.format("orderId = '%s' and barcode = '%s'", orderId, productEntity.getBarcode()));
-////        List<StockTakeEntity> entityList = queryAllBy(String.format("orderId = '%s' and shelfNumber = '%d' and barcode = '%s'", orderId, shelfNumber, productEntity.getBarcode()));
+//        List<InvCheckGoodsEntity> entityList = queryAllBy(String.format("orderId = '%s' and barcode = '%s'", orderId, productEntity.getBarcode()));
+////        List<InvCheckGoodsEntity> entityList = queryAllBy(String.format("orderId = '%s' and shelfNumber = '%d' and barcode = '%s'", orderId, shelfNumber, productEntity.getBarcode()));
 //        if (entityList != null && entityList.size() > 0){
 //            entity = entityList.get(0);
 //            entity.setShelfNumber(shelfNumber);
 //            entity.setUpdatedDate(new Date());
 //        }
 //        else{
-            entity = new StockTakeEntity();
+            entity = new InvCheckGoodsEntity();
 
             entity.setOrderId(orderId);
             entity.setShelfNumber(shelfNumber);
@@ -155,49 +154,9 @@ public class StockTakeService extends BaseService<StockTakeEntity, String, Stock
 //        }
 
         entity.setQuantityCheck(quantity);
-        entity.setStatus(StockTakeEntity.STATUS_NONE);
+        entity.setStatus(InvCheckGoodsEntity.STATUS_NONE);
         entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_INIT);
-        entity.setUpdateHint(StockTakeEntity.HINT_MERGER);
-
-        saveOrUpdate(entity);
-    }
-
-    public void addNewEntity(Long orderId, Long shelfNumber, InvSkuGoods goods,
-                             Double quantity){
-        if (StringUtils.isEmpty(orderId) || goods == null){
-            return;
-        }
-
-        StockTakeEntity entity;
-        // 不再对同一商品合并，只保留盘点纪录。
-//        List<StockTakeEntity> entityList = queryAllBy(String.format("orderId = '%s' and barcode = '%s'", orderId, productEntity.getBarcode()));
-////        List<StockTakeEntity> entityList = queryAllBy(String.format("orderId = '%s' and shelfNumber = '%d' and barcode = '%s'", orderId, shelfNumber, productEntity.getBarcode()));
-//        if (entityList != null && entityList.size() > 0){
-//            entity = entityList.get(0);
-//            entity.setShelfNumber(shelfNumber);
-//            entity.setUpdatedDate(new Date());
-//        }
-//        else{
-        entity = new StockTakeEntity();
-
-        entity.setOrderId(orderId);
-        entity.setShelfNumber(shelfNumber);
-
-        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
-        entity.setUpdatedDate(new Date());
-
-        entity.setGoodsId(goods.getId());
-//        entity.setProductId(goods.getProductId());
-        entity.setProSkuId(goods.getProSkuId());
-        entity.setBarcode(goods.getBarcode());
-        entity.setName(goods.getName());
-        entity.setSpecNames("");
-//        }
-
-        entity.setQuantityCheck(quantity);
-        entity.setStatus(StockTakeEntity.STATUS_NONE);
-        entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_INIT);
-        entity.setUpdateHint(StockTakeEntity.HINT_MERGER);
+        entity.setUpdateHint(InvCheckGoodsEntity.HINT_MERGER);
 
         saveOrUpdate(entity);
     }

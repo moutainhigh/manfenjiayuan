@@ -124,6 +124,10 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
     public void submit() {
         super.submit();
 
+        if (curGoods == null){
+            onSubmitError("商品无效");
+            return;
+        }
         String quantityStr = labelSignQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)){
             onSubmitError("请输入报损数量");
@@ -131,7 +135,7 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
         }
         Double quantityCheck = Double.valueOf(quantityStr);
 
-        if (curGoods != null && curGoods.getQuantityCheck() > 0){
+        if (curGoods.getQuantityCheck() > 0){
             quantityCheckConfirmDialog(curGoods, quantityCheck);
         }
         else{

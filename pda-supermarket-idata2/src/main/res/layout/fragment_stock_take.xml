@@ -36,39 +36,15 @@
 
         </android.support.v7.widget.Toolbar>
 
-        <RelativeLayout
+        <com.bingshanguxue.pda.widget.ScanBar
+            android:id="@+id/scanBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_margin="@dimen/spacing_micro"
-            android:orientation="horizontal"
-            android:padding="@dimen/spacing_micro">
-
-            <com.bingshanguxue.pda.widget.ScanBar
-                android:id="@+id/scanBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/spacing_normal"
-                android:layout_toStartOf="@+id/iv_search"
-                android:weightSum="1"
-                app:hint="请扫描商品条码"
-                app:editInputType="barcode"
-                app:textColor="@color/black"
-                app:textColorHint="@color/black_35"
-                app:textSize="16px"/>
-
-            <ImageView
-                android:id="@+id/iv_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/spacing_normal"
-                android:layout_marginStart="@dimen/spacing_normal"
-                android:background="@null"
-                android:src="@mipmap/ic_toolbar_search_white"/>
-        </RelativeLayout>
+            app:hint="请扫描商品条码"
+            app:editInputType="barcode"
+            app:textColor="@color/black"
+            app:textColorHint="@color/black_35"
+            app:textSize="16px"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -113,7 +89,7 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="当前库存:"/>
+                app:startText="库存:"/>
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_newquantity"
@@ -121,8 +97,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:editInputType="numberDecimal"
-                app:editTextHint="请输入盘点库存"
-                app:startText="盘点库存:"/>
+                app:editTextHint="请输入盘点数量"
+                app:startText="盘点:"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -140,6 +116,7 @@
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"
+        android:visibility="gone"
         app:rippleColor="@color/material_green_800"/>
 
     <!--结算-->

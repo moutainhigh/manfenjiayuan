@@ -255,7 +255,8 @@ public class GoodsInfoFragment extends BaseFragment {
 
     public void onSubmitSuccess() {
         showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
-        refresh(null);
+        //修改商品信息成功后，清空商品信息
+//        refresh(null);
     }
 
     /**

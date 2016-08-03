@@ -138,6 +138,11 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     public void submit() {
         super.submit();
 
+        if (curGoods == null){
+            onSubmitError("商品无效");
+            return;
+        }
+
         String price = labelPrice.getInput();
         if (StringUtils.isEmpty(price)){
             onSubmitError("请输入发货价格");
@@ -151,7 +156,7 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
         }
         Double quantityCheck = Double.valueOf(quantityStr);
 
-        if (curGoods != null && curGoods.getQuantityCheck() > 0){
+        if (curGoods.getQuantityCheck() > 0){
             quantityCheckConfirmDialog(curGoods, Double.valueOf(price), quantityCheck);
         }
         else{
@@ -198,7 +203,6 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 
     @Override
     public void onChainGoodsSkuViewProcess() {
-
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
     }
 

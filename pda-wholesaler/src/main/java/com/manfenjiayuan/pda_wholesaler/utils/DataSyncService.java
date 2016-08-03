@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.database.entity.ShelveEntity;
-import com.manfenjiayuan.pda_wholesaler.database.entity.StockTakeEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
-import com.manfenjiayuan.pda_wholesaler.database.logic.StockTakeService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
@@ -146,9 +144,9 @@ public class DataSyncService {
 
         String lastCursor = SharedPreferencesHelper.getStocktakeLastUpdate();
 
-//        List<StockTakeEntity> entityList = StockTakeService.get()
+//        List<InvCheckGoodsEntity> entityList = InvCheckGoodsService.get()
 //                .queryAllBy(String.format("createdDate > '%s' and syncStatus < '%d'",
-//                        lastCursor, StockTakeEntity.SYNC_STATUS_FINISHED), new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
+//                        lastCursor, InvCheckGoodsEntity.SYNC_STATUS_FINISHED), new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
         List<StockTakeEntity> entityList = StockTakeService.get()
                 .queryAllBy(String.format("syncStatus < '%d'", L2CSyncStatus.SYNC_STATUS_FINISHED),
                         new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
@@ -267,9 +265,9 @@ public class DataSyncService {
 
         String lastCursor = SharedPreferencesHelper.getStocktakeLastUpdate();
 
-//        List<StockTakeEntity> entityList = StockTakeService.get()
+//        List<InvCheckGoodsEntity> entityList = InvCheckGoodsService.get()
 //                .queryAllBy(String.format("createdDate > '%s' and syncStatus < '%d'",
-//                        lastCursor, StockTakeEntity.SYNC_STATUS_FINISHED), new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
+//                        lastCursor, InvCheckGoodsEntity.SYNC_STATUS_FINISHED), new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
         List<ShelveEntity> entityList = ShelveService.get()
                 .queryAllBy(String.format("syncStatus < '%d'", L2CSyncStatus.SYNC_STATUS_FINISHED),
                         new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));

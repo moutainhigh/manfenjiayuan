@@ -10,12 +10,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.manfenjiayuan.business.bean.InvCheckOrder;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.logic.StockTakeService;
+import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SimpleActivity;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.StockCheckOrderAdapter;
 import com.mfh.comn.bean.EntityWrapper;
@@ -186,19 +185,19 @@ public class InvCheckListFragment extends BaseFragment {
                 }
 //                else if (invCheckOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_FREEZE)){
 //                    DialogUtil.showHint("盘点已冻结");
-//                    StockTakeService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
+//                    InvCheckGoodsService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
 //                }
                 else if (invCheckOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_FINISHED)) {
                     DialogUtil.showHint("盘点已结束");
 
                     //删除无效的盘点数据
-                    StockTakeService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
+                    InvCheckGoodsService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
                 } else if (invCheckOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_CANCELED)) {
                     DialogUtil.showHint("盘点已取消");
-                    StockTakeService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
+                    InvCheckGoodsService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
                 } else {
                     DialogUtil.showHint("无法盘点");
-                    StockTakeService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
+                    InvCheckGoodsService.get().deleteBy(String.format("orderId = '%d'", invCheckOrder.getId()));
                 }
             }
 

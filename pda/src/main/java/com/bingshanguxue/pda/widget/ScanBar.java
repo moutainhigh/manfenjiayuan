@@ -35,7 +35,7 @@ public class ScanBar extends LinearLayout {
 
     public interface OnScanBarListener {
         void onKeycodeEnterClick(String text);
-        void onAction1Click();
+        void onAction1Click(String text);
     }
 
     private OnScanBarListener onViewListener;
@@ -71,7 +71,7 @@ public class ScanBar extends LinearLayout {
             etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
 
-        boolean isAction1Enabled = ta.getBoolean(R.styleable.ScanBar_action1Enabled, false);
+        boolean isAction1Enabled = ta.getBoolean(R.styleable.ScanBar_action1Enabled, true);
         if (isAction1Enabled){
             ivAction1.setVisibility(VISIBLE);
         }
@@ -81,8 +81,10 @@ public class ScanBar extends LinearLayout {
         ivAction1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                String text = etInput.getText().toString();
+
                 if (onViewListener != null){
-                    onViewListener.onAction1Click();
+                    onViewListener.onAction1Click(text);
                 }
             }
         });

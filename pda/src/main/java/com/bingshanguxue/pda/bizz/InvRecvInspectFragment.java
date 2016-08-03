@@ -157,8 +157,9 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
                 }
 
                 @Override
-                public void onAction1Click() {
-                    DialogUtil.showHint("点击了搜索");
+                public void onAction1Click(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
                 }
             });
         } else {
@@ -488,7 +489,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                goodsEntity = InvRecvGoodsService.get().queryEntityBy(barcode);
+                goodsEntity = InvRecvGoodsService.get().queryEntityByBarcode(barcode);
                 if (goodsEntity != null) {
                     return true;
                 }
@@ -538,7 +539,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
     }
 
-
     /**
      * 查询成功
      */
@@ -547,9 +547,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         hideProgressDialog();
         isAcceptBarcodeEnabled = true;
     }
-
-
-
 
     public void saveDistributionSignEntity(InvRecvGoodsEntity goods) {
         hideProgressDialog();
@@ -572,7 +569,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 //            return;
 //        }
 
-        InvRecvGoodsEntity entity = InvRecvGoodsService.get().queryEntityBy(goods.getBarcode());
+        InvRecvGoodsEntity entity = InvRecvGoodsService.get().queryEntityByBarcode(goods.getBarcode());
         if (entity == null) {
             entity = new InvRecvGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息

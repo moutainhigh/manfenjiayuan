@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.database.entity.StockTakeEntity;
-import com.manfenjiayuan.pda_wholesaler.database.logic.StockTakeService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 

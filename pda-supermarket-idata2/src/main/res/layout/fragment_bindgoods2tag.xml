@@ -16,7 +16,6 @@
             android:id="@+id/eqv_tagno"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_below="@+id/frame_top"
             app:editLabelView_inputTextColorHint="@color/black_35"
             app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
             app:editQueryView_inputHint="请扫描标签条码"
@@ -27,7 +26,6 @@
             android:id="@+id/eqv_barcode"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_below="@+id/eqv_tagno"
             android:layout_marginTop="@dimen/spacing_normal"
             app:editLabelView_inputTextColorHint="@color/black_35"
             app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
@@ -39,9 +37,7 @@
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/line"
-            android:layout_below="@+id/eqv_barcode">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,7 +64,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     app:startText="零售价:"/>
-
 
                 <com.bingshanguxue.pda.widget.TextLabelView
                     android:id="@+id/label_quantity"

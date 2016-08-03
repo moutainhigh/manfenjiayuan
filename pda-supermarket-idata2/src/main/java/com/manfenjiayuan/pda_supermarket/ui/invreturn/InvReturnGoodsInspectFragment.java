@@ -180,6 +180,7 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
      * 刷新信息
      * */
     private void refreshPackage(InvReturnGoodsEntity goods){
+        refresh();
         curGoods = goods;
         if (curGoods == null){
             labelViews.get(LABELVIEW_INDEX_BARCODE).setTvSubTitle("");
@@ -207,8 +208,6 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
         }
 
         DeviceUtils.hideSoftInput(getActivity(), labelSignQuantity);
-
-        refresh();
     }
 
     @Override

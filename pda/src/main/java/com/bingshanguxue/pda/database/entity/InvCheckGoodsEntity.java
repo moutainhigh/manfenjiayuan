@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.database.entity;
+package com.bingshanguxue.pda.database.entity;
 
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.mfh.comn.annotations.Table;
@@ -6,11 +6,11 @@ import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.core.MfhEntity;
 
 /**
- * POS--商品--收银
+ * 盘点
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_supermarket_stocktakeitem_v3")
-public class StockTakeEntity extends MfhEntity<Long> implements ILongId{
+@Table(name="pda_invcheck_goods_v1")
+public class InvCheckGoodsEntity extends MfhEntity<Long> implements ILongId{
     private Long orderId;//盘点批次编号
     private Long goodsId;//商品主键
     private Long productId; //产品编号
