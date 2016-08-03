@@ -364,26 +364,26 @@ public class ReceiveSendOrderFragment extends BaseReceiveOrderFragment implement
 
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
         animProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
         animProgress.setVisibility(View.GONE);
         DistributionSignService.get().saveSendOrderItems(null);
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
         animProgress.setVisibility(View.GONE);
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List<InvSendOrderItem> dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> items) {
         try {
             ZLogger.d("加载订单明细成功");
-            DistributionSignService.get().saveSendOrderItems(dataList);
+            DistributionSignService.get().saveSendOrderItems(items);
             officeAdapter.setEntityList(DistributionSignService.get().queryAll());
         } catch (Exception e) {
             ZLogger.e(e.toString());

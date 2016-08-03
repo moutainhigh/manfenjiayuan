@@ -8,16 +8,16 @@ import android.view.WindowManager;
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invloss.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertFromFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.InvRecvOrderSplashFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ScGoodsSkuFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invio.CreateInvIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invlabel.InvLabelFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invloss.CreateInvLossOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -154,7 +154,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_DISTRIBUTION){
-            InvRecvOrderSplashFragment fragment = new InvRecvOrderSplashFragment();
+            CreateInvReceiveOrderFragment fragment = new CreateInvReceiveOrderFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, invRecvOrderSplashFragment).show(invRecvOrderSplashFragment)

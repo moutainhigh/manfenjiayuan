@@ -222,7 +222,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
 //                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-        }else if (serviceType == FT_INVLOSS_INSPECTGOODS) {
+        } else if (serviceType == FT_INVLOSS_INSPECTGOODS) {
             InvLossInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {

@@ -51,6 +51,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <RelativeLayout
+            android:id="@+id/rl_scan_sendioorder"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:background="@color/mf_dividerColorPrimary"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textColor="@color/material_white"
+                android:text="单击返回"/>
+
+            <ProgressBar
+                android:id="@+id/animProgress"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                style="@style/loading"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
     </RelativeLayout>
 
 

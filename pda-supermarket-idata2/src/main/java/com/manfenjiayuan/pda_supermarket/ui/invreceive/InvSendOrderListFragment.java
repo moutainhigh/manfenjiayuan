@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -24,6 +25,7 @@ import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -41,6 +43,8 @@ import butterknife.OnClick;
 public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
         implements IInvSendOrderView {
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport mRecyclerView;
     private InvSendOrderAdapter orderAdapter;
@@ -71,12 +75,20 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        EventBus.getDefault().register(this);
         invSendOrderPresenter = new InvSendOrderPresenter(this);
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("导入采购订单");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
 
         initRecyclerView();
 
@@ -143,14 +155,11 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
             @Override
             public void onItemClick(View view, int position) {
                 //TODO,跳转至详情页
-                Bundle extras = new Bundle();
-                extras.putSerializable("sendOrder", orderAdapter.getCurOrder());
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_DISTRIBUTION_SIGN);
+                Intent data = new Intent();
+                data.putExtra("sendOrder", orderAdapter.getCurOrder());
 
-                Intent intent = new Intent(getActivity(), SecondaryActivity.class);
-                intent.putExtras(extras);
-                startActivityForResult(intent, Constants.ARC_DISTRIBUTION_SIGN);
+                getActivity().setResult(Activity.RESULT_OK, data);
+                getActivity().finish();
             }
 
             @Override
@@ -235,18 +244,18 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     }
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
         onLoadStart();
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
 
         onLoadFinished();
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
         try {
             mPageInfo = pageInfo;
 
@@ -277,7 +286,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List<InvSendOrderItem> dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
 
     }
 

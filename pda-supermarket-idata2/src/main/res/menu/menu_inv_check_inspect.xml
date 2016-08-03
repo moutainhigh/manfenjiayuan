@@ -5,7 +5,7 @@
         android:id="@+id/action_history"
         android:orderInCategory="100"
         android:icon="@mipmap/ic_history_white_64"
-        android:title="同步"
+        android:title="历史记录"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_sync"

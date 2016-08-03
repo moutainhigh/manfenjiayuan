@@ -185,6 +185,7 @@ public class CommitInvIoOrderDialog extends CommonDialog {
         this.listener = listener;
 
         this.mHuman = null;
+
     }
 
     @Override
@@ -203,6 +204,8 @@ public class CommitInvIoOrderDialog extends CommonDialog {
     public void show() {
         super.show();
 
+        etVehicle.requestFocus();
+        etVehicle.setSelection(etVehicle.length());
 
         DeviceUtils.hideSoftInput(getOwnerActivity());
     }

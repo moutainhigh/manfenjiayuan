@@ -4,7 +4,6 @@
     <item
         android:id="@+id/action_submit"
         android:orderInCategory="100"
-        android:icon="@mipmap/ic_fab_confirm"
         android:title="提交"
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
 </menu>

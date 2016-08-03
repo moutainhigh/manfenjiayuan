@@ -620,59 +620,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         });
     }
 
-    private void selectReceiveOrderType() {
-        final CommonDialog dialog = DialogHelper
-                .getPinterestDialogCancelable(this);
-
-        View.OnClickListener click = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                dialog.dismiss();
-                switch (id) {
-                    case R.id.tv_invioorder: {
-                        Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_RECEIVEORDER_INVIOORDER);
-//        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
-                        UIHelper.startActivity(MainActivity.this, SecondaryActivity.class, extras);
-                    }
-                    break;
-                    case R.id.tv_select_sendorder: {
-                        Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_INV_SENDORDER);
-//        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
-                        UIHelper.startActivity(MainActivity.this, SecondaryActivity.class, extras);
-                    }
-                    break;
-                    case R.id.tv_create_neworder: {
-                        Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_INV_RECVDORDER_CREATE);
-//        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
-                        UIHelper.startActivity(MainActivity.this, SecondaryActivity.class, extras);
-                    }
-                    break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        View view = LayoutInflater.from(this).inflate(
-                R.layout.dialogview_receiveorder_type, null);
-        view.findViewById(R.id.tv_create_neworder).setOnClickListener(click);
-        view.findViewById(R.id.tv_select_sendorder).setOnClickListener(click);
-
-        dialog.setContent(view, 0);
-        dialog.show();
-    }
-
 
     @Override
     public void onRegisterPlatProcess() {

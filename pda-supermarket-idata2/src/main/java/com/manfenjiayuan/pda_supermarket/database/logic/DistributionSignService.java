@@ -141,7 +141,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
     /**
      * 保存采购订单明细
      */
-    private void saveInvSendOrderItem(InvSendOrderItem goods) {
+    public void saveInvSendOrderItem(InvSendOrderItem goods) {
         DistributionSignEntity entity = new DistributionSignEntity();
         entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
         entity.setUpdatedDate(new Date());
@@ -182,7 +182,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
     /**
      * 保存发货单明细
      */
-    private void saveInvSendIoOrderItem(InvSendIoOrderItem goods) {
+    public void saveInvSendIoOrderItem(InvSendIoOrderItem goods) {
         DistributionSignEntity entity = new DistributionSignEntity();
         entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
         entity.setUpdatedDate(new Date());

@@ -84,7 +84,7 @@ public class ReceiveMSendOrderFragment extends BaseReceiveOrderFragment
     @Override
     protected void onScanCode(String code) {
         if (mInvSendIoOrderItemBrief != null){
-            inspect(barcode);
+            inspect(code);
         }
     }
 
@@ -381,17 +381,17 @@ public class ReceiveMSendOrderFragment extends BaseReceiveOrderFragment
     }
 
     @Override
-    public void onQueryInvSendIoOrderProcess() {
+    public void onIInvSendIoOrderViewProcess() {
         animProgress.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onQueryInvSendIoOrderError(String errorMsg) {
+    public void onIInvSendIoOrderViewError(String errorMsg) {
         animProgress.setVisibility(View.GONE);
     }
 
     @Override
-    public void onQueryInvSendIoOrderSuccess(InvSendIoOrderItemBrief data) {
+    public void onIInvSendIoOrderViewSuccess(InvSendIoOrderItemBrief data) {
         animProgress.setVisibility(View.GONE);
 
         mInvSendIoOrderItemBrief = data;
