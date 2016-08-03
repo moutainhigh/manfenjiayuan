@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.adapter;
+package com.bingshanguxue.pda.bizz;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.R;
 import com.manfenjiayuan.business.bean.InvSendOrder;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
@@ -23,8 +23,6 @@ import butterknife.ButterKnife;
  * Created by bingshanguxue on 15/8/5.
  */
 public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrderAdapter.ProductViewHolder> {
-
-    private InvSendOrder curOrder = null;
 
     public InvSendOrderAdapter(Context context, List<InvSendOrder> entityList) {
         super(context, entityList);
@@ -48,19 +46,12 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_content_commodity_distribution, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_inv_sendorder, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         InvSendOrder entity = entityList.get(position);
-
-        if (curOrder != null && curOrder.getId().compareTo(entity.getId()) == 0){
-            holder.rootView.setSelected(true);
-        }else{
-            holder.rootView.setSelected(false);
-        }
-
 
         holder.tvSendCompanyName.setText(entity.getSendCompanyName());
         holder.tvBarCode.setText(String.format("订单号：%s", entity.getName()));
@@ -77,23 +68,29 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview) View rootView;
-        @Bind(R.id.tv_send_companyname)
+//        @Bind(R.id.tv_send_companyname)
         TextView tvSendCompanyName;
-        @Bind(R.id.tv_barcode)
+//        @Bind(R.id.tv_barcode)
         TextView tvBarCode;
-        @Bind(R.id.tv_quantity)
+//        @Bind(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.tv_sendDate)
+//        @Bind(R.id.tv_sendDate)
         TextView tvSendDate;
-        @Bind(R.id.tv_goodsFee)
+//        @Bind(R.id.tv_goodsFee)
         TextView tvGoodsFee;
-        @Bind(R.id.tv_transHumanName)
+//        @Bind(R.id.tv_transHumanName)
         TextView tvTransHumanName;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+//            ButterKnife.bind(this, itemView);
+
+            tvSendCompanyName = (TextView) itemView.findViewById(R.id.tv_send_companyname);
+            tvBarCode = (TextView) itemView.findViewById(R.id.tv_barcode);
+            tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
+            tvSendDate = (TextView) itemView.findViewById(R.id.tv_sendDate);
+            tvGoodsFee = (TextView) itemView.findViewById(R.id.tv_goodsFee);
+            tvTransHumanName = (TextView) itemView.findViewById(R.id.tv_transHumanName);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,7 +101,6 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
                         return;
                     }
 
-                    curOrder = entityList.get(position);
                     notifyDataSetChanged();
 //                    notifyItemChanged(position);
 
@@ -119,8 +115,6 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
     public void setEntityList(List<InvSendOrder> entityList) {
         this.entityList = entityList;
 
-        curOrder = null;
-
         notifyDataSetChanged();
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
@@ -129,49 +123,6 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
 
     public List<InvSendOrder> getEntityList() {
         return entityList;
-    }
-
-    public InvSendOrder getCurOrder() {
-        return curOrder;
-    }
-
-    public void remove(InvSendOrder order){
-        if (order == null){
-            return;
-        }
-
-        if (entityList != null){
-            entityList.remove(order);
-        }
-        if (curOrder == order){
-            curOrder = null;
-        }
-        notifyDataSetChanged();
-        if (adapterListener != null) {
-            adapterListener.onDataSetChanged();
-        }
-    }
-
-    public void remove(Long orderId){
-        if (orderId == null){
-            return;
-        }
-
-        if (entityList != null && entityList.size() > 0){
-            for (InvSendOrder entity : entityList){
-                if (entity.getId() != null && entity.getId().compareTo(orderId) == 0){
-                    entityList.remove(entity);
-                    break;
-                }
-            }
-        }
-
-        curOrder = null;
-
-        notifyDataSetChanged();
-        if (adapterListener != null) {
-            adapterListener.onDataSetChanged();
-        }
     }
 
 }

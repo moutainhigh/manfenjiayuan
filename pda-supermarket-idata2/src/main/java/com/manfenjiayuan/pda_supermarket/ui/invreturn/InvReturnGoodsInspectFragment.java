@@ -85,7 +85,6 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
 
-        labelPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -100,7 +99,6 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
 //                eqvBarcode.requestFocus();
             }
         });
-        labelSignQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -149,13 +147,13 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
     @Override
     public void submit() {
         super.submit();
-        String price = labelPrice.getEtContent();
+        String price = labelPrice.getInput();
         if (StringUtils.isEmpty(price)){
             onSubmitError("请输入发货价格");
             return;
         }
 
-        String quantityStr = labelSignQuantity.getEtContent();
+        String quantityStr = labelSignQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)){
             onSubmitError("请输入签收数量");
             return;
@@ -187,8 +185,8 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
             labelViews.get(LABELVIEW_INDEX_BARCODE).setTvSubTitle("");
             labelViews.get(LABELVIEW_INDEX_NAME).setTvSubTitle("");
             labelViews.get(LABELVIEW_INDEX_TOTALCOUNT).setTvSubTitle("");
-            labelPrice.setEtContent("");
-            labelSignQuantity.setEtContent("");
+            labelPrice.setInput("");
+            labelSignQuantity.setInput("");
 
             fabCancel.setEnabled(false);
             btnSubmit.setEnabled(false);
@@ -198,9 +196,9 @@ public class InvReturnGoodsInspectFragment extends QueryBarcodeFragment implemen
             labelViews.get(LABELVIEW_INDEX_NAME).setTvSubTitle(curGoods.getProductName());
             labelViews.get(LABELVIEW_INDEX_TOTALCOUNT).setTvSubTitle(MUtils.formatDouble(curGoods.getTotalCount(), ""));
 //            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
-            labelPrice.setEtContent(MUtils.formatDouble(curGoods.getPrice(), ""));
+            labelPrice.setInput(MUtils.formatDouble(curGoods.getPrice(), ""));
             //默认签收数量为空，根据实际情况填写
-            labelSignQuantity.setEtContent("");
+            labelSignQuantity.setInput("");
 
             fabCancel.setEnabled(true);
             btnSubmit.setEnabled(true);

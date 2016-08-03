@@ -110,7 +110,6 @@ public class InvCheckInspectFragment extends QueryBarcodeFragment  implements IS
             curOrderId = args.getLong(EXTRA_KEY_ORDER_ID);
         }
 
-        labelQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -228,7 +227,7 @@ public class InvCheckInspectFragment extends QueryBarcodeFragment  implements IS
             return;
         }
 
-        String quantity = labelQuantity.getEtContent();
+        String quantity = labelQuantity.getInput();
         if (StringUtils.isEmpty(quantity)) {
             onSubmitError("请输入盘点数目");
             return;
@@ -259,7 +258,7 @@ public class InvCheckInspectFragment extends QueryBarcodeFragment  implements IS
             labelViews.get(1).setTvSubTitle("");
             labelViews.get(2).setTvSubTitle("");
             labelViews.get(3).setTvSubTitle("");
-            labelQuantity.setEtContent("");
+            labelQuantity.setInput("");
 
             btnSubmit.setEnabled(false);
         } else {
@@ -267,7 +266,7 @@ public class InvCheckInspectFragment extends QueryBarcodeFragment  implements IS
             labelViews.get(1).setTvSubTitle(curGoods.getSkuName());
             labelViews.get(2).setTvSubTitle(curGoods.getShortName());
             labelViews.get(3).setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), ""));
-            labelQuantity.setEtContent("");
+            labelQuantity.setInput("");
 
             btnSubmit.setEnabled(true);
 

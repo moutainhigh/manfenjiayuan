@@ -10,11 +10,13 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 
@@ -24,24 +26,25 @@ import com.mfh.framework.core.utils.DeviceUtils;
  * 支持自定义属性，可以直接在xml文件中配置。
  */
 public class EditLabelView extends LinearLayout {
-    private static final String TAG = "EditLabelView";
-
     public static final int INPUT_TYPE_NUMBER = 0;
     public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;
 
-    private TextView tvLeftText;
-    private EditText etContent;
+    private TextView tvStartText;
+    private EditText etInput;
     private TextView tvEndText;
 
     private boolean softKeyboardEnabled;//是否支持软键盘
     private int[] interceptKeyCodes;
 
-    public interface OnViewListener{
+    public interface OnViewListener {
         void onKeycodeEnterClick(String text);
+
         void onScan();
     }
+
     private OnViewListener onViewListener;
-    public void setOnViewListener(OnViewListener onViewListener){
+
+    public void setOnViewListener(OnViewListener onViewListener) {
         this.onViewListener = onViewListener;
     }
 
@@ -53,42 +56,60 @@ public class EditLabelView extends LinearLayout {
         super(context, attrs);
 
         View rootView = View.inflate(getContext(), R.layout.itemview_edit, this);
-        tvLeftText = (TextView) rootView.findViewById(R.id.tv_lefttext);
-        etContent = (EditText) rootView.findViewById(R.id.et_content);
+        tvStartText = (TextView) rootView.findViewById(R.id.tv_lefttext);
+        etInput = (EditText) rootView.findViewById(R.id.et_content);
         tvEndText = (TextView) rootView.findViewById(R.id.tv_endText);
 
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditLabelView);
-        tvLeftText.setText(ta.getString(R.styleable.EditLabelView_editLabelView_leftText));
-        //像素
-        tvLeftText.setTextSize(ta.getDimension(R.styleable.EditLabelView_editLabelView_leftTextSize, 12));
-//        tvLeftText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
-        tvLeftText.setTextColor(ta.getColor(R.styleable.EditLabelView_editLabelView_leftTextColor, 0));
-        //px
-        tvLeftText.setWidth(ta.getDimensionPixelSize(R.styleable.EditLabelView_editLabelView_leftTextWidth, 80));
+        try {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditLabelView);
+            tvStartText.setText(ta.getString(R.styleable.EditLabelView_startText));
+            //像素
+            tvStartText.setTextSize(ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextSize, 12));
+//        tvStartText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
+            tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0));
 
-        etContent.setHint(ta.getString(R.styleable.EditLabelView_editLabelView_rightHint));
-        etContent.setTextSize(ta.getDimension(R.styleable.EditLabelView_editLabelView_rightTextSize, 12));
-        etContent.setTextColor(ta.getColor(R.styleable.EditLabelView_editLabelView_rightTextColor, 0));
-        etContent.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editLabelView_rightTextColorHint, 0));
+            //px
+            int startTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextWidth, 80);//px
 
-        if (ta.getBoolean(R.styleable.EditLabelView_endTextVisible, false)){
-            tvEndText.setVisibility(VISIBLE);
+            ViewGroup.LayoutParams stLayoutParams = tvStartText.getLayoutParams();
+            stLayoutParams.width = startTextWidth;
+            tvStartText.setLayoutParams(stLayoutParams);
+
+            etInput.setHint(ta.getString(R.styleable.EditLabelView_editTextHint));
+            etInput.setTextSize(ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 12));
+            etInput.setTextColor(ta.getColor(R.styleable.EditLabelView_editTextColor, 0));
+            etInput.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editTextColorHint, 0));
+            int inputType = ta.getInteger(R.styleable.EditLabelView_editInputType, 0);
+            if (inputType == EditInputType.BARCODE) {
+                etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+            }
+            else if (inputType == EditInputType.NUMBER_DECIMAL) {
+                //相当于在.xml文件中设置inputType="numberDecimal
+                etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            }
+            else {
+                etInput.setInputType(InputType.TYPE_CLASS_TEXT);
+            }
+//            ZLogger.d(String.format("inputType=%d", etInput.getInputType()));
+
+            if (ta.getBoolean(R.styleable.EditLabelView_endTextVisible, false)) {
+                tvEndText.setVisibility(VISIBLE);
+            } else {
+                tvEndText.setVisibility(GONE);
+            }
+            tvEndText.setText(ta.getString(R.styleable.EditLabelView_endText));
+            tvEndText.setTextSize(ta.getDimension(R.styleable.EditLabelView_endTextSize, 12));
+            tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0));
+
+            ta.recycle();
+        } catch (Exception e) {
+            ZLogger.e(e.toString());
         }
-        else{
-            tvEndText.setVisibility(GONE);
-        }
-        tvEndText.setText(ta.getString(R.styleable.EditLabelView_endText));
-        tvEndText.setTextSize(ta.getDimension(R.styleable.EditLabelView_endTextSize, 12));
-//        tvLeftText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
-        tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0));
-        tvEndText.setWidth(ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextWidth, 80));
 
-        ta.recycle();
+//        etInput.setInputType(InputType.TYPE_NULL);
 
-        etContent.setInputType(InputType.TYPE_NULL);
-
-//        etContent.setFocusableInTouchMode(false);
-//        etContent.setOnClickListener(new OnClickListener() {
+//        etInput.setFocusableInTouchMode(false);
+//        etInput.setOnClickListener(new OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                if (!softKeyboardEnabled) {
@@ -97,14 +118,14 @@ public class EditLabelView extends LinearLayout {
 //            }
 //        });
         //
-        etContent.setOnTouchListener(new OnTouchListener() {
+        etInput.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP){
-                    if (softKeyboardEnabled){
-                        DeviceUtils.showSoftInput(getContext(), etContent);
-                    }else{
-                        DeviceUtils.hideSoftInput(getContext(), etContent);
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (softKeyboardEnabled) {
+                        DeviceUtils.showSoftInput(getContext(), etInput);
+                    } else {
+                        DeviceUtils.hideSoftInput(getContext(), etInput);
                     }
                 }
                 requestFocusEnd();
@@ -112,25 +133,26 @@ public class EditLabelView extends LinearLayout {
                 return true;
             }
         });
-        etContent.setOnKeyListener(new View.OnKeyListener() {
+        etInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("(%s):%d", etContent.getClass().getSimpleName(),
+                ZLogger.d(String.format("(%s):%d", etInput.getClass().getSimpleName(),
                         event.getKeyCode()));
                 //Press “Enter”
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER
+                        || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        if (onViewListener != null){
-                            onViewListener.onKeycodeEnterClick(etContent.getText().toString());
+                        if (onViewListener != null) {
+                            onViewListener.onKeycodeEnterClick(etInput.getText().toString());
                         }
                     }
 
                     return true;
                 }
                 //Press “F5”，盘点机，F5对"Scan"扫描按钮
-                if (event.getKeyCode() == KeyEvent.KEYCODE_F5) {
+                if (keyCode == KeyEvent.KEYCODE_F5) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        if (onViewListener != null){
+                        if (onViewListener != null) {
                             onViewListener.onScan();
                         }
                     }
@@ -146,10 +168,10 @@ public class EditLabelView extends LinearLayout {
 
     /**
      * 光标定位到最后
-     * */
-    public void requestFocusEnd(){
-        etContent.requestFocus();
-        etContent.setSelection(etContent.length());
+     */
+    public void requestFocusEnd() {
+        etInput.requestFocus();
+        etInput.setSelection(etInput.length());
     }
 
     /**
@@ -157,32 +179,35 @@ public class EditLabelView extends LinearLayout {
      */
     public void config(int inputType) {
         if (inputType == INPUT_TYPE_NUMBER) {
-            etContent.setInputType(InputType.TYPE_NULL);
-            etContent.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
+            etInput.setInputType(InputType.TYPE_NULL);
+            etInput.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
         } else if (inputType == INPUT_TYPE_NUMBER_DECIMAL) {
-//			etContent.setInputType(InputType.TYPE_CLASS_NUMBER);
-            etContent.setInputType(InputType.TYPE_NULL);
-            etContent.setKeyListener(DigitsKeyListener.getInstance("0123456789."));
+//			etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+            etInput.setInputType(InputType.TYPE_NULL);
+            etInput.setKeyListener(DigitsKeyListener.getInstance("0123456789."));
         } else {
-            etContent.setInputType(InputType.TYPE_CLASS_TEXT);
+            etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
     }
 
-    public void setTvTitle(String text) {
-        this.tvLeftText.setText(text);
+
+    public void setInputAndEnd(String inputText, String endText) {
+        this.etInput.setText(inputText);
+        tvEndText.setText(endText);
     }
 
-    public void setEtContent(String text) {
-        this.etContent.setText(text);
+    public void setInput(String text) {
+        this.etInput.setText(text);
     }
 
-    public String getEtContent() {
-        return etContent.getText().toString();
+    public String getInput() {
+        return etInput.getText().toString();
     }
 
-    public void setEndText(String text){
+    public void setEndText(String text) {
         tvEndText.setText(text);
     }
+
     public boolean isSoftKeyboardEnabled() {
         return softKeyboardEnabled;
     }
@@ -191,8 +216,8 @@ public class EditLabelView extends LinearLayout {
         this.softKeyboardEnabled = softKeyboardEnabled;
     }
 
-    public void addTextChangedListener(TextWatcher watcher){
-        etContent.addTextChangedListener(watcher);
+    public void addTextChangedListener(TextWatcher watcher) {
+        etInput.addTextChangedListener(watcher);
     }
 
 }

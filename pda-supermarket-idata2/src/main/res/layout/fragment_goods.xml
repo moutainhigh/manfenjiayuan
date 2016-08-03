@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:weightSum="1"
                 app:hint="请扫描商品条码"
-                app:mfh_inputType="barcode"
+                app:editInputType="barcode"
                 app:textColor="@color/black"
                 app:textColorHint="@color/black_35"
                 app:textSize="16px"/>

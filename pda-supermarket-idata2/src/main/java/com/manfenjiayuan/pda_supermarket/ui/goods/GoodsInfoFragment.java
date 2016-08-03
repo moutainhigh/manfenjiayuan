@@ -81,7 +81,7 @@ public class GoodsInfoFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        labelCostPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
+//        labelCostPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -115,7 +115,6 @@ public class GoodsInfoFragment extends BaseFragment {
             }
         });
 //        labelCostPrice.setSoftKeyboardEnabled(false);
-        labelUpperLimit.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelUpperLimit.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -156,7 +155,7 @@ public class GoodsInfoFragment extends BaseFragment {
     }
 
     private Double calInputCostPrice() {
-        String price = labelCostPrice.getEtContent();
+        String price = labelCostPrice.getInput();
         if (StringUtils.isEmpty(price)) {
             return 0D;
         }
@@ -179,17 +178,17 @@ public class GoodsInfoFragment extends BaseFragment {
             return;
         }
 
-        if (StringUtils.isEmpty(labelCostPrice.getEtContent())) {
+        if (StringUtils.isEmpty(labelCostPrice.getInput())) {
             onSubmitError("销售价不能为空");
             return;
         }
 
-        if (StringUtils.isEmpty(labelUpperLimit.getEtContent())) {
+        if (StringUtils.isEmpty(labelUpperLimit.getInput())) {
             onSubmitError("排面库存不能为空");
             return;
         }
 
-//        if (StringUtils.isEmpty(labelLowerLimit.getEtContent())) {
+//        if (StringUtils.isEmpty(labelLowerLimit.getInput())) {
 //            DialogUtil.showHint("安全库存不能为空");
 //            btnSubmit.setEnabled(true);
 //            isAcceptBarcodeEnabled = true;
@@ -199,9 +198,9 @@ public class GoodsInfoFragment extends BaseFragment {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在提交信息...", false);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", curGoods.getId());
-        jsonObject.put("costPrice", labelCostPrice.getEtContent());
-        jsonObject.put("upperLimit", labelUpperLimit.getEtContent());
-//        jsonObject.put("lowerLimit", labelLowerLimit.getEtContent());
+        jsonObject.put("costPrice", labelCostPrice.getInput());
+        jsonObject.put("upperLimit", labelUpperLimit.getInput());
+//        jsonObject.put("lowerLimit", labelLowerLimit.getInput());
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
         //回调
@@ -268,11 +267,11 @@ public class GoodsInfoFragment extends BaseFragment {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelBuyprice.setTvSubTitle("");
-            labelCostPrice.setEtContent("");
+            labelCostPrice.setInput("");
             labelCostPrice.setEnabled(false);
             labelGrossProfit.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
-            labelUpperLimit.setEtContent("");
+            labelUpperLimit.setInput("");
             labelUpperLimit.setEnabled(false);
 //            labelLowerLimit.setEtContent("");
 //            labelLowerLimit.setEnabled(false);
@@ -283,10 +282,10 @@ public class GoodsInfoFragment extends BaseFragment {
         } else {
             labelProductName.setTvSubTitle(curGoods.getSkuName());
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
-            labelCostPrice.setEtContent(MUtils.formatDouble(curGoods.getCostPrice(), ""));
+            labelCostPrice.setInput(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelCostPrice.setEnabled(true);
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
-            labelUpperLimit.setEtContent(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
+            labelUpperLimit.setInput(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
             labelUpperLimit.setEnabled(true);
 //            labelLowerLimit.setEtContent(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
 //            labelLowerLimit.setEnabled(true);

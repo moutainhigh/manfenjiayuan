@@ -3,6 +3,7 @@
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
                                                  android:orientation="vertical">
+
     <include
         android:id="@+id/appbar"
         layout="@layout/appbar_scan_barcode"/>
@@ -38,27 +39,21 @@
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_price"
+                style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="价格:"
-                app:editLabelView_leftTextColor="@color/black"
-                app:editLabelView_leftTextSize="18px"
-                app:editLabelView_rightHint="请输入价格"
-                app:editLabelView_rightTextColor="@color/black"
-                app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightTextSize="18px"/>
+                app:editInputType="numberDecimal"
+                app:editTextHint="请输入价格"
+                app:startText="价格:"/>
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_sign_quantity"
+                style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="数量:"
-                app:editLabelView_leftTextColor="@color/black"
-                app:editLabelView_leftTextSize="18px"
-                app:editLabelView_rightHint="请输入数量"
-                app:editLabelView_rightTextColor="@color/black"
-                app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightTextSize="18px"/>
+                app:editInputType="numberDecimal"
+                app:editTextHint="请输入数量"
+                app:startText="数量:"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

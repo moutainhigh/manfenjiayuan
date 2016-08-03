@@ -1,17 +1,16 @@
-package com.manfenjiayuan.pda_supermarket.ui.adapter;
+package com.bingshanguxue.pda.bizz;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
@@ -19,16 +18,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 /**
  * 签收订单
  * Created by bingshanguxue on 15/8/5.
  */
-public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity, DistributionSignAdapter.ProductViewHolder> {
+public class InvRecvGoodsAdapter extends SwipAdapter<InvRecvGoodsEntity,
+        InvRecvGoodsAdapter.ProductViewHolder> {
 
-    public DistributionSignAdapter(Context context, List<DistributionSignEntity> entityList) {
+    public InvRecvGoodsAdapter(Context context, List<InvRecvGoodsEntity> entityList) {
         super(context, entityList);
     }
 
@@ -51,13 +48,13 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         return new ProductViewHolder(mLayoutInflater
-                .inflate(R.layout.itemview_content_commodity_distributioin_good, parent, false));
+                .inflate(R.layout.itemview_inv_recv_goods, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         try {
-            DistributionSignEntity entity = entityList.get(position);
+            InvRecvGoodsEntity entity = entityList.get(position);
 
             holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
             holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
@@ -68,18 +65,14 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
             holder.tvPrice.setText(MUtils.formatDouble("收货价格:", "",
                     entity.getReceivePrice(), "无", "/", entity.getUnitSpec()));
 
-            if (entity.getInspectStatus() == DistributionSignEntity.INSPECT_STATUS_OK) {
-                holder.ivMarker.setImageResource(R.mipmap.ic_marker_ok);
+            if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_OK) {
                 holder.tvQuantity.setTextColor(Color.parseColor("#2E7D32"));
-            } else if (entity.getInspectStatus() == DistributionSignEntity.INSPECT_STATUS_CONFLICT) {
-                holder.ivMarker.setImageResource(R.mipmap.ic_marker_warn);
+            } else if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_CONFLICT) {
                 //冲突
                 holder.tvQuantity.setTextColor(Color.parseColor("#FFC107"));
-            } else if (entity.getInspectStatus() == DistributionSignEntity.INSPECT_STATUS_REJECT) {
-                holder.ivMarker.setImageResource(R.mipmap.ic_marker_error);
+            } else if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_REJECT) {
                 holder.tvQuantity.setTextColor(Color.parseColor("#F44336"));
             } else {
-                holder.ivMarker.setImageResource(R.mipmap.ic_marker_uncheck);
                 holder.tvQuantity.setTextColor(Color.parseColor("#000000"));
             }
         } catch (Exception e) {
@@ -88,22 +81,25 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_marker)
-        ImageView ivMarker;
-        @Bind(R.id.tv_name)
-        TextView tvName;
-        @Bind(R.id.tv_barcode)
-        TextView tvBarcode;
-        @Bind(R.id.tv_quantity)
-        TextView tvQuantity;
-        @Bind(R.id.tv_price)
-        TextView tvPrice;
-        @Bind(R.id.tv_amount)
-        TextView tvAmount;
+//        @BindView(R2.id.tv_name)
+        private TextView tvName;
+//        @BindView(R2.id.tv_barcode)
+private TextView tvBarcode;
+//        @BindView(R2.id.tv_quantity)
+private TextView tvQuantity;
+//        @BindView(R2.id.tv_price)
+private TextView tvPrice;
+//        @BindView(R2.id.tv_amount)
+private TextView tvAmount;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+//            ButterKnife.bind(this, itemView);
+            tvName = (TextView)itemView.findViewById(R.id.tv_name);
+            tvBarcode = (TextView)itemView.findViewById(R.id.tv_barcode);
+            tvQuantity = (TextView)itemView.findViewById(R.id.tv_quantity);
+            tvPrice = (TextView)itemView.findViewById(R.id.tv_price);
+            tvAmount = (TextView)itemView.findViewById(R.id.tv_amount);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,7 +135,7 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
     }
 
     @Override
-    public void setEntityList(List<DistributionSignEntity> entityList) {
+    public void setEntityList(List<InvRecvGoodsEntity> entityList) {
 //        super.setEntityList(entityList);
         this.entityList = entityList;
         sortByUpdateDate();
@@ -151,12 +147,12 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
 
     @Override
     public void removeEntity(int position) {
-        DistributionSignEntity entity = getEntity(position);
+        InvRecvGoodsEntity entity = getEntity(position);
         if (entity == null){
             return;
         }
 
-        DistributionSignService.get().deleteById(String.valueOf(entity.getId()));
+        InvRecvGoodsService.get().deleteById(String.valueOf(entity.getId()));
 
         //刷新列表
         entityList.remove(position);
@@ -171,9 +167,9 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
             return;
         }
 
-        Collections.sort(entityList, new Comparator<DistributionSignEntity>() {
+        Collections.sort(entityList, new Comparator<InvRecvGoodsEntity>() {
             @Override
-            public int compare(DistributionSignEntity order1, DistributionSignEntity order2) {
+            public int compare(InvRecvGoodsEntity order1, InvRecvGoodsEntity order2) {
                 return order2.getInspectStatus() - order1.getInspectStatus();
             }
         });
@@ -186,9 +182,9 @@ public class DistributionSignAdapter extends SwipAdapter<DistributionSignEntity,
             return;
         }
 
-        Collections.sort(entityList, new Comparator<DistributionSignEntity>() {
+        Collections.sort(entityList, new Comparator<InvRecvGoodsEntity>() {
             @Override
-            public int compare(DistributionSignEntity order1, DistributionSignEntity order2) {
+            public int compare(InvRecvGoodsEntity order1, InvRecvGoodsEntity order2) {
                 return 0 - order1.getUpdatedDate().compareTo(order2.getUpdatedDate());
             }
         });

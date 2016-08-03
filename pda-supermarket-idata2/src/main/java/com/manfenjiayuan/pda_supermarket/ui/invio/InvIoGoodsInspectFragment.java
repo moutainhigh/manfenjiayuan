@@ -21,7 +21,6 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
@@ -85,7 +84,6 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
 
-        labelPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -100,7 +98,6 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
 //                eqvBarcode.requestFocus();
             }
         });
-        labelSignQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -141,13 +138,13 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
     public void submit() {
         super.submit();
 
-        String price = labelPrice.getEtContent();
+        String price = labelPrice.getInput();
         if (StringUtils.isEmpty(price)){
             onSubmitError("请输入发货价格");
             return;
         }
 
-        String quantityStr = labelSignQuantity.getEtContent();
+        String quantityStr = labelSignQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)){
             onSubmitError("请输入签收数量");
             return;
@@ -179,8 +176,8 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
         if (curGoods == null){
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
-            labelPrice.setEtContent("");
-            labelSignQuantity.setEtContent("");
+            labelPrice.setInput("");
+            labelSignQuantity.setInput("");
 
             btnSubmit.setEnabled(false);
         }
@@ -188,9 +185,9 @@ public class InvIoGoodsInspectFragment extends QueryBarcodeFragment
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getProductName());
 //            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
-            labelPrice.setEtContent(MUtils.formatDouble(curGoods.getPrice(), ""));
+            labelPrice.setInput(MUtils.formatDouble(curGoods.getPrice(), ""));
             //默认签收数量为空，根据实际情况填写
-            labelSignQuantity.setEtContent("");
+            labelSignQuantity.setInput("");
 
             btnSubmit.setEnabled(true);
 

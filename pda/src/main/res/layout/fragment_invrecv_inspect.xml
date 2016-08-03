@@ -52,33 +52,23 @@
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_receive_quantity"
+                style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="签收数量:"
-                app:editLabelView_leftTextColor="@color/material_black"
-                app:editLabelView_leftTextSize="18px"
-                app:editLabelView_rightHint="请输入签收数量"
-                app:editLabelView_rightTextColor="@color/material_black"
-                app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightTextSize="18px"
-                app:endTextColor="@color/black_35"
-                app:endTextSize="18px"
-                app:endTextVisible="true"/>
+                app:editTextHint="请输入签收数量"
+                app:endTextVisible="true"
+                app:editInputType="numberDecimal"
+                app:startText="签收数量:"/>
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_receive_amount"
+                style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="收货金额:"
-                app:editLabelView_leftTextColor="@color/material_black"
-                app:editLabelView_leftTextSize="18px"
-                app:editLabelView_rightHint="请输入收货金额"
-                app:editLabelView_rightTextColor="@color/material_black"
-                app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightTextSize="18px"
-                app:endTextColor="@color/black_35"
-                app:endTextSize="18px"
-                app:endTextVisible="true"/>
+                app:editTextHint="请输入收货金额"
+                app:editInputType="numberDecimal"
+                app:endTextVisible="true"
+                app:startText="收货金额:"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_receive_price"

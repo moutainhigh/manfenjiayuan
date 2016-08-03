@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
@@ -26,7 +23,6 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.net.NetCallBack;
@@ -35,7 +31,6 @@ import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 
 
 /**
@@ -86,9 +81,7 @@ public class InvConvertToFragment extends QueryBarcodeFragment implements IInvSk
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
         super.createViewInner(rootView, container, savedInstanceState);
-        labelQuantityCheck.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelQuantityCheck.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -158,7 +151,7 @@ public class InvConvertToFragment extends QueryBarcodeFragment implements IInvSk
             return;
         }
 
-        if (StringUtils.isEmpty(labelQuantityCheck.getEtContent())) {
+        if (StringUtils.isEmpty(labelQuantityCheck.getInput())) {
             onSubmitError("库存数不能为空");
             return;
         }
@@ -168,7 +161,7 @@ public class InvConvertToFragment extends QueryBarcodeFragment implements IInvSk
         sendItemsJsonArray.add(convertSkuGoods);
         JSONObject receiveItemJson = new JSONObject();
         receiveItemJson.put("id", curGoods.getId());
-        receiveItemJson.put("quantity", labelQuantityCheck.getEtContent());
+        receiveItemJson.put("quantity", labelQuantityCheck.getInput());
 
         //回调
         InvSkuStoreApiImpl.changeSkuStore(sendItemsJsonArray.toJSONString(),
@@ -210,7 +203,7 @@ public class InvConvertToFragment extends QueryBarcodeFragment implements IInvSk
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
-            labelQuantityCheck.setEtContent("");
+            labelQuantityCheck.setInput("");
             tvUnit.setText("");
 
             btnSubmit.setEnabled(false);
@@ -220,7 +213,7 @@ public class InvConvertToFragment extends QueryBarcodeFragment implements IInvSk
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getName());
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
-            labelQuantityCheck.setEtContent("");
+            labelQuantityCheck.setInput("");
             tvUnit.setText(curGoods.getUnit());
 
             labelQuantityCheck.requestFocusEnd();

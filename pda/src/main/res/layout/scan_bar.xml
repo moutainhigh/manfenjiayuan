@@ -1,37 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/rootview"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@drawable/bg_input_corner"
               android:gravity="center_vertical"
-              android:orientation="horizontal"
-              android:padding="@dimen/spacing_micro">
+              android:padding="@dimen/spacing_normal">
 
-    <EditText
-        android:id="@+id/et_input"
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@null"
-        android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="@mipmap/ic_scan_barcode"
+        android:background="@drawable/bg_input_corner"
         android:gravity="center_vertical"
-        android:hint=""
-        android:paddingStart="@dimen/spacing_micro"
-        android:inputType="numberDecimal"
-        android:singleLine="true"
-        android:textColor="@color/material_black"
-        android:textColorHint="@color/black_35"
-        android:textSize="14sp"/>
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/iv_del"
+            android:background="@null"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:drawableStart="@mipmap/ic_scan_barcode"
+            android:gravity="center_vertical"
+            android:hint=""
+            android:inputType="numberDecimal"
+            android:paddingEnd="@dimen/spacing_micro"
+            android:paddingStart="@dimen/spacing_normal"
+            android:singleLine="true"
+            android:textColor="@color/material_black"
+            android:textColorHint="@color/black_35"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:id="@+id/iv_del"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/spacing_micro"
+            android:layout_marginStart="@dimen/spacing_normal"
+            android:background="@null"
+            android:src="@mipmap/ic_del_oval"
+            android:visibility="invisible"/>
+    </RelativeLayout>
 
     <ImageView
-        android:id="@+id/iv_del"
+        android:id="@+id/iv_action_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_micro"
+        android:layout_marginEnd="@dimen/spacing_normal"
         android:layout_marginStart="@dimen/spacing_normal"
         android:background="@null"
-        android:src="@mipmap/ic_del_oval"
-        android:visibility="gone"/>
+        android:src="@mipmap/ic_toolbar_search_white"/>
 </LinearLayout>

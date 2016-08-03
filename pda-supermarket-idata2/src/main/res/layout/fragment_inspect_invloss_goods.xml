@@ -37,15 +37,12 @@
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_sign_quantity"
+                style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="数量:"
-                app:editLabelView_leftTextColor="@color/black"
-                app:editLabelView_leftTextSize="18px"
-                app:editLabelView_rightHint="请输入报损数量"
-                app:editLabelView_rightTextColor="@color/black"
-                app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightTextSize="18px"/>
+                app:editTextHint="请输入报损数量"
+                app:editInputType="numberDecimal"
+                app:startText="数量:"/>
 
 
         </LinearLayout>

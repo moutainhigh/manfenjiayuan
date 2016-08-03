@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.database.entity;
+package com.bingshanguxue.pda.database.entity;
 
 import com.mfh.framework.core.MfhEntity;
 import com.mfh.comn.annotations.Table;
@@ -8,17 +8,21 @@ import com.mfh.comn.bean.ILongId;
  * POS--商品--签收
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_wholesaler_distribution_sign_v1")
-public class DistributionSignEntity extends MfhEntity<Long> implements ILongId{
-//    private String id;
-    private Long orderId;//订单编号
-    private Long productId;//
+@Table(name = "pda_invrecv_goods_v1")
+public class InvRecvGoodsEntity extends MfhEntity<Long> implements ILongId {
     private Long proSkuId;//
     private Long chainSkuId;//
     private String productName;//商品名称
-    private Double totalCount;//单据数量
-    private Double price;//价格
-    private Double amount;//总价
+
+    //单据
+    private Double sendPrice;//发货价格
+    private Double sendAmount;//发货总价
+    private Double sendQuantity;//发货数量
+
+    private Double receiveQuantity;//实际签收数量
+    private Double receiveAmount;//实际签收金额
+    private Double receivePrice;//实际签收价格
+
     private String unitSpec;//单位
     private String barcode;//条码
 
@@ -31,24 +35,6 @@ public class DistributionSignEntity extends MfhEntity<Long> implements ILongId{
     public static final int INSPECT_STATUS_REJECT = 3;//已验货，拒收
     private int inspectStatus = INSPECT_STATUS_NONE;
 
-    private Double quantityCheck;//实际签收数量，默认与单据数量一致
-
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
 
     public String getProductName() {
         return productName;
@@ -56,33 +42,6 @@ public class DistributionSignEntity extends MfhEntity<Long> implements ILongId{
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public Double getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(Double totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public Double getPrice() {
-//        if (price == null){
-//            return 0D;
-//        }
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
     }
 
     public String getUnitSpec() {
@@ -141,11 +100,63 @@ public class DistributionSignEntity extends MfhEntity<Long> implements ILongId{
         this.isPrivate = isPrivate;
     }
 
-    public Double getQuantityCheck() {
-        return quantityCheck;
+    public Double getSendPrice() {
+        return sendPrice;
     }
 
-    public void setQuantityCheck(Double quantityCheck) {
-        this.quantityCheck = quantityCheck;
+    public void setSendPrice(Double sendPrice) {
+        this.sendPrice = sendPrice;
+    }
+
+    public Double getSendAmount() {
+        return sendAmount;
+    }
+
+    public void setSendAmount(Double sendAmount) {
+        this.sendAmount = sendAmount;
+    }
+
+    public Double getSendQuantity() {
+        if (sendQuantity == null) {
+            return 0D;
+        }
+        return sendQuantity;
+    }
+
+    public void setSendQuantity(Double sendQuantity) {
+        this.sendQuantity = sendQuantity;
+    }
+
+    public Double getReceiveQuantity() {
+        if (receiveQuantity == null) {
+            return 0D;
+        }
+        return receiveQuantity;
+    }
+
+    public void setReceiveQuantity(Double receiveQuantity) {
+        this.receiveQuantity = receiveQuantity;
+    }
+
+    public Double getReceiveAmount() {
+        if (receiveAmount == null) {
+            return 0D;
+        }
+        return receiveAmount;
+    }
+
+    public void setReceiveAmount(Double receiveAmount) {
+        this.receiveAmount = receiveAmount;
+    }
+
+    public Double getReceivePrice() {
+        if (receivePrice == null){
+            return 0D;
+        }
+        return receivePrice;
+    }
+
+    public void setReceivePrice(Double receivePrice) {
+        this.receivePrice = receivePrice;
     }
 }

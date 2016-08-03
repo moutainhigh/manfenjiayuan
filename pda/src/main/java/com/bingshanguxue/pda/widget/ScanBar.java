@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -27,17 +28,19 @@ public class ScanBar extends LinearLayout {
 
     private EditText etInput;
     private ImageView ivDel;
+    private ImageView ivAction1;
 
     private boolean softKeyboardEnabled;//是否支持软键盘
     private int[] interceptKeyCodes;
 
-    public interface OnViewListener {
+    public interface OnScanBarListener {
         void onKeycodeEnterClick(String text);
+        void onAction1Click();
     }
 
-    private OnViewListener onViewListener;
+    private OnScanBarListener onViewListener;
 
-    public void setOnViewListener(OnViewListener onViewListener) {
+    public void setOnScanBarListener(OnScanBarListener onViewListener) {
         this.onViewListener = onViewListener;
     }
 
@@ -51,6 +54,7 @@ public class ScanBar extends LinearLayout {
         View rootView = View.inflate(getContext(), R.layout.scan_bar, this);
         etInput = (EditText) rootView.findViewById(R.id.et_input);
         ivDel = (ImageView) rootView.findViewById(R.id.iv_del);
+        ivAction1 = (ImageView) rootView.findViewById(R.id.iv_action_1);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ScanBar);
 
@@ -58,14 +62,30 @@ public class ScanBar extends LinearLayout {
         etInput.setTextColor(ta.getColor(R.styleable.ScanBar_textColor, 0));
         etInput.setHint(ta.getString(R.styleable.ScanBar_hint));
         etInput.setHintTextColor(ta.getColor(R.styleable.ScanBar_textColorHint, 0));
-        int inputType = ta.getInteger(R.styleable.ScanBar_mfh_inputType, 0);
-        if (inputType == 1){
+        int inputType = ta.getInteger(R.styleable.ScanBar_editInputType, 0);
+        if (inputType == EditInputType.BARCODE){
 //            etInput.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         }
         else{
             etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
+
+        boolean isAction1Enabled = ta.getBoolean(R.styleable.ScanBar_action1Enabled, false);
+        if (isAction1Enabled){
+            ivAction1.setVisibility(VISIBLE);
+        }
+        else{
+            ivAction1.setVisibility(GONE);
+        }
+        ivAction1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onViewListener != null){
+                    onViewListener.onAction1Click();
+                }
+            }
+        });
 
         ta.recycle();
 

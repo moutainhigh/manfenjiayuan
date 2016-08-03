@@ -6,12 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
@@ -21,14 +18,12 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
 import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 
 
 /**
@@ -82,7 +77,6 @@ public class InvConvertFromFragment extends QueryBarcodeFragment implements IInv
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
 
-        labelQuantityCheck.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
         labelQuantityCheck.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -139,7 +133,7 @@ public class InvConvertFromFragment extends QueryBarcodeFragment implements IInv
             return;
         }
 
-        if (StringUtils.isEmpty(labelQuantityCheck.getEtContent())) {
+        if (StringUtils.isEmpty(labelQuantityCheck.getInput())) {
             onSubmitError("库存数不能为空");
             return;
         }
@@ -147,7 +141,7 @@ public class InvConvertFromFragment extends QueryBarcodeFragment implements IInv
         // TODO: 5/19/16
         ChangeSkuStoreItem itemWrapper = new ChangeSkuStoreItem();
         itemWrapper.setId(curGoods.getId());
-        itemWrapper.setQuantity(Double.valueOf(labelQuantityCheck.getEtContent()));
+        itemWrapper.setQuantity(Double.valueOf(labelQuantityCheck.getInput()));
 
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -169,7 +163,7 @@ public class InvConvertFromFragment extends QueryBarcodeFragment implements IInv
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
-            labelQuantityCheck.setEtContent("");
+            labelQuantityCheck.setInput("");
             tvUnit.setText("");
 
             btnSubmit.setEnabled(false);
@@ -179,7 +173,7 @@ public class InvConvertFromFragment extends QueryBarcodeFragment implements IInv
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getName());
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
-            labelQuantityCheck.setEtContent("");
+            labelQuantityCheck.setInput("");
             tvUnit.setText(curGoods.getUnit());
 
             btnSubmit.setEnabled(true);

@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.InvRecvInspectFragment;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertToFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.DistributionInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.InvSendOrderListFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.ReceiveMSendOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.ReceiveSendOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invio.InvIoGoodsInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
+import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -26,11 +24,9 @@ import com.mfh.framework.uikit.base.BaseFragment;
 public class SecondaryActivity extends IData95Activity implements BackHandledInterface {
 
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
-    public static final int FRAGMENT_TYPE_DISTRIBUTION_SIGN = 0x01;//签收
     public static final int FRAGMENT_TYPE_DISTRIBUTION_INSPECT = 2;//验货
     public static final int FT_INVRETURN_INSPECTGOODS = 0x03;//退货验货
     public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
-    public static final int FT_RECEIVEORDER_INVIOORDER = 0x05;//发货单收货
     public static final int FRAGMENT_TYPE_INV_SENDORDER = 0x06;//采购订单列表
     public static final int FRAGMENT_TYPE_INV_RECVDORDER_CREATE = 0x07;//新建采购收货单
     public static final int FT_SKUGOODS_CONVERT_TO = 0x08;//转换成商品
@@ -119,25 +115,13 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
      * Caused by: java.lang.IllegalStateException: commit already called
      */
     private void initFragments() {
-        if (serviceType == FRAGMENT_TYPE_DISTRIBUTION_SIGN) {
-            ReceiveSendOrderFragment fragment;
+        if (serviceType == FRAGMENT_TYPE_DISTRIBUTION_INSPECT) {
+            InvRecvInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = ReceiveSendOrderFragment.newInstance(intent.getExtras());
+                fragment = InvRecvInspectFragment.newInstance(intent.getExtras());
             } else {
-                fragment = ReceiveSendOrderFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_DISTRIBUTION_INSPECT) {
-            DistributionInspectFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = DistributionInspectFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = DistributionInspectFragment.newInstance(null);
+                fragment = InvRecvInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -164,19 +148,6 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = InvIoGoodsInspectFragment.newInstance(intent.getExtras());
             } else {
                 fragment = InvIoGoodsInspectFragment.newInstance(null);
-            }
-
-            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FT_RECEIVEORDER_INVIOORDER) {
-            ReceiveMSendOrderFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = ReceiveMSendOrderFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = ReceiveMSendOrderFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

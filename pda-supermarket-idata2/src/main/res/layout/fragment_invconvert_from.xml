@@ -52,8 +52,9 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
-                    app:editLabelView_leftText="减少库存:"
-                    app:editLabelView_rightHint="请输入数量"/>
+                    app:editInputType="numberDecimal"
+                    app:startText="减少库存:"
+                    app:editTextHint="请输入数量"/>
 
                 <TextView
                     android:id="@+id/tv_unit"

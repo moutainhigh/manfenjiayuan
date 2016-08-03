@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt;
+package com.bingshanguxue.pda.bizz;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,24 +6,22 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.bingshanguxue.pda.R;
 import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
-import com.manfenjiayuan.pda_wholesaler.AppContext;
-import com.manfenjiayuan.pda_wholesaler.Constants;
-import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.InvSendOrderAdapter;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -41,22 +39,30 @@ import butterknife.OnClick;
 public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
         implements IInvSendOrderView {
 
-    @Bind(R.id.office_list)
+    public static final String EXTRA_KEY_STATUS = "status";
+
+//    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+//    @Bind(R.id.office_list)
     RecyclerViewEmptySupport mRecyclerView;
     private InvSendOrderAdapter orderAdapter;
     private LinearLayoutManager linearLayoutManager;
 
-    @Bind(R.id.empty_view) View emptyView;
-    @Bind(R.id.animProgress)
+//    @Bind(R.id.empty_view)
+    View emptyView;
+//    @Bind(R.id.animProgress)
     ProgressBar progressBar;
 
-    private String status;
+
+//    status = String.format("%d,%d,%d", InvOrderApi.ORDER_STATUS_INIT,
+//    InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED);
+    private String status = String.format("%d,%d", InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED);
     private InvSendOrderPresenter invSendOrderPresenter;
 
     public static InvSendOrderListFragment newInstance(Bundle args) {
         InvSendOrderListFragment fragment = new InvSendOrderListFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -64,44 +70,56 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_distribution_list;
+        return R.layout.fragment_inv_sendorder_list;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        EventBus.getDefault().register(this);
         invSendOrderPresenter = new InvSendOrderPresenter(this);
     }
 
     @Override
-    protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+    protected void initViews(View rootView) {
+        super.initViews(rootView);
 
-        initRecyclerView();
+        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        mRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.office_list);
+        emptyView = rootView.findViewById(R.id.empty_view);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
 
-        status = String.format("%d,%d,%d", InvOrderApi.ORDER_STATUS_INIT,
-                InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED);
-        reload();
+        emptyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reload();
+            }
+        });
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_SIGN: {
-                //商品签收成功
-                if (resultCode == Activity.RESULT_OK) {
-                    if (data != null){
-                        Long orderId = data.getLongExtra("orderId", 0L);
-                        orderAdapter.remove(orderId);
-                        reload();
-                    }
-                }
-            }
-            break;
+    protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null) {
+            status = args.getString(EXTRA_KEY_STATUS);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
+        mToolbar.setTitle("导入采购订单");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+
+        initRecyclerView();
+
+
+        reload();
     }
+
 
     private void initRecyclerView() {
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -144,14 +162,11 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
             @Override
             public void onItemClick(View view, int position) {
                 //TODO,跳转至详情页
-                Bundle extras = new Bundle();
-                extras.putSerializable("sendOrder", orderAdapter.getCurOrder());
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_DISTRIBUTION_SIGN);
+                Intent data = new Intent();
+                data.putExtra("sendOrder", orderAdapter.getEntity(position));
 
-                Intent intent = new Intent(getActivity(), SecondaryActivity.class);
-                intent.putExtras(extras);
-                startActivityForResult(intent, Constants.ARC_DISTRIBUTION_SIGN);
+                getActivity().setResult(Activity.RESULT_OK, data);
+                getActivity().finish();
             }
 
             @Override
@@ -186,15 +201,15 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 
     /**
      * 重新加载数据
-     * */
-    @OnClick(R.id.empty_view)
-    public void reload(){
+     */
+//    @OnClick(R.id.empty_view)
+    public void reload() {
         if (bSyncInProgress) {
             ZLogger.d("正在加载线上订单订单流水。");
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载订单流水。");
             onLoadFinished();
             return;
@@ -217,7 +232,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
             onLoadFinished();
             return;
@@ -236,18 +251,18 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     }
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
         onLoadStart();
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
 
         onLoadFinished();
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
         try {
             mPageInfo = pageInfo;
 
@@ -278,7 +293,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List<InvSendOrderItem> dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
 
     }
 

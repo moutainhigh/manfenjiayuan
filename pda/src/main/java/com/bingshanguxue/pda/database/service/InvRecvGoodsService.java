@@ -1,9 +1,9 @@
-package com.manfenjiayuan.pda_supermarket.database.logic;
+package com.bingshanguxue.pda.database.service;
 
+import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
-import com.manfenjiayuan.pda_supermarket.database.dao.DistributionSignDao;
-import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
+import com.bingshanguxue.pda.database.dao.InvRecvGoodsDao;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
@@ -19,10 +19,10 @@ import java.util.List;
  * POS--商品--签收
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class DistributionSignService extends BaseService<DistributionSignEntity, String, DistributionSignDao> {
+public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String, InvRecvGoodsDao> {
     @Override
-    protected Class<DistributionSignDao> getDaoClass() {
-        return DistributionSignDao.class;
+    protected Class<InvRecvGoodsDao> getDaoClass() {
+        return InvRecvGoodsDao.class;
     }
 
     @Override
@@ -30,19 +30,19 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         return null;
     }
 
-    private static DistributionSignService instance = null;
+    private static InvRecvGoodsService instance = null;
 
     /**
      * 返回 IMConversationService 实例
      *
      * @return
      */
-    public static DistributionSignService get() {
-        String lsName = DistributionSignService.class.getName();
+    public static InvRecvGoodsService get() {
+        String lsName = InvRecvGoodsService.class.getName();
         if (ServiceFactory.checkService(lsName))
             instance = ServiceFactory.getService(lsName);
         else {
-            instance = new DistributionSignService();//初始化登录服务
+            instance = new InvRecvGoodsService();//初始化登录服务
         }
         return instance;
     }
@@ -56,7 +56,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         }
     }
 
-    public DistributionSignEntity getEntityById(String id) {
+    public InvRecvGoodsEntity getEntityById(String id) {
         try {
             return getDao().getEntityById(id);
         } catch (Exception e) {
@@ -65,15 +65,15 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         }
     }
 
-    public void save(DistributionSignEntity entity) {
+    public void save(InvRecvGoodsEntity entity) {
         getDao().save(entity);
     }
 
-    public void update(DistributionSignEntity entity) {
+    public void update(InvRecvGoodsEntity entity) {
         getDao().update(entity);
     }
 
-    public void saveOrUpdate(DistributionSignEntity entity) {
+    public void saveOrUpdate(InvRecvGoodsEntity entity) {
         getDao().saveOrUpdate(entity);
     }
 
@@ -90,19 +90,19 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
      * @param pageInfo
      * @return
      */
-    public List<DistributionSignEntity> queryAll(PageInfo pageInfo) {
+    public List<InvRecvGoodsEntity> queryAll(PageInfo pageInfo) {
         return getDao().queryAll(pageInfo);
     }
 
-    public List<DistributionSignEntity> queryAll() {
+    public List<InvRecvGoodsEntity> queryAll() {
         return getDao().queryAll();
     }
 
-    public List<DistributionSignEntity> queryAllBy(String strWhere) {
+    public List<InvRecvGoodsEntity> queryAllBy(String strWhere) {
         return getDao().queryAllBy(strWhere);
     }
 
-    public List<DistributionSignEntity> queryAllByDesc(String strWhere) {
+    public List<InvRecvGoodsEntity> queryAllByDesc(String strWhere) {
         return getDao().queryAllByDesc(strWhere);
     }
 
@@ -125,12 +125,12 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
     /**
      * 根据条码查商品
      */
-    public DistributionSignEntity queryEntityBy(String barcode) {
+    public InvRecvGoodsEntity queryEntityBy(String barcode) {
         if (StringUtils.isEmpty(barcode)) {
             return null;
         }
 
-        List<DistributionSignEntity> entityList = queryAllBy(String.format("barcode = '%s'", barcode));
+        List<InvRecvGoodsEntity> entityList = queryAllBy(String.format("barcode = '%s'", barcode));
         if (entityList != null && entityList.size() > 0) {
             return entityList.get(0);
         }
@@ -142,7 +142,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
      * 保存采购订单明细
      */
     public void saveInvSendOrderItem(InvSendOrderItem goods) {
-        DistributionSignEntity entity = new DistributionSignEntity();
+        InvRecvGoodsEntity entity = new InvRecvGoodsEntity();
         entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
         entity.setUpdatedDate(new Date());
         entity.setProSkuId(goods.getProSkuId());
@@ -174,7 +174,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         entity.setProviderId(goods.getProviderId());
         entity.setIsPrivate(goods.getIsPrivate());
 
-        entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_NONE);
+        entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
 
         saveOrUpdate(entity);
     }
@@ -183,7 +183,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
      * 保存发货单明细
      */
     public void saveInvSendIoOrderItem(InvSendIoOrderItem goods) {
-        DistributionSignEntity entity = new DistributionSignEntity();
+        InvRecvGoodsEntity entity = new InvRecvGoodsEntity();
         entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
         entity.setUpdatedDate(new Date());
 
@@ -205,7 +205,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         } else {
             entity.setReceivePrice(entity.getReceiveAmount() / entity.getReceiveQuantity());
         }
-        entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_NONE);
+        entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
 
         saveOrUpdate(entity);
     }
@@ -238,7 +238,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
     /**
      * 验收商品
      */
-    public void inspect(DistributionSignEntity entity, Double amount, Double quantity) {
+    public void inspect(InvRecvGoodsEntity entity, Double amount, Double quantity) {
         if (entity == null) {
             return;
         }
@@ -264,12 +264,12 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
         }
 
         if (ObjectsCompact.equals(entity.getSendQuantity(), quantity)) {
-            entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_OK);
+            entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_OK);
         } else {
             if (quantity == 0) {
-                entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_REJECT);
+                entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_REJECT);
             } else {
-                entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_CONFLICT);
+                entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_CONFLICT);
             }
         }
         entity.setUpdatedDate(new Date());
@@ -279,7 +279,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
     /**
      * 拒收商品
      */
-    public void reject(DistributionSignEntity entity) {
+    public void reject(InvRecvGoodsEntity entity) {
         if (entity == null) {
             return;
         }
@@ -288,7 +288,7 @@ public class DistributionSignService extends BaseService<DistributionSignEntity,
             entity.setReceiveQuantity(0D);
             entity.setReceiveAmount(0D);
             entity.setReceivePrice(0D);
-            entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_REJECT);
+            entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_REJECT);
             entity.setUpdatedDate(new Date());
             saveOrUpdate(entity);
         }

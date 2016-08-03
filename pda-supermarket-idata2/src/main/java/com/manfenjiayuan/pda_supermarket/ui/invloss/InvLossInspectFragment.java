@@ -75,7 +75,6 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
-        labelSignQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -125,7 +124,7 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
     public void submit() {
         super.submit();
 
-        String quantityStr = labelSignQuantity.getEtContent();
+        String quantityStr = labelSignQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)){
             onSubmitError("请输入报损数量");
             return;
@@ -157,7 +156,7 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
         if (curGoods == null){
             labelBarcode.setTvSubTitle("");
             labelName.setTvSubTitle("");
-            labelSignQuantity.setEtContent("");
+            labelSignQuantity.setInput("");
 
             fabCancel.setEnabled(false);
             btnSubmit.setEnabled(false);
@@ -167,7 +166,7 @@ public class InvLossInspectFragment extends QueryBarcodeFragment implements IScG
             labelName.setTvSubTitle(curGoods.getProductName());
 
             //默认签收数量为空，根据实际情况填写
-            labelSignQuantity.setEtContent("");
+            labelSignQuantity.setInput("");
 
             fabCancel.setEnabled(true);
             btnSubmit.setEnabled(true);

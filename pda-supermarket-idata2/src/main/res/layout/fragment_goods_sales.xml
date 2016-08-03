@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:rightTextSingleLine="false"
+                app:endTextSingleLine="false"
                 app:startText="商品名称:"/>
             <!--条码-->
             <com.bingshanguxue.pda.widget.TextLabelView
@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:rightTextSingleLine="false"
+                app:endTextSingleLine="false"
                 app:startText="条码:"/>
             <!--采购价-->
             <com.bingshanguxue.pda.widget.TextLabelView
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:rightTextSingleLine="false"
+                app:endTextSingleLine="false"
                 app:startText="库存成本价:"/>
             <!--毛利率-->
             <com.bingshanguxue.pda.widget.TextLabelView

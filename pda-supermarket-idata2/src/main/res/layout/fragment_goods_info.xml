@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:rightTextSingleLine="false"
+                app:endTextSingleLine="false"
                 app:startText="商品名称:"
                 app:startTextWidth="130dp"/>
             <!--条码-->
@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:rightTextSingleLine="false"
+                app:endTextSingleLine="false"
                 app:startText="条码:"
                 app:startTextWidth="130dp"/>
             <!--采购价-->
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
-                app:rightTextSingleLine="false"
+                app:endTextSingleLine="false"
                 app:startText="库存成本价:"
                 app:startTextSize="12sp"
                 app:startTextWidth="130dp"/>
@@ -54,8 +54,9 @@
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="零售价:"
-                app:editLabelView_rightHint="请输入零售价格"/>
+                app:startText="零售价:"
+                app:editInputType="numberDecimal"
+                app:editTextHint="请输入零售价格"/>
             <!--毛利率-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_grossProfit"
@@ -78,8 +79,9 @@
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editLabelView_leftText="排面库存:"
-                app:editLabelView_rightHint="请输入排面库存"/>
+                app:startText="排面库存:"
+                app:editInputType="numberDecimal"
+                app:editTextHint="请输入排面库存"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

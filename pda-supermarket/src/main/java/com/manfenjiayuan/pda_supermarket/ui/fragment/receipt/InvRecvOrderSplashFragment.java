@@ -67,7 +67,7 @@ public class InvRecvOrderSplashFragment extends PDAScanFragment {
         });
 
         //清空签收数据库
-//        DistributionSignService.get().clear();
+//        InvRecvGoodsService.get().clear();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class InvRecvOrderSplashFragment extends PDAScanFragment {
         super.onDestroy();
 
         //清空签收数据库
-//        DistributionSignService.get().clear();
+//        InvRecvGoodsService.get().clear();
     }
 
     /**

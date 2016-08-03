@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
+import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
@@ -128,7 +128,7 @@ public class ChainGoodsSkuAdapter extends SwipAdapter<ChainGoodsSku, ChainGoodsS
             return;
         }
 
-        DistributionSignService.get().deleteById(String.valueOf(entity.getId()));
+        InvRecvGoodsService.get().deleteById(String.valueOf(entity.getId()));
 
         //刷新列表
         entityList.remove(position);

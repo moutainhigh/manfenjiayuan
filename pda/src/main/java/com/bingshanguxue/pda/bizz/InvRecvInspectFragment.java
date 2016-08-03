@@ -1,29 +1,33 @@
-package com.manfenjiayuan.pda_supermarket.ui.invreceive;
+package com.bingshanguxue.pda.bizz;
 
 
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
+import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
-import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
@@ -33,38 +37,47 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
-
 
 /**
  * 商品配送－－验货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class DistributionInspectFragment extends QueryBarcodeFragment implements IChainGoodsSkuView {
+public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoodsSkuView {
 
     public static final String EXTRA_KEY_BARCODE = "barcode";
 
-    @Bind(R.id.label_barcode)
+//    @BindView(R2.id.toolbar)
+     Toolbar mToolbar;
+//    @BindView(R2.id.scanBar)
+     ScanBar mScanBar;
+
+//    @BindView(R2.id.label_barcode)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_productName)
+//    @BindView(R2.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_send_price)
+//    @BindView(R2.id.label_send_price)
     TextLabelView labelSendPrice;
-    @Bind(R.id.label_send_quantity)
+//    @BindView(R2.id.label_send_quantity)
     TextLabelView labelSendQuantity;
-    @Bind(R.id.label_receive_quantity)
+//    @BindView(R2.id.label_receive_quantity)
     EditLabelView labelReceiveQuantity;
-    @Bind(R.id.label_receive_amount)
+//    @BindView(R2.id.label_receive_amount)
     EditLabelView labelReceiveAmount;
-    @Bind(R.id.label_receive_price)
+//    @BindView(R2.id.label_receive_price)
     TextLabelView labelReceivePrice;
 
-    private DistributionSignEntity curGoods = null;
+
+//    @BindView(R2.id.fab_cancel)
+    public FloatingActionButton fabCancel;
+//    @BindView(R2.id.fab_submit)
+    public FloatingActionButton btnSubmit;
+
+    private InvRecvGoodsEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
 
 
-    public static DistributionInspectFragment newInstance(Bundle args) {
-        DistributionInspectFragment fragment = new DistributionInspectFragment();
+    public static InvRecvInspectFragment newInstance(Bundle args) {
+        InvRecvInspectFragment fragment = new InvRecvInspectFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -77,12 +90,10 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         return true;
     }
 
-
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_distribution_inspect;
+        return R.layout.fragment_invrecv_inspect;
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,10 +103,68 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
     }
 
     @Override
-    protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        super.createViewInner(rootView, container, savedInstanceState);
+    protected void initViews(View rootView) {
+        super.initViews(rootView);
 
-        labelReceiveQuantity.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
+        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
+        labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
+        labelSendPrice = (TextLabelView) rootView.findViewById(R.id.label_send_price);
+        labelSendQuantity = (TextLabelView) rootView.findViewById(R.id.label_send_quantity);
+        labelReceiveQuantity = (EditLabelView) rootView.findViewById(R.id.label_receive_quantity);
+        labelReceiveAmount = (EditLabelView) rootView.findViewById(R.id.label_receive_amount);
+        labelReceivePrice = (TextLabelView) rootView.findViewById(R.id.label_receive_price);
+        fabCancel = (FloatingActionButton) rootView.findViewById(R.id.fab_cancel);
+        btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+
+        fabCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancel();
+            }
+        });
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submit();
+            }
+        });
+    }
+
+    @Override
+    protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        if (mToolbar != null) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+            mToolbar.setNavigationOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getActivity().onBackPressed();
+                        }
+                    });
+        } else {
+            ZLogger.d("mToolbar is null");
+        }
+
+        if (mScanBar != null) {
+            mScanBar.setSoftKeyboardEnabled(true);
+            mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
+                @Override
+                public void onKeycodeEnterClick(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
+                }
+
+                @Override
+                public void onAction1Click() {
+                    DialogUtil.showHint("点击了搜索");
+                }
+            });
+        } else {
+            ZLogger.d("mScanBar is null");
+        }
+
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelReceiveQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -127,7 +196,6 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 
             }
         });
-        labelReceiveAmount.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelReceiveAmount.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -164,8 +232,9 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         if (args != null) {
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
-//            eqvBarcode.setInputString(barcode);
-            queryByBarcode(barcode);
+            if (!StringUtils.isEmpty(barcode)){
+                queryByBarcode(barcode);
+            }
         }
     }
 
@@ -205,12 +274,12 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 
 
     private Double calculateReceivePrice() {
-        String quantityStr = labelReceiveQuantity.getEtContent();
+        String quantityStr = labelReceiveQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)) {
             return 0D;
         }
 
-        String amount = labelReceiveAmount.getEtContent();
+        String amount = labelReceiveAmount.getInput();
         if (StringUtils.isEmpty(amount)) {
             return 0D;
         }
@@ -224,32 +293,56 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         }
     }
 
-    @Override
-    public void sendQueryReq(String barcode) {
-        super.sendQueryReq(barcode);
+    /**
+     * 搜索条码
+     */
+    public void queryByBarcode(String barcode) {
+        isAcceptBarcodeEnabled = false;
+        if (StringUtils.isEmpty(barcode)) {
+            onQueryError("请先扫描商品条码");
+            return;
+        }
 
         QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
         queryGoodsAsyncTask.execute();
     }
 
-    @Override
-    public void cancel() {
-        super.cancel();
-        DistributionSignService.get().reject(curGoods);
+    public void onQueryError(String errorMsg) {
+        if (!StringUtils.isEmpty(errorMsg)){
+            ZLogger.df(errorMsg);
+            showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+        }
+        else{
+            hideProgressDialog();
+        }
+        isAcceptBarcodeEnabled = true;
 
         refreshPackage(null);
     }
 
-    @Override
+//    @OnClick(R2.id.fab_cancel)
+    public void cancel() {
+        fabCancel.setEnabled(false);
+        InvRecvGoodsService.get().reject(curGoods);
+
+        refreshPackage(null);
+    }
+
+
+//    @OnClick(R2.id.fab_submit)
     public void submit() {
-        super.submit();
-        String quantityStr = labelReceiveQuantity.getEtContent();
+        btnSubmit.setEnabled(false);
+        isAcceptBarcodeEnabled = false;
+
+        onSubmitProcess();
+
+        String quantityStr = labelReceiveQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)) {
             onSubmitError("请输入签收数量");
             return;
         }
 
-        String amount = labelReceiveAmount.getEtContent();
+        String amount = labelReceiveAmount.getInput();
         if (StringUtils.isEmpty(amount)) {
             onSubmitError("请输入收货金额");
             return;
@@ -259,28 +352,59 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         if (curGoods != null && curGoods.getReceiveQuantity() > 0) {
             quantityCheckConfirmDialog(curGoods, Double.valueOf(amount), quantityCheck);
         } else {
-            DistributionSignService.get().inspect(curGoods, Double.valueOf(amount), quantityCheck);
+            InvRecvGoodsService.get().inspect(curGoods, Double.valueOf(amount), quantityCheck);
 
             onSubmitSuccess();
             refreshPackage(null);
         }
     }
 
+    /**
+     * 提交处理中
+     */
+    public void onSubmitProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+    }
+
+    /**
+     * 提交失败
+     */
+    public void onSubmitError(String errorMsg) {
+        if (!StringUtils.isEmpty(errorMsg)) {
+            showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+            ZLogger.df(errorMsg);
+        } else {
+            hideProgressDialog();
+        }
+        isAcceptBarcodeEnabled = true;
+        btnSubmit.setEnabled(true);
+    }
+
+    /**
+     * 提交成功
+     */
+    public void onSubmitSuccess() {
+        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+//        hideProgressDialog();
+    }
+
 
     /**
      * 刷新信息
      */
-    private void refreshPackage(DistributionSignEntity goods) {
-        refresh();
+    private void refreshPackage(InvRecvGoodsEntity goods) {
+        mScanBar.reset();
+        isAcceptBarcodeEnabled = true;
+        DeviceUtils.hideSoftInput(getActivity(), mScanBar);
+
         curGoods = goods;
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelSendQuantity.setTvSubTitle("");
             labelSendPrice.setTvSubTitle("");
-            labelReceiveQuantity.setEtContent("");
-            labelReceiveQuantity.setEndText("");
-            labelReceiveAmount.setEtContent("");
+            labelReceiveQuantity.setInputAndEnd("", "");
+            labelReceiveAmount.setInput("");
             labelReceivePrice.setTvSubTitle("");
 
             fabCancel.setEnabled(false);
@@ -293,10 +417,9 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 //            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
             labelSendPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getSendPrice(), ""));
             //默认签收数量为空，根据实际情况填写
-            labelReceiveQuantity.setEtContent("");
-            labelReceiveQuantity.setEndText(curGoods.getUnitSpec());
+            labelReceiveQuantity.setInputAndEnd("", curGoods.getUnitSpec());
 //            labelReceiveAmount.setEndText(curGoods.getUnitSpec());
-            labelReceiveAmount.setEtContent("");
+            labelReceiveAmount.setInput("");
             labelReceivePrice.setTvSubTitle(MUtils.formatDouble(calculateReceivePrice(), ""));
 
             fabCancel.setEnabled(true);
@@ -344,9 +467,19 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         }
     }
 
+    @Override
+    protected void onScanCode(String code) {
+        if (!isAcceptBarcodeEnabled) {
+            return;
+        }
+        isAcceptBarcodeEnabled = false;
+        mScanBar.reset();
+        queryByBarcode(code);
+    }
+
     class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
         private String barcode;
-        private DistributionSignEntity goodsEntity = null;
+        private InvRecvGoodsEntity goodsEntity = null;
 
         public QueryGoodsAsyncTask(String barcode) {
             this.barcode = barcode;
@@ -355,7 +488,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                goodsEntity = DistributionSignService.get().queryEntityBy(barcode);
+                goodsEntity = InvRecvGoodsService.get().queryEntityBy(barcode);
                 if (goodsEntity != null) {
                     return true;
                 }
@@ -397,8 +530,28 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
         chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
 
+    /**
+     * 查询处理中
+     */
+    public void onQueryProcess() {
+        isAcceptBarcodeEnabled = false;
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+    }
 
-    public void saveDistributionSignEntity(DistributionSignEntity goods) {
+
+    /**
+     * 查询成功
+     */
+    public void onQuerySuccess() {
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
+        isAcceptBarcodeEnabled = true;
+    }
+
+
+
+
+    public void saveDistributionSignEntity(InvRecvGoodsEntity goods) {
         hideProgressDialog();
         refreshPackage(goods);
     }
@@ -419,9 +572,9 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
 //            return;
 //        }
 
-        DistributionSignEntity entity = DistributionSignService.get().queryEntityBy(goods.getBarcode());
+        InvRecvGoodsEntity entity = InvRecvGoodsService.get().queryEntityBy(goods.getBarcode());
         if (entity == null) {
-            entity = new DistributionSignEntity();
+            entity = new InvRecvGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
             entity.setProSkuId(goods.getProSkuId());
@@ -437,17 +590,17 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
             entity.setSendPrice(0D);
             entity.setReceiveQuantity(0D);
             entity.setReceiveAmount(0D);
-            entity.setInspectStatus(DistributionSignEntity.INSPECT_STATUS_NONE);
+            entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
             entity.setUpdatedDate(new Date());
 
-            DistributionSignService.get().saveOrUpdate(entity);
+            InvRecvGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;
 
-    private void quantityCheckConfirmDialog(final DistributionSignEntity entity,
+    private void quantityCheckConfirmDialog(final InvRecvGoodsEntity entity,
                                             final Double amount, final Double quantity) {
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
@@ -460,7 +613,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                DistributionSignService.get().inspect(entity, amount, quantity);
+                InvRecvGoodsService.get().inspect(entity, amount, quantity);
 
                 onSubmitSuccess();
                 refreshPackage(null);
@@ -471,7 +624,7 @@ public class DistributionInspectFragment extends QueryBarcodeFragment implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                DistributionSignService.get().inspect(entity,
+                InvRecvGoodsService.get().inspect(entity,
                         amount + entity.getReceiveAmount(),
                         entity.getReceiveQuantity() + quantity);
 
