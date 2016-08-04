@@ -21,28 +21,30 @@ public class InvSendOrderPresenter2 extends MvpBasePresenter<IInvSendOrderView> 
 
     /**
      * 加载采购订单
-     * @param  类目编号
+     * @param  netId
      * */
-    public void loadOrders(PageInfo pageInfo, boolean netFlag, Long netId, String sendTenantId, String status){
-        invSendOrderMode.loadOrders(pageInfo, netFlag, netId, sendTenantId, status, new OnPageModeListener<InvSendOrder>() {
+    public void loadOrders(PageInfo pageInfo, boolean netFlag, Long netId,
+                           String sendTenantId, String status){
+        invSendOrderMode.loadOrders(pageInfo, netFlag, netId, sendTenantId,
+                status, new OnPageModeListener<InvSendOrder>() {
             @Override
             public void onProcess() {
                 if (getView() != null) {
-                    getView().onQueryInvSendOrderProcess();
+                    getView().onIInvSendOrderViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
                 if (getView() != null) {
-                    getView().onQueryInvSendOrderSuccess(pageInfo, dataList);
+                    getView().onIInvSendOrderViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (getView() != null) {
-                    getView().onQueryInvSendOrderError(errorMsg);
+                    getView().onIInvSendOrderViewError(errorMsg);
                 }
             }
         });
@@ -54,7 +56,7 @@ public class InvSendOrderPresenter2 extends MvpBasePresenter<IInvSendOrderView> 
             public void onProcess() {
 
                 if (getView() != null) {
-                    getView().onQueryInvSendOrderProcess();
+                    getView().onIInvSendOrderViewProcess();
                 }
             }
 
@@ -62,7 +64,7 @@ public class InvSendOrderPresenter2 extends MvpBasePresenter<IInvSendOrderView> 
             public void onSuccess(PageInfo pageInfo, List<InvSendOrderItem> dataList) {
 
                 if (getView() != null) {
-                    getView().onQueryInvSendOrderItemsSuccess(dataList);
+                    getView().onIInvSendOrderViewItemsSuccess(dataList);
                 }
             }
 
@@ -70,7 +72,7 @@ public class InvSendOrderPresenter2 extends MvpBasePresenter<IInvSendOrderView> 
             public void onError(String errorMsg) {
 
                 if (getView() != null) {
-                    getView().onQueryInvSendOrderError(errorMsg);
+                    getView().onIInvSendOrderViewError(errorMsg);
                 }
             }
         });

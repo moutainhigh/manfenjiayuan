@@ -67,17 +67,17 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
     private InvSendOrderPresenter invSendOrderPresenter;
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
         onLoadStart();
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
         onLoadFinished();
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List dataList) {
         try {
             mPageInfo = pageInfo;
 
@@ -114,7 +114,7 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List dataList) {
 
     }
 

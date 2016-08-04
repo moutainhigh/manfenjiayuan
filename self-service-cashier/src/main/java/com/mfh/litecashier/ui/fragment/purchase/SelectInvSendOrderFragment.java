@@ -309,19 +309,19 @@ public class SelectInvSendOrderFragment extends BaseListFragment<InvSendOrder> i
 
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
 
         onLoadStart();
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
 
         onLoadFinished();
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
         try {
             mPageInfo = pageInfo;
 
@@ -358,7 +358,7 @@ public class SelectInvSendOrderFragment extends BaseListFragment<InvSendOrder> i
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List<InvSendOrderItem> dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
 
     }
 }

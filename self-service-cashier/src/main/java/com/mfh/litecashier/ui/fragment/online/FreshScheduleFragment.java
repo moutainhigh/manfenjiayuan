@@ -400,12 +400,12 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
     }
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
         if (goodsListAdapter != null) {
             goodsListAdapter.setEntityList(null);
         }
@@ -413,12 +413,12 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List<InvSendOrderItem> dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
         List<FreshScheduleGoods> scheduleGoodsList = new ArrayList<>();
         if (dataList != null && dataList.size() > 0){
             for (InvSendOrderItem invSendOrderItem : dataList){
