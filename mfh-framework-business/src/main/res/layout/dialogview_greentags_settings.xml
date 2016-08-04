@@ -44,7 +44,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="主机IP"
+                    android:text="IP"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/textsize_normal"/>
 
@@ -56,7 +56,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:digits="0123456789."
-                    android:hint="主机IP"
+                    android:hint="IP"
                     android:inputType="number|numberDecimal"/>
             </LinearLayout>
 
@@ -71,7 +71,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="主机端口号"
+                    android:text="端口号"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/textsize_normal"/>
 
@@ -81,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
-                    android:hint="主机端口号"
+                    android:hint="端口号"
                     android:inputType="number"/>
             </LinearLayout>
 
