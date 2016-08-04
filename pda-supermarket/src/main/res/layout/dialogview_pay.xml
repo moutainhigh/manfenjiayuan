@@ -15,9 +15,9 @@
         app:editLabelView_leftText="支付密码:"
         app:editLabelView_leftTextSize="18sp"
         app:editLabelView_leftTextColor="@color/black"
-        app:editLabelView_rightTextSize="18sp"
-        app:editLabelView_rightTextColor="@color/black"
-        app:editLabelView_rightTextColorHint="@color/black_35"
-        app:editLabelView_rightHint="请输入支付密码"/>
+        app:endTextSize="18sp"
+        app:endTextColor="@color/black"
+        app:endTextColorHint="@color/black_35"
+        app:endHint="请输入支付密码"/>
 
 </LinearLayout>

@@ -19,7 +19,7 @@ android {
         applicationId "com.manfenjiayuan.pda_wholesaler"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 16
+        versionCode 17
         versionName "0.0.5"
         multiDexEnabled true
 
@@ -103,6 +103,10 @@ android {
         }
     } else {
         android.buildTypes.release.signingConfig = null
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 

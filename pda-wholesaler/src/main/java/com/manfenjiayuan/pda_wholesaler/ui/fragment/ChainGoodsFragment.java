@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
@@ -17,10 +18,9 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -209,7 +209,7 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
 //        animProgress.setVisibility(View.VISIBLE);
 
         //回调
-        StockApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
+        InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
     }
 
     NetCallBack.NetTaskCallBack updateResponseCallback = new NetCallBack.NetTaskCallBack<String,

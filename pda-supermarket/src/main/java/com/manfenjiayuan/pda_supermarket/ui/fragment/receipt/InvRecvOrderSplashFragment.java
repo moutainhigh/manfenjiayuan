@@ -5,11 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;
 import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -67,7 +67,7 @@ public class InvRecvOrderSplashFragment extends PDAScanFragment {
         });
 
         //清空签收数据库
-//        DistributionSignService.get().clear();
+//        InvRecvGoodsService.get().clear();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class InvRecvOrderSplashFragment extends PDAScanFragment {
         super.onDestroy();
 
         //清空签收数据库
-//        DistributionSignService.get().clear();
+//        InvRecvGoodsService.get().clear();
     }
 
     /**

@@ -38,6 +38,11 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     protected int getLayoutResId(){return 0;}
 
+
+    protected void initViews(View rootView){
+        ButterKnife.bind(this, rootView);
+    }
+
     protected abstract void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState);
 
     @Nullable
@@ -49,7 +54,7 @@ public abstract class BaseListFragment<T> extends Fragment {
         //Inflate the layout for this fragment
         rootView = inflater.inflate(getLayoutResId(), container, false);
 
-        ButterKnife.bind(this, rootView);
+        initViews(rootView);
 
         createViewInner(rootView, container, savedInstanceState);
         return rootView;

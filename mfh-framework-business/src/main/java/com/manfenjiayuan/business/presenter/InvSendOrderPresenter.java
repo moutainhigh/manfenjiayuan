@@ -35,21 +35,21 @@ public class InvSendOrderPresenter {
             @Override
             public void onProcess() {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderProcess();
+                    invSendOrderView.onIInvSendOrderViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderSuccess(pageInfo, dataList);
+                    invSendOrderView.onIInvSendOrderViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderError(errorMsg);
+                    invSendOrderView.onIInvSendOrderViewError(errorMsg);
                 }
             }
         });
@@ -64,21 +64,21 @@ public class InvSendOrderPresenter {
             @Override
             public void onProcess() {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderProcess();
+                    invSendOrderView.onIInvSendOrderViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderSuccess(pageInfo, dataList);
+                    invSendOrderView.onIInvSendOrderViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderError(errorMsg);
+                    invSendOrderView.onIInvSendOrderViewError(errorMsg);
                 }
             }
         });
@@ -90,21 +90,21 @@ public class InvSendOrderPresenter {
             @Override
             public void onProcess() {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderProcess();
+                    invSendOrderView.onIInvSendOrderViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderSuccess(pageInfo, dataList);
+                    invSendOrderView.onIInvSendOrderViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderError(errorMsg);
+                    invSendOrderView.onIInvSendOrderViewError(errorMsg);
                 }
             }
         });
@@ -120,7 +120,7 @@ public class InvSendOrderPresenter {
             public void onProcess() {
 
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderProcess();
+                    invSendOrderView.onIInvSendOrderViewProcess();
                 }
             }
 
@@ -128,7 +128,7 @@ public class InvSendOrderPresenter {
             public void onSuccess(PageInfo pageInfo, List<InvSendOrderItem> dataList) {
 
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderItemsSuccess(dataList);
+                    invSendOrderView.onIInvSendOrderViewItemsSuccess(dataList);
                 }
             }
 
@@ -136,7 +136,7 @@ public class InvSendOrderPresenter {
             public void onError(String errorMsg) {
 
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendOrderError(errorMsg);
+                    invSendOrderView.onIInvSendOrderViewError(errorMsg);
                 }
             }
         });

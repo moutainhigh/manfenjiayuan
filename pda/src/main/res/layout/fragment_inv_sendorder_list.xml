@@ -1,0 +1,40 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include layout="@layout/appbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/material_white">
+        <!--空视图-->
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/mfh_textview_text"
+            android:text="没有数据"
+            android:layout_margin="16dp"
+            android:gravity="center"/>
+
+        <!--订单列表-->
+        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+            android:id="@+id/office_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            style="@style/loading"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,8 +17,8 @@ import com.bingshanguxue.pda.R;
  * {@link TextLabelView }
  */
 public class TextLabelView extends LinearLayout {
-	TextView tvLeftText;
-	TextView tvRightText;
+	private TextView tvStartText;
+	private TextView tvEndText;
 
 	public TextLabelView(Context context) {
 		this(context, null);
@@ -29,38 +30,33 @@ public class TextLabelView extends LinearLayout {
 
 //		ButterKnife.bind(rootView);
 
+		tvStartText = (TextView) rootView.findViewById(R.id.tv_lefttext);
+		tvEndText = (TextView) rootView.findViewById(R.id.tv_righttext);
+
 		TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TextLabelView);
-		String leftText = ta.getString(R.styleable.TextLabelView_textLabelView_leftText);
+
+		tvStartText.setText(ta.getString(R.styleable.TextLabelView_startText));
 //		int leftTextSize = ta.getDimensionPixelSize(R.styleable.TextLabelView_textLabelView_leftTextSize, 12);//px
-		float leftTextSize = ta.getDimension(R.styleable.TextLabelView_textLabelView_leftTextSize, 12);//sp
-		int leftTextColor = ta.getColor(R.styleable.TextLabelView_textLabelView_leftTextColor, 0);
-		int leftTextWidth = ta.getDimensionPixelSize(R.styleable.TextLabelView_textLabelView_leftTextWidth, 80);//px
-		String rightText = ta.getString(R.styleable.TextLabelView_textLabelView_rightText);
-//		int rightTextSize = ta.getDimensionPixelSize(R.styleable.TextLabelView_textLabelView_rightTextSize, rightTextSize);
-		float rightTextSize = (int)ta.getDimension(R.styleable.TextLabelView_textLabelView_leftTextSize, 12);
-		int rightTextColor = ta.getColor(R.styleable.TextLabelView_textLabelView_rightTextColor, 0);
-		boolean isRightTextSingleLine = ta.getBoolean(R.styleable.TextLabelView_rightTextSingleLine, true);
+		tvStartText.setTextSize(ta.getDimensionPixelSize(R.styleable.TextLabelView_startTextSize, 12));
+		tvStartText.setTextColor(ta.getColor(R.styleable.TextLabelView_startTextColor, 0xFFFFFFFF));
+		int startTextWidth = ta.getDimensionPixelSize(R.styleable.TextLabelView_startTextWidth, 80);//px
+		ViewGroup.LayoutParams stLayoutParams = tvStartText.getLayoutParams();
+		stLayoutParams.width = startTextWidth;
+//		ZLogger.d(String.format("startText, %s=%d", leftText, startTextWidth));
+		tvStartText.setLayoutParams(stLayoutParams);
 
+		tvEndText.setText(ta.getString(R.styleable.TextLabelView_endText));
+		tvEndText.setTextSize(ta.getDimensionPixelSize(R.styleable.TextLabelView_endTextSize, 12));
+		tvEndText.setTextColor(ta.getColor(R.styleable.TextLabelView_endTextColor, 0xFFFFFFFF));
+		tvEndText.setSingleLine(ta.getBoolean(R.styleable.TextLabelView_endTextSingleLine, true));
 		ta.recycle();
-
-		tvLeftText = (TextView) rootView.findViewById(R.id.tv_lefttext);
-		tvLeftText.setText(leftText);
-		tvLeftText.setTextSize(leftTextSize);
-		tvLeftText.setTextColor(leftTextColor);
-		tvLeftText.setWidth(leftTextWidth);
-		tvRightText = (TextView) rootView.findViewById(R.id.tv_righttext);
-		tvRightText.setText(rightText);
-		tvRightText.setTextSize(rightTextSize);
-		tvRightText.setTextColor(rightTextColor);
-		tvRightText.setSingleLine(isRightTextSingleLine);
 	}
 
-
-	public void setTvTitle(String text) {
-		this.tvLeftText.setText(text);
+	public void setStartText(String text) {
+		this.tvStartText.setText(text);
 	}
 
 	public void setTvSubTitle(String text) {
-		this.tvRightText.setText(text);
+		this.tvEndText.setText(text);
 	}
 }

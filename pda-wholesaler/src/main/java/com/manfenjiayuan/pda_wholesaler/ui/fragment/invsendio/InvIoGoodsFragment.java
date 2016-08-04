@@ -19,7 +19,6 @@ import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.BaseReceiveOrderFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;

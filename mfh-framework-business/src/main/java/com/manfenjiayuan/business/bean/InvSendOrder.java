@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- *  采购单
+ * 采购单
  * Created by bingshanguxue on 15/9/22.
  */
 public class InvSendOrder implements ILongId, Serializable {

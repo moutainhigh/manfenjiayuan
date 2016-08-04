@@ -11,7 +11,7 @@
     <item
         android:id="@+id/action_sign_out"
         android:orderInCategory="100"
-        android:icon="@mipmap/ic_exit_to_app_white_24dp"
+        android:icon="@mipmap/ic_logout"
         android:title="@string/action_settings"
         app:showAsAction="always" />
 </menu>

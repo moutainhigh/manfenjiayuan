@@ -2,7 +2,6 @@ package com.manfenjiayuan.pda_wholesaler;
 
 
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
-import com.manfenjiayuan.pda_wholesaler.database.logic.StockTakeService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;

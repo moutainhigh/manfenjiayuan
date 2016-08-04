@@ -24,7 +24,7 @@ public class InvSendIoOrderPresenter {
             public void onProcess() {
 
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendIoOrderProcess();
+                    invSendOrderView.onIInvSendIoOrderViewProcess();
                 }
             }
 
@@ -32,7 +32,7 @@ public class InvSendIoOrderPresenter {
             public void onSuccess(InvSendIoOrderItemBrief data) {
 
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendIoOrderSuccess(data);
+                    invSendOrderView.onIInvSendIoOrderViewSuccess(data);
                 }
             }
 
@@ -40,7 +40,7 @@ public class InvSendIoOrderPresenter {
             public void onError(String errorMsg) {
 
                 if (invSendOrderView != null) {
-                    invSendOrderView.onQueryInvSendIoOrderError(errorMsg);
+                    invSendOrderView.onIInvSendIoOrderViewError(errorMsg);
                 }
             }
         });

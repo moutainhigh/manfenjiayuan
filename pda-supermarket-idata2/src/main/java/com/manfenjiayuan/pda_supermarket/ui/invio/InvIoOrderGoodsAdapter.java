@@ -6,9 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.Collections;
@@ -32,6 +33,8 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
     public interface OnAdapterListener {
         void onItemClick(View view, int position);
 
+
+        void onItemLongClick(View view, int position);
         void onDataSetChanged();
     }
 
@@ -43,7 +46,8 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_invreturnorder_goods, parent, false));
+        return new ProductViewHolder(mLayoutInflater
+                .inflate(R.layout.itemview_invreturnorder_goods, parent, false));
     }
 
     @Override
@@ -52,9 +56,10 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
 
         holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
         holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
-        holder.tvPrice.setText(MUtils.formatDouble("发货价格:", "",
+        holder.tvPrice.setText(MUtils.formatDouble("价格:", "",
                 entity.getPrice(), "无", null, null));
-        holder.tvQuantity.setText(String.format("数量：%.2f", entity.getQuantityCheck()));
+        holder.tvQuantity.setText(MUtils.formatDouble("数量:", "",
+                entity.getQuantityCheck(), "无", "/", entity.getUnit()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -85,22 +90,22 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
                     }
                 }
             });
-//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    int position = getAdapterPosition();
-//                    if (entityList == null || position < 0 || position >= entityList.size()) {
-////                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-//                        return false;
-//                    }
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+                    if (entityList == null || position < 0 || position >= entityList.size()) {
+//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                        return false;
+                    }
 ////                    notifyDataSetChanged();//getAdapterPosition() return -1.
 ////
-//                    if (adapterListener != null) {
-//                        adapterListener.onItemLongClick(itemView, position);
-//                    }
-//                    return false;
-//                }
-//            });
+                    if (adapterListener != null) {
+                        adapterListener.onItemLongClick(itemView, position);
+                    }
+                    return false;
+                }
+            });
         }
     }
 
@@ -110,6 +115,25 @@ public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
         this.entityList = entityList;
         sortByUpdateDate();
         notifyDataSetChanged();
+        if (adapterListener != null) {
+            adapterListener.onDataSetChanged();
+        }
+    }
+
+    @Override
+    public void removeEntity(int position) {
+//        super.removeEntity(position);
+
+        InvIoGoodsEntity entity = getEntity(position);
+        if (entity == null){
+            return;
+        }
+
+        InvIoGoodsService.get().deleteById(String.valueOf(entity.getId()));
+
+        //刷新列表
+        entityList.remove(position);
+        notifyItemRemoved(position);
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
         }

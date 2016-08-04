@@ -2,33 +2,33 @@
 <resources>
     <!---->
     <declare-styleable name="TextLabelView">
-        <attr name="textLabelView_leftText" format="string" />
-        <attr name="textLabelView_leftTextColor" format="color" />
-        <attr name="textLabelView_leftTextSize" format="dimension" />
-        <attr name="textLabelView_leftTextWidth" format="dimension" />
+        <attr name="startText"/>
+        <attr name="startTextColor"/>
+        <attr name="startTextSize"/>
+        <attr name="startTextWidth"/>
 
-        <attr name="textLabelView_rightText" format="string" />
-        <attr name="textLabelView_rightTextColor" format="color" />
-        <attr name="textLabelView_rightTextSize" format="dimension" />
-        <attr name="rightTextSingleLine" format="boolean" />
+        <attr name="endText"/>
+        <attr name="endTextColor"/>
+        <attr name="endTextSize"/>
+        <attr name="endTextSingleLine"/>
     </declare-styleable>
 
     <declare-styleable name="EditLabelView">
-        <attr name="editLabelView_leftText" format="string" />
-        <attr name="editLabelView_leftTextColor" format="color" />
-        <attr name="editLabelView_leftTextSize" format="dimension" />
-        <attr name="editLabelView_leftTextWidth" format="dimension" />
+        <attr name="startText"/>
+        <attr name="startTextColor"/>
+        <attr name="startTextSize"/>
+        <attr name="startTextWidth"/>
 
-        <attr name="editLabelView_rightHint" format="string" />
-        <attr name="editLabelView_rightTextColor" format="color" />
-        <attr name="editLabelView_rightTextColorHint" format="color" />
-        <attr name="editLabelView_rightTextSize" format="dimension" />
+        <attr name="editTextColor"/>
+        <attr name="editTextSize"/>
+        <attr name="editTextHint"/>
+        <attr name="editTextColorHint"/>
+        <attr name="editInputType"/>
 
-        <attr name="endTextVisible" format="boolean" />
-        <attr name="endText" format="string" />
-        <attr name="endTextColor" format="color" />
-        <attr name="endTextSize" format="dimension" />
-        <attr name="endTextWidth" format="dimension" />
+        <attr name="endText"/>
+        <attr name="endTextColor"/>
+        <attr name="endTextSize"/>
+        <attr name="endTextVisible" />
     </declare-styleable>
 
     <declare-styleable name="EditQueryView">
@@ -37,10 +37,21 @@
         <attr name="editQueryView_inputTextSize" format="dimension" />
         <attr name="editLabelView_inputTextColorHint" format="color" />
         <attr name="editQueryView_inputHint" format="string" />
-
+        <attr name="editInputType"/>
         <attr name="editQueryView_rightButtonWidth" format="dimension" />
         <attr name="editLabelView_rightImageButtonSrc" format="reference" />
     </declare-styleable>
 
+
+    <!--条码搜索控件-->
+    <declare-styleable name="ScanBar">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="textColorHint"/>
+        <attr name="hint"/>
+        <attr name="editInputType"/>
+        <attr name="action1Enabled" format="boolean" />
+    </declare-styleable>
 
 </resources>

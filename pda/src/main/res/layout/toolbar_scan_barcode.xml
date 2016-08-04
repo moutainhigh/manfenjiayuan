@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                   android:layout_width="match_parent"
+                                   android:layout_height="?attr/actionBarSize"
+                                   android:background="@color/mfh_toolbar_background">
+
+    <com.bingshanguxue.pda.widget.ScanBar
+        android:id="@+id/scanBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:hint="请扫描商品条码"
+        app:editInputType="barcode"
+        app:textColor="@color/black"
+        app:textColorHint="@color/black_35"
+        app:textSize="16px"
+        app:action1Enabled="true"/>
+
+</android.support.v7.widget.Toolbar>

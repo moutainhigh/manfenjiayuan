@@ -39,9 +39,12 @@ public class ScGoodsSku implements ILongId, Serializable {
     private Long tenantSkuId;//租户商品SKU编号
     private Integer storeType;//仓储类型
     private Double quantity;     // 商品数量(库存)
-    //    private Double sellNumber;//销量
-    private Double sellMonthNum;//月销量
-    //    private Double sellDayNum;//日销量
+
+    private Double sellNumber = 0D;//总销量
+    private Double sellMonthNum = 0D;//月销量
+    private Double sellDayNum = 0D;//日销量
+    private Double avgSellNum = 0D;//平均销量
+
     private Double buyPrice;    //采购价,配销价，平均采购价(库存成本价)，也就是预计采购价
     private Double costPrice; // 商品售价
     private Double costScore;//商品积分
@@ -151,16 +154,16 @@ public class ScGoodsSku implements ILongId, Serializable {
         this.quantity = quantity;
     }
 
-//    public Double getSellNumber() {
-//        if (sellNumber == null){
-//            return 0D;
-//        }
-//        return sellNumber;
-//    }
-//
-//    public void setSellNumber(Double sellNumber) {
-//        this.sellNumber = sellNumber;
-//    }
+    public Double getSellNumber() {
+        if (sellNumber == null) {
+            return 0D;
+        }
+        return sellNumber;
+    }
+
+    public void setSellNumber(Double sellNumber) {
+        this.sellNumber = sellNumber;
+    }
 
     public Double getSellMonthNum() {
         if (sellMonthNum == null) {
@@ -173,16 +176,27 @@ public class ScGoodsSku implements ILongId, Serializable {
         this.sellMonthNum = sellMonthNum;
     }
 
-//    public Double getSellDayNum() {
-//        if (sellDayNum == null){
-//            return 0D;
-//        }
-//        return sellDayNum;
-//    }
-//
-//    public void setSellDayNum(Double sellDayNum) {
-//        this.sellDayNum = sellDayNum;
-//    }
+    public Double getSellDayNum() {
+        if (sellDayNum == null) {
+            return 0D;
+        }
+        return sellDayNum;
+    }
+
+    public void setSellDayNum(Double sellDayNum) {
+        this.sellDayNum = sellDayNum;
+    }
+
+    public Double getAvgSellNum() {
+        if (avgSellNum == null) {
+            return 0D;
+        }
+        return avgSellNum;
+    }
+
+    public void setAvgSellNum(Double avgSellNum) {
+        this.avgSellNum = avgSellNum;
+    }
 
     public Double getCostPrice() {
         if (costPrice == null) {

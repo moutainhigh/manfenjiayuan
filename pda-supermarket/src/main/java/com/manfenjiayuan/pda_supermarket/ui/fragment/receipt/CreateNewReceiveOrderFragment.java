@@ -95,7 +95,7 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
         super.onCreate(savedInstanceState);
 
         //清空签收数据库
-//        DistributionSignService.get().clear();
+//        InvRecvGoodsService.get().clear();
     }
 
     @Override
@@ -179,7 +179,7 @@ public class CreateNewReceiveOrderFragment extends BaseReceiveOrderFragment {
         this.mProviderView.setText(companyInfo != null ? companyInfo.getName() : "");
 
 //        officeAdapter.setEntityList(null);//清空商品
-//        DistributionSignService.get().clear();
+//        InvRecvGoodsService.get().clear();
     }
 
     @Override

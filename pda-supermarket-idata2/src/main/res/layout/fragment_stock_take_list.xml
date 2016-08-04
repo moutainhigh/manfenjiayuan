@@ -1,56 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@drawable/divider_horizontal_line"
-                android:showDividers="middle"
-                android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:divider="@drawable/divider_horizontal_line"
+                                                 android:showDividers="middle"
+                                                 android:orientation="vertical">
+
+
+    <include layout="@layout/appbar"/>
+
 
     <RelativeLayout
-        android:id="@+id/frame_top"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:background="@color/mfh_colorPrimary"
-        android:gravity="center_vertical"
-        android:padding="4dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:textColor="@color/material_white"
-            android:textSize="20sp"
-            android:text="盘点记录"
-            android:gravity="start|center_vertical"/>
-
-        <ImageButton
-            android:id="@+id/button_sync"
-            android:layout_width="44dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:contentDescription="@null"
-            android:src="@mipmap/ic_cloud_upload_white_24dp"
-            android:background="@null"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
-
-        <Button
-            android:id="@+id/button_clear"
-            android:layout_width="44dp"
-            android:layout_height="wrap_content"
-            android:text="@string/button_clear"
-            android:textColor="@color/material_black"
-            android:textSize="16sp"
-            android:padding="8dp"
-            android:gravity="center"
-            android:background="@drawable/bg_btn_rectange_gray"
-            android:visibility="gone"/>
-    </RelativeLayout>
-
-    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/frame_top">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/material_white">
         <!--空视图-->
         <TextView
             android:id="@+id/empty_view"
@@ -74,7 +38,7 @@
             style="@style/loading"
             android:layout_gravity="center"
             android:visibility="gone"/>
-    </FrameLayout>
+    </RelativeLayout>
 
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

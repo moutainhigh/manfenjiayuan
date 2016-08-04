@@ -16,7 +16,6 @@ import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.bean.Shelfnumber;
-import com.manfenjiayuan.pda_wholesaler.database.logic.StockTakeService;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SimpleActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectShelvesDialog;
@@ -65,7 +64,6 @@ public class StockTakeFragment extends PDAScanFragment implements IInvSkuGoodsVi
     private Long curOrderId;//当前盘点批次编号
     private Long curShelfNumber = 0L;//当前盘点货架
     private InvSkuGoods curGoods = null;//当前盘点商品
-//    private boolean isPackage = false;//查询到的商品是否是有规格的，true,显示箱包总数，否则按单品计算
 
     public static StockTakeFragment newInstance(Bundle args) {
         StockTakeFragment fragment = new StockTakeFragment();

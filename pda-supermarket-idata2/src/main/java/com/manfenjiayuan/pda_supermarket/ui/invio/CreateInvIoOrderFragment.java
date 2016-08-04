@@ -7,17 +7,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
@@ -30,6 +28,8 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -44,23 +44,24 @@ import butterknife.OnClick;
  * 新建出库/入库订单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvIoOrderFragment extends PDAScanFragment {
+public class CreateInvIoOrderFragment extends BaseFragment {
+    //出入库类型
     public static final String EXTRA_KEY_ORDER_TYPE = "orderType";
+    //仓储类型
     public static final String EXTRA_KEY_STORE_TYPE = "storeType";
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvIoOrderGoodsAdapter goodsAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
+
+
+    private CommonDialog operateDialog = null;
 
     private int orderType = InvIoOrderApi.ORDER_TYPE_IN;
     private int storeType = InvIoOrderApi.STORE_TYPE_RETAIL;
@@ -85,15 +86,10 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
-        inspect(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
 
         //清空签收数据库
         InvIoGoodsService.get().clear();
@@ -101,43 +97,43 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        initRecyclerView();
-
         Bundle args = getArguments();
         if (args != null) {
             orderType = args.getInt(EXTRA_KEY_ORDER_TYPE);
             storeType = args.getInt(EXTRA_KEY_STORE_TYPE);
         }
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setHoldFocusEnable(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                inspect(text);
-            }
-        });
-
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
         if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
-            btnSubmit.setText("入库");
             mToolbar.setTitle("新建入库单");
         } else {
             mToolbar.setTitle("新建出库单");
-            btnSubmit.setText("出库");
         }
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+
+        initRecyclerView();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        eqvBarcode.requestFocusEnd();
-        eqvBarcode.clear();
-    }
 
     @Override
     public boolean onBackPressed() {
@@ -168,46 +164,71 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
 
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
-        //enable optimizations if all item views are of the same height and width for
-        //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
-        //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
-
         goodsAdapter = new InvIoOrderGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvIoOrderGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                CreateOrderItemWrapper entity = goodsAdapter.getEntity(position);
-//                inspect(entity.getBarcode());
-//                changeQuantityCheck();
+                InvIoGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (entity != null){
+                    inspect(entity.getBarcode());
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, final int position) {
+                final InvIoGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (operateDialog == null) {
+                    operateDialog = new CommonDialog(getActivity());
+                    operateDialog.setCancelable(true);
+                }
+                operateDialog.setMessage(String.format("%s\n%s", entity.getBarcode(), entity.getProductName()));
+                operateDialog.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        goodsAdapter.removeEntity(position);
+                    }
+                });
+                operateDialog.setNegativeButton("点错了", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                if (!operateDialog.isShowing()) {
+                    operateDialog.show();
+                }
             }
 
             @Override
             public void onDataSetChanged() {
-//                isLoadingMore = false;
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
+        //enable optimizations if all item views are of the same height and width for
+        //signficantly smoother scrolling
+        goodsRecyclerView.setHasFixedSize(true);
+        //添加分割线
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
+                getActivity(), LineItemDecoration.VERTICAL_LIST));
+        //设置列表为空时显示的视图
+        goodsRecyclerView.setEmptyView(emptyView);
+
+
+
+        goodsRecyclerView.setAdapter(goodsAdapter);
     }
 
 
     /**
      * 签收
      */
-    @OnClick(R.id.button_submit)
-    public void createInvReturnOrder() {
-        btnSubmit.setEnabled(false);
-
+    public void submit() {
         showConfirmDialog("确定要提交单据吗？",
                 "确定", new DialogInterface.OnClickListener() {
 
@@ -222,7 +243,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        btnSubmit.setEnabled(true);
                     }
                 });
     }
@@ -235,17 +255,13 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
 
         List<InvIoGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            btnSubmit.setEnabled(true);
-            DialogUtil.showHint("商品不能为空");
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
             return;
         }
 
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-//            animProgress.setVisibility(View.GONE);
-            btnSubmit.setEnabled(true);
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_ERROR,
+                    getString(R.string.toast_network_error), true);
             return;
         }
 
@@ -279,7 +295,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
 //                        animProgress.setVisibility(View.GONE);
 //                    DialogUtil.showHint("新建退货单失败" + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
                 }
 
                 @Override
@@ -326,7 +341,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
         commitDialog.init(new CommitInvIoOrderDialog.DialogListener() {
             @Override
             public void onCancel() {
-                btnSubmit.setEnabled(true);
                 hideProgressDialog();
             }
 
@@ -335,7 +349,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
                 if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
                     DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
-                    btnSubmit.setEnabled(true);
                     hideProgressDialog();
                     return;
                 }
@@ -389,6 +402,11 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
     /**
      * 验货
      * */
+    @OnClick(R.id.fab_add)
+    public void inspect() {
+        inspect(null);
+    }
+
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -404,7 +422,6 @@ public class CreateInvIoOrderFragment extends PDAScanFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                eqvBarcode.requestFocusEnd();
                 goodsAdapter.setEntityList(InvIoGoodsService.get().queryAll());
             }
             break;
