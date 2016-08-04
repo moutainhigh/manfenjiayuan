@@ -719,10 +719,9 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         protected void onPostExecute(List<InvRecvGoodsEntity> distributionSignEntities) {
             super.onPostExecute(distributionSignEntities);
             goodsAdapter.setEntityList(distributionSignEntities);
-
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
+            setScanEnabled(false);
         }
     }
-
 
 }
