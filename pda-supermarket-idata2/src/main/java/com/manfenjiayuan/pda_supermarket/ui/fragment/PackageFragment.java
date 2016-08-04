@@ -3,23 +3,20 @@ package com.manfenjiayuan.pda_supermarket.ui.fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.StockOutItem;
+import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.impl.StockApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
@@ -28,22 +25,17 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 
 
 /**
  * 包裹
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class PackageFragment extends PDAScanFragment {
+public class PackageFragment extends QueryBarcodeFragment {
 
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind({R.id.label_receiveName, R.id.label_receivePhone, R.id.label_itemTypeName,
             R.id.label_createdDate, R.id.label_transportName, R.id.label_transHumanInfo})
     List<TextLabelView> labelViews;
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
 
     private StockOutItem curPackage = null;
 
@@ -61,77 +53,75 @@ public class PackageFragment extends PDAScanFragment {
         return R.layout.fragment_package;
     }
 
+
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.setInputString(code);
-        query(code);
+    public boolean isRootFlow() {
+        return true;
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                query(text);
-            }
-        });
-
+        super.createViewInner(rootView, container, savedInstanceState);
         btnSubmit.setEnabled(false);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        refreshPackage(null);
     }
 
     /**
      * 查询包裹信息
      */
-    public void query(String barcode) {
-        if (StringUtils.isEmpty(barcode)) {
-            return;
-        }
+    @Override
+    public void sendQueryReq(String barcode) {
+        super.sendQueryReq(barcode);
 
-        curPackage = null;
+        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+            onQueryError(getString(R.string.toast_network_error));
+        }
+        else{
+            // TODO: 7/30/16 执行查询动作
+            curPackage = null;
 //        animProgress.setVisibility(View.VISIBLE);
 //        btnStockOut.setEnabled(false);
-        //查询出库列表
-        StockApiImpl.findStockOutByCode(barcode,
-                new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<StockOutItem>(new PageInfo(1, 20)) {
-                    @Override
-                    public void processQueryResult(RspQueryResult<StockOutItem> rs) {
-                        //此处在主线程中执行。
-                        int retSize = rs.getReturnNum();
-                        ZLogger.d(String.format("%d result, content:%s", retSize, rs.toString()));
+            //查询出库列表
+            StockApiImpl.findStockOutByCode(barcode,
+                    new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<StockOutItem>(new PageInfo(1, 20)) {
+                        @Override
+                        public void processQueryResult(RspQueryResult<StockOutItem> rs) {
+                            //此处在主线程中执行。
+                            int retSize = rs.getReturnNum();
+                            ZLogger.d(String.format("%d result, content:%s", retSize, rs.toString()));
 
-                        if (retSize > 0) {
-                            refreshPackage(rs.getRowEntity(0));
-                        } else {
-                            DialogUtil.showHint("未查询到结果");
-                            refreshPackage(null);
+                            if (retSize > 0) {
+                                refreshPackage(rs.getRowEntity(0));
+                            } else {
+                                DialogUtil.showHint("未查询到结果");
+                                refreshPackage(null);
+                            }
+                            onQuerySuccess();
                         }
 
-//                        animProgress.setVisibility(View.GONE);
-                    }
+                        @Override
+                        protected void processFailure(Throwable t, String errMsg) {
+                            super.processFailure(t, errMsg);
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-
-//                        animProgress.setVisibility(View.GONE);
-
-                        DialogUtil.showHint(errMsg);
-                        refreshPackage(null);
-                    }
-                }, StockOutItem.class, AppContext.getAppContext()));
+                            onQueryError(errMsg);
+                        }
+                    }, StockOutItem.class, AppContext.getAppContext()));
+        }
     }
 
-    @OnClick(R.id.button_submit)
-    public void stockOut() {
+    @Override
+    public void onQuerySuccess() {
+        super.onQuerySuccess();
+    }
+
+    @Override
+    public void onQueryError(String errorMsg) {
+        super.onQueryError(errorMsg);
+
+        refreshPackage(null);
+    }
+
+    @Override
+    public void submit() {
         btnSubmit.setEnabled(false);
         if (curPackage == null) {
             btnSubmit.setEnabled(true);
@@ -196,6 +186,7 @@ public class PackageFragment extends PDAScanFragment {
     /**
      * */
     private void refreshPackage(StockOutItem stockOutItem) {
+        refresh();
         curPackage = stockOutItem;
         if (curPackage == null) {
             labelViews.get(0).setTvSubTitle("");
@@ -206,9 +197,6 @@ public class PackageFragment extends PDAScanFragment {
             labelViews.get(5).setTvSubTitle("");
 
             btnSubmit.setEnabled(false);
-
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
         } else {
             labelViews.get(0).setTvSubTitle(curPackage.getReceiveName());
             labelViews.get(1).setTvSubTitle(curPackage.getReceivePhone());
@@ -219,8 +207,6 @@ public class PackageFragment extends PDAScanFragment {
 
             btnSubmit.setEnabled(true);
         }
-
-//        etQuery.requestFocus();
     }
 
 }

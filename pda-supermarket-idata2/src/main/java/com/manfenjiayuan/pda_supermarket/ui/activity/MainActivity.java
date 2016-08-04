@@ -11,12 +11,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
@@ -41,11 +38,9 @@ import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.dialog.DialogHelper;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.tencent.bugly.beta.Beta;
 
@@ -95,12 +90,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     protected void setupThirdParty() {
         super.setupThirdParty();
-
-//        EventBus.getDefault().register(this);
-//        MobclickAgent.onProfileSignIn(MfhLoginService.get().getCurrentGuId());
-//
-//        //初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
-//        PushManager.getInstance().initialize(getApplicationContext());
     }
 
     MenuItem menuLogin = null;
@@ -146,16 +135,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        hideSystemUI();
         super.onCreate(savedInstanceState);
 
         //hide soft input
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
 
         EventBus.getDefault().register(this);
 
@@ -198,7 +181,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ZLogger.d("onConfigurationChanged");
     }
 
     @Override
@@ -206,7 +188,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        ZLogger.d("onCreateOptionsMenu");
         menuLogin = menu.findItem(R.id.action_sign_in);
         menuLogout = menu.findItem(R.id.action_sign_out);
 //        MenuItemCompat.setActionView(settings, R.layout.view_corner_button);
@@ -234,6 +215,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     configMenuOptions();
                     //注册到消息桥
                     IMClient.getInstance().registerBridge();
+
+                    Beta.checkUpgrade(false, false);
                 }
             }
             break;
@@ -338,7 +321,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 "收货", R.mipmap.ic_receive_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
                 "退货", R.mipmap.ic_return_goods));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_PICK_GOODS,
                 "拣货", R.mipmap.ic_pick_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_OUT,
                 "出库", R.mipmap.ic_stock_out));
@@ -552,6 +535,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
                         //注册到消息桥
                         IMClient.getInstance().registerBridge();
+
+                        Beta.checkUpgrade(false, false);
                     }
 
                     @Override
@@ -634,59 +619,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 redirectToLogin();
             }
         });
-    }
-
-    private void selectReceiveOrderType() {
-        final CommonDialog dialog = DialogHelper
-                .getPinterestDialogCancelable(this);
-
-        View.OnClickListener click = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                dialog.dismiss();
-                switch (id) {
-                    case R.id.tv_invioorder: {
-                        Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_RECEIVEORDER_INVIOORDER);
-//        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
-                        UIHelper.startActivity(MainActivity.this, SecondaryActivity.class, extras);
-                    }
-                    break;
-                    case R.id.tv_select_sendorder: {
-                        Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_INV_SENDORDER);
-//        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
-                        UIHelper.startActivity(MainActivity.this, SecondaryActivity.class, extras);
-                    }
-                    break;
-                    case R.id.tv_create_neworder: {
-                        Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_INV_RECVDORDER_CREATE);
-//        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
-                        UIHelper.startActivity(MainActivity.this, SecondaryActivity.class, extras);
-                    }
-                    break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        View view = LayoutInflater.from(this).inflate(
-                R.layout.dialogview_receiveorder_type, null);
-        view.findViewById(R.id.tv_create_neworder).setOnClickListener(click);
-        view.findViewById(R.id.tv_select_sendorder).setOnClickListener(click);
-
-        dialog.setContent(view, 0);
-        dialog.show();
     }
 
 

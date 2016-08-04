@@ -12,7 +12,7 @@
         android:id="@+id/eqv_barcode"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
+        app:endImageButtonSrc="@mipmap/ic_search_green"
         app:editQueryView_inputTextSize="18px"
         app:editQueryView_inputTextColor="@color/black"
         app:editLabelView_inputTextColorHint="@color/black_35"
@@ -59,10 +59,10 @@
                 app:editLabelView_leftText="签收数量:"
                 app:editLabelView_leftTextSize="18px"
                 app:editLabelView_leftTextColor="@color/black"
-                app:editLabelView_rightTextSize="18px"
-                app:editLabelView_rightTextColor="@color/black"
-                app:editLabelView_rightTextColorHint="@color/black_35"
-                app:editLabelView_rightHint="请输入签收数量"/>
+                app:endTextSize="18px"
+                app:endTextColor="@color/black"
+                app:endTextColorHint="@color/black_35"
+                app:endHint="请输入签收数量"/>
 
         </LinearLayout>
     </ScrollView>

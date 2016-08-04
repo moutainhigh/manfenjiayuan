@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
+        app:endImageButtonSrc="@mipmap/ic_search_green"
         app:editQueryView_inputHint="@string/hint_input_barcode"
         app:editQueryView_inputTextColor="@color/black"
         app:editQueryView_inputTextSize="18px"/>
@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:editLabelView_leftText="零售价:"
-                app:editLabelView_rightHint="请输入零售价格"/>
+                app:endHint="请输入零售价格"/>
 
             <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
                 android:id="@+id/label_quantity"
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:editLabelView_leftText="安全库存:"
-                app:editLabelView_rightHint="请输入安全库存"/>
+                app:endHint="请输入安全库存"/>
 
             <com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView
                 android:id="@+id/label_rackno"

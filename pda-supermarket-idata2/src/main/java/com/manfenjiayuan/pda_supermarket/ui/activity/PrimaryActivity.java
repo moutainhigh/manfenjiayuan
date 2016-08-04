@@ -3,23 +3,22 @@ package com.manfenjiayuan.pda_supermarket.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.receipt.InvRecvOrderSplashFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.stocktake.InventoryCheckFragment;
-import com.manfenjiayuan.pda_supermarket.ui.goods.ChainGoodsSkuFragment;
 import com.manfenjiayuan.pda_supermarket.ui.goods.ScGoodsSkuFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invcheck.InvCheckListFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invio.CreateInvIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.invlabel.InvLabelFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invloss.CreateInvLossOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.invreturn.CreateInvReturnOrderFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -32,7 +31,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
     public static final int FRAGMENT_TYPE_NONE = 0x00;
     public static final int FRAGMENT_TYPE_GOODS         = 0x01;
-    public static final int FRAGMENT_TYPE_GOODS_PROVIDER         = 0x02;
     public static final int FRAGMENT_TYPE_PACKAGE = 0x03;
     public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 0x04;//盘点订单列表
     public static final int FRAGMENT_TYPE_DISTRIBUTION = 0x05;
@@ -70,9 +68,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 
         handleIntent();
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         super.onCreate(savedInstanceState);
 
         //hide soft input
@@ -85,11 +80,14 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     protected void onResume() {
         super.onResume();
 //        hideSystemUI();
+
     }
 
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+
+        DeviceUtils.hideSoftInput(this);
 
         if(mBackHandedFragment == null || !mBackHandedFragment.onBackPressed()){
             if(getSupportFragmentManager().getBackStackEntryCount() == 0){
@@ -144,33 +142,20 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
                     .commit();
         }
-        else if(serviceType == FRAGMENT_TYPE_GOODS_PROVIDER){
-            ChainGoodsSkuFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null){
-                fragment = ChainGoodsSkuFragment.newInstance(intent.getExtras());
-            }else{
-                fragment = ChainGoodsSkuFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-//                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
-                    .commit();
-        }
         else if(serviceType == FRAGMENT_TYPE_DISTRIBUTION){
-            InvRecvOrderSplashFragment fragment = new InvRecvOrderSplashFragment();
+            CreateInvReceiveOrderFragment fragment = new CreateInvReceiveOrderFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, invRecvOrderSplashFragment).show(invRecvOrderSplashFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_INVENTORY_CHECK){
-            InventoryCheckFragment fragment;
+            InvCheckListFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                fragment = InventoryCheckFragment.newInstance(intent.getExtras());
+                fragment = InvCheckListFragment.newInstance(intent.getExtras());
             }else{
-                fragment = InventoryCheckFragment.newInstance(null);
+                fragment = InvCheckListFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

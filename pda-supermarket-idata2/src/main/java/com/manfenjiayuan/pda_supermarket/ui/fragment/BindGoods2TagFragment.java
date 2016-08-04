@@ -3,9 +3,11 @@ package com.manfenjiayuan.pda_supermarket.ui.fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditQueryView;
@@ -41,6 +43,10 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoodsView {
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
     @Bind(R.id.eqv_tagno)
@@ -54,8 +60,8 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
     @Bind(R.id.label_costPrice)
     TextLabelView labelCostPrice;
 
-    @Bind(R.id.button_bind)
-    Button btnBind;
+    @Bind(R.id.fab_submit)
+    FloatingActionButton btnBind;
 
     private InvSkuGoods curGoods = null;
     private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
@@ -95,6 +101,30 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("价签绑定");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_settings) {
+                    showGreenTagsDialog();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_bindtags);
+
         initProgressDialog("正在同步数据", "同步成功", "同步失败");
 
         eqvTagNo.config(EditQueryView.INPUT_TYPE_TEXT);
@@ -133,8 +163,7 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     private GreenTagsSettingsDialog mGreenTagsSettingsDialog = null;
 
-    @OnClick(R.id.button_settings)
-    public void showGreenTagsDialog(){
+    private void showGreenTagsDialog(){
         if (mGreenTagsSettingsDialog == null) {
             mGreenTagsSettingsDialog = new GreenTagsSettingsDialog(getActivity());
             mGreenTagsSettingsDialog.setCancelable(true);
@@ -149,7 +178,7 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
     /**
      * 签收采购订单
      */
-    @OnClick(R.id.button_bind)
+    @OnClick(R.id.fab_submit)
     public void bindGoods2Tag() {
         btnBind.setEnabled(false);
 

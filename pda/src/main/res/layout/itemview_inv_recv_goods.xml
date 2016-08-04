@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/material_white"
+              android:padding="16dp"
+              android:orientation="horizontal"
+              android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_name_barcode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="名称"
+            android:singleLine="true"/>
+
+        <TextView
+            android:id="@+id/tv_barcode"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="条码"
+            android:singleLine="true" />
+
+
+        <TextView
+            android:id="@+id/tv_quantity"
+            style="@style/mfh_textview_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="收货数量"
+            android:gravity="center|end"
+            android:singleLine="true"/>
+        <TextView
+            android:id="@+id/tv_amount"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="实付金额"
+            android:singleLine="true" />
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/mfh_textview_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="收货价格"
+            android:gravity="center|end"
+            android:singleLine="true"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

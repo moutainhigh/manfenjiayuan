@@ -25,7 +25,6 @@ import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.PickingGoodsAdapter;
 import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectCompanyInfoDialog;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.DistributionInspectFragment;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
@@ -466,7 +465,7 @@ public class InvIoPickingGoodsFragment extends PDAScanFragment
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVIO_PICK_GOODS);
-        extras.putString(DistributionInspectFragment.EXTRA_KEY_BARCODE, barcode);
+        extras.putString(InvIoGoodsFragment.EXTRA_KEY_BARCODE, barcode);
 //        extras.putInt(DistributionInspectFragment.EXTRA_KEY_INSPECTMODE, 1);
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);

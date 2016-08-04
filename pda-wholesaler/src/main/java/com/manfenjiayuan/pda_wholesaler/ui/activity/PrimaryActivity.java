@@ -9,7 +9,6 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.ChainGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.PackageFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio.InvIoPickingGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.stocktake.InventoryCheckFragment;
@@ -138,14 +137,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                .add(R.id.fragment_container, stockOutFragment).hide(stockInFragment).hide(stockOutFragment)
 //                .commit();
 
-        if(fragmentType == FRAGMENT_TYPE_PACKAGE){
-            PackageFragment packageFragment = new PackageFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, packageFragment)
-//                    .add(R.id.fragment_container, packageFragment).show(packageFragment)
-                    .commit();
-        }
-        else if(fragmentType == FRAGMENT_TYPE_INVENTORY_CHECK){
+        if(fragmentType == FRAGMENT_TYPE_INVENTORY_CHECK){
             InventoryCheckFragment inventoryCheckFragment;
             Intent intent = this.getIntent();
             if (intent != null){

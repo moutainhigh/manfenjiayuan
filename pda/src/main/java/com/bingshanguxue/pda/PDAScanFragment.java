@@ -13,8 +13,6 @@ import de.greenrobot.event.EventBus;
  */
 public abstract class PDAScanFragment extends BaseFragment {
 
-    private static final String TAG = "PDAScanFragment";
-
     //扫描到条码
     protected abstract void onScanCode(String code);
 

@@ -1,8 +1,8 @@
 package com.manfenjiayuan.pda_supermarket;
 
 
+import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.pda_supermarket.database.logic.ShelveService;
-import com.manfenjiayuan.pda_supermarket.database.logic.StockTakeService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
@@ -70,7 +70,7 @@ public class AppHelper {
         ZLogger.d(String.format("订单过期时间(%s)保留最近30天数据。", expireCursor));
 
         //清除订单
-        StockTakeService.get().deleteBy(String.format("updatedDate < '%s'", expireCursor));
+        InvCheckGoodsService.get().deleteBy(String.format("updatedDate < '%s'", expireCursor));
         ShelveService.get().deleteBy(String.format("updatedDate < '%s'", expireCursor));
     }
 

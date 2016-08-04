@@ -4,7 +4,6 @@ package com.bingshanguxue.pda.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -166,10 +165,10 @@ public class CommitInvIoOrderDialog extends CommonDialog {
 
         getWindow().setGravity(Gravity.CENTER);
 
-        WindowManager m = getWindow().getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = getWindow().getAttributes();
-        p.height = d.getHeight();
+//        WindowManager m = getWindow().getWindowManager();
+//        Display d = m.getDefaultDisplay();
+//        WindowManager.LayoutParams p = getWindow().getAttributes();
+//        p.height = d.getHeight();
 ////        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
@@ -186,6 +185,7 @@ public class CommitInvIoOrderDialog extends CommonDialog {
         this.listener = listener;
 
         this.mHuman = null;
+
     }
 
     @Override
@@ -204,6 +204,8 @@ public class CommitInvIoOrderDialog extends CommonDialog {
     public void show() {
         super.show();
 
+        etVehicle.requestFocus();
+        etVehicle.setSelection(etVehicle.length());
 
         DeviceUtils.hideSoftInput(getOwnerActivity());
     }

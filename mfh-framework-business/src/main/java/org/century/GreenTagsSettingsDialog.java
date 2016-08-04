@@ -223,7 +223,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
     public void show() {
         super.show();
 
-        DeviceUtils.hideSoftInput(getOwnerActivity());
+//        DeviceUtils.hideSoftInput(getOwnerActivity());
     }
 
 

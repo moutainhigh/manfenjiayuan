@@ -10,14 +10,10 @@
 
     <com.bingshanguxue.pda.widget.EditLabelView
         android:id="@+id/elv_pay"
+        style="@style/mfh_editlabelview"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        app:editLabelView_leftText="支付密码:"
-        app:editLabelView_leftTextSize="18px"
-        app:editLabelView_leftTextColor="@color/black"
-        app:editLabelView_rightTextSize="18px"
-        app:editLabelView_rightTextColor="@color/black"
-        app:editLabelView_rightTextColorHint="@color/black_35"
-        app:editLabelView_rightHint="请输入支付密码"/>
+        app:startText="支付密码:"
+        app:editTextHint="请输入支付密码"/>
 
 </LinearLayout>

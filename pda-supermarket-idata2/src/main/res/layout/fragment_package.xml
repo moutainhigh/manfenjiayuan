@@ -1,91 +1,100 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:divider="@drawable/divider_horizontal_line"
-              android:showDividers="middle"
-              android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical">
 
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar_scan_barcode"/>
 
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
-        app:editQueryView_inputTextSize="18px"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editQueryView_inputHint="@string/hint_input_package_no"/>
-
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        style="@style/mf_scrolview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_receiveName"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="收件人:"
-                style="@style/mfh_textlabelview"/>
+                app:startText="收件人:"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_receivePhone"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="手机号:"
-                style="@style/mfh_textlabelview"/>
+                app:startText="手机号:"/>
 
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_itemTypeName"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="包裹类型:"
-                style="@style/mfh_textlabelview"/>
+                app:startText="包裹类型:"/>
 
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_createdDate"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="入库时间:"
-                style="@style/mfh_textlabelview"/>
+                app:startText="入库时间:"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_transportName"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="物流公司:"
-                style="@style/mfh_textlabelview"/>
+                app:startText="物流公司:"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_transHumanInfo"
+                style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="配送员:"
-                style="@style/mfh_textlabelview"/>
+                app:startText="配送员:"/>
 
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:text="@string/button_package_stockout"
-        android:textColor="@color/material_white"
-        android:textSize="18sp"
-        android:gravity="center"
-        android:background="@drawable/btn_rectange_primary"/>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cancel"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_cancel_white_24"
+        android:visibility="gone"
+        app:backgroundTint="@color/mfh_negative_defalult"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
 
-</LinearLayout>
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        app:backgroundTint="@color/mfh_positive_default"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
+</android.support.design.widget.CoordinatorLayout>

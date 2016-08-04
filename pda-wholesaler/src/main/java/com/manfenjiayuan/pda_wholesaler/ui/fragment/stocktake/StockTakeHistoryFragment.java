@@ -10,8 +10,6 @@ import android.widget.Button;
 
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.database.entity.StockTakeEntity;
-import com.manfenjiayuan.pda_wholesaler.database.logic.StockTakeService;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.StockTakeAdapter;
 import com.manfenjiayuan.pda_wholesaler.utils.DataSyncService;
 import com.mfh.framework.core.logger.ZLogger;
@@ -114,8 +112,8 @@ public class StockTakeHistoryFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
 
-//                final StockTakeEntity entity = orderListAdapter.getEntityList().get(position);
-//                if (entity.getStatus() == StockTakeEntity.STATUS_CONFLICT) {
+//                final InvCheckGoodsEntity entity = orderListAdapter.getEntityList().get(position);
+//                if (entity.getStatus() == InvCheckGoodsEntity.STATUS_CONFLICT) {
                     //TODO,修改状态
 
 //                }
@@ -132,7 +130,7 @@ public class StockTakeHistoryFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         entity.setUpdateHint(StockTakeEntity.HINT_OVERRIDE);
-//                            entity.setStatus(StockTakeEntity.STATUS_NONE);
+//                            entity.setStatus(InvCheckGoodsEntity.STATUS_NONE);
                         StockTakeService.get().saveOrUpdate(entity);
                         orderListAdapter.notifyDataSetChanged();
                         dialog.dismiss();
@@ -143,7 +141,7 @@ public class StockTakeHistoryFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         entity.setUpdateHint(StockTakeEntity.HINT_MERGER);
-//                            entity.setStatus(StockTakeEntity.STATUS_NONE);
+//                            entity.setStatus(InvCheckGoodsEntity.STATUS_NONE);
                         StockTakeService.get().saveOrUpdate(entity);
                         orderListAdapter.notifyDataSetChanged();
                         dialog.dismiss();

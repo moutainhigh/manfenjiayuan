@@ -6,22 +6,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v7.widget.Toolbar;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditQueryView;
-import com.mfh.framework.api.companyInfo.CompanyInfo;
-import com.manfenjiayuan.pda_supermarket.Constants;
-import com.manfenjiayuan.pda_supermarket.R;
 import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
+import com.manfenjiayuan.pda_supermarket.Constants;
+import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -46,10 +47,11 @@ import butterknife.OnClick;
  */
 public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private InvReturnOrderGoodsAdapter officeAdapter;
@@ -57,15 +59,11 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_submit)
-    View btnSubmit;
 
     private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
-//    private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
-//    private boolean isQueryProcessing;
 
     public static CreateInvReturnOrderFragment newInstance(Bundle args) {
         CreateInvReturnOrderFragment fragment = new CreateInvReturnOrderFragment();
@@ -89,14 +87,14 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Override
     protected void onScanCode(String code) {
-        eqvBarcode.requestFocus();
-        eqvBarcode.clear();
         inspect(code);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
 
         //清空签收数据库
         InvReturnGoodsService.get().clear();
@@ -105,6 +103,29 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+// Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+
         initRecyclerView();
 
 //        Bundle args = getArguments();
@@ -112,37 +133,14 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 ////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
 //        }
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setHoldFocusEnable(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                inspect(text);
-            }
-        });
-
-        if (companyInfo == null){
+        if (companyInfo == null) {
             selectInvCompProvider();
-        }
-        else{
-            eqvBarcode.requestFocus();
-            eqvBarcode.clear();
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-//        if (companyInfo == null){
-//            selectInvCompProvider();
-//        }
-//        else{
-            eqvBarcode.requestFocusEnd();
-            eqvBarcode.clear();
-//        }
     }
 
     @Override
@@ -165,8 +163,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
                             dialog.dismiss();
                         }
                     });
-        }
-        else{
+        } else {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
@@ -188,9 +185,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
     /**
      * 签收
      */
-    @OnClick(R.id.button_submit)
-    public void createInvReturnOrder() {
-        btnSubmit.setEnabled(false);
+    public void submit() {
 //        showConfirmDialog("确定要提交退货单吗？",
 //                "退货", new DialogInterface.OnClickListener() {
 //
@@ -212,15 +207,13 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
         List<InvReturnGoodsEntity> goodsList = officeAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            btnSubmit.setEnabled(true);
             DialogUtil.showHint("商品不能为空");
             hideProgressDialog();
             return;
         }
 
-        if (companyInfo == null){
+        if (companyInfo == null) {
             hideProgressDialog();
-            btnSubmit.setEnabled(true);
             selectInvCompProvider();
             return;
         }
@@ -228,7 +221,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
-            btnSubmit.setEnabled(true);
             hideProgressDialog();
             return;
         }
@@ -274,7 +266,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 //                        animProgress.setVisibility(View.GONE);
 //                    DialogUtil.showHint("新建退货单失败" + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
                 }
 
                 @Override
@@ -321,68 +312,16 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
             @Override
             public void onDataSetChanged() {
 //                isLoadingMore = false;
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
             }
         });
 
         addressRecyclerView.setAdapter(officeAdapter);
     }
-//
-//    private void load(String barcode) {
-//        eqvBarcode.clear();
-//        if (isQueryProcessing || StringUtils.isEmpty(barcode)) {
-//            return;
-//        }
-////
-////        if (companyInfo == null) {
-////            DialogUtil.showHint("请先选择发货方");
-////            return;
-////        }
-//
-//        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-//            onError(getString(R.string.toast_network_error));
-//            return;
-//        }
-//
-//        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
-//    }
 
-//    @Override
-//    public void onProcess() {
-//        isQueryProcessing = true;
-//        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-//    }
-//
-//    @Override
-//    public void onError(String errorMsg) {
-//        hideProgressDialog();
-//        isQueryProcessing = false;
-//    }
-//
-//    @Override
-//    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-//        hideProgressDialog();
-//        isQueryProcessing = false;
-//
-//        if (dataList != null && dataList.size() > 0) {
-//            changeQuantityCheck(dataList.get(0));
-//        } else {
-//            DialogUtil.showHint("未找到商品");
-//        }
-//    }
-//
-//    @Override
-//    public void onQueryChainGoodsSku(ChainGoodsSku chainGoodsSku) {
-//        hideProgressDialog();
-//        isQueryProcessing = false;
-//
-//        if (chainGoodsSku != null) {
-//            changeQuantityCheck(chainGoodsSku);
-//        } else {
-//            DialogUtil.showHint("未找到商品");
-//        }
-//    }
+    @OnClick(R.id.fab_add)
+    public void inspect() {
+        inspect(null);
+    }
 
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
@@ -400,7 +339,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                eqvBarcode.requestFocusEnd();
                 officeAdapter.setEntityList(InvReturnGoodsService.get().queryAll());
             }
             break;

@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.StockTakeEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.StockTakeService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 
@@ -29,7 +29,7 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private final LayoutInflater mLayoutInflater;
     private Context mContext;
-    private List<StockTakeEntity> entityList;
+    private List<InvCheckGoodsEntity> entityList;
 
     public interface OnAdapterListener {
         void onItemClick(View view, int position);
@@ -47,7 +47,7 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.adapterListener = adapterListener;
     }
 
-    public StockTakeAdapter(Context context, List<StockTakeEntity> entityList) {
+    public StockTakeAdapter(Context context, List<InvCheckGoodsEntity> entityList) {
         this.entityList = entityList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
@@ -64,7 +64,7 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder.getItemViewType() == ITEM_TYPE_PRODUCT) {
-            StockTakeEntity entity = entityList.get(position);
+            InvCheckGoodsEntity entity = entityList.get(position);
 
             ((ProductViewHolder) holder).tvName.setText(entity.getName());
             ((ProductViewHolder) holder).tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
@@ -76,9 +76,9 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     L2CSyncStatus.translate(entity.getSyncStatus())));
 
             //盘点方式
-            if (entity.getUpdateHint() == StockTakeEntity.HINT_MERGER) {
+            if (entity.getUpdateHint() == InvCheckGoodsEntity.HINT_MERGER) {
                 ((ProductViewHolder) holder).tvUpdateHint.setText("[合并]");
-            } else if (entity.getUpdateHint() == StockTakeEntity.HINT_OVERRIDE) {
+            } else if (entity.getUpdateHint() == InvCheckGoodsEntity.HINT_OVERRIDE) {
                 ((ProductViewHolder) holder).tvUpdateHint.setText("[覆盖]");
             } else {
                 ((ProductViewHolder) holder).tvUpdateHint.setText("[冲突]");
@@ -157,7 +157,7 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public void setEntityList(List<StockTakeEntity> entityList) {
+    public void setEntityList(List<InvCheckGoodsEntity> entityList) {
         this.entityList = entityList;
 
         notifyDataSetChanged();
@@ -166,14 +166,14 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public List<StockTakeEntity> getEntityList() {
+    public List<InvCheckGoodsEntity> getEntityList() {
         return entityList;
     }
 
     public void removeAll() {
         if (entityList != null && entityList.size() > 0) {
-            for (StockTakeEntity entity : entityList) {
-                StockTakeService.get().deleteBy(String.format("barcode = '%s'", entity.getBarcode()));
+            for (InvCheckGoodsEntity entity : entityList) {
+                InvCheckGoodsService.get().deleteBy(String.format("barcode = '%s'", entity.getBarcode()));
             }
         }
 
@@ -193,24 +193,24 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
         if (entityList != null && entityList.size() > 0) {
-            for (StockTakeEntity entity : entityList) {
+            for (InvCheckGoodsEntity entity : entityList) {
                 if (length > 1) {
                     if (barcodes.startsWith(entity.getBarcode() + ",")
                             || barcodes.contains("," + entity.getBarcode() + ",")
                             || barcodes.endsWith("," + entity.getBarcode())) {
-                        entity.setStatus(StockTakeEntity.STATUS_CONFLICT);
-                        StockTakeService.get().saveOrUpdate(entity);
+                        entity.setStatus(InvCheckGoodsEntity.STATUS_CONFLICT);
+                        InvCheckGoodsService.get().saveOrUpdate(entity);
                     } else {
-                        entity.setStatus(StockTakeEntity.STATUS_FINISHED);
-                        StockTakeService.get().saveOrUpdate(entity);
+                        entity.setStatus(InvCheckGoodsEntity.STATUS_FINISHED);
+                        InvCheckGoodsService.get().saveOrUpdate(entity);
                     }
                 } else {
                     if (barcodes.equals(entity.getBarcode())) {
-                        entity.setStatus(StockTakeEntity.STATUS_CONFLICT);
-                        StockTakeService.get().saveOrUpdate(entity);
+                        entity.setStatus(InvCheckGoodsEntity.STATUS_CONFLICT);
+                        InvCheckGoodsService.get().saveOrUpdate(entity);
                     } else {
-                        entity.setStatus(StockTakeEntity.STATUS_FINISHED);
-                        StockTakeService.get().saveOrUpdate(entity);
+                        entity.setStatus(InvCheckGoodsEntity.STATUS_FINISHED);
+                        InvCheckGoodsService.get().saveOrUpdate(entity);
                     }
                 }
             }

@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/action_history"
+        android:orderInCategory="100"
+        android:icon="@mipmap/ic_history_white_64"
+        android:title="历史记录"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_sync"
+        android:orderInCategory="100"
+        android:icon="@mipmap/ic_cloud_upload_white_24dp"
+        android:title="同步"
+        app:showAsAction="always" />
+</menu>

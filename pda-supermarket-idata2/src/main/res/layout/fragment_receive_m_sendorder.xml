@@ -1,7 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-    >
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+    <include layout="@layout/appbar"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,13 +18,13 @@
             android:layout_height="match_parent"
             android:layout_margin="16dp"
             android:gravity="center"
-            android:text="@string/label_no_data" />
+            android:text="@string/label_no_data"/>
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/office_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
         <ProgressBar
             android:id="@+id/animProgress"
@@ -49,7 +51,7 @@
             android:gravity="center"
             android:text="@string/button_distribution_sign"
             android:textColor="@color/material_black"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <Button
             android:id="@+id/button_inspect"
@@ -60,7 +62,7 @@
             android:gravity="center"
             android:text="@string/button_distribution_inspect"
             android:textColor="@color/material_white"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

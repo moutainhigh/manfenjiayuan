@@ -123,7 +123,10 @@ public class EditQueryView extends LinearLayout {
                 }
 
                 //Press Directional “UP-DOWN-LEFT-RIGHT”
-                return (keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) && holdFocusEnable;
+                return (keyCode == KeyEvent.KEYCODE_DPAD_UP
+                        || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+                        || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) && holdFocusEnable;
 
             }
         });

@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio.InvIoGoodsFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.CreateNewReceiveOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.DistributionInspectFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.InvSendOrderListFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.ReceiveSendOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.invio.InvIoGoodsInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
@@ -188,12 +186,12 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (serviceType == FRAGMENT_TYPE_INV_RECVDORDER_CREATE) {
-            CreateNewReceiveOrderFragment fragment;
+            CreateInvReceiveOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = CreateNewReceiveOrderFragment.newInstance(intent.getExtras());
+                fragment = CreateInvReceiveOrderFragment.newInstance(intent.getExtras());
             } else {
-                fragment = CreateNewReceiveOrderFragment.newInstance(null);
+                fragment = CreateInvReceiveOrderFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
