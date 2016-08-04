@@ -30,11 +30,10 @@ public class AlarmManagerHelper {
      * TODO,在设置中添加取消方法。
      */
     public static void registerDailysettle(Context context) {
-        Calendar rightNow = Calendar.getInstance();
-
         Calendar trigger = Calendar.getInstance();
 
         if (BizConfig.RELEASE) {
+            //第二天凌晨2点钟
             trigger.add(Calendar.DAY_OF_MONTH, 1);
             trigger.set(Calendar.HOUR_OF_DAY, 0);
             trigger.set(Calendar.MINUTE, 2);
@@ -42,6 +41,11 @@ public class AlarmManagerHelper {
         } else {
             trigger.add(Calendar.MINUTE, 10);
         }
+        registerDailysettle(context, trigger);
+    }
+
+    public static void registerDailysettle(Context context, Calendar trigger) {
+        Calendar rightNow = Calendar.getInstance();
         ZLogger.d(String.format("trigger : %s",
                 TimeUtil.format(trigger.getTime(), TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
 
