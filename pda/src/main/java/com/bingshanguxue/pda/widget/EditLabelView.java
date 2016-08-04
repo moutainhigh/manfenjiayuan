@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 
 
@@ -64,19 +65,28 @@ public class EditLabelView extends LinearLayout {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditLabelView);
             tvStartText.setText(ta.getString(R.styleable.EditLabelView_startText));
             //像素
-            tvStartText.setTextSize(ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextSize, 12));
-//        tvStartText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
-            tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0));
-
+            int textSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextSize, 12);
+            int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+            int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 12);
+            int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);
+            int endTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextSize, 12);
+            int endTextSizeInSp = DensityUtil.px2sp(getContext(), endTextSizeInPx);
             //px
             int startTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextWidth, 80);//px
+
+            ZLogger.d(String.format("textSize=%dpx =%dsp\nstartTextWidth=%d",
+                    textSizeInPx, textSizeInSp,
+                    startTextWidth));
+            tvStartText.setTextSize(textSizeInSp);
+//        tvStartText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
+            tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0));
 
             ViewGroup.LayoutParams stLayoutParams = tvStartText.getLayoutParams();
             stLayoutParams.width = startTextWidth;
             tvStartText.setLayoutParams(stLayoutParams);
 
             etInput.setHint(ta.getString(R.styleable.EditLabelView_editTextHint));
-            etInput.setTextSize(ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 12));
+            etInput.setTextSize(editTextSizeInSp);
             etInput.setTextColor(ta.getColor(R.styleable.EditLabelView_editTextColor, 0));
             etInput.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editTextColorHint, 0));
             int inputType = ta.getInteger(R.styleable.EditLabelView_editInputType, 0);
@@ -98,7 +108,7 @@ public class EditLabelView extends LinearLayout {
                 tvEndText.setVisibility(GONE);
             }
             tvEndText.setText(ta.getString(R.styleable.EditLabelView_endText));
-            tvEndText.setTextSize(ta.getDimension(R.styleable.EditLabelView_endTextSize, 12));
+            tvEndText.setTextSize(endTextSizeInSp);
             tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0));
 
             ta.recycle();

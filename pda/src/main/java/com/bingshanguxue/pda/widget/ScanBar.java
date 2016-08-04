@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 
@@ -58,7 +59,10 @@ public class ScanBar extends LinearLayout {
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ScanBar);
 
-        etInput.setTextSize(ta.getDimension(R.styleable.ScanBar_textSize, 12));
+        float textSizeInPx = ta.getDimensionPixelSize(R.styleable.ScanBar_textSize, 12);
+        int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+        etInput.setTextSize(textSizeInSp);
+
         etInput.setTextColor(ta.getColor(R.styleable.ScanBar_textColor, 0));
         etInput.setHint(ta.getString(R.styleable.ScanBar_hint));
         etInput.setHintTextColor(ta.getColor(R.styleable.ScanBar_textColorHint, 0));

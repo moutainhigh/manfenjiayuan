@@ -37,7 +37,7 @@
                 app:endTextSingleLine="false"
                 app:startText="条码:"
                 app:startTextWidth="130dp"/>
-            <!--采购价-->
+            <!--库存成本价-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_buyprice"
                 style="@style/mfh_textlabelview"
@@ -46,7 +46,6 @@
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
                 app:startText="库存成本价:"
-                app:startTextSize="12sp"
                 app:startTextWidth="130dp"/>
             <!--零售价（可编辑）-->
             <com.bingshanguxue.pda.widget.EditLabelView

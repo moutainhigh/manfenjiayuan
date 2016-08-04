@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
+import com.mfh.framework.core.utils.DensityUtil;
 
 
 /**
@@ -35,9 +36,15 @@ public class TextLabelView extends LinearLayout {
 
 		TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TextLabelView);
 
+		//像素
+		int textSizeInPx = ta.getDimensionPixelSize(R.styleable.TextLabelView_startTextSize, 12);
+		int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+		int endTextSizeInPx = ta.getDimensionPixelSize(R.styleable.TextLabelView_endTextSize, 12);
+		int endTextSizeInSp = DensityUtil.px2sp(getContext(), endTextSizeInPx);
+
 		tvStartText.setText(ta.getString(R.styleable.TextLabelView_startText));
 //		int leftTextSize = ta.getDimensionPixelSize(R.styleable.TextLabelView_textLabelView_leftTextSize, 12);//px
-		tvStartText.setTextSize(ta.getDimensionPixelSize(R.styleable.TextLabelView_startTextSize, 12));
+		tvStartText.setTextSize(textSizeInSp);
 		tvStartText.setTextColor(ta.getColor(R.styleable.TextLabelView_startTextColor, 0xFFFFFFFF));
 		int startTextWidth = ta.getDimensionPixelSize(R.styleable.TextLabelView_startTextWidth, 80);//px
 		ViewGroup.LayoutParams stLayoutParams = tvStartText.getLayoutParams();
@@ -46,7 +53,7 @@ public class TextLabelView extends LinearLayout {
 		tvStartText.setLayoutParams(stLayoutParams);
 
 		tvEndText.setText(ta.getString(R.styleable.TextLabelView_endText));
-		tvEndText.setTextSize(ta.getDimensionPixelSize(R.styleable.TextLabelView_endTextSize, 12));
+		tvEndText.setTextSize(endTextSizeInSp);
 		tvEndText.setTextColor(ta.getColor(R.styleable.TextLabelView_endTextColor, 0xFFFFFFFF));
 		tvEndText.setSingleLine(ta.getBoolean(R.styleable.TextLabelView_endTextSingleLine, true));
 		ta.recycle();

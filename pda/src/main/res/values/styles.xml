@@ -17,22 +17,28 @@
         <item name="android:textColor">@color/material_black</item>
     </style>
 
+    <style name="mfh_scanBar">
+        <item name="textColor">@color/material_black</item>
+        <item name="textSize">16sp</item>
+        <item name="textColorHint">@color/black_35</item>
+    </style>
+
     <style name="mfh_textlabelview">
         <item name="startTextWidth">120dp</item>
-        <item name="startTextSize">12sp</item>
+        <item name="startTextSize">16sp</item>
         <item name="startTextColor">@color/black_35</item>
-        <item name="endTextSize">12sp</item>
+        <item name="endTextSize">16sp</item>
         <item name="endTextColor">@color/material_black</item>
     </style>
 
     <style name="mfh_editlabelview">
         <item name="startTextWidth">120dp</item>
-        <item name="startTextSize">12sp</item>
+        <item name="startTextSize">16sp</item>
         <item name="startTextColor">@color/black_35</item>
-        <item name="editTextSize">12sp</item>
+        <item name="editTextSize">16sp</item>
         <item name="editTextColor">@color/material_black</item>
         <item name="editTextColorHint">@color/black_35</item>
-        <item name="endTextSize">12sp</item>
+        <item name="endTextSize">16sp</item>
         <item name="endTextColor">@color/material_black</item>
     </style>
 

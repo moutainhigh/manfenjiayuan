@@ -9,11 +9,9 @@
         android:id="@+id/scanBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        style="@style/mfh_scanBar"
         app:hint="请扫描商品条码"
         app:editInputType="barcode"
-        app:textColor="@color/black"
-        app:textColorHint="@color/black_35"
-        app:textSize="16px"
         app:action1Enabled="true"/>
 
 </android.support.v7.widget.Toolbar>
