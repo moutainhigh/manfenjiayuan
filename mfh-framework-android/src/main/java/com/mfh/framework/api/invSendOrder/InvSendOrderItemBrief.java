@@ -1,6 +1,7 @@
-package com.mfh.framework.api.invSendIoOrder;
+package com.mfh.framework.api.invSendOrder;
 
 import com.mfh.comn.bean.ILongId;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 
 import java.io.Serializable;
 import java.util.List;

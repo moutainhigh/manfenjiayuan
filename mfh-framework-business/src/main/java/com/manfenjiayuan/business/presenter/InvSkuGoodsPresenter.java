@@ -27,21 +27,21 @@ public class InvSkuGoodsPresenter {
             @Override
             public void onProcess() {
                 if (mInvSkuGoodsView != null) {
-                    mInvSkuGoodsView.onProcess();
+                    mInvSkuGoodsView.onIInvSkuGoodsViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(InvSkuGoods data) {
                 if (mInvSkuGoodsView != null) {
-                    mInvSkuGoodsView.onSuccess(data);
+                    mInvSkuGoodsView.onIInvSkuGoodsViewSuccess(data);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (mInvSkuGoodsView != null) {
-                    mInvSkuGoodsView.onError(errorMsg);
+                    mInvSkuGoodsView.onIInvSkuGoodsViewError(errorMsg);
                 }
             }
         });
