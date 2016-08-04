@@ -1,11 +1,11 @@
-package com.manfenjiayuan.business.mode;
+package com.mfh.framework.api.invSendOrder;
 
-import com.manfenjiayuan.business.bean.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvSendOrderApiImpl;
+import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.net.NetCallBack;
@@ -18,9 +18,8 @@ import java.util.List;
  * 采购订单
  * Created by bingshanguxue on 16/3/17.
  */
-public class InvSendOrderMode implements IInvSendOrderMode<InvSendOrder> {
+public class InvSendOrderMode {
 
-    @Override
     public void loadOrders(PageInfo pageInfo, boolean netFlag, Long netId, String sendTenantId,
                            String status, final OnPageModeListener<InvSendOrder> listener) {
         if (listener != null) {

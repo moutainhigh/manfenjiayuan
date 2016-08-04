@@ -1,11 +1,8 @@
-package com.manfenjiayuan.business.mode;
+package com.mfh.framework.api.invSendOrder;
 
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItemBrief;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvSendOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.net.NetCallBack;
@@ -15,9 +12,8 @@ import com.mfh.framework.net.NetProcessor;
  * 采购订单明细
  * Created by bingshanguxue on 16/3/17.
  */
-public class InvSendOrderItemMode implements IInvSendOrderItemMode<InvSendOrderItem> {
+public class InvSendOrderItemMode {
 
-    @Override
     public void loadOrderItems(Long id, final OnPageModeListener<InvSendOrderItem> listener) {
         if (listener != null) {
             listener.onProcess();

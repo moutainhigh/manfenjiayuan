@@ -1,4 +1,4 @@
-package com.mfh.framework.api.invSendIoOrder;
+package com.mfh.framework.api.invSendOrder;
 
 
 import java.io.Serializable;

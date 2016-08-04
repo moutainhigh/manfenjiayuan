@@ -1,29 +1,13 @@
 package com.mfh.framework.api.invSkuStore;
 
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApi;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItemBrief;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItemBrief;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
-import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.uikit.dialog.ProgressDialog;
-
-import net.tsz.afinal.http.AjaxParams;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by bingshanguxue on 7/28/16.
