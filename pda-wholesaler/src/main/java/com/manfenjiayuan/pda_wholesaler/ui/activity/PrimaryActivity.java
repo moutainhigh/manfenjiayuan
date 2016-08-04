@@ -9,11 +9,11 @@ import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.ChainGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio.InvIoPickingGoodsFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvSendIoOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.stocktake.InventoryCheckFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.invio.CreateInvIoOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.invreturn.CreateInvReturnOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvCheckListFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvIoOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReturnOrderFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -70,13 +70,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-//        hideSystemUI();
-
         handleIntent();
-
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
 
@@ -138,12 +132,12 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                .commit();
 
         if(fragmentType == FRAGMENT_TYPE_INVENTORY_CHECK){
-            InventoryCheckFragment inventoryCheckFragment;
+            InvCheckListFragment inventoryCheckFragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                inventoryCheckFragment = InventoryCheckFragment.newInstance(intent.getExtras());
+                inventoryCheckFragment = InvCheckListFragment.newInstance(intent.getExtras());
             }else{
-                inventoryCheckFragment = InventoryCheckFragment.newInstance(null);
+                inventoryCheckFragment = InvCheckListFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, inventoryCheckFragment)
@@ -172,12 +166,12 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .commit();
         }
         else if (fragmentType == FT_CREATE_INVIOORDER_BYFINDORDER) {
-            InvIoPickingGoodsFragment fragment;
+            CreateInvSendIoOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = InvIoPickingGoodsFragment.newInstance(intent.getExtras());
+                fragment = CreateInvSendIoOrderFragment.newInstance(intent.getExtras());
             } else {
-                fragment = InvIoPickingGoodsFragment.newInstance(null);
+                fragment = CreateInvSendIoOrderFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

@@ -7,11 +7,14 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
+import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
+import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
+import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.invsendio.InvIoGoodsFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.receipt.CreateInvReceiveOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.invio.InvIoGoodsInspectFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.invreturn.InvReturnGoodsInspectFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReceiveOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesHistoryFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvCheckHistoryFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvIoGoodsFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -25,10 +28,14 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FRAGMENT_TYPE_INV_SENDORDER = 0x01;//门店采购订单
     public static final int FRAGMENT_TYPE_INV_RECVDORDER_CREATE = 0x02;//新建采购收货单
     public static final int FRAGMENT_TYPE_DISTRIBUTION_SIGN = 0x03;//签收
-    public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FRAGMENT_TYPE_DISTRIBUTION_INSPECT = 0x05;//验货
+
+    public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FT_INVIO_PICK_GOODS = 0x20;//发货－拣货
     public static final int FT_INVRETURN_INSPECTGOODS = 0x21;//退货验货
+    public static final int FRAGMENT_TYPE_STOCKTAKE_HISTORY = 0x22;//盘点记录
+    public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x23;//盘点
+    public static final int FRAGMENT_TYPE_SHELVESBIND_HISTORY = 0x24;//商品绑定货架
 
 
     /**
@@ -57,13 +64,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-//        hideSystemUI();
-
         handleIntent();
-
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         super.onCreate(savedInstanceState);
 
         //hide soft input
@@ -121,25 +122,13 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
      * Caused by: java.lang.IllegalStateException: commit already called
      */
     private void initFragments() {
-        if (serviceType == FRAGMENT_TYPE_DISTRIBUTION_SIGN) {
-            ReceiveSendOrderFragment fragment;
+        if (serviceType == FRAGMENT_TYPE_DISTRIBUTION_INSPECT) {
+            InvRecvInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = ReceiveSendOrderFragment.newInstance(intent.getExtras());
+                fragment = InvRecvInspectFragment.newInstance(intent.getExtras());
             } else {
-                fragment = ReceiveSendOrderFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_DISTRIBUTION_INSPECT) {
-            DistributionInspectFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = DistributionInspectFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = DistributionInspectFragment.newInstance(null);
+                fragment = InvRecvInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -210,6 +199,46 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
             getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
                     .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
+        else if(serviceType == FRAGMENT_TYPE_STOCKTAKE_HISTORY){
+            InvCheckHistoryFragment stockTakeHistoryFragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                stockTakeHistoryFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+            }else{
+                stockTakeHistoryFragment = InvCheckHistoryFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, stockTakeHistoryFragment)
+//                    .add(R.id.fragment_container, stockTakeHistoryFragment).show(stockTakeHistoryFragment)
+                    .commit();
+        }
+        else if(serviceType == FRAGMENT_TYPE_STOCK_TAKE){
+            InvCheckHistoryFragment stockTakeFragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                stockTakeFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+            }else{
+                stockTakeFragment = InvCheckHistoryFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, stockTakeFragment)
+//                    .add(R.id.fragment_container, stockTakeFragment).show(stockTakeFragment)
+                    .commit();
+        }
+        else if(serviceType == FRAGMENT_TYPE_SHELVESBIND_HISTORY){
+            GoodsShelvesHistoryFragment goodsShelvesHistoryFragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                goodsShelvesHistoryFragment = GoodsShelvesHistoryFragment.newInstance(intent.getExtras());
+            }else{
+                goodsShelvesHistoryFragment = GoodsShelvesHistoryFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, goodsShelvesHistoryFragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
                     .commit();
         }
     }

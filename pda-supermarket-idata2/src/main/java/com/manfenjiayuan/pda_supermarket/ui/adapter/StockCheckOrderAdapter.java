@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 /**
  * 库存－－库存盘点
- * Created by Nat.ZZN on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrderAdapter.ProductViewHolder> {
 

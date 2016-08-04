@@ -41,7 +41,7 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="商品名称:"/>
+                app:startText="商品名称:"/>
 
             <com.bingshanguxue.pda.widget.EditLabelView
                 android:id="@+id/label_costPrice"
@@ -49,14 +49,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:startText="零售价:"
-                app:endHint="请输入零售价格"/>
+                app:editTextHint="请输入零售价格"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_quantity"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:textLabelView_leftText="库存:"/>
+                app:startText="库存:"/>
 
 
             <com.bingshanguxue.pda.widget.EditLabelView
@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:startText="安全库存:"
-                app:endHint="请输入安全库存"/>
+                app:editTextHint="请输入安全库存"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_rackno"

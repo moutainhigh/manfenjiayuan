@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
-import com.manfenjiayuan.business.bean.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetWorkUtil;
@@ -27,9 +27,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
-
-import butterknife.Bind;
-import butterknife.OnClick;
 
 
 /**

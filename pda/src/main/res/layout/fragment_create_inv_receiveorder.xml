@@ -1,0 +1,97 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <!--app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/mfh_toolbar_background"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <com.mfh.framework.uikit.compound.NaviAddressView
+                android:id="@+id/providerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                app:hint="请选择批发商"
+                app:textColor="@color/material_white"/>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--空视图-->
+        <ImageView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@mipmap/emptyimage_no_goods"/>
+
+        <!--订单列表-->
+        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+            android:id="@+id/office_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+    </RelativeLayout>
+
+
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_add_white"
+        app:backgroundTint="@color/mfh_colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_scan_sendioorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mf_dividerColorPrimary"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/animProgress"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/spacing_double"
+            android:gravity="center"
+            android:text="请扫描发货单条码\n单击返回收货单列表"
+            android:textColor="@color/material_white"
+            android:textSize="18sp"/>
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            style="@style/loading"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

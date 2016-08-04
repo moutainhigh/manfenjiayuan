@@ -186,13 +186,13 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
             return;
         }
 
-        if (StringUtils.isEmpty(labelCostPrice.getEtContent())) {
+        if (StringUtils.isEmpty(labelCostPrice.getInput())) {
             DialogUtil.showHint("销售价不能为空");
             btnSubmit.setEnabled(true);
             return;
         }
 
-        if (StringUtils.isEmpty(labelLowerLimit.getEtContent())) {
+        if (StringUtils.isEmpty(labelLowerLimit.getInput())) {
             DialogUtil.showHint("安全库存不能为空");
             btnSubmit.setEnabled(true);
             return;
@@ -201,9 +201,9 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在提交信息...", false);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", curGoods.getId());
-        jsonObject.put("costPrice", labelCostPrice.getEtContent());
+        jsonObject.put("costPrice", labelCostPrice.getInput());
 //        jsonObject.put("upperLimit", curGoods.getUpperLimit());
-        jsonObject.put("lowerLimit", labelLowerLimit.getEtContent());
+        jsonObject.put("lowerLimit", labelLowerLimit.getInput());
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
 //        animProgress.setVisibility(View.VISIBLE);
@@ -250,9 +250,9 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
         if (curGoods == null) {
             labelViews.get(LABELVIEW_INDEX_BARCODE).setTvSubTitle("");
             labelViews.get(LABELVIEW_INDEX_NAME).setTvSubTitle("");
-            labelCostPrice.setEtContent("");
+            labelCostPrice.setInput("");
             labelViews.get(LABELVIEW_INDEX_QUANTITY).setTvSubTitle("");
-            labelLowerLimit.setEtContent("");
+            labelLowerLimit.setInput("");
             labelViews.get(LABELVIEW_INDEX_RACK_NO).setTvSubTitle("");
 
             btnSubmit.setEnabled(false);
@@ -264,9 +264,9 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
         } else {
             labelViews.get(LABELVIEW_INDEX_BARCODE).setTvSubTitle(curGoods.getBarcode());
             labelViews.get(LABELVIEW_INDEX_NAME).setTvSubTitle(curGoods.getName());
-            labelCostPrice.setEtContent(MUtils.formatDouble(curGoods.getCostPrice(), ""));
+            labelCostPrice.setInput(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelViews.get(LABELVIEW_INDEX_QUANTITY).setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "无"));
-            labelLowerLimit.setEtContent(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
+            labelLowerLimit.setInput(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
             labelViews.get(LABELVIEW_INDEX_RACK_NO).setTvSubTitle(curGoods.getRackNo());
 
             btnSubmit.setEnabled(true);
@@ -278,12 +278,12 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
     }
 
     @Override
-    public void onProcess() {
+    public void onIInvSkuGoodsViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onIInvSkuGoodsViewError(String errorMsg) {
 
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
@@ -291,10 +291,9 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
     }
 
     @Override
-    public void onSuccess(InvSkuGoods invSkuGoods) {
-
+    public void onIInvSkuGoodsViewSuccess(InvSkuGoods data) {
         hideProgressDialog();
 
-        refresh(invSkuGoods);
+        refresh(data);
     }
 }

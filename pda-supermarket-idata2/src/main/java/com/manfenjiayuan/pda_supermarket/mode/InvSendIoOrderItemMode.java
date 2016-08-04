@@ -20,7 +20,8 @@ public class InvSendIoOrderItemMode implements IInvSendIoOrderItemMode<InvSendIo
      * 适用场景，查看发货单
      * */
     @Override
-    public void loadOrderItemsByBarcode(String barcode, final OnModeListener<InvSendIoOrderItemBrief> listener) {
+    public void loadOrderItemsByBarcode(String barcode,
+                                        final OnModeListener<InvSendIoOrderItemBrief> listener) {
         if (listener != null) {
             listener.onProcess();
         }

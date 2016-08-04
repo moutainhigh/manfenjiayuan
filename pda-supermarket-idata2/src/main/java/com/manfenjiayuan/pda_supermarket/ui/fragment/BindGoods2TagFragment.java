@@ -265,12 +265,12 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
     }
 
     @Override
-    public void onProcess() {
+    public void onIInvSkuGoodsViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onIInvSkuGoodsViewError(String errorMsg) {
 
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
@@ -278,7 +278,7 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
     }
 
     @Override
-    public void onSuccess(InvSkuGoods invSkuGoods) {
+    public void onIInvSkuGoodsViewSuccess(InvSkuGoods invSkuGoods) {
 
         hideProgressDialog();
 

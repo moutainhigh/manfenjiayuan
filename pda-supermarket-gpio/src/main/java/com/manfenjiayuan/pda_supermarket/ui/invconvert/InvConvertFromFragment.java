@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.invconvert;
+package com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert;
 
 import android.app.Activity;
 import android.content.Intent;

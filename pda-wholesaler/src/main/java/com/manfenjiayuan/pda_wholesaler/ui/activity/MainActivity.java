@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.home.HomeAdapter;
+import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
@@ -25,13 +27,10 @@ import com.manfenjiayuan.pda_wholesaler.AppHelper;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ValidateManager;
-import com.manfenjiayuan.pda_wholesaler.bean.wrapper.HomeMenu;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.HomeAdapter;
 import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectOfficeDialog;
 import com.manfenjiayuan.pda_wholesaler.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
@@ -146,7 +145,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         mPosRegisterPresenter = new PosRegisterPresenter(this);
 
-        if (!BizConfig.RELEASE){
+        if (!BizConfig.RELEASE) {
             DialogUtil.showHint("您正在使用的是测试版本，如需切换到正式版本请联系服务商。");
         }
 
@@ -353,8 +352,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODSSHELVES);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }
-        else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
             Office office = DataCacheHelper.getInstance().getCurrentOffice();
             if (office == null) {
                 //TODO,请先选择网点。。。
@@ -366,36 +364,36 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_INVENTORY_CHECK);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }else if (id.compareTo(HomeMenu.OPTION_ID_DISTRIBUTION) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_DISTRIBUTION) == 0) {
             selectReceiveOrderType();
         } else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_PICKING_GOODS) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(SimpleDialogActivity.EXTRA_KEY_FRAGMENT_TYPE, SimpleDialogActivity.FT_CREATE_INVIOORDER_SPLASH);
-            extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_WIDTH_INPIXEL, DensityUtil.dip2px(getApplicationContext(), 300));
-            SimpleDialogActivity.actionStart(MainActivity.this, extras);
-        }  else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER) == 0) {    Bundle extras = new Bundle();
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE,
+                    PrimaryActivity.FT_CREATE_INVIOORDER_BYFINDORDER);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        } else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER) == 0) {
+            Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_LOSSORDER);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE,
+                    PrimaryActivity.FT_CREATE_INV_LOSSORDER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_IN) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_IN);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }  else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }
-        else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_RETURNORDER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }
-        else {
+        } else {
             DialogUtil.showHint("开发君失踪了...");
         }
     }
@@ -460,15 +458,15 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         List<Office> offices = MfhLoginService.get().getOffices();
         if (offices != null && offices.size() > 0) {
 
-            for (Office office1 : offices){
+            for (Office office1 : offices) {
                 ZLogger.d(String.format("%d,%d", office1.getCode(), MfhLoginService.get().getCurOfficeId()));
-                if (ObjectsCompact.equals(office1.getCode(), MfhLoginService.get().getCurOfficeId())){
+                if (ObjectsCompact.equals(office1.getCode(), MfhLoginService.get().getCurOfficeId())) {
                     office = office1;
                     break;
                 }
             }
 
-            if (office == null){
+            if (office == null) {
                 office = offices.get(0);
             }
         }
@@ -483,8 +481,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
     /**
      * 选择网点
-     * */
-    private void selectOffice(){
+     */
+    private void selectOffice() {
         if (mSelectOfficeDialog == null) {
             mSelectOfficeDialog = new SelectOfficeDialog(this);
             mSelectOfficeDialog.setCancelable(true);

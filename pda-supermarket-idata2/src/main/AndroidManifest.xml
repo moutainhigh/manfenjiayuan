@@ -114,15 +114,9 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustResize"/>
         <activity
-            android:name=".ui.activity.SimpleActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="standard"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
             android:name=".ui.activity.SecondaryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTop"
+            android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
 

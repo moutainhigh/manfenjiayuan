@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:editLabelView_inputTextColorHint="@color/black_35"
-        app:endImageButtonSrc="@mipmap/ic_search_green"
+        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
         app:editQueryView_inputHint="请扫描拣货单条码"
         app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="18px"
+        app:editQueryView_inputTextSize="16sp"
         android:layout_marginTop="@dimen/spacing_double"/>
 
     <Button

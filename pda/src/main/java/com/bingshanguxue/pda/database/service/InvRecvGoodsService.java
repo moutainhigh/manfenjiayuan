@@ -2,7 +2,7 @@ package com.bingshanguxue.pda.database.service;
 
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.bingshanguxue.pda.database.dao.InvRecvGoodsDao;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;

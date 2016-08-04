@@ -5,21 +5,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.widget.EditQueryView;
+import com.bingshanguxue.pda.bizz.invloss.InvLossOrderGoodsAdapter;
+import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.manfenjiayuan.business.bean.InvLossOrder;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
-import com.manfenjiayuan.business.dialog.InputNumberDialog;
-import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
-import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.bingshanguxue.pda.PDAScanFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.InvLossOrderGoodsAdapter;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
@@ -27,11 +23,11 @@ import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -49,12 +45,12 @@ import butterknife.OnClick;
  * 新建报损单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInvSkuGoodsView {
+public class CreateInvLossOrderFragment extends BaseFragment {
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private InvLossOrderGoodsAdapter officeAdapter;
@@ -62,16 +58,8 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_submit)
-    View btnSubmit;
-
-    private InputNumberDialog mInputNumberDialog = null;
 
     private InvLossOrder invLossOrder = null;
-    private boolean isQueryProcessing;
-
-
-    private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
 
     public static CreateInvLossOrderFragment newInstance(Bundle args) {
         CreateInvLossOrderFragment fragment = new CreateInvLossOrderFragment();
@@ -94,21 +82,35 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.setInputString(code);
-        eqvBarcode.requestFocus();
-        load(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mInvSkuGoodsPresenter = new InvSkuGoodsPresenter(this);
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+
         initRecyclerView();
 
 //        Bundle args = getArguments();
@@ -116,17 +118,6 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
 ////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
 //        }
 
-
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setHoldFocusEnable(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                load(text);
-            }
-        });
 
         loadLossOrder();
     }
@@ -229,14 +220,11 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
     /**
      * 签收
      */
-    @OnClick(R.id.button_submit)
-    public void createInvLossOrder() {
-        btnSubmit.setEnabled(false);
+    public void submit() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING);
 
-        List<CreateOrderItemWrapper> goodsList = officeAdapter.getEntityList();
+        List<InvLossGoodsEntity> goodsList = officeAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            btnSubmit.setEnabled(true);
             DialogUtil.showHint("商品不能为空");
             hideProgressDialog();
             return;
@@ -246,20 +234,18 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
 //            DialogUtil.showHint("请点击屏幕右上角的'+'号新建盘点");
             DialogUtil.showHint("报损单号不能为空，请退出重试");
 
-            btnSubmit.setEnabled(true);
             return;
         }
 
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
-            btnSubmit.setEnabled(true);
             hideProgressDialog();
             return;
         }
 
         JSONArray items = new JSONArray();
-        for (CreateOrderItemWrapper goods : goodsList){
+        for (InvLossGoodsEntity goods : goodsList){
             JSONObject item = new JSONObject();
             item.put("proSkuId", goods.getProSkuId());
             item.put("barcode", goods.getBarcode());
@@ -284,7 +270,6 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
 //                        animProgress.setVisibility(View.GONE);
 //                    DialogUtil.showHint("新建退货单失败" + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
                 }
 
                 @Override
@@ -331,49 +316,10 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
             @Override
             public void onDataSetChanged() {
 //                isLoadingMore = false;
-                eqvBarcode.requestFocus();
-                eqvBarcode.clear();
             }
         });
 
         addressRecyclerView.setAdapter(officeAdapter);
-    }
-
-    private void load(String barcode) {
-        eqvBarcode.clear();
-        if (invLossOrder == null || isQueryProcessing || StringUtils.isEmpty(barcode)) {
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-
-        mInvSkuGoodsPresenter.getByBarcodeMust(barcode);
-    }
-
-
-    public void changeQuantityCheck(final InvSkuGoods chainGoodsSku) {
-        if (chainGoodsSku == null){
-            DialogUtil.showHint("商品信息不完整");
-            return;
-        }
-        if (mInputNumberDialog == null) {
-            mInputNumberDialog = new InputNumberDialog(getActivity());
-            mInputNumberDialog.setCancelable(true);
-            mInputNumberDialog.setCanceledOnTouchOutside(false);
-        }
-        mInputNumberDialog.init("报损数量", new InputNumberDialog.OnDialogListener() {
-            @Override
-            public void onConfirm(String numberInputStr) {
-                Double quantityCheck = Double.valueOf(numberInputStr);
-                officeAdapter.appendInvSkuGoods(chainGoodsSku, quantityCheck);
-            }
-        });
-        if (!mInputNumberDialog.isShowing()) {
-            mInputNumberDialog.show();
-        }
     }
 
 
@@ -388,29 +334,5 @@ public class CreateInvLossOrderFragment extends PDAScanFragment  implements IInv
     }
 
 
-    @Override
-    public void onProcess() {
 
-        isQueryProcessing = true;
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-    }
-
-    @Override
-    public void onError(String errorMsg) {
-        isQueryProcessing = false;
-        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
-    }
-
-    @Override
-    public void onSuccess(InvSkuGoods invSkuGoods) {
-        hideProgressDialog();
-        isQueryProcessing = false;
-
-        if (invSkuGoods == null){
-            DialogUtil.showHint("未找到商品");
-        }
-        else{
-            changeQuantityCheck(invSkuGoods);
-        }
-    }
 }

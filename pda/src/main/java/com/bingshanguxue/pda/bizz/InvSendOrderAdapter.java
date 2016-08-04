@@ -7,16 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
-import com.manfenjiayuan.business.bean.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * 采购订单列表

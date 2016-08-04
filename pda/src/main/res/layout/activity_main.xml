@@ -5,36 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:id="@+id/abl_toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:fitsSystemWindows="false"-->
-        <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
-
-        <!--&lt;!&ndash;<android.support.design.widget.CollapsingToolbarLayout&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/collapsing_toolbar"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:fitsSystemWindows="true"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:contentScrim="?attr/colorPrimary"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:expandedTitleMarginEnd="64dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:expandedTitleMarginStart="48dp"&ndash;&gt;-->
-        <!--&lt;!&ndash;app:layout_scrollFlags="scroll|exitUntilCollapsed">        &ndash;&gt;-->
-
-        <!--&lt;!&ndash;</android.support.design.widget.CollapsingToolbarLayout>&ndash;&gt;-->
-
-        <!--&lt;!&ndash;app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。&ndash;&gt;-->
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="?attr/actionBarSize"-->
-            <!--android:background="@color/mfh_toolbar_background"-->
-            <!--app:layout_collapseMode="pin"-->
-            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
-
-    <!--</android.support.design.widget.AppBarLayout>-->
-
     <include layout="@layout/appbar"/>
 
     <!--网格菜单入口-->

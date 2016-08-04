@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
+import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.Collections;
@@ -111,6 +112,23 @@ public class PickingGoodsAdapter extends RegularAdapter<InvIoPickGoodsEntity,
         this.entityList = entityList;
 //        sortByUpdateDate();
         notifyDataSetChanged();
+        if (adapterListener != null) {
+            adapterListener.onDataSetChanged();
+        }
+    }
+
+    @Override
+    public void removeEntity(int position) {
+        InvIoPickGoodsEntity entity = getEntity(position);
+        if (entity == null){
+            return;
+        }
+
+        InvIoPickGoodsService.get().deleteById(String.valueOf(entity.getId()));
+
+        //刷新列表
+        entityList.remove(position);
+        notifyItemRemoved(position);
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
         }

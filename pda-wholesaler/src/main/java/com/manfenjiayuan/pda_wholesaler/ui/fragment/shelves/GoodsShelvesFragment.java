@@ -16,7 +16,7 @@ import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
 import com.bingshanguxue.pda.PDAScanFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.activity.SimpleActivity;
+import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.utils.ShelveSyncManager;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -122,8 +122,6 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
         else{
             refreshGoodsInfo(curGoods);
         }
-
-//        onScanCode("*222*22*");
     }
 
     @Override
@@ -132,7 +130,7 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     }
 
     public void onEventMainThread(ShelveSyncManager.ShelveSyncManagerEvent event) {
-        ZLogger.d(String.format("GoodsShelvesFragment: ShelveSyncManagerEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("ShelveSyncManagerEvent(%d)", event.getEventId()));
         if (event.getEventId() == ShelveSyncManager.ShelveSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             showProgressDialog(ProgressDialog.STATUS_DONE, "同步成功", true);
         } else if (event.getEventId() == ShelveSyncManager.ShelveSyncManagerEvent.EVENT_ID_SYNC_DATA_FAILED) {
@@ -161,9 +159,10 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     public void uploadOrders() {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FRAGMENT_TYPE_SHELVESBIND_HISTORY);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE,
+                SecondaryActivity.FRAGMENT_TYPE_SHELVESBIND_HISTORY);
 //        SimpleActivity.actionStart(getActivity(), extras);
-        UIHelper.startActivity(getActivity(), SimpleActivity.class, extras);
+        UIHelper.startActivity(getActivity(), SecondaryActivity.class, extras);
     }
 
     /**
@@ -271,18 +270,18 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     }
 
     @Override
-    public void onProcess() {
+    public void onIInvSkuGoodsViewProcess() {
 
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onIInvSkuGoodsViewError(String errorMsg) {
         DialogUtil.showHint(errorMsg);
         refreshGoodsInfo(null);
     }
 
     @Override
-    public void onSuccess(InvSkuGoods invSkuGoods) {
+    public void onIInvSkuGoodsViewSuccess(InvSkuGoods invSkuGoods) {
         if (invSkuGoods == null) {
             DialogUtil.showHint("未找到商品");
         }

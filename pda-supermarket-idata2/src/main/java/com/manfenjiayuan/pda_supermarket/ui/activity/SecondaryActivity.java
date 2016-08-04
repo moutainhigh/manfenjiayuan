@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
-import com.bingshanguxue.pda.bizz.InvRecvInspectFragment;
+import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.invconvert.InvConvertToFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invio.InvIoGoodsInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invloss.InvLossInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreceive.CreateInvReceiveOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.invreturn.InvReturnGoodsInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckHistoryFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertToFragment;
+import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.InvLossInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvReceiveOrderFragment;
+import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -32,6 +34,8 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FRAGMENT_TYPE_INV_RECVDORDER_CREATE = 0x07;//新建采购收货单
     public static final int FT_SKUGOODS_CONVERT_TO = 0x08;//转换成商品
     public static final int FT_INVLOSS_INSPECTGOODS = 0x09;//报损验货
+    public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x10;//盘点
+    public static final int FRAGMENT_TYPE_STOCKTAKE_LIST = 0x11;//盘点记录
 
     /**
      * 0: 快递代收
@@ -207,6 +211,33 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
             getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
                     .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
+        else if(serviceType == FRAGMENT_TYPE_STOCKTAKE_LIST){
+            InvCheckHistoryFragment invCheckHistoryFragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                invCheckHistoryFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+            }else{
+                invCheckHistoryFragment = InvCheckHistoryFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, invCheckHistoryFragment)
+//                    .add(R.id.fragment_container, invCheckHistoryFragment).show(invCheckHistoryFragment)
+                    .commit();
+        }
+        else if(serviceType == FRAGMENT_TYPE_STOCK_TAKE){
+            InvCheckInspectFragment invCheckInspectFragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                invCheckInspectFragment = InvCheckInspectFragment.newInstance(intent.getExtras());
+            }else{
+                invCheckInspectFragment = InvCheckInspectFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, invCheckInspectFragment)
+//                    .add(R.id.fragment_container, invCheckInspectFragment).show(invCheckInspectFragment)
                     .commit();
         }
     }

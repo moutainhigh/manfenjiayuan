@@ -2,6 +2,8 @@ package com.manfenjiayuan.pda_wholesaler.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.database.entity.ShelveEntity;
@@ -147,7 +149,7 @@ public class DataSyncService {
 //        List<InvCheckGoodsEntity> entityList = InvCheckGoodsService.get()
 //                .queryAllBy(String.format("createdDate > '%s' and syncStatus < '%d'",
 //                        lastCursor, InvCheckGoodsEntity.SYNC_STATUS_FINISHED), new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
-        List<StockTakeEntity> entityList = StockTakeService.get()
+        List<InvCheckGoodsEntity> entityList = InvCheckGoodsService.get()
                 .queryAllBy(String.format("syncStatus < '%d'", L2CSyncStatus.SYNC_STATUS_FINISHED),
                         new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
         if (entityList == null || entityList.size() < 1){
@@ -156,7 +158,7 @@ public class DataSyncService {
             nextStep();
             return;
         }
-        final StockTakeEntity entity = entityList.get(0);
+        final InvCheckGoodsEntity entity = entityList.get(0);
 
         JSONArray items = new JSONArray();
         JSONObject item = new JSONObject();
@@ -195,34 +197,34 @@ public class DataSyncService {
                                     //需要更新订单流水
                                     SharedPreferencesHelper.setStocktakeLastUpdate(finalNewCursor);
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_FINISHED);
-                                    StockTakeService.get().saveOrUpdate(entity);
+                                    InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
                                 break;
                                 // 系统异常，需要重试
                                 case "1":{
                                     ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_SYSTEM_ERROR);
-                                    StockTakeService.get().saveOrUpdate(entity);
+                                    InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
                                 break;
                                 // 不能提交
                                 case "2":{
                                     ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_ERROR);
-                                    StockTakeService.get().save(entity);
+                                    InvCheckGoodsService.get().save(entity);
                                 }
                                 break;
                                 // 参数异常
                                 case "5":{
                                     ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_PARAMS_ERROR);
-                                    StockTakeService.get().saveOrUpdate(entity);
+                                    InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
                                 break;
                                 default:{
                                     ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_ERROR);
-                                    StockTakeService.get().saveOrUpdate(entity);
+                                    InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
                                 break;
                             }

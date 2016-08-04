@@ -1,6 +1,7 @@
 package com.bingshanguxue.pda.database.service;
 
 import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
+import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.bingshanguxue.pda.database.dao.InvCheckGoodsDao;
 import com.mfh.comn.bean.PageInfo;
@@ -146,11 +147,50 @@ public class InvCheckGoodsService extends BaseService<InvCheckGoodsEntity, Strin
             entity.setUpdatedDate(new Date());
 
             entity.setGoodsId(productEntity.getId());
-            entity.setProductId(productEntity.getProductId());
             entity.setProSkuId(productEntity.getProSkuId());
             entity.setBarcode(productEntity.getBarcode());
             entity.setName(productEntity.getSkuName());
-            entity.setSpecNames(productEntity.getShortName());
+//        }
+
+        entity.setQuantityCheck(quantity);
+        entity.setStatus(InvCheckGoodsEntity.STATUS_NONE);
+        entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_INIT);
+        entity.setUpdateHint(InvCheckGoodsEntity.HINT_MERGER);
+
+        saveOrUpdate(entity);
+    }
+
+    /**
+     * 添加新商品
+     * */
+    public void addNewEntity(Long orderId, Long shelfNumber, InvSkuGoods productEntity,
+                             Double quantity){
+        if (StringUtils.isEmpty(orderId) || productEntity == null){
+            return;
+        }
+
+        InvCheckGoodsEntity entity;
+        // 不再对同一商品合并，只保留盘点纪录。
+//        List<InvCheckGoodsEntity> entityList = queryAllBy(String.format("orderId = '%s' and barcode = '%s'", orderId, productEntity.getBarcode()));
+////        List<InvCheckGoodsEntity> entityList = queryAllBy(String.format("orderId = '%s' and shelfNumber = '%d' and barcode = '%s'", orderId, shelfNumber, productEntity.getBarcode()));
+//        if (entityList != null && entityList.size() > 0){
+//            entity = entityList.get(0);
+//            entity.setShelfNumber(shelfNumber);
+//            entity.setUpdatedDate(new Date());
+//        }
+//        else{
+        entity = new InvCheckGoodsEntity();
+
+        entity.setOrderId(orderId);
+        entity.setShelfNumber(shelfNumber);
+
+        entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+        entity.setUpdatedDate(new Date());
+
+        entity.setGoodsId(productEntity.getId());
+        entity.setProSkuId(productEntity.getProSkuId());
+        entity.setBarcode(productEntity.getBarcode());
+        entity.setName(productEntity.getName());
 //        }
 
         entity.setQuantityCheck(quantity);

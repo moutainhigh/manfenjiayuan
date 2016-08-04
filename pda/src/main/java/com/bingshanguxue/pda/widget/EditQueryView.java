@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.bingshanguxue.pda.R;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 
 
@@ -67,7 +68,8 @@ public class EditQueryView extends LinearLayout {
         int rightImageButtonResId = ta.getResourceId(R.styleable.EditQueryView_editLabelView_rightImageButtonSrc,
                 R.mipmap.ic_search_green);
 
-        float inputTextSize = ta.getDimension(R.styleable.EditQueryView_editQueryView_inputTextSize, 12);
+        int inputTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditQueryView_editQueryView_inputTextSize, 12);
+        int inputTextSizeInSp = DensityUtil.px2sp(getContext(), inputTextSizeInPx);
         int inputTextColor = ta.getColor(R.styleable.EditQueryView_editQueryView_inputTextColor, 0);
         int inputTextColorHint = ta.getColor(R.styleable.EditQueryView_editLabelView_inputTextColorHint, 0);
         String inputHint = ta.getString(R.styleable.EditQueryView_editQueryView_inputHint);
@@ -76,7 +78,7 @@ public class EditQueryView extends LinearLayout {
         ibRight = (ImageButton) rootView.findViewById(R.id.ib_search);
         ibRight.setImageResource(rightImageButtonResId);
         etInput = (EditText) rootView.findViewById(R.id.et_input);
-        etInput.setTextSize(inputTextSize);
+        etInput.setTextSize(inputTextSizeInSp);
         etInput.setTextColor(inputTextColor);
         etInput.setHintTextColor(inputTextColorHint);
         etInput.setHint(inputHint);
