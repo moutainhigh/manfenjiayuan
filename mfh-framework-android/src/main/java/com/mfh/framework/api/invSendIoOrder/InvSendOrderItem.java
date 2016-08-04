@@ -5,37 +5,6 @@ import java.io.Serializable;
 
 /**
  *  采购订单明细
- *  <p>
- *      <code>{
- "imgUrl":"http://chunchunimage.b0.upaiyun.com/product/1949.JPG!small",
- "unit":"",
- "priceType":0,
- "buyUnit":"",
- "buyPriceType":0,
- "orderId":"347",
- "proSkuId":"1214",
- "chainSkuId":"39808",
- "providerId":"130222",
- "isPrivate":0,
- "productName":"澳大利亚禾富酒园南澳红牌设拉子加本力苏维翁干红葡萄酒",
- "unitSpec":null,
- "singleCount":null,
- "packCount":null,
- "totalCount":0.0,
- "askTotalCount":1.0,
- "price":128.0,
- "amount":128.0,
- "receiveCount":null,
- "receiveAmount":null,
- "barcode":"9312088451898",
- "tenantId":"135266",
- "id":"6198",
- "createdBy":"",
- "createdDate":null,
- "updatedBy":"",
- "updatedDate":null
- }</code>
- *  </p>
  * Created by bingshanguxue on 15/9/22.
  */
 public class InvSendOrderItem implements Serializable {

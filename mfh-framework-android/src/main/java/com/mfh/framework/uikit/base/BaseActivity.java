@@ -18,6 +18,7 @@ import android.view.WindowManager;
 
 import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -148,6 +149,10 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        //hide soft input
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
         if (isMfLocationEnable()) {
             initMfLocation();
         }
@@ -168,6 +173,10 @@ public class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         ButterKnife.unbind(this);
         hideProgressDialog();
+
+        DeviceUtils.hideSoftInput(this);
+        //hide soft input
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
 

@@ -19,7 +19,9 @@ public class ScGoodsSkuApi {
     public final static String URL_SCGOODSSKU_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
 
     /**
-     * 加载POS前台类目商品：/scGoodsSku/findGoodsList?categoryId=&netId=&barcode=&name=
+     * 查询网点库存商品信息列表（包括本店商品库存、采购价、售价和商品档案基本信息等）.
+     * 其中needSellNum代表是否需要返回商品30天平均销量
+     * /scGoodsSku/findGoodsList?categoryId=&netId=&barcode=&name=&needSellNum=false
      */
     public final static String URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
     /**

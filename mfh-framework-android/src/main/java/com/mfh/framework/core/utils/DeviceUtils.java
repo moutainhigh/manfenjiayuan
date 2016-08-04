@@ -56,7 +56,22 @@ public class DeviceUtils {
         }
     }
 
-    public static void hideSoftInput(Activity context) {
+    /**
+     * 动态隐藏软键盘
+     */
+    public static void hideSoftInput(Activity activity) {
+        if (activity == null){
+            return;
+        }
+        View view = activity.getWindow().peekDecorView();
+        if (view != null) {
+            InputMethodManager inputmanger = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void hideSoftInput2(Activity context) {
         if (context == null){
             return ;
         }
