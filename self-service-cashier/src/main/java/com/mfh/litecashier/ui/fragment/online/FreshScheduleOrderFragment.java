@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;

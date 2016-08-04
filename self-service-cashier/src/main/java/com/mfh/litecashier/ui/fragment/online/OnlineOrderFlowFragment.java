@@ -20,10 +20,10 @@ import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
 import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.ui.fragment.orderflow.GoodsListFragment;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;

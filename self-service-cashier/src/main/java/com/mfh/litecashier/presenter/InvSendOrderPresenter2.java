@@ -2,11 +2,11 @@ package com.mfh.litecashier.presenter;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpBasePresenter;
-import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.manfenjiayuan.business.mode.InvSendOrderItemMode;
-import com.manfenjiayuan.business.mode.InvSendOrderMode;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItemMode;
+import com.mfh.framework.api.invSendOrder.InvSendOrderMode;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 
 import java.util.List;

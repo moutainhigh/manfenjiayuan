@@ -23,17 +23,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.bingshanguxue.cashier.database.service.PosProductService;
-import com.bingshanguxue.cashier.model.PosGoods;
 import com.manfenjiayuan.business.bean.CategoryOption;
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.GoodsSupplyInfo;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -67,7 +62,6 @@ import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.PinyinUtils;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;

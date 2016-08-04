@@ -1,6 +1,6 @@
 package com.mfh.litecashier.ui.fragment.purchase.intelligent;
 
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.mvp.MvpView;
 
 import java.util.List;

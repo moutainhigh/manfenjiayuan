@@ -15,7 +15,7 @@
         android:showDividers="middle"
         android:layout_weight="1">
         <!--导航-->
-        <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
+        <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
             android:id="@+id/tab_category_goods"
             android:layout_width="match_parent"
             android:layout_height="50dp"
