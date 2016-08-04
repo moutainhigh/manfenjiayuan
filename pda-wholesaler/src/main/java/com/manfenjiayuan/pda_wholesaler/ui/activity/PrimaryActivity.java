@@ -51,13 +51,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
         context.startActivity(intent);
     }
 
-
-    @Override
-    protected boolean isFullscreenEnabled() {
-        return true;
-    }
-
-
     @Override
     protected int getLayoutResId() {
         return R.layout.activity_service;

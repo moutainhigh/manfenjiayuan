@@ -324,7 +324,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
     /**
      * 发货
-     * */
+     */
     private void doSubmitWork() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在创建发货单...", false);
 
@@ -454,6 +454,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         }
 
         hideProgressDialog();
+        setScanEnabled(false);
     }
 
     /**
@@ -509,7 +510,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
     /**
      * 拣货
-     * */
+     */
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
