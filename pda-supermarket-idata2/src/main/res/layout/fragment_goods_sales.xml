@@ -17,43 +17,33 @@
             android:orientation="vertical">
 
             <!--内容区-->
-            <!--商品名称-->
+            <!--总销量-->
             <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_productName"
+                android:id="@+id/label_sellNumber"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
-                app:startText="商品名称:"
+                app:startText="总销量:"
                 app:startTextWidth="130dp"/>
-            <!--条码-->
+            <!--平均销量-->
             <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_barcodee"
+                android:id="@+id/label_avgSellNum"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
-                app:startText="条码:"
+                app:startText="平均销量:"
                 app:startTextWidth="130dp"/>
-            <!--采购价-->
+            <!--日销量-->
             <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_buyprice"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="44dp"
-                app:endTextSingleLine="false"
-                app:startText="库存成本价:"
-                app:startTextWidth="130dp"/>
-            <!--毛利率-->
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_grossProfit"
+                android:id="@+id/label_sellDayNum"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="毛利率:"
+                app:startText="日销量:"
                 app:startTextWidth="130dp"/>
             <!--30天平均销量-->
             <com.bingshanguxue.pda.widget.TextLabelView

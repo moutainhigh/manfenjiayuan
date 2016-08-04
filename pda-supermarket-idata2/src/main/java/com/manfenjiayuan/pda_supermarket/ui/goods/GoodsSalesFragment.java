@@ -2,61 +2,34 @@ package com.manfenjiayuan.pda_supermarket.ui.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
-import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.QueryBarcodeFragment;
-import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
-import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.SettingsItem;
-import com.mfh.framework.uikit.dialog.ProgressDialog;
-
-import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
 /**
- * 库存商品
+ * 商品－－销量
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class GoodsSalesFragment extends BaseFragment {
 
-    @Bind(R.id.label_productName)
-    TextLabelView labelProductName;
-    @Bind(R.id.label_barcodee)
-    TextLabelView labelBarcode;
-    @Bind(R.id.label_buyprice)
-    TextLabelView labelBuyprice;
+    @Bind(R.id.label_sellNumber)
+    TextLabelView labelSellNumber;
+    @Bind(R.id.label_avgSellNum)
+    TextLabelView labelAvgSellNum;
+    @Bind(R.id.label_sellDayNum)
+    TextLabelView labelSellDayNum;
     @Bind(R.id.label_sellMonthNum)
     TextLabelView labelSellMonthNum;
-    @Bind(R.id.label_grossProfit)
-    TextLabelView labelGrossProfit;
 
     private ScGoodsSku curGoods = null;
 
@@ -116,31 +89,17 @@ public class GoodsSalesFragment extends BaseFragment {
      * 刷新信息
      */
     private void refresh(ScGoodsSku invSkuGoods) {
-
         curGoods = invSkuGoods;
         if (curGoods == null) {
-
-            labelBarcode.setTvSubTitle("");
-            labelProductName.setTvSubTitle("");
-            labelBuyprice.setTvSubTitle("");
-            labelGrossProfit.setTvSubTitle("");
+            labelSellNumber.setTvSubTitle("");
+            labelAvgSellNum.setTvSubTitle("");
+            labelSellDayNum.setTvSubTitle("");
             labelSellMonthNum.setTvSubTitle("");
-
-
-//            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
-            labelProductName.setTvSubTitle(curGoods.getSkuName());
-            labelBarcode.setTvSubTitle(curGoods.getBarcode());
-//            labelLowerLimit.setEtContent(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
-//            labelLowerLimit.setEnabled(true);
-
-
-            //计算毛利率:(costPrice-buyPrice) / costPrice
-            String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
-                    (curGoods.getCostPrice() - curGoods.getBuyPrice()));
-            labelGrossProfit.setTvSubTitle(grossProfit);
+            labelSellNumber.setTvSubTitle(MUtils.formatDouble(curGoods.getSellNumber(), ""));
+            labelAvgSellNum.setTvSubTitle(MUtils.formatDouble(curGoods.getAvgSellNum(), ""));
+            labelSellDayNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellDayNum(), ""));
             labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
-            labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
         }
     }
 
