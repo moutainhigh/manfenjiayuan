@@ -14,13 +14,15 @@
 
 
 ##Version
-###[v0.0.05_080317](https://beta.bugly.qq.com/bz1s)
+###[v0.0.05_080417](https://beta.bugly.qq.com/bz1s)
 
 版本描述：
 
 1. 优化 样式全新升级。
 2. 修复 商品页面价格输入错误闪退的问题。
-3. 
+
+
+如果不能升级或使用中有任何问题或建议，请及时反馈给我。
 
 
 ###[v0.0.04_072715](https://beta.bugly.qq.com/bz1s)

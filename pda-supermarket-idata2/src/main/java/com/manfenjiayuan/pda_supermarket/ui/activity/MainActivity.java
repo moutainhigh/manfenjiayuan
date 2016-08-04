@@ -11,7 +11,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,11 +38,9 @@ import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.dialog.DialogHelper;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.tencent.bugly.beta.Beta;
 
@@ -218,6 +215,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     configMenuOptions();
                     //注册到消息桥
                     IMClient.getInstance().registerBridge();
+
+                    Beta.checkUpgrade(false, false);
                 }
             }
             break;
@@ -536,6 +535,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
                         //注册到消息桥
                         IMClient.getInstance().registerBridge();
+
+                        Beta.checkUpgrade(false, false);
                     }
 
                     @Override
