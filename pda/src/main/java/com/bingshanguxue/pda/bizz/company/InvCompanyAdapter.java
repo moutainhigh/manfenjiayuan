@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.adapter;
+package com.bingshanguxue.pda.bizz.company;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -6,24 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.R;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
-import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 /**
- * 订货－－选择批发商
+ * 选择批发商
  * Created by bingshanguxue on 15/8/5.
  */
-public class SelectPlatformProviderAdapter
-        extends RegularAdapter<CompanyInfo, SelectPlatformProviderAdapter.ProductViewHolder> {
+public class InvCompanyAdapter
+        extends RegularAdapter<CompanyInfo, InvCompanyAdapter.ProductViewHolder> {
 
 
-    public SelectPlatformProviderAdapter(Context context, List<CompanyInfo> entityList) {
+    public InvCompanyAdapter(Context context, List<CompanyInfo> entityList) {
         super(context, entityList);
     }
 
@@ -42,7 +39,8 @@ public class SelectPlatformProviderAdapter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_inv_company, parent, false));
+        return new ProductViewHolder(mLayoutInflater
+                .inflate(R.layout.itemview_inv_company, parent, false));
     }
 
     @Override
@@ -59,14 +57,15 @@ public class SelectPlatformProviderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
-        View rootView;
-        @Bind(R.id.tv_provider_name)
+        //        @Bind(R.id.rootview)
+//        View rootView;
+//        @Bind(R.id.tv_provider_name)
         TextView tvProviderName;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+//            ButterKnife.bind(this, itemView);
+            tvProviderName = (TextView) itemView.findViewById(R.id.tv_provider_name);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

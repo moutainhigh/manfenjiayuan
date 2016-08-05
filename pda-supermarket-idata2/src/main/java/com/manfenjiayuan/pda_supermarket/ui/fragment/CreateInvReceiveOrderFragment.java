@@ -34,7 +34,6 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.presenter.InvSendIoOrderPresenter;
 import com.manfenjiayuan.pda_supermarket.ui.IInvSendIoOrderView;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -87,8 +86,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
     @Bind(R.id.empty_view)
     View emptyView;
-
-    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
@@ -174,15 +171,16 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         mToolbar.inflateMenu(R.menu.menu_inv_recv);
 
         initRecyclerView();
+
+        if (companyInfo == null) {
+            selectInvCompProvider();
+        }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (companyInfo == null) {
-            selectInvCompProvider();
-        }
 
         isAcceptBarcodeEnabled = true;
     }
@@ -202,13 +200,21 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                 }
             }
             break;
+            case Constants.ARC_INVCOMPANY_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
+                    if (companyInfo != null){
+                        changeSendCompany(companyInfo);
+                    }
+                }
+            }
+            break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public boolean onBackPressed() {
-//        DialogUtil.showHint("onBackPressed");
         if (goodsAdapter.getItemCount() > 0) {
             showConfirmDialog("退出后商品列表将会清空，确定要退出吗？",
                     "退出", new DialogInterface.OnClickListener() {
@@ -619,26 +625,12 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
      */
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
-        if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
-            selectPlatformProviderDialog.setCancelable(true);
-            selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
-        }
-        selectPlatformProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(CompanyInfo companyInfo) {
-                changeSendCompany(companyInfo);
-            }
-
-        });
-        selectPlatformProviderDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-            }
-        });
-        if (!selectPlatformProviderDialog.isShowing()) {
-            selectPlatformProviderDialog.show();
-        }
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPANYLIST);
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_INVCOMPANY_LIST);
     }
 
 

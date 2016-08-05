@@ -7,6 +7,8 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
+import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
+import com.bingshanguxue.pda.bizz.company.InvCompProviderListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
@@ -33,10 +35,13 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FT_INVIO_PICK_GOODS = 0x20;//发货－拣货
     public static final int FT_INVRETURN_INSPECTGOODS = 0x21;//退货验货
-    public static final int FT_INVLOSS_INSPECTGOODS = 0x25;//退货验货
     public static final int FRAGMENT_TYPE_STOCKTAKE_HISTORY = 0x22;//盘点记录
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x23;//盘点
     public static final int FRAGMENT_TYPE_SHELVESBIND_HISTORY = 0x24;//商品绑定货架
+    public static final int FT_INVLOSS_INSPECTGOODS = 0x25;//退货验货
+    public static final int FT_COMPANYLIST = 0x26;//批发商列表
+    public static final int FT_INV_COMPROVIDER_LIST = 0x27;//批发商供应商列表
+
 
 
     /**
@@ -217,42 +222,68 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_STOCKTAKE_HISTORY){
-            InvCheckHistoryFragment stockTakeHistoryFragment;
+            InvCheckHistoryFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                stockTakeHistoryFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+                fragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
             }else{
-                stockTakeHistoryFragment = InvCheckHistoryFragment.newInstance(null);
+                fragment = InvCheckHistoryFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stockTakeHistoryFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, stockTakeHistoryFragment).show(stockTakeHistoryFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_STOCK_TAKE){
-            InvCheckHistoryFragment stockTakeFragment;
+            InvCheckHistoryFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                stockTakeFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+                fragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
             }else{
-                stockTakeFragment = InvCheckHistoryFragment.newInstance(null);
+                fragment = InvCheckHistoryFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stockTakeFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, stockTakeFragment).show(stockTakeFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_SHELVESBIND_HISTORY){
-            GoodsShelvesHistoryFragment goodsShelvesHistoryFragment;
+            GoodsShelvesHistoryFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                goodsShelvesHistoryFragment = GoodsShelvesHistoryFragment.newInstance(intent.getExtras());
+                fragment = GoodsShelvesHistoryFragment.newInstance(intent.getExtras());
             }else{
-                goodsShelvesHistoryFragment = GoodsShelvesHistoryFragment.newInstance(null);
+                fragment = GoodsShelvesHistoryFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, goodsShelvesHistoryFragment)
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
+                    .commit();
+        }
+        else if(serviceType == FT_COMPANYLIST){
+            CompanyListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = CompanyListFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CompanyListFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
+                    .commit();
+        }
+        else if(serviceType == FT_INV_COMPROVIDER_LIST){
+            InvCompProviderListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = InvCompProviderListFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = InvCompProviderListFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
                     .commit();
         }

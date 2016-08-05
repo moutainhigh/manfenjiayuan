@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.company.InvCompanyListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -36,6 +37,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FT_INVLOSS_INSPECTGOODS = 0x09;//报损验货
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x10;//盘点
     public static final int FRAGMENT_TYPE_STOCKTAKE_LIST = 0x11;//盘点记录
+    public static final int FT_INV_COMPANYLIST = 0x12;//批发商
 
     /**
      * 0: 快递代收
@@ -214,29 +216,43 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_STOCKTAKE_LIST){
-            InvCheckHistoryFragment invCheckHistoryFragment;
+            InvCheckHistoryFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                invCheckHistoryFragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+                fragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
             }else{
-                invCheckHistoryFragment = InvCheckHistoryFragment.newInstance(null);
+                fragment = InvCheckHistoryFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, invCheckHistoryFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, invCheckHistoryFragment).show(invCheckHistoryFragment)
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_STOCK_TAKE){
-            InvCheckInspectFragment invCheckInspectFragment;
+            InvCheckInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                invCheckInspectFragment = InvCheckInspectFragment.newInstance(intent.getExtras());
+                fragment = InvCheckInspectFragment.newInstance(intent.getExtras());
             }else{
-                invCheckInspectFragment = InvCheckInspectFragment.newInstance(null);
+                fragment = InvCheckInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, invCheckInspectFragment)
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, invCheckInspectFragment).show(invCheckInspectFragment)
+                    .commit();
+        }
+        else if(serviceType == FT_INV_COMPANYLIST){
+            InvCompanyListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = InvCompanyListFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = InvCompanyListFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, invCheckInspectFragment).show(invCheckInspectFragment)
                     .commit();
         }

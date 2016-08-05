@@ -1,4 +1,4 @@
-package com.bingshanguxue.pda.bizz;
+package com.bingshanguxue.pda.bizz.company;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,15 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
-import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
-import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
+import com.mfh.framework.api.invCompany.InvCompanyPresenter;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -30,20 +27,18 @@ import java.util.List;
 
 
 /**
- * 采购订单列表
+ * 批发商列表
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
-        implements IInvSendOrderView {
-
-    public static final String EXTRA_KEY_STATUS = "status";
+public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
+        implements IInvCompanyInfoView {
 
 //    @Bind(R.id.toolbar)
     Toolbar mToolbar;
 //    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
-    private InvSendOrderAdapter orderAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private InvCompanyAdapter companyAdapter;
 
 //    @Bind(R.id.empty_view)
     View emptyView;
@@ -51,13 +46,10 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     ProgressBar progressBar;
 
 
-//    status = String.format("%d,%d,%d", InvOrderApi.ORDER_STATUS_INIT,
-//    InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED);
-    private String status = String.format("%d,%d", InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED);
-    private InvSendOrderPresenter invSendOrderPresenter;
+    private InvCompanyPresenter mInvCompanyPresenter;
 
-    public static InvSendOrderListFragment newInstance(Bundle args) {
-        InvSendOrderListFragment fragment = new InvSendOrderListFragment();
+    public static InvCompanyListFragment newInstance(Bundle args) {
+        InvCompanyListFragment fragment = new InvCompanyListFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -74,7 +66,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        invSendOrderPresenter = new InvSendOrderPresenter(this);
+        mInvCompanyPresenter = new InvCompanyPresenter(this);
     }
 
     @Override
@@ -96,12 +88,12 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        if (args != null) {
-            status = args.getString(EXTRA_KEY_STATUS);
-        }
+//        Bundle args = getArguments();
+//        if (args != null) {
+//            status = args.getString(EXTRA_KEY_STATUS);
+//        }
 
-        mToolbar.setTitle("导入采购订单");
+        mToolbar.setTitle("选择批发商");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -154,21 +146,16 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
             }
         });
 
-        orderAdapter = new InvSendOrderAdapter(getActivity(), null);
-        orderAdapter.setOnAdapterListener(new InvSendOrderAdapter.OnAdapterListener() {
+        companyAdapter = new InvCompanyAdapter(getActivity(), null);
+        companyAdapter.setOnAdapterListener(new InvCompanyAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
                 //TODO,跳转至详情页
                 Intent data = new Intent();
-                data.putExtra("sendOrder", orderAdapter.getEntity(position));
+                data.putExtra("companyInfo", companyAdapter.getEntity(position));
 
                 getActivity().setResult(Activity.RESULT_OK, data);
                 getActivity().finish();
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
             }
 
             @Override
@@ -178,7 +165,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
             }
         });
 
-        mRecyclerView.setAdapter(orderAdapter);
+        mRecyclerView.setAdapter(companyAdapter);
     }
 
     @Override
@@ -215,8 +202,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        invSendOrderPresenter.loadOrders(mPageInfo, true,
-                MfhLoginService.get().getCurOfficeId(), "", status);
+        mInvCompanyPresenter.list(mPageInfo, null);
         mPageInfo.setPageNo(1);
     }
 
@@ -239,46 +225,47 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            invSendOrderPresenter.loadOrders(mPageInfo, true,
-                    MfhLoginService.get().getCurOfficeId(), "", status);
+            mInvCompanyPresenter.list(mPageInfo, null);
         } else {
             ZLogger.d("加载采购订单，已经是最后一页。");
             onLoadFinished();
         }
     }
 
+
     @Override
-    public void onIInvSendOrderViewProcess() {
+    public void onIInvCompanyInfoViewProcess() {
+
         onLoadStart();
     }
 
     @Override
-    public void onIInvSendOrderViewError(String errorMsg) {
+    public void onIInvCompanyInfoViewError(String errorMsg) {
 
         onLoadFinished();
     }
 
     @Override
-    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvCompanyInfoViewSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
         try {
             mPageInfo = pageInfo;
 
             //第一页，缓存数据
             if (mPageInfo.getPageNo() == 1) {
-                if (orderAdapter != null) {
-                    orderAdapter.setEntityList(dataList);
+                if (companyAdapter != null) {
+                    companyAdapter.setEntityList(dataList);
                 }
             } else {
                 if (dataList != null && dataList.size() > 0) {
-                    if (orderAdapter != null) {
-                        orderAdapter.appendEntityList(dataList);
+                    if (companyAdapter != null) {
+                        companyAdapter.appendEntityList(dataList);
                     }
                 }
             }
 
             ZLogger.d(String.format("加载商品采购订单结束,pageInfo':page=%d/%d(%d/%d)",
                     mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
-                    orderAdapter.getItemCount(), mPageInfo.getTotalCount()));
+                    companyAdapter.getItemCount(), mPageInfo.getTotalCount()));
 
             onLoadFinished();
         } catch (Throwable ex) {
@@ -288,10 +275,4 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
             onLoadFinished();
         }
     }
-
-    @Override
-    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
-
-    }
-
 }

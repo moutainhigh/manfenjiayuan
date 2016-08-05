@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
@@ -26,7 +27,6 @@ import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.PickingGoodsAdapter;
-import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectCompanyInfoDialog;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
@@ -77,8 +77,6 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
     @Bind(R.id.empty_view)
     View emptyView;
-
-    private SelectCompanyInfoDialog mSelectTenantDialog = null;
 
     /**
      * 接收方网点信息
@@ -155,14 +153,14 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
         initRecyclerView();
 
+        if (mNetInfoWrapper == null) {
+            selectInvCompProvider();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mNetInfoWrapper == null) {
-            selectInvCompProvider();
-        }
     }
 
     @Override
@@ -201,6 +199,15 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
             case Constants.ARC_DISTRIBUTION_INSPECT: {
                 isAcceptBarcodeEnabled = true;
                 officeAdapter.setEntityList(InvIoPickGoodsService.get().queryAll());
+            }
+            break;
+            case Constants.ARC_COMPANY_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
+                    if (companyInfo != null){
+                        changeSendCompany(companyInfo);
+                    }
+                }
             }
             break;
         }
@@ -538,21 +545,14 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
      */
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
-        if (mSelectTenantDialog == null) {
-            mSelectTenantDialog = new SelectCompanyInfoDialog(getActivity());
-            mSelectTenantDialog.setCancelable(true);
-            mSelectTenantDialog.setCanceledOnTouchOutside(false);
-        }
-        mSelectTenantDialog.init(AbilityItem.TENANT, new SelectCompanyInfoDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(CompanyInfo companyInfo) {
-                changeSendCompany(companyInfo);
-            }
 
-        });
-        if (!mSelectTenantDialog.isShowing()) {
-            mSelectTenantDialog.show();
-        }
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_COMPANYLIST);
+        extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_COMPANY_LIST);
     }
 
 }

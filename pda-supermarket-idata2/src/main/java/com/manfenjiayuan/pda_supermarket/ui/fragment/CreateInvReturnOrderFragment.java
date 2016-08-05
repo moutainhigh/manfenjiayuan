@@ -21,7 +21,6 @@ import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
@@ -61,8 +60,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
-
-    private SelectInvCompanyInfoDialog selectPlatformProviderDialog = null;
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
@@ -344,7 +341,17 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
                 officeAdapter.setEntityList(InvReturnGoodsService.get().queryAll());
             }
             break;
+            case Constants.ARC_INVCOMPANY_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
+                    if (companyInfo != null){
+                        changeSendCompany(companyInfo);
+                    }
+                }
+            }
+            break;
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -353,21 +360,13 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
      */
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
-        if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectInvCompanyInfoDialog(getActivity());
-            selectPlatformProviderDialog.setCancelable(true);
-            selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
-        }
-        selectPlatformProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(CompanyInfo companyInfo) {
-                changeSendCompany(companyInfo);
-            }
 
-        });
-        if (!selectPlatformProviderDialog.isShowing()) {
-            selectPlatformProviderDialog.show();
-        }
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPANYLIST);
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_INVCOMPANY_LIST);
     }
 
 

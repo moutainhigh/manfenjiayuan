@@ -20,7 +20,6 @@ import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectWholesalerDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.invCompProvider.MyProvider;
@@ -61,8 +60,6 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
-
-    private SelectWholesalerDialog selectPlatformProviderDialog = null;
 
     /*供应商*/
     private MyProvider companyInfo = null;//当前私有供应商
@@ -127,14 +124,15 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
         mToolbar.inflateMenu(R.menu.menu_inv_return);
 
         initRecyclerView();
+
+        if (companyInfo == null){
+            selectInvCompProvider();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (companyInfo == null){
-            selectInvCompProvider();
-        }
     }
 
     @Override
@@ -336,6 +334,16 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
                 officeAdapter.setEntityList(InvReturnGoodsService.get().queryAll());
             }
             break;
+
+            case Constants.ARC_INV_COMPROVIDER_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    MyProvider myProvider = (MyProvider) data.getSerializableExtra("myProvider");
+                    if (myProvider != null){
+                        changeSendCompany(myProvider);
+                    }
+                }
+            }
+            break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -345,21 +353,12 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
      */
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
-        if (selectPlatformProviderDialog == null) {
-            selectPlatformProviderDialog = new SelectWholesalerDialog(getActivity());
-            selectPlatformProviderDialog.setCancelable(true);
-            selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
-        }
-        selectPlatformProviderDialog.init(new SelectWholesalerDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(MyProvider companyInfo) {
-                changeSendCompany(companyInfo);
-            }
-
-        });
-        if (!selectPlatformProviderDialog.isShowing()) {
-            selectPlatformProviderDialog.show();
-        }
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPROVIDER_LIST);
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_INV_COMPROVIDER_LIST);
     }
 
 

@@ -11,5 +11,6 @@ public class Constants {
     public static final int ARC_DISTRIBUTION_INSPECT    = 0x04;//商品验货
     public static final int ARC_NATIVE_LOGIN            = 0x05;//登录
     public static final int ARC_SENDORDER_LIST    = 0x06;//采购订单列表
+    public static final int ARC_INVCOMPANY_LIST    = 0x07;//采购订单列表
 
 }

@@ -42,7 +42,7 @@ public class SelectMyProviderAdapeter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_select_invcomp_provider, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_inv_company, parent, false));
     }
 
     @Override
