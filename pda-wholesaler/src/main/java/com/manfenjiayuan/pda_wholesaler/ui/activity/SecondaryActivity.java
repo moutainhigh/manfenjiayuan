@@ -12,9 +12,9 @@ import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReceiveOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesHistoryFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvCheckHistoryFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvIoGoodsFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvLossInspectFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesHistoryFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -33,6 +33,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FT_INVIO_PICK_GOODS = 0x20;//发货－拣货
     public static final int FT_INVRETURN_INSPECTGOODS = 0x21;//退货验货
+    public static final int FT_INVLOSS_INSPECTGOODS = 0x25;//退货验货
     public static final int FRAGMENT_TYPE_STOCKTAKE_HISTORY = 0x22;//盘点记录
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x23;//盘点
     public static final int FRAGMENT_TYPE_SHELVESBIND_HISTORY = 0x24;//商品绑定货架
@@ -149,12 +150,12 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (serviceType == FT_INVIO_PICK_GOODS) {
-            InvIoGoodsFragment fragment;
+            InvIoGoodsInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = InvIoGoodsFragment.newInstance(intent.getExtras());
+                fragment = InvIoGoodsInspectFragment.newInstance(intent.getExtras());
             } else {
-                fragment = InvIoGoodsFragment.newInstance(null);
+                fragment = InvIoGoodsInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -194,6 +195,20 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = InvReturnGoodsInspectFragment.newInstance(intent.getExtras());
             } else {
                 fragment = InvReturnGoodsInspectFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
+        else if (serviceType == FT_INVLOSS_INSPECTGOODS) {
+            InvLossInspectFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvLossInspectFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvLossInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

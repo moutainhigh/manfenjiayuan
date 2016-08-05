@@ -2,10 +2,13 @@ package com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.EditQueryView;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
@@ -15,7 +18,6 @@ import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.utils.ShelveSyncManager;
 import com.mfh.framework.core.logger.ZLogger;
@@ -26,8 +28,6 @@ import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.OnClick;
 
@@ -36,24 +36,31 @@ import butterknife.OnClick;
  * 货架商品绑定
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGoodsView {
+public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSkuGoodsView {
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Bind(R.id.eqv_shelve)
     EditQueryView eqvShelve;
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
-    @Bind({R.id.label_barcodee, R.id.label_productName, R.id.label_costPrice, R.id.label_quantity})
-    List<TextLabelView> labelViews;
+    @Bind(R.id.label_barcodee)
+    TextLabelView labelBarcode;
+    @Bind(R.id.label_productName)
+    TextLabelView labelProductName;
+    @Bind(R.id.label_quantity)
+    TextLabelView labelQuantity;
+    @Bind(R.id.label_costPrice)
+    TextLabelView labelCostPrice;
 
-    @Bind(R.id.button_bind)
-    Button btnBind;
-
+    @Bind(R.id.fab_submit)
+    FloatingActionButton btnBind;
 
     private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
-    private InvSkuGoods curGoods = null;//
-//    private boolean isPackage = false;//查询到的商品是否是有规格的，true,显示箱包总数，否则按单品计算
+    private InvSkuGoods curGoods = null;
 
-    public static GoodsShelvesFragment newInstance(Bundle args) {
-        GoodsShelvesFragment fragment = new GoodsShelvesFragment();
+    public static BindGoods2ShelvesFragment newInstance(Bundle args) {
+        BindGoods2ShelvesFragment fragment = new BindGoods2ShelvesFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -86,6 +93,31 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("价签绑定");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_sync) {
+                    syncData();
+                } else if (id == R.id.action_history) {
+                    redirectToHistory();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_check_inspect);
 
         initProgressDialog("正在同步数据", "同步成功", "同步失败");
 
@@ -116,10 +148,9 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     public void onResume() {
         super.onResume();
 
-        if (curGoods == null){
+        if (curGoods == null) {
             loadInit();
-        }
-        else{
+        } else {
             refreshGoodsInfo(curGoods);
         }
     }
@@ -141,7 +172,6 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     /**
      * 同步数据
      */
-    @OnClick(R.id.button_sync)
     public void syncData() {
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
@@ -155,8 +185,7 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     /**
      * 同步盘点数据
      */
-    @OnClick(R.id.button_history)
-    public void uploadOrders() {
+    public void redirectToHistory() {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE,
@@ -168,8 +197,8 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
     /**
      * 签收采购订单
      */
-    @OnClick(R.id.button_bind)
-    public void bindGoods2RackNo() {
+    @OnClick(R.id.fab_submit)
+    public void submit() {
         btnBind.setEnabled(false);
         if (curGoods == null) {
             btnBind.setEnabled(true);
@@ -209,6 +238,7 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
      */
     public void query(final String barcode) {
         if (StringUtils.isEmpty(barcode)) {
+            eqvBarcode.requestFocus();
             return;
         }
 
@@ -218,7 +248,6 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
-
 
         mInvSkuGoodsPresenter.getByBarcodeMust(barcode);
     }
@@ -230,10 +259,10 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
         eqvShelve.requestFocus();
         eqvBarcode.clear();
 
-        labelViews.get(0).setTvSubTitle("");
-        labelViews.get(1).setTvSubTitle("");
-        labelViews.get(2).setTvSubTitle("");
-        labelViews.get(3).setTvSubTitle("");
+        labelBarcode.setTvSubTitle("");
+        labelProductName.setTvSubTitle("");
+        labelCostPrice.setTvSubTitle("");
+        labelQuantity.setTvSubTitle("");
 
         btnBind.setEnabled(false);
 
@@ -247,10 +276,10 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
             eqvBarcode.clear();
             eqvBarcode.requestFocus();
 
-            labelViews.get(0).setTvSubTitle(curGoods.getBarcode());
-            labelViews.get(1).setTvSubTitle(curGoods.getName());
-            labelViews.get(2).setTvSubTitle(MUtils.formatDouble(curGoods.getCostPrice(), ""));
-            labelViews.get(3).setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), ""));
+            labelBarcode.setTvSubTitle(curGoods.getBarcode());
+            labelProductName.setTvSubTitle(curGoods.getName());
+            labelCostPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getCostPrice(), ""));
+            labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), ""));
 
             btnBind.setEnabled(true);
             DeviceUtils.hideSoftInput(getActivity(), eqvBarcode);
@@ -259,10 +288,10 @@ public class GoodsShelvesFragment extends PDAScanFragment implements IInvSkuGood
             eqvBarcode.clear();
             eqvBarcode.requestFocus();
 
-            labelViews.get(0).setTvSubTitle("");
-            labelViews.get(1).setTvSubTitle("");
-            labelViews.get(2).setTvSubTitle("");
-            labelViews.get(3).setTvSubTitle("");
+            labelBarcode.setTvSubTitle("");
+            labelProductName.setTvSubTitle("");
+            labelCostPrice.setTvSubTitle("");
+            labelQuantity.setTvSubTitle("");
 
             btnBind.setEnabled(false);
             DeviceUtils.hideSoftInput(getActivity(), eqvShelve);

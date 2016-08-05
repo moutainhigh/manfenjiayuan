@@ -2,6 +2,7 @@ package com.manfenjiayuan.pda_wholesaler.ui.fragment;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +15,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.bizz.invloss.InvLossOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.manfenjiayuan.business.bean.InvLossOrder;
+import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
+import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
@@ -53,7 +57,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
-    private InvLossOrderGoodsAdapter officeAdapter;
+    private InvLossOrderGoodsAdapter goodsAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view)
@@ -84,6 +88,10 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+
+        InvLossGoodsService.get().clear();
     }
 
     @Override
@@ -118,28 +126,18 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 ////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
 //        }
 
-
         loadLossOrder();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-//        if (companyInfo == null){
-//            selectInvCompProvider();
-//        }
-//        else{
-//            eqvBarcode.requestFocus();
-//            eqvBarcode.clear();
-//        }
-
     }
 
     @Override
     public boolean onBackPressed() {
 //        DialogUtil.showHint("onBackPressed");
-        if (officeAdapter.getItemCount() > 0) {
+        if (goodsAdapter.getItemCount() > 0) {
             showConfirmDialog("退出后商品列表将会清空，确定要退出吗？",
                     "退出", new DialogInterface.OnClickListener() {
 
@@ -221,26 +219,21 @@ public class CreateInvLossOrderFragment extends BaseFragment {
      * 签收
      */
     public void submit() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在报损...", false);
 
-        List<InvLossGoodsEntity> goodsList = officeAdapter.getEntityList();
+        List<InvLossGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            DialogUtil.showHint("商品不能为空");
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
             return;
         }
 
         if (invLossOrder == null){
-//            DialogUtil.showHint("请点击屏幕右上角的'+'号新建盘点");
-            DialogUtil.showHint("报损单号不能为空，请退出重试");
-
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "报损单号不能为空", true);
             return;
         }
 
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-//            animProgress.setVisibility(View.GONE);
-            hideProgressDialog();
+            showProgressDialog(ProgressDialog.STATUS_ERROR, getString(R.string.toast_network_error), true);
             return;
         }
 
@@ -264,7 +257,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.d("新建退货单失败: " + errMsg);
+                    ZLogger.d("新建报损单失败: " + errMsg);
 //                    {"code":"1","msg":"132079网点有仓储单正在处理中...","version":"1","data":null}
                     //查询失败
 //                        animProgress.setVisibility(View.GONE);
@@ -279,11 +272,9 @@ public class CreateInvLossOrderFragment extends BaseFragment {
                     /**
                      * 新建退货单成功，更新采购单列表
                      * */
-                    ZLogger.d("新建退货单成功: ");
+                    ZLogger.d("新建报损单成功: ");
                     hideProgressDialog();
                     getActivity().finish();
-
-//                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class
@@ -304,13 +295,14 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         //设置列表为空时显示的视图
         addressRecyclerView.setEmptyView(emptyView);
 
-        officeAdapter = new InvLossOrderGoodsAdapter(getActivity(), null);
-        officeAdapter.setOnAdapterListener(new InvLossOrderGoodsAdapter.OnAdapterListener() {
+        goodsAdapter = new InvLossOrderGoodsAdapter(getActivity(), null);
+        goodsAdapter.setOnAdapterListener(new InvLossOrderGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                CreateOrderItemWrapper entity = officeAdapter.getEntity(position);
-//                inspect(entity.getBarcode());
-//                changeQuantityCheck();
+                InvLossGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (entity != null){
+                    inspect(entity.getBarcode());
+                }
             }
 
             @Override
@@ -319,7 +311,37 @@ public class CreateInvLossOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(officeAdapter);
+        addressRecyclerView.setAdapter(goodsAdapter);
+    }
+
+    /**
+     * 验货
+     * */
+    @OnClick(R.id.fab_add)
+    public void inspect() {
+        inspect(null);
+    }
+
+    private void inspect(String barcode) {
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVLOSS_INSPECTGOODS);
+        extras.putString(InvLossInspectFragment.EXTRA_KEY_BARCODE, barcode);
+
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Constants.ARC_DISTRIBUTION_INSPECT: {
+                goodsAdapter.setEntityList(InvLossGoodsService.get().queryAll());
+            }
+            break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -332,7 +354,5 @@ public class CreateInvLossOrderFragment extends BaseFragment {
             loadLossOrder();
         }
     }
-
-
 
 }

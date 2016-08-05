@@ -4,9 +4,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
@@ -24,7 +25,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
@@ -33,6 +33,9 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class GoodsShelvesHistoryFragment extends BaseFragment {
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private GoodsShelvesAdapter orderListAdapter;
@@ -40,8 +43,6 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
 
     @Bind(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.button_clear)
-    Button btnClear;
 
     private CommonDialog operateDialog = null;
 
@@ -65,11 +66,35 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_shelves_history;
+        return R.layout.fragment_template_goods_list;
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("盘点记录");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_sync) {
+                    sync();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_bindshelves_history);
+
         initGoodsRecyclerView();
 
         load();
@@ -93,7 +118,7 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
     }
 
     public void onEventMainThread(ShelveSyncManager.ShelveSyncManagerEvent event) {
-        ZLogger.d(String.format("GoodsShelvesFragment: ShelveSyncManagerEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("BindGoods2ShelvesFragment: ShelveSyncManagerEvent(%d)", event.getEventId()));
         if (event.getEventId() == ShelveSyncManager.ShelveSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             showProgressDialog(ProgressDialog.STATUS_DONE, "同步成功", true);
         } else if (event.getEventId() == ShelveSyncManager.ShelveSyncManagerEvent.EVENT_ID_SYNC_DATA_FAILED) {
@@ -101,7 +126,6 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
         }
     }
 
-    @OnClick(R.id.button_sync)
     public void sync() {
         if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
@@ -170,11 +194,6 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
 
             @Override
             public void onDataSetChanged() {
-                if (orderListAdapter.getItemCount() > 0) {
-                    btnClear.setEnabled(true);
-                } else {
-                    btnClear.setEnabled(false);
-                }
             }
         });
         orderRecyclerView.setAdapter(orderListAdapter);

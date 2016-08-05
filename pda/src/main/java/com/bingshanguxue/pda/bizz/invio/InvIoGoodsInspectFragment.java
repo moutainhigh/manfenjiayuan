@@ -56,6 +56,8 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     //    @Bind(R.id.label_price)
     EditLabelView labelPrice;
     //    @Bind(R.id.label_sign_quantity)
+    //    @Bind(R.id.label_productName)
+    TextLabelView labelQuantityCheck;
     EditLabelView labelSignQuantity;
     //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
@@ -228,7 +230,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
 
         String quantityStr = labelSignQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)) {
-            onSubmitError("请输入签收数量");
+            onSubmitError("请输入发货数量");
             return;
         }
         Double quantityCheck = Double.valueOf(quantityStr);
@@ -302,7 +304,6 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
      * 刷新信息
      */
     private void refreshPackage(InvIoGoodsEntity goods) {
-
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -312,14 +313,15 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelPrice.setInput("");
+            labelQuantityCheck.setTvSubTitle("");
             labelSignQuantity.setInput("");
 
             btnSubmit.setEnabled(false);
         } else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getProductName());
-//            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
             labelPrice.setInput(MUtils.formatDouble(curGoods.getPrice(), ""));
+            labelQuantityCheck.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantityCheck(), ""));
             //默认签收数量为空，根据实际情况填写
             labelSignQuantity.setInput("");
 
@@ -327,7 +329,6 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
 
             labelSignQuantity.requestFocus();
         }
-
     }
 
     @Override

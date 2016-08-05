@@ -1,64 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/frame_top"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/mfh_colorPrimary"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp">
+<include layout="@layout/appbar"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:gravity="start|center_vertical"
-            android:text="货架绑定"
-            android:textColor="@color/material_white"
-            android:textSize="20sp"/>
-
-        <!--<com.mfh.framework.uikit.compound.NaviAddressView-->
-        <!--android:id="@+id/shelvesNumberView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:gravity="center_vertical"-->
-        <!--app:naviAddressView_text="请选择货架号"-->
-        <!--android:layout_toStartOf="@+id/button_history"/>-->
-
-        <ImageButton
-            android:id="@+id/button_history"
-            android:layout_width="44dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_toStartOf="@+id/button_sync"
-            android:background="@null"
-            android:gravity="center"
-            android:src="@mipmap/ic_history_white_64"/>
-
-        <ImageButton
-            android:id="@+id/button_sync"
-            android:layout_width="44dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:background="@null"
-            android:gravity="center"
-            android:src="@mipmap/ic_cloud_upload_white_24dp"/>
-    </RelativeLayout>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <com.bingshanguxue.pda.widget.EditQueryView
         android:id="@+id/eqv_shelve"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_below="@+id/frame_top"
         app:editLabelView_inputTextColorHint="@color/black_35"
         app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
         app:editQueryView_inputHint="请扫描货架编号"
@@ -69,7 +26,6 @@
         android:id="@+id/eqv_barcode"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_below="@+id/eqv_shelve"
         android:layout_marginTop="@dimen/spacing_normal"
         app:editLabelView_inputTextColorHint="@color/black_35"
         app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
@@ -77,13 +33,11 @@
         app:editQueryView_inputTextColor="@color/black"
         app:editQueryView_inputTextSize="16sp"/>
 
-    <ScrollView
+
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        style="@style/mf_scrolview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/line"
-        android:layout_below="@+id/eqv_barcode">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,35 +65,31 @@
                 android:layout_height="44dp"
                 app:startText="零售价:"/>
 
-
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_quantity"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="当前库存:"/>
+                app:startText="库存:"/>
 
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
+</LinearLayout>
 
-    <View
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_above="@+id/button_bind"
-        android:background="@color/mf_dividerColorPrimary"/>
+<!--结算-->
+<android.support.design.widget.FloatingActionButton
+    android:id="@+id/fab_submit"
+    android:layout_width="64dp"
+    android:layout_height="64dp"
+    android:layout_gravity="bottom|end"
+    android:layout_margin="@dimen/spacing_double"
+    android:src="@mipmap/ic_fab_confirm"
+    app:backgroundTint="@color/mfh_positive_default"
+    app:borderWidth="0dp"
+    app:elevation="0dp"
+    app:pressedTranslationZ="0dp"
+    app:rippleColor="@color/material_green_800"/>
 
+</android.support.design.widget.CoordinatorLayout>
 
-    <Button
-        android:id="@+id/button_bind"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_rectange_primary"
-        android:gravity="center"
-        android:text="绑定"
-        android:textColor="@color/material_white"
-        android:textSize="18sp"/>
-
-</RelativeLayout>

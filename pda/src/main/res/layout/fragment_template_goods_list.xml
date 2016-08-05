@@ -1,10 +1,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:divider="@drawable/divider_horizontal_line"
-                                                 android:showDividers="middle"
-                                                 android:orientation="vertical">
+                                                 android:orientation="vertical"
+                                                 android:showDividers="middle">
 
 
     <include layout="@layout/appbar"/>
@@ -13,17 +13,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/material_white">
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--空视图-->
         <TextView
             android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            style="@style/mfh_textview_text"
-            android:text="@string/label_no_data"
             android:layout_margin="16dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:text="暂无数据"/>
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
@@ -33,9 +33,9 @@
 
         <ProgressBar
             android:id="@+id/animProgress"
+            style="@style/loading"
             android:layout_width="30dip"
             android:layout_height="30dip"
-            style="@style/loading"
             android:layout_gravity="center"
             android:visibility="gone"/>
     </RelativeLayout>

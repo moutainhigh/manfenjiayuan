@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
 import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;
@@ -509,13 +510,22 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
     }
 
     /**
+     * 验货
+     * */
+    @OnClick(R.id.fab_add)
+    public void inspect() {
+        inspect(null);
+    }
+
+    
+    /**
      * 拣货
      */
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVIO_PICK_GOODS);
-        extras.putString(InvIoGoodsFragment.EXTRA_KEY_BARCODE, barcode);
+        extras.putString(InvIoGoodsInspectFragment.EXTRA_KEY_BARCODE, barcode);
 //        extras.putInt(DistributionInspectFragment.EXTRA_KEY_INSPECTMODE, 1);
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);

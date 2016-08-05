@@ -63,6 +63,8 @@ public class EditQueryView extends LinearLayout {
         View rootView = View.inflate(getContext(), R.layout.edit_query_view, this);
 
 //        ButterKnife.bind(rootView);
+        ibRight = (ImageButton) rootView.findViewById(R.id.ib_search);
+
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditQueryView);
         int rightImageButtonResId = ta.getResourceId(R.styleable.EditQueryView_editLabelView_rightImageButtonSrc,
@@ -75,7 +77,7 @@ public class EditQueryView extends LinearLayout {
         String inputHint = ta.getString(R.styleable.EditQueryView_editQueryView_inputHint);
         ta.recycle();
 
-        ibRight = (ImageButton) rootView.findViewById(R.id.ib_search);
+
         ibRight.setImageResource(rightImageButtonResId);
         etInput = (EditText) rootView.findViewById(R.id.et_input);
         etInput.setTextSize(inputTextSizeInSp);

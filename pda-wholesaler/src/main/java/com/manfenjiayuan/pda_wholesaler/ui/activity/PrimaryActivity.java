@@ -10,7 +10,7 @@ import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.ChainGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvSendIoOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.BindGoods2ShelvesFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvCheckListFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvIoOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReturnOrderFragment;
@@ -146,16 +146,16 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .commit();
         }
         else if(fragmentType == FT_WHOLESALER_GOODSSHELVES){
-            GoodsShelvesFragment mGoodsShelvesFragment;
+            BindGoods2ShelvesFragment mBindGoods2ShelvesFragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                mGoodsShelvesFragment = GoodsShelvesFragment.newInstance(intent.getExtras());
+                mBindGoods2ShelvesFragment = BindGoods2ShelvesFragment.newInstance(intent.getExtras());
             }else{
-                mGoodsShelvesFragment = GoodsShelvesFragment.newInstance(null);
+                mBindGoods2ShelvesFragment = BindGoods2ShelvesFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mGoodsShelvesFragment)
-//                    .add(R.id.fragment_container, mGoodsShelvesFragment).show(mGoodsShelvesFragment)
+                    .replace(R.id.fragment_container, mBindGoods2ShelvesFragment)
+//                    .add(R.id.fragment_container, mBindGoods2ShelvesFragment).show(mBindGoods2ShelvesFragment)
                     .commit();
         }
         else if (fragmentType == FT_CREATE_INVIOORDER_BYFINDORDER) {

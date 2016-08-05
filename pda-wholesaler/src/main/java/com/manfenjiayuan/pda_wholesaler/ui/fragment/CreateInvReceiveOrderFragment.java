@@ -183,7 +183,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             break;
             case Constants.ARC_SENDORDER_LIST: {
                 // TODO: 8/2/16  
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
                 }
             }
@@ -221,7 +221,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     }
 
 
-
     /**
      * 切换发货方
      */
@@ -242,17 +241,16 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_INV_SENDORDER);
         extras.putString(InvSendOrderListFragment.EXTRA_KEY_STATUS,
-                String.format("%d,%d",
-                        InvOrderApi.ORDER_STATUS_CONFIRM,
-                        InvOrderApi.ORDER_STATUS_SENDED));
+                String.format("%d,%d,%d", InvOrderApi.ORDER_STATUS_INIT,
+                        InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED));
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_SENDORDER_LIST);
     }
 
 
-    private void importInvSendOrder(InvSendOrder invSendOrder){
-        if (invSendOrder == null){
+    private void importInvSendOrder(InvSendOrder invSendOrder) {
+        if (invSendOrder == null) {
             return;
         }
 
@@ -390,7 +388,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             , AppContext.getAppContext()) {
     };
 
-    public void onReceiveOrderProcess(){
+    public void onReceiveOrderProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在处理订单，请稍后...", false);
     }
 

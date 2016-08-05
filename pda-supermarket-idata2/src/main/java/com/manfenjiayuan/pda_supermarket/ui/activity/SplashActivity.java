@@ -1,8 +1,5 @@
 package com.manfenjiayuan.pda_supermarket.ui.activity;
 
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
@@ -27,16 +24,6 @@ public class SplashActivity extends InitActivity {
     @Bind(R.id.tv_version)
     TextView tvVersion;
 
-    public static PendingIntent generatePendingIntent(Context context){
-        Intent intent =new Intent(context, SplashActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FILL_IN_DATA);
-        intent.setAction(String.valueOf(System.currentTimeMillis()));
-
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
     @Override
     protected int getLayoutResId() {
         return R.layout.activity_splash;
@@ -44,19 +31,17 @@ public class SplashActivity extends InitActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
-        ZLogger.d("adb 0005");
+        ZLogger.d("adb 0008");
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
         ZLogger.df("initializing getui sdk...");
         PushManager.getInstance().initialize(AppContext.getAppContext());
-//        PushManager.getInstance().stopService(this);
 
-        tvVersion.setText(String.format("%s-%d", AppContext.getVersionName(), AppContext.getVersionCode()));
+        tvVersion.setText(String.format("%s-%d",
+                AppContext.getVersionName(), AppContext.getVersionCode()));
     }
 
     @Override
