@@ -24,17 +24,13 @@ import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
-import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -929,11 +925,16 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                 String dailysettleDatetime = args.getString("dailysettleDatetime");
                 DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(dailysettleDatetime);
                 if (BizConfig.RELEASE){
-                    commintCashAndTrigDateEnd(dailysettleEntity, 100D);
+                    incomeDistributionTopup(100D);
                 }
                 else{
-                    commintCashAndTrigDateEnd(dailysettleEntity, 0.01D);
+                    incomeDistributionTopup(0.01D);
                 }
+            }
+            break;
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
+                Double amount = args.getDouble("amount");
+                incomeDistributionTopup(amount);
             }
             break;
             //现金额度发生变化，更新界面，并判断是否需要支付
@@ -1761,14 +1762,11 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     /**
      * 针对当前用户所属网点提交营业现金，并触发一次日结操作
      */
-    private void commintCashAndTrigDateEnd(final DailysettleEntity dailysettleEntity, Double amount) {
-        if (dailysettleEntity == null){
-            return;
-        }
+    private void incomeDistributionTopup(Double amount) {
         ZLogger.df(">>>准备提交营业现金");
         List<CashierOrderItemInfo> cashierOrderItemInfoList = new ArrayList<>();
         CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
-        cashierOrderItemInfo.setOrderId(dailysettleEntity.getId());
+        cashierOrderItemInfo.setOrderId(0L);
         cashierOrderItemInfo.setbCount(1D);
         cashierOrderItemInfo.setRetailAmount(amount);
         cashierOrderItemInfo.setFinalAmount(amount);
@@ -1776,7 +1774,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         cashierOrderItemInfo.setDiscountRate(1D);
         cashierOrderItemInfo.setBrief("提交营业现金");
         cashierOrderItemInfo.setProductsInfo(null);
-        cashierOrderItemInfo.setDiscountInfo(new DiscountInfo(dailysettleEntity.getId()));
+        cashierOrderItemInfo.setDiscountInfo(new DiscountInfo(0L));
         cashierOrderItemInfoList.add(cashierOrderItemInfo);
 
         CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
@@ -1792,65 +1790,65 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             @Override
             public void onPayProcess(Double amount, String outTradeNo) {
 //                ZLogger.d("支付处理中");
-                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_PROCESS);
-                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
-                        WayType.ALI_F2F,
-                        PosOrderPayEntity.PAY_STATUS_PROCESS, amount, amount, 0D);
-                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                //保存支付记录
-                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                        dailysettleEntity.getBarCode(), null);
+//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_PROCESS);
+//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
+//
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
+//                        WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_PROCESS, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                //保存支付记录
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
+//                        dailysettleEntity.getBarCode(), null);
 
             }
 
             @Override
             public void onPaySucceed(Double amount, String outTradeNo) {
-                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_SUCCEED);
-                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                //保存支付记录
-                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-                        PosOrderPayEntity.PAY_STATUS_FINISH, amount, amount, 0D);
-                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                        dailysettleEntity.getBarCode(), null);
+//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_SUCCEED);
+//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
+//
+//                //保存支付记录
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_FINISH, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
+//                        dailysettleEntity.getBarCode(), null);
 
 
                 // TODO: 8/4/16 解锁POS机
+                commintCashAndTrigDateEnd(outTradeNo);
             }
 
             @Override
             public void onPayException(Double amount, String outTradeNo) {
 //                ZLogger.d("支付异常");
-                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_EXCEPTION);
-                DailysettleService.get().saveOrUpdate(dailysettleEntity);
+//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_EXCEPTION);
+//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
+//
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_EXCEPTION, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
+//                        dailysettleEntity.getBarCode(), null);
 
-                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-                        PosOrderPayEntity.PAY_STATUS_EXCEPTION, amount, amount, 0D);
-                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                        dailysettleEntity.getBarCode(), null);
-
-                commintCashAndTrigDateEnd(outTradeNo);
             }
 
             @Override
             public void onPayFailed(Double amount, String outTradeNo) {
 //                ZLogger.d("支付失败");
-                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_FAILED);
-                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-                        PosOrderPayEntity.PAY_STATUS_FAILED, amount, amount, 0D);
-                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                        dailysettleEntity.getBarCode(), null);
+//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_FAILED);
+//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
+//
+//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
+//                        PosOrderPayEntity.PAY_STATUS_FAILED, amount, amount, 0D);
+//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
+//
+//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
+//                        dailysettleEntity.getBarCode(), null);
             }
 
             @Override

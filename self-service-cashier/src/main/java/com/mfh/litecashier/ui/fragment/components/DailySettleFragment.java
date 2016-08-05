@@ -36,7 +36,6 @@ import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
-import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.utils.AnalysisHelper;
 
 import java.util.ArrayList;
@@ -93,8 +92,6 @@ public class DailySettleFragment extends BaseProgressFragment {
     private boolean cancelable = true;//是否可以关闭窗口
     private String dailySettleDatetime = null;//日结日期
     private DailysettleEntity dailysettleEntity = null;
-
-    private AlipayDialog alipayDialog = null;
 
     public static DailySettleFragment newInstance(Bundle args) {
         DailySettleFragment fragment = new DailySettleFragment();

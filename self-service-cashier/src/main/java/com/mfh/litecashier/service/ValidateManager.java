@@ -129,7 +129,8 @@ public class ValidateManager {
             }
             break;
             case STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND: {
-                validateCheckHaveDateEndByServer();
+//                validateCheckHaveDateEndByServer();
+                haveNoMoneyEnd();
             }
             break;
             case STEP_VALIDATE_ANALISIS_QUOTA: {
@@ -337,6 +338,70 @@ public class ValidateManager {
 
 
     /**
+     * 针对当前用户所属网点判断是否存在过清分时余额不足情况
+     * /analysisAccDate/haveNoMoneyEnd?date=2016-02-02
+     * @param request date可空,默认是昨天。代表昨天包括昨天以前的时间内有无存在余额不足情况。
+     */
+    private void haveNoMoneyEnd(){
+//        Calendar rightNow = Calendar.getInstance();
+//        rightNow.add(Calendar.DAY_OF_MONTH, -1);
+//        final Date yesterday = rightNow.getTime();
+//
+//        final String aggDateStr = TimeCursor.FORMAT_YYYYMMDD.format(yesterday);
+//        ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
+
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            //十分钟后自动重试
+            Calendar trigger = Calendar.getInstance();
+            trigger.add(Calendar.MINUTE, 10);
+            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
+            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                    "网络未连接，暂停验证(昨日是否已经清分)。");
+            return;
+        }
+
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"10.4"}}
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            Double amount = Double.valueOf(retValue.getValue());
+                            if (amount >= 0.01){
+                                Bundle args = new Bundle();
+                                args.putDouble("amount", amount);
+                                validateFinished(ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP,
+                                        args, String.format("余额不足(%2f)清分失败，即将锁定POS机，" +
+                                                "可以通过提交营业现金来解锁", amount));
+                            }
+
+                            nextStep();
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+
+                            nextStep();
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
+                        ZLogger.df("判读是否清分失败：" + errMsg);
+                        nextStep();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        AnalysisApiImpl.haveNoMoneyEnd(responseCallback);
+    }
+
+    /**
      * 统计分析,同时只能存在一条未支付的额度表，若存在多条，则默认取第一条。
      * */
     public void analysisQuota(Date analysisDate){
@@ -409,8 +474,9 @@ public class ValidateManager {
         public static final int EVENT_ID_VALIDATE_SESSION_EXPIRED   = 0X03;//会话过期
         public static final int EVENT_ID_VALIDATE_PLAT_NOT_REGISTER = 0X04;//设备未注册
         public static final int EVENT_ID_VALIDATE_NEED_DAILYSETTLE  = 0X05;//需要日结
-        public static final int EVENT_ID_VALIDATE_FINISHED          = 0X06;//验证结束
-        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE     = 0X07;//额度发生变化
+        public static final int EVENT_ID_INCOME_DESTRIBUTION_TOPUP  = 0x06;//清分充值
+        public static final int EVENT_ID_VALIDATE_FINISHED          = 0X07;//验证结束
+        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE      = 0X08;//额度发生变化
 
         private int eventId;
         private Bundle args;//参数

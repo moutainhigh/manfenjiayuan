@@ -24,6 +24,7 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.PayApi;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -68,12 +69,6 @@ public class AlipayDialog extends CommonDialog {
 
     private CashierOrderInfo cashierOrderInfo;
     protected int payType;//支付类型
-//    protected Double handleAmount = 0D;//应收金额
-    protected Double paidAmount = 0D;//实收金额
-    protected Double rechargeAmount = 0D;//找零金额
-//    private String subject;//订单标题
-//    private String body;//对交易或商品的描述
-//    private String orderId;//设备号＋订单编号
     //设备号＋订单编号＋时间
     private String outTradeNo;//商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
 //    private String bizType;
@@ -229,7 +224,7 @@ public class AlipayDialog extends CommonDialog {
         List<CashierOrderItemInfo> cashierOrderItemInfoList = cashierOrderInfo.getCashierOrderItemInfos();
         CashierOrderItemInfo cashierOrderItemInfo = cashierOrderItemInfoList.get(0);
 
-        outTradeNo = CashierFactory.genTradeNo(cashierOrderItemInfo.getOrderId(), true);
+        outTradeNo = CashierFactory.genTradeNo(cashierOrderInfo.getBizType(), cashierOrderItemInfo.getOrderId(), true);
         ZLogger.df(String.format("支付宝支付－交易编号：%s", outTradeNo));
 
         JSONObject orderInfo = new JSONObject();
