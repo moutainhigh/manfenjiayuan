@@ -9,7 +9,7 @@ import com.mfh.framework.core.MfhEntity;
  * 盘点
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_invcheck_goods_v1")
+@Table(name="pda_invcheck_goods_v0001")
 public class InvCheckGoodsEntity extends MfhEntity<Long> implements ILongId{
     private Long orderId;//盘点批次编号
     private Long goodsId;//商品主键

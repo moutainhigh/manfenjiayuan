@@ -1,22 +1,22 @@
-package com.manfenjiayuan.pda_wholesaler.database.entity;
+package com.bingshanguxue.pda.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.core.MfhEntity;
 
 /**
- * 发货拣货－商品
+ * 发货
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_wholesaler_invio_pickgoods")
-public class InvIoPickGoodsEntity extends MfhEntity<Long> implements ILongId{
+@Table(name="pda_invsendio_goods_v0001")
+public class InvSendIoGoodsEntity extends MfhEntity<Long> implements ILongId{
 //    private String id;
     private Long proSkuId;//
     private Long chainSkuId;//
     private String productName;//商品名称
     private Double price;//价格
     private Double amount;//总价
-    private String unitSpec;//单位
+    private String unit;//单位
     private String barcode;//条码
 
     private Long providerId;//供应商编号
@@ -51,12 +51,12 @@ public class InvIoPickGoodsEntity extends MfhEntity<Long> implements ILongId{
         this.amount = amount;
     }
 
-    public String getUnitSpec() {
-        return unitSpec;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setUnitSpec(String unitSpec) {
-        this.unitSpec = unitSpec;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getBarcode() {

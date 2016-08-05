@@ -17,16 +17,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
+import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
 import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;
 import com.manfenjiayuan.business.view.IInvFindOrderView;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
-import com.manfenjiayuan.pda_wholesaler.database.logic.InvIoPickGoodsService;
+import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.PickingGoodsAdapter;
+import com.bingshanguxue.pda.bizz.invsendio.InvSendIoGoodsAdapter;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
@@ -73,7 +73,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
-    private PickingGoodsAdapter officeAdapter;
+    private InvSendIoGoodsAdapter officeAdapter;
 
     @Bind(R.id.empty_view)
     View emptyView;
@@ -119,8 +119,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        InvIoPickGoodsService.get().clear();
+        InvSendIoGoodsService.get().clear();
         mInvFindOrderPresenter = new InvFindOrderPresenter(this);
     }
 
@@ -198,7 +197,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
                 isAcceptBarcodeEnabled = true;
-                officeAdapter.setEntityList(InvIoPickGoodsService.get().queryAll());
+                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
             }
             break;
             case Constants.ARC_COMPANY_LIST: {
@@ -246,29 +245,30 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         //设置列表为空时显示的视图
         addressRecyclerView.setEmptyView(emptyView);
 
-        officeAdapter = new PickingGoodsAdapter(getActivity(), null);
-        officeAdapter.setOnAdapterListener(new PickingGoodsAdapter.OnAdapterListener() {
+        officeAdapter = new InvSendIoGoodsAdapter(getActivity(), null);
+        officeAdapter.setOnAdapterListener(new InvSendIoGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                // TODO: 5/18/16
-                InvIoPickGoodsEntity entity = officeAdapter.getEntityList().get(position);
+                InvSendIoGoodsEntity entity = officeAdapter.getEntityList().get(position);
                 inspect(entity.getBarcode());
             }
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                final InvIoPickGoodsEntity entity = officeAdapter.getEntity(position);
+                final InvSendIoGoodsEntity entity = officeAdapter.getEntity(position);
                 if (operateDialog == null) {
                     operateDialog = new CommonDialog(getActivity());
                     operateDialog.setCancelable(true);
                 }
-                operateDialog.setMessage(String.format("%s\n%s", entity.getBarcode(), entity.getProductName()));
-                operateDialog.setPositiveButton("拒收", new DialogInterface.OnClickListener() {
+                operateDialog.setMessage(String.format("%s\n%s",
+                        entity.getBarcode(), entity.getProductName()));
+                operateDialog.setPositiveButton("拒收",
+                        new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        InvIoPickGoodsService.get().reject(entity);
+                        InvSendIoGoodsService.get().reject(entity);
 
                         officeAdapter.notifyItemChanged(position);
                     }
@@ -346,7 +346,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         jsonStrObject.put("orderType", InvOrderApi.ORDERTYPE_RECEIPT);
 
         JSONArray itemsArray = new JSONArray();
-        for (InvIoPickGoodsEntity goods : officeAdapter.getEntityList()) {
+        for (InvSendIoGoodsEntity goods : officeAdapter.getEntityList()) {
             JSONObject item = new JSONObject();
             item.put("chainSkuId", goods.getChainSkuId());//查询供应链
             item.put("providerId", goods.getProviderId());
@@ -381,9 +381,6 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 //                        {"code":"0","msg":"新增成功!","version":"1","data":""}
 
 //                        animProgress.setVisibility(View.GONE);
-                    /**
-                     * 新建调拨单，更新采购单列表
-                     * */
                     ZLogger.d("新建发货单成功: ");
                     changeSendCompany(null);
                     officeAdapter.setEntityList(null);
@@ -454,8 +451,8 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
             mNetInfoWrapper.setNetId(data.getTargetNetId());
             mNetInfoWrapper.setName(data.getTargetNetCaption());
 
-            InvIoPickGoodsService.get().saveInvFindOrderItems(data.getItems());
-            officeAdapter.setEntityList(InvIoPickGoodsService.get().queryAll());
+            InvSendIoGoodsService.get().saveInvFindOrderItems(data.getItems());
+            officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
 
             // TODO: 6/8/16 获取商品批发价（拣货单商品没有批发价）
             retrieveGoodsPrice();
@@ -469,13 +466,13 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
      * 获取商品价格*
      */
     private void retrieveGoodsPrice() {
-        List<InvIoPickGoodsEntity> entityList = officeAdapter.getEntityList();
+        List<InvSendIoGoodsEntity> entityList = officeAdapter.getEntityList();
         if (entityList == null || entityList.size() < 1) {
             return;
         }
 
         StringBuilder sb = new StringBuilder();
-        for (InvIoPickGoodsEntity wrapper : entityList) {
+        for (InvSendIoGoodsEntity wrapper : entityList) {
             if (wrapper.getProSkuId() == null) {
                 continue;
             }
@@ -501,8 +498,8 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
                 }
 
                 //刷新商品价格
-                InvIoPickGoodsService.get().infusePriceList(scGoodsSkus);
-                officeAdapter.setEntityList(InvIoPickGoodsService.get().queryAll());
+                InvSendIoGoodsService.get().infusePriceList(scGoodsSkus);
+                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
             }
 
             @Override
@@ -524,7 +521,6 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         inspect(null);
     }
 
-    
     /**
      * 拣货
      */

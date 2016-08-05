@@ -20,7 +20,7 @@ import java.util.List;
  * 库存盘点纪录商品
  * Created by bingshanguxue on 15/8/5.
  */
-public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class InvCheckHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int ITEM_TYPE_PRODUCT = 1;
 
@@ -44,7 +44,7 @@ public class StockTakeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.adapterListener = adapterListener;
     }
 
-    public StockTakeAdapter(Context context, List<InvCheckGoodsEntity> entityList) {
+    public InvCheckHistoryAdapter(Context context, List<InvCheckGoodsEntity> entityList) {
         this.entityList = entityList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);

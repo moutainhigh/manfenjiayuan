@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class InvCheckGoodsDao extends BaseSeqAbleDao<InvCheckGoodsEntity, String> {
 
-    private static final String TABLE_NAME = "pda_invcheck_goods_v1";
+    private static final String TABLE_NAME = "pda_invcheck_goods_v0001";
 
     @Override
     protected Pair<String, String> initTableChName() {

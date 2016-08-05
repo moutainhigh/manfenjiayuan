@@ -1,33 +1,28 @@
-package com.manfenjiayuan.pda_supermarket.ui.adapter;
+package com.bingshanguxue.pda.bizz.invcheck;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.R;
 import com.manfenjiayuan.business.bean.InvCheckOrder;
-import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * 库存－－库存盘点
  * Created by bingshanguxue on 15/8/5.
  */
-public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrderAdapter.ProductViewHolder> {
+public class InvCheckOrderAdapter extends RegularAdapter<InvCheckOrder, InvCheckOrderAdapter.ProductViewHolder> {
 
-    private final LayoutInflater mLayoutInflater;
-    private Context mContext;
-    private List<InvCheckOrder> entityList;
-
-    private InvCheckOrder curOrder = null;
+    public InvCheckOrderAdapter(Context context, List<InvCheckOrder> entityList) {
+        super(context, entityList);
+    }
 
     public interface OnAdapterListener {
         void onItemClick(View view, int position);
@@ -41,26 +36,20 @@ public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrder
         this.adapterListener = adapterListener;
     }
 
-    public StockCheckOrderAdapter(Context context, List<InvCheckOrder> entityList) {
-        this.entityList = entityList;
-        mContext = context;
-        mLayoutInflater = LayoutInflater.from(context);
-    }
-
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_stockcheck_order, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_invcheck_order, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         InvCheckOrder entity = entityList.get(position);
 
-        if (curOrder != null && curOrder.getId().compareTo(entity.getId()) == 0) {
-            holder.rootView.setSelected(true);
-        } else {
-            holder.rootView.setSelected(false);
-        }
+//        if (curOrder != null && curOrder.getId().compareTo(entity.getId()) == 0) {
+//            holder.rootView.setSelected(true);
+//        } else {
+//            holder.rootView.setSelected(false);
+//        }
 
         holder.tvOrderName.setText(entity.getOrderName());
         holder.tvCreateDate.setText(String.format("盘点时间：%s", TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
@@ -71,31 +60,26 @@ public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrder
         holder.tvOrderStatus.setText(String.format("状态: %s", entity.getStatusCaption()));
     }
 
-    @Override
-    public int getItemCount() {
-        return (entityList == null ? 0 : entityList.size());
-    }
-
-    @Override
-    public void onViewRecycled(ProductViewHolder holder) {
-        super.onViewRecycled(holder);
-    }
-
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
-        View rootView;
-        @Bind(R.id.tv_orderName)
+//        @Bind(R.id.rootview)
+//        View rootView;
+//        @Bind(R.id.tv_orderName)
         TextView tvOrderName;
-        @Bind(R.id.tv_createDate)
+//        @Bind(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_net)
+//        @Bind(R.id.tv_net)
         TextView tvNet;
-        @Bind(R.id.tv_orderstatus)
+//        @Bind(R.id.tv_orderstatus)
         TextView tvOrderStatus;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+//            ButterKnife.bind(this, itemView);
+
+            tvOrderName = (TextView) itemView.findViewById(R.id.tv_orderName);
+            tvCreateDate = (TextView) itemView.findViewById(R.id.tv_createDate);
+            tvNet = (TextView) itemView.findViewById(R.id.tv_net);
+            tvOrderStatus = (TextView) itemView.findViewById(R.id.tv_orderstatus);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,7 +90,6 @@ public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrder
                         return;
                     }
 
-                    curOrder = entityList.get(position);
                     notifyDataSetChanged();
 
                     if (adapterListener != null) {
@@ -120,12 +103,6 @@ public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrder
     public void setEntityList(List<InvCheckOrder> entityList) {
         this.entityList = entityList;
 
-        if (this.entityList != null && this.entityList.size() > 0) {
-            curOrder = this.entityList.get(0);
-        } else {
-            curOrder = null;
-        }
-
         notifyDataSetChanged();
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
@@ -135,10 +112,5 @@ public class StockCheckOrderAdapter extends RecyclerView.Adapter<StockCheckOrder
     public List<InvCheckOrder> getEntityList() {
         return entityList;
     }
-
-    public InvCheckOrder getCurOrder() {
-        return curOrder;
-    }
-
 
 }

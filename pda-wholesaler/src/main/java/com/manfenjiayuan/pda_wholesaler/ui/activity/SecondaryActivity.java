@@ -12,6 +12,7 @@ import com.bingshanguxue.pda.bizz.company.InvCompProviderListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
+import com.bingshanguxue.pda.bizz.invsendio.InvSendIoInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckHistoryFragment;
@@ -156,12 +157,12 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (serviceType == FT_INVIO_PICK_GOODS) {
-            InvIoGoodsInspectFragment fragment;
+            InvSendIoInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = InvIoGoodsInspectFragment.newInstance(intent.getExtras());
+                fragment = InvSendIoInspectFragment.newInstance(intent.getExtras());
             } else {
-                fragment = InvIoGoodsInspectFragment.newInstance(null);
+                fragment = InvSendIoInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

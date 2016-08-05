@@ -15,7 +15,7 @@ import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.bingshanguxue.pda.bizz.invcheck.StockTakeAdapter;
+import com.bingshanguxue.pda.bizz.invcheck.InvCheckHistoryAdapter;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -40,7 +40,7 @@ public class InvCheckHistoryFragment extends BaseFragment {
 
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    private StockTakeAdapter orderListAdapter;
+    private InvCheckHistoryAdapter orderListAdapter;
     private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view) View emptyView;
@@ -140,8 +140,8 @@ public class InvCheckHistoryFragment extends BaseFragment {
         //设置列表为空时显示的视图
         orderRecyclerView.setEmptyView(emptyView);
 
-        orderListAdapter = new StockTakeAdapter(getActivity(), null);
-        orderListAdapter.setOnAdapterListener(new StockTakeAdapter.OnAdapterListener() {
+        orderListAdapter = new InvCheckHistoryAdapter(getActivity(), null);
+        orderListAdapter.setOnAdapterListener(new InvCheckHistoryAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
 

@@ -8,7 +8,7 @@ import com.mfh.framework.core.MfhEntity;
  * 报损
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_invloss_goods_v1")
+@Table(name="pda_invloss_goods_v0001")
 public class InvLossGoodsEntity extends MfhEntity<Long> implements ILongId{
 
     private Long proSkuId;//

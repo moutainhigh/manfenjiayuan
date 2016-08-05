@@ -1,9 +1,9 @@
-package com.manfenjiayuan.pda_wholesaler.database.logic;
+package com.bingshanguxue.pda.database.service;
 
+import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.manfenjiayuan.business.bean.InvFindOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.manfenjiayuan.pda_wholesaler.database.dao.InvIoPickGoodsDao;
-import com.manfenjiayuan.pda_wholesaler.database.entity.InvIoPickGoodsEntity;
+import com.bingshanguxue.pda.database.dao.InvSendIoGoodsDao;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
@@ -18,10 +18,10 @@ import java.util.List;
  * 发货拣货－商品
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, String, InvIoPickGoodsDao> {
+public class InvSendIoGoodsService extends BaseService<InvSendIoGoodsEntity, String, InvSendIoGoodsDao> {
     @Override
-    protected Class<InvIoPickGoodsDao> getDaoClass() {
-        return InvIoPickGoodsDao.class;
+    protected Class<InvSendIoGoodsDao> getDaoClass() {
+        return InvSendIoGoodsDao.class;
     }
 
     @Override
@@ -29,17 +29,17 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
         return null;
     }
 
-    private static InvIoPickGoodsService instance = null;
+    private static InvSendIoGoodsService instance = null;
     /**
      * 返回 IMConversationService 实例
      * @return
      */
-    public static InvIoPickGoodsService get() {
-        String lsName = InvIoPickGoodsService.class.getName();
+    public static InvSendIoGoodsService get() {
+        String lsName = InvSendIoGoodsService.class.getName();
         if (ServiceFactory.checkService(lsName))
             instance = ServiceFactory.getService(lsName);
         else {
-            instance = new InvIoPickGoodsService();//初始化登录服务
+            instance = new InvSendIoGoodsService();//初始化登录服务
         }
         return instance;
     }
@@ -53,7 +53,7 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
         }
     }
 
-    public InvIoPickGoodsEntity getEntityById(String id) {
+    public InvSendIoGoodsEntity getEntityById(String id) {
         try {
             return getDao().getEntityById(id);
         } catch (Exception e) {
@@ -62,15 +62,15 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
         }
     }
 
-//    public void save(InvIoPickGoodsEntity entity) {
+//    public void save(InvSendIoGoodsEntity entity) {
 //        getDao().save(entity);
 //    }
 
-    public void update(InvIoPickGoodsEntity entity) {
+    public void update(InvSendIoGoodsEntity entity) {
         getDao().update(entity);
     }
 
-    public void saveOrUpdate(InvIoPickGoodsEntity entity) {
+    public void saveOrUpdate(InvSendIoGoodsEntity entity) {
         getDao().saveOrUpdate(entity);
     }
 
@@ -87,19 +87,19 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
      * @param pageInfo
      * @return
      */
-    public List<InvIoPickGoodsEntity> queryAll(PageInfo pageInfo) {
+    public List<InvSendIoGoodsEntity> queryAll(PageInfo pageInfo) {
         return getDao().queryAll(pageInfo);
     }
 
-    public List<InvIoPickGoodsEntity> queryAll() {
+    public List<InvSendIoGoodsEntity> queryAll() {
         return getDao().queryAll();
     }
 
-    public List<InvIoPickGoodsEntity> queryAllBy(String strWhere) {
+    public List<InvSendIoGoodsEntity> queryAllBy(String strWhere) {
         return getDao().queryAllBy(strWhere);
     }
 
-    public List<InvIoPickGoodsEntity> queryAllByDesc(String strWhere) {
+    public List<InvSendIoGoodsEntity> queryAllByDesc(String strWhere) {
         return getDao().queryAllByDesc(strWhere);
     }
 
@@ -122,12 +122,12 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
     /**
      * 根据条码查商品
      */
-    public InvIoPickGoodsEntity queryEntityBy(String barcode) {
+    public InvSendIoGoodsEntity queryEntityBy(String barcode) {
         if (StringUtils.isEmpty(barcode)) {
             return null;
         }
 
-        List<InvIoPickGoodsEntity> entityList = queryAllBy(String.format("barcode = '%s'", barcode));
+        List<InvSendIoGoodsEntity> entityList = queryAllBy(String.format("barcode = '%s'", barcode));
         if (entityList != null && entityList.size() > 0) {
             return entityList.get(0);
         }
@@ -148,14 +148,14 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
         }
 
         for (InvFindOrderItem item : orderItems) {
-            InvIoPickGoodsEntity entity = new InvIoPickGoodsEntity();
+            InvSendIoGoodsEntity entity = new InvSendIoGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
             entity.setUpdatedDate(new Date());
 
             entity.setProSkuId(item.getProSkuId());
             entity.setChainSkuId(item.getTenantSkuId());
             entity.setProductName(item.getProductName());
-            entity.setUnitSpec(item.getUnitSpec());
+            entity.setUnit(item.getUnitSpec());
 
             entity.setPrice(item.getPrice());
             // TODO: 5/13/16 PC上还是用的totalCount字段
@@ -174,7 +174,7 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
     /**
      * 验收商品
      */
-    public void inspect(InvIoPickGoodsEntity entity, Double price, Double quantity) {
+    public void inspect(InvSendIoGoodsEntity entity, Double price, Double quantity) {
         if (entity == null) {
             return;
         }
@@ -205,7 +205,7 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
     /**
      * 拒收商品
      */
-    public void reject(InvIoPickGoodsEntity entity) {
+    public void reject(InvSendIoGoodsEntity entity) {
         if (entity == null) {
             return;
         }
@@ -232,7 +232,7 @@ public class InvIoPickGoodsService extends BaseService<InvIoPickGoodsEntity, Str
         }
 
         for (ScGoodsSku scGoodsSku : scGoodsSkus){
-            InvIoPickGoodsEntity entity = queryEntityBy(scGoodsSku.getBarcode());
+            InvSendIoGoodsEntity entity = queryEntityBy(scGoodsSku.getBarcode());
             if (entity == null){
                 continue;
             }

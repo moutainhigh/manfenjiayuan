@@ -8,7 +8,7 @@ import com.mfh.framework.core.MfhEntity;
  * 退货
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_invreturn_goods_v1")
+@Table(name="pda_invreturn_goods_v0001")
 public class InvReturnGoodsEntity extends MfhEntity<Long> implements ILongId{
 //    private String id;
     private Long orderId;//订单编号

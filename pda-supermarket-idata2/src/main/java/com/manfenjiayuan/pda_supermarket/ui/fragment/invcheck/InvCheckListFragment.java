@@ -16,7 +16,7 @@ import com.manfenjiayuan.business.bean.InvCheckOrder;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.ui.adapter.StockCheckOrderAdapter;
+import com.bingshanguxue.pda.bizz.invcheck.InvCheckOrderAdapter;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
@@ -61,7 +61,7 @@ public class InvCheckListFragment extends BaseFragment {
     private LinearLayoutManager linearLayoutManager;
     @Bind(R.id.empty_view)
     View emptyView;
-    private StockCheckOrderAdapter orderListAdapter;
+    private InvCheckOrderAdapter orderListAdapter;
 
     private boolean isLoadingMore;
 
@@ -163,13 +163,13 @@ public class InvCheckListFragment extends BaseFragment {
             }
         });
 
-        orderListAdapter = new StockCheckOrderAdapter(AppContext.getAppContext(), null);
-        orderListAdapter.setOnAdapterListener(new StockCheckOrderAdapter.OnAdapterListener() {
+        orderListAdapter = new InvCheckOrderAdapter(AppContext.getAppContext(), null);
+        orderListAdapter.setOnAdapterListener(new InvCheckOrderAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
 //                loadGoodsList(orderListAdapter.getCurOrder());
                 //TODO
-                InvCheckOrder invCheckOrder = orderListAdapter.getCurOrder();
+                InvCheckOrder invCheckOrder = orderListAdapter.getEntity(position);
                 if (invCheckOrder == null) {
                     DialogUtil.showHint("无法盘点");
                     return;

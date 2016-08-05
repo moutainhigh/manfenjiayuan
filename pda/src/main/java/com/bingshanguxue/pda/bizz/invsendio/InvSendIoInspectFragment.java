@@ -1,4 +1,4 @@
-package com.bingshanguxue.pda.bizz.invio;
+package com.bingshanguxue.pda.bizz.invsendio;
 
 
 import android.content.DialogInterface;
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
-import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
-import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
@@ -27,7 +27,6 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -37,10 +36,10 @@ import java.util.List;
 
 
 /**
- * 出入库商品检查
+ * 发货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvIoGoodsInspectFragment extends PDAScanFragment
+public class InvSendIoInspectFragment extends PDAScanFragment
         implements IChainGoodsSkuView {
 
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
@@ -55,17 +54,19 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     TextLabelView labelProductName;
     //    @Bind(R.id.label_price)
     EditLabelView labelPrice;
+    //    @Bind(R.id.label_quantity_check)
+    TextLabelView labelQuantityCheck;
     //    @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
     //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
-    private InvIoGoodsEntity curGoods = null;
+    private InvSendIoGoodsEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
 
 
-    public static InvIoGoodsInspectFragment newInstance(Bundle args) {
-        InvIoGoodsInspectFragment fragment = new InvIoGoodsInspectFragment();
+    public static InvSendIoInspectFragment newInstance(Bundle args) {
+        InvSendIoInspectFragment fragment = new InvSendIoInspectFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -75,7 +76,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_inspect_invio_goods;
+        return R.layout.fragment_inspect_invsendio_goods;
     }
 
 
@@ -95,6 +96,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
+        labelQuantityCheck = (TextLabelView) rootView.findViewById(R.id.label_quantity_check);
         labelSignQuantity = (EditLabelView) rootView.findViewById(R.id.label_sign_quantity);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
 
@@ -236,7 +238,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
         if (curGoods.getQuantityCheck() > 0) {
             quantityCheckConfirmDialog(curGoods, Double.valueOf(price), quantityCheck);
         } else {
-            InvIoGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
+            InvSendIoGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
             onSubmitSuccess();
         }
     }
@@ -301,7 +303,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     /**
      * 刷新信息
      */
-    private void refreshPackage(InvIoGoodsEntity goods) {
+    private void refreshPackage(InvSendIoGoodsEntity goods) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -311,6 +313,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelPrice.setInput("");
+            labelQuantityCheck.setTvSubTitle("");
             labelSignQuantity.setInput("");
 
             btnSubmit.setEnabled(false);
@@ -318,6 +321,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getProductName());
             labelPrice.setInput(MUtils.formatDouble(curGoods.getPrice(), ""));
+            labelQuantityCheck.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantityCheck(), ""));
             //默认签收数量为空，根据实际情况填写
             labelSignQuantity.setInput("");
 
@@ -362,7 +366,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
 
     class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
         private String barcode;
-        private InvIoGoodsEntity goodsEntity;
+        private InvSendIoGoodsEntity goodsEntity;
 
         public QueryGoodsAsyncTask(String barcode) {
             this.barcode = barcode;
@@ -371,7 +375,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                goodsEntity = InvIoGoodsService.get().queryEntityBy(barcode);
+                goodsEntity = InvSendIoGoodsService.get().queryEntityBy(barcode);
                 if (goodsEntity != null) {
                     return true;
                 }
@@ -386,6 +390,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean) {
+                hideProgressDialog();
                 refreshPackage(goodsEntity);
             } else {
                 queryNetGoods(barcode);
@@ -426,9 +431,9 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             return;
         }
 
-        InvIoGoodsEntity entity = InvIoGoodsService.get().queryEntityBy(goods.getBarcode());
+        InvSendIoGoodsEntity entity = InvSendIoGoodsService.get().queryEntityBy(goods.getBarcode());
         if (entity == null) {
-            entity = new InvIoGoodsEntity();
+            entity = new InvSendIoGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
 //        entity.setOrderId(productEntity.getOrderId());
@@ -439,16 +444,15 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             entity.setBarcode(goods.getBarcode());
             entity.setQuantityCheck(0D);
             entity.setUpdatedDate(new Date());
-            entity.setPosId(SharedPreferencesManager.getTerminalId());
 
-            InvIoGoodsService.get().saveOrUpdate(entity);
+            InvSendIoGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;
 
-    private void quantityCheckConfirmDialog(final InvIoGoodsEntity entity,
+    private void quantityCheckConfirmDialog(final InvSendIoGoodsEntity entity,
                                             final Double price, final Double quantity) {
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
@@ -461,7 +465,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                InvIoGoodsService.get().inspect(entity, price, quantity);
+                InvSendIoGoodsService.get().inspect(entity, price, quantity);
 
                 onSubmitSuccess();
             }
@@ -471,7 +475,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                InvIoGoodsService.get().inspect(entity, price, entity.getQuantityCheck() + quantity);
+                InvSendIoGoodsService.get().inspect(entity, price, entity.getQuantityCheck() + quantity);
                 onSubmitSuccess();
             }
         });

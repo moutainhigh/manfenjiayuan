@@ -5,10 +5,10 @@ import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 
 /**
- * POS--商品--签收
+ * 收货
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name = "pda_invrecv_goods_v1")
+@Table(name = "pda_invrecv_goods_v0001")
 public class InvRecvGoodsEntity extends MfhEntity<Long> implements ILongId {
     private Long proSkuId;//
     private Long chainSkuId;//
