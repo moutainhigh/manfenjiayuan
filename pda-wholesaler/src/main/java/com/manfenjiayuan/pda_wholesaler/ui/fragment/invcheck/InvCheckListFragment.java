@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;

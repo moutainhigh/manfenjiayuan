@@ -34,6 +34,7 @@ public class InvIoPickGoodsDao extends BaseSeqAbleDao<InvIoPickGoodsEntity, Stri
 
     /**
      * 查询指定session下的消息类比，按照逆序
+     *
      * @param pageInfo
      * @return List<InvIoPickGoodsEntity>
      */
@@ -69,7 +70,7 @@ public class InvIoPickGoodsDao extends BaseSeqAbleDao<InvIoPickGoodsEntity, Stri
         }
     }
 
-    public void deleteBy(String strWhere){
+    public void deleteBy(String strWhere) {
         getFinalDb().deleteByWhere(this.pojoClass, strWhere);
     }
 }

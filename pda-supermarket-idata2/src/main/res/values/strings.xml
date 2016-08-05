@@ -13,17 +13,9 @@
     <string name="button_login_signin">登录</string>
     <string name="button_login_retrieve_pwd">忘记密码</string>
     <string name="button_login_signup">新用户注册</string>
-    <string name="button_clear">清空</string>
     <string name="button_submit">提交</string>
-    <string name="button_modify">修改</string>
-    <string name="button_distribution_sign">签收</string>
-    <string name="button_distribution_inspect">逐件验货</string>
-    <string name="button_distribution_reject">拒收</string>
     <string name="button_confirm">确定</string>
-    <string name="button_package_stockout">出库</string>
-    <string name="button_stocktake_list">盘点记录</string>
     <string name="button_sync">同步</string>
 
-    <string name="action_settings">设置</string>
 
 </resources>

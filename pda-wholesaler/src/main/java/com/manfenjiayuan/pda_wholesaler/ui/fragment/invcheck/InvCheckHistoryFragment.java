@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -64,7 +64,7 @@ public class InvCheckHistoryFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_stock_take_list;
+        return R.layout.fragment_template_goods_list;
     }
 
     @Override

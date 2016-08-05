@@ -14,7 +14,7 @@
         app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
         app:editQueryView_inputHint="@string/hint_input_barcode"
         app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="18px"/>
+        app:editQueryView_inputTextSize="16sp"/>
 
     <ScrollView
         android:id="@+id/scrollView"

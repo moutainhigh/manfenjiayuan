@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Pda</string>
+    <string name="app_name">PDA</string>
+
+    <string name="action_import_sendorder">导入采购订单</string>
+    <string name="action_import_sendioorder">导入发货单</string>
+    <string name="action_import_findorder">导入拣货单</string>
 </resources>

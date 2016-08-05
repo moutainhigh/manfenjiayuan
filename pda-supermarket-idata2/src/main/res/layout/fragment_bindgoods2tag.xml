@@ -20,7 +20,7 @@
             app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
             app:editQueryView_inputHint="请扫描标签条码"
             app:editQueryView_inputTextColor="@color/black"
-            app:editQueryView_inputTextSize="18px"/>
+            app:editQueryView_inputTextSize="16sp"/>
 
         <com.bingshanguxue.pda.widget.EditQueryView
             android:id="@+id/eqv_barcode"
@@ -31,7 +31,7 @@
             app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
             app:editQueryView_inputHint="请扫描商品条码"
             app:editQueryView_inputTextColor="@color/black"
-            app:editQueryView_inputTextSize="18px"/>
+            app:editQueryView_inputTextSize="16sp"/>
 
 
         <android.support.v4.widget.NestedScrollView

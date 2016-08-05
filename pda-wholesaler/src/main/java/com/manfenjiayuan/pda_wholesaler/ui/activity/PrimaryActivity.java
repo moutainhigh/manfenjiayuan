@@ -11,7 +11,7 @@ import com.manfenjiayuan.pda_wholesaler.ui.fragment.ChainGoodsFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvSendIoOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.BindGoods2ShelvesFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvCheckListFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvIoOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReturnOrderFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;

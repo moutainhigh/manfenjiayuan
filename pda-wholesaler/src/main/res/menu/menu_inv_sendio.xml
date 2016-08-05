@@ -4,12 +4,12 @@
     <item
         android:id="@+id/action_submit"
         android:orderInCategory="100"
-        android:title="提交"
+        android:title="@string/action_submit"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/action_sendioorder"
         android:orderInCategory="100"
         android:icon="@mipmap/actionbar_icon_more_normal"
-        android:title="导入拣货单"
+        android:title="@string/action_import_findorder"
         app:showAsAction="never" />
 </menu>

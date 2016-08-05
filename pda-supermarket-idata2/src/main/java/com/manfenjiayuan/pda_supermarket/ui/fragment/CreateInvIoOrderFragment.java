@@ -171,7 +171,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
                 InvIoGoodsEntity entity = goodsAdapter.getEntity(position);
-                if (entity != null){
+                if (entity != null) {
                     inspect(entity.getBarcode());
                 }
             }
@@ -324,10 +324,11 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     };
 
     private CommitInvIoOrderDialog commitDialog = null;
+
     /**
      * 提交订单
-     * */
-    private void doCommitTask(final String orderId){
+     */
+    private void doCommitTask(final String orderId) {
 //        hideProgressDialog();
 //        DialogUtil.showHint("准备提交订单");
 
@@ -399,7 +400,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
     /**
      * 验货
-     * */
+     */
     @OnClick(R.id.fab_add)
     public void inspect() {
         inspect(null);

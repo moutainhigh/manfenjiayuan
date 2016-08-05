@@ -84,7 +84,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_stock_take;
+        return R.layout.fragment_inspect_invcheck_goods;
     }
 
     @Override

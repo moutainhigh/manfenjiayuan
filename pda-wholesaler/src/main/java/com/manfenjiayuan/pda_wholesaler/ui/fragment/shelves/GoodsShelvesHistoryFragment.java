@@ -29,7 +29,7 @@ import de.greenrobot.event.EventBus;
 
 
 /**
- * 盘点记录
+ * 绑定记录
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class GoodsShelvesHistoryFragment extends BaseFragment {
@@ -71,7 +71,7 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setTitle("盘点记录");
+        mToolbar.setTitle("绑定记录");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {

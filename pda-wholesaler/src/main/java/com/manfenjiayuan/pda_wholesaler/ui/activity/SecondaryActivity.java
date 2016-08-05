@@ -14,7 +14,8 @@ import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReceiveOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvCheckHistoryFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckHistoryFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvLossInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesHistoryFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
@@ -235,12 +236,12 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                     .commit();
         }
         else if(serviceType == FRAGMENT_TYPE_STOCK_TAKE){
-            InvCheckHistoryFragment fragment;
+            InvCheckInspectFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                fragment = InvCheckHistoryFragment.newInstance(intent.getExtras());
+                fragment = InvCheckInspectFragment.newInstance(intent.getExtras());
             }else{
-                fragment = InvCheckHistoryFragment.newInstance(null);
+                fragment = InvCheckInspectFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

@@ -297,7 +297,6 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
         @Override
         protected Boolean doInBackground(String... params) {
-            ZLogger.d("doInBackground");
 //            getCountryCityByIp("http://www.manfenjiayuan.cn");
 //            getCountryCityByIp("221.224.34.30");
 

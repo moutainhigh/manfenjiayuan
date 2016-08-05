@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -83,7 +83,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_stock_take;
+        return R.layout.fragment_inspect_invcheck_goods;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
                     if (id == R.id.action_sync) {
                         uploadOrders();
                     } else if (id == R.id.action_history) {
-                        redirectToStockTakeList();
+                        redirectToStockTakeHistory();
                     }
                     return true;
                 }
@@ -199,10 +199,6 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
         queryByBarcode(code);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @OnClick(R.id.shelvesNumberView)
     public void toggleShelfnumber() {
@@ -237,7 +233,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
         DataSyncService.get().sync();
     }
 
-    public void redirectToStockTakeList() {
+    public void redirectToStockTakeHistory() {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE,
@@ -370,7 +366,6 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
             labelQuantity.requestFocusEnd();
         }
     }
-
 
 
     @Override

@@ -70,7 +70,7 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_wholesaler_goodsshelves;
+        return R.layout.fragment_bindgoods2shelves;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
             }
         });
         // Inflate a menu to be displayed in the toolbar
-        mToolbar.inflateMenu(R.menu.menu_inv_check_inspect);
+        mToolbar.inflateMenu(R.menu.menu_bindshelves);
 
         initProgressDialog("正在同步数据", "同步成功", "同步失败");
 
@@ -153,11 +153,6 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
         } else {
             refreshGoodsInfo(curGoods);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     public void onEventMainThread(ShelveSyncManager.ShelveSyncManagerEvent event) {

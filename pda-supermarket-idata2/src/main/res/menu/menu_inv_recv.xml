@@ -4,18 +4,18 @@
     <item
         android:id="@+id/action_submit"
         android:orderInCategory="100"
-        android:title="提交"
+        android:title="@string/action_submit"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/action_sendioorder"
         android:orderInCategory="100"
         android:icon="@mipmap/actionbar_icon_more_normal"
-        android:title="导入发货单"
+        android:title="@string/action_import_sendioorder"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_sendorder"
         android:orderInCategory="100"
         android:icon="@mipmap/actionbar_icon_more_normal"
-        android:title="导入采购订单"
+        android:title="@string/action_import_sendorder"
         app:showAsAction="never" />
 </menu>
