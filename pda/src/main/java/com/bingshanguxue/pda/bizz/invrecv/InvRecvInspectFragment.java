@@ -338,7 +338,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
             InvRecvGoodsService.get().inspect(curGoods, Double.valueOf(amount), quantityCheck);
 
             onSubmitSuccess();
-            refreshPackage(null);
         }
     }
 
@@ -367,8 +366,10 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
      * 提交成功
      */
     public void onSubmitSuccess() {
-        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
-//        hideProgressDialog();
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
+
+        refreshPackage(null);
     }
 
 
@@ -593,7 +594,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
                 InvRecvGoodsService.get().inspect(entity, amount, quantity);
 
                 onSubmitSuccess();
-                refreshPackage(null);
             }
         });
         quantityCheckConfirmDialog.setNegativeButton("累加", new DialogInterface.OnClickListener() {
@@ -606,7 +606,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
                         entity.getReceiveQuantity() + quantity);
 
                 onSubmitSuccess();
-                refreshPackage(null);
             }
         });
         if (!quantityCheckConfirmDialog.isShowing()) {

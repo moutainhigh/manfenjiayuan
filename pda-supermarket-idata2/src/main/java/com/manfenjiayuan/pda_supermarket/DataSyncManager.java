@@ -42,7 +42,8 @@ public class DataSyncManager {
                 ZLogger.d("通知更新SKU商品");
             }
         };
-        EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class, MfhApplication.getAppContext());
+        EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class,
+                MfhApplication.getAppContext());
         msgService.sendText(MfhLoginService.get().getCurrentGuId(),
                 MfhLoginService.get().getCurrentGuId(),
                 IMBizType.TENANT_SKU_UPDATE, "update sku", processor);

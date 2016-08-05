@@ -292,8 +292,8 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
      * 提交成功
      */
     public void onSubmitSuccess() {
-        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
-//        hideProgressDialog();
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
 
         refreshPackage(null);
     }

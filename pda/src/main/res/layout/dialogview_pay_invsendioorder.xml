@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="320dp"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_double">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_double">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="货款支付"
+            android:textColor="@color/material_black"
+            android:textSize="20sp"/>
+
+        <!--应收金额-->
+        <TextView
+            android:id="@+id/tv_handle_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:text=""
+            android:textColor="@color/material_grey_500"
+            android:textSize="@dimen/textsize_normal"/>
+
+        <!--授权码-->
+        <EditText
+            android:id="@+id/et_password"
+            style="@style/mfh_edittext_normal"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_margin="@dimen/spacing_double"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:gravity="center_vertical"
+            android:hint="请输入支付密码"
+            android:inputType="textPassword"
+            android:maxLength="6"/>
+
+        <Button
+            android:id="@+id/button_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:background="@drawable/btn_corner_red"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="@color/material_white"
+            android:textSize="16sp"
+            android:visibility="visible"/>
+
+        <Button
+            android:id="@+id/button_cancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:background="@drawable/btn_corner_green"
+            android:gravity="center"
+            android:text="暂不支付"
+            android:textColor="@color/material_white"
+            android:textSize="16sp"
+            android:visibility="visible"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/frame_process"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            style="@style/loading"
+            android:layout_width="30dip"
+            android:layout_height="30dip"/>
+
+        <TextView
+            android:id="@+id/tv_process"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_double"
+            android:text="正在发起支付请求"
+            android:textColor="@color/material_black"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="300dp"-->
+    <!--android:layout_height="320dp"-->
+    <!--android:padding="@dimen/spacing_double">-->
+
+
+    <!---->
+
+    <!--</RelativeLayout>-->
+
+</RelativeLayout>

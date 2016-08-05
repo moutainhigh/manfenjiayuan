@@ -17,14 +17,13 @@ import android.widget.RelativeLayout;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvGoodsAdapter;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
-import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
+import com.bingshanguxue.pda.dialog.InvSendIoOrderPayDialog;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
-import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
@@ -44,6 +43,7 @@ import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -93,7 +93,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     private InvSendOrderPresenter invSendOrderPresenter;
     private InvSendIoOrderPresenter invSendIoOrderPresenter;
 
-    private AccountQuickPayDialog payDialog = null;
+    private InvSendIoOrderPayDialog payDialog = null;
     protected Double totalAmount = 0D;
 
     public static CreateInvReceiveOrderFragment newInstance(Bundle args) {
@@ -465,10 +465,15 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
      * 支付成功
      */
     public void onReceiveOrderSucceed(String orderId) {
-        hideProgressDialog();
         ZLogger.d("新建收货单成功: " + orderId);
 
+        //更新商品发生变化，通知POS机同步
         DataSyncManager.getInstance().notifyUpdateSku();
+
+        goodsAdapter.setEntityList(null);
+        InvRecvGoodsService.get().clear();
+
+        hideProgressDialog();
 
 //        支付收货订单
         doPayWork(orderId, totalAmount);
@@ -478,24 +483,25 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
      * 支付订单
      */
     public void doPayWork(String orderId, Double amount) {
-        if (amount <= 0) {
-            onOrderPaySucceed();
-            return;
-        }
-
         if (StringUtils.isEmpty(orderId)) {
             ZLogger.d("订单无效");
             onOrderPayInterrupted();
             return;
         }
 
+        ZLogger.d(String.format("orderId=%s, amount=%.2f", orderId, amount));
+        if (amount <= 0) {
+            onOrderPaySucceed();
+            return;
+        }
+
         //支付
         if (payDialog == null) {
-            payDialog = new AccountQuickPayDialog(getActivity());
+            payDialog = new InvSendIoOrderPayDialog(getActivity());
             payDialog.setCancelable(false);
             payDialog.setCanceledOnTouchOutside(false);
         }
-        payDialog.init(orderId, amount, new AccountQuickPayDialog.DialogClickListener() {
+        payDialog.init(orderId, amount, new InvSendIoOrderPayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed() {
                 //支付成功
@@ -512,7 +518,9 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                 onOrderPayInterrupted();
             }
         });
-        payDialog.show();
+        if (!payDialog.isShowing()){
+            payDialog.show();
+        }
     }
 
 
@@ -522,7 +530,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     public void onOrderPaySucceed() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
-
     }
 
     /**
