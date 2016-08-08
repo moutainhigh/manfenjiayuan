@@ -38,7 +38,8 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
  * <h1>快捷帐号支付：采购收货单</h1><br>
  *
  * 1.支付完成 {@link DialogClickListener#onPaySucceed()}<br>
- * 2.支付异常 {@link DialogClickListener#onPayException()}<br>
+ * 2.支付异常 {@link DialogClickListener#onPayFailed()}<br>
+ * 2.支付取消 {@link DialogClickListener#onPayCanceled()}<br>
  *
  * @author NAT.ZZN(bingshanguxue)
  * 
@@ -92,7 +93,6 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
                 submitOrder();
             }
         });
@@ -252,7 +252,6 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
                     ZLogger.d("支付采购配送单失败:" + errMsg);
                     bPayProcessing = false;
                     onBarpayFailed(errMsg, Color.parseColor("#FE5000"));
-//                        onBarpayFinished(Constants.PAYTYPE_MFACCOUNT, paidAmount, "支付成功", Color.parseColor("#FE5000"));
                 }
             }
             , String.class
@@ -305,15 +304,15 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
         tvProcess.setText(msg);
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);
-        if (mListener != null){
-            mListener.onPayFailed();
-        }
-
         etPassword.getText().clear();//清空授权码
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (mListener != null){
+                    mListener.onPayFailed();
+                }
+
                 etPassword.setVisibility(View.VISIBLE);
                 etPassword.requestFocus();
                 frameProcess.setVisibility(View.GONE);
