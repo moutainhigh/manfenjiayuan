@@ -21,6 +21,7 @@ public class InvSendIoOrderItemBrief implements ILongId, Serializable {
     private Integer status;//订单状态
     private Integer isPrivate = IsPrivate.PLATFORM;
     private Long sendTenantId;
+    private String sendCompanyName;
 
     private List<InvSendIoOrderItem> items;
 
@@ -102,5 +103,13 @@ public class InvSendIoOrderItemBrief implements ILongId, Serializable {
 
     public void setSendTenantId(Long sendTenantId) {
         this.sendTenantId = sendTenantId;
+    }
+
+    public String getSendCompanyName() {
+        return sendCompanyName;
+    }
+
+    public void setSendCompanyName(String sendCompanyName) {
+        this.sendCompanyName = sendCompanyName;
     }
 }
