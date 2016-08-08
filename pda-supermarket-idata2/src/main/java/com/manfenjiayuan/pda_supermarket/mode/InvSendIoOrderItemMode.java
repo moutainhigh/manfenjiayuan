@@ -1,8 +1,8 @@
 package com.manfenjiayuan.pda_supermarket.mode;
 
 import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
+import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
@@ -42,9 +42,9 @@ public class InvSendIoOrderItemMode implements IInvSendIoOrderItemMode<InvSendIo
                         InvSendIoOrderItemBrief invSendIoOrderItemBrief = null;
 
                         if (rspData != null) {
-                            //com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-                            RspBean<InvSendIoOrderItemBrief> retValue = (RspBean<InvSendIoOrderItemBrief>) rspData;
-                            invSendIoOrderItemBrief = retValue.getValue();
+                            //com.mfh.comn.net.data.EntityWrapper cannot be cast to com.mfh.comn.net.data.RspBean
+                            EntityWrapper<InvSendIoOrderItemBrief> retValue = (EntityWrapper<InvSendIoOrderItemBrief>) rspData;
+                            invSendIoOrderItemBrief = retValue.getBean();
                         }
 
                         if (listener != null) {

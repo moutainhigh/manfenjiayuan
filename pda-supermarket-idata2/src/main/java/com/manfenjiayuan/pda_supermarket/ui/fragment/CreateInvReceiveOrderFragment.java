@@ -20,9 +20,11 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvGoodsAdapter;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
+import com.bingshanguxue.pda.bizz.invsendio.SendIoEntryMode;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.dialog.InvSendIoOrderPayDialog;
+import com.bingshanguxue.pda.widget.EditLabelView;
 import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
@@ -33,6 +35,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.presenter.InvSendIoOrderPresenter;
 import com.manfenjiayuan.pda_supermarket.ui.IInvSendIoOrderView;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
+import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -74,8 +77,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.rl_scan_sendioorder)
-    RelativeLayout rlScanSendIoOrder;
 
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
@@ -83,9 +84,13 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     RecyclerViewEmptySupport addressRecyclerView;
     private InvRecvGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
-
     @Bind(R.id.empty_view)
     View emptyView;
+
+    @Bind(R.id.rl_scan_sendioorder)
+    RelativeLayout rlScanSendIoOrder;
+    @Bind(R.id.label_order_barcode)
+    EditLabelView labelOrderBarcode;
 
     /*供应商*/
     private CompanyInfo companyInfo = null;//当前私有供应商
@@ -95,6 +100,9 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
     private InvSendIoOrderPayDialog payDialog = null;
     protected Double totalAmount = 0D;
+
+    private int entryMode = SendIoEntryMode.MANUAL;
+    private ActionDialog mActionDialog = null;
 
     public static CreateInvReceiveOrderFragment newInstance(Bundle args) {
         CreateInvReceiveOrderFragment fragment = new CreateInvReceiveOrderFragment();
@@ -121,8 +129,9 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             return;
         }
         isAcceptBarcodeEnabled = false;
-//        inspect(code);
-        importSendIoOrder(code);
+        if (entryMode == SendIoEntryMode.SENDIOORDER){
+            importSendIoOrder(code);
+        }
     }
 
     @Override
@@ -159,10 +168,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                 int id = item.getItemId();
                 if (id == R.id.action_submit) {
                     submit();
-                } else if (id == R.id.action_sendioorder) {
-                    fetchSendIoOrder();
-                } else if (id == R.id.action_sendorder) {
-                    fetchSendOrder();
                 }
                 return true;
             }
@@ -170,12 +175,22 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_recv);
 
+        mProviderView.setEnabled(false);
         initRecyclerView();
 
-        if (companyInfo == null) {
-            selectInvCompProvider();
-        }
+        labelOrderBarcode.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                importSendIoOrder(text);
+            }
 
+            @Override
+            public void onScan() {
+            }
+        });
+
+
+        selectEntryMode();
     }
 
     @Override
@@ -263,19 +278,34 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         setScanEnabled(true);
     }
 
+    /**
+     * */
     public void setScanEnabled(boolean enabled) {
         isAcceptBarcodeEnabled = enabled;
         if (enabled) {
             rlScanSendIoOrder.setVisibility(View.VISIBLE);
+            labelOrderBarcode.requestFocusEnd();
         } else {
             rlScanSendIoOrder.setVisibility(View.GONE);
         }
+    }
+
+    @OnClick(R.id.fab_submit)
+    public void importSendIoOrder(){
+        String barcode = labelOrderBarcode.getInput().toString();
+        importSendIoOrder(barcode);
     }
 
     /**
      * 扫描到发货单条码后，加载订单明细
      */
     private void importSendIoOrder(String barcode) {
+        labelOrderBarcode.setInput("");
+        labelOrderBarcode.requestFocusEnd();
+        if (StringUtils.isEmpty(barcode)){
+            isAcceptBarcodeEnabled = true;
+            return;
+        }
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             isAcceptBarcodeEnabled = true;
@@ -559,6 +589,44 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
     }
 
+    /**
+     * 选择入口
+     * */
+    private void selectEntryMode(){
+        if (mActionDialog == null) {
+            mActionDialog = new ActionDialog(getActivity());
+            mActionDialog.setCancelable(false);
+            mActionDialog.setCanceledOnTouchOutside(false);
+        }
+        mActionDialog.init("新建收货单", "可以选择以下方式新建收货单",
+                new ActionDialog.DialogClickListener() {
+                    @Override
+                    public void onAction1Click() {
+                        entryMode = SendIoEntryMode.MANUAL;
+
+                        if (companyInfo == null) {
+                            selectInvCompProvider();
+                        }
+                    }
+
+                    @Override
+                    public void onAction2Click() {
+                        entryMode = SendIoEntryMode.SENDIOORDER;
+                        fetchSendIoOrder();
+                    }
+
+                    @Override
+                    public void onAction3Click() {
+                        entryMode = SendIoEntryMode.SENDORDER;
+                        fetchSendOrder();
+                    }
+        });
+        mActionDialog.registerActions("手动输入商品", "导入发货单", "导入采购单");
+        if (!mActionDialog.isShowing()){
+            mActionDialog.show();
+        }
+    }
+
     private CommonDialog operateDialog = null;
 
     private void initRecyclerView() {
@@ -677,6 +745,13 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     @Override
     public void onIInvSendIoOrderViewSuccess(InvSendIoOrderItemBrief data) {
         if (data != null) {
+            //保存批发商信息
+            CompanyInfo companyInfo = new CompanyInfo();
+            companyInfo.setTenantId(data.getSendTenantId());
+            companyInfo.setName(data.getSendCompanyName());
+            changeSendCompany(companyInfo);
+
+            //保存订单明细
             List<InvSendIoOrderItem> sendIoOrderItems = data.getItems();
             new SendIoOrderAsyncTask().execute(sendIoOrderItems);
         }
@@ -718,7 +793,8 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         protected void onPostExecute(List<InvRecvGoodsEntity> distributionSignEntities) {
             super.onPostExecute(distributionSignEntities);
             goodsAdapter.setEntityList(distributionSignEntities);
-            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
+//            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
+            hideProgressDialog();
             setScanEnabled(false);
         }
     }

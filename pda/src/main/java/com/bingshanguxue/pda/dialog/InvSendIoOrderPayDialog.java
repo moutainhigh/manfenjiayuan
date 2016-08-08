@@ -264,7 +264,7 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
      */
     private void onBarpayProcessing(String msg) {
         bPayProcessing = true;
-        etPassword.setVisibility(View.GONE);
+        etPassword.setEnabled(false);
         frameProcess.setVisibility(View.VISIBLE);
         tvProcess.setText(msg);
         tvProcess.setTextColor(Color.parseColor("#FF000000"));
@@ -288,7 +288,7 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
                     mListener.onPaySucceed();
                 }
 
-                etPassword.setVisibility(View.VISIBLE);
+                etPassword.setEnabled(true);
                 etPassword.requestFocus();
                 frameProcess.setVisibility(View.GONE);
                 bPayProcessing = false;
@@ -313,7 +313,7 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
                     mListener.onPayFailed();
                 }
 
-                etPassword.setVisibility(View.VISIBLE);
+                etPassword.setEnabled(true);
                 etPassword.requestFocus();
                 frameProcess.setVisibility(View.GONE);
 
