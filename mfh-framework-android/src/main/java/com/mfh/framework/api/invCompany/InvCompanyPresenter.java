@@ -29,21 +29,21 @@ public class InvCompanyPresenter {
             @Override
             public void onProcess() {
                 if (mIInvCompanyInfoView != null){
-                    mIInvCompanyInfoView.onProcess();
+                    mIInvCompanyInfoView.onIInvCompanyInfoViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
                 if (mIInvCompanyInfoView != null){
-                    mIInvCompanyInfoView.onSuccess(pageInfo, dataList);
+                    mIInvCompanyInfoView.onIInvCompanyInfoViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (mIInvCompanyInfoView != null){
-                    mIInvCompanyInfoView.onError(errorMsg);
+                    mIInvCompanyInfoView.onIInvCompanyInfoViewError(errorMsg);
                 }
             }
         });

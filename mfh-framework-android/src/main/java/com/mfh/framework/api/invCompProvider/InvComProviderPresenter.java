@@ -25,21 +25,21 @@ public class InvComProviderPresenter {
             @Override
             public void onProcess() {
                 if (mIMyProviderView != null){
-                    mIMyProviderView.onProcess();
+                    mIMyProviderView.onIMyProviderViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<MyProvider> dataList) {
                 if (mIMyProviderView != null){
-                    mIMyProviderView.onSuccess(pageInfo, dataList);
+                    mIMyProviderView.onIMyProviderViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (mIMyProviderView != null){
-                    mIMyProviderView.onError(errorMsg);
+                    mIMyProviderView.onIMyProviderViewError(errorMsg);
                 }
             }
         });

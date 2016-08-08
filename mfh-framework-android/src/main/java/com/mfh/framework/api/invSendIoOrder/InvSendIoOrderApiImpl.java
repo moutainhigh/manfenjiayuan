@@ -96,6 +96,7 @@ public class InvSendIoOrderApiImpl extends InvSendIoOrderApi{
         if (!StringUtils.isEmpty(barcode)) {
             params.put("barcode", barcode);
         }
+        params.put("wrapper", "true");
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_INVSENDIOORDER_GETBYID, params, responseCallback);
     }
