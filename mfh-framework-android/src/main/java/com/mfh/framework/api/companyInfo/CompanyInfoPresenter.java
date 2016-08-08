@@ -21,25 +21,26 @@ public class CompanyInfoPresenter {
      * 获取门店
      */
     public void findPublicCompanyInfo(PageInfo pageInfo, String nameLike, Integer abilityItem) {
-        mCompanyInfoMode.findPublicCompanyInfo(pageInfo, nameLike, abilityItem, new OnPageModeListener<CompanyInfo>() {
+        mCompanyInfoMode.findPublicCompanyInfo(pageInfo, nameLike, abilityItem,
+                new OnPageModeListener<CompanyInfo>() {
             @Override
             public void onProcess() {
                 if (mICompanyInfoView != null) {
-                    mICompanyInfoView.onProcess();
+                    mICompanyInfoView.onICompanyInfoViewProcess();
                 }
             }
 
             @Override
             public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
                 if (mICompanyInfoView != null) {
-                    mICompanyInfoView.onSuccess(pageInfo, dataList);
+                    mICompanyInfoView.onICompanyInfoViewSuccess(pageInfo, dataList);
                 }
             }
 
             @Override
             public void onError(String errorMsg) {
                 if (mICompanyInfoView != null) {
-                    mICompanyInfoView.onError(errorMsg);
+                    mICompanyInfoView.onICompanyInfoViewError(errorMsg);
                 }
             }
         });

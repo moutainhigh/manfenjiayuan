@@ -2,13 +2,14 @@ package com.mfh.framework.api.invCompProvider;
 
 import com.mfh.framework.api.CashierApi;
 
+import java.io.Serializable;
 import java.security.Provider;
 
 
 /**
  * Created by bingshanguxue on 5/29/16.
  */
-public class MyProvider {
+public class MyProvider implements Serializable{
     private Provider provider;
     private String name;
     /**
