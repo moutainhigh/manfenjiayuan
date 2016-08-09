@@ -196,4 +196,6 @@ dependencies {
     compile project(':cashier')
     compile project(path: ':vector_user')
     compile project(path: ':vector_uikit')
+    compile rootProject.ext.dependencies["rxjava"]
+    compile rootProject.ext.dependencies["rxandroid"]
 }

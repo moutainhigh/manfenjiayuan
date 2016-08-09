@@ -2,7 +2,6 @@ package com.mfh.framework.api.cashier;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetFactory;
@@ -356,5 +355,16 @@ public class CashierApiImpl extends CashierApi {
         params.put("jsonStr", jsonStr);
 
         AfinalFactory.getHttp(true).post(URL_PAYORDER_CREATE, params, responseCallback);
+    }
+
+    /**
+     * 判断是否需要锁定pos，由pos端主动发起询问
+     * */
+    public static void needLockPos(AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_NEEDLOCKPOS, params, responseCallback);
     }
 }

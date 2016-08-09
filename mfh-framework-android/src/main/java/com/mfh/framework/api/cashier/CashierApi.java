@@ -175,6 +175,9 @@ public class CashierApi {
             "/payOrder/create";
 
 
+    /**
+     * 判断是否需要锁定pos，由pos端主动发起询问,/scNetRealInfo/needLockPos?netId=
+     * */
     public final static String URL_NEEDLOCKPOS = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/needLockPos";
 
 
