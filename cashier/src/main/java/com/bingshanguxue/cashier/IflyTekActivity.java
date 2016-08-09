@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.activity;
+package com.bingshanguxue.cashier;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -14,14 +14,14 @@ import com.iflytek.cloud.SynthesizerListener;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.litecashier.R;
+import com.mfh.framework.uikit.base.BaseActivity;
 
 
 /**
  * 科大讯飞
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public abstract class IflyTekActivity extends SerialPortActivity {
+public abstract class IflyTekActivity extends BaseActivity {
     // 语音合成对象
     private SpeechSynthesizer mTts;
 

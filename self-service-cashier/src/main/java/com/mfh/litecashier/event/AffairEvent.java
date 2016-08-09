@@ -12,14 +12,16 @@ public class AffairEvent {
     public static final int EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER = 0X03;//预定订单更新
     public static final int EVENT_ID_APPEND_UNREAD_SKU = 0X04;//预定订单更新
 
+    public static final int EVENT_ID_LOCK_POS_CLIENT = 0X05;//锁定POS机器
+    public static final int EVENT_ID_PRE_LOCK_POS_CLIENT = 0X06;//锁定POS机器提示
+    public static final int EVENT_ID_RESET_CASHIER = 0X08;//初始化收银
+
     //同步数据
     public static final int EVENT_ID_SYNC_DATA_INITIALIZE = 0X20;//恢复出厂设置
     public static final int EVENT_ID_SYNC_DATA_START = 0X21;//同步数据开始
     public static final int EVENT_ID_REDIRECT_TO_LOGIN = 0X11;//跳转至登录页面
 
     //常用商品
-    public static final int EVENT_ID_SHOW_COMMONLY = 0X08;//常用商品
-    public static final int EVENT_ID_POPBACKSTACK = 0X10;//
     public static final int EVENT_ID_SHOW_EXPRESS = 0X11;//寄快递
     public static final int EVENT_ID_SHOW_LAUNDRY = 0X12;//洗衣服务
     public static final int EVENT_ID_SHOW_FRONT_CATEGORY = 0X14;//显示前台类目，带数据

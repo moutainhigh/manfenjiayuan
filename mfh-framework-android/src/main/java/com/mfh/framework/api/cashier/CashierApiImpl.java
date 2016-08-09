@@ -1,18 +1,14 @@
-package com.mfh.framework.api.impl;
+package com.mfh.framework.api.cashier;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.CashierApi;
-import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-
-import java.util.Date;
 
 /**
  * 满分POS－－API接口--网络请求

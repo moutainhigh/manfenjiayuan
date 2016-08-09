@@ -270,7 +270,7 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
 
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
+    public void onIInvCompanyInfoViewSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
         mPageInfo = pageInfo;
         if (orderList == null) {
             orderList = new ArrayList<>();
@@ -284,14 +284,14 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
     }
 
     @Override
-    public void onProcess() {
+    public void onIInvCompanyInfoViewProcess() {
         isLoadingMore = true;
         bSyncInProgress = true;
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onIInvCompanyInfoViewError(String errorMsg) {
         onLoadFinished();
     }
 

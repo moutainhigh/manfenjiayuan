@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.BooleanArraySerializer;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.DailysettleService;
@@ -12,6 +13,7 @@ import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.vector_user.UserApiImpl;
+import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
@@ -19,6 +21,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
+import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.core.DeviceUuidFactory;
@@ -26,6 +29,8 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
@@ -57,8 +62,8 @@ public class ValidateManager {
     public static final int STEP_VALIDATE_SESSION = 0;// 检查是否已经登录/会话是否有效
     /**设备注册,每次启动都需要注册，由后台去判断是否需要注册*/
     public static final int STEP_REGISTER_PLAT = 1;//
-    public static final int STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND = 2;// 检查是否清分完毕
-    public static final int STEP_VALIDATE_ANALISIS_QUOTA = 4;//统计分析现金授权额度
+    public static final int STEP_HAVENOMENYEND = 2;// 检查是否清分余额不足
+    public static final int STEP_VALIDATE_CASHQUOTA = 3;//统计分析现金授权额度
 
 
     private boolean bSyncInProgress = false;//是否正在同步
@@ -128,13 +133,13 @@ public class ValidateManager {
 //                }
             }
             break;
-            case STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND: {
+            case STEP_HAVENOMENYEND: {
 //                validateCheckHaveDateEndByServer();
                 haveNoMoneyEnd();
             }
             break;
-            case STEP_VALIDATE_ANALISIS_QUOTA: {
-                analysisQuota(new Date());
+            case STEP_VALIDATE_CASHQUOTA: {
+                needLockPos();
             }
             break;
             default: {
@@ -156,51 +161,79 @@ public class ValidateManager {
     }
 
     /**
+     * 验证结束
+     * */
+    private void validateUpdate(int eventId, Bundle args, String msg) {
+        if (!StringUtils.isEmpty(msg)){
+            ZLogger.df(msg);
+        }
+        EventBus.getDefault().post(new ValidateManagerEvent(eventId, args));
+    }
+
+    /**
      * 登录状态验证:进入需要登录的功能时需要
      * */
     private void checkSessionExpire(){
-        //未登录
         if (!MfhLoginService.get().haveLogined()) {
-            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN,
+            validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
                     null, "未登录，跳转到登录页面");
+            return;
         }
+
         //已经登录,检查会话是否过期
-        else {
-            if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-                nextStep();
-//                //没有网络，跳过验证会话过期，直接进行下一步操作
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-////                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_NOT_LOGIN,
-// null, "未登录，跳转到登录页面");
-//                    }
-//                }, 1000);
-            } else {
-                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                        NetProcessor.Processor<String>>(
-                        new NetProcessor.Processor<String>() {
-                            @Override
-                            public void processResult(IResponseData rspData) {
-                                //{"code":"0","msg":"登录成功!","version":"1","data":""}
-                                ZLogger.df("登录状态有效 ");
-                                nextStep();
-                            }
-
-                            @Override
-                            protected void processFailure(Throwable t, String errMsg) {
-                                super.processFailure(t, errMsg);
-                                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_SESSION_EXPIRED,
-                                        null, "会话过期，自动重登录");
-                            }
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            nextStep();
+        } else {
+            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                    NetProcessor.Processor<String>>(
+                    new NetProcessor.Processor<String>() {
+                        @Override
+                        public void processResult(IResponseData rspData) {
+                            //{"code":"0","msg":"登录成功!","version":"1","data":""}
+                            ZLogger.df("验证登录状态成功");
+                            nextStep();
                         }
-                        , String.class
-                        , CashierApp.getAppContext()) {
-                };
 
-                UserApiImpl.validSession(responseCallback);
-            }
+                        @Override
+                        protected void processFailure(Throwable t, String errMsg) {
+                            super.processFailure(t, errMsg);
+                            retryLogin();
+                        }
+                    }
+                    , String.class
+                    , CashierApp.getAppContext()) {
+            };
+
+            UserApiImpl.validSession(responseCallback);
         }
+    }
+
+    /**
+     * 自动重登录
+     *
+     */
+    private void retryLogin() {
+        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
+                MfhLoginService.get().getPassword(), new LoginCallback() {
+                    @Override
+                    public void loginSuccess(UserMixInfo user) {
+                        //登录成功
+                        ZLogger.df("重登录成功：");
+
+                        //注册到消息桥
+                        IMClient.getInstance().registerBridge();
+
+                        validateUpdate(ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED,
+                                null, "重登录成功");
+                        nextStep();
+                    }
+
+                    @Override
+                    public void loginFailed(String errMsg) {
+                        validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
+                                null, "登录已失效－－" + errMsg);
+                    }
+                });
     }
 
 
@@ -218,8 +251,8 @@ public class ValidateManager {
                             String retStr = retValue.getValue();
                             ZLogger.df("注册设备成功:" + retStr);
                             SharedPreferencesManager.setTerminalId(retStr);
-                            nextStep();
                         }
+                        nextStep();
                     }
 
                     @Override
@@ -227,9 +260,13 @@ public class ValidateManager {
                         super.processFailure(t, errMsg);
                         ZLogger.df(String.format("注册设备失败,%s", errMsg));
 
-                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
-                                null, "设备注册失败，需要重新注册");
-                        nextStep();
+                        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())){
+                            validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                                    null, "设备注册失败，需要重新注册");
+                        }
+                        else{
+                            nextStep();
+                        }
                     }
                 }
                 , String.class
@@ -246,8 +283,14 @@ public class ValidateManager {
         order.put("netId", MfhLoginService.get().getCurOfficeId());
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
-                    "网络未连接，暂停注册设备。");
+            if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())){
+                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                        null, "设备注册失败，需要重新注册");
+            }
+            else{
+                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                        "网络未连接，暂停注册设备。");
+            }
         }
         else {
             ZLogger.df("注册设备中..." + order.toJSONString());
@@ -377,6 +420,9 @@ public class ValidateManager {
                                         args, String.format("余额不足(%2f)清分失败，即将锁定POS机，" +
                                                 "可以通过提交营业现金来解锁", amount));
                             }
+                            else{
+                                ZLogger.df("haveNoMoneyEnd: " + amount);
+                            }
 
                             nextStep();
                         } catch (NumberFormatException e) {
@@ -402,9 +448,75 @@ public class ValidateManager {
     }
 
     /**
+     * 判断是否需要锁定pos
+     *
+     * */
+    private void needLockPos(){
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+//            //十分钟后自动重试
+//            Calendar trigger = Calendar.getInstance();
+//            trigger.add(Calendar.MINUTE, 10);
+//            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
+            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                    "网络未连接，暂停验证(昨日是否已经清分)。");
+            return;
+        }
+
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"查询成功!","version":"1","data":"false,8.99"}
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            String result = retValue.getValue();
+                            String[] ret = result.split(",");
+                            if (ret.length >=2){
+                                boolean isNeedLock = Boolean.getBoolean(ret[0]);
+                                Double amount = Double.valueOf(ret[1]);
+
+                                ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
+                                        isNeedLock, amount));
+                                if (isNeedLock && amount >= 0.01){
+                                    Bundle args = new Bundle();
+                                    args.putDouble("amount", amount);
+                                    validateFinished(ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP,
+                                            args, String.format("现金超过授权金额(%2f)，即将锁定POS机，" +
+                                                    "可以通过提交营业现金来解锁", amount));
+                                }
+                            }
+
+
+                        } catch (NumberFormatException e) {
+//                            e.printStackTrace();
+                            ZLogger.ef(e.toString());
+                        }
+
+                        nextStep();
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
+                        ZLogger.df("判读是否锁定POS机失败：" + errMsg);
+                        nextStep();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        CashierApiImpl.needLockPos(responseCallback);
+    }
+
+
+    /**
      * 统计分析,同时只能存在一条未支付的额度表，若存在多条，则默认取第一条。
      * */
-    public void analysisQuota(Date analysisDate){
+    public void localAnalysisCashQuota(Date analysisDate){
         try{
             QuotaEntity quotaEntity;
 
@@ -469,14 +581,14 @@ public class ValidateManager {
 
 
     public class ValidateManagerEvent {
-        public static final int EVENT_ID_VALIDATE_START             = 0X01;//验证开始
-        public static final int EVENT_ID_VALIDATE_NEED_LOGIN        = 0X02;//需要登录
-        public static final int EVENT_ID_VALIDATE_SESSION_EXPIRED   = 0X03;//会话过期
-        public static final int EVENT_ID_VALIDATE_PLAT_NOT_REGISTER = 0X04;//设备未注册
+        public static final int EVENT_ID_INTERRUPT_NEED_LOGIN        = 0X02;//需要登录
+        public static final int EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER = 0X04;//设备未注册
+        public static final int EVENT_ID_RETRY_SIGNIN_SUCCEED   = 0X03;//重登录成功
         public static final int EVENT_ID_VALIDATE_NEED_DAILYSETTLE  = 0X05;//需要日结
         public static final int EVENT_ID_INCOME_DESTRIBUTION_TOPUP  = 0x06;//清分充值
-        public static final int EVENT_ID_VALIDATE_FINISHED          = 0X07;//验证结束
-        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE      = 0X08;//额度发生变化
+        public static final int EVENT_ID_CASH_QUOTA_TOPUP  = 0x07;//授权额度超限充值
+        public static final int EVENT_ID_VALIDATE_FINISHED          = 0X08;//验证结束
+        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE      = 0X09;//额度发生变化
 
         private int eventId;
         private Bundle args;//参数

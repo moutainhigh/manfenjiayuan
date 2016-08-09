@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.CashierApi;
+import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.api.impl.StockApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;

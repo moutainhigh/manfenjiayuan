@@ -13,6 +13,6 @@ public class DailysettleReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
         ZLogger.df(">>启动自动检查清分");
-        ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND);
+        ValidateManager.get().stepValidate(ValidateManager.STEP_HAVENOMENYEND);
     }
 }

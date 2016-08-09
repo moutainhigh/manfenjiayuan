@@ -1,8 +1,8 @@
-package com.mfh.litecashier.event;
+package com.mfh.litecashier.ui.fragment.goods;
 
 /**
  * 类目商品
- * Created by kun on 15/9/23.
+ * Created by bingshanguxue on 15/9/23.
  */
 public class FrontCategoryGoodsEvent {
     public static final int EVENT_ID_RELOAD_DATA = 0X01;//初始化数据

@@ -14,7 +14,7 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.CashierApi;
+import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.api.CateApi;
 import com.mfh.framework.api.impl.CateApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;

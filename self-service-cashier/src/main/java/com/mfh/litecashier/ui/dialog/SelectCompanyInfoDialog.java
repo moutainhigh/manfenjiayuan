@@ -73,17 +73,17 @@ public class SelectCompanyInfoDialog extends CommonDialog
 
 
     @Override
-    public void onProcess() {
+    public void onICompanyInfoViewProcess() {
         onLoadStart();
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onICompanyInfoViewError(String errorMsg) {
         onLoadFinished();
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
+    public void onICompanyInfoViewSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
         mPageInfo = pageInfo;
 
         //第一页，缓存数据

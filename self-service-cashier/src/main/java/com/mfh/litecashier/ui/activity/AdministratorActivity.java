@@ -35,7 +35,7 @@ import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
-import com.mfh.litecashier.event.CashierAffairEvent;
+import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.OrderSyncManager2;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
@@ -218,7 +218,7 @@ public class AdministratorActivity extends BaseActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     //初始化收银
-                    EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_RESET_CASHIER));
+                    EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
                     reload(true);
                 }
             }
@@ -311,7 +311,7 @@ public class AdministratorActivity extends BaseActivity {
             public void onChangeHuman() {
 
                 //初始化收银,createdBy(humanId)已经改变
-                EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_RESET_CASHIER));
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
                 retryLogin(true);
             }
         });

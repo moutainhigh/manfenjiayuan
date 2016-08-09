@@ -20,36 +20,34 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
+import com.bingshanguxue.cashier.PayStatus;
+import com.bingshanguxue.cashier.database.service.PosTopupService;
+import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.PayApi;
-import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.EmptyEntity;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
-
-import java.util.List;
 
 
 /**
  * <h1>账号操作：锁定/交接班/登录/退出</h1><br>
  *
- * 1.支付完成 {@link DialogClickListener#onPaySucceed()}<br>
- * 2.支付异常 {@link DialogClickListener#onPayException()}<br>
+ * 1.支付完成 {@link DialogClickListener#onPaySucceed(Double, String)} ()}<br>
+ * 2.支付异常 {@link DialogClickListener#onPayCanceled()} ()}<br>
  *
  * @author NAT.ZZN(bingshanguxue)
  * 
@@ -67,24 +65,15 @@ public class AlipayDialog extends CommonDialog {
     private ProgressBar progressBar;
     private TextView tvProcess;
 
-    private CashierOrderInfo cashierOrderInfo;
-    protected int payType;//支付类型
+    private QuickPayInfo mQuickPayInfo;
     //设备号＋订单编号＋时间
     private String outTradeNo;//商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
-//    private String bizType;
 
     private boolean bPayProcessing = false;
 
-
     public interface DialogClickListener {
-        /**支付处理中*/
-        void onPayProcess(Double amount, String outTradeNo);
         /**支付完成*/
         void onPaySucceed(Double amount, String outTradeNo);
-        /**支付异常*/
-        void onPayException(Double amount, String outTradeNo);
-        /**支付失败*/
-        void onPayFailed(Double amount, String outTradeNo);
         /**取消支付*/
         void onPayCanceled();
     }
@@ -119,6 +108,9 @@ public class AlipayDialog extends CommonDialog {
             @Override
             public void onClick(View v) {
                 dismiss();
+
+                PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
+                        WayType.ALI_F2F, PayStatus.CANCELED);
                 if (mListener != null){
                     mListener.onPayCanceled();
                 }
@@ -128,7 +120,7 @@ public class AlipayDialog extends CommonDialog {
         btnQueryOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                queryOrder(outTradeNo, CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
+                queryOrder(outTradeNo, mQuickPayInfo.getAmount());
             }
         });
         btnCancelOrder.setOnClickListener(new View.OnClickListener() {
@@ -221,10 +213,8 @@ public class AlipayDialog extends CommonDialog {
      */
     private JSONObject generateOrderInfo(Double paidAmount, String authCode) {
         // 商户订单号
-        List<CashierOrderItemInfo> cashierOrderItemInfoList = cashierOrderInfo.getCashierOrderItemInfos();
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderItemInfoList.get(0);
-
-        outTradeNo = CashierFactory.genTradeNo(cashierOrderInfo.getBizType(), cashierOrderItemInfo.getOrderId(), true);
+        outTradeNo = CashierFactory.genTradeNo(mQuickPayInfo.getBizType(),
+                WayType.ALI_F2F, 0L, true);
         ZLogger.df(String.format("支付宝支付－交易编号：%s", outTradeNo));
 
         JSONObject orderInfo = new JSONObject();
@@ -233,8 +223,8 @@ public class AlipayDialog extends CommonDialog {
         orderInfo.put("auth_code", authCode);
         orderInfo.put("total_amount", MUtils.formatDouble(paidAmount, ""));
 //        orderInfo.put("discountable_amount", MStringUtil.formatAmount(discountableAmount));
-        orderInfo.put("subject", cashierOrderInfo.getSubject());
-        orderInfo.put("body", cashierOrderItemInfo.getBrief());
+        orderInfo.put("subject", mQuickPayInfo.getSubject());
+        orderInfo.put("body", mQuickPayInfo.getBody());
         orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
         orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
@@ -293,7 +283,7 @@ public class AlipayDialog extends CommonDialog {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
                             case "0":{
-                                onBarpayFinished(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo), outTradeNo,
+                                onBarpayFinished(mQuickPayInfo.getAmount(), outTradeNo,
                                         "支付成功", Color.parseColor("#FE5000"));
                             }
                             break;
@@ -305,7 +295,7 @@ public class AlipayDialog extends CommonDialog {
                             // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
                             // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
                             case "1":{
-                                queryOrder(outTradeNo, CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
+                                queryOrder(outTradeNo, mQuickPayInfo.getAmount());
                             }
                             break;
                             //{"code":"1","msg":"bizType参数不能为空!","version":"1","data":null}
@@ -333,15 +323,15 @@ public class AlipayDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        Double handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
         ZLogger.df(String.format("支付宝条码支付：支付金额:%.2f, 授权码：%s, 业务类型：%s",
-                handleAmount, authCode, cashierOrderInfo.getBizType()));
-        JSONObject jsonStr = generateOrderInfo(handleAmount, authCode);
-        if (mListener != null){
-            mListener.onPayProcess(handleAmount, outTradeNo);
-        }
+                mQuickPayInfo.getAmount(), authCode, mQuickPayInfo.getBizType()));
+        JSONObject jsonStr = generateOrderInfo(mQuickPayInfo.getAmount(), authCode);
+
+        PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
+                WayType.ALI_F2F, PayStatus.PROCESS);
+
         PayApi.aliBarPay(jsonStr.toJSONString(),
-                String.valueOf(cashierOrderInfo.getBizType()), payRespCallback);
+                String.valueOf(mQuickPayInfo.getBizType()), payRespCallback);
     }
 
     /**
@@ -472,6 +462,10 @@ public class AlipayDialog extends CommonDialog {
      * */
     private void onBarpayFinished(final Double paidAmount, final String outTradeNo,
                                   String msg, int color) {
+
+        PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
+                WayType.ALI_F2F, PayStatus.FINISH);
+
         tvProcess.setText(msg);
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);
@@ -501,14 +495,14 @@ public class AlipayDialog extends CommonDialog {
         progressBar.setVisibility(View.GONE);
         if (isException){
             frameOperation.setVisibility(View.VISIBLE);
-            if (mListener != null){
-                mListener.onPayException(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo), outTradeNo);
-            }
+            PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
+                    WayType.ALI_F2F, PayStatus.EXCEPTION);
+
         }else{
             frameOperation.setVisibility(View.GONE);
-            if (mListener != null){
-                mListener.onPayFailed(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo), outTradeNo);
-            }
+
+            PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
+                    WayType.ALI_F2F, PayStatus.FAILED);
         }
 
         etAuthCode.getText().clear();//清空授权码
@@ -525,11 +519,31 @@ public class AlipayDialog extends CommonDialog {
         }, 2000);
     }
 
-    public void init(CashierOrderInfo cashierOrderInfo, DialogClickListener callback) {
-        this.cashierOrderInfo = cashierOrderInfo;
+    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, DialogClickListener callback) {
+        this.mQuickPayInfo = quickPayInfo;
         this.mListener = callback;
+        if (isCancelAbled){
+            this.btnClose.setVisibility(View.VISIBLE);
+        }
+        else{
+            this.btnClose.setVisibility(View.GONE);
+        }
 
-        this.tvHandleAmount.setText(String.format("%.2f",
-                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo)));
+        this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+    }
+
+    public void initialize(QuickPayInfo quickPayInfo,
+                     String title, boolean isCancelAbled, DialogClickListener callback) {
+        this.mQuickPayInfo = quickPayInfo;
+        this.mListener = callback;
+        this.tvTitle.setText(title);
+        if (isCancelAbled){
+            this.btnClose.setVisibility(View.VISIBLE);
+        }
+        else{
+            this.btnClose.setVisibility(View.GONE);
+        }
+
+        this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
     }
 }

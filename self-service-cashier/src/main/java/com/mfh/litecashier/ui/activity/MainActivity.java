@@ -81,7 +81,6 @@ import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.database.logic.QuotaService;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.event.CashierAffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.CloudSyncManager;
@@ -869,19 +868,18 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                 cloudSpeak("您有新订单,请注意查收");
             }
 //            shopcartBadgeView.setBadgeNumber(DataCacheHelper.getInstance().getUnreadOrder());
+        } else if (event.getAffairId() == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
+
+        } else if (event.getAffairId() == AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT) {
+
+        } else if (event.getAffairId() == AffairEvent.EVENT_ID_RESET_CASHIER) {
+            initCashierOrder();
         }
     }
 
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(CashierAffairEvent event) {
-        ZLogger.d(String.format("CashierAffairEvent(%d)", event.getAffairId()));
-        if (event.getAffairId() == CashierAffairEvent.EVENT_ID_RESET_CASHIER) {
-            initCashierOrder();
-        }
-    }
-
     public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
@@ -924,10 +922,9 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE: {
                 String dailysettleDatetime = args.getString("dailysettleDatetime");
                 DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(dailysettleDatetime);
-                if (BizConfig.RELEASE){
+                if (BizConfig.RELEASE) {
                     incomeDistributionTopup(100D);
-                }
-                else{
+                } else {
                     incomeDistributionTopup(0.01D);
                 }
             }
@@ -1168,7 +1165,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 
     /**
      * 异步处理订单支付结果
-     *
+     * <p/>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
     private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
@@ -1521,8 +1518,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                 cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
                         WayType.name(payType), finalAmount, bCount));
             }
-        }
-        else{
+        } else {
             tvLastAmount.setText(String.format("合计: ¥%.2f", 0D));
             tvLastQuantity.setText(String.format("数量: %.2f", 0D));
             tvLastDiscount.setText(String.format("优惠: ¥%.2f", 0D));
@@ -1863,7 +1859,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     }
 
 
-    private void commintCashAndTrigDateEnd(String outTradeNo){
+    private void commintCashAndTrigDateEnd(String outTradeNo) {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {

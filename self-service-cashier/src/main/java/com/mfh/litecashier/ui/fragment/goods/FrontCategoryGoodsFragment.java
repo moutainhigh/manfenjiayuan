@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.cashier;
+package com.mfh.litecashier.ui.fragment.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,8 +27,6 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.AddCategoryGoodsEvent;
-import com.mfh.litecashier.event.FrontCategoryGoodsEvent;
-import com.mfh.litecashier.ui.adapter.FrontCategoryGoodsAdapter;
 import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.utils.ACacheHelper;
 
@@ -104,7 +102,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(FrontCategoryGoodsEvent event) {
-        ZLogger.d(String.format("FrontCategoryGoodsFragment: FrontCategoryGoodsEvent(%d/%d)", event.getAffairId(), event.getCategoryId()));
+        ZLogger.d(String.format("FrontCategoryGoodsEvent(%d/%d)", event.getAffairId(), event.getCategoryId()));
         if (event.getCategoryId().compareTo(categoryId) != 0) {
             return;
         }
@@ -306,7 +304,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
             }
         }, ScGoodsSku.class, CashierApp.getAppContext());
 
-        ScGoodsSkuApiImpl.findGoodsList(categoryId, pageInfo, queryRsCallBack);
+        ScGoodsSkuApiImpl.findGoodsListByFrontCategory(categoryId, pageInfo, queryRsCallBack);
     }
 
     public class QueryAsyncTask extends AsyncTask<RspQueryResult<ScGoodsSku>, Integer, Long> {

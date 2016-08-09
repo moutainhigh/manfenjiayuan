@@ -3,7 +3,7 @@ package com.mfh.litecashier.mode;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.CashierApi;
+import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
