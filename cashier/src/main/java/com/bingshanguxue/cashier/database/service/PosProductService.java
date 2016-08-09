@@ -7,6 +7,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.util.List;
 
@@ -69,8 +70,8 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         getDao().deleteAll();
     }
 
-    public List<PosProductEntity> queryAll(PageInfo pageInfo) {
-        return getDao().queryAll(pageInfo);
+    public List<PosProductEntity> queryAll(String strWhere, PageInfo pageInfo) {
+        return getDao().queryAll(strWhere, pageInfo);
     }
 
     public List<PosProductEntity> queryAll() {
@@ -97,5 +98,28 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
+    }
+
+    /**
+     * 查询本地商品库搜索商品
+     * @param barcode 商品条码
+     * @return PosProductEntity 如果找到多个返回第一个商品；没有找到返回null.
+     * */
+    public PosProductEntity findGoods(String barcode) {
+        //注意，这里的租户默认是当前登录租户
+        List<PosProductEntity> entities = PosProductService.get()
+                .queryAllByDesc(String.format("barcode = '%s' and tenantId = '%d'",
+                        barcode, MfhLoginService.get().getSpid()));
+        if (entities != null && entities.size() > 0) {
+            PosProductEntity goods = entities.get(0);
+            ZLogger.df(String.format("找到%d个商品:%s[%s]",
+                    entities.size(), barcode, goods.getName()));
+            return goods;
+        }
+        else{
+            ZLogger.df(String.format("未找到商品:%s", barcode));
+        }
+
+        return null;
     }
 }

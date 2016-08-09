@@ -37,10 +37,6 @@ public class PosProductDao extends BaseDbDao<PosProductEntity, String> {
      * @param pageInfo
      * @return
      */
-    public List<PosProductEntity> queryAll(PageInfo pageInfo) {
-        return queryAll(null, pageInfo);
-    }
-
     public List<PosProductEntity> queryAll(String strWhere, PageInfo pageInfo) {
         return getFinalDb().findAllByWhere(PosProductEntity.class, strWhere, "createdDate desc", pageInfo);//"id desc"/asc
     }

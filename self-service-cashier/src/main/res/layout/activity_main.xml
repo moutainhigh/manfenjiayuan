@@ -3,6 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:baselineAligned="false"
+              android:showDividers="middle"
+              android:divider="@drawable/divider_vertical_line_primary"
               android:orientation="horizontal">
 
     <LinearLayout
@@ -26,7 +28,6 @@
 
     </LinearLayout>
 
-
     <!--收银区-->
     <include
         layout="@layout/fragment_cashier"
@@ -35,11 +36,9 @@
         android:layout_weight="1"/>
 
     <!--广告轮播 780*1080/458.25*752dp-->
-    <com.mfh.framework.uikit.adv.AdvertisementViewPager
-        android:id="@+id/viewpager_adv"
+    <FrameLayout
+        android:id="@+id/fragment_plugin"
         android:layout_width="543dp"
-        android:layout_height="match_parent"
-        android:background="@color/material_white"/>
-
+        android:layout_height="match_parent"/>
 </LinearLayout>
 

@@ -583,10 +583,10 @@ public class ValidateManager {
     public class ValidateManagerEvent {
         public static final int EVENT_ID_INTERRUPT_NEED_LOGIN        = 0X02;//需要登录
         public static final int EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER = 0X04;//设备未注册
-        public static final int EVENT_ID_RETRY_SIGNIN_SUCCEED   = 0X03;//重登录成功
+        public static final int EVENT_ID_RETRY_SIGNIN_SUCCEED       = 0X03;//重登录成功
         public static final int EVENT_ID_VALIDATE_NEED_DAILYSETTLE  = 0X05;//需要日结
         public static final int EVENT_ID_INCOME_DESTRIBUTION_TOPUP  = 0x06;//清分充值
-        public static final int EVENT_ID_CASH_QUOTA_TOPUP  = 0x07;//授权额度超限充值
+        public static final int EVENT_ID_CASH_QUOTA_TOPUP           = 0x07;//授权额度超限充值
         public static final int EVENT_ID_VALIDATE_FINISHED          = 0X08;//验证结束
         public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE      = 0X09;//额度发生变化
 

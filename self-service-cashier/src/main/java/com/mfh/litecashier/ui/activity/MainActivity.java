@@ -25,24 +25,20 @@ import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
-import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.config.UConfig;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
@@ -53,16 +49,10 @@ import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.login.entity.UserMixInfo;
-import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.adv.AdvLocalPic;
-import com.mfh.framework.uikit.adv.AdvLocalPicAdapter;
-import com.mfh.framework.uikit.adv.AdvertisementViewPager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -76,10 +66,8 @@ import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LastOrderInfo;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
-import com.mfh.litecashier.database.entity.QuotaEntity;
 import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
-import com.mfh.litecashier.database.logic.QuotaService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
@@ -87,9 +75,11 @@ import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.OrderSyncManager2;
+import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
 import com.mfh.litecashier.ui.adapter.CashierSwipAdapter;
+import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.AdministratorSigninDialog;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
@@ -102,6 +92,8 @@ import com.mfh.litecashier.ui.dialog.ReceiveGoodsDialog;
 import com.mfh.litecashier.ui.dialog.RegisterUserDialog;
 import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
+import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
+import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
 import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -120,29 +112,31 @@ import net.tsz.afinal.FinalDb;
 
 import org.century.GreenTagsApi;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
  * 首页
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class MainActivity extends IflyTekActivity implements ICashierView {
+public class MainActivity extends CashierActivity implements ICashierView {
 
     @Bind(R.id.slideMenu)
     RecyclerView menuRecyclerView;
     private CashierServiceMenuAdapter menuAdapter;
     @Bind(R.id.button_sync)
     SyncButton btnSync;
-    @Bind(R.id.viewpager_adv)
-    AdvertisementViewPager advertiseViewPager;
-    private AdvLocalPicAdapter mPictureAdvPagerAdapter;
+
     @Bind(R.id.tv_quantity)
     TextView tvQuantity;
     @Bind(R.id.tv_amount)
@@ -155,8 +149,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     TextView tvLastDiscount;
     @Bind(R.id.tv_last_charge)
     TextView tvLastCharge;
-    @Bind(R.id.tv_quota)
-    TextView tvQuota;
     @Bind(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
     @Bind(R.id.product_list)
@@ -174,14 +166,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     private DoubleInputDialog quantityCheckDialog = null;
     private HangupOrderDialog hangupOrderDialog = null;
     private AlipayDialog alipayDialog = null;
-
-    /**
-     * POS唯一订单号，由POS机本地生成的12位字符串
-     */
-    private String curPosTradeNo;
-
-    private CashierPresenter cashierPresenter;
-
     private ValidatePhonenumberDialog mValidatePhonenumberDialog = null;
     private QueryBalanceDialog mQueryBalanceDialog = null;
     private RegisterUserDialog mRegisterUserDialog = null;
@@ -190,6 +174,17 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     private ExpressDialog expressDialog = null;
     private LaundryDialog laundryDialog = null;
     private ReceiveGoodsDialog receiveGoodsDialog = null;
+    private ActionDialog registerPlatDialog = null;
+
+//    private HomeAdvFragment mHomeAdvFragment;
+
+    /**
+     * POS唯一订单号，由POS机本地生成的12位字符串
+     */
+    private String curPosTradeNo;
+
+    private CashierPresenter cashierPresenter;
+
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -232,26 +227,19 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         initMenuRecyclerView();
         initBarCodeInput();
         initCashierRecyclerView();
-        initCashierOrder();
+
+//        showAdvFragment();
+        showLocalFrontCategoryFragment();
 
         if (menuAdapter != null) {
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
         }
-        List<AdvLocalPic> localAdvList = new ArrayList<>();
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb1));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb4));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb1));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.hb4));
-        mPictureAdvPagerAdapter = new AdvLocalPicAdapter(this, localAdvList, null);
-        advertiseViewPager.setAdapter(mPictureAdvPagerAdapter);
-        //TODO,定时切换(每隔5秒切换一次)
-        advertiseViewPager.startSlide(5 * 1000);
 
 
         //刷新挂单
         refreshFloatHangup();
 
-        ValidateManager.get().batchValidate();
+        initCashierOrder();
 
         reload(true);
 
@@ -287,10 +275,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     protected void onDestroy() {
@@ -300,16 +284,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 
         AppHelper.clearTempData();
     }
-
-    //
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        //Any time the window receives focus, simply set the IMMERSIVE mode.
-//        if (hasFocus) {
-//            hideSystemUI();
-//        }
-//    }
 
 
     @Override
@@ -809,6 +783,9 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         mAdministratorSigninDialog.show();
     }
 
+    /**
+     * 重新加载数据
+     */
     private void reload(boolean isSlient) {
         //设置需要更新前台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, true);
@@ -826,11 +803,15 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 //        hideRightSideFragment();
 
         dataSync(isSlient);
+
+        ValidateManager.get().batchValidate();
     }
 
     public void onEventMainThread(AffairEvent event) {
-        ZLogger.d(String.format("AffairEvent(%d)", event.getAffairId()));
-        if (event.getAffairId() == AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE) {
+        int eventId = event.getAffairId();
+        Bundle bundle = event.getArgs();
+        ZLogger.d(String.format("AffairEvent(%d)", eventId));
+        if (eventId == AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE) {
             if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
                 DialogUtil.showHint(R.string.toast_network_error);
                 return;
@@ -848,9 +829,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 //            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", true, false);
             btnSync.startSync();
             DataSyncManager.get().sync();
-        } else if (event.getAffairId() == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
-//            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", true, false);
-
+        } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
             if (count > 2) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
@@ -860,19 +839,19 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             } else {
                 btnSync.setBadgeEnabled(true);
             }
-        } else if (event.getAffairId() == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
+        } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
             if (count > 0) {
                 cloudSpeak("您有新订单,请注意查收");
             }
-//            shopcartBadgeView.setBadgeNumber(DataCacheHelper.getInstance().getUnreadOrder());
-        } else if (event.getAffairId() == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
+        } else if (eventId == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
+            Double amount = bundle.getDouble("amount");
+            incomeDistributionTopup(BizType.CASH_QUOTA, amount);
+        } else if (eventId == AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT) {
 
-        } else if (event.getAffairId() == AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT) {
-
-        } else if (event.getAffairId() == AffairEvent.EVENT_ID_RESET_CASHIER) {
+        } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
             initCashierOrder();
         }
     }
@@ -903,18 +882,15 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
 
         ZLogger.d(String.format("ValidateManagerEvent(%d)", eventId));
         switch (eventId) {
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_START: {
-            }
-            break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_SESSION_EXPIRED: {
-                retryLogin(false);
-            }
-            break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN: {
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN: {
                 redirectToLogin();
             }
             break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER: {
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED: {
+                dataSync(true);
+            }
+            break;
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
                 DialogUtil.showHint("需要注册");
 //                redirectToLogin();
             }
@@ -923,33 +899,20 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                 String dailysettleDatetime = args.getString("dailysettleDatetime");
                 DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(dailysettleDatetime);
                 if (BizConfig.RELEASE) {
-                    incomeDistributionTopup(100D);
+                    incomeDistributionTopup(BizType.INCOME_DISTRIBUTION, 100D);
                 } else {
-                    incomeDistributionTopup(0.01D);
+                    incomeDistributionTopup(BizType.INCOME_DISTRIBUTION, 0.01D);
                 }
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
                 Double amount = args.getDouble("amount");
-                incomeDistributionTopup(amount);
+                incomeDistributionTopup(BizType.INCOME_DISTRIBUTION, amount);
             }
             break;
-            //现金额度发生变化，更新界面，并判断是否需要支付
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_QUOTA_UPDATE: {
-
-                if (args != null) {
-                    Long orderId = args.getLong("orderId");
-                    QuotaEntity entity = QuotaService.get().getEntityById(String.valueOf(orderId));
-                    if (entity != null) {
-                        Double amount = entity.getAmount();
-                        tvQuota.setText(String.format("额度：%.2f", amount));
-//                        if (amount.compareTo(QuotaEntity.MAX_QUOTA) >= 0){
-//                            quotaPay(entity);
-//                        }
-                    } else {
-                        tvQuota.setText(MUtils.formatDouble(0D, ""));
-                    }
-                }
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP: {
+                Double amount = args.getDouble("amount");
+                incomeDistributionTopup(BizType.CASH_QUOTA, amount);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
@@ -960,37 +923,6 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             break;
         }
     }
-
-    /**
-     * 尝试登录
-     *
-     * @param bSlient 是否静默重试登录
-     */
-    private void retryLogin(final boolean bSlient) {
-        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
-                MfhLoginService.get().getPassword(), new LoginCallback() {
-                    @Override
-                    public void loginSuccess(UserMixInfo user) {
-                        //登录成功
-                        ZLogger.df("重登录成功：");
-
-                        //注册到消息桥
-                        IMClient.getInstance().registerBridge();
-
-                        dataSync(true);
-                    }
-
-                    @Override
-                    public void loginFailed(String errMsg) {
-                        //登录失败
-                        ZLogger.df("重登录失败：" + errMsg);
-                        if (!bSlient) {
-                            redirectToLogin();
-                        }
-                    }
-                });
-    }
-
 
     /**
      * 结算(需要登录)
@@ -1228,7 +1160,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             PrintManager.printPosOrder(orderEntities, true);
 
             //统计订单
-            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALISIS_QUOTA);
+//            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
             return lastOrderInfo;
         }
 
@@ -1353,6 +1285,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         String barcode = inlvBarcode.getInputString();
                         searchGoodsByBarcode(barcode);
+//                        searchGoodsByBarcodeRx(barcode);
                     }
 
                     return true;
@@ -1564,6 +1497,8 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
             updatePadDisplay(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
             //刷新挂单
             refreshFloatHangup();
+
+            UploadSyncManager.getInstance().sync();
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
@@ -1642,6 +1577,93 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         cashierPresenter.findGoods(barCode);
     }
 
+    private void searchGoodsByBarcodeRx(final String barCode) {
+
+        // 清空二维码输入，避免下次扫描条码错误
+        inlvBarcode.clear();
+
+        cashierPresenter.findGoods(barCode);
+
+        Observable.create(new Observable.OnSubscribe<PosProductEntity>() {
+            @Override
+            public void call(Subscriber<? super PosProductEntity> subscriber) {
+
+                if (StringUtils.isEmpty(barCode)) {
+                    subscriber.onError(new Throwable("商品条码无效"));
+                    return;
+                }
+
+                PosProductEntity goods;
+                //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
+                if (barCode.startsWith("2") && barCode.length() == 13) {
+                    String plu = barCode.substring(1, 7);
+                    String weightStr = String.format("%s.%s", barCode.substring(7, 9), barCode.substring(9, 12));
+                    Double weight = Double.valueOf(weightStr);
+                    ZLogger.df(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",
+                            barCode, plu, weight));
+
+                    int packFlag = 0;//是否是箱规：0不是；1是
+                    //Step 1:查询商品
+                    goods = PosProductService.get().findGoods(plu);
+                    if (goods == null) {
+                        // Step 2: 查询主条码
+                        List<PosProductSkuEntity> entityList = PosProductSkuService.get()
+                                .queryAllByDesc(String.format("otherBarcode = '%s'", plu));
+                        if (entityList != null && entityList.size() > 0) {
+                            PosProductSkuEntity posProductSkuEntity = entityList.get(0);
+                            String mainBarcode = posProductSkuEntity.getMainBarcode();
+                            packFlag = posProductSkuEntity.getPackFlag();
+                            ZLogger.df(String.format("找到%d个主条码%s", entityList.size(), mainBarcode));
+
+                            //Step 3:根据主条码再次查询商品
+                            goods = PosProductService.get().findGoods(mainBarcode);
+                        }
+                    }
+
+                } else {
+                    int packFlag = 0;//是否是箱规：0不是；1是
+                    //Step 1:查询商品
+                    goods = PosProductService.get().findGoods(barCode);
+                    if (goods == null) {
+                        // Step 2: 查询主条码
+                        List<PosProductSkuEntity> entityList = PosProductSkuService.get()
+                                .queryAllByDesc(String.format("otherBarcode = '%s'", barCode));
+                        if (entityList != null && entityList.size() > 0) {
+                            PosProductSkuEntity posProductSkuEntity = entityList.get(0);
+                            String mainBarcode = posProductSkuEntity.getMainBarcode();
+                            packFlag = posProductSkuEntity.getPackFlag();
+                            ZLogger.df(String.format("找到%d个主条码%s", entityList.size(), mainBarcode));
+
+                            //Step 3:根据主条码再次查询商品
+                            goods = PosProductService.get().findGoods(mainBarcode);
+                        }
+                    }
+                }
+
+                subscriber.onNext(goods);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<PosProductEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(PosProductEntity posProductEntity) {
+
+                    }
+                });
+    }
+
+
     /**
      * 获取当前订单交易编号
      */
@@ -1651,6 +1673,7 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         } else {
             curPosTradeNo = barcode;
         }
+
     }
 
     @Override
@@ -1758,93 +1781,25 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
     /**
      * 针对当前用户所属网点提交营业现金，并触发一次日结操作
      */
-    private void incomeDistributionTopup(Double amount) {
+    private void incomeDistributionTopup(Integer bizType, Double amount) {
         ZLogger.df(">>>准备提交营业现金");
-        List<CashierOrderItemInfo> cashierOrderItemInfoList = new ArrayList<>();
-        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
-        cashierOrderItemInfo.setOrderId(0L);
-        cashierOrderItemInfo.setbCount(1D);
-        cashierOrderItemInfo.setRetailAmount(amount);
-        cashierOrderItemInfo.setFinalAmount(amount);
-        cashierOrderItemInfo.setAdjustDiscountAmount(0D);
-        cashierOrderItemInfo.setDiscountRate(1D);
-        cashierOrderItemInfo.setBrief("提交营业现金");
-        cashierOrderItemInfo.setProductsInfo(null);
-        cashierOrderItemInfo.setDiscountInfo(new DiscountInfo(0L));
-        cashierOrderItemInfoList.add(cashierOrderItemInfo);
-
-        CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
-        cashierOrderInfo.initQuickPayment(BizType.DAILYSETTLE,
-                "", cashierOrderItemInfoList, "提交营业现金", null);
+        QuickPayInfo quickPayInfo = new QuickPayInfo();
+        quickPayInfo.setBizType(bizType);
+        quickPayInfo.setPayType(WayType.ALI_F2F);
+        quickPayInfo.setAmount(amount);
+        quickPayInfo.setSubject("提交营业现金");
+        quickPayInfo.setBody("清分余额不足");
 
         if (alipayDialog == null) {
             alipayDialog = new AlipayDialog(this);
             alipayDialog.setCancelable(false);
             alipayDialog.setCanceledOnTouchOutside(false);
         }
-        alipayDialog.init(cashierOrderInfo, new AlipayDialog.DialogClickListener() {
-            @Override
-            public void onPayProcess(Double amount, String outTradeNo) {
-//                ZLogger.d("支付处理中");
-//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_PROCESS);
-//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-//
-//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
-//                        WayType.ALI_F2F,
-//                        PosOrderPayEntity.PAY_STATUS_PROCESS, amount, amount, 0D);
-//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-//
-//                //保存支付记录
-//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-//                        dailysettleEntity.getBarCode(), null);
-
-            }
-
+        alipayDialog.initialize(quickPayInfo, "提交营业额", false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(Double amount, String outTradeNo) {
-//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_SUCCEED);
-//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-//
-//                //保存支付记录
-//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-//                        PosOrderPayEntity.PAY_STATUS_FINISH, amount, amount, 0D);
-//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-//
-//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-//                        dailysettleEntity.getBarCode(), null);
-
-
-                // TODO: 8/4/16 解锁POS机
-                commintCashAndTrigDateEnd(outTradeNo);
-            }
-
-            @Override
-            public void onPayException(Double amount, String outTradeNo) {
-//                ZLogger.d("支付异常");
-//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_EXCEPTION);
-//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-//
-//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-//                        PosOrderPayEntity.PAY_STATUS_EXCEPTION, amount, amount, 0D);
-//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-//
-//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-//                        dailysettleEntity.getBarCode(), null);
-
-            }
-
-            @Override
-            public void onPayFailed(Double amount, String outTradeNo) {
-//                ZLogger.d("支付失败");
-//                dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_FAILED);
-//                DailysettleService.get().saveOrUpdate(dailysettleEntity);
-//
-//                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-//                        PosOrderPayEntity.PAY_STATUS_FAILED, amount, amount, 0D);
-//                ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-//
-//                PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-//                        dailysettleEntity.getBarCode(), null);
+                // TODO: 8/4/16 解锁POS机，清分余额不足或现金额度超限，支付成功后在后台提交，不影响主线程。
+                UploadSyncManager.getInstance().sync();
             }
 
             @Override
@@ -1858,39 +1813,68 @@ public class MainActivity extends IflyTekActivity implements ICashierView {
         }
     }
 
-
-    private void commintCashAndTrigDateEnd(String outTradeNo) {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR, "网络未连接", true);
-            return;
+    /**
+     * 领取商品
+     */
+    private void registerPlat() {
+        if (registerPlatDialog == null) {
+            registerPlatDialog = new ActionDialog(this);
+            registerPlatDialog.setCancelable(false);
+            registerPlatDialog.setCanceledOnTouchOutside(false);
         }
+        registerPlatDialog.initialize("注册设备", "", new ActionDialog.OnActionClickListener() {
+            @Override
+            public void onAction1() {
+                // TODO: 8/8/16 注册设备
+            }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":false}
-                        //java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
-                        //RspValue<Boolean> retValue = (RspValue<Boolean>) rspData;
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        showProgressDialog(ProgressDialog.STATUS_DONE, "成功", true);
-                    }
+            @Override
+            public void onAction2() {
+                // TODO: 8/8/16 暂不注册
+                registerPlatDialog.dismiss();
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-//                        {"code":"1","msg":"未找到支付交易号:2016-08-02","data":null,"version":1}
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
+            @Override
+            public void onAction3() {
 
-        AnalysisApiImpl.commintCashAndTrigDateEnd(outTradeNo, responseCallback);
+            }
+        });
+        registerPlatDialog.setActions("立即注册", "暂不注册", null);
+        if (!registerPlatDialog.isShowing()) {
+            registerPlatDialog.show();
+        }
     }
 
+
+    /**
+     * 显示广告
+     */
+    private void showAdvFragment() {
+        HomeAdvFragment fragment;
+        Intent intent = this.getIntent();
+        if (intent != null) {
+            fragment = HomeAdvFragment.newInstance(intent.getExtras());
+        } else {
+            fragment = HomeAdvFragment.newInstance(null);
+        }
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_plugin, fragment).show(fragment)
+                .commit();
+    }
+
+    /**
+     * 显示广告
+     */
+    private void showLocalFrontCategoryFragment() {
+        LocalFrontCategoryFragment fragment;
+        Intent intent = this.getIntent();
+        if (intent != null) {
+            fragment = LocalFrontCategoryFragment.newInstance(intent.getExtras());
+        } else {
+            fragment = LocalFrontCategoryFragment.newInstance(null);
+        }
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_plugin, fragment).show(fragment)
+                .commit();
+    }
 }

@@ -74,7 +74,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment  implements IS
 
     private String barcode;
     private ScGoodsSku purchaseGoods;
-    private ScGoodsSkuPresenter chainGoodsSkuPresenter;
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter;
 
     public static StockScSkuGoodsFragment newInstance(Bundle args) {
         StockScSkuGoodsFragment fragment = new StockScSkuGoodsFragment();
@@ -92,7 +92,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment  implements IS
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        chainGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -269,8 +269,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment  implements IS
 
 //        animProgress.setVisibility(View.VISIBLE);
 
-
-        chainGoodsSkuPresenter.getByBarcode(barcode);
+        mScGoodsSkuPresenter.getByBarcode(barcode);
     }
 
     private void refresh(ScGoodsSku stockGoods) {

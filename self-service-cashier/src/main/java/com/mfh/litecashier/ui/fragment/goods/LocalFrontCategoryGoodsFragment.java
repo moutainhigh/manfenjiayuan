@@ -1,31 +1,27 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.utils.PinyinUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -36,22 +32,19 @@ import de.greenrobot.event.EventBus;
  * POS-本地前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWrapper>
-        implements IScGoodsSkuView {
+public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWrapper> {
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.order_list)
     RecyclerViewEmptySupport mRecyclerView;
     @Bind(R.id.empty_view)
-    TextView emptyView;
+    View emptyView;
 
-    LinearLayoutManager linearLayoutManager;
-    private BackendCategoryGoodsAdapter adapter;
+    GridLayoutManager linearLayoutManager;
+    private LocalFrontCategoryGoodsAdapter adapter;
 
     private Long categoryId;
-    private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
-
 
     @Override
     protected int getLayoutResId() {
@@ -64,7 +57,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
 
         EventBus.getDefault().register(this);
 
-        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -82,7 +74,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
     @Override
     public void onResume() {
         super.onResume();
-        ZLogger.d(String.valueOf(categoryId));
     }
 
     @Override
@@ -127,8 +118,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
     }
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        linearLayoutManager = new GridLayoutManager(getContext(), 6);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         //enable optimizations if all item views are of the same height and width for
@@ -142,12 +132,12 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
         mRecyclerView.setEmptyView(emptyView);
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
-        mRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
-//        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
-//                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
-//                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
-//                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0f));
+//        mRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
+        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0f));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -173,8 +163,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
             }
         });
 
-        adapter = new BackendCategoryGoodsAdapter(CashierApp.getAppContext(), null);
-        adapter.setOnAdapterLitener(new BackendCategoryGoodsAdapter.AdapterListener() {
+        adapter = new LocalFrontCategoryGoodsAdapter(CashierApp.getAppContext(), null);
+        adapter.setOnAdapterLitener(new LocalFrontCategoryGoodsAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
             }
@@ -248,124 +238,15 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
     }
 
     private void load(PageInfo pageInfo) {
-        mScGoodsSkuPresenter.listScGoodsSku(categoryId, pageInfo);
-    }
-
-    @Override
-    public void onIScGoodsSkuViewProcess() {
-        onLoadStart();
-    }
-
-    @Override
-    public void onIScGoodsSkuViewError(String errorMsg) {
-
-    }
-
-    @Override
-    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
-
-        mPageInfo = pageInfo;
-        new SortAsyncTask().execute(scGoodsSkus);
-
-//        List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
-//
-//        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
-//            for (ScGoodsSku sku : scGoodsSkus){
-//                ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
-//                wrapper.setSkuName(sku.getSkuName());
-//                wrapper.setBarcode(sku.getBarcode());
-//                wrapper.setCostPrice(sku.getCostPrice());
-//                wrapper.setUnit(sku.getUnit());
-//
-//                //设置商品名称的拼音和排序字母
-//                String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
-//                wrapper.setNamePinyin(namePinyin);
-//                String sortLetter = null;
-//                if (!StringUtils.isEmpty(namePinyin)){
-//                    sortLetter = namePinyin.substring(0, 1).toUpperCase();
-//                }
-//                if (sortLetter != null && sortLetter.matches("[A-Z]")) {
-//                    wrapper.setNameSortLetter(sortLetter);
-//                } else {
-//                    wrapper.setNameSortLetter("#");
-//                }
-//                wrappers.add(wrapper);
-//            }
-//        }
-//
-//        if (adapter != null) {
-//            adapter.appendEntityList(wrappers);
-//        }
-//        onLoadFinished();
-    }
-
-    @Override
-    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
-
-    }
-
-    private class SortAsyncTask extends AsyncTask<List<ScGoodsSku>, Integer, List<ScGoodsSkuWrapper>> {
-
-        @Override
-        protected List<ScGoodsSkuWrapper> doInBackground(List<ScGoodsSku>... params) {
-            return saveQueryResult(params[0]);
+        String sqlWhere = String.format("frontCategoryId = '%d'", categoryId);
+        List<PosProductEntity> entities = PosProductService.get().queryAll(sqlWhere, null);
+        if (adapter != null) {
+            adapter.setEntityList(entities);
         }
 
-        @Override
-        protected void onPostExecute(List<ScGoodsSkuWrapper> scGoodsSkuWrappers) {
-            super.onPostExecute(scGoodsSkuWrappers);
-
-            if (adapter != null) {
-                adapter.appendEntityList(scGoodsSkuWrappers);
-            }
-
-            onLoadFinished();
-        }
-
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private List<ScGoodsSkuWrapper> saveQueryResult(List<ScGoodsSku> goodsList) {
-            try {
-                List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
-
-                if (goodsList != null && goodsList.size() > 0){
-                    for (ScGoodsSku sku : goodsList){
-                        ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
-                        wrapper.setSkuName(sku.getSkuName());
-                        wrapper.setBarcode(sku.getBarcode());
-                        wrapper.setCostPrice(sku.getCostPrice());
-                        wrapper.setUnit(sku.getUnit());
-
-                        //设置商品名称的拼音和排序字母
-                        String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
-                        wrapper.setNamePinyin(namePinyin);
-                        String sortLetter = null;
-                        if (!StringUtils.isEmpty(namePinyin)){
-                            sortLetter = namePinyin.substring(0, 1).toUpperCase();
-                        }
-                        if (sortLetter != null && sortLetter.matches("[A-Z]")) {
-                            wrapper.setNameSortLetter(sortLetter);
-                        } else {
-                            wrapper.setNameSortLetter("#");
-                        }
-                        wrappers.add(wrapper);
-                    }
-                }
-                return wrappers;
-
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.ef(ex.toString());
-                return null;
-            }
-        }
-
+        onLoadFinished();
     }
+
 
     /**
      * 设置刷新

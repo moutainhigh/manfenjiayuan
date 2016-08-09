@@ -44,7 +44,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
     @Bind(R.id.order_list)
     RecyclerViewEmptySupport mRecyclerView;
     @Bind(R.id.empty_view)
-    TextView emptyView;
+    View emptyView;
 
     LinearLayoutManager linearLayoutManager;
     private BackendCategoryGoodsAdapter adapter;

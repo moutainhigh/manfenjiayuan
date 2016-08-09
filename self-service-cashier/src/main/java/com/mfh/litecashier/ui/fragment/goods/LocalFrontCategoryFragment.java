@@ -5,26 +5,16 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
+import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspListBean;
-import com.mfh.framework.api.impl.CateApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.ACache;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
-import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.PosCategory;
-import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
+import com.mfh.litecashier.ui.dialog.TextInputDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,18 +28,15 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class LocalFrontCategoryFragment extends BaseFragment {
-    @Bind(R.id.tv_service_title)
-    TextView tvTitle;
     @Bind(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
     @Bind(R.id.viewpager_category_goods)
     ViewPager mCategoryGoodsViewPager;
     private TopFragmentPagerAdapter categoryGoodsPagerAdapter;
 
-    private Long categoryId;
-    private String title;
-    private String cacheKey;
-    private List<PosCategory> curCategoryList;//当前子类目
+    private List<PosLocalCategoryEntity> curCategoryList;//当前子类目
+
+    private ModifyLocalCategoryDialog mModifyLocalCategoryDialog = null;
 
     public static LocalFrontCategoryFragment newInstance(Bundle args) {
         LocalFrontCategoryFragment fragment = new LocalFrontCategoryFragment();
@@ -62,37 +49,33 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_cashier_category;
+        return R.layout.fragment_local_frontcategory;
     }
 
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        init(getArguments());
-
         initCategoryGoodsView();
+
         reload();
     }
 
-    /**
-     * 关闭二级服务台
-     */
-    @OnClick(R.id.btn_service_back)
-    public void close() {
-        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_HIDE_RIGHTSLIDE));
-    }
-
-    public void init(Bundle args) {
-        if (args != null) {
-            this.categoryId = args.getLong("categoryId");
-            this.title = args.getString("title");
-        }
-        this.cacheKey = String.format("%s_%d",
-                ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);
-    }
 
     private void initCategoryGoodsView() {
-        mCategoryGoodsTabStrip.setOnClickTabListener(null);
+        mCategoryGoodsTabStrip.setOnClickTabListener(new TopSlidingTabStrip.OnClickTabListener() {
+            @Override
+            public void onClickTab(View tab, int index) {
+            }
+
+            @Override
+            public void onLongClickTab(View tab, int index) {
+
+                ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(index);
+                if (viewPageInfo != null) {
+                    changeName(viewPageInfo.args.getLong("id"));
+                }
+            }
+        });
         mCategoryGoodsTabStrip.setOnPagerChange(new TopSlidingTabStrip.OnPagerChangeLis() {
             @Override
             public void onChanged(int page) {
@@ -101,59 +84,20 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             }
         });
 
-        categoryGoodsPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(), mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text);
+        categoryGoodsPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(),
+                mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text);
     }
 
-    /**
-     * 加载数据
-     */
-    public void reload() {
-        if (tvTitle != null) {
-            tvTitle.setText(title);
-        }
 
-        //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
-        String cacheStr = ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).getAsString(cacheKey);
-        List<PosCategory> cacheData = JSONArray.parseArray(cacheStr, PosCategory.class);
-        if (cacheData != null && cacheData.size() > 0) {
-            ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目", cacheKey, cacheData.size()));
-            refreshCategoryGoodsTab(cacheData);
-
-            if (SharedPreferencesHelper.isSyncFrontCategorySubEnabled()) {
-                //加载子类目
-                loadSubCategory(categoryId, false);
-            }
-        } else {
-            //加载子类目
-            loadSubCategory(categoryId, true);
-        }
-    }
-
-    /**
-     * 刷新子类目
-     */
-    private void refreshCategoryGoodsTab(List<PosCategory> items) {
-        if (curCategoryList == null) {
-            curCategoryList = new ArrayList<>();
-        } else {
-            curCategoryList.clear();
-        }
-        if (items != null) {
-            curCategoryList.addAll(items);
-        }
-        PosCategory rootClone = new PosCategory();
-        rootClone.setNameCn("全部");
-        rootClone.setId(categoryId);
-        rootClone.setParentId(categoryId);
-        curCategoryList.add(rootClone);
+    private void reload(){
+        curCategoryList = PosLocalCategoryService.get().queryAll(null, null);
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        for (PosCategory category : curCategoryList) {
+        for (PosLocalCategoryEntity category : curCategoryList) {
             Bundle args = new Bundle();
-            args.putLong("parentId", category.getParentId());
-            args.putLong("categoryId", category.getId());
+            args.putLong("id", category.getId());
 
-            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(),
+            mTabs.add(new ViewPageInfo(category.getName(), category.getName(),
                     LocalFrontCategoryGoodsFragment.class, args));
 //            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), FrontCategoryGoodsFragment.class, args));
         }
@@ -173,52 +117,61 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         }
     }
 
-    /**
-     * 加载前台类目子类目
-     */
-    private void loadSubCategory(final Long categoryId, final boolean isNeedRefresh) {
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<PosCategory,
-                NetProcessor.Processor<PosCategory>>(
-                new NetProcessor.Processor<PosCategory>() {
+    private TextInputDialog mTextInputDialog = null;
+
+    @OnClick(R.id.ib_add)
+    public void addCategory(){
+        if (mTextInputDialog == null) {
+            mTextInputDialog = new TextInputDialog(getActivity());
+            mTextInputDialog.setCancelable(false);
+            mTextInputDialog.setCanceledOnTouchOutside(false);
+        }
+        mTextInputDialog.initialize("添加栏目", "请输入栏目名称", true,
+                new TextInputDialog.OnTextInputListener() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        List<PosCategory> items = new ArrayList<>();
-                        if (rspData != null) {
-                            RspListBean<PosCategory> retValue = (RspListBean<PosCategory>) rspData;
-                            items = retValue.getValue();
-                        }
-                        ZLogger.d(String.format("加载POS %d 前台子类目", (items != null ? items.size() : 0)));
-
-                        //缓存数据
-                        JSONArray cacheArrays = new JSONArray();
-                        if (items != null && items.size() > 0) {
-                            for (PosCategory item : items) {
-                                cacheArrays.add(item);
-                            }
-                        }
-                        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
-                                .put(cacheKey, cacheArrays.toJSONString());
-                        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(false);
-
-                        if (isNeedRefresh) {
-                            refreshCategoryGoodsTab(items);
-                        }
+                    public void onCancel() {
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("加载POS前台子类目 失败, " + errMsg);
-                        if (isNeedRefresh) {
-                            refreshCategoryGoodsTab(null);
-                        }
-                    }
-                }
-                , PosCategory.class
-                , CashierApp.getAppContext()) {
-        };
+                    public void onConfirm(String text) {
+                        PosLocalCategoryEntity categoryEntity = new PosLocalCategoryEntity();
+                        categoryEntity.setName(text);
+                        PosLocalCategoryService.get().saveOrUpdate(categoryEntity);
 
-        CateApiImpl.listPublicCategory(categoryId, queryRsCallBack);
+                        reload();
+                    }
+                });
+        if (!mTextInputDialog.isShowing()) {
+            mTextInputDialog.show();
+        }
+    }
+
+    private void changeName(Long categoryId){
+        if (categoryId == null){
+            return;
+        }
+        PosLocalCategoryEntity categoryEntity = PosLocalCategoryService.get()
+                .getEntityById(String.valueOf(categoryId));
+        if (categoryEntity == null) {
+             return;
+        }
+
+        if (mModifyLocalCategoryDialog == null){
+            mModifyLocalCategoryDialog = new ModifyLocalCategoryDialog(getActivity());
+            mModifyLocalCategoryDialog.setCanceledOnTouchOutside(true);
+            mModifyLocalCategoryDialog.setCancelable(false);
+        }
+
+        mModifyLocalCategoryDialog.init(categoryEntity, new ModifyLocalCategoryDialog.DialogListener() {
+            @Override
+            public void onComplete() {
+                reload();
+            }
+        });
+
+        if (!mModifyLocalCategoryDialog.isShowing()){
+            mModifyLocalCategoryDialog.show();
+        }
     }
 
 }
