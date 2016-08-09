@@ -40,8 +40,8 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.ui.adapter.InventoryTransGoodsAdapter;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 

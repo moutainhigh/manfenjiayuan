@@ -14,8 +14,8 @@ import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 

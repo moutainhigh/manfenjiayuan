@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.bean.InvSendOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
@@ -21,7 +21,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.api.impl.InvSendOrderApiImpl;
+import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -40,9 +40,9 @@ import com.mfh.litecashier.event.InvSendOrderEvent;
 import com.mfh.litecashier.event.PurchaseSendEvent;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.ui.adapter.FreshScheduleGoodsAdapter;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
@@ -400,12 +400,12 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
     }
 
     @Override
-    public void onQueryInvSendOrderProcess() {
+    public void onIInvSendOrderViewProcess() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onQueryInvSendOrderError(String errorMsg) {
+    public void onIInvSendOrderViewError(String errorMsg) {
         if (goodsListAdapter != null) {
             goodsListAdapter.setEntityList(null);
         }
@@ -413,12 +413,12 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
     }
 
     @Override
-    public void onQueryInvSendOrderSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
+    public void onIInvSendOrderViewSuccess(PageInfo pageInfo, List<InvSendOrder> dataList) {
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public void onQueryInvSendOrderItemsSuccess(List<InvSendOrderItem> dataList) {
+    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
         List<FreshScheduleGoods> scheduleGoodsList = new ArrayList<>();
         if (dataList != null && dataList.size() > 0){
             for (InvSendOrderItem invSendOrderItem : dataList){

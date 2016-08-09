@@ -35,8 +35,8 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvRecvOrderEvent;
 import com.mfh.litecashier.event.PurchaseReceiptEvent;
 import com.mfh.litecashier.ui.adapter.PurchaseReceiptGoodsAdapter;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;

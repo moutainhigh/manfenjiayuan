@@ -2,7 +2,7 @@ package com.mfh.litecashier.bean.wrapper;
 
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.GoodsSupplyInfo;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 
 import java.io.Serializable;

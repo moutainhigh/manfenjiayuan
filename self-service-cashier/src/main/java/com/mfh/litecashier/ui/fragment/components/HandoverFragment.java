@@ -15,12 +15,12 @@ import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -323,7 +323,7 @@ public class HandoverFragment extends BaseProgressFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        CashierApiImpl.autoShiftAnalysic(handOverBill.getShiftId(),
+        AnalysisApiImpl.autoShiftAnalysic(handOverBill.getShiftId(),
                 TimeCursor.InnerFormat.format(handOverBill.getStartDate()),
                 TimeCursor.InnerFormat.format(handOverBill.getEndDate()), responseCallback);
     }
@@ -358,7 +358,7 @@ public class HandoverFragment extends BaseProgressFragment {
             }
         }, AggItem.class, CashierApp.getAppContext());
 
-        CashierApiImpl.analysisAggShift(handOverBill.getShiftId(),
+        AnalysisApiImpl.analysisAggShift(handOverBill.getShiftId(),
                 TimeCursor.FORMAT_YYYYMMDD.format(handOverBill.getStartDate()), responseCallback);
     }
 
@@ -405,7 +405,7 @@ public class HandoverFragment extends BaseProgressFragment {
             }
         }, AccItem.class, CashierApp.getAppContext());
 
-        CashierApiImpl.accAnalysisAggShift(handOverBill.getShiftId(),
+        AnalysisApiImpl.accAnalysisAggShift(handOverBill.getShiftId(),
                 TimeCursor.FORMAT_YYYYMMDD.format(handOverBill.getStartDate()), responseCallback);
     }
 

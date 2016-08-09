@@ -74,10 +74,10 @@ public class SettingsDailysettleAdapter
                 DailysettleEntity.getPayStatusDesc(entity.getPaystatus()), entity.getPaystatus()));
 
         if (entity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_YES){
-            holder.tvConfirmStatus.setText(String.format("%s(%d)", "已确认", entity.getConfirmStatus()));
+            holder.tvConfirmStatus.setText(String.format("%s(%d)", "已清分", entity.getConfirmStatus()));
         }
         else{
-            holder.tvConfirmStatus.setText(String.format("%s(%d)", "未确认", entity.getConfirmStatus()));
+            holder.tvConfirmStatus.setText(String.format("%s(%d)", "位清分", entity.getConfirmStatus()));
         }
 
         holder.tvOffice.setText(String.format("网点：%d", entity.getOfficeId()));

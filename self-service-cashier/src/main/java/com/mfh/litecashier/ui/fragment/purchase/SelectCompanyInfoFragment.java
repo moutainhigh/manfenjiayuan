@@ -269,19 +269,19 @@ public class SelectCompanyInfoFragment extends BaseFragment
     }
 
     @Override
-    public void onProcess() {
+    public void onICompanyInfoViewProcess() {
         isLoadingMore = true;
         bSyncInProgress = true;
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onICompanyInfoViewError(String errorMsg) {
         onLoadFinished();
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
+    public void onICompanyInfoViewSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
         mPageInfo = pageInfo;
         if (orderList == null) {
             orderList = new ArrayList<>();

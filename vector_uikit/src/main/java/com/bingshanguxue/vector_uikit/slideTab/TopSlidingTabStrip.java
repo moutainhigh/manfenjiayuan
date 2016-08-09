@@ -40,7 +40,7 @@ import java.util.List;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/18.
  * */
 public class TopSlidingTabStrip extends HorizontalScrollView implements
-		View.OnClickListener {
+		View.OnClickListener, View.OnLongClickListener {
 	private int currentPosition; // 当前位置
 	private int lastOffset;
 	private int lastScrollX = 0;
@@ -200,22 +200,36 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 				View itemView = tabViewGroup.getChildAt(w);
 				itemView.setTag(w);
 				itemView.setOnClickListener(this);
+				itemView.setOnLongClickListener(this);
 			}
 		}
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(View view) {
 		if (!clickEnabled){
 			return;
 		}
-		int index = (Integer) v.getTag();
+		int index = (Integer) view.getTag();
 		if (onClickTabListener != null) {
-			onClickTabListener.onClickTab(v, index);
+			onClickTabListener.onClickTab(view, index);
 		}
 		if (viewPager != null) {
 			viewPager.setCurrentItem(index, false);
 		}
+	}
+
+	@Override
+	public boolean onLongClick(View view) {
+		if (!clickEnabled){
+			return false;
+		}
+		int index = (Integer) view.getTag();
+		if (onClickTabListener != null) {
+			onClickTabListener.onLongClickTab(view, index);
+		}
+
+		return false;
 	}
 
 	@Override
@@ -553,6 +567,8 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 		requestLayout();
 	}
 
+
+
 	/**
 	 * Tab点击监听器
 	 * 
@@ -561,6 +577,7 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 	 */
 	public interface OnClickTabListener {
 		void onClickTab(View tab, int index);
+		void onLongClickTab(View tab, int index);
 	}
 
 	public void setOnPagerChange(OnPagerChangeLis l) {

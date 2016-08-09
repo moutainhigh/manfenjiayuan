@@ -10,7 +10,7 @@
     <include layout="@layout/contentview_dialog_header"/>
 
     <!--导航-->
-    <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
+    <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
         android:id="@+id/slidingTab"
         android:layout_width="match_parent"
         android:layout_height="60dp"

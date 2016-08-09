@@ -7,7 +7,7 @@ import com.bingshanguxue.cashier.model.PosGoods;
 
 /**
  * 基于网络访问
- * Created by Administrator on 14-5-7.
+ * Created by bingshanguxue on 14-5-7.
  */
 public class PosProductNetDao extends BaseNetDao<PosGoods, Long> {
     private boolean downLoading = false;//正在下载标志

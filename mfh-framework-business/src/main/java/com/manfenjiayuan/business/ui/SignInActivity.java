@@ -106,7 +106,7 @@ public class SignInActivity extends BaseActivity {
                         event.getKeyCode(), event.getAction()));
 //                etQuery.requestFocus();
 //                etBarCode.setFocusableInTouchMode(true);
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         attemptLogin();
                     }

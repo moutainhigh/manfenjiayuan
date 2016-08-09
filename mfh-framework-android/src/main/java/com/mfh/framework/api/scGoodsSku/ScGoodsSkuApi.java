@@ -25,9 +25,10 @@ public class ScGoodsSkuApi {
      */
     public final static String URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
     /**
+     * /scGoodsSku/getLocalByBarcode
      * 查询库存商品－－
      */
-    public final static String URL_SCGOODSSKU_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
+    public final static String URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
     /**
      * 查询发布商品/scGoodsSku/getByBarcode?barcode=77777777&&JSESSIONID=7a6b9fe4-f6fb-4985-9810-6a7c544eeb0d
      * 根据条码逐级查找商品：

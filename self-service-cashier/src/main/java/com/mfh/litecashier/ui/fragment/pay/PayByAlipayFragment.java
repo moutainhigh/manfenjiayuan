@@ -26,7 +26,7 @@ import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.PayApi;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -49,7 +49,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 支付--支付宝条码支付
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
- * {@link https://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.6L5pUZ&treeId=26&articleId=104040&docType=1}
+ * {@see <a href="https://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.6L5pUZ&treeId=26&articleId=104040&docType=1"></a>}
  *
  * 商户收银系统(POS)
  * 1--收银系统轮询时，需出现等待支付结果的界面

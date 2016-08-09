@@ -9,7 +9,7 @@ import java.util.List;
  * Created by bingshanguxue on 16/3/17.
  */
 public interface ICompanyInfoView extends MvpView {
-    void onProcess();
-    void onError(String errorMsg);
-    void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList);
+    void onICompanyInfoViewProcess();
+    void onICompanyInfoViewError(String errorMsg);
+    void onICompanyInfoViewSuccess(PageInfo pageInfo, List<CompanyInfo> dataList);
 }

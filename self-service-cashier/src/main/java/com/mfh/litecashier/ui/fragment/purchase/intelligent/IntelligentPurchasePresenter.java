@@ -1,6 +1,6 @@
 package com.mfh.litecashier.ui.fragment.purchase.intelligent;
 
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItemBrief;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItemBrief;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreMode;
 import com.mfh.framework.mvp.OnModeListener;
 

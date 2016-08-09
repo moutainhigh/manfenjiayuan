@@ -15,9 +15,9 @@ import com.mfh.litecashier.event.LaundryOrderFlowEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
 import com.mfh.litecashier.event.OrderFlowEvent;
 import com.mfh.litecashier.event.StoreOrderFlowEvent;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.fragment.online.OnlineOrderFlowFragment;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 

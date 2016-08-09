@@ -40,7 +40,7 @@ public class CashierPresenter {
             findFreshGoods(barcode);
             return;
         }
-        ZLogger.df(String.format("搜索生鲜商品 条码：%s", barcode));
+        ZLogger.df(String.format("搜索标准商品 条码：%s", barcode));
 
         int packFlag = 0;//是否是箱规：0不是；1是
         //Step 1:查询商品

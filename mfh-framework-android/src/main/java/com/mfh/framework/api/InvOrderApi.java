@@ -140,11 +140,6 @@ public class InvOrderApi {
      */
     public final static String URL_INVLOSSORDERITEM_BATCHCOMMIT = URL_INVLOSSORDER_ITEM + "batchCommitItems";
 
-
-
-
-
-
     /**
      * 查询批次流水明细
      */

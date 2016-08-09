@@ -2,7 +2,7 @@ package com.mfh.litecashier.bean;
 
 /**
  * 出库－－快递批次明细
- * Created by Administrator on 2015/5/14.
+ * Created by bingshanguxue on 2015/5/14.
  *
  */
 public class StockOutItem implements java.io.Serializable{

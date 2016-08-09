@@ -13,8 +13,8 @@ import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.event.StockCheckEvent;
 import com.mfh.litecashier.event.StockLossEvent;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 

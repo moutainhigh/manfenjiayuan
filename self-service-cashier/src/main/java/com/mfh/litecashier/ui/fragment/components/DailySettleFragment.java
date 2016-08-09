@@ -1,11 +1,3 @@
-/*
- * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
- */
-
 package com.mfh.litecashier.ui.fragment.components;
 
 import android.app.Activity;
@@ -14,31 +6,22 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
-import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
@@ -51,14 +34,9 @@ import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
-import com.mfh.litecashier.com.SerialManager;
-import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
-import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
-import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.utils.AnalysisHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,14 +88,10 @@ public class DailySettleFragment extends BaseProgressFragment {
 
     @Bind(R.id.button_header_close)
     ImageButton btnClose;
-    @Bind(R.id.button_footer_positive)
-    Button btnConfirm;
 
     private boolean cancelable = true;//是否可以关闭窗口
     private String dailySettleDatetime = null;//日结日期
     private DailysettleEntity dailysettleEntity = null;
-
-    private AlipayDialog alipayDialog = null;
 
     public static DailySettleFragment newInstance(Bundle args) {
         DailySettleFragment fragment = new DailySettleFragment();
@@ -161,7 +135,6 @@ public class DailySettleFragment extends BaseProgressFragment {
 
         refresh();
 
-        btnConfirm.setEnabled(false);
         if (dailysettleEntity == null) {
             ZLogger.d("日结单创建失败");
 
@@ -199,150 +172,6 @@ public class DailySettleFragment extends BaseProgressFragment {
         getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
     }
-
-    /**
-     * 日结确认(支付成功后才能确认)
-     */
-    @OnClick(R.id.button_footer_positive)
-    public void doConfirmDailySettle() {
-        btnConfirm.setEnabled(false);
-        //现金收取金额
-        Double cashAmount = dailysettleEntity.getCash();
-        if (cashAmount.compareTo(0D) < 0.01 ) {
-            ZLogger.df(String.format("日结确认－－现金收取金额为%.2f,不需要支付。", cashAmount));
-
-            //确认日结单
-            analysisAcDateDoEnd(null);
-            return;
-        } else {
-            //TODO 判断是否已经支付过，如果已支付金额大于现金收取金额，则认为已经支付过，不需要支付
-        }
-
-        //设备号_支付业务类型号_本地数据库编号
-//        String orderid = String.format("%s_%d_%d", SharedPreferencesManager.getTerminalId(), MUtils.PAY_BIZ_TYPE_DAILYSETTLE, dailysettleEntity.getId());
-
-        List<CashierOrderItemInfo> cashierOrderItemInfoList = new ArrayList<>();
-        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
-        cashierOrderItemInfo.setOrderId(dailysettleEntity.getId());
-        cashierOrderItemInfo.setbCount(1D);
-        cashierOrderItemInfo.setRetailAmount(cashAmount);
-        cashierOrderItemInfo.setFinalAmount(cashAmount);
-        cashierOrderItemInfo.setAdjustDiscountAmount(0D);
-        cashierOrderItemInfo.setDiscountRate(1D);
-        cashierOrderItemInfo.setBrief("日结支付" + dailysettleEntity.getOfficeName());
-        cashierOrderItemInfo.setProductsInfo(null);
-        cashierOrderItemInfo.setDiscountInfo(new DiscountInfo(dailysettleEntity.getId()));
-        cashierOrderItemInfoList.add(cashierOrderItemInfo);
-
-        CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
-        cashierOrderInfo.initQuickPayment(BizType.DAILYSETTLE,
-                "", cashierOrderItemInfoList, "日结单支付", null);
-
-        if (alipayDialog == null) {
-            alipayDialog = new AlipayDialog(getActivity());
-            alipayDialog.setCancelable(false);
-            alipayDialog.setCanceledOnTouchOutside(false);
-        }
-        alipayDialog.init(cashierOrderInfo, new AlipayDialog.DialogClickListener() {
-            @Override
-            public void onPayProcess(Double amount, String outTradeNo) {
-//                ZLogger.d("支付处理中");
-                if (dailysettleEntity != null) {
-                    dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_PROCESS);
-                    DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo,
-                            WayType.ALI_F2F,
-                            PosOrderPayEntity.PAY_STATUS_PROCESS, amount, amount, 0D);
-                    ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                    //保存支付记录
-                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                            dailysettleEntity.getBarCode(), null);
-                }
-            }
-
-            @Override
-            public void onPaySucceed(Double amount, String outTradeNo) {
-                if (dailysettleEntity != null) {
-                    dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_SUCCEED);
-                    DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                    //保存支付记录
-                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-                            PosOrderPayEntity.PAY_STATUS_FINISH, amount, amount, 0D);
-                    ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                            dailysettleEntity.getBarCode(), null);
-                }
-
-                //确认日结单
-                analysisAcDateDoEnd(outTradeNo);
-            }
-
-            @Override
-            public void onPayException(Double amount, String outTradeNo) {
-//                ZLogger.d("支付异常");
-                if (dailysettleEntity != null) {
-                    dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_EXCEPTION);
-                    DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-                            PosOrderPayEntity.PAY_STATUS_EXCEPTION, amount, amount, 0D);
-                    ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                            dailysettleEntity.getBarCode(), null);
-                }
-            }
-
-            @Override
-            public void onPayFailed(Double amount, String outTradeNo) {
-//                ZLogger.d("支付失败");
-                if (dailysettleEntity != null) {
-                    dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_FAILED);
-                    DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, WayType.ALI_F2F,
-                            PosOrderPayEntity.PAY_STATUS_FAILED, amount, amount, 0D);
-                    ZLogger.df(String.format("支付信息：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                    PaymentInfoImpl.saveOrUpdate(paymentInfo, BizType.DAILYSETTLE,
-                            dailysettleEntity.getBarCode(), null);
-                }
-            }
-
-            @Override
-            public void onPayCanceled() {
-                btnConfirm.setEnabled(true);
-
-//                if (dailysettleEntity != null) {
-//                    dailysettleEntity.setPaystatus(DailysettleEntity.PAY_STATUS_FAILED);
-//                    DailysettleService.get().saveOrUpdate(dailysettleEntity);
-//
-//                    PosOrderPayService.get().pay(dailysettleEntity.getBarCode(),
-//                            WayType.ALI_F2F, outTradeNo,
-//                            amount, PosOrderPayEntity.PAY_STATUS_FAILED, null);
-//                }
-            }
-
-        });
-
-        alipayDialog.show();
-    }
-
-//    public void onEventMainThread(OrderSyncManager.OrderSyncManagerEvent event) {
-//        //有新订单
-//        if (event.getEventId() == OrderSyncManager.OrderSyncManagerEvent.EVENT_ID_SYNC_DATA_PROCESS) {
-//            onLoadProcess("正在同步订单流水");
-//        } else if (event.getEventId() == OrderSyncManager.OrderSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
-//            autoDateEnd();
-//        } else if (event.getEventId() == OrderSyncManager.OrderSyncManagerEvent.EVENT_ID_SYNC_DATA_FAILED) {
-//            DialogUtil.showHint("同步订单流水失败");
-//            autoDateEnd();
-//        }
-//    }
 
     private void initAggRecyclerView() {
         LinearLayoutManager mRLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
@@ -441,13 +270,11 @@ public class DailySettleFragment extends BaseProgressFragment {
     @Override
     public void onLoadProcess(String description) {
         super.onLoadProcess(description);
-        btnConfirm.setEnabled(false);
     }
 
     @Override
     public void onLoadFinished() {
         super.onLoadFinished();
-        btnConfirm.setEnabled(true);
     }
 
     /**
@@ -458,11 +285,10 @@ public class DailySettleFragment extends BaseProgressFragment {
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             onLoadError("统计失败，网络未连接，请重新日结。");
-            btnConfirm.setEnabled(false);
             return;
         }
 
-        CashierApiImpl.autoDateEnd(dailysettleEntity.getDailysettleDate(), autoDateEndRC);
+        AnalysisApiImpl.autoDateEnd(dailysettleEntity.getDailysettleDate(), autoDateEndRC);
     }
 
     //回调
@@ -483,7 +309,6 @@ public class DailySettleFragment extends BaseProgressFragment {
                     super.processFailure(t, errMsg);
                     //{"code":"1","msg":"指定网点已经日结过：132079","version":"1","data":null}
                     onLoadError("启动日结统计失败：" + errMsg);
-                    btnConfirm.setEnabled(false);
                 }
             }
             , String.class
@@ -498,11 +323,10 @@ public class DailySettleFragment extends BaseProgressFragment {
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接，暂停查询日结经营分析数据!");
-            btnConfirm.setEnabled(false);
             return;
         }
 
-        CashierApiImpl.analysisAggDateList(dailysettleEntity.getDailysettleDate(), aggDateListRC);
+        AnalysisApiImpl.analysisAggDateList(dailysettleEntity.getDailysettleDate(), aggDateListRC);
     }
 
     NetCallBack.QueryRsCallBack aggDateListRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<AggItem>(new PageInfo(1, 20)) {
@@ -519,7 +343,6 @@ public class DailySettleFragment extends BaseProgressFragment {
         protected void processFailure(Throwable t, String errMsg) {
             super.processFailure(t, errMsg);
             onLoadError("查询日结经营分析数据失败：" + errMsg);
-            btnConfirm.setEnabled(false);
         }
     }, AggItem.class, CashierApp.getAppContext());
 
@@ -560,11 +383,10 @@ public class DailySettleFragment extends BaseProgressFragment {
         onLoadProcess("正在查询流水分析数据");
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             onLoadError("统计失败，网络未连接，暂停查询日结流水分析数据。");
-            btnConfirm.setEnabled(false);
             return;
         }
 
-        CashierApiImpl.analysisAccDateList(dailysettleEntity.getDailysettleDate(), accDateListRC);
+        AnalysisApiImpl.analysisAccDateList(dailysettleEntity.getDailysettleDate(), accDateListRC);
     }
 
     NetCallBack.QueryRsCallBack accDateListRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<AccItem>(new PageInfo(1, 20)) {
@@ -580,7 +402,6 @@ public class DailySettleFragment extends BaseProgressFragment {
         protected void processFailure(Throwable t, String errMsg) {
             super.processFailure(t, errMsg);
             onLoadError("查询日结流水分析数据失败：" + errMsg);
-            btnConfirm.setEnabled(false);
         }
     }, AccItem.class, CashierApp.getAppContext());
 
@@ -612,69 +433,4 @@ public class DailySettleFragment extends BaseProgressFragment {
             ZLogger.d("保存流水分析数据失败:" + ex.toString());
         }
     }
-
-    /**
-     * 确认日结统计
-     */
-    private void analysisAcDateDoEnd(String outTradeNo) {
-        onLoadProcess("正在确认日结...");
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            onLoadError("网络未连接，暂停确认日结。");
-            btnConfirm.setEnabled(true);
-            return;
-        }
-
-        //回调
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        ZLogger.d("确认日结成功:" + retValue.getValue());
-                        // 保存交接班时间和班次
-                        String cursor = TimeUtil.format(dailysettleEntity.getDailysettleDate(),
-                                TimeCursor.FORMAT_YYYYMMDDHHMM);
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_LAST_HANDOVER_DATETIME, cursor);
-//                        SharedPreferencesHelper.setLastHandoverShiftId(dailySettleBill.getShiftId());
-
-                        //确认日结
-                        if (dailysettleEntity != null) {
-                            dailysettleEntity.setConfirmStatus(DailysettleEntity.CONFIRM_STATUS_YES);
-                            DailysettleService.get().saveOrUpdate(dailysettleEntity);
-                        }
-
-                        onLoadFinished();
-
-                        DialogUtil.showHint("确认日结成功");
-
-                        // 打印交接单
-                        SerialManager.printDailySettleBill(dailysettleEntity);
-
-                        //TODO,跳转至支付页面
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        onLoadError("确认日结失败：" + errMsg);
-                        btnConfirm.setEnabled(true);
-
-//                        getActivity().setResult(Activity.RESULT_OK);
-//                        getActivity().finish();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        CashierApiImpl.analysisAcDateDoEnd(dailysettleEntity.getDailysettleDate(),
-                outTradeNo, responseCallback);
-    }
-
 }

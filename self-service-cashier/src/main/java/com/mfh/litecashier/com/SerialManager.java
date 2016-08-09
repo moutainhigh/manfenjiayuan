@@ -1228,7 +1228,8 @@ public class SerialManager {
      * 显示 标签 ＋ 金额
      * */
     public static void vfdShow(String text){
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_BYTE, SerialManager.VFD_CH(text)));
+        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_BYTE,
+                SerialManager.VFD_CH(text)));
 //        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD, text));
     }
 
@@ -1237,19 +1238,23 @@ public class SerialManager {
     public static void show(int sn, Double amount){
         if (sn == 1){
         //更新显示屏,显示'单价'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_ESC_S_1));
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                    CommandConstants.CMD_HEX_ESC_S_1));
         }
         else if (sn == 2){
             //更新显示屏,显示'总计'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_ESC_S_2));
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                    CommandConstants.CMD_HEX_ESC_S_2));
         }
         else if (sn == 3){
             //更新显示屏,显示'收款'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_ESC_S_3));
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                    CommandConstants.CMD_HEX_ESC_S_3));
         }
         else if (sn == 4){
             //更新显示屏,显示'找零'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_ESC_S_4));
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                    CommandConstants.CMD_HEX_ESC_S_4));
         }
 //        //更新显示屏,显示'单价''总计'字符
 //        EventBus.getDefault().post(new SerialPortEvent(0, CommandConstants.CMD_HEX_STX_L
@@ -1257,7 +1262,8 @@ public class SerialManager {
 //                + CommandConstants.HEX_1 + CommandConstants.HEX_0));
 
         //更新显示屏,显示商品价格
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_ESC_Q_A
+        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                CommandConstants.CMD_HEX_ESC_Q_A
                 + showNumber(amount) + CommandConstants.HEX_CR));
     }
 
