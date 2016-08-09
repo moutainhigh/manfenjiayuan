@@ -1,6 +1,6 @@
 package com.mfh.framework.api.invCompProvider;
 
-import com.mfh.framework.api.CashierApi;
+import com.mfh.framework.api.cashier.CashierApi;
 
 import java.io.Serializable;
 import java.security.Provider;

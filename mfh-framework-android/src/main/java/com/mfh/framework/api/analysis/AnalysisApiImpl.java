@@ -148,4 +148,15 @@ public class AnalysisApiImpl extends AnalysisApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_ANALYSISACCDATE_COMMITCASH_TRIGDATEEND, params, responseCallback);
     }
+
+    /**
+     * 提交营业现金
+     */
+    public static void commintCash(String outTradeNo,
+                                                 AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("outTradeNo", outTradeNo);
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.getHttp(true).post(URL_ANALYSISACCDATE_COMMITCASH, params, responseCallback);
+    }
 }

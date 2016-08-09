@@ -72,5 +72,12 @@ public class AnalysisApi {
      * 针对当前用户所属网点提交营业现金，并触发一次日结操作
      * /analysisAccDate/commintCashAndTrigDateEnd?date=2016-02-18&outTradeNo=7_1000228_1452600164232
      */
-    public final static String URL_ANALYSISACCDATE_COMMITCASH_TRIGDATEEND = URL_ANALYSIS_ACCDATE + "commintCashAndTrigDateEnd";
+    public final static String URL_ANALYSISACCDATE_COMMITCASH_TRIGDATEEND = URL_ANALYSIS_ACCDATE +
+            "commintCashAndTrigDateEnd";
+
+    /**
+     * 针对当前用户所属网点提交营业现金
+     * /analysisAccDate/commintCashAndTrigDateEnd?outTradeNo=7_1000228_1452600164232
+     */
+    public final static String URL_ANALYSISACCDATE_COMMITCASH = URL_ANALYSIS_ACCDATE + "commintCash";
 }

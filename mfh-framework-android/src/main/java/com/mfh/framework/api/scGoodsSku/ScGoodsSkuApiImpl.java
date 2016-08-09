@@ -16,12 +16,13 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
     /**
      * 根据条码查找租户是否已经发布过该商品，若存在返回信息
      */
-    public static void findLocalGoodsByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
+    @Deprecated
+    public static void getLocalByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("barcode", barcode);
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_GETLOCAL_BYBARCODE, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_GETLOCAL_BYBARCODE, params, responseCallback);
     }
 
     /**

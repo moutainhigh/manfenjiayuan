@@ -15,6 +15,7 @@ public class ScApi {
     /**摇一摇·店铺*/
     public final static String URL_WX_SHOP_DEVICE_PAGE = MfhApi.URL_BASE_SERVER + "/wxShopDevicePage/list";
 
+
     /**
      * 搜索小区
      * */
