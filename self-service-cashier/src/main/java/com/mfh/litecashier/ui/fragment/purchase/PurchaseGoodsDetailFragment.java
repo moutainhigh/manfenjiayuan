@@ -13,9 +13,9 @@ import com.bumptech.glide.Glide;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.fragment.ReportFragment;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 

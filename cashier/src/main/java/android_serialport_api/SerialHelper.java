@@ -3,7 +3,6 @@ package android_serialport_api;
 
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
-import com.mfh.litecashier.com.ComBean;
 
 import java.io.File;
 import java.io.IOException;

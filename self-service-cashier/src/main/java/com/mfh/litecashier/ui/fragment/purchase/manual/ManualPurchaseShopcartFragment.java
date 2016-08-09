@@ -19,7 +19,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfoApi;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.impl.InvSendOrderApiImpl;
+import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;

@@ -12,7 +12,7 @@ import com.mfh.framework.core.logger.ZLogger;
 public class DailysettleReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
-        ZLogger.df(">>启动自动日结");
-        ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_ANALYSISACCDATE_NEEDDATEEND);
+        ZLogger.df(">>启动自动检查清分");
+        ValidateManager.get().stepValidate(ValidateManager.STEP_HAVENOMENYEND);
     }
 }

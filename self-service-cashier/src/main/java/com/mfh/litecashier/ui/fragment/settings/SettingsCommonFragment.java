@@ -211,7 +211,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     @OnClick(R.id.item_terminal)
     public void registerPlat() {
         if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
-            showConfirmDialog("同步商品库到最新版本，同步过程中会先删除历史数据，可能会影响正常收银，确定要同步吗？",
+            showConfirmDialog("确定要重新注册设备吗？",
                     "注册", new DialogInterface.OnClickListener() {
 
                         @Override

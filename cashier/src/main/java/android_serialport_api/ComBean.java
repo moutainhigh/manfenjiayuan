@@ -1,4 +1,4 @@
-package com.mfh.litecashier.com;
+package android_serialport_api;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

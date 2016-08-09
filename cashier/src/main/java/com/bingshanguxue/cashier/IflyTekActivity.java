@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.activity;
+package com.bingshanguxue.cashier;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -14,14 +14,14 @@ import com.iflytek.cloud.SynthesizerListener;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.litecashier.R;
+import com.mfh.framework.uikit.base.BaseActivity;
 
 
 /**
  * 科大讯飞
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public abstract class IflyTekActivity extends SerialPortActivity {
+public abstract class IflyTekActivity extends BaseActivity {
     // 语音合成对象
     private SpeechSynthesizer mTts;
 
@@ -184,7 +184,8 @@ public abstract class IflyTekActivity extends SerialPortActivity {
             if (error == null) {
 //                DialogUtil.showHint("播放完成");
             } else {
-                DialogUtil.showHint(error.getPlainDescription(true));
+                ZLogger.ef(error.getPlainDescription(true));
+//                DialogUtil.showHint(error.getPlainDescription(true));
             }
         }
 
@@ -246,6 +247,7 @@ public abstract class IflyTekActivity extends SerialPortActivity {
         }
         // 设置参数
         setParam();
+        ZLogger.df("准备播放语音:" + text);
         int code = mTts.startSpeaking(text, mTtsListener);
 //			/**
 //			 * 只保存音频不进行播放接口,调用此接口请注释startSpeaking接口

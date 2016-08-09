@@ -103,7 +103,7 @@
         android:showDividers="middle">
 
         <!--导航-->
-        <com.mfh.litecashier.ui.widget.TopSlidingTabStrip
+        <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
             android:id="@+id/tab_order"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

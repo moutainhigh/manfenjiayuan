@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.cashier;
+package com.mfh.litecashier.ui.fragment.goods;
 
 
 import android.os.Bundle;
@@ -8,12 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.api.impl.CateApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
-import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -22,9 +23,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.event.FrontCategoryGoodsEvent;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -88,7 +87,8 @@ public class FrontCategoryFragment extends BaseFragment {
             this.categoryId = args.getLong("categoryId");
             this.title = args.getString("title");
         }
-        this.cacheKey = String.format("%s_%d", ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);
+        this.cacheKey = String.format("%s_%d",
+                ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);
     }
 
     private void initCategoryGoodsView() {
@@ -218,7 +218,7 @@ public class FrontCategoryFragment extends BaseFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        CateApiImpl.listPublicCategory(String.valueOf(categoryId), queryRsCallBack);
+        CateApiImpl.listPublicCategory(categoryId, queryRsCallBack);
     }
 
 }

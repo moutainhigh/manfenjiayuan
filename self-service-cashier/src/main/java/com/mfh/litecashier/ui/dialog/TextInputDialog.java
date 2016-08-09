@@ -4,6 +4,7 @@ package com.mfh.litecashier.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -118,11 +120,11 @@ public class TextInputDialog extends CommonDialog {
 
         getWindow().setGravity(Gravity.CENTER);
 
-//        WindowManager m = getWindow().getWindowManager();
-//        Display d = m.getDefaultDisplay();
-//        WindowManager.LayoutParams p = getWindow().getAttributes();
-////        p.width = d.getWidth() * 2 / 3;
-////        p.y = DensityUtil.dip2px(getContext(), 44);
+        WindowManager m = getWindow().getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = getWindow().getAttributes();
+//        p.width = d.getWidth() * 2 / 3;
+        p.width = DensityUtil.dip2px(getContext(), 400);
 //
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
@@ -137,10 +139,7 @@ public class TextInputDialog extends CommonDialog {
         this.mListener = listener;
 
         tvTitle.setText(title);
-//        etQuantity.setText(hintValue.toString());
-        if (StringUtils.isEmpty(hint)){
-            etContent.setHint(hint);
-        }
+        etContent.setHint(hint);
         etContent.getText().clear();
         etContent.setSelection(etContent.length());
         etContent.requestFocus();

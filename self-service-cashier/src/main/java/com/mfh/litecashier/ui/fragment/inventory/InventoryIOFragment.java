@@ -37,8 +37,8 @@ import com.mfh.litecashier.bean.InvIoOrderItem;
 import com.mfh.litecashier.event.InvIOOrderEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.ui.adapter.InvIOGoodsAdapter;
-import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.litecashier.ui.widget.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import net.tsz.afinal.core.AsyncTask;

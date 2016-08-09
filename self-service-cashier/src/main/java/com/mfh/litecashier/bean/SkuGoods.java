@@ -1,7 +1,7 @@
 package com.mfh.litecashier.bean;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.CashierApi;
+import com.mfh.framework.api.cashier.CashierApi;
 
 import java.io.Serializable;
 import java.util.Date;

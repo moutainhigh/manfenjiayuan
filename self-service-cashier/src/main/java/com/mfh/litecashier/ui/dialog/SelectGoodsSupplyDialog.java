@@ -269,7 +269,7 @@ public class SelectGoodsSupplyDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        ScGoodsSkuApiImpl.findLocalGoodsByBarcode(shopcartGoodsWrapper.getBarcode(), responseCallback);
+        ScGoodsSkuApiImpl.getLocalByBarcode(shopcartGoodsWrapper.getBarcode(), responseCallback);
     }
 
     /**

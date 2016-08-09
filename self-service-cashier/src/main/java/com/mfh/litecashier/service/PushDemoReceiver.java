@@ -12,6 +12,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.PayloadHelper;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -34,16 +35,20 @@ public class PushDemoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        ZLogger.df(String.format("action=%d", bundle.getInt("action")));
+        ZLogger.df(String.format("bundle=%s", StringUtils.decodeBundle(bundle)));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:{
                 // 获取透传（payload）数据
-                byte[] payload = bundle.getByteArray(KEY_PAYLOAD);
-                if (payload != null){
-                    String data = new String(payload);
-                    parsePushPayload(context, data);
+                try{
+                    byte[] payload = bundle.getByteArray(KEY_PAYLOAD);
+                    if (payload != null){
+                        String data = new String(payload);
+                        parsePushPayload(context, data);
+                    }
                 }
-                // String appid = bundle.getString(KEY_APPID);
+                catch (Exception e){
+                    ZLogger.ef(e.toString());
+                }
             }
                 break;
             case PushConsts.GET_CLIENTID:{
@@ -113,14 +118,15 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 }
             }
         }
+        //SKU更新
         else if (IMBizType.TENANT_SKU_UPDATE == bizType){
-            //同步数据
             int count = SharedPreferencesHelper
                     .getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
             SharedPreferencesHelper
                     .set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, count+1);
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
         }
+        //新的采购订单
         else if (IMBizType.NEW_PURCHASE_ORDER == bizType){
             int count = SharedPreferencesHelper
                     .getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
@@ -129,6 +135,32 @@ public class PushDemoReceiver extends BroadcastReceiver {
 
             //同步数据
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER));
+        }
+        //现金超过授权额度，要求锁定pos机
+        else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            JSONObject msgObj = jsonObject.getJSONObject("msg");
+            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
+            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
+            String content = bodyObj.getString("content");
+
+            Double cashLimitAmount = Double.valueOf(content);
+            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
+            Bundle args = new Bundle();
+            args.putDouble("amount", cashLimitAmount);
+
+            //同步数据
+            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
+        }
+        //现金授权额度将要用完，即将锁定pos机
+        else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
+            int count = SharedPreferencesHelper
+                    .getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
+            SharedPreferencesHelper
+                    .set(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, count+1);
+
+            //同步数据
+            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT));
         }
     }
 }

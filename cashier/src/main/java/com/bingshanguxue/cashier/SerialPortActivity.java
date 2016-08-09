@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.activity;
+package com.bingshanguxue.cashier;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -7,14 +7,7 @@ import android.os.Bundle;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.litecashier.com.ComBean;
-import com.mfh.litecashier.com.SerialManager;
-import com.mfh.litecashier.event.SerialPortEvent;
-import com.mfh.litecashier.hardware.SMScale.DS781A;
-import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
-import com.mfh.litecashier.utils.DataCacheHelper;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -24,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
 import android_serialport_api.SerialPortFinder;
 import de.greenrobot.event.EventBus;
@@ -36,7 +30,6 @@ import de.greenrobot.event.EventBus;
 public abstract class SerialPortActivity extends BaseActivity {
     DispQueueThread DispQueue;//刷新显示线程
     private SerialPortFinder mSerialPortFinder;//串口设备搜索
-    protected SerialControl comDisplay, comPrint, comScale;//串口
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +71,12 @@ public abstract class SerialPortActivity extends BaseActivity {
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
-
-        //关闭串口
-        CloseComPort(comDisplay);
-        CloseComPort(comPrint);
-        CloseComPort(comScale);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         ZLogger.d("onConfigurationChanged" + newConfig.toString());
-        CloseComPort(comDisplay);
-        CloseComPort(comPrint);
-        CloseComPort(comScale);
 
         setControls();
     }
@@ -168,38 +153,19 @@ public abstract class SerialPortActivity extends BaseActivity {
     /**
      * 显示接收数据
      */
-    private void DispRecData(ComBean comBean) {
-        //
-//        DialogUtil.showHint("接收串口数据!" + sMsg.toString());
-        if (comBean.sComPort.equals(DigiDS781Agent.PORT_SCALE_DS781)) {
-            //TODO,刷新重量,解析数据
-//            Intent intent = new Intent(Constants.BROADCAST_ACTION_REFRESH_NET_WEIGHT);
-////            intent.putExtra("netWeight", new String(ComRecData.bRec));
-//            intent.putExtra("netWeight", ComRecData.bRec);
-//            sendBroadcast(intent);
-
-            DS781A ds781A = DigiDS781Agent.parseData(comBean.bRec);
-            if (ds781A != null){
-                DataCacheHelper.getInstance().setNetWeight(ds781A.getNetWeight());
-            }
-        }
-        else{
-            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
-                    comBean.sRecTime, comBean.sComPort,
-                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
-            ZLogger.d("COM RECV:" + sMsg);
-        }
+    protected void DispRecData(ComBean comBean) {
+        // TODO: 8/9/16 process com data 
+        String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
+                comBean.sRecTime, comBean.sComPort,
+                new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
+        ZLogger.d("COM RECV:" + sMsg);
     }
 
     /**
      * 初始化串口
      */
-    private void initCOM() {
-        comDisplay = new SerialControl(SerialManager.getLedPort(), SerialManager.getLedBaudrate());
-        comPrint = new SerialControl(SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate());
-//        comScale = new SerialControl(SerialManager.getScalePort(), SerialManager.getScaleBaudrate());
-        comScale = new SerialControl(DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781);
-
+    protected void initCOM() {
+        // TODO: 8/9/16 init coms 
         DispQueue = new DispQueueThread();
         DispQueue.start();
 
@@ -288,8 +254,7 @@ public abstract class SerialPortActivity extends BaseActivity {
             Collections.addAll(allDevices, entryValues);
         }
         ZLogger.d("devicePath:" + allDevices.toString());
-        DataCacheHelper.getInstance().setComDevicesPath(allDevices);//保存devices
-
+      
         if (!BizConfig.RELEASE){
             String[] entryValues2 = mSerialPortFinder.getAllDevices();
             List<String> allDevices2 = new ArrayList<>();
@@ -298,93 +263,5 @@ public abstract class SerialPortActivity extends BaseActivity {
             }
             ZLogger.d("devices:" + allDevices2.toString());
         }
-
-        if (allDevices.contains(SerialManager.PORT_PRINTER)) {
-            OpenComPort(comPrint);
-        }
-        if (allDevices.contains(SerialManager.PORT_SCREEN)) {
-            OpenComPort(comDisplay);
-        }
-        if (!StringUtils.isEmpty(DigiDS781Agent.PORT_SCALE_DS781)
-                && allDevices.contains(DigiDS781Agent.PORT_SCALE_DS781)) {
-            OpenComPort(comScale);
-        }
     }
-
-    /**
-     * 串口
-     */
-    public void onEventMainThread(SerialPortEvent event) {
-        ZLogger.d(String.format("SerialPortEvent(%d)", event.getType()));
-        //客显
-        if (event.getType() == SerialPortEvent.SERIAL_TYPE_DISPLAY) {
-            //打开
-            OpenComPort(comDisplay);
-            sendPortData(comDisplay, event.getCmd(), true);
-        } else if (event.getType() == 1) {
-            OpenComPort(comPrint);
-            sendPortData(comPrint, event.getCmd(), false);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_PRINTER) {
-            OpenComPort(comPrint);
-            sendPortData(comPrint, event.getCmdBytes());
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_PRINTER_INIT) {
-            CloseComPort(comPrint);
-
-            comPrint = new SerialControl(SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate());
-            OpenComPort(comPrint);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_PRINTER_OPEN) {
-            OpenComPort(comPrint);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_PRINTER_CLOSE) {
-            CloseComPort(comPrint);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE_INIT) {
-            try {
-                ZLogger.d("关闭电子秤串口");
-                CloseComPort(comScale);
-
-                ZLogger.d("初始化电子秤串口");
-//                comScale = new SerialControl(SerialManager.getScalePort(), SerialManager.getScaleBaudrate());
-                comScale = new SerialControl(DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781);
-
-                ZLogger.d("打开电子秤串口");
-                OpenComPort(comScale);
-                ZLogger.d("打开电子秤串口完成");
-                //清空数据
-                DataCacheHelper.getInstance().setNetWeight(0D);
-            } catch (Exception e) {
-                ZLogger.e(e.toString());
-            }
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE_OPEN) {
-            OpenComPort(comScale);
-
-            //清空数据
-            DataCacheHelper.getInstance().setNetWeight(0D);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE_CLOSE) {
-            CloseComPort(comScale);
-            //清空数据
-            DataCacheHelper.getInstance().setNetWeight(0D);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE) {
-            OpenComPort(comScale);
-            DataCacheHelper.getInstance().setNetWeight(0D);
-            sendPortData(comScale, event.getCmd(), false);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_INIT) {
-            CloseComPort(comDisplay);
-
-            comDisplay = new SerialControl(SerialManager.getLedPort(), SerialManager.getLedBaudrate());
-            OpenComPort(comDisplay);
-            sendPortData(comDisplay, SerialManager.VFD("12.306"));
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_OPEN) {
-            if (comDisplay == null) {
-                comDisplay = new SerialControl(SerialManager.getLedPort(), SerialManager.getLedBaudrate());
-            }
-            OpenComPort(comDisplay);
-//            sendPortData(comDisplay, SerialManager.VFD("5201314"));
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD) {
-            OpenComPort(comDisplay);
-            sendPortData(comDisplay, SerialManager.VFD(event.getCmd()));
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_BYTE) {
-            OpenComPort(comDisplay);
-            sendPortData(comDisplay, event.getCmdBytes());
-        }
-    }
-
 }

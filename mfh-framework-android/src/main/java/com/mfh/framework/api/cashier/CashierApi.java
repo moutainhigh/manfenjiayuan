@@ -1,5 +1,7 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.cashier;
 
+
+import com.mfh.framework.api.MfhApi;
 
 /**
  * 收银Api<br>
@@ -171,5 +173,12 @@ public class CashierApi {
      */
     public final static String URL_PAYORDER_CREATE = MfhApi.URL_BASE_SERVER +
             "/payOrder/create";
+
+
+    /**
+     * 判断是否需要锁定pos，由pos端主动发起询问,/scNetRealInfo/needLockPos?netId=
+     * */
+    public final static String URL_NEEDLOCKPOS = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/needLockPos";
+
 
 }

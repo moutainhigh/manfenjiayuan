@@ -86,7 +86,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import android_serialport_api.SerialPortFinder;
+import com.bingshanguxue.cashier.android_serialport_api.SerialPortFinder;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;

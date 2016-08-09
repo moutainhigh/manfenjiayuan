@@ -5,39 +5,43 @@ import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.BooleanArraySerializer;
+import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.vector_user.UserApiImpl;
+import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.analysis.AnalysisApiImpl;
+import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.core.DeviceUuidFactory;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
-import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
-import com.bingshanguxue.cashier.database.service.DailysettleService;
 import com.mfh.litecashier.database.entity.QuotaEntity;
 import com.mfh.litecashier.database.logic.QuotaService;
 import com.mfh.litecashier.utils.AlarmManagerHelper;
 import com.mfh.litecashier.utils.AnalysisHelper;
 
-import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -58,9 +62,8 @@ public class ValidateManager {
     public static final int STEP_VALIDATE_SESSION = 0;// 检查是否已经登录/会话是否有效
     /**设备注册,每次启动都需要注册，由后台去判断是否需要注册*/
     public static final int STEP_REGISTER_PLAT = 1;//
-    public static final int STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND = 2;// 检查是否日结
-    public static final int STEP_VALIDATE_ANALYSISACCDATE_NEEDDATEEND = 3;// 检查是否需要日结
-    public static final int STEP_VALIDATE_ANALISIS_QUOTA = 4;//统计分析现金授权额度
+    public static final int STEP_HAVENOMENYEND = 2;// 检查是否清分余额不足
+    public static final int STEP_VALIDATE_CASHQUOTA = 3;//统计分析现金授权额度
 
 
     private boolean bSyncInProgress = false;//是否正在同步
@@ -130,19 +133,13 @@ public class ValidateManager {
 //                }
             }
             break;
-            case STEP_VALIDATE_ANALYSISACCDATE_HAVEDATEEND: {
-                validateCheckHaveDateEndByServer();
-                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext());
+            case STEP_HAVENOMENYEND: {
+//                validateCheckHaveDateEndByServer();
+                haveNoMoneyEnd();
             }
             break;
-            case STEP_VALIDATE_ANALYSISACCDATE_NEEDDATEEND: {
-//                validateGetLastAggDate();
-                validateCheckNeedDateEndByServer();
-                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext());
-            }
-            break;
-            case STEP_VALIDATE_ANALISIS_QUOTA: {
-                analysisQuota(new Date());
+            case STEP_VALIDATE_CASHQUOTA: {
+                needLockPos();
             }
             break;
             default: {
@@ -164,51 +161,79 @@ public class ValidateManager {
     }
 
     /**
+     * 验证结束
+     * */
+    private void validateUpdate(int eventId, Bundle args, String msg) {
+        if (!StringUtils.isEmpty(msg)){
+            ZLogger.df(msg);
+        }
+        EventBus.getDefault().post(new ValidateManagerEvent(eventId, args));
+    }
+
+    /**
      * 登录状态验证:进入需要登录的功能时需要
      * */
     private void checkSessionExpire(){
-        //未登录
         if (!MfhLoginService.get().haveLogined()) {
-            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN,
+            validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
                     null, "未登录，跳转到登录页面");
+            return;
         }
+
         //已经登录,检查会话是否过期
-        else {
-            if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-                nextStep();
-//                //没有网络，跳过验证会话过期，直接进行下一步操作
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-////                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_NOT_LOGIN,
-// null, "未登录，跳转到登录页面");
-//                    }
-//                }, 1000);
-            } else {
-                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                        NetProcessor.Processor<String>>(
-                        new NetProcessor.Processor<String>() {
-                            @Override
-                            public void processResult(IResponseData rspData) {
-                                //{"code":"0","msg":"登录成功!","version":"1","data":""}
-                                ZLogger.df("登录状态有效 ");
-                                nextStep();
-                            }
-
-                            @Override
-                            protected void processFailure(Throwable t, String errMsg) {
-                                super.processFailure(t, errMsg);
-                                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_SESSION_EXPIRED,
-                                        null, "会话过期，自动重登录");
-                            }
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            nextStep();
+        } else {
+            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                    NetProcessor.Processor<String>>(
+                    new NetProcessor.Processor<String>() {
+                        @Override
+                        public void processResult(IResponseData rspData) {
+                            //{"code":"0","msg":"登录成功!","version":"1","data":""}
+                            ZLogger.df("验证登录状态成功");
+                            nextStep();
                         }
-                        , String.class
-                        , CashierApp.getAppContext()) {
-                };
 
-                UserApiImpl.validSession(responseCallback);
-            }
+                        @Override
+                        protected void processFailure(Throwable t, String errMsg) {
+                            super.processFailure(t, errMsg);
+                            retryLogin();
+                        }
+                    }
+                    , String.class
+                    , CashierApp.getAppContext()) {
+            };
+
+            UserApiImpl.validSession(responseCallback);
         }
+    }
+
+    /**
+     * 自动重登录
+     *
+     */
+    private void retryLogin() {
+        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
+                MfhLoginService.get().getPassword(), new LoginCallback() {
+                    @Override
+                    public void loginSuccess(UserMixInfo user) {
+                        //登录成功
+                        ZLogger.df("重登录成功：");
+
+                        //注册到消息桥
+                        IMClient.getInstance().registerBridge();
+
+                        validateUpdate(ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED,
+                                null, "重登录成功");
+                        nextStep();
+                    }
+
+                    @Override
+                    public void loginFailed(String errMsg) {
+                        validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
+                                null, "登录已失效－－" + errMsg);
+                    }
+                });
     }
 
 
@@ -226,8 +251,8 @@ public class ValidateManager {
                             String retStr = retValue.getValue();
                             ZLogger.df("注册设备成功:" + retStr);
                             SharedPreferencesManager.setTerminalId(retStr);
-                            nextStep();
                         }
+                        nextStep();
                     }
 
                     @Override
@@ -235,9 +260,13 @@ public class ValidateManager {
                         super.processFailure(t, errMsg);
                         ZLogger.df(String.format("注册设备失败,%s", errMsg));
 
-                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
-                                null, "设备注册失败，需要重新注册");
-                        nextStep();
+                        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())){
+                            validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                                    null, "设备注册失败，需要重新注册");
+                        }
+                        else{
+                            nextStep();
+                        }
                     }
                 }
                 , String.class
@@ -254,8 +283,14 @@ public class ValidateManager {
         order.put("netId", MfhLoginService.get().getCurOfficeId());
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
-                    "网络未连接，暂停注册设备。");
+            if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())){
+                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                        null, "设备注册失败，需要重新注册");
+            }
+            else{
+                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                        "网络未连接，暂停注册设备。");
+            }
         }
         else {
             ZLogger.df("注册设备中..." + order.toJSONString());
@@ -263,136 +298,68 @@ public class ValidateManager {
         }
     }
 
-
-
     /**
-     * 获取后台最后日结日期
-     * */
-    private void validateGetLastAggDate(){
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
-                    "网络未连接，暂停验证是否日结。");
-            return;
-        }
-
-        bSyncInProgress = true;
-
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":"2016-02-18"}
-                        try{
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String lastAggDate = retValue.getValue();
-                            ZLogger.df(String.format("获取网店在后台最后日结日期成功：%s", lastAggDate));
-                            //根据最后一次日结日期来判断是否日结
-                            validateCheckNeedDateEndByPos(lastAggDate);
-                        }
-                        catch (Exception e){
-                            ZLogger.e(e.toString());
-                            nextStep();
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.df("获取最后日结日期失败：" + errMsg);
-                        nextStep();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-
-        CashierApiImpl.analysisAccDateGetLastAggDate(responseCallback);
-    }
-
-    /**
-     * POS判读是否日结
-     * @param lastAggDate 后台上一次日结日期
-     * */
-    private void validateCheckNeedDateEndByPos(String lastAggDate){
-        bSyncInProgress = true;
-
-        //获取POS设备最新的订单更新日期
-        final Date latestNeedAggDate = getLatestNeedAggDate();
-        if (latestNeedAggDate == null){
-            ZLogger.df("POS设备最新的需要日结日期为空，不需要日结。");
-            nextStep();
-            return;
-        }
-
-        String latestNeedAggDateStr = TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(latestNeedAggDate);
-        ZLogger.df(String.format("获取POS机是否需要进行日结: %s(%s)", latestNeedAggDateStr, lastAggDate));
-
-        //POS设备最新的需要日结日期与后台日结日期比较，判断是否需要日结。
-        if (!StringUtils.isEmpty(lastAggDate)){
-            try {
-                Date LastAggDatetime = TimeCursor.FORMAT_YYYYMMDD.parse(lastAggDate);
-                if (LastAggDatetime.after(latestNeedAggDate)){
-                    ZLogger.df("POS设备最新的需要日结日期比后台日结日期晚，不需要日结。");
-                    nextStep();
-                    return;
-                }
-            } catch (ParseException e) {
-//                e.printStackTrace();
-                ZLogger.df(String.format("POS设备最新的需要日结日期与后台日结日期比较失败, %s", e.toString()));
-                nextStep();
-                return;
-            }
-        }
-
-        Bundle args = new Bundle();
-        args.putString("dailysettleDatetime", latestNeedAggDateStr);
-        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE, args,
-                String.format("%s 未做日结，需要重新日结后才可以使用POS", latestNeedAggDateStr));
-    }
-
-    /**
-     * 后台判读当天是否已经日结，并修改日结确认状态
+     * 检测昨日是否清分完毕：针对当前用户所属网点判断是否进行过日结清分操作；如果发现未清分，则锁定pos机，
+     * 但允许调用commintCashAndTrigDateEnd接口提交营业现金，后台马上会触发一次清分。
      * */
     private void validateCheckHaveDateEndByServer(){
-        Date currentDate = new Date();
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.add(Calendar.DAY_OF_MONTH, -1);
+        final Date yesterday = rightNow.getTime();
 
-        final String aggDateStr = TimeCursor.FORMAT_YYYYMMDD.format(currentDate);
-        ZLogger.df(String.format("判断当天是否日结：%s ", aggDateStr));
-
-        final DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(currentDate);
-        if (dailysettleEntity == null){
-            ZLogger.df(String.format("创建日结单失败：%s", aggDateStr));
-            nextStep();
-            return;
-        }
+        final String aggDateStr = TimeCursor.FORMAT_YYYYMMDD.format(yesterday);
+        ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            //十分钟后自动重试
+            Calendar trigger = Calendar.getInstance();
+            trigger.add(Calendar.MINUTE, 10);
+            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
-                    "网络未连接，暂停验证(当天是否已经日结)。");
+                    "网络未连接，暂停验证(昨日是否已经清分)。");
             return;
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<Boolean,
+                NetProcessor.Processor<Boolean>>(
+                new NetProcessor.Processor<Boolean>() {
                     @Override
                     public void processResult(IResponseData rspData) {
                         //{"code":"0","msg":"操作成功!","version":"1","data":false}
                         //java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
                         //RspValue<Boolean> retValue = (RspValue<Boolean>) rspData;
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        if (!StringUtils.isEmpty(retValue.getValue()) && retValue.getValue().equals("true")){
-                            ZLogger.df(String.format("日结单已经确认：%s", aggDateStr));
+                        RspValue<Boolean> retValue = (RspValue<Boolean>) rspData;
+                        Boolean isHaveDateEnd = retValue.getValue();
+
+                        final DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(yesterday);
+                        if (dailysettleEntity == null){
+                            ZLogger.df(String.format("创建日结单失败：%s", aggDateStr));
+
+                            //十分钟后自动重试
+                            Calendar trigger = Calendar.getInstance();
+                            trigger.add(Calendar.MINUTE, 10);
+                            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
+                            nextStep();
+                            return;
+                        }
+
+                        if (isHaveDateEnd){
+                            ZLogger.df(String.format("%s 已清分", aggDateStr));
                             dailysettleEntity.setConfirmStatus(DailysettleEntity.CONFIRM_STATUS_YES);
                             DailysettleService.get().saveOrUpdate(dailysettleEntity);
                         }
                         else{
-                            ZLogger.df(String.format("日结单未确认：%s", aggDateStr));
                             dailysettleEntity.setConfirmStatus(DailysettleEntity.CONFIRM_STATUS_NO);
                             DailysettleService.get().saveOrUpdate(dailysettleEntity);
+
+                            Bundle args = new Bundle();
+                            args.putString("dailysettleDatetime",
+                                    TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(yesterday));
+                            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE,
+                                    args, String.format("%s 未清分，即将锁定POS机，" +
+                                            "可以通过提交营业现金来解锁", aggDateStr));
                         }
                         nextStep();
                     }
@@ -401,32 +368,39 @@ public class ValidateManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.df("判读是否日结失败：" + errMsg);
+                        ZLogger.df("判读是否清分失败：" + errMsg);
                         nextStep();
                     }
                 }
-                , String.class
+                , Boolean.class
                 , CashierApp.getAppContext()) {
         };
 
-        CashierApiImpl.analysisAccDateHaveDateEnd(currentDate, responseCallback);
+        AnalysisApiImpl.analysisAccDateHaveDateEnd(yesterday, responseCallback);
     }
 
+
     /**
-     * 后台判读是否有日结未确认，并修改日结确认状态
-     * */
-    private void validateCheckNeedDateEndByServer(){
-        //获取POS设备最新的订单更新日期
-        final Date latestNeedAggDate = getLatestNeedAggDate();
-        if (latestNeedAggDate == null){
-            ZLogger.df("POS设备最新的需要日结日期为空，不需要日结。");
-            nextStep();
-            return;
-        }
+     * 针对当前用户所属网点判断是否存在过清分时余额不足情况
+     * /analysisAccDate/haveNoMoneyEnd?date=2016-02-02
+     * @param request date可空,默认是昨天。代表昨天包括昨天以前的时间内有无存在余额不足情况。
+     */
+    private void haveNoMoneyEnd(){
+//        Calendar rightNow = Calendar.getInstance();
+//        rightNow.add(Calendar.DAY_OF_MONTH, -1);
+//        final Date yesterday = rightNow.getTime();
+//
+//        final String aggDateStr = TimeCursor.FORMAT_YYYYMMDD.format(yesterday);
+//        ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED,
-                    null, "网络未连接，暂停验证是否有日结未确认。");
+            //十分钟后自动重试
+            Calendar trigger = Calendar.getInstance();
+            trigger.add(Calendar.MINUTE, 10);
+            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
+            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                    "网络未连接，暂停验证(昨日是否已经清分)。");
             return;
         }
 
@@ -435,36 +409,24 @@ public class ValidateManager {
                 new NetProcessor.Processor<String>() {
                     @Override
                     public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":false}
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        String result = retValue != null ? retValue.getValue() : null;
+//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"10.4"}}
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            Double amount = Double.valueOf(retValue.getValue());
+                            if (amount >= 0.01){
+                                Bundle args = new Bundle();
+                                args.putDouble("amount", amount);
+                                validateFinished(ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP,
+                                        args, String.format("余额不足(%2f)清分失败，即将锁定POS机，" +
+                                                "可以通过提交营业现金来解锁", amount));
+                            }
+                            else{
+                                ZLogger.df("haveNoMoneyEnd: " + amount);
+                            }
 
-                        final String latestNeedAggDateStr = TimeCursor.FORMAT_YYYYMMDD.format(latestNeedAggDate);
-//                        ZLogger.d(String.format("判断是否有日结未确认: %s", latestNeedAggDateStr));
-
-                        final DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(latestNeedAggDate);
-                        if (dailysettleEntity == null){
-                            ZLogger.df(String.format("创建日结单失败：%s", latestNeedAggDateStr));
                             nextStep();
-                            return;
-                        }
-
-                        if (StringUtils.isEmpty(result) || result.equals("false")){
-                            dailysettleEntity.setConfirmStatus(DailysettleEntity.CONFIRM_STATUS_NO);
-                            DailysettleService.get().saveOrUpdate(dailysettleEntity);
-
-                            Bundle args = new Bundle();
-                            args.putString("dailysettleDatetime",
-                                    TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(latestNeedAggDate));
-                            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE,
-                                    args, String.format("%s 未做日结，即将锁定POS机，请立即进行日结",
-                                            latestNeedAggDateStr));
-                        }
-                        else{
-                            ZLogger.df(String.format("%s 已经日结", latestNeedAggDateStr));
-
-                            dailysettleEntity.setConfirmStatus(DailysettleEntity.CONFIRM_STATUS_YES);
-                            DailysettleService.get().saveOrUpdate(dailysettleEntity);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
 
                             nextStep();
                         }
@@ -474,7 +436,7 @@ public class ValidateManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.df("判读是否日结失败：" + errMsg);
+                        ZLogger.df("判读是否清分失败：" + errMsg);
                         nextStep();
                     }
                 }
@@ -482,32 +444,79 @@ public class ValidateManager {
                 , CashierApp.getAppContext()) {
         };
 
-        CashierApiImpl.analysisAccDateHaveDateEnd(latestNeedAggDate, responseCallback);
+        AnalysisApiImpl.haveNoMoneyEnd(responseCallback);
     }
 
     /**
-     * 获取POS设备最新需要日结的日期，用于判断是否需要日结*/
-    private Date getLatestNeedAggDate(){
-        Date currentDate = new Date();
+     * 判断是否需要锁定pos
+     *
+     * */
+    private void needLockPos(){
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+//            //十分钟后自动重试
+//            Calendar trigger = Calendar.getInstance();
+//            trigger.add(Calendar.MINUTE, 10);
+//            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
 
-        //获取小于当前日期的最新一次已经完成的订单的更新日期
-        String strWhere = String.format("updatedDate < '%s' and sellerId = '%d' and status = '%d'",
-                TimeCursor.FORMAT_YYYYMMDD.format(currentDate), MfhLoginService.get().getSpid(),
-                PosOrderEntity.ORDER_STATUS_FINISH);
-        List<PosOrderEntity> orderEntityList = PosOrderService.get()
-                .queryAllDesc(strWhere, new PageInfo(1, 10));
-        if (orderEntityList != null && orderEntityList.size() > 1) {
-            return orderEntityList.get(0).getUpdatedDate();
+            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                    "网络未连接，暂停验证(昨日是否已经清分)。");
+            return;
         }
 
-        return null;
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"查询成功!","version":"1","data":"false,8.99"}
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            String result = retValue.getValue();
+                            String[] ret = result.split(",");
+                            if (ret.length >=2){
+                                boolean isNeedLock = Boolean.getBoolean(ret[0]);
+                                Double amount = Double.valueOf(ret[1]);
+
+                                ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
+                                        isNeedLock, amount));
+                                if (isNeedLock && amount >= 0.01){
+                                    Bundle args = new Bundle();
+                                    args.putDouble("amount", amount);
+                                    validateFinished(ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP,
+                                            args, String.format("现金超过授权金额(%2f)，即将锁定POS机，" +
+                                                    "可以通过提交营业现金来解锁", amount));
+                                }
+                            }
+
+
+                        } catch (NumberFormatException e) {
+//                            e.printStackTrace();
+                            ZLogger.ef(e.toString());
+                        }
+
+                        nextStep();
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
+                        ZLogger.df("判读是否锁定POS机失败：" + errMsg);
+                        nextStep();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        CashierApiImpl.needLockPos(responseCallback);
     }
 
 
     /**
      * 统计分析,同时只能存在一条未支付的额度表，若存在多条，则默认取第一条。
      * */
-    public void analysisQuota(Date analysisDate){
+    public void localAnalysisCashQuota(Date analysisDate){
         try{
             QuotaEntity quotaEntity;
 
@@ -572,13 +581,14 @@ public class ValidateManager {
 
 
     public class ValidateManagerEvent {
-        public static final int EVENT_ID_VALIDATE_START             = 0X01;//验证开始
-        public static final int EVENT_ID_VALIDATE_NEED_LOGIN        = 0X02;//需要登录
-        public static final int EVENT_ID_VALIDATE_SESSION_EXPIRED   = 0X03;//会话过期
-        public static final int EVENT_ID_VALIDATE_PLAT_NOT_REGISTER = 0X04;//设备未注册
+        public static final int EVENT_ID_INTERRUPT_NEED_LOGIN        = 0X02;//需要登录
+        public static final int EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER = 0X04;//设备未注册
+        public static final int EVENT_ID_RETRY_SIGNIN_SUCCEED       = 0X03;//重登录成功
         public static final int EVENT_ID_VALIDATE_NEED_DAILYSETTLE  = 0X05;//需要日结
-        public static final int EVENT_ID_VALIDATE_FINISHED          = 0X06;//验证结束
-        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE     = 0X07;//额度发生变化
+        public static final int EVENT_ID_INCOME_DESTRIBUTION_TOPUP  = 0x06;//清分充值
+        public static final int EVENT_ID_CASH_QUOTA_TOPUP           = 0x07;//授权额度超限充值
+        public static final int EVENT_ID_VALIDATE_FINISHED          = 0X08;//验证结束
+        public static final int EVENT_ID_VALIDATE_QUOTA_UPDATE      = 0X09;//额度发生变化
 
         private int eventId;
         private Bundle args;//参数

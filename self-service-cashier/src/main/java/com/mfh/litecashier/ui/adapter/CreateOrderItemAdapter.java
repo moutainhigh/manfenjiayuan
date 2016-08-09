@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.wrapper.CreateOrderItemWrapper;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;

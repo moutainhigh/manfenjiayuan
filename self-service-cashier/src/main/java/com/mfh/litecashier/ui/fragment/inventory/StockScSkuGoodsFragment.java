@@ -17,23 +17,27 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.CateApi;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -48,7 +52,7 @@ import butterknife.OnClick;
  * </ol>
  * Created by Nat.ZZN(bingshanguxue) on 15/09/24.
  */
-public class StockScSkuGoodsFragment extends BaseProgressFragment {
+public class StockScSkuGoodsFragment extends BaseProgressFragment  implements IScGoodsSkuView {
 
     public static final String EXTRY_KEY_BARCODE = "barcode";
 
@@ -70,6 +74,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment {
 
     private String barcode;
     private ScGoodsSku purchaseGoods;
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter;
 
     public static StockScSkuGoodsFragment newInstance(Bundle args) {
         StockScSkuGoodsFragment fragment = new StockScSkuGoodsFragment();
@@ -81,6 +86,13 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment {
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_stock_scskugoods;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -257,35 +269,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment {
 
 //        animProgress.setVisibility(View.VISIBLE);
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
-                NetProcessor.Processor<ScGoodsSku>>(
-                new NetProcessor.Processor<ScGoodsSku>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("processFailure: " + errMsg);
-                        //查询失败
-                        refresh(null);
-//                        animProgress.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        if (rspData != null) {
-//                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                            RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
-                            refresh(retValue.getValue());
-                        } else {
-                            refresh(null);
-                        }
-//                        animProgress.setVisibility(View.GONE);
-                    }
-                }
-                , ScGoodsSku.class
-                , CashierApp.getAppContext()) {
-        };
-
-        ScGoodsSkuApiImpl.getByBarcode(barcode, responseCallback);
+        mScGoodsSkuPresenter.getByBarcode(barcode);
     }
 
     private void refresh(ScGoodsSku stockGoods) {
@@ -468,5 +452,23 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment {
             , CashierApp.getAppContext()) {
     };
 
+    @Override
+    public void onIScGoodsSkuViewProcess() {
 
+    }
+
+    @Override
+    public void onIScGoodsSkuViewError(String errorMsg) {
+        refresh(null);
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
+        refresh(data);
+    }
 }

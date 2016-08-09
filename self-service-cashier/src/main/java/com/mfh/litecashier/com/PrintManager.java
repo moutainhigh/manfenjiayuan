@@ -7,7 +7,7 @@ import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.gprinter.command.EscCommand;
-import com.manfenjiayuan.business.bean.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.WayType;

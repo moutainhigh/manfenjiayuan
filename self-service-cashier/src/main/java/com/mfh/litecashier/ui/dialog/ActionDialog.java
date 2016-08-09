@@ -7,20 +7,31 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import com.mfh.litecashier.R;
+import android.widget.TextView;
+
 import com.mfh.framework.uikit.dialog.CommonDialog;
+import com.mfh.litecashier.R;
 
 import org.apache.commons.lang3.StringUtils;
 
 
 /**
- * 
  * @author NAT.ZZN(bingshanguxue)
- * 
  */
 public class ActionDialog extends CommonDialog {
 
+    private TextView tvTitle, tvSubTitle;
     private Button btnAction1, btnAction2, btnAction3;
+
+    public interface OnActionClickListener {
+        void onAction1();
+
+        void onAction2();
+
+        void onAction3();
+    }
+
+    private OnActionClickListener mOnActionClickListener;
 
     private View rootView;
 
@@ -35,9 +46,36 @@ public class ActionDialog extends CommonDialog {
                 R.layout.dialogview_action, null);
 //        ButterKnife.bind(rootView);
 
+        tvTitle = (TextView) rootView.findViewById(R.id.tv_title);
+        tvSubTitle = (TextView) rootView.findViewById(R.id.tv_subtitle);
         btnAction1 = (Button) rootView.findViewById(R.id.button_action1);
         btnAction2 = (Button) rootView.findViewById(R.id.button_action2);
         btnAction3 = (Button) rootView.findViewById(R.id.button_action3);
+
+        btnAction1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnActionClickListener != null) {
+                    mOnActionClickListener.onAction1();
+                }
+            }
+        });
+        btnAction2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnActionClickListener != null) {
+                    mOnActionClickListener.onAction2();
+                }
+            }
+        });
+        btnAction3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnActionClickListener != null) {
+                    mOnActionClickListener.onAction3();
+                }
+            }
+        });
 
         setContent(rootView, 0);
     }
@@ -64,34 +102,35 @@ public class ActionDialog extends CommonDialog {
 //        getWindow().setAttributes(p);
     }
 
-    public void setAction1(String name, View.OnClickListener listener){
-        if (StringUtils.isEmpty(name)){
+    public void initialize(String title, String subTitle,
+                           OnActionClickListener onActionClickListener) {
+        this.tvTitle.setText(title);
+        this.tvSubTitle.setText(subTitle);
+        this.mOnActionClickListener = onActionClickListener;
+    }
+
+    public void setActions(String action1, String action2, String action3) {
+        if (StringUtils.isEmpty(action1)) {
             btnAction1.setVisibility(View.GONE);
-            return;
+        } else {
+            btnAction1.setVisibility(View.VISIBLE);
+            btnAction1.setText(action1);
         }
 
-        btnAction1.setVisibility(View.VISIBLE);
-        btnAction1.setText(name);
-        btnAction1.setOnClickListener(listener);
-    }
-
-    public void setAction2(String name, View.OnClickListener listener){
-        if (StringUtils.isEmpty(name)){
+        if (StringUtils.isEmpty(action2)) {
             btnAction2.setVisibility(View.GONE);
+        } else {
+            btnAction2.setVisibility(View.VISIBLE);
+            btnAction2.setText(action2);
         }
 
-        btnAction2.setText(name);
-        btnAction2.setVisibility(View.VISIBLE);
-        btnAction2.setOnClickListener(listener);
-    }
-
-    public void setAction3(String name, View.OnClickListener listener){
-        if (StringUtils.isEmpty(name)){
+        if (StringUtils.isEmpty(action1)) {
             btnAction3.setVisibility(View.GONE);
+        } else {
+            btnAction3.setVisibility(View.VISIBLE);
+            btnAction3.setText(action3);
         }
 
-        btnAction3.setText(name);
-        btnAction3.setVisibility(View.VISIBLE);
-        btnAction3.setOnClickListener(listener);
     }
+
 }

@@ -165,9 +165,10 @@ public class PaymentInfoImpl{
                     outTradeNo, paymentInfo.getPayType(),
                     PosOrderPayEntity.AMOUNT_TYPE_IN, paidFactor,
                     status, member);
-            return;
         }
+        else{
 
-        split(paymentInfo, bizType, orderBarCode, member);
+            split(paymentInfo, bizType, orderBarCode, member);
+        }
     }
 }
