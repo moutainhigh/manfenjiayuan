@@ -53,10 +53,20 @@ public class GoodsInfoFragment extends BaseFragment {
     TextLabelView labelQuantity;
     @Bind(R.id.label_upperLimit)
     EditLabelView labelUpperLimit;
+    @Bind(R.id.label_sellNumber)
+    TextLabelView labelSellNumber;
+    @Bind(R.id.label_avgSellNum)
+    TextLabelView labelAvgSellNum;
+    @Bind(R.id.label_sellDayNum)
+    TextLabelView labelSellDayNum;
+    @Bind(R.id.label_sellMonthNum)
+    TextLabelView labelSellMonthNum;
+
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
     private ScGoodsSku curGoods = null;
+    private boolean isEditable = true;//网店商品档案允许被修改，平台商品档案不允许被修改。
 
     public static GoodsInfoFragment newInstance(Bundle args) {
         GoodsInfoFragment fragment = new GoodsInfoFragment();
@@ -269,27 +279,30 @@ public class GoodsInfoFragment extends BaseFragment {
             labelProductName.setTvSubTitle("");
             labelBuyprice.setTvSubTitle("");
             labelCostPrice.setInput("");
-            labelCostPrice.setEnabled(false);
             labelGrossProfit.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
             labelUpperLimit.setInput("");
-            labelUpperLimit.setEnabled(false);
-//            labelLowerLimit.setEtContent("");
-//            labelLowerLimit.setEnabled(false);
+            labelSellNumber.setTvSubTitle("");
+            labelAvgSellNum.setTvSubTitle("");
+            labelSellDayNum.setTvSubTitle("");
+            labelSellMonthNum.setTvSubTitle("");
 
+            labelCostPrice.setEnabled(false);
+            labelUpperLimit.setEnabled(false);
             btnSubmit.setEnabled(false);
+            btnSubmit.setVisibility(View.GONE);
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
             labelProductName.setTvSubTitle(curGoods.getSkuName());
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelCostPrice.setInput(MUtils.formatDouble(curGoods.getCostPrice(), ""));
-            labelCostPrice.setEnabled(true);
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
             labelUpperLimit.setInput(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
-            labelUpperLimit.setEnabled(true);
-//            labelLowerLimit.setEtContent(MUtils.formatDouble(curGoods.getLowerLimit(), ""));
-//            labelLowerLimit.setEnabled(true);
+            labelSellNumber.setTvSubTitle(MUtils.formatDouble(curGoods.getSellNumber(), ""));
+            labelAvgSellNum.setTvSubTitle(MUtils.formatDouble(curGoods.getAvgSellNum(), ""));
+            labelSellDayNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellDayNum(), ""));
+            labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
 
 
             //计算毛利率:(costPrice-buyPrice) / costPrice
@@ -298,8 +311,16 @@ public class GoodsInfoFragment extends BaseFragment {
             labelGrossProfit.setTvSubTitle(grossProfit);
             labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
 
-            labelCostPrice.requestFocusEnd();
-            btnSubmit.setEnabled(true);
+            if (isEditable){
+                labelCostPrice.setEnabled(true);
+                labelUpperLimit.setEnabled(true);
+                labelCostPrice.requestFocusEnd();
+                btnSubmit.setVisibility(View.VISIBLE);
+                btnSubmit.setEnabled(true);
+            }
+            else{
+                btnSubmit.setVisibility(View.GONE);
+            }
         }
     }
 }

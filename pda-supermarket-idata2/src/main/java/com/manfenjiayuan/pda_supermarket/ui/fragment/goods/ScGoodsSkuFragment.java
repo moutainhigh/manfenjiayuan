@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
@@ -33,7 +34,7 @@ import de.greenrobot.event.EventBus;
 
 
 /**
- * 库存商品
+ * 商品档案
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
@@ -49,8 +50,14 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     ViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
+
+    private String curBarcode;
     private ScGoodsSku curGoods = null;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
+
+
+    private ActionDialog mActionDialog = null;
+
 
     public static ScGoodsSkuFragment newInstance(Bundle args) {
         ScGoodsSkuFragment fragment = new ScGoodsSkuFragment();
@@ -122,7 +129,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
     private void initTabs() {
         mTabStrip.setOnClickTabListener(null);
-        //TODO
         mTabStrip.setOnPagerChange(new TopSlidingTabStrip.OnPagerChangeLis() {
             @Override
             public void onChanged(int page) {
@@ -160,9 +166,43 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         }
 
         if (mScGoodsSkuPresenter != null) {
+            curBarcode = barcode;
             mScGoodsSkuPresenter.findGoodsListByBarcode(barcode);
         } else {
             refresh(null);
+        }
+    }
+
+
+    /**
+     * 网点商品档案未找到商品提示
+     */
+    private void noGoodsAlert(final String barcode) {
+        if (mActionDialog == null) {
+            mActionDialog = new ActionDialog(getActivity());
+            mActionDialog.setCancelable(false);
+            mActionDialog.setCanceledOnTouchOutside(false);
+        }
+        mActionDialog.init("无结果", String.format("%s 商品档案未在当前网点登记", barcode),
+                new ActionDialog.DialogClickListener() {
+                    @Override
+                    public void onAction1Click() {
+                        mScGoodsSkuPresenter.getByBarcode(barcode);
+                    }
+
+                    @Override
+                    public void onAction2Click() {
+                        hideProgressDialog();
+                        refresh(null);
+                    }
+
+                    @Override
+                    public void onAction3Click() {
+                    }
+                });
+        mActionDialog.registerActions("查询平台商品档案", "暂不查询", "");
+        if (!mActionDialog.isShowing()) {
+            mActionDialog.show();
         }
     }
 
@@ -208,9 +248,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
 
         curGoods = invSkuGoods;
-        if (curGoods == null) {
-            mScanBar.reset();
-        }
 
         Bundle args = new Bundle();
         args.putSerializable("scGoodsSku", curGoods);
@@ -233,16 +270,28 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         if (dataList != null && dataList.size() > 0) {
             ScGoodsSku scGoodsSku = dataList.get(0);
             refresh(scGoodsSku);
-        } else {
-            DialogUtil.showHint("未找到商品");
-            refresh(null);
-        }
 
-        hideProgressDialog();
+            hideProgressDialog();
+        } else {
+            if (!StringUtils.isEmpty(curBarcode)) {
+                noGoodsAlert(curBarcode);
+                curBarcode = null;
+            } else {
+                DialogUtil.showHint("未找到商品");
+                hideProgressDialog();
+                refresh(null);
+            }
+        }
     }
 
     @Override
     public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
+        refresh(goodsSku);
+        curBarcode = null;
+        hideProgressDialog();
 
+        if (goodsSku == null) {
+            DialogUtil.showHint("未找到商品");
+        }
     }
 }
