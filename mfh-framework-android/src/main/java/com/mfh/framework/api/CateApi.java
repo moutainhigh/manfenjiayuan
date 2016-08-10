@@ -100,7 +100,7 @@ public class CateApi {
     public final static Integer FRESH           = 101;//生鲜
     public final static Integer FRUIT           = 102;//水果
 
-    public static String fontCatetypeName(Integer value) {
+    public static String frontCatetypeName(Integer value) {
         if (value.equals(PLAT)) {
             return "满分平台";
         }

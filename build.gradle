@@ -18,6 +18,10 @@ buildscript {
      * JCenter as the repository Gradle should use to look for its dependencies.
      */
     repositories {
+//        mavenCentral()
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//        }
         jcenter()
     }
 
@@ -31,6 +35,9 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+//        classpath 'com.jakewharton:butterknife-gradle-plugin:8.2.0'
     }
 }
 
