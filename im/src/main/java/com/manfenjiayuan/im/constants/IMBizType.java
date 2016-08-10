@@ -25,7 +25,9 @@ public class IMBizType {
     //1100~1200 POS机&客显
     public final static int TENANT_SKU_UPDATE           = 1101;//网点sku信息更新
     public final static int NEW_PURCHASE_ORDER          = 1102;//新的生鲜预订单
-    public final static int CUSTOMER_DISPLAY_PAYORDER   = 1103;//收银机推送订单到客显设备
+    public final static int LOCK_POS_CLIENT_NOTIFY      = 1103;//现金超过授权额度，要求锁定pos机
+    public final static int PRE_LOCK_POS_CLIENT_NOTIFY  = 1104;//现金授权额度将要用完，即将锁定pos机
+    public final static int CUSTOMER_DISPLAY_PAYORDER   = 1105;//收银机推送订单到客显设备
 
     public static String name(int value) {
         switch (value) {
@@ -59,6 +61,10 @@ public class IMBizType {
                 return "满分小伙伴送达通知";
             case MFPARGER_RECEIVE_ORDER:
                 return "满分小伙伴接单通知";
+            case LOCK_POS_CLIENT_NOTIFY:
+                return "现金超过授权额度";
+            case PRE_LOCK_POS_CLIENT_NOTIFY:
+                return "现金授权额度将要用完";
             case EVALUATE_ORDER:
                 return "用户评价订单";
             default:
