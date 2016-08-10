@@ -21,7 +21,7 @@
 
 
 ##Version
-###[v1.21.03_0802287](https://beta.bugly.qq.com/bz1s)
+###[v1.21.04_0810287](https://beta.bugly.qq.com/bz1s)
 
 版本描述：
 

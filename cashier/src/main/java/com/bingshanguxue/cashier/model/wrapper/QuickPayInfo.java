@@ -14,6 +14,7 @@ public class QuickPayInfo implements Serializable{
     private String body;//内容
     private Integer payType = WayType.NA;
     private Double amount;//支付金额
+    private Double minAmount;
 
     public Integer getBizType() {
         return bizType;
@@ -53,5 +54,14 @@ public class QuickPayInfo implements Serializable{
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+
+    public Double getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(Double minAmount) {
+        this.minAmount = minAmount;
     }
 }

@@ -56,8 +56,7 @@ public class AlipayDialog extends CommonDialog {
 
     private View rootView;
     private ImageButton btnClose;
-    private TextView tvTitle;
-    private TextView tvHandleAmount;
+    private TextView tvTitle, tvHandleAmount, tvSubTitle;
     private EditText etAuthCode;
     private LinearLayout frameOperation;
     private Button btnQueryOrder, btnCancelOrder;
@@ -70,6 +69,9 @@ public class AlipayDialog extends CommonDialog {
     private String outTradeNo;//商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
 
     private boolean bPayProcessing = false;
+
+
+    private DoubleInputDialog changePriceDialog = null;
 
     public interface DialogClickListener {
         /**支付完成*/
@@ -95,6 +97,7 @@ public class AlipayDialog extends CommonDialog {
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
         tvHandleAmount = (TextView) rootView.findViewById(R.id.tv_handle_amount);
+        tvSubTitle = (TextView) rootView.findViewById(R.id.tv_subtitle);
         etAuthCode = (EditText) rootView.findViewById(R.id.et_authcode);
         frameOperation = (LinearLayout) rootView.findViewById(R.id.frame_operation);
         btnQueryOrder = (Button) rootView.findViewById(R.id.button_query_orderstatus);
@@ -104,6 +107,12 @@ public class AlipayDialog extends CommonDialog {
         tvProcess = (TextView) rootView.findViewById(R.id.tv_process);
 
         tvTitle.setText("快捷支付（支付宝）");
+        tvHandleAmount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeAmount();
+            }
+        });
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,8 +173,10 @@ public class AlipayDialog extends CommonDialog {
         super.show();
 
         etAuthCode.requestFocus();
-//        ivHeader.setAvatarUrl(MfhLoginService.get().getHeadimage());
-//        tvUsername.setText(MfhLoginService.get().getHumanName());
+
+        if (mQuickPayInfo == null){
+            dismiss();
+        }
     }
 
 
@@ -205,6 +216,28 @@ public class AlipayDialog extends CommonDialog {
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
+    }
+
+    /**
+     * 修改金额
+     * */
+    private void changeAmount(){
+        if (changePriceDialog == null) {
+            changePriceDialog = new DoubleInputDialog(getContext());
+            changePriceDialog.setCancelable(true);
+            changePriceDialog.setCanceledOnTouchOutside(true);
+        }
+        changePriceDialog.initialzie("修改金额", 2, mQuickPayInfo.getMinAmount(), "元",
+                new DoubleInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onQuantityChanged(Double quantity) {
+                        mQuickPayInfo.setAmount(quantity);
+
+                        tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+                    }
+                });
+        changePriceDialog.setMinimumDoubleCheck(mQuickPayInfo.getAmount(), true);
+        changePriceDialog.show();
     }
 
     /**
@@ -522,6 +555,12 @@ public class AlipayDialog extends CommonDialog {
     public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, DialogClickListener callback) {
         this.mQuickPayInfo = quickPayInfo;
         this.mListener = callback;
+        if (quickPayInfo != null){
+            this.tvTitle.setText(quickPayInfo.getSubject());
+            this.tvSubTitle.setText(quickPayInfo.getBody());
+            this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+        }
+
         if (isCancelAbled){
             this.btnClose.setVisibility(View.VISIBLE);
         }
@@ -529,21 +568,6 @@ public class AlipayDialog extends CommonDialog {
             this.btnClose.setVisibility(View.GONE);
         }
 
-        this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
-    }
 
-    public void initialize(QuickPayInfo quickPayInfo,
-                     String title, boolean isCancelAbled, DialogClickListener callback) {
-        this.mQuickPayInfo = quickPayInfo;
-        this.mListener = callback;
-        this.tvTitle.setText(title);
-        if (isCancelAbled){
-            this.btnClose.setVisibility(View.VISIBLE);
-        }
-        else{
-            this.btnClose.setVisibility(View.GONE);
-        }
-
-        this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
     }
 }

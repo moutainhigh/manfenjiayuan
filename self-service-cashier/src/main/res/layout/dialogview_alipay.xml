@@ -18,17 +18,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_amount"
+            android:drawableEnd="@mipmap/ic_marker_edit"
+            android:drawablePadding="4dp"
             android:textColor="#FE5000"
             android:textSize="64sp"
             android:singleLine="true"/>
         <TextView
+            android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_handle_amount"
+            android:gravity="center"
             android:textColor="@color/mfh_colorPrimary"
-            android:textSize="@dimen/textsize_normal"
-            android:drawableStart="@mipmap/ic_marker_money_small"
-            android:drawablePadding="4dp"/>
+            android:textSize="@dimen/textsize_normal"/>
     </LinearLayout>
 
     <RelativeLayout

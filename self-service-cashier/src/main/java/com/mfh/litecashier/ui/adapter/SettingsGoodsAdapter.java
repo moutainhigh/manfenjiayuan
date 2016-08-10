@@ -14,6 +14,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -81,16 +82,24 @@ public class SettingsGoodsAdapter
                         .build();
         BadgeDrawable drawableProLine =
                 new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
+                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT)
 //                        .badgeColor(0xFF5722)
                         .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
                         .text1(String.valueOf(entity.getProdLineId()))
                         .text2("产品线")
                         .build();
+        BadgeDrawable drawableCateType =
+                new BadgeDrawable.Builder()
+                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT)
+//                        .badgeColor(0xFF5722)
+                        .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
+                        .text1(String.valueOf(entity.getCateType()))
+                        .text2(CateApi.backendCatetypeName(entity.getCateType()))
+                        .build();
 
         BadgeDrawable drawableStatus =
                 new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
+                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT)
 //                        .badgeColor(0xFF5722)
                         .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
                         .text2(String.valueOf(entity.getStatus()))
@@ -101,9 +110,10 @@ public class SettingsGoodsAdapter
             drawableStatus.setText1("已下架");
         }
 
-        SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawablePriceType.toSpannable())
-                + " " + TextUtils.concat(drawableProLine.toSpannable())
-                + " " + TextUtils.concat(drawableStatus.toSpannable()));
+        SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawablePriceType.toSpannable(),
+                "  " , drawableCateType.toSpannable(),
+                "  " , drawableProLine.toSpannable(),
+                "  " , drawableStatus.toSpannable()));
         holder.tvBadge.setText(badgeBrief);
 
         holder.tvId.setText(String.format("编号：%d", entity.getId()));
@@ -123,16 +133,6 @@ public class SettingsGoodsAdapter
         holder.tvUpdateDate.setText(String.format("更新时间：%s",
                 TimeUtil.format(entity.getUpdatedDate(), TimeCursor.InnerFormat)));
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return (entityList == null ? 0 : entityList.size());
-    }
-
-    @Override
-    public void onViewRecycled(ProductViewHolder holder) {
-        super.onViewRecycled(holder);
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {

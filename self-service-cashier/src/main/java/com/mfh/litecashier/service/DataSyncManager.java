@@ -354,6 +354,7 @@ public class DataSyncManager {
                     entity.setPriceType(posGoods.getPriceType());
                     entity.setPackageNum(posGoods.getPackageNum());
                     entity.setProcateId(posGoods.getProcateId());
+                    entity.setCateType(posGoods.getCateType());
                     entity.setProdLineId(posGoods.getProdLineId());
 
                     // TODO: 8/2/16 用不到，影响效率，暂时忽略。

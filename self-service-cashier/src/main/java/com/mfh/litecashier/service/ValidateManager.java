@@ -421,10 +421,19 @@ public class ValidateManager {
                                                 "可以通过提交营业现金来解锁", amount));
                             }
                             else{
-                                ZLogger.df("haveNoMoneyEnd: " + amount);
+                                ZLogger.df("清分完成: " + amount);
+
+                                Calendar trigger = Calendar.getInstance();
+                                //第二天凌晨2点钟
+                                trigger.add(Calendar.DAY_OF_MONTH, 1);
+                                trigger.set(Calendar.HOUR_OF_DAY, 2);
+                                trigger.set(Calendar.MINUTE, 2);
+                                trigger.set(Calendar.SECOND, 0);
+                                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
+                                nextStep();
                             }
 
-                            nextStep();
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
 
@@ -474,7 +483,9 @@ public class ValidateManager {
                             String result = retValue.getValue();
                             String[] ret = result.split(",");
                             if (ret.length >=2){
-                                boolean isNeedLock = Boolean.getBoolean(ret[0]);
+//                                Boolean.parseBoolean()1
+//                                boolean isNeedLock = Boolean.valueOf(ret[0]).booleanValue();
+                                boolean isNeedLock = Boolean.parseBoolean(ret[0]);
                                 Double amount = Double.valueOf(ret[1]);
 
                                 ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
@@ -486,15 +497,20 @@ public class ValidateManager {
                                             args, String.format("现金超过授权金额(%2f)，即将锁定POS机，" +
                                                     "可以通过提交营业现金来解锁", amount));
                                 }
+                                else{
+                                    nextStep();
+                                }
                             }
-
-
+                            else{
+                                ZLogger.df("判断是否需要锁定POS机:" + result);
+                                nextStep();
+                            }
                         } catch (NumberFormatException e) {
 //                            e.printStackTrace();
                             ZLogger.ef(e.toString());
-                        }
 
-                        nextStep();
+                            nextStep();
+                        }
                     }
 
                     @Override

@@ -1,6 +1,7 @@
 package com.bingshanguxue.cashier.model;
 
 import com.mfh.comn.bean.ILongId;
+import com.mfh.framework.api.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 
 import java.io.Serializable;
@@ -29,7 +30,7 @@ public class PosGoods implements ILongId, Serializable {
     private Integer priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double packageNum = 0D;//箱规
     private Long procateId;     //商品类目
-//    private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
+    private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
     private Integer prodLineId;//商品线编号
 
 
@@ -165,6 +166,14 @@ public class PosGoods implements ILongId, Serializable {
 
     public void setProcateId(Long procateId) {
         this.procateId = procateId;
+    }
+
+    public Integer getCateType() {
+        return cateType;
+    }
+
+    public void setCateType(Integer cateType) {
+        this.cateType = cateType;
     }
 
     public Integer getProdLineId() {

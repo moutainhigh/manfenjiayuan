@@ -22,7 +22,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierAgent;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
-import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
@@ -112,6 +111,7 @@ import net.tsz.afinal.FinalDb;
 
 import org.century.GreenTagsApi;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -228,8 +228,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
         initBarCodeInput();
         initCashierRecyclerView();
 
-//        showAdvFragment();
-        showLocalFrontCategoryFragment();
+        showAdvFragment();
+//        showLocalFrontCategoryFragment();
 
         if (menuAdapter != null) {
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
@@ -848,7 +848,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
         } else if (eventId == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
             Double amount = bundle.getDouble("amount");
-            incomeDistributionTopup(BizType.CASH_QUOTA, amount);
+            QuickPayInfo quickPayInfo = new QuickPayInfo();
+            quickPayInfo.setBizType(BizType.CASH_QUOTA);
+            quickPayInfo.setPayType(WayType.ALI_F2F);
+            quickPayInfo.setSubject("提交营业现金");
+            quickPayInfo.setBody("营业现金已超出授权限额，请尽快提交现金，解锁POS设备！");
+            quickPayInfo.setAmount(amount);
+            quickPayInfo.setMinAmount(amount);
+            incomeDistributionTopup(quickPayInfo);
         } else if (eventId == AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT) {
 
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
@@ -896,23 +903,48 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE: {
-                String dailysettleDatetime = args.getString("dailysettleDatetime");
-                DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(dailysettleDatetime);
+//                String dailysettleDatetime = args.getString("dailysettleDatetime");
+//                DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(dailysettleDatetime);
+
+                QuickPayInfo quickPayInfo = new QuickPayInfo();
+                quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
+                quickPayInfo.setPayType(WayType.ALI_F2F);
+                quickPayInfo.setSubject("提交营业现金");
+                quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
+
                 if (BizConfig.RELEASE) {
-                    incomeDistributionTopup(BizType.INCOME_DISTRIBUTION, 100D);
+                    quickPayInfo.setAmount(100D);
+                    quickPayInfo.setMinAmount(100D);
                 } else {
-                    incomeDistributionTopup(BizType.INCOME_DISTRIBUTION, 0.01D);
+                    quickPayInfo.setAmount(0.01D);
+                    quickPayInfo.setMinAmount(0.01D);
                 }
+                incomeDistributionTopup(quickPayInfo);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
                 Double amount = args.getDouble("amount");
-                incomeDistributionTopup(BizType.INCOME_DISTRIBUTION, amount);
+                QuickPayInfo quickPayInfo = new QuickPayInfo();
+                quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
+                quickPayInfo.setPayType(WayType.ALI_F2F);
+                quickPayInfo.setSubject("提交营业现金");
+                quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
+                quickPayInfo.setAmount(amount);
+                quickPayInfo.setMinAmount(amount);
+
+                incomeDistributionTopup(quickPayInfo);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP: {
                 Double amount = args.getDouble("amount");
-                incomeDistributionTopup(BizType.CASH_QUOTA, amount);
+                QuickPayInfo quickPayInfo = new QuickPayInfo();
+                quickPayInfo.setBizType(BizType.CASH_QUOTA);
+                quickPayInfo.setPayType(WayType.ALI_F2F);
+                quickPayInfo.setSubject("提交营业现金");
+                quickPayInfo.setBody("营业现金已超出授权限额，请尽快提交现金，解锁POS设备！");
+                quickPayInfo.setAmount(amount);
+                quickPayInfo.setMinAmount(amount);
+                incomeDistributionTopup(quickPayInfo);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
@@ -1097,7 +1129,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 异步处理订单支付结果
-     * <p/>
+     * <p>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
     private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
@@ -1781,25 +1813,28 @@ public class MainActivity extends CashierActivity implements ICashierView {
     /**
      * 针对当前用户所属网点提交营业现金，并触发一次日结操作
      */
-    private void incomeDistributionTopup(Integer bizType, Double amount) {
+    private void incomeDistributionTopup(QuickPayInfo quickPayInfo) {
         ZLogger.df(">>>准备提交营业现金");
-        QuickPayInfo quickPayInfo = new QuickPayInfo();
-        quickPayInfo.setBizType(bizType);
-        quickPayInfo.setPayType(WayType.ALI_F2F);
-        quickPayInfo.setAmount(amount);
-        quickPayInfo.setSubject("提交营业现金");
-        quickPayInfo.setBody("清分余额不足");
+
 
         if (alipayDialog == null) {
             alipayDialog = new AlipayDialog(this);
             alipayDialog.setCancelable(false);
             alipayDialog.setCanceledOnTouchOutside(false);
         }
-        alipayDialog.initialize(quickPayInfo, "提交营业额", false, new AlipayDialog.DialogClickListener() {
+        alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(Double amount, String outTradeNo) {
                 // TODO: 8/4/16 解锁POS机，清分余额不足或现金额度超限，支付成功后在后台提交，不影响主线程。
                 UploadSyncManager.getInstance().sync();
+
+                Calendar trigger = Calendar.getInstance();
+                //第二天凌晨2点钟
+                trigger.add(Calendar.DAY_OF_MONTH, 1);
+                trigger.set(Calendar.HOUR_OF_DAY, 2);
+                trigger.set(Calendar.MINUTE, 2);
+                trigger.set(Calendar.SECOND, 0);
+                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
             }
 
             @Override

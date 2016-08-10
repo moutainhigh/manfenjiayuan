@@ -174,7 +174,7 @@ public class ExceptionOrderflowAdapter
                 WayType.name(entity.getPayType()), entity.getPayType()));
 
         SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawableActive.toSpannable(),
-                " " + drawableBizType.toSpannable(),
+                " ", drawableBizType.toSpannable(),
                 " ", drawableOrderStatus.toSpannable(),
                 " ", drawableSyncStatus.toSpannable(),
                 " ", drawableWaytype.toSpannable()));

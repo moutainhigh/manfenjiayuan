@@ -164,19 +164,20 @@ public abstract class CashierActivity extends BaseActivity {
         @Override
         public void run() {
             super.run();
-            while (!isInterrupted()) {
-                final ComBean ComData;
-                while ((ComData = mComBeanQueue.poll()) != null) {
-                    try {
+            // TODO: 8/9/16 java.util.NoSuchElementException 
+            try {
+                while (!isInterrupted()) {
+                    final ComBean ComData;
+                    while ((ComData = mComBeanQueue.poll()) != null) {
                         DispRecData(ComData);
 
                         Thread.sleep(50);//显示性能高的话，可以把此数值调小。
-                    } catch (Exception e) {
-//                        e.printStackTrace();
-                        ZLogger.e(e.toString());
+                        break;
                     }
-                    break;
                 }
+            } catch (Exception e) {
+//                        e.printStackTrace();
+                ZLogger.ef(e.toString());
             }
         }
 
@@ -555,6 +556,11 @@ public abstract class CashierActivity extends BaseActivity {
         if (StringUtils.isEmpty(text)) {
             return;
         }
+
+        if (mTts == null){
+            initSpeechSynthesizer();
+        }
+
         // 设置参数
         setParam();
         ZLogger.df("准备播放语音:" + text);
