@@ -37,8 +37,18 @@ public abstract class PDAScanFragment extends BaseFragment {
         ZLogger.d(String.format("isAcceptBarcodeEnabled=%b, barcode=%s",
                 isAcceptBarcodeEnabled, barcode));
 
-        if (isAcceptBarcodeEnabled && !StringUtils.isEmpty(barcode)){
-            onScanCode(barcode);
+        if (isAcceptBarcodeEnabled && !StringUtils.isEmpty(barcode)) {
+            if (barcode.startsWith("2") && barcode.length() == 13) {
+                String plu = barcode.substring(1, 7);
+                String weightStr = String.format("%s.%s", barcode.substring(7, 9), barcode.substring(9, 12));
+                Double weight = Double.valueOf(weightStr);
+                ZLogger.d(String.format("扫描生鲜商品条码：%s, PLU码：%s, 重量：%f",
+                        barcode, plu, weight));
+                onScanCode(plu);
+            } else {
+                ZLogger.d(String.format("扫描标准商品条码:%s", barcode));
+                onScanCode(barcode);
+            }
         }
     }
 
