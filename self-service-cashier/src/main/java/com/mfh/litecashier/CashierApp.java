@@ -106,16 +106,18 @@ public class CashierApp extends MfhApplication {
      * Beta高级设置
      */
     private void configBugly() {
-        ZLogger.d("configBugly...");
+        ZLogger.d("Beta高级设置...");
         /***** Beta高级设置 *****/
         /**
-         * true表示app启动自动初始化升级模块; false不会自动初始化;
+         * true表示app启动自动初始化升级模块;
+         * false不会自动初始化;
          * 开发者如果担心sdk初始化影响app启动速度，可以设置为false，
          * 在后面某个时刻手动调用Beta.init(getApplicationContext(),false);
          */
         Beta.autoInit = true;
         /**
-         * true表示初始化时自动检查升级; false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
+         * true表示初始化时自动检查升级;
+         * false表示不会自动检查升级,需要手动调用Beta.checkUpgrade()方法;
          */
         Beta.autoCheckUpgrade = true;
         /**
@@ -162,7 +164,13 @@ public class CashierApp extends MfhApplication {
 
         /***** 统一初始化Bugly产品，包含Beta *****/
 //        Bugly.init(this, APP_ID, true, strategy);
-        //Bugly SDK初始化
+        /**
+         * 已经接入Bugly用户改用上面的初始化方法,不影响原有的crash上报功能;
+         * init方法会自动检测更新，不需要再手动调用Beta.checkUpdate(),如需增加自动检查时机可以使用Beta.checkUpdate(false,false);
+         * 参数1： applicationContext
+         * 参数2：appId
+         * 参数3：是否开启debug
+         */
         Bugly.init(getApplicationContext(), "900030108", false);
     }
 

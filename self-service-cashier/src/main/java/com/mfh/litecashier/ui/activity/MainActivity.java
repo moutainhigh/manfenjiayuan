@@ -97,7 +97,7 @@ import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.AlarmManagerHelper;
+import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
@@ -249,6 +249,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
 //        cloudSpeak("hi");
         cloudSpeak("欢迎使用米西厨房智能收银系统");
         ZLogger.d("小版本标记：2016-07-28-001");
+
+        AlarmManagerHelper.registerBuglyUpgrade(this);
     }
 
     @Override

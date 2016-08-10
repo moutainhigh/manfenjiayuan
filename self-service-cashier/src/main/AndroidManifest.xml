@@ -167,12 +167,12 @@
             android:theme="@style/AppBaseTheme_Light.Transparent"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
-        <receiver android:name=".service.DailysettleReceiver">
+        <receiver android:name=".alarm.DailysettleReceiver">
             <intent-filter>
                 <action android:name="com.mfh.litecashier.alarm"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".service.KeepAlarmLiveReceiver">
+        <receiver android:name=".alarm.KeepAlarmLiveReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>

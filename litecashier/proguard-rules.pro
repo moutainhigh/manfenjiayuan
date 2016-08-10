@@ -121,7 +121,7 @@ public static final int *;
 -keep class com.manfenjiayuan.business.** { * ; }
 -keep class com.alibaba.fastjson.** { * ; }
 -keep class com.mfh.litecashier.** { * ; }
--keep class android_serialport_api.** { * ; }
+-keep class com.bingshanguxue.cashier.android_serialport_api.** { * ; }
 -keep class org.century.** { * ; }
 
 # Butter Knife start
