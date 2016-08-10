@@ -43,10 +43,10 @@
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:startText="零售价:"
+                app:startText="批发价:"
                 app:startTextWidth="130dp"
                 app:editInputType="numberDecimal"
-                app:editTextHint="请输入零售价格"/>
+                app:editTextHint="请输入批发价格"/>
             <!--库存-->
             <com.bingshanguxue.pda.widget.TextLabelView
                 android:id="@+id/label_quantity"
@@ -64,7 +64,7 @@
                 app:startText="货架编号:"
                 app:startTextWidth="130dp"
                 app:editInputType="numberDecimal"
-                app:editTextHint="请输入排面库存"/>
+                app:editTextHint="请输入货架编号"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

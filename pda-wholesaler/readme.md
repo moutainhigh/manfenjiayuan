@@ -20,6 +20,15 @@
 
 
 ##Version
+###[v0.1.0_081018](https://beta.bugly.qq.com/bz1s)
+
+版本描述：
+
+1. 优化 UI全新升级。
+
+
+如果不能升级或使用中有任何问题或建议，请及时反馈给我。
+
 ###[v0.0.5_072616](https://beta.bugly.qq.com/bz1s)
 
 版本描述：

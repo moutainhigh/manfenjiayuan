@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.office.OfficeListFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvIoOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
@@ -27,6 +28,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
     public static final int FRAGMENT_TYPE_NONE = 0x00;
     public static final int FRAGMENT_TYPE_PACKAGE = 0x1;
+    public static final int FT_CREATE_INVIOORDER_BYFINDORDER = 0x02;//拣货发货
     public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 0x06;//盘点订单列表
     public static final int FT_WHOLESALER_GOODS             = 0x07;//商品
     public static final int FT_WHOLESALER_GOODSSHELVES      = 0x08;//货架绑定商品
@@ -34,8 +36,8 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_CREATE_INV_LOSSORDER      = 0x12;//报损
     public static final int FT_INVIO_IN         = 0x21;//入库
     public static final int FT_INVIO_OUT         = 0x22;//出库
+    public static final int FT_OFFICE_LIST = 0x24;//网店租户列表
 
-    public static final int FT_CREATE_INVIOORDER_BYFINDORDER = 0x02;//拣货发货
 
 
     /**
@@ -222,6 +224,18 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }else if(fragmentType == FT_OFFICE_LIST){
+            OfficeListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = OfficeListFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = OfficeListFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
                     .commit();
         }
     }

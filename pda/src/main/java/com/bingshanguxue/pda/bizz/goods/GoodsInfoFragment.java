@@ -306,8 +306,8 @@ public class GoodsInfoFragment extends BaseFragment {
             labelSellDayNum.setTvSubTitle("");
             labelSellMonthNum.setTvSubTitle("");
 
-            labelCostPrice.setEnabled(false);
-            labelUpperLimit.setEnabled(false);
+            labelCostPrice.setInputEnabled(false);
+            labelUpperLimit.setInputEnabled(false);
             btnSubmit.setEnabled(false);
             btnSubmit.setVisibility(View.GONE);
 
@@ -329,9 +329,9 @@ public class GoodsInfoFragment extends BaseFragment {
             labelGrossProfit.setTvSubTitle(grossProfit);
             labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
 
+            labelCostPrice.setInputEnabled(isEditable);
+            labelUpperLimit.setInputEnabled(isEditable);
             if (isEditable){
-                labelCostPrice.setEnabled(true);
-                labelUpperLimit.setEnabled(true);
                 labelCostPrice.requestFocusEnd();
                 btnSubmit.setVisibility(View.VISIBLE);
                 btnSubmit.setEnabled(true);

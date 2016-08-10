@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
@@ -26,9 +27,9 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ValidateManager;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
-import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectOfficeDialog;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
+import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
@@ -64,7 +65,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private HomeAdapter menuAdapter;
-    private SelectOfficeDialog mSelectOfficeDialog = null;
 
     private PosRegisterPresenter mPosRegisterPresenter;
 
@@ -217,6 +217,18 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     IMClient.getInstance().registerBridge();
 
                     Beta.checkUpgrade(false, false);
+                }
+            }
+            break;
+            case Constants.ARC_OFFICE_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    Office office = (Office) data.getSerializableExtra("office");
+                    DataCacheHelper.getInstance().setCurrentOffice(office);
+                    if (office != null) {
+                        addressView.setText(office.getValue());
+                    } else {
+                        addressView.setText("请选择网点");
+                    }
                 }
             }
             break;
@@ -447,25 +459,14 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      * 选择网点
      */
     private void selectOffice() {
-        if (mSelectOfficeDialog == null) {
-            mSelectOfficeDialog = new SelectOfficeDialog(this);
-            mSelectOfficeDialog.setCancelable(true);
-            mSelectOfficeDialog.setCanceledOnTouchOutside(false);
-        }
-        mSelectOfficeDialog.init(MfhLoginService.get().getOffices(), new SelectOfficeDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(Office office) {
-                DataCacheHelper.getInstance().setCurrentOffice(office);
-                if (office != null) {
-                    addressView.setText(office.getValue());
-                } else {
-                    addressView.setText("请选择网点");
-                }
-            }
-        });
-        if (!mSelectOfficeDialog.isShowing()) {
-            mSelectOfficeDialog.show();
-        }
+
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_OFFICE_LIST);
+        extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
+        Intent intent = new Intent(this, PrimaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_OFFICE_LIST);
     }
 
 

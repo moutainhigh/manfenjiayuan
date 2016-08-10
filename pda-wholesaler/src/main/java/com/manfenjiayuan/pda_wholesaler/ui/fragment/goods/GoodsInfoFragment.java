@@ -260,8 +260,8 @@ public class GoodsInfoFragment extends BaseFragment {
             labelQuantity.setTvSubTitle("");
             labelRackNo.setInput("");
 
-            labelCostPrice.setEnabled(false);
-            labelRackNo.setEnabled(false);
+            labelCostPrice.setInputEnabled(false);
+            labelRackNo.setInputEnabled(false);
             btnSubmit.setEnabled(false);
             btnSubmit.setVisibility(View.GONE);
 
@@ -273,9 +273,9 @@ public class GoodsInfoFragment extends BaseFragment {
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
             labelRackNo.setInput(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
 
+            labelCostPrice.setInputEnabled(isEditable);
+            labelRackNo.setInputEnabled(isEditable);
             if (isEditable){
-                labelCostPrice.setEnabled(true);
-                labelRackNo.setEnabled(true);
                 labelCostPrice.requestFocusEnd();
                 btnSubmit.setVisibility(View.VISIBLE);
                 btnSubmit.setEnabled(true);

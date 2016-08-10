@@ -84,6 +84,9 @@
             android:layout_height="52dp"
             app:startText="单据编号:"
             app:startTextWidth="130dp"
+            android:layout_marginTop="@dimen/spacing_4x"
+            app:startTextColor="@color/material_white"
+            app:editTextColor="@color/material_white"
             app:editInputType="numberDecimal"
             app:editTextHint="请输入单据编号"/>
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.office.OfficeListFragment;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
@@ -41,12 +42,13 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_INVIO_IN         = 0x21;//入库
     public static final int FT_INVIO_OUT         = 0x22;//出库
     public static final int FT_PRINT_PRICETAGS         = 0x23;//价签
+    public static final int FT_OFFICE_LIST = 0x24;//网店租户列表
 
 
     /**
      * 0: 快递代收
      * */
-    private int serviceType = 0;
+    private int fragmentType = 0;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, PrimaryActivity.class);
@@ -113,7 +115,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 this.setTheme(R.style.NewFlow);
             }
 
-            serviceType = intent.getIntExtra(EXTRA_KEY_SERVICE_TYPE, FRAGMENT_TYPE_NONE);
+            fragmentType = intent.getIntExtra(EXTRA_KEY_SERVICE_TYPE, FRAGMENT_TYPE_NONE);
         }
     }
 
@@ -128,28 +130,28 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                .add(R.id.fragment_container, stockOutFragment).hide(stockInFragment).hide(stockOutFragment)
 //                .commit();
 
-        if(serviceType == FRAGMENT_TYPE_PACKAGE){
+        if(fragmentType == FRAGMENT_TYPE_PACKAGE){
             PackageFragment fragment = new PackageFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, packageFragment).show(packageFragment)
                     .commit();
         }
-        else if(serviceType == FRAGMENT_TYPE_GOODS){
+        else if(fragmentType == FRAGMENT_TYPE_GOODS){
             ScGoodsSkuFragment fragment = new ScGoodsSkuFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, goodsFragment).show(goodsFragment)
                     .commit();
         }
-        else if(serviceType == FRAGMENT_TYPE_DISTRIBUTION){
+        else if(fragmentType == FRAGMENT_TYPE_DISTRIBUTION){
             CreateInvReceiveOrderFragment fragment = new CreateInvReceiveOrderFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, invRecvOrderSplashFragment).show(invRecvOrderSplashFragment)
                     .commit();
         }
-        else if(serviceType == FRAGMENT_TYPE_INVENTORY_CHECK){
+        else if(fragmentType == FRAGMENT_TYPE_INVENTORY_CHECK){
             InvCheckListFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -162,7 +164,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, inventoryCheckFragment).show(inventoryCheckFragment)
                     .commit();
         }
-        else if(serviceType == FT_BIND_GOODS_2_TAGS){
+        else if(fragmentType == FT_BIND_GOODS_2_TAGS){
             BindGoods2TagFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -175,7 +177,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-        else if(serviceType == FT_CREATE_INV_RETURNORDER){
+        else if(fragmentType == FT_CREATE_INV_RETURNORDER){
             CreateInvReturnOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -188,7 +190,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-        else if(serviceType == FT_CREATE_INV_LOSSORDER){
+        else if(fragmentType == FT_CREATE_INV_LOSSORDER){
             CreateInvLossOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -201,7 +203,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-        else if(serviceType == FT_INV_CONVERT){
+        else if(fragmentType == FT_INV_CONVERT){
             InvConvertFromFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -214,7 +216,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-        else if(serviceType == FT_INVIO_IN){
+        else if(fragmentType == FT_INVIO_IN){
             CreateInvIoOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -231,7 +233,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-        else if(serviceType == FT_INVIO_OUT){
+        else if(fragmentType == FT_INVIO_OUT){
             CreateInvIoOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -248,7 +250,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
                     .commit();
         }
-        else if(serviceType == FT_PRINT_PRICETAGS){
+        else if(fragmentType == FT_PRINT_PRICETAGS){
             InvLabelFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
@@ -259,6 +261,18 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, mBindGoods2TagFragment).show(mBindGoods2TagFragment)
+                    .commit();
+        }else if(fragmentType == FT_OFFICE_LIST){
+            OfficeListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = OfficeListFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = OfficeListFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
                     .commit();
         }
     }

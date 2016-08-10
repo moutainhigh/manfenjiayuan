@@ -13,5 +13,6 @@ public class Constants {
     public static final int ARC_SENDORDER_LIST    = 0x06;//采购订单列表
     public static final int ARC_COMPANY_LIST    = 0x08;//批发商列表
     public static final int ARC_INV_COMPROVIDER_LIST    = 0x09;//批发商供应商列表
+    public static final int ARC_OFFICE_LIST    = 0x10;//批发商列表
 
 }
