@@ -28,8 +28,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["cardview-v7"]
+    debugCompile rootProject.ext.dependencies["support-v4"]
+    compile project(':mfh-framework-all')
     compile project(':mfh-framework-android')
+    compile project(':mfh-framework-business')
     compile project(path: ':vector_user')
     compile project(path: ':vector_uikit')
-    compile project(':mfh-framework-business')
 }

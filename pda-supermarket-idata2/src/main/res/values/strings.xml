@@ -4,18 +4,9 @@
     <string name="app_name">MixiCook PDA</string>
 
     <!--提示文字-->
-    <string name="label_no_office">未找到网点</string>
-    <string name="label_select_office">请选择网点</string>
-    <string name="label_no_data">暂无数据</string>
-    <string name="label_no_stocktake">暂无盘点</string>
-
     <!--按键文字-->
-    <string name="button_login_signin">登录</string>
-    <string name="button_login_retrieve_pwd">忘记密码</string>
-    <string name="button_login_signup">新用户注册</string>
     <string name="button_submit">提交</string>
     <string name="button_confirm">确定</string>
     <string name="button_sync">同步</string>
-
 
 </resources>

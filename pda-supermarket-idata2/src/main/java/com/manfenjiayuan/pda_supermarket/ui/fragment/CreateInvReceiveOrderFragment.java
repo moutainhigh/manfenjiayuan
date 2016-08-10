@@ -30,7 +30,7 @@ import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.Constants;
-import com.manfenjiayuan.pda_supermarket.DataSyncManager;
+import com.bingshanguxue.pda.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.presenter.InvSendIoOrderPresenter;
 import com.manfenjiayuan.pda_supermarket.ui.IInvSendIoOrderView;

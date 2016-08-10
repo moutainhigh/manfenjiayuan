@@ -1,24 +1,23 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.goods;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.DataSyncManager;
+import com.bingshanguxue.pda.bizz.goods.ScGoodsSkuEvent;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.TextLabelView;
+import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.DataSyncManager;
-import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -28,8 +27,6 @@ import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
@@ -39,33 +36,21 @@ import de.greenrobot.event.EventBus;
  */
 public class GoodsInfoFragment extends BaseFragment {
 
-    @Bind(R.id.label_productName)
+//    @Bind(R.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_barcodee)
+//    @Bind(R.id.label_barcodee)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_buyprice)
-    TextLabelView labelBuyprice;
-    @Bind(R.id.label_costPrice)
+//    @Bind(R.id.label_costPrice)
     EditLabelView labelCostPrice;
-    @Bind(R.id.label_grossProfit)
-    TextLabelView labelGrossProfit;
-    @Bind(R.id.label_quantity)
+//    @Bind(R.id.label_quantity)
     TextLabelView labelQuantity;
-    @Bind(R.id.label_upperLimit)
-    EditLabelView labelUpperLimit;
-    @Bind(R.id.label_sellNumber)
-    TextLabelView labelSellNumber;
-    @Bind(R.id.label_avgSellNum)
-    TextLabelView labelAvgSellNum;
-    @Bind(R.id.label_sellDayNum)
-    TextLabelView labelSellDayNum;
-    @Bind(R.id.label_sellMonthNum)
-    TextLabelView labelSellMonthNum;
+//    @Bind(R.id.label_upperLimit)
+    EditLabelView labelRackNo;
 
-    @Bind(R.id.fab_submit)
+//    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
-    private ScGoodsSku curGoods = null;
+    private InvSkuGoods curGoods = null;
     private boolean isEditable = true;//网店商品档案允许被修改，平台商品档案不允许被修改。
 
     public static GoodsInfoFragment newInstance(Bundle args) {
@@ -91,11 +76,18 @@ public class GoodsInfoFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        labelCostPrice.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
+
+        labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
+        labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcodee);
+        labelCostPrice = (EditLabelView) rootView.findViewById(R.id.label_costPrice);
+        labelQuantity = (TextLabelView) rootView.findViewById(R.id.label_quantity);
+        labelRackNo = (EditLabelView) rootView.findViewById(R.id.label_rackno);
+        btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+
         labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
-                labelUpperLimit.requestFocusEnd();
+                labelRackNo.requestFocusEnd();
             }
 
             @Override
@@ -103,29 +95,8 @@ public class GoodsInfoFragment extends BaseFragment {
                 refresh(null);
             }
         });
-        labelCostPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (curGoods != null) {
-                    //计算毛利率:(costPrice-buyPrice) / buyPrice
-                    String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
-                            (calInputCostPrice() - curGoods.getBuyPrice()));
-                    labelGrossProfit.setTvSubTitle(grossProfit);
-                }
-            }
-        });
 //        labelCostPrice.setSoftKeyboardEnabled(false);
-        labelUpperLimit.setOnViewListener(new EditLabelView.OnViewListener() {
+        labelRackNo.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
                 submit();
@@ -135,6 +106,13 @@ public class GoodsInfoFragment extends BaseFragment {
             @Override
             public void onScan() {
                 refresh(null);
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submit();
             }
         });
     }
@@ -156,7 +134,8 @@ public class GoodsInfoFragment extends BaseFragment {
         ZLogger.d(String.format("ScGoodsSkuEvent(%d)", eventId));
         switch (eventId) {
             case ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE: {
-                ScGoodsSku sku = (ScGoodsSku) args.getSerializable("scGoodsSku");
+                InvSkuGoods sku = (InvSkuGoods) args.getSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU);
+                isEditable = args.getBoolean(ScGoodsSkuEvent.EXTRA_KEY_ISEDITABLE, true);
                 refresh(sku);
             }
             break;
@@ -173,7 +152,7 @@ public class GoodsInfoFragment extends BaseFragment {
         return Double.valueOf(price);
     }
 
-    @OnClick(R.id.fab_submit)
+//    @OnClick(R.id.fab_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
         onSubmitProcess();
@@ -183,7 +162,7 @@ public class GoodsInfoFragment extends BaseFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             onSubmitError(getString(R.string.toast_network_error));
             return;
         }
@@ -193,8 +172,8 @@ public class GoodsInfoFragment extends BaseFragment {
             return;
         }
 
-        if (StringUtils.isEmpty(labelUpperLimit.getInput())) {
-            onSubmitError("排面库存不能为空");
+        if (StringUtils.isEmpty(labelRackNo.getInput())) {
+            onSubmitError("货架编号不能为空");
             return;
         }
 
@@ -209,12 +188,12 @@ public class GoodsInfoFragment extends BaseFragment {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", curGoods.getId());
         jsonObject.put("costPrice", labelCostPrice.getInput());
-        jsonObject.put("upperLimit", labelUpperLimit.getInput());
+        jsonObject.put("upperLimit", labelRackNo.getInput());
 //        jsonObject.put("lowerLimit", labelLowerLimit.getInput());
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
         //回调
-        InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
+        InvSkuStoreApiImpl.update(jsonObject.toJSONString(), updateResponseCallback);
     }
 
     NetCallBack.NetTaskCallBack updateResponseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -240,7 +219,7 @@ public class GoodsInfoFragment extends BaseFragment {
                 }
             }
             , String.class
-            , AppContext.getAppContext()) {
+            , MfhApplication.getAppContext()) {
     };
 
     /**
@@ -272,47 +251,31 @@ public class GoodsInfoFragment extends BaseFragment {
     /**
      * 刷新信息
      */
-    private void refresh(ScGoodsSku invSkuGoods) {
+    private void refresh(InvSkuGoods invSkuGoods) {
         curGoods = invSkuGoods;
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
-            labelBuyprice.setTvSubTitle("");
             labelCostPrice.setInput("");
-            labelGrossProfit.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
-            labelUpperLimit.setInput("");
-            labelSellNumber.setTvSubTitle("");
-            labelAvgSellNum.setTvSubTitle("");
-            labelSellDayNum.setTvSubTitle("");
-            labelSellMonthNum.setTvSubTitle("");
+            labelRackNo.setInput("");
 
             labelCostPrice.setEnabled(false);
-            labelUpperLimit.setEnabled(false);
+            labelRackNo.setEnabled(false);
             btnSubmit.setEnabled(false);
             btnSubmit.setVisibility(View.GONE);
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
-            labelProductName.setTvSubTitle(curGoods.getSkuName());
+            labelProductName.setTvSubTitle(curGoods.getName());
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelCostPrice.setInput(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
-            labelUpperLimit.setInput(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
-            labelSellNumber.setTvSubTitle(MUtils.formatDouble(curGoods.getSellNumber(), ""));
-            labelAvgSellNum.setTvSubTitle(MUtils.formatDouble(curGoods.getAvgSellNum(), ""));
-            labelSellDayNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellDayNum(), ""));
-            labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
-
-            //计算毛利率:(costPrice-buyPrice) / costPrice
-            String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
-                    (curGoods.getCostPrice() - curGoods.getBuyPrice()));
-            labelGrossProfit.setTvSubTitle(grossProfit);
-            labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
+            labelRackNo.setInput(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
 
             if (isEditable){
                 labelCostPrice.setEnabled(true);
-                labelUpperLimit.setEnabled(true);
+                labelRackNo.setEnabled(true);
                 labelCostPrice.requestFocusEnd();
                 btnSubmit.setVisibility(View.VISIBLE);
                 btnSubmit.setEnabled(true);

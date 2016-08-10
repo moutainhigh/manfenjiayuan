@@ -176,6 +176,7 @@ public class EditLabelView extends LinearLayout {
     }
 
 
+
     /**
      * 光标定位到最后
      */

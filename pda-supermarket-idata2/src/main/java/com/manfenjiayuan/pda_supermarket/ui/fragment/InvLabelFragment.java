@@ -56,7 +56,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     TextLabelView labelProdLevel;
 
     private ScGoodsSku curGoods = null;
-    private ScGoodsSkuPresenter chainGoodsSkuPresenter;
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter;
 
 
     public static InvLabelFragment newInstance(Bundle args) {
@@ -82,7 +82,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        chainGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
         }
         else{
             // TODO: 7/30/16 执行查询动作
-            chainGoodsSkuPresenter.getByBarcode(barcode);
+            mScGoodsSkuPresenter.getByBarcode(barcode);
         }
     }
 

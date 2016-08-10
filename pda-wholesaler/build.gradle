@@ -113,10 +113,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':mfh-framework-all')
-    compile project(':mfh-framework-android')
+//    compile project(':mfh-framework-android')
     compile project(':im')
-    compile project(':mfh-framework-business')
-    debugCompile rootProject.ext.dependencies["support-v4"]
+//    compile project(':mfh-framework-business')
     compile project(':pda')
     compile project(path: ':vector_user')
 }

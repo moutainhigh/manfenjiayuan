@@ -1,8 +1,12 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.goods;
+package com.bingshanguxue.pda.bizz.goods;
 
 import android.os.Bundle;
 
 public class ScGoodsSkuEvent {
+    public static final String EXTRA_KEY_SCGOODSSKU = "scGoodsSku";
+    public static final String EXTRA_KEY_PROSKUID = "proSkuId";
+    public static final String EXTRA_KEY_ISEDITABLE = "isEditable";
+
         public static final int EVENT_ID_SKU_UPDATE = 0X01;//商品刷新
 
         private int eventId;

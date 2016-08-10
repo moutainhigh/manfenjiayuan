@@ -5,12 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -32,8 +30,8 @@ public class SelectShelvesDialog extends CommonDialog  {
 
     private View rootView;
     private RecyclerViewEmptySupport mRecyclerView;
-    private LinearLayoutManager linearLayoutManager;
-    private TextView emptyView;
+//    private LinearLayoutManager linearLayoutManager;
+    private View emptyView;
     private ProgressBar progressBar;
 
     private ShelfnumberAdapter shelfnumberAdapter;
@@ -57,7 +55,7 @@ public class SelectShelvesDialog extends CommonDialog  {
 //        ButterKnife.bind(rootView);
 
         mRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.recyclerViewEmptySupport);
-        emptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        emptyView = rootView.findViewById(R.id.empty_view);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgressBar);
 
         initRecyclerView();

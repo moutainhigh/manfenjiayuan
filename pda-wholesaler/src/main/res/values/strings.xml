@@ -13,15 +13,8 @@
     <string name="username_field_required">用户名不能为空</string>
     <string name="password_field_required">密码不能为空</string>
 
-    <string name="label_no_office">未找到网点</string>
-    <string name="label_select_office">请选择网点</string>
-    <string name="label_no_data">暂无数据</string>
-    <string name="label_no_stocktake">暂无盘点</string>
 
     <!--按键文字-->
-    <string name="button_login_signin">登录</string>
-    <string name="button_login_retrieve_pwd">忘记密码</string>
-    <string name="button_login_signup">新用户注册</string>
     <string name="button_clear">清空</string>
     <string name="button_submit">提交</string>
     <string name="button_modify">修改</string>

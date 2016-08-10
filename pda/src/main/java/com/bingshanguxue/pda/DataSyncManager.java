@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket;
+package com.bingshanguxue.pda;
 
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;

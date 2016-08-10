@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.goods;
+package com.bingshanguxue.pda.bizz.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.bingshanguxue.pda.R;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
@@ -21,7 +21,6 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
 
@@ -31,12 +30,12 @@ import de.greenrobot.event.EventBus;
  */
 public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuView {
 
-    @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+//    @Bind(R.id.office_list)
+    RecyclerViewEmptySupport chainRecyclerView;
     private ChainGoodsSkuAdapter goodsAdapter;
-    @Bind(R.id.animProgress)
+//    @Bind(R.id.animProgress)
     ProgressBar animProgress;
-    @Bind(R.id.empty_view)
+//    @Bind(R.id.empty_view)
     View emptyView;
 
     private ChainGoodsSkuPresenter mChainGoodsSkuPresenter;
@@ -75,6 +74,10 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
 //            barcode = args.getString(EXTRA_KEY_BARCODE);
 //        }
 
+        chainRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.office_list);
+        animProgress = (ProgressBar) rootView.findViewById(R.id.animProgress);
+        emptyView = rootView.findViewById(R.id.empty_view);
+
         initRecyclerView();
     }
 
@@ -95,7 +98,7 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
         ZLogger.d(String.format("ScGoodsSkuEvent(%d)", eventId));
         switch (eventId) {
             case ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE: {
-                ScGoodsSku curGoods = (ScGoodsSku) args.getSerializable("scGoodsSku");
+                ScGoodsSku curGoods = (ScGoodsSku) args.getSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU);
                 reload(curGoods);
             }
             break;
@@ -120,15 +123,15 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        chainRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        chainRecyclerView.setHasFixedSize(true);
         //添加分割线
-//        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+//        chainRecyclerView.addItemDecoration(new LineItemDecoration(
 //                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        chainRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new ChainGoodsSkuAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new ChainGoodsSkuAdapter.OnAdapterListener() {
@@ -147,7 +150,7 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        chainRecyclerView.setAdapter(goodsAdapter);
     }
 
 

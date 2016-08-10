@@ -43,8 +43,6 @@ import butterknife.OnClick;
  */
 public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsView {
 
-    private static final String TAG = "ChainGoodsFragment";
-
     @Bind(R.id.eqv_barcode)
     EditQueryView eqvBarcode;
     private final static int LABELVIEW_INDEX_BARCODE = 0;
@@ -209,7 +207,7 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
 //        animProgress.setVisibility(View.VISIBLE);
 
         //回调
-        InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), updateResponseCallback);
+        InvSkuStoreApiImpl.update(jsonObject.toJSONString(), updateResponseCallback);
     }
 
     NetCallBack.NetTaskCallBack updateResponseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -226,7 +224,7 @@ public class ChainGoodsFragment extends PDAScanFragment implements IInvSkuGoodsV
 
 //                    hideProgressDialog();
                     showProgressDialog(ProgressDialog.STATUS_ERROR, "修改成功", true);
-                    refresh(null);
+//                    refresh(null);
                 }
 
                 @Override

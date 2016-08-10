@@ -7,13 +7,13 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.ChainGoodsFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvSendIoOrderFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.BindGoods2ShelvesFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvIoOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvLossOrderFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReturnOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvSendIoOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.goods.InvSkuGoodsFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckListFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.BindGoods2ShelvesFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -118,43 +118,37 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
      * Caused by: java.lang.IllegalStateException: commit already called
      * */
     private void initFragments(){
-////        fragments = new Fragment[]{serviceFragment, surroundFragment};
-//        getSupportFragmentManager().beginTransaction()
-//                .add(R.id.fragment_container, stockInFragment)
-//                .add(R.id.fragment_container, stockOutFragment).hide(stockInFragment).hide(stockOutFragment)
-//                .commit();
-
         if(fragmentType == FRAGMENT_TYPE_INVENTORY_CHECK){
-            InvCheckListFragment inventoryCheckFragment;
+            InvCheckListFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                inventoryCheckFragment = InvCheckListFragment.newInstance(intent.getExtras());
+                fragment = InvCheckListFragment.newInstance(intent.getExtras());
             }else{
-                inventoryCheckFragment = InvCheckListFragment.newInstance(null);
+                fragment = InvCheckListFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, inventoryCheckFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, inventoryCheckFragment).show(inventoryCheckFragment)
                     .commit();
         }
 
         else if(fragmentType == FT_WHOLESALER_GOODS){
-            ChainGoodsFragment chainGoodsFragment = new ChainGoodsFragment();
+            InvSkuGoodsFragment fragment = new InvSkuGoodsFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, chainGoodsFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, commodityFragment).show(commodityFragment)
                     .commit();
         }
         else if(fragmentType == FT_WHOLESALER_GOODSSHELVES){
-            BindGoods2ShelvesFragment mBindGoods2ShelvesFragment;
+            BindGoods2ShelvesFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null){
-                mBindGoods2ShelvesFragment = BindGoods2ShelvesFragment.newInstance(intent.getExtras());
+                fragment = BindGoods2ShelvesFragment.newInstance(intent.getExtras());
             }else{
-                mBindGoods2ShelvesFragment = BindGoods2ShelvesFragment.newInstance(null);
+                fragment = BindGoods2ShelvesFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mBindGoods2ShelvesFragment)
+                    .replace(R.id.fragment_container, fragment)
 //                    .add(R.id.fragment_container, mBindGoods2ShelvesFragment).show(mBindGoods2ShelvesFragment)
                     .commit();
         }

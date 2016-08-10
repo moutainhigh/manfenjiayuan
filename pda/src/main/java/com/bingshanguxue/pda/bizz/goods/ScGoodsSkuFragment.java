@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.fragment.goods;
+package com.bingshanguxue.pda.bizz.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,15 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
-import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -29,7 +29,6 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
 
@@ -39,14 +38,14 @@ import de.greenrobot.event.EventBus;
  */
 public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
 
-    @Bind(R.id.toolbar)
+//    @Bind(R.id.toolbar)
     public Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+//    @Bind(R.id.scanBar)
     public ScanBar mScanBar;
 
-    @Bind(R.id.tab_page)
+//    @Bind(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-    @Bind(R.id.viewpager_pagecontent)
+//    @Bind(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
@@ -82,6 +81,11 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        mTabStrip = (TopSlidingTabStrip) rootView.findViewById(R.id.tab_page);
+        mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager_pagecontent);
+
         if (mToolbar != null) {
             mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
             mToolbar.setNavigationOnClickListener(
@@ -160,7 +164,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
             return;
         }
@@ -169,7 +173,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             curBarcode = barcode;
             mScGoodsSkuPresenter.findGoodsListByBarcode(barcode);
         } else {
-            refresh(null);
+            refresh(null, false);
         }
     }
 
@@ -193,7 +197,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                     @Override
                     public void onAction2Click() {
                         hideProgressDialog();
-                        refresh(null);
+                        refresh(null, false);
                     }
 
                     @Override
@@ -217,17 +221,17 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             isAcceptBarcodeEnabled = true;
-            refresh(null);
+            refresh(null, false);
             return;
         }
 
         if (mScGoodsSkuPresenter != null) {
             mScGoodsSkuPresenter.findGoodsListByName(name);
         } else {
-            refresh(null);
+            refresh(null, false);
         }
     }
 
@@ -236,13 +240,13 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
         isAcceptBarcodeEnabled = true;
 
-        refresh(null);
+        refresh(null, false);
     }
 
     /**
      * 刷新信息
      */
-    private void refresh(ScGoodsSku invSkuGoods) {
+    private void refresh(ScGoodsSku invSkuGoods, boolean isEditable) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -250,10 +254,13 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         curGoods = invSkuGoods;
 
         Bundle args = new Bundle();
-        args.putSerializable("scGoodsSku", curGoods);
+        if (curGoods != null){
+            args.putLong(ScGoodsSkuEvent.EXTRA_KEY_PROSKUID, curGoods.getProSkuId());
+        }
+        args.putSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU, curGoods);
+        args.putBoolean(ScGoodsSkuEvent.EXTRA_KEY_ISEDITABLE, isEditable);
         EventBus.getDefault().post(new ScGoodsSkuEvent(ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE, args));
     }
-
 
     @Override
     public void onIScGoodsSkuViewProcess() {
@@ -269,7 +276,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
         if (dataList != null && dataList.size() > 0) {
             ScGoodsSku scGoodsSku = dataList.get(0);
-            refresh(scGoodsSku);
+            refresh(scGoodsSku, true);
 
             hideProgressDialog();
         } else {
@@ -279,14 +286,14 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             } else {
                 DialogUtil.showHint("未找到商品");
                 hideProgressDialog();
-                refresh(null);
+                refresh(null, false);
             }
         }
     }
 
     @Override
     public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
-        refresh(goodsSku);
+        refresh(goodsSku, false);
         curBarcode = null;
         hideProgressDialog();
 

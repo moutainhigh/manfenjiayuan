@@ -200,10 +200,6 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
         queryByBarcode(code);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @OnClick(R.id.shelvesNumberView)
     public void toggleShelfnumber() {

@@ -4,4 +4,11 @@
     <string name="action_import_sendorder">导入采购订单</string>
     <string name="action_import_sendioorder">导入发货单</string>
     <string name="action_import_findorder">导入拣货单</string>
+
+
+    <!--提示文字-->
+    <string name="label_no_office">未找到网点</string>
+    <string name="label_select_office">请选择网点</string>
+    <string name="label_no_data">暂无数据</string>
+    <string name="label_no_stocktake">暂无盘点</string>
 </resources>

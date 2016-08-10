@@ -49,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:startText="零售价:"
+                app:editInputType="numberDecimal"
                 app:editTextHint="请输入零售价格"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
@@ -65,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:startText="安全库存:"
+                app:editInputType="numberDecimal"
                 app:editTextHint="请输入安全库存"/>
 
             <com.bingshanguxue.pda.widget.TextLabelView
