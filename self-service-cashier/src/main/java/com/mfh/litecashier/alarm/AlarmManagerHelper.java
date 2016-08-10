@@ -18,7 +18,6 @@ import java.util.Calendar;
  * Created by bingshanguxue on 16/2/24.
  */
 public class AlarmManagerHelper {
-    public static final String ACTION_DAILYSETTLE = "com.mfh.litecashier.alarm";
     public static final int REQUEST_CODE_DAILYSETTLE = 100;
     public static final int REQUEST_CODE_BUGLY_UPGRADE = 101;
 
@@ -67,7 +66,7 @@ public class AlarmManagerHelper {
             return;
         }
 
-        Intent intent = new Intent(ACTION_DAILYSETTLE);
+        Intent intent = new Intent(ZIntent.ACTION_DAILYSETTLE);
         intent.setClass(context, DailysettleReceiver.class);
 
         PendingIntent broadcast = PendingIntent.getBroadcast(context, REQUEST_CODE_DAILYSETTLE, intent,

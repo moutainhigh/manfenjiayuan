@@ -169,7 +169,7 @@
 
         <receiver android:name=".alarm.DailysettleReceiver">
             <intent-filter>
-                <action android:name="com.mfh.litecashier.alarm"/>
+                <action android:name="manfenjiayuan.intent.action.DAILYSETTLE"/>
             </intent-filter>
         </receiver>
         <receiver android:name=".alarm.KeepAlarmLiveReceiver">
