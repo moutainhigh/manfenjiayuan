@@ -304,7 +304,6 @@ public class GoodsInfoFragment extends BaseFragment {
             labelSellDayNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellDayNum(), ""));
             labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
 
-
             //计算毛利率:(costPrice-buyPrice) / costPrice
             String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
                     (curGoods.getCostPrice() - curGoods.getBuyPrice()));

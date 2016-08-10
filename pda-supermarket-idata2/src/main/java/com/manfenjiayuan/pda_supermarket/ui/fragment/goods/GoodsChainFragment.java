@@ -31,8 +31,6 @@ import de.greenrobot.event.EventBus;
  */
 public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuView {
 
-    public final static String EXTRA_KEY_BARCODE = "barCode";
-
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private ChainGoodsSkuAdapter goodsAdapter;
@@ -118,6 +116,7 @@ public class GoodsChainFragment extends BaseFragment implements IChainGoodsSkuVi
             goodsAdapter.setEntityList(null);
         }
     }
+
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
