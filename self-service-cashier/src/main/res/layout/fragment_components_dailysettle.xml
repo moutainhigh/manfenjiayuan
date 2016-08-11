@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/material_white"
@@ -11,10 +11,12 @@
         layout="@layout/contentview_dialog_header"/>
 
     <LinearLayout
+        android:id="@+id/ll_brief_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
+        android:layout_below="@+id/frame_top"
+        android:layout_marginEnd="@dimen/spacing_double"
+        android:layout_marginStart="@dimen/spacing_double"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:padding="8dp">
@@ -51,10 +53,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_brief_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
+        android:layout_below="@+id/ll_brief_1"
         android:orientation="horizontal"
         android:padding="8dp">
         <!--营业额合计-->
@@ -90,13 +94,14 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
+        android:layout_below="@+id/ll_brief_2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
+        android:layout_alignParentBottom="true"
         android:scrollbars="vertical">
 
         <LinearLayout
@@ -167,4 +172,13 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_print"
+        android:src="@mipmap/ic_print_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_double"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

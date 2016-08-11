@@ -75,9 +75,6 @@ public class SettingsDailysettleFragment extends BaseFragment {
     @Bind(R.id.insv_order_barcode)
     InputSearchView insvOrderBarcode;
 
-
-    @Bind(R.id.tv_officename)
-    TextView tvOfficeName;
     @Bind(R.id.tv_receipt_tail)
     TextView tvReceiptTail;
 
@@ -275,41 +272,40 @@ public class SettingsDailysettleFragment extends BaseFragment {
      * @param dailysettleEntity 订单
      */
     private void loadReceipt(DailysettleEntity dailysettleEntity) {
-        if (dailysettleEntity == null) {
-            tvOfficeName.setText(MfhLoginService.get().getCurOfficeName());
-            tvReceiptTail.setText("");
 
-        } else {
-            tvOfficeName.setText(dailysettleEntity.getOfficeName());
-            //尾部:订单支付信息
-            StringBuilder sbTail = new StringBuilder();
+        StringBuilder sbTail = new StringBuilder();
+        sbTail.append(String.format("<p><font color=#000000>%s</font></p>",
+                MfhLoginService.get().getCurOfficeName()));
 
-            sbTail.append(String.format("<p><font color=#000000>日结人:%s</font></p>", dailysettleEntity.getHumanName()));
+        if (dailysettleEntity != null) {
+            sbTail.append(String.format("<p><font color=#000000>日结人:%s</font></p>",
+                    dailysettleEntity.getHumanName()));
             sbTail.append(String.format("<p><font color=#000000>日结时间:%s</font></p>",
                     (dailysettleEntity.getDailysettleDate() != null
                             ? TimeCursor.InnerFormat.format(dailysettleEntity.getDailysettleDate())
                             : "")
-                    ));
-            sbTail.append(String.format("<p><font color=#000000>设备编号:%s</font></p>", SharedPreferencesManager.getTerminalId()));
+            ));
+            sbTail.append(String.format("<p><font color=#000000>设备编号:%s</font></p>",
+                    SharedPreferencesManager.getTerminalId()));
 
             sbTail.append("--------------------------------\n");
-            AggWrapper aggWrapper = JSON.toJavaObject(JSON.parseObject(dailysettleEntity.getAggData()), AggWrapper.class);
-            if (aggWrapper == null){
+            AggWrapper aggWrapper = JSON.toJavaObject(JSON.parseObject(dailysettleEntity.getAggData()),
+                    AggWrapper.class);
+            if (aggWrapper == null) {
                 aggWrapper = new AggWrapper();
             }
             int index = 1;
 
             List<AggItem> posItems = aggWrapper.getPosItems();
-            if (posItems != null && posItems.size() > 0){
-                for (AggItem aggItem : posItems){
+            if (posItems != null && posItems.size() > 0) {
+                for (AggItem aggItem : posItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover()));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.社区超市\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
@@ -317,16 +313,15 @@ public class SettingsDailysettleFragment extends BaseFragment {
             }
 
             List<AggItem> scItems = aggWrapper.getScItems();
-            if (scItems != null && scItems.size() > 0){
-                for (AggItem aggItem : scItems){
+            if (scItems != null && scItems.size() > 0) {
+                for (AggItem aggItem : scItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover()));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.线上订单\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
@@ -334,32 +329,30 @@ public class SettingsDailysettleFragment extends BaseFragment {
             }
 
             List<AggItem> laundryItems = aggWrapper.getLaundryItems();
-            if (laundryItems != null && laundryItems.size() > 0){
-                for (AggItem aggItem : laundryItems){
+            if (laundryItems != null && laundryItems.size() > 0) {
+                for (AggItem aggItem : laundryItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover()));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.衣物洗护\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
                 index++;
             }
             List<AggItem> pijuItems = aggWrapper.getPijuItems();
-            if (pijuItems != null && pijuItems.size() > 0){
-                for (AggItem aggItem : pijuItems){
+            if (pijuItems != null && pijuItems.size() > 0) {
+                for (AggItem aggItem : pijuItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover()));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.皮具护理\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
@@ -367,16 +360,15 @@ public class SettingsDailysettleFragment extends BaseFragment {
             }
 
             List<AggItem> stockItems = aggWrapper.getStockItems();
-            if (stockItems != null && stockItems.size() > 0){
-                for (AggItem aggItem : stockItems){
+            if (stockItems != null && stockItems.size() > 0) {
+                for (AggItem aggItem : stockItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover()));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.快递代收\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
@@ -384,16 +376,15 @@ public class SettingsDailysettleFragment extends BaseFragment {
             }
 
             List<AggItem> sendItems = aggWrapper.getSendItems();
-            if (sendItems != null && sendItems.size() > 0){
-                for (AggItem aggItem : sendItems){
+            if (sendItems != null && sendItems.size() > 0) {
+                for (AggItem aggItem : sendItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
                             aggItem.getTurnover()));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.快递代揽\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
@@ -401,8 +392,8 @@ public class SettingsDailysettleFragment extends BaseFragment {
             }
 
             List<AggItem> rechargeItems = aggWrapper.getRechargeItems();
-            if (rechargeItems != null && rechargeItems.size() > 0){
-                for (AggItem aggItem : rechargeItems){
+            if (rechargeItems != null && rechargeItems.size() > 0) {
+                for (AggItem aggItem : rechargeItems) {
                     sbTail.append(String.format("<p><font color=#000000>%d.%s-%s\t\t%.2f\t%.2f\t%s</font></p>",
                             index, aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption(),
                             aggItem.getOrderNum(),
@@ -411,8 +402,7 @@ public class SettingsDailysettleFragment extends BaseFragment {
                                     aggItem.getGrossProfit())));
                     index++;
                 }
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.转账充值\t\t%.2f\t%.2f</font></p>",
                         index, 0D,
                         0D));
@@ -420,20 +410,20 @@ public class SettingsDailysettleFragment extends BaseFragment {
             }
 
             sbTail.append("--------------------------------\n");
-            AccWrapper accWrapper = JSON.toJavaObject(JSON.parseObject(dailysettleEntity.getAccData()), AccWrapper.class);
-            if (accWrapper == null){
+            AccWrapper accWrapper = JSON.toJavaObject(JSON.parseObject(dailysettleEntity.getAccData()),
+                    AccWrapper.class);
+            if (accWrapper == null) {
                 accWrapper = new AccWrapper();
             }
             int accIndex = 1;
 
             AccItem cashItem = accWrapper.getCashItem();
-            if (cashItem != null){
+            if (cashItem != null) {
                 sbTail.append(String.format("<p><font color=#000000>%d.%s\t\t%.2f\t%.2f</font></p>",
                         accIndex, cashItem.getPayTypeCaption(),
                         cashItem.getOrderNum(),
                         cashItem.getAmount()));
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.现金\t\t%.2f\t%.2f</font></p>",
                         accIndex, 0D,
                         0D));
@@ -441,13 +431,12 @@ public class SettingsDailysettleFragment extends BaseFragment {
             accIndex++;
 
             AccItem alipayItem = accWrapper.getAlipayItem();
-            if (alipayItem != null){
+            if (alipayItem != null) {
                 sbTail.append(String.format("<p><font color=#000000>%d.%s\t\t%.2f\t%.2f</font></p>",
                         accIndex, alipayItem.getPayTypeCaption(),
                         alipayItem.getOrderNum(),
                         alipayItem.getAmount()));
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.支付宝\t\t%.2f\t%.2f</font></p>",
                         accIndex, 0D,
                         0D));
@@ -455,13 +444,12 @@ public class SettingsDailysettleFragment extends BaseFragment {
             accIndex++;
 
             AccItem wxItem = accWrapper.getWxItem();
-            if (wxItem != null){
+            if (wxItem != null) {
                 sbTail.append(String.format("<p><font color=#000000>%d.%s\t\t%.2f\t%.2f</font></p>",
                         accIndex, wxItem.getPayTypeCaption(),
                         wxItem.getOrderNum(),
                         wxItem.getAmount()));
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.微信\t\t%.2f\t%.2f</font></p>",
                         accIndex, 0D,
                         0D));
@@ -469,13 +457,12 @@ public class SettingsDailysettleFragment extends BaseFragment {
             accIndex++;
 
             AccItem accountItem = accWrapper.getAccountItem();
-            if (accountItem != null){
+            if (accountItem != null) {
                 sbTail.append(String.format("<p><font color=#000000>%d.%s\t\t%.2f\t%.2f</font></p>",
                         accIndex, accountItem.getPayTypeCaption(),
                         accountItem.getOrderNum(),
                         accountItem.getAmount()));
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.平台账户\t\t%.2f\t%.2f</font></p>",
                         accIndex, 0D,
                         0D));
@@ -483,13 +470,12 @@ public class SettingsDailysettleFragment extends BaseFragment {
             accIndex++;
 
             AccItem bankItem = accWrapper.getBankItem();
-            if (bankItem != null){
+            if (bankItem != null) {
                 sbTail.append(String.format("<p><font color=#000000>%d.%s\t\t%.2f\t%.2f</font></p>",
                         accIndex, bankItem.getPayTypeCaption(),
                         bankItem.getOrderNum(),
                         bankItem.getAmount()));
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.现金\t\t%.2f\t%.2f</font></p>",
                         accIndex, 0D,
                         0D));
@@ -497,13 +483,12 @@ public class SettingsDailysettleFragment extends BaseFragment {
             accIndex++;
 
             AccItem ruleItem = accWrapper.getRuleItem();
-            if (cashItem != null){
+            if (cashItem != null) {
                 sbTail.append(String.format("<p><font color=#000000>%d.%s\t\t%.2f\t%.2f</font></p>",
                         accIndex, cashItem.getPayTypeCaption(),
                         cashItem.getOrderNum(),
                         cashItem.getAmount()));
-            }
-            else{
+            } else {
                 sbTail.append(String.format("<p><font color=#000000>%d.现金\t\t%.2f\t%.2f</font></p>",
                         accIndex, 0D,
                         0D));
@@ -533,8 +518,10 @@ public class SettingsDailysettleFragment extends BaseFragment {
 //            }
 //            else{
 //            }
-            tvReceiptTail.setText(Html.fromHtml(sbTail.toString()));
         }
+        sbTail.append("辛苦了!\\n祝您生活愉快\\n");
+
+        tvReceiptTail.setText(Html.fromHtml(sbTail.toString()));
     }
 
 
@@ -542,7 +529,7 @@ public class SettingsDailysettleFragment extends BaseFragment {
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(SettingsDailysettleEvent event) {
-        ZLogger.d(String.format("SettingsDailysettleFragment: SettingsDailysettleEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("SettingsDailysettleEvent(%d)", event.getEventId()));
         if (event.getEventId() == SettingsDailysettleEvent.EVENT_ID_RELOAD_DATA) {
             refresh();
             reload();
@@ -645,7 +632,8 @@ public class SettingsDailysettleFragment extends BaseFragment {
             onLoadFinished();
             return;
         }
-        ZLogger.d(String.format("共找到%d条订单(%d/%d-%d)", entityList.size(), pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
+        ZLogger.d(String.format("共找到%d条订单(%d/%d-%d)", entityList.size(),
+                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
         if (orderListAdapter != null) {
             orderListAdapter.appendEntityList(entityList);
