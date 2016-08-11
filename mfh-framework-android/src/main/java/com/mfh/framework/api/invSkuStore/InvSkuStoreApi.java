@@ -15,7 +15,7 @@ public class InvSkuStoreApi {
      * /scGoodsSku/update?jsonStr={"id":...,"costPrice"...,"quantity":...,"lowerLimit":...., "tenantId":....},
      * 注意：这里的tenantId就是店的租户，不是CATEGORY_TENANT_ID(130222)
      * */
-    public final static String URL_INVSKUSTORE_UPDATE = URL_INVSKUSTORE + "update";
+    public final static String URL_UPDATE = URL_INVSKUSTORE + "update";
 
     /**
      * 商品和货架绑定

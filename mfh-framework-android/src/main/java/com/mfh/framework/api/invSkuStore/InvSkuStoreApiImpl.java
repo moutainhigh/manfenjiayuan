@@ -15,11 +15,11 @@ public class InvSkuStoreApiImpl extends InvSkuStoreApi{
      * 更新商品信息:
      * /pmcstock/findConpousByOrderInfo?jsonStr={productId:[1,2,3], officeId:.., shopId:..., orderAmount:...} 其中officeId和shopId可以只提供一个，也可以同时为空
      */
-    public static void updateStockGoods(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
+    public static void update(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonStr);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_INVSKUSTORE_UPDATE, params, responseCallback);
+        AfinalFactory.postDefault(URL_UPDATE, params, responseCallback);
     }
 
     /**

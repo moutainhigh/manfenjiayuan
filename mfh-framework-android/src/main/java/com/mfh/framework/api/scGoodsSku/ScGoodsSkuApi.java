@@ -16,7 +16,7 @@ public class ScGoodsSkuApi {
     /**
      * 指定网点可同步sku总数查询接口： /scGoodsSku/countNetSyncAbleSkuNum?netId=132079
      */
-    public final static String URL_SCGOODSSKU_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
+    public final static String URL_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
 
     /**
      * 查询网点库存商品信息列表（包括本店商品库存、采购价、售价和商品档案基本信息等）.
@@ -29,6 +29,13 @@ public class ScGoodsSkuApi {
      * 查询库存商品－－
      */
     public final static String URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
+
+    /**
+     * /scGoodsSku/checkWithBuyInfoByBarcode
+     */
+    public final static String URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
+            + "checkWithBuyInfoByBarcode";
+
     /**
      * 查询发布商品/scGoodsSku/getByBarcode?barcode=77777777&&JSESSIONID=7a6b9fe4-f6fb-4985-9810-6a7c544eeb0d
      * 根据条码逐级查找商品：
@@ -37,14 +44,14 @@ public class ScGoodsSkuApi {
      * 若仅在产品中心中存在则返回信息中proSkuId、productId不为空, costPrice为空，quantity为0；
      * 若产品中心也不存在，则返回null
      */
-    public final static String URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
-            + "checkWithBuyInfoByBarcode";
+    public final static String URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
+
 
     /**
      * 查询批发商采购商品
      * 适用场景：门店采购查询商品
      */
-    public final static String URL_SCGOODSKU_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
+    public final static String URL_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
 
     /**
      * 店家商品建档入库
@@ -69,17 +76,8 @@ public class ScGoodsSkuApi {
      * <li>手持终端－－根据条码查询库存商品，修改商品零售价和安全库存</li>
      * </ul>
      */
-    public final static String URL_SCGOODSSKU_LIST = URL_SCGOODSSKU + "list";
+    public final static String URL_LIST = URL_SCGOODSSKU + "list";
 
-    /**
-     * 查询发布商品/scGoodsSku/getByBarcode?barcode=77777777&&JSESSIONID=7a6b9fe4-f6fb-4985-9810-6a7c544eeb0d
-     * 根据条码逐级查找商品：
-     * 若门店中存在该商品则返回信息中id、tenantSkuId、proSkuId、productId都不为空，且quantity和costPrice都有值
-     * 若仅在租户存在则返回信息中tenantSkuId、proSkuId、productId不为空，且costPrice有值， quantity为0;
-     * 若仅在产品中心中存在则返回信息中proSkuId、productId不为空, costPrice为空，quantity为0；
-     * 若产品中心也不存在，则返回null
-     */
-    public final static String URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
 
     /**
      * 从批发商导入某个类目的商品到当前门店,

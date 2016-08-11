@@ -18,8 +18,8 @@ import java.util.List;
 public class InvComProviderMode {
 
     public void findMyProviders(PageInfo pageInfo,
-                                               final OnPageModeListener<MyProvider> listener) {
-        if (listener != null){
+                                final OnPageModeListener<MyProvider> listener) {
+        if (listener != null) {
             listener.onProcess();
         }
         ZLogger.d(String.format("加载批发商供应商开始:page=%d/%d",
@@ -30,13 +30,13 @@ public class InvComProviderMode {
             public void processQueryResult(RspQueryResult<MyProvider> rs) {
                 //此处在主线程中执行。
                 List<MyProvider> entityList = new ArrayList<>();
-                if (rs != null){
+                if (rs != null) {
                     for (EntityWrapper<MyProvider> wrapper : rs.getRowDatas()) {
                         entityList.add(wrapper.getBean());
                     }
                 }
 
-                if (listener != null){
+                if (listener != null) {
                     listener.onSuccess(pageInfo, entityList);
                 }
             }
@@ -45,7 +45,7 @@ public class InvComProviderMode {
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
                 ZLogger.d("加载批发商失败:" + errMsg);
-                if (listener != null){
+                if (listener != null) {
                     listener.onError(errMsg);
                 }
             }

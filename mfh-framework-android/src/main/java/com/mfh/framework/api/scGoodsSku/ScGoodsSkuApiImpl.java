@@ -75,7 +75,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         if (!StringUtils.isEmpty(barcode)) {
             params.put("barcode", barcode);
         }
-        params.put("needSellNum", "true");
+        params.put("needSellNum", "true");//销量
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
         params.put("page", Integer.toString(pageInfo.getPageNo()));
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
@@ -132,7 +132,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_COUNTNETSYNCABLESKUNUM, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_COUNTNETSYNCABLESKUNUM, params, responseCallback);
     }
 
     /**
@@ -165,7 +165,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         params.put("page", Integer.toString(pageInfo.getPageNo()));
         params.put("rows", Integer.toString(pageInfo.getPageSize()));
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_LIST, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_LIST, params, responseCallback);
     }
 
     public static void listScGoodsSku(Long categoryId, PageInfo pageInfo, boolean joinFlag,
@@ -182,7 +182,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_LIST, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_LIST, params, responseCallback);
     }
 
     /**
