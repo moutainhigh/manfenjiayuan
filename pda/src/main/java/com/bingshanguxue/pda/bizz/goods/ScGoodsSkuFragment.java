@@ -137,6 +137,9 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             @Override
             public void onChanged(int page) {
 //                refreshData(page);
+//                if (page != 0){
+//                    mScanBar.requestFocusEnd();
+//                }
             }
         });
 
