@@ -565,7 +565,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 
             entity.setSendPrice(goods.getSingleCostPrice());
             entity.setSendAmount(0D);
-            entity.setSendPrice(0D);
             entity.setReceiveQuantity(0D);
             entity.setReceiveAmount(0D);
             entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
