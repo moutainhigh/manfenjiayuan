@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
@@ -153,6 +154,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         ValidateManager.get().batchValidate();
         Beta.checkUpgrade(false, false);
+
+
+        AlarmManagerHelper.registerBuglyUpgrade(this);
     }
 
     @Override
@@ -215,6 +219,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     configMenuOptions();
                     //注册到消息桥
                     IMClient.getInstance().registerBridge();
+
+
+                    Beta.checkUpgrade(false, false);
                 }
             }
             break;
@@ -522,6 +529,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
                 //注册到消息桥
                 IMClient.getInstance().registerBridge();
+
+
+                Beta.checkUpgrade(false, false);
             }
 
             @Override

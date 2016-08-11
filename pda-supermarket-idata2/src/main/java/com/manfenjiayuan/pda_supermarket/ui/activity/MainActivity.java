@@ -16,7 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
+import com.bingshanguxue.pda.bizz.home.HomeAdapter;
+import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
@@ -25,8 +28,6 @@ import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ValidateManager;
-import com.bingshanguxue.pda.bizz.home.HomeMenu;
-import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.api.constant.AbilityItem;
@@ -154,6 +155,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         ValidateManager.get().batchValidate();
         Beta.checkUpgrade(false, false);
+
+        AlarmManagerHelper.registerBuglyUpgrade(this);
     }
 
     @Override
