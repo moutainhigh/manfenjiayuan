@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.compound;
+package com.bingshanguxue.vector_uikit;
 
 
 import android.content.Context;

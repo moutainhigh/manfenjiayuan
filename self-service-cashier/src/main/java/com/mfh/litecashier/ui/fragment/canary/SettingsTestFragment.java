@@ -12,7 +12,7 @@ import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.ToggleSettingItem;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -30,6 +30,8 @@ public class SettingsTestFragment extends BaseFragment {
     ToggleSettingItem toggleItemRelease;
     @Bind(R.id.toggleItem_customer_screen)
     ToggleSettingItem toggleItemCustomerScreen;
+    @Bind(R.id.toggleItem_hybrid_payment)
+    ToggleSettingItem toggleHybridPayment;
 
     @Bind(R.id.tv_display)
     TextView tvDisplay;
@@ -49,11 +51,10 @@ public class SettingsTestFragment extends BaseFragment {
         toggleItemRelease.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesManager.setReleaseVersion(isChecked);
                 if (isChecked) {
-                    SharedPreferencesManager.setReleaseVersion(true);
                     toggleItemRelease.setSubTitle("正式发布");
                 } else {
-                    SharedPreferencesManager.setReleaseVersion(false);
                     toggleItemRelease.setSubTitle("开发测试");
                 }
             }
@@ -61,11 +62,13 @@ public class SettingsTestFragment extends BaseFragment {
         toggleItemCustomerScreen.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                if (isChecked) {
-                    SharedPreferencesHelper.set(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, true);
-                } else {
-                    SharedPreferencesHelper.set(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false);
-                }
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, isChecked);
+            }
+        });
+        toggleHybridPayment.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PREF_KEY_HYBRID_PAYMENT_ENABLED, isChecked);
             }
         });
 

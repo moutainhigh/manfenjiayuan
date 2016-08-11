@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.compound;
+package com.bingshanguxue.vector_uikit;
 
 
 import android.content.Context;
@@ -41,7 +41,7 @@ public class ToggleSettingItem extends RelativeLayout {
 
     public ToggleSettingItem(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(getContext(), R.layout.listitem_switch, this);
+        View.inflate(getContext(), R.layout.settings_item_toggle, this);
         this.tvTitle = (TextView) findViewById(R.id.tv_title);
         this.tvSubTitle = (TextView) findViewById(R.id.tv_subtitle);
         this.buttonToggle = (SwitchCompat) findViewById(R.id.button_toggle);
