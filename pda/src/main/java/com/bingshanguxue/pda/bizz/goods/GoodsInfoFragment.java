@@ -52,13 +52,9 @@ public class GoodsInfoFragment extends BaseFragment {
 //    @Bind(R.id.label_upperLimit)
     EditLabelView labelUpperLimit;
 //    @Bind(R.id.label_sellNumber)
-    TextLabelView labelSellNumber;
+    TextLabelView labelSellNum7;
 //    @Bind(R.id.label_avgSellNum)
-    TextLabelView labelAvgSellNum;
-//    @Bind(R.id.label_sellDayNum)
-    TextLabelView labelSellDayNum;
-//    @Bind(R.id.label_sellMonthNum)
-    TextLabelView labelSellMonthNum;
+    TextLabelView labelSellNum30;
 
 //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
@@ -97,10 +93,8 @@ public class GoodsInfoFragment extends BaseFragment {
         labelGrossProfit = (TextLabelView) rootView.findViewById(R.id.label_grossProfit);
         labelQuantity = (TextLabelView) rootView.findViewById(R.id.label_quantity);
         labelUpperLimit = (EditLabelView) rootView.findViewById(R.id.label_upperLimit);
-        labelSellNumber = (TextLabelView) rootView.findViewById(R.id.label_sellNumber);
-        labelAvgSellNum = (TextLabelView) rootView.findViewById(R.id.label_avgSellNum);
-        labelSellDayNum = (TextLabelView) rootView.findViewById(R.id.label_sellDayNum);
-        labelSellMonthNum = (TextLabelView) rootView.findViewById(R.id.label_sellMonthNum);
+        labelSellNum7 = (TextLabelView) rootView.findViewById(R.id.label_sellNum7);
+        labelSellNum30 = (TextLabelView) rootView.findViewById(R.id.label_sellNum30);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
 
         labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -302,10 +296,8 @@ public class GoodsInfoFragment extends BaseFragment {
             labelGrossProfit.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
             labelUpperLimit.setInput("");
-            labelSellNumber.setTvSubTitle("");
-            labelAvgSellNum.setTvSubTitle("");
-            labelSellDayNum.setTvSubTitle("");
-            labelSellMonthNum.setTvSubTitle("");
+            labelSellNum30.setTvSubTitle("");
+            labelSellNum7.setTvSubTitle("");
 
             labelCostPrice.setInputEnabled(false);
             labelUpperLimit.setInputEnabled(false);
@@ -319,10 +311,8 @@ public class GoodsInfoFragment extends BaseFragment {
             labelCostPrice.setInput(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
             labelUpperLimit.setInput(MUtils.formatDouble(curGoods.getUpperLimit(), ""));
-            labelSellNumber.setTvSubTitle(MUtils.formatDouble(curGoods.getSellNumber(), ""));
-            labelAvgSellNum.setTvSubTitle(MUtils.formatDouble(curGoods.getAvgSellNum(), ""));
-            labelSellDayNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellDayNum(), ""));
-            labelSellMonthNum.setTvSubTitle(MUtils.formatDouble(curGoods.getSellMonthNum(), ""));
+            labelSellNum7.setTvSubTitle("暂无数据");
+            labelSellNum30.setTvSubTitle(MUtils.formatDouble(curGoods.getAvgSellNum(), ""));
 
             //计算毛利率:(costPrice-buyPrice) / costPrice
             String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),

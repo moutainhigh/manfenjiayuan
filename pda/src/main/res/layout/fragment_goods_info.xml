@@ -83,19 +83,9 @@
                 app:startTextWidth="130dp"
                 app:editInputType="numberDecimal"
                 app:editTextHint="请输入排面库存"/>
-            <!--总销量-->
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_sellNumber"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="44dp"
-                app:endTextSingleLine="false"
-                app:startText="总销量:"
-                app:startTextWidth="130dp"/>
             <!--平均销量-->
             <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_avgSellNum"
+                android:id="@+id/label_sellNum30"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -103,22 +93,17 @@
                 app:endTextSingleLine="false"
                 app:startText="30天销量:"
                 app:startTextWidth="130dp"/>
-            <!--日销量-->
+            <!--7天销量-->
             <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_sellDayNum"
+                android:id="@+id/label_sellNum7"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                app:startText="日销量:"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:endTextSingleLine="false"
+                app:startText="7天销量:"
                 app:startTextWidth="130dp"/>
-            <!--30天平均销量-->
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_sellMonthNum"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                app:startText="月销量:"
-                app:startTextWidth="130dp"/>
+
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
