@@ -18,6 +18,9 @@
     <attr name="editTextHint" format="string|reference"/>
     <attr name="editTextColorHint" format="reference|color" />
 
+    <!--图片-->
+    <attr name="src" format="reference"/>
+
 
     <!--自定义输入类型 {@link com.bingshanguxue.vector_uikit.EditInputType }-->
     <attr name="editInputType">
@@ -28,5 +31,37 @@
         <!--价格，*\d［0-9].\d{2}-->
         <enum name="price" value="3"/>
     </attr>
+
+    <attr name="isArrowVisible" format="boolean"/>
+    <attr name="isLogoVisible" format="boolean"/>
+
+
+    <declare-styleable name="SettingsItem">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="subTextGravity"/>
+        <attr name="subTextMaxLines"/>
+        <attr name="isArrowVisible"/>
+        <attr name="isLogoVisible"/>
+        <attr name="src"/>
+        <attr name="position"/>
+    </declare-styleable>
+    <declare-styleable name="ToggleSettingItem">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="subTextGravity"/>
+        <attr name="subTextMaxLines"/>
+        <attr name="position"/>
+        <attr name="isLogoVisible"/>
+        <attr name="src"/>
+    </declare-styleable>
 
 </resources>
