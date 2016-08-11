@@ -57,16 +57,16 @@ public class GoodsSalesAdapter extends SwipAdapter<ProductAggDate, GoodsSalesAda
 
             holder.tvName.setText(TimeUtil.format(entity.getAggDate(), TimeCursor.FORMAT_YYYYMMDD));
             holder.tvQuantity.setText(MUtils.formatDouble(entity.getProductNum(), "无"));
-            holder.progressBar.setMax(Integer.parseInt(String.format("%.0f", maxVal)));
+            holder.progressBar.setMax(Integer.parseInt(String.format("%.0f", maxVal * 100)));
 //            if (entity.getProductNum() > 0 && entity.getProductNum() < 1){
 //                holder.progressBar.setProgress(1);
 //            }
 //            else{
-                holder.progressBar.setProgress(Integer.parseInt(String.format("%.0f", entity.getProductNum())));
+                holder.progressBar.setProgress(Integer.parseInt(String.format("%.0f", entity.getProductNum() * 100)));
 //            }
 
             holder.progressBar.animate();
-            ZLogger.d(String.format("max=%f, progress=%f", maxVal, entity.getProductNum()));
+//            ZLogger.d(String.format("max=%f, progress=%f", maxVal, entity.getProductNum()));
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
@@ -131,12 +131,7 @@ public class GoodsSalesAdapter extends SwipAdapter<ProductAggDate, GoodsSalesAda
                 maxVal = Math.max(maxVal, entity.getProductNum());
             }
         }
-        if (maxVal > 100){
-            this.maxVal = maxVal;
-        }
-        else{
-            this.maxVal = maxVal * 2;
-        }
+        this.maxVal = maxVal;
 
         notifyDataSetChanged();
         if (adapterListener != null) {
