@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.method.DigitsKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -185,26 +184,13 @@ public class EditLabelView extends LinearLayout {
         etInput.setSelection(etInput.length());
     }
 
-    /**
-     * 配置
-     */
-    public void config(int inputType) {
-        if (inputType == INPUT_TYPE_NUMBER) {
-            etInput.setInputType(InputType.TYPE_NULL);
-            etInput.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
-        } else if (inputType == INPUT_TYPE_NUMBER_DECIMAL) {
-//			etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-            etInput.setInputType(InputType.TYPE_NULL);
-            etInput.setKeyListener(DigitsKeyListener.getInstance("0123456789."));
-        } else {
-            etInput.setInputType(InputType.TYPE_CLASS_TEXT);
-        }
-    }
-
-
     public void setInputAndEnd(String inputText, String endText) {
         this.etInput.setText(inputText);
-        tvEndText.setText(endText);
+        this.tvEndText.setText(endText);
+    }
+
+    public void setInputEnabled(boolean enabled){
+        this.etInput.setEnabled(enabled);
     }
 
     public void setInput(String text) {
