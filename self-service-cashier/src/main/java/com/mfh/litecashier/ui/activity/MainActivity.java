@@ -59,6 +59,7 @@ import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
@@ -97,8 +98,6 @@ import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.alarm.AlarmManagerHelper;
-import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.DataCacheHelper;
@@ -112,7 +111,6 @@ import net.tsz.afinal.FinalDb;
 import org.century.GreenTagsApi;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -292,9 +290,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
     public void onBackPressed() {
         String dbName;
         if (BizConfig.RELEASE) {
-            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON, UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
         } else {
-            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON, "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
         }
         ZLogger.d("关闭数据库:" + dbName);
         FinalDb db = FinalDb.getDb(dbName);
@@ -967,14 +967,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
         btnSettle.setEnabled(false);
 
         //判断是否登录
-        if (productAdapter.getItemCount() <= 0) {
-            DialogUtil.showHint("商品明细不能为空");
-            btnSettle.setEnabled(true);
-            hideProgressDialog();
-            return;
-        }
-
-        //判断是否登录
         if (!MfhLoginService.get().haveLogined()) {
             DialogUtil.showHint("请先登录");
             btnSettle.setEnabled(true);
@@ -982,9 +974,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
             return;
         }
 
-        //判断当天是否日结
-        if (AnalysisHelper.validateHaveDateEnd(new Date())) {
-            DialogUtil.showHint("该网点今天已经日结，请先挂单。");
+        //判断是否登录
+        if (productAdapter.getItemCount() <= 0) {
+            DialogUtil.showHint("商品明细不能为空");
             btnSettle.setEnabled(true);
             hideProgressDialog();
             return;
@@ -1312,7 +1304,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         inlvBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
+//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
                 //Press “Enter”
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     //条码枪扫描结束后会自动触发回车键
