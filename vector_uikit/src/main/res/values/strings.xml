@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Vector_uikit</string>
+
+
+    <!--按键文字-->
+    <string name="button_login_signin">登录</string>
+    <string name="button_login_retrieve_pwd">忘记密码</string>
+    <string name="button_login_signup">新用户注册</string>
 </resources>
