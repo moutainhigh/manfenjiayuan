@@ -16,6 +16,7 @@ import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
@@ -75,7 +76,6 @@ public abstract class CashierActivity extends BaseActivity {
         // 云端发音人名称列表
         mCloudVoicersEntries = getResources().getStringArray(R.array.voicer_cloud_entries);
         mCloudVoicersValue = getResources().getStringArray(R.array.voicer_cloud_values);
-
 
         mEngineType = SpeechConstant.TYPE_CLOUD;
     }
@@ -370,7 +370,7 @@ public abstract class CashierActivity extends BaseActivity {
                 //清空数据
                 DataCacheHelper.getInstance().setNetWeight(0D);
             } catch (Exception e) {
-                ZLogger.e(e.toString());
+                ZLogger.ef(e.toString());
             }
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE_OPEN) {
             OpenComPort(comScale);
@@ -411,7 +411,6 @@ public abstract class CashierActivity extends BaseActivity {
      */
     private void initSpeechSynthesizer() {
         try {
-
 //1.创建 SpeechSynthesizer 对象, 第二个参数:本地合成时传 InitListener
             mTts = SpeechSynthesizer.createSynthesizer(getApplicationContext(),
                     mTtsInitListener);
@@ -553,6 +552,12 @@ public abstract class CashierActivity extends BaseActivity {
 
 
     public void cloudSpeak(String text) {
+        if (!SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
+                SharedPreferencesManager.PK_B_TTS_ENABLED, true)){
+            ZLogger.d("请在设置中开启语音播报功能");
+            return;
+        }
+
         if (StringUtils.isEmpty(text)) {
             return;
         }
@@ -563,7 +568,7 @@ public abstract class CashierActivity extends BaseActivity {
 
         // 设置参数
         setParam();
-        ZLogger.df("准备播放语音:" + text);
+        ZLogger.d("准备播放语音:" + text);
         int code = mTts.startSpeaking(text, mTtsListener);
 //			/**
 //			 * 只保存音频不进行播放接口,调用此接口请注释startSpeaking接口

@@ -214,7 +214,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/spacing_double"
         android:src="@mipmap/ic_checkmark_white_32"
-        app:backgroundTint="@color/fab"
+        app:backgroundTint="@color/material_green_500"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"

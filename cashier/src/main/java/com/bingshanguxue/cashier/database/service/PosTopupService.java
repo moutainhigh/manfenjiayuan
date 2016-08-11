@@ -6,11 +6,13 @@ import com.bingshanguxue.cashier.database.dao.PosTopupDao;
 import com.bingshanguxue.cashier.database.entity.PosTopupEntity;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -167,5 +169,19 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
         }
     }
 
+    /**
+     * 清除旧数据
+     *
+     * @param saveDate 保存的天数
+     */
+    public void deleteOldData(int saveDate) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 0 - saveDate);//
+        String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
+        ZLogger.d(String.format("清分支付记录过期时间(%s)保留最近30天数据。", expireCursor));
+
+        deleteBy(String.format("updatedDate < '%s'", expireCursor));
+    }
 
 }

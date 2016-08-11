@@ -65,6 +65,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     ToggleSettingItem printerToggleItem;
     @Bind(R.id.toggleItem_softkeyboard)
     ToggleSettingItem tsiSoftKeyboard;
+    @Bind(R.id.toggleItem_tts)
+    ToggleSettingItem ttsToggleItem;
 
     @Bind(R.id.item_ahscale_rs232)
     SettingsItem ahscaleToggleItem;
@@ -119,6 +121,13 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             @Override
             public void onToggleChanged(boolean isChecked) {
                 SharedPreferencesManager.setSoftKeyboardEnabled(isChecked);
+            }
+        });
+        ttsToggleItem.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_CONFIG,
+                        SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
             }
         });
 
@@ -456,6 +465,9 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     SMScaleSyncManager.FTP_HOST, SMScaleSyncManager.FTP_PORT));
             greentagsSettingsItem.setSubTitle(GreenTagsApi.URL);
             tsiSoftKeyboard.setChecked(SharedPreferencesManager.isSoftKeyboardEnabled());
+            ttsToggleItem.setChecked(
+                    SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
+                            SharedPreferencesManager.PK_B_TTS_ENABLED, true));
 
             //        ActivityManager am =  (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
             //        ACache cache = ACache.get(CashierApp.getAppContext(), Constants.CACHE_NAME);

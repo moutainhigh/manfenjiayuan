@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="@dimen/spacing_double"
-            app:position="bottom"
+            app:position="top"
             app:subText=""
             app:src="@mipmap/ic_ftp"
             app:text="寺冈电子秤"/>

@@ -420,7 +420,7 @@ public class ValidateManager {
                                                 "可以通过提交营业现金来解锁", amount));
                             }
                             else{
-                                ZLogger.df("清分完成: " + amount);
+                                ZLogger.df(String.format("清分完成: %.2f, 可以正常使用POS机", amount));
 
                                 Calendar trigger = Calendar.getInstance();
                                 //第二天凌晨2点钟

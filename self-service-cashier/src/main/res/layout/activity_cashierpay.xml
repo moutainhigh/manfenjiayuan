@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
-            android:background="@color/mfh_colorPrimary"
+            android:background="@color/mfh_toolbar_background"
             android:focusableInTouchMode="true"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
