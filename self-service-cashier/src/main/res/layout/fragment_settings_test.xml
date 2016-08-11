@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <!--开发测试/正式发布-->
-        <com.mfh.framework.uikit.compound.ToggleSettingItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_release"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -19,11 +19,19 @@
             app:position="top"/>
 
         <!--客显-->
-        <com.mfh.framework.uikit.compound.ToggleSettingItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_customer_screen"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             app:text="客显（PAD）"
+            app:position="center"/>
+
+        <!--混合支付-->
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
+            android:id="@+id/toggleItem_hybrid_payment"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:text="混合支付"
             app:position="center"/>
 
         <!--显示-->

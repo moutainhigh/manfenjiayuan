@@ -14,8 +14,8 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.SettingsItem;
-import com.mfh.framework.uikit.compound.ToggleSettingItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -28,6 +28,7 @@ import com.mfh.litecashier.hardware.SMScale.SMScaleSettingsDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
+import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.tencent.bugly.beta.Beta;
@@ -64,11 +65,15 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     ToggleSettingItem printerToggleItem;
     @Bind(R.id.toggleItem_softkeyboard)
     ToggleSettingItem tsiSoftKeyboard;
+    @Bind(R.id.toggleItem_tts)
+    ToggleSettingItem ttsToggleItem;
 
     @Bind(R.id.item_ahscale_rs232)
     SettingsItem ahscaleToggleItem;
     @Bind(R.id.item_smscale_rs232)
     SettingsItem smscaleRs232SettingsItem;
+    @Bind(R.id.item_umsips_rs232)
+    SettingsItem umsipsRs232SettingsItem;
     @Bind(R.id.item_smscale_ftp)
     SettingsItem smscaleFtpSettingsItem;
     @Bind(R.id.item_greentags_webservice)
@@ -77,6 +82,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     private SetPortDialog setPortDialog = null;
     private SMScaleSettingsDialog mSMScaleSettingsDialog = null;
+    private UmsipsDialog mUmsipsDialog = null;
     private GreenTagsSettingsDialog mGreenTagsSettingsDialog = null;
     private PosRegisterPresenter mPosRegisterPresenter;
 
@@ -115,6 +121,13 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             @Override
             public void onToggleChanged(boolean isChecked) {
                 SharedPreferencesManager.setSoftKeyboardEnabled(isChecked);
+            }
+        });
+        ttsToggleItem.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_CONFIG,
+                        SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
             }
         });
 
@@ -261,7 +274,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.init(SerialManager.getLedPort(), SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
+        setPortDialog.initialize("LED客显", SerialManager.getLedPort(), SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
             @Override
             public void onSetPort(String port, String baudrate) {
                 tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
@@ -287,7 +300,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.init(SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate(), new SetPortDialog.onDialogClickListener() {
+        setPortDialog.initialize("打印机", SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate(), new SetPortDialog.onDialogClickListener() {
             @Override
             public void onSetPort(String port, String baudrate) {
                 printerToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
@@ -314,7 +327,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.init(AHScaleAgent.PORT_ACS_P215, AHScaleAgent.BAUDRATE_ACS_P215, new SetPortDialog.onDialogClickListener() {
+        setPortDialog.initialize("爱华电子秤", AHScaleAgent.PORT_ACS_P215, AHScaleAgent.BAUDRATE_ACS_P215, new SetPortDialog.onDialogClickListener() {
             @Override
             public void onSetPort(String port, String baudrate) {
                 ahscaleToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
@@ -340,25 +353,51 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.init(DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781, new SetPortDialog.onDialogClickListener() {
-            @Override
-            public void onSetPort(String port, String baudrate) {
-                smscaleRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
-                DigiDS781Agent.setPort(port);
-                DigiDS781Agent.setBaudrate(baudrate);
-                DigiDS781Agent.initialize();
+        setPortDialog.initialize("寺冈电子秤", DigiDS781Agent.PORT_SCALE_DS781,
+                DigiDS781Agent.BAUDRATE_SCALE_DS781,
+                new SetPortDialog.onDialogClickListener() {
+                    @Override
+                    public void onSetPort(String port, String baudrate) {
+                        smscaleRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                                port, baudrate));
+                        DigiDS781Agent.setPort(port);
+                        DigiDS781Agent.setBaudrate(baudrate);
+                        DigiDS781Agent.initialize();
 
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_SCALE_INIT, ""));
+                        //设置串口
+                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_SCALE_INIT, ""));
 //                scalePortSwitchCompat.setChecked(false);
 
-                refresh();
-            }
-        });
+                        refresh();
+                    }
+                });
         if (!setPortDialog.isShowing()) {
             setPortDialog.show();
         }
     }
+
+    /**
+     * 配置银联参数
+     * */
+    @OnClick(R.id.item_umsips_rs232)
+    public void configureUmsipsRs232() {
+        if (mUmsipsDialog == null) {
+            mUmsipsDialog = new UmsipsDialog(getActivity());
+            mUmsipsDialog.setCancelable(false);
+            mUmsipsDialog.setCanceledOnTouchOutside(false);
+        }
+        mUmsipsDialog.init(new UmsipsDialog.onDialogClickListener() {
+            @Override
+            public void onDatasetChanged() {
+                umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                        SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
+            }
+        });
+        if (!mUmsipsDialog.isShowing()) {
+            mUmsipsDialog.show();
+        }
+    }
+
 
     @OnClick(R.id.item_smscale_ftp)
     public void configureSmscaleFtp() {
@@ -420,10 +459,15 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     AHScaleAgent.PORT_ACS_P215, AHScaleAgent.BAUDRATE_ACS_P215));
             smscaleRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781));
+            umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                    SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
             smscaleFtpSettingsItem.setSubTitle(String.format("%s:%d",
                     SMScaleSyncManager.FTP_HOST, SMScaleSyncManager.FTP_PORT));
             greentagsSettingsItem.setSubTitle(GreenTagsApi.URL);
             tsiSoftKeyboard.setChecked(SharedPreferencesManager.isSoftKeyboardEnabled());
+            ttsToggleItem.setChecked(
+                    SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
+                            SharedPreferencesManager.PK_B_TTS_ENABLED, true));
 
             //        ActivityManager am =  (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
             //        ACache cache = ACache.get(CashierApp.getAppContext(), Constants.CACHE_NAME);

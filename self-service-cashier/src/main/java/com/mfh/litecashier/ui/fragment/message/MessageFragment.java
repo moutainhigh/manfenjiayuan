@@ -17,27 +17,26 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.im.param.TextParam;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.FaceUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.uikit.adv.AdvertisementViewPager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.mfh.litecashier.ui.adapter.ChatMessageAdapter;
 import com.mfh.litecashier.ui.adapter.MaterialCouponAdapter;
 import com.mfh.litecashier.ui.adapter.MaterialEmojiPageAdapter;
 import com.mfh.litecashier.ui.dialog.QueryGoodsDialog;
-import com.mfh.framework.uikit.adv.AdvertisementViewPager;
 import com.mfh.litecashier.ui.widget.LeftTabStrip;
 
 import java.util.ArrayList;
@@ -222,8 +221,7 @@ public class MessageFragment extends BaseFragment {
                 chatMessageAdapter.appendEntity(result);
             }
         };
-        EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class, getContext());
-        msgService.sendMessageToPeople(MfhLoginService.get().getCurrentGuId(),
+        EmbMsgService.getInstance().sendMessageToPeople(MfhLoginService.get().getCurrentGuId(),
                 MfhLoginService.get().getCurrentGuId(), new TextParam(message), processor);
     }
 

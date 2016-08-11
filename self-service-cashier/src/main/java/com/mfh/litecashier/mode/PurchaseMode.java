@@ -99,7 +99,7 @@ public class PurchaseMode {
                     }
                 }, ScGoodsSku.class, CashierApp.getAppContext());
 
-        AfinalFactory.postDefault(ScGoodsSkuApi.URL_SCGOODSKU_FIND_STOREWITHCHAINSKU, params, queryRsCallBack);
+        AfinalFactory.postDefault(ScGoodsSkuApi.URL_FIND_STOREWITHCHAINSKU, params, queryRsCallBack);
     }
 
 

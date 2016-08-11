@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.compound;
+package com.bingshanguxue.vector_uikit;
 
 
 import android.content.Context;
@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mfh.framework.R;
 
 
 /***
@@ -49,12 +48,12 @@ public class SettingsItem extends RelativeLayout {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SettingsItem);
             boolean isLogoVisible = a.getBoolean(R.styleable.SettingsItem_isLogoVisible, true);
             if (isLogoVisible) {
-                ivLogo.setVisibility(View.VISIBLE);
+                this.ivLogo.setVisibility(View.VISIBLE);
             } else {
-                ivLogo.setVisibility(View.GONE);
+                this.ivLogo.setVisibility(View.GONE);
             }
 
-            ivLogo.setImageResource(a.getResourceId(R.styleable.SettingsItem_logoSrc, 0));
+            this.ivLogo.setImageResource(a.getResourceId(R.styleable.SettingsItem_src, 0));
 
             tvTitle.setText(a.getString(R.styleable.SettingsItem_text));
             tvTitle.setTextColor(a.getColor(R.styleable.SettingsItem_textColor, Color.BLACK));

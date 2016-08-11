@@ -133,14 +133,11 @@ public class AppHelper {
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_ORDER_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_SUPPLY_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_GOODS_DATA);
-
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERETURN_ORDER_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERETURN_SUPPLY_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
-
         ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_TENANT_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_GOODS_DATA);
-
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
     }
 //

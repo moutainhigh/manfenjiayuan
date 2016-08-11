@@ -26,7 +26,7 @@ import de.greenrobot.event.EventBus;
 
 
 /**
- * 首页
+ * 收银订单支付页面
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class CashierPayActivity extends BaseActivity {

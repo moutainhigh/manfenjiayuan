@@ -16,12 +16,20 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.chinaums.mis.bank.BankDAO;
+import com.chinaums.mis.bank.ICallBack;
+import com.chinaums.mis.bean.RequestPojo;
+import com.chinaums.mis.bean.ResponsePojo;
+import com.chinaums.mis.bean.TransCfx;
+import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.pay.umsips.TransType;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.DataCacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -36,7 +44,7 @@ public class UmsipsDialog extends CommonDialog {
     private TextView tvTitle;
     private EditText etIp, etPort, etMchtId, etTermId;
     private Spinner mPortSpinner, mBaudrateSpinner;
-    private Button btnSubmit;
+    private Button btnSubmit, btnSign;
     private ImageButton btnClose;
     private ProgressBar progressBar;
 
@@ -46,6 +54,7 @@ public class UmsipsDialog extends CommonDialog {
     public interface onDialogClickListener {
         void onDatasetChanged();
     }
+
     private onDialogClickListener mListener;
 
 
@@ -65,6 +74,7 @@ public class UmsipsDialog extends CommonDialog {
         etPort = (EditText) rootView.findViewById(R.id.et_port);
         etMchtId = (EditText) rootView.findViewById(R.id.et_mchtId);
         etTermId = (EditText) rootView.findViewById(R.id.et_termId);
+        btnSign = (Button) rootView.findViewById(R.id.button_footer_negative);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
         mPortSpinner = (Spinner) rootView.findViewById(R.id.spinner_port);
@@ -160,6 +170,12 @@ public class UmsipsDialog extends CommonDialog {
 //                return true;
 //            }
 //        });
+        btnSign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sign();
+            }
+        });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,7 +224,7 @@ public class UmsipsDialog extends CommonDialog {
         DeviceUtils.hideSoftInput(getOwnerActivity());
     }
 
-    public void init(onDialogClickListener listener){
+    public void init(onDialogClickListener listener) {
         this.mListener = listener;
         refresh();
     }
@@ -216,7 +232,7 @@ public class UmsipsDialog extends CommonDialog {
     /**
      * 刷新会员信息
      */
-    private void refresh(){
+    private void refresh() {
         etIp.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP, "10.139.93.98"));
         etPort.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT, "19003"));
         etMchtId.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID, "898320554115217"));
@@ -226,6 +242,9 @@ public class UmsipsDialog extends CommonDialog {
         mBaudrateSpinner.setSelection(adapter.getPosition(SerialManager.getUmsipsBaudrate()));
     }
 
+    /**
+     * 保存参数
+     */
     private void submit() {
         progressBar.setVisibility(View.VISIBLE);
         btnSubmit.setEnabled(false);
@@ -272,11 +291,140 @@ public class UmsipsDialog extends CommonDialog {
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
 
-        if (mListener != null){
+        if (mListener != null) {
             mListener.onDatasetChanged();
         }
 
         dismiss();
+    }
+
+    private BankDAO bankDAO;
+    private boolean isRunningThread;
+    private RequestPojo request;
+    private ResponsePojo response;
+    private TransCfx transCFX;
+
+    private class BackCall implements ICallBack {
+        private BackCall() {
+        }
+
+        public void getCallBack(String stateCode, String stateTips) {
+            ZLogger.d("stateCode=" + stateCode + "|" + "stateTips=" + stateTips);
+//            DialogUtil.showHint(String.format("%s--%s", stateCode, stateTips));
+        }
+    }
+
+    /**
+     * 签到
+     */
+    public void sign() {
+        ZLogger.d("正在签到，请稍候......");
+        initBasicValue();
+        initBankRequestValue(TransType.SIGN);
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    isRunningThread = true;
+                    ZLogger.d("正在签到，请稍候......");
+                    bankDAO = new BankDAO();
+                    bankDAO.getCallBack(new BackCall());
+                    //同步
+                    response = bankDAO.bankall(transCFX, request);
+                    if (response != null) {
+                        ZLogger.d(String.format("签到结束：%s", response.toString()));
+                    }
+                    isRunningThread = false;
+                } catch (Exception e) {
+                    ZLogger.e(e.toString());
+                    isRunningThread = false;
+                }
+            }
+
+        }
+        )
+                .start();
+    }
+
+    /**
+     * 初始化交易基础信息
+     * 域名：upos.chinaums.com
+     * ULINK传统：端口 19003，TPDU 6000030000
+     */
+    private void initBasicValue() {
+        ZLogger.d("正在初始化交易基础信息，请稍候......");
+        this.transCFX = new TransCfx();
+        //公网标志位(ssl_on)	int		8	是	0-表示专线 1-表示公网
+        this.transCFX.setSsl_on(0);
+        //主机ip地址(ip)	String		16	是	主机ip地址
+        this.transCFX.setIp(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP, "10.139.93.98"));//upos.chinaums.com
+        //主机端口号(port)	int		8	是	主机端口号
+        this.transCFX.setPort(Integer.valueOf(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT, "19003")));//19003
+        //终端号(termId)	String	8	是	终端号
+        this.transCFX.setTermId(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID, "55877236"));
+        //终端信息(term_info)   	String		64	否	终端信息（公网相关）
+        this.transCFX.setTerm_info("");
+        //终端序列号(ssl_sn)	String		39	否	终端序列号（公网相关）
+        this.transCFX.setSsl_sn("");
+        //数字证书路径(ssl_cert)	String		200	否	数字证书路径（公网相关）
+        this.transCFX.setSsl_cert("");
+        //TPDU传送协议数据单元(tpdu)    String		10	是
+        this.transCFX.setTpdu("6000030000");
+        //商户号(mchtId)  String	15	是	商户号
+        String mchtId = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID, "898320554115217");
+        this.transCFX.setMchtId(mchtId);
+        //SN密文(authSN)	String		60	是	SN密文
+        if (mchtId.equalsIgnoreCase("898320554115217")) {
+            this.transCFX.setAuthSN("277797D4DE797832B650C201EE08DC5300C1771A372DCC6E08E57799A377CF91");
+        } else if (mchtId.equalsIgnoreCase("898320554115269")) {
+            this.transCFX.setAuthSN("9907666AAB467BBF3A3067A9BE71FD7B54AC0A6D7B8AB996BB5C097417D453B6");
+        } else {
+            this.transCFX.setAuthSN("277797D4DE797832B650C201EE08DC5300C1771A372DCC6E08E57799A377CF91");
+        }
+        //串口值(devPath)	String		50	是	串口值
+        this.transCFX.setDevPath(SerialManager.getUmsipsPort());
+        //波特率(baudRate)	int		8	是	波特率
+        this.transCFX.setBaudRate(Integer.valueOf(SerialManager.getUmsipsBaudrate()));
+        ZLogger.df("初始化交易基础信息: " + this.transCFX.toString());
+    }
+
+    /**
+     * 初始化交易请求
+     */
+    private void initBankRequestValue(String transType) {
+        this.request = new RequestPojo();
+        //操作员号(operid)  String	operId	8	必填	左对齐，不足右补空格
+//        MfhLoginService.get().getCurrentGuId();
+        this.request.setOperId(CashierHelper.getOperateId(8));
+        //POS机号(posId)    String    8   必填	左对齐，不足右补空格(0)
+        this.request.setPosId(CashierHelper.getTerminalId(8));
+        //交易类型(transtype)   String  2   必填
+        this.request.setTransType(transType);
+        //交易金额(amount)  String  12  必填  精确到分，不足左补0。比如1.23元应填写000000000123。
+        this.request.setAmount("000000000001");
+        /**交易附加域(transMemo)	String		VAR	是	"交易类型附加信息域，域格式为data1&data2&......&dataN
+         例如：手机充值需要传入运营商和手机号，则填充：01&15866668888"*/
+        this.request.setTransMemo("01");
+        ZLogger.df("初始化交易请求: " + this.request.toString());
+    }
+
+
+
+    /**
+     * 打印参数
+     */
+    private void print() {
+//        String sb = "参数（点击可修改）：\n" +
+//                String.format("主机IP：%s\n",
+//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP)) +
+//                String.format("主机端口号：%s\n",
+//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT)) +
+//                String.format("商户号：%s\n",
+//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID)) +
+//                String.format("终端号：%s\n",
+//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID)) +
+//                String.format("串口值：%s\n", SerialManager.getUmsipsPort()) +
+//                String.format("波特率：%s\n", SerialManager.getUmsipsBaudrate());
+//        tvUmsipsConfigs.setText(sb);
     }
 
 }

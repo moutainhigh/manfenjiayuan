@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.compound;
+package com.bingshanguxue.vector_uikit;
 
 
 import android.content.Context;
@@ -10,10 +10,9 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.mfh.framework.R;
 
 
 /***
@@ -21,6 +20,7 @@ import com.mfh.framework.R;
  * 样式：(Icon + Title/Name) + Detail
  */
 public class ToggleSettingItem extends RelativeLayout {
+    private ImageView ivLogo;
     private TextView tvTitle;
     private TextView tvSubTitle;
     private SwitchCompat buttonToggle;
@@ -41,7 +41,8 @@ public class ToggleSettingItem extends RelativeLayout {
 
     public ToggleSettingItem(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(getContext(), R.layout.listitem_switch, this);
+        View.inflate(getContext(), R.layout.settings_item_toggle, this);
+        this.ivLogo = (ImageView) findViewById(R.id.iv_logo);
         this.tvTitle = (TextView) findViewById(R.id.tv_title);
         this.tvSubTitle = (TextView) findViewById(R.id.tv_subtitle);
         this.buttonToggle = (SwitchCompat) findViewById(R.id.button_toggle);
@@ -59,6 +60,14 @@ public class ToggleSettingItem extends RelativeLayout {
 
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ToggleSettingItem);
+            boolean isLogoVisible = a.getBoolean(R.styleable.ToggleSettingItem_isLogoVisible, true);
+            if (isLogoVisible) {
+                this.ivLogo.setVisibility(View.VISIBLE);
+            } else {
+                this.ivLogo.setVisibility(View.GONE);
+            }
+
+            this.ivLogo.setImageResource(a.getResourceId(R.styleable.ToggleSettingItem_src, 0));
 
             this.tvTitle.setText(a.getString(R.styleable.ToggleSettingItem_text));
             this.tvTitle.setTextColor(a.getColor(R.styleable.ToggleSettingItem_textColor, Color.BLACK));

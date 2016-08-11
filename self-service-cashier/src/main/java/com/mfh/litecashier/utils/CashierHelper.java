@@ -3,6 +3,7 @@ package com.mfh.litecashier.utils;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bingshanguxue.cashier.CashierFactory;
@@ -12,14 +13,20 @@ import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.database.entity.EmbMsg;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.net.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.PosCategory;
+import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 
 import java.text.ParseException;
@@ -93,7 +100,7 @@ public class CashierHelper {
 
 
     /**
-     * 清除旧数据
+     * 清除旧的订单数据
      *
      * @param saveDate 保存的天数
      */
@@ -244,6 +251,30 @@ public class CashierHelper {
         return sb.toString();
     }
 
+    /**
+     * 更新客显信息
+     */
+    public static void broadcastCashierOrderInfo(int cmdType, CashierOrderInfo cashierOrderInfo) {
+        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
+            ZLogger.d("PAD客显功能未打开");
+            return;
+        }
+
+        CashierOrderInfoWrapper cashierOrderInfoWrapper = new CashierOrderInfoWrapper();
+        cashierOrderInfoWrapper.setCmdType(cmdType);
+        cashierOrderInfoWrapper.setCashierOrderInfo(cashierOrderInfo);
+        NetProcessor.ComnProcessor processor = new NetProcessor.ComnProcessor<EmbMsg>() {
+            @Override
+            protected void processOperResult(EmbMsg result) {
+//                doAfterSendSuccess(result);
+                ZLogger.d("发送订单信息到客显成功");
+            }
+        };
+        EmbMsgService.getInstance().sendText(MfhLoginService.get().getCurrentGuId(),
+                MfhLoginService.get().getCurrentGuId(),
+                IMBizType.CUSTOMER_DISPLAY_PAYORDER,
+                JSON.toJSONString(cashierOrderInfoWrapper), processor);
+    }
 
 
 

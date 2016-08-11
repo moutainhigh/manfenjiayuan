@@ -9,132 +9,147 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_normal">
+        android:padding="@dimen/spacing_double">
 
         <!--商品-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_posgoods"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
+            app:src="@mipmap/ic_goods_warehouse"
             app:position="top"
             app:subText=""
             app:text="商品库"/>
         <!--米西生鲜-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_mixi_fresh"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
+            app:src="@mipmap/ic_fresh"
             app:position="center"
             app:subText=""
             app:text="米西生鲜"/>
 
         <!--设备-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_terminal"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
-            app:position="center"
+            app:src="@mipmap/ic_cashier"
+            app:position="bottom"
             app:subText=""
             app:text="设备编号"/>
 
         <!--LED客显-->
-        <com.mfh.framework.uikit.compound.ToggleSettingItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_leddisplay"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
             app:text="LED客显"
-            app:position="center"/>
+            app:src="@mipmap/ic_rs232"
+            app:position="top"/>
 
         <!--打印机-->
-        <com.mfh.framework.uikit.compound.ToggleSettingItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_printer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:text="Gprinter打印机(RS232)"
+            app:text="打印机(Gprinter)"
+            app:src="@mipmap/ic_rs232"
             app:position="center"/>
 
         <!--爱华电子秤-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_ahscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
             app:position="center"
             app:subText=""
             android:visibility="gone"
-            app:text="爱华电子秤(RS232)"/>
+            app:src="@mipmap/ic_rs232"
+            app:text="爱华电子秤"/>
 
         <!--寺冈电子秤-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_smscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
             app:position="center"
             app:subText=""
-            app:text="寺冈电子秤(RS232)"/>
+            app:src="@mipmap/ic_rs232"
+            app:text="寺冈电子秤"/>
+        <!--银联-->
+        <com.bingshanguxue.vector_uikit.SettingsItem
+            android:id="@+id/item_umsips_rs232"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:position="bottom"
+            app:src="@mipmap/ic_rs232"
+            app:subText=""
+            app:text="银联"/>
 
         <!--寺冈电子秤-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_smscale_ftp"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
-            app:position="bottom"
+            android:layout_marginTop="@dimen/spacing_double"
+            app:position="top"
             app:subText=""
-            app:text="寺冈电子秤(FTP)"/>
+            app:src="@mipmap/ic_ftp"
+            app:text="寺冈电子秤"/>
 
         <!--绿泰电子价签-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_greentags_webservice"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:isLogoVisible="false"
+            app:src="@mipmap/ic_tag"
             app:position="center"
             app:subText=""
             app:text="绿泰电子价签"/>
 
 
         <!--系统键盘-->
-        <com.mfh.framework.uikit.compound.ToggleSettingItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_softkeyboard"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             app:text="系统键盘"
+            app:src="@mipmap/ic_keyboard"
             app:position="center"/>
 
 
         <!--内存-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_momory"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="@dimen/sectioin_divider_height"
-            app:isLogoVisible="false"
+            app:src="@mipmap/ic_memory"
             app:position="center"
-            app:subText=""
+            app:subText="吃饱了别忘记减肥"
             app:text="内存"/>
 
 
         <!--语音播报-->
-        <com.mfh.framework.uikit.compound.ToggleSettingItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_tts"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             app:text="语音播报"
+            app:src="@mipmap/ic_voice"
             app:subText="语音技术由科大讯飞提供"
             app:position="center"/>
 
         <!--版本-->
-        <com.mfh.framework.uikit.compound.SettingsItem
+        <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_version"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="@dimen/sectioin_divider_height"
-            app:isLogoVisible="false"
+            app:src="@mipmap/ic_memory"
             app:position="bottom"
             app:subText=""
             app:text="应用版本"/>

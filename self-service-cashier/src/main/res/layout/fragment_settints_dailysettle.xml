@@ -94,33 +94,12 @@
         android:padding="@dimen/spacing_normal"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/mfh_textview_text"
-            android:id="@+id/tv_officename"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="网点名称"
-            android:padding="@dimen/spacing_micro"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/spacing_normal"/>
 
         <TextView
             android:id="@+id/tv_receipt_tail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/tv_concluding_remarks"
-            android:layout_below="@+id/tv_officename"/>
+            android:layout_height="match_parent"/>
 
-        <TextView
-            style="@style/mfh_textview_text"
-            android:id="@+id/tv_concluding_remarks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="辛苦了!\n祝您生活愉快\n"
-            android:layout_marginBottom="@dimen/spacing_normal"
-            android:layout_alignParentBottom="true"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_print"

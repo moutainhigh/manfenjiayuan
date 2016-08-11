@@ -3,6 +3,7 @@ package com.mfh.litecashier.ui.fragment.components;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
+import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.utils.AnalysisHelper;
@@ -88,6 +90,8 @@ public class DailySettleFragment extends BaseProgressFragment {
 
     @Bind(R.id.button_header_close)
     ImageButton btnClose;
+    @Bind(R.id.fab_print)
+    FloatingActionButton fabPrint;
 
     private boolean cancelable = true;//是否可以关闭窗口
     private String dailySettleDatetime = null;//日结日期
@@ -173,6 +177,14 @@ public class DailySettleFragment extends BaseProgressFragment {
         getActivity().finish();
     }
 
+    /**
+     * 打印订单
+     */
+    @OnClick(R.id.fab_print)
+    public void printOrder() {
+        SerialManager.printDailySettleBill(dailysettleEntity);
+    }
+
     private void initAggRecyclerView() {
         LinearLayoutManager mRLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
         mRLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -231,12 +243,16 @@ public class DailySettleFragment extends BaseProgressFragment {
         try {
             if (dailysettleEntity == null) {
                 dailysettleEntity = AnalysisHelper.createDailysettle(dailySettleDatetime);
+                fabPrint.setVisibility(View.GONE);
             }
 
             if (dailysettleEntity == null) {
                 ZLogger.d("日结单创建失败");
+                fabPrint.setVisibility(View.GONE);
                 return;
             }
+
+            fabPrint.setVisibility(View.VISIBLE);
 
             tvOfficeName.setText(String.format("门店：%s", dailysettleEntity.getOfficeName()));
             tvHumanName.setText(String.format("结算人：%s", dailysettleEntity.getHumanName()));

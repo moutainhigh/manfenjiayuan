@@ -150,7 +150,14 @@ public class SetPortDialog extends CommonDialog {
     }
 
 
-    public void init(String port, String baudrate, onDialogClickListener listener){
+    public void initialize(String title, String port, String baudrate, onDialogClickListener listener){
+        if (!StringUtils.isEmpty(title)){
+            tvTitle.setText(title);
+        }
+        else{
+            tvTitle.setText("配置串口");
+        }
+
         if (StringUtils.isEmpty(port)) {
             mPortSpinner.setSelection(0);
         }
@@ -164,6 +171,9 @@ public class SetPortDialog extends CommonDialog {
             mBaudrateSpinner.setSelection(adapter.getPosition(baudrate));
         }
         this.mListener = listener;
+    }
+    public void init(String port, String baudrate, onDialogClickListener listener){
+        initialize(null, port, baudrate, listener);
     }
 
     private void submit(){

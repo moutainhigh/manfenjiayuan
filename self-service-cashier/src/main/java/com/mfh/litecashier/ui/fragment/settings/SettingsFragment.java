@@ -86,9 +86,6 @@ public class SettingsFragment extends BaseFragment {
         mTabs.add(new ViewPageInfo("账户", R.mipmap.ic_settings_account_selected, "账户",
                 SettingsAccountFragment.class,
                 null));
-        mTabs.add(new ViewPageInfo("支付", R.mipmap.ic_settings_pay_normal, "支付",
-                SettingsPayFragment.class,
-                null));
 
         viewPagerAdapter.addAllTab(mTabs);
         mViewPager.setOffscreenPageLimit(mTabs.size());

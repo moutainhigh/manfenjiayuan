@@ -771,7 +771,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                         , String.class
                         , CashierApp.getAppContext()) {
                 };
-                InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), responseCallback);
+                InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
             }
         });
         if (!changeDialog.isShowing()) {
@@ -836,7 +836,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                         , String.class
                         , CashierApp.getAppContext()) {
                 };
-                InvSkuStoreApiImpl.updateStockGoods(jsonObject.toJSONString(), responseCallback);
+                InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
             }
         });
         if (!changeDialog.isShowing()) {

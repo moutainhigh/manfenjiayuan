@@ -33,9 +33,6 @@ import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.im.constants.IMBizType;
-import com.manfenjiayuan.im.database.entity.EmbMsg;
-import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.api.constant.BizType;
@@ -43,13 +40,11 @@ import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -59,6 +54,7 @@ import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
@@ -97,8 +93,6 @@ import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.alarm.AlarmManagerHelper;
-import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.DataCacheHelper;
@@ -112,7 +106,6 @@ import net.tsz.afinal.FinalDb;
 import org.century.GreenTagsApi;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -185,7 +178,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     private CashierPresenter cashierPresenter;
 
-
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
         if (extras != null) {
@@ -210,8 +202,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         cashierPresenter = new CashierPresenter(this);
 
-        AlarmManagerHelper.registerDailysettle(this);
-
         //hide soft input
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -227,14 +217,12 @@ public class MainActivity extends CashierActivity implements ICashierView {
         initMenuRecyclerView();
         initBarCodeInput();
         initCashierRecyclerView();
-
         showAdvFragment();
 //        showLocalFrontCategoryFragment();
 
         if (menuAdapter != null) {
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
         }
-
 
         //刷新挂单
         refreshFloatHangup();
@@ -251,6 +239,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         ZLogger.d("小版本标记：2016-07-28-001");
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
+        AlarmManagerHelper.registerDailysettle(this);
     }
 
     @Override
@@ -292,9 +281,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
     public void onBackPressed() {
         String dbName;
         if (BizConfig.RELEASE) {
-            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON, UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
         } else {
-            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON, "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
         }
         ZLogger.d("关闭数据库:" + dbName);
         FinalDb db = FinalDb.getDb(dbName);
@@ -967,14 +958,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
         btnSettle.setEnabled(false);
 
         //判断是否登录
-        if (productAdapter.getItemCount() <= 0) {
-            DialogUtil.showHint("商品明细不能为空");
-            btnSettle.setEnabled(true);
-            hideProgressDialog();
-            return;
-        }
-
-        //判断是否登录
         if (!MfhLoginService.get().haveLogined()) {
             DialogUtil.showHint("请先登录");
             btnSettle.setEnabled(true);
@@ -982,9 +965,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
             return;
         }
 
-        //判断当天是否日结
-        if (AnalysisHelper.validateHaveDateEnd(new Date())) {
-            DialogUtil.showHint("该网点今天已经日结，请先挂单。");
+        //判断是否登录
+        if (productAdapter.getItemCount() <= 0) {
+            DialogUtil.showHint("商品明细不能为空");
             btnSettle.setEnabled(true);
             hideProgressDialog();
             return;
@@ -1034,39 +1017,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 JSON.toJSONString(cashierOrderInfo)));
 
         //显示客显
-        updatePadDisplay(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
+        CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
 
-        hideProgressDialog();
 
         Intent intent = new Intent(this, CashierPayActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_MFPAY);
-    }
-
-    /**
-     * 更新客显信息
-     */
-    private void updatePadDisplay(int cmdType, CashierOrderInfo cashierOrderInfo) {
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
-            ZLogger.d("PAD客显功能未打开");
-            return;
-        }
-        CashierOrderInfoWrapper cashierOrderInfoWrapper = new CashierOrderInfoWrapper();
-        cashierOrderInfoWrapper.setCmdType(cmdType);
-        cashierOrderInfoWrapper.setCashierOrderInfo(cashierOrderInfo);
-        NetProcessor.ComnProcessor processor = new NetProcessor.ComnProcessor<EmbMsg>() {
-            @Override
-            protected void processOperResult(EmbMsg result) {
-//                doAfterSendSuccess(result);
-                ZLogger.d("发送订单信息到客显成功");
-            }
-        };
-        EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class, this);
-        msgService.sendText(MfhLoginService.get().getCurrentGuId(),
-                MfhLoginService.get().getCurrentGuId(),
-                IMBizType.CUSTOMER_DISPLAY_PAYORDER, JSON.toJSONString(cashierOrderInfoWrapper), processor);
     }
 
 
@@ -1131,7 +1089,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 异步处理订单支付结果
-     * <p>
+     * <p/>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
     private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
@@ -1168,7 +1126,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
             LastOrderInfo lastOrderInfo = null;
             // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
-            updatePadDisplay(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
+            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
 
             List<PosOrderEntity> orderEntities = CashierFactory
                     .fetchActiveOrderEntities(BizType.POS, cashierOrderInfo.getPosTradeNo());
@@ -1312,7 +1270,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         inlvBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
+//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
                 //Press “Enter”
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     //条码枪扫描结束后会自动触发回车键
@@ -1528,7 +1486,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             obtaincurPosTradeNo(null);
             productAdapter.setEntityList(null);
 
-            updatePadDisplay(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
+            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
             //刷新挂单
             refreshFloatHangup();
 
@@ -1727,7 +1685,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
             if (weightVal > 0) {
                 productAdapter.append(curPosTradeNo, goods, weightVal);
-
             } else {
                 if (quantityCheckDialog == null) {
                     quantityCheckDialog = new DoubleInputDialog(this);
