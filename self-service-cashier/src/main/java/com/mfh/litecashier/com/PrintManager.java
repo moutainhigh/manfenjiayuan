@@ -253,6 +253,7 @@ public class PrintManager {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeScheduleOrderEsc(invSendOrder, goodsList));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -559,6 +560,7 @@ public class PrintManager {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makePosOrderEsc(orderEntities));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -590,6 +592,7 @@ public class PrintManager {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makePosOrderEsc(posOrderEntity));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -669,6 +672,7 @@ public class PrintManager {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeTopupEsc(mQuickPayInfo, outTradeNo));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())

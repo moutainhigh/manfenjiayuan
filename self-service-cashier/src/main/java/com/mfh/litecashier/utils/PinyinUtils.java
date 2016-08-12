@@ -56,7 +56,7 @@ public class PinyinUtils {
         if (StringUtils.isEmpty(chinese)){
             return null;
         }
-        StringBuffer pybf = new StringBuffer();
+        StringBuilder pybf = new StringBuilder();
         char[] arr = chinese.toCharArray();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);

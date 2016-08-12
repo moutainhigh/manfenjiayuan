@@ -167,7 +167,7 @@ public class CashierSwipAdapter
     public void setEntityList(List<CashierShopcartEntity> entityList) {
         super.setEntityList(entityList);
 
-        sortByUpdateDate();
+//        sortByUpdateDate();
         notifyDataSetChanged(true);
     }
 

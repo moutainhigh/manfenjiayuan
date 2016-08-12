@@ -11,11 +11,10 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.api.impl.CateApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
@@ -28,7 +27,6 @@ import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.CompanyHuman;
-import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.bean.ProductSkuBarcode;
 import com.mfh.litecashier.database.dao.PosProductNetDao;
 import com.mfh.litecashier.database.dao.PosProductSkuNetDao;
@@ -40,7 +38,6 @@ import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,16 +51,13 @@ public class DataSyncManager {
     public static final int SYNC_STEP_NA = -1;
     public static final int SYNC_STEP_BACKEND_CATEGORYINFO          = 0;//后台类目信息
     public static final int SYNC_STEP_BACKEND_CATEGORYINFO_FRESH    = 1;//后台生鲜类目信息
-//    public static final int SYNC_STEP_FRONTEND_CATEGORYINFO_FRESH   = 2;//前台生鲜类目信息（和微信端一致）
-    public static final int SYNC_STEP_PUBLIC_FRONTEND_CATEGORYINFO  = 2;//公共前台类目信息
-    public static final int SYNC_STEP_COSTOM_FRONTEND_CATEGORYINFO  = 3;//自定义前台类目信息
     public static final int SYNC_STEP_PRODUCT_SKU   = 4;//一品多码
     public static final int SYNC_STEP_PRODUCTS      = 5;//商品库
     public static final int SYNC_STEP_COMPANY_HUMAN = 6;//账号
 
 
-    private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 50;
-    private static final int MAX_SYNC_PAGESIZE = 20;
+    private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 60;
+    private static final int MAX_SYNC_PAGESIZE = 30;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
     private PosProductNetDao posProductNetDao = new PosProductNetDao();
@@ -136,22 +130,6 @@ public class DataSyncManager {
         switch (step) {
             case SYNC_STEP_BACKEND_CATEGORYINFO: {
                 downloadBackendCategoryInfo();
-            }
-            break;
-            case SYNC_STEP_BACKEND_CATEGORYINFO_FRESH: {
-                downloadBackendFreshCategoryInfo();
-            }
-            break;
-//            case SYNC_STEP_FRONTEND_CATEGORYINFO_FRESH: {
-//                downloadFrontendFreshCategoryInfo();
-//            }
-//            break;
-            case SYNC_STEP_PUBLIC_FRONTEND_CATEGORYINFO: {
-                downloadPublicFrontCategory();
-            }
-            break;
-            case SYNC_STEP_COSTOM_FRONTEND_CATEGORYINFO: {
-                downloadCustomFrontCategory();
             }
             break;
             case SYNC_STEP_PRODUCT_SKU: {
@@ -284,38 +262,12 @@ public class DataSyncManager {
 
         @Override
         protected Long doInBackground(RspQueryResult<PosGoods>... params) {
-            saveQueryResult(params[0], pageInfo);
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-            //若还有继续发起请求
-            if (!isInterrupted && pageInfo.hasNextPage()) {
-                pageInfo.moveToNext();
-                downloadProducts(lastCursor, pageInfo);
-            } else {
-                ZLogger.df("同步商品库结束" + SharedPreferencesHelper.getSyncProductsCursor());
-                //商品同步结束后不立刻执行下一步操作，而是去检查商品数是否和后台商品数一致。
-//                nextStep();
-                countNetSyncAbleSkuNum();
-            }
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<PosGoods> rs, PageInfo pageInfo) {//此处在主线程中执行。
             try {
+                RspQueryResult<PosGoods> rs = params[0];
                 mPageInfo = pageInfo;
 
                 if (rs == null) {
-                    return;
+                    return -1L;
                 }
 
                 ZLogger.df(String.format("同步 %d/%d 个商品（%s） 开始", rs.getReturnNum(),
@@ -386,6 +338,23 @@ public class DataSyncManager {
 //            throw new RuntimeException(ex);
                 ZLogger.e(String.format("保存商品库失败: %s", ex.toString()));
                 isInterrupted = true;
+            }
+            return -1L;
+//        return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+            //若还有继续发起请求
+            if (!isInterrupted && pageInfo.hasNextPage()) {
+                pageInfo.moveToNext();
+                downloadProducts(lastCursor, pageInfo);
+            } else {
+                ZLogger.df("同步商品库结束" + SharedPreferencesHelper.getSyncProductsCursor());
+                //商品同步结束后不立刻执行下一步操作，而是去检查商品数是否和后台商品数一致。
+//                nextStep();
+                countNetSyncAbleSkuNum();
             }
         }
     }
@@ -514,7 +483,37 @@ public class DataSyncManager {
 
         @Override
         protected Long doInBackground(RspQueryResult<ProductSkuBarcode>... params) {
-            saveQueryResult(params[0], pageInfo);
+//            saveQueryResult(params[0], pageInfo);
+            RspQueryResult<ProductSkuBarcode> rs = params[0];
+            try {
+                mPosSkuPageInfo = pageInfo;
+
+                if (rs == null) {
+                    return -1L;
+                }
+
+                //保存下来
+                int retSize = rs.getReturnNum();
+                Date cursor = null;
+                for (EntityWrapper<ProductSkuBarcode> wrapper : rs.getRowDatas()) {
+                    ProductSkuBarcode bean = wrapper.getBean();
+                    if (bean != null) {
+                        PosProductSkuService.get().saveOrUpdate(bean);
+                        cursor = bean.getCreatedDate();
+                    }
+                }
+
+                //更新游标
+                if (cursor != null){
+                    SharedPreferencesHelper.setPosSkuLastUpdate(cursor);
+                }
+                ZLogger.df(String.format("同步 %d/%d 个箱规", retSize, rs.getTotalNum()));
+
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.ef(String.format("同步码表失败: %s", ex.toString()));
+            }
+
             return -1L;
 //        return null;
         }
@@ -532,39 +531,6 @@ public class DataSyncManager {
                 nextStep();
             }
         }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<ProductSkuBarcode> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
-                mPosSkuPageInfo = pageInfo;
-
-                if (rs == null) {
-                    return;
-                }
-
-                //保存下来
-                int retSize = rs.getReturnNum();
-                for (EntityWrapper<ProductSkuBarcode> wrapper : rs.getRowDatas()) {
-                    ProductSkuBarcode bean = wrapper.getBean();
-                    if (bean != null) {
-                        PosProductSkuService.get().saveOrUpdate(bean);
-
-                        //更新游标
-                        SharedPreferencesHelper.setPosSkuLastUpdate(bean.getCreatedDate());
-                    }
-                }
-                ZLogger.df(String.format("同步 %d/%d 个箱规", retSize, rs.getTotalNum()));
-
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.ef(String.format("同步码表失败: %s", ex.toString()));
-            }
-        }
     }
 
 
@@ -573,6 +539,7 @@ public class DataSyncManager {
     /**
      * 下载部门员工数据
      */
+    @Deprecated
     private void downloadWorkerBeanInfoOfCompany() {
         if (!MfhLoginService.get().haveLogined()) {
             sessionError();
@@ -586,7 +553,7 @@ public class DataSyncManager {
         mWorderBeanPageInfo.setPageNo(1);
     }
 
-    public void downloadWorkerBeanInfoOfCompany(PageInfo pageInfo) {
+    private void downloadWorkerBeanInfoOfCompany(PageInfo pageInfo) {
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
@@ -625,7 +592,32 @@ public class DataSyncManager {
 
         @Override
         protected Long doInBackground(RspQueryResult<CompanyHuman>... params) {
-            saveQueryResult(params[0], pageInfo);
+            try {
+                RspQueryResult<CompanyHuman> rs = params[0];
+                mWorderBeanPageInfo = pageInfo;
+                //第一页，清空旧数据
+                if (mWorderBeanPageInfo.getPageNo() == 1) {
+                    ZLogger.df("清空旧部门员工数据");
+                    CompanyHumanService.get().clear();
+                }
+
+                if (rs == null) {
+                    return -1L;
+                }
+
+                //保存下来
+                int retSize = rs.getReturnNum();
+                ZLogger.df(String.format("同步 %d/%d 个部门员工数据", retSize, rs.getTotalNum()));
+                for (EntityWrapper<CompanyHuman> wrapper : rs.getRowDatas()) {
+                    CompanyHumanService.get().saveOrUpdate(wrapper.getBean());
+                }
+
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.e(String.format("同步部门员工数据失败: %s", ex.toString()));
+            }
+
+
             return -1L;
 //        return null;
         }
@@ -640,38 +632,6 @@ public class DataSyncManager {
             } else {
                 ZLogger.df("同步部门员工数据结束");
                 nextStep();
-            }
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<CompanyHuman> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
-                mWorderBeanPageInfo = pageInfo;
-                //第一页，清空旧数据
-                if (mWorderBeanPageInfo.getPageNo() == 1) {
-                    ZLogger.df("清空旧部门员工数据");
-                    CompanyHumanService.get().clear();
-                }
-
-                if (rs == null) {
-                    return;
-                }
-
-                //保存下来
-                int retSize = rs.getReturnNum();
-                ZLogger.df(String.format("同步 %d/%d 个部门员工数据", retSize, rs.getTotalNum()));
-                for (EntityWrapper<CompanyHuman> wrapper : rs.getRowDatas()) {
-                    CompanyHumanService.get().saveOrUpdate(wrapper.getBean());
-                }
-
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("同步部门员工数据失败: %s", ex.toString()));
             }
         }
     }
@@ -861,369 +821,8 @@ public class DataSyncManager {
                 .put(ACacheHelper.CK_STOCKGOODS_CATEGORY, cacheArrays.toJSONString());
     }
 
-    /**
-     * 下载生鲜后台类目树
-     */
-    private void downloadBackendFreshCategoryInfo() {
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true)) {
-            ZLogger.df("使用后台生鲜类目缓存数据，暂不加载新数据");
-            nextStep();
-            //通知刷新数据
-            EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO_FRESH));
-
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            networkError();
-            //通知刷新数据
-            EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO_FRESH));
-            return;
-        }
-
-        ZLogger.df("下载后台生鲜类目树开始");
-        CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD,
-                CateApi.BACKEND_CATE_BTYPE_FRESH,
-                CateApi.CATE_POSITION_BACKEND, 2, freshBackendCategoryInfoRspCallback);
-    }
-
-    private NetCallBack.NetTaskCallBack freshBackendCategoryInfoRspCallback = new NetCallBack.NetTaskCallBack<CategoryInfo,
-            NetProcessor.Processor<CategoryInfo>>(
-            new NetProcessor.Processor<CategoryInfo>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("加载后台生鲜类目树失败, " + errMsg);
-                    //通知刷新数据
-                    EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO_FRESH));
-
-                    nextStep();
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-                    if (rspData == null) {
-                        saveBackendFreshCategoryInfoCache(null);
-                        return;
-                    }
-//                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                    RspBean<CategoryInfo> retValue = (RspBean<CategoryInfo>) rspData;
-                    CategoryInfo categoryInfo = retValue.getValue();
-
-                    if (categoryInfo != null) {
-                        //缓存数据
-                        saveBackendFreshCategoryInfoCache(categoryInfo.getOptions());
-                    } else {
-                        saveBackendFreshCategoryInfoCache(null);
-                    }
-
-                    //通知刷新数据
-                    EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO_FRESH));
-
-                    nextStep();
-                }
-            }
-            , CategoryInfo.class
-            , CashierApp.getAppContext()) {
-    };
-
-    /**
-     * 缓存后台生鲜类目树
-     */
-    private void saveBackendFreshCategoryInfoCache(List<CategoryOption> options) {
-
-        //缓存数据
-        JSONArray cacheArrays = new JSONArray();
-        if (options != null && options.size() > 0) {
-            ZLogger.df(String.format("保存 %d个后台生鲜类目", options.size()));
-            for (CategoryOption option : options) {
-                cacheArrays.add(option);
-            }
-
-            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, false);
-        }
-        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
-                .put(ACacheHelper.CK_BACKEND_CATEGORY_FRESH, cacheArrays.toJSONString());
-    }
-
-
-
-    /**
-     * 下载公共前台类目
-     */
-    private void downloadPublicFrontCategory() {
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, true)) {
-            ZLogger.df("使用前台公共类目缓存数据，暂不加载新数据");
-            //更新UI
-//            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_CLOUD_CATEGORY_UPDATED));
-            nextStep();
-            return;
-        }
-
-        if (!MfhLoginService.get().haveLogined()) {
-            sessionError();
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            networkError();
-            return;
-        }
-
-        ZLogger.df("同步前台公共类目开始");
-        CateApiImpl.comnqueryCategory(CateApi.DOMAIN_TYPE_PROD, CateApi.POS,
-                CateApi.CATE_POSITION_FRONT,
-                1, null, publicFrontCategoryRespCallback);
-    }
-
-    private NetCallBack.NetTaskCallBack publicFrontCategoryRespCallback = new NetCallBack.NetTaskCallBack<CategoryInfo,
-            NetProcessor.Processor<CategoryInfo>>(
-            new NetProcessor.Processor<CategoryInfo>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("加载前台公共类目树失败, " + errMsg);
-                    nextStep();
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-                    if (rspData == null) {
-                        savePublicFrontCategoryInfoCache(null);
-                        return;
-                    }
-
-                    ZLogger.df("加载前台公共类目树成功, ");
-//                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                    RspBean<CategoryInfo> retValue = (RspBean<CategoryInfo>) rspData;
-                    CategoryInfo categoryInfo = retValue.getValue();
-
-                    downloadPublicFrontCategory2(categoryInfo);
-                }
-            }
-            , CategoryInfo.class
-            , CashierApp.getAppContext()) {
-    };
-
-
-    private void downloadPublicFrontCategory2(CategoryInfo categoryInfo) {
-        if (categoryInfo == null) {
-            savePublicFrontCategoryInfoCache(null);
-
-            //通知刷新数据
-//            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_CLOUD_CATEGORY_UPDATED));
-            nextStep();
-            return;
-        }
-
-        List<CategoryOption> options = categoryInfo.getOptions();
-        if (options == null || options.size() < 1) {
-            ZLogger.df("前台公共类目为空");
-            savePublicFrontCategoryInfoCache(null);
-//            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_CLOUD_CATEGORY_UPDATED));
-            nextStep();
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            networkError();
-            return;
-        }
-
-        CategoryOption option = options.get(0);
-        ZLogger.df(String.format("同步前台公共二级类目(%s)开始", option.getValue()));
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<PosCategory,
-                NetProcessor.Processor<PosCategory>>(
-                new NetProcessor.Processor<PosCategory>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        List<PosCategory> items = new ArrayList<>();
-                        if (rspData != null) {
-                            RspListBean<PosCategory> retValue = (RspListBean<PosCategory>) rspData;
-                            items = retValue.getValue();
-                        }
-
-                        savePublicFrontCategoryInfoCache(items);
-
-                        //更新UI
-//                        EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_CLOUD_CATEGORY_UPDATED));
-
-                        nextStep();
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-//                        1:12345卡芯片号不存在，请重新输入!
-                        ZLogger.df("加载POS前台公共二级类目 失败, " + errMsg);
-                        nextStep();
-                    }
-                }
-                , PosCategory.class
-                , CashierApp.getAppContext()) {
-        };
-
-        CateApiImpl.listPublicCategory(option.getCode(), queryRsCallBack);
-    }
-
-
-    /**
-     * 缓存前台公共类目树
-     */
-    private void savePublicFrontCategoryInfoCache(List<PosCategory> options) {
-        ZLogger.df(String.format("加载POS %d个前台公共二级类目",
-                (options != null ? options.size() : 0)));
-        //缓存数据
-        JSONArray cacheArrays = new JSONArray();
-        if (options != null && options.size() > 0) {
-            for (PosCategory option : options) {
-//                PosCategory category = PosCategory.generateCloud(option.getCode(), option.getValue(), option.);
-                cacheArrays.add(option);
-            }
-        }
-        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
-                .put(ACacheHelper.CK_PUBLIC_FRONT_CATEGORY, cacheArrays.toJSONString());
-
-        //设置下次不需要自动更新商品类目，可以在收银页面点击同步按钮修改
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, false);
-    }
-
-    /**
-     * 下载私有前台类目
-     */
-    private void downloadCustomFrontCategory() {
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED, true)) {
-            ZLogger.df("使用前台自定义（私有）类目缓存数据，暂不加载新数据");
-            //更新UI
-//            EventBus.getDefault().post(new CashierAffairEvent(CashierAffairEvent.EVENT_ID_CLOUD_CATEGORY_UPDATED));
-            nextStep();
-            return;
-        }
-        if (!MfhLoginService.get().haveLogined()) {
-            sessionError();
-            return;
-        }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            networkError();
-            return;
-        }
-
-        ZLogger.df("同步前台自定义（私有）类目开始");
-        CateApiImpl.comnqueryCategory(CateApi.DOMAIN_TYPE_PROD, CateApi.POS,
-                CateApi.CATE_POSITION_FRONT,
-                1, MfhLoginService.get().getSpid(), customFrontCategoryRespCallback);
-    }
-
-    private NetCallBack.NetTaskCallBack customFrontCategoryRespCallback = new NetCallBack.NetTaskCallBack<CategoryInfo,
-            NetProcessor.Processor<CategoryInfo>>(
-            new NetProcessor.Processor<CategoryInfo>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("加载前台自定义（私有）类目树失败, " + errMsg);
-                    nextStep();
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-                    if (rspData == null) {
-                        saveCustomFrontCategoryInfoCache(null);
-                        return;
-                    }
-//                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                    RspBean<CategoryInfo> retValue = (RspBean<CategoryInfo>) rspData;
-                    CategoryInfo categoryInfo = retValue.getValue();
-
-                    downloadCustomFrontCategory2(categoryInfo);
-                }
-            }
-            , CategoryInfo.class
-            , CashierApp.getAppContext()) {
-    };
-
-    private void downloadCustomFrontCategory2(CategoryInfo categoryInfo) {
-        if (categoryInfo == null) {
-            saveCustomFrontCategoryInfoCache(null);
-
-            //通知刷新数据
-            EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_FRONT_CATEGORYINFO));
-            nextStep();
-            return;
-        }
-
-        List<CategoryOption> options = categoryInfo.getOptions();
-        if (options == null || options.size() < 1) {
-            ZLogger.df("前台自定义（私有）类目为空");
-            saveCustomFrontCategoryInfoCache(null);
-            EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_FRONT_CATEGORYINFO));
-            nextStep();
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            networkError();
-            return;
-        }
-
-        CategoryOption option = options.get(0);
-        ZLogger.df(String.format("同步前台自定义（私有）二级类目(%s)开始", option.getValue()));
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<PosCategory,
-                NetProcessor.Processor<PosCategory>>(
-                new NetProcessor.Processor<PosCategory>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        List<PosCategory> items = new ArrayList<>();
-                        if (rspData != null) {
-                            RspListBean<PosCategory> retValue = (RspListBean<PosCategory>) rspData;
-                            items = retValue.getValue();
-                        }
-
-                        saveCustomFrontCategoryInfoCache(items);
-
-                        //更新UI
-                        EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_FRONT_CATEGORYINFO));
-
-                        nextStep();
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("加载前台自定义（私有）二级类目 失败, " + errMsg);
-                        nextStep();
-                    }
-                }
-                , PosCategory.class
-                , CashierApp.getAppContext()) {
-        };
-
-        CateApiImpl.listPublicCategory(option.getCode(), queryRsCallBack);
-    }
-
-    /**
-     * 缓存前台私有类目树
-     */
-    private void saveCustomFrontCategoryInfoCache(List<PosCategory> options) {
-        ZLogger.df(String.format("保存POS %d个前台自定义（私有）二级类目",
-                (options != null ? options.size() : 0)));
-        //缓存数据
-        JSONArray cacheArrays = new JSONArray();
-        if (options != null && options.size() > 0) {
-            for (PosCategory option : options) {
-                cacheArrays.add(option);
-            }
-        }
-        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).put(ACacheHelper.CK_CUSTOM_FRONT_CATEGORY, cacheArrays.toJSONString());
-
-        //设置下次不需要自动更新商品类目，可以在收银页面点击同步按钮修改
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED, false);
-    }
-
     public static class DataSyncEvent {
-        public static final int EVENT_ID_REFRESH_FRONT_CATEGORYINFO         = 0X01;//刷新前台类目树
-        public static final int EVENT_ID_REFRESH_FRONTEND_CATEGORYINFO_FRESH = 0X02;//刷新前台生鲜类目树
         public static final int EVENT_ID_REFRESH_BACKEND_CATEGORYINFO       = 0X03;//刷新后台类目树
-        public static final int EVENT_ID_REFRESH_BACKEND_CATEGORYINFO_FRESH = 0X04;//刷新后台生鲜类目树
         public static final int EVENT_ID_SYNC_DATA_PROGRESS = 0X11;//同步进度
         public static final int EVENT_ID_SYNC_DATA_FINISHED = 0X12;//同步结束
 

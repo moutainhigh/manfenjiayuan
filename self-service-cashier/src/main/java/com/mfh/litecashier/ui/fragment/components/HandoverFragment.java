@@ -29,7 +29,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.HandOverBill;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -175,7 +175,7 @@ public class HandoverFragment extends BaseProgressFragment {
 
         SharedPreferencesHelper.setLastHandoverShiftId(handOverBill.getShiftId());
         //打印交接单单据
-        SerialManager.printHandoverBill(handOverBill);
+        PrintManagerImpl.printHandoverBill(handOverBill);
 
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();

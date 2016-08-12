@@ -37,7 +37,7 @@ import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.SettingsDailysettleEvent;
 import com.mfh.litecashier.ui.adapter.SettingsDailysettleAdapter;
 import com.mfh.litecashier.ui.widget.InputSearchView;
@@ -263,7 +263,7 @@ public class SettingsDailysettleFragment extends BaseFragment {
             return;
         }
 
-        SerialManager.printDailySettleBill(orderEntity);
+        PrintManagerImpl.printDailySettleBill(orderEntity);
     }
 
     /**

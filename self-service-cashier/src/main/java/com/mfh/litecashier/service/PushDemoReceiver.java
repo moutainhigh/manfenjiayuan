@@ -154,13 +154,18 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //现金授权额度将要用完，即将锁定pos机
         else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
-            int count = SharedPreferencesHelper
-                    .getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
-            SharedPreferencesHelper
-                    .set(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, count+1);
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            JSONObject msgObj = jsonObject.getJSONObject("msg");
+            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
+            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
+            String content = bodyObj.getString("content");
 
-            //同步数据
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT));
+            Double cashLimitAmount = Double.valueOf(content);
+            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
+            Bundle args = new Bundle();
+            args.putDouble("amount", cashLimitAmount);
+
+            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
         }
     }
 }

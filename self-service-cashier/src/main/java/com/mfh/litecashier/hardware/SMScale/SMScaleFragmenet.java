@@ -59,7 +59,7 @@ public class SMScaleFragmenet extends BaseFragment {
 
     @OnClick(R.id.button_write_csv)
     public void writeCSV() {
-        File file = SMScaleSyncManager.getCSVFile();
+        File file = SMScaleSyncManager2.getCSVFile2();
 
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(file));
@@ -75,7 +75,7 @@ public class SMScaleFragmenet extends BaseFragment {
     @OnClick(R.id.button_write_csv_encoding)
     public void writeCSVEncoding() {
         try {
-            File file = SMScaleSyncManager.getCSVFile();
+            File file = SMScaleSyncManager2.getCSVFile2();
             CSVWriter csvWriter;
             if (StringUtils.isEmpty(FTPManager.ENCODING_CHARSET)) {
                 csvWriter = new CSVWriter(new FileWriter(file));
@@ -94,7 +94,7 @@ public class SMScaleFragmenet extends BaseFragment {
 
     @OnClick(R.id.button_bean2csv)
     public void writeBean2CSV() {
-        File file = SMScaleSyncManager.getCSVFile();
+        File file = SMScaleSyncManager2.getCSVFile();
         //mapping of columns with their positions
 //        ColumnPositionMappingStrategy<SMGoods> strat = new ColumnPositionMappingStrategy();
 //        //Set mappingStrategy type to SMGoods Type
@@ -120,10 +120,10 @@ public class SMScaleFragmenet extends BaseFragment {
 
     @OnClick(R.id.button_csv2bean)
     public void readCSV2Bean() {
-        File file = SMScaleSyncManager.getCSVFile();
+        File file = SMScaleSyncManager2.getCSVFile2();
         ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
         strat.setType(SMGoods.class);
-        strat.setColumnMapping(SMScaleSyncManager.TEMPLATE_COLUMNS);
+        strat.setColumnMapping(SMScaleSyncManager2.TEMPLATE_COLUMNS);
 
         CsvToBean csv = new CsvToBean();
         CSVReader reader = null;
@@ -163,7 +163,7 @@ public class SMScaleFragmenet extends BaseFragment {
 
 //        CSVReader reader = new CSVReader(new InputStreamReader(getAssets().open("test.csv")));//Specify asset file name
 //        - See more at: http://www.theappguruz.com/blog/parse-csv-file-in-android-example-sample-code#sthash.ubT9iaWd.dpuf
-        File file = SMScaleSyncManager.getCSVFile();
+        File file = SMScaleSyncManager2.getCSVFile2();
         if (!file.exists()) {
             Snackbar.make(tvUrl, "指定的CSV文件不存在", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
@@ -213,7 +213,7 @@ public class SMScaleFragmenet extends BaseFragment {
         private Exception exception;
 
         protected Integer doInBackground(String... urls) {
-            File file = SMScaleSyncManager.getCSVFile();
+            File file = SMScaleSyncManager2.getCSVFile2();
             FTPManager.upload2Ftp(file, new MyTransferListener());
 
             return 0;
@@ -328,7 +328,7 @@ public class SMScaleFragmenet extends BaseFragment {
     private List<String[]> toStringArray(List<SMGoods> goodsList) {
         List<String[]> records = new ArrayList<>();
         //add header record
-        records.add(SMScaleSyncManager.TEMPLATE_COLUMNS);
+        records.add(SMScaleSyncManager2.TEMPLATE_COLUMNS);
         for (SMGoods goods : goodsList) {
             records.add(new String[]{goods.getBarcode(), String.valueOf(goods.getPrice()),
                     goods.getBarcode(), "20", String.valueOf(goods.getCategory()), goods.getName()});
@@ -341,7 +341,7 @@ public class SMScaleFragmenet extends BaseFragment {
 //        beanToCsv.write()
         List<String[]> allElements = new ArrayList<>();
 //        PLU号码,单价,品名信息,称重标识（1非称重，0称重）,标签格式,分类,表示位（F1，F2)
-        allElements.add(SMScaleSyncManager.TEMPLATE_COLUMNS);
+        allElements.add(SMScaleSyncManager2.TEMPLATE_COLUMNS);
         for (int i = 0; i < 5; i++) {
             String plu = StringUtils.getNonceDecimalString(6);
             allElements.add(new String[]{plu,

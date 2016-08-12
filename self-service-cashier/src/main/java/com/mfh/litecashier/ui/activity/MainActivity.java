@@ -234,8 +234,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //打开秤的串口
         OpenComPort(comScale);
 
-//        cloudSpeak("hi");
         cloudSpeak("欢迎使用米西厨房智能收银系统");
+
         ZLogger.d("小版本标记：2016-07-28-001");
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
@@ -701,15 +701,10 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
 
         //设置需要更新前台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_LAUNDRY_FRONTCATEGORY_ENABLED, true);
-        //设置需要更新前台类目
         SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
-
 
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
         btnSync.setBadgeEnabled(false);
@@ -786,10 +781,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     private void reload(boolean isSlient) {
         //设置需要更新前台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_LAUNDRY_FRONTCATEGORY_ENABLED, true);
-        //设置需要更新前台类目
         SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
@@ -855,7 +846,16 @@ public class MainActivity extends CashierActivity implements ICashierView {
             quickPayInfo.setMinAmount(amount);
             incomeDistributionTopup(quickPayInfo);
         } else if (eventId == AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT) {
+            Double amount = bundle.getDouble("amount");
 
+            DialogUtil.showHint(String.format("现金授权额度(%.2f)即将用完，" +
+                    "为了不影响您使用POS设备，请及时充值", amount));
+
+        }  else if (eventId == AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT) {
+
+            if (alipayDialog != null) {
+                alipayDialog.dismiss();
+            }
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
             initCashierOrder();
         }
@@ -898,26 +898,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
                 DialogUtil.showHint("需要注册");
 //                redirectToLogin();
-            }
-            break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE: {
-//                String dailysettleDatetime = args.getString("dailysettleDatetime");
-//                DailysettleEntity dailysettleEntity = AnalysisHelper.createDailysettle(dailysettleDatetime);
-
-                QuickPayInfo quickPayInfo = new QuickPayInfo();
-                quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
-                quickPayInfo.setPayType(WayType.ALI_F2F);
-                quickPayInfo.setSubject("提交营业现金");
-                quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
-
-                if (BizConfig.RELEASE) {
-                    quickPayInfo.setAmount(100D);
-                    quickPayInfo.setMinAmount(100D);
-                } else {
-                    quickPayInfo.setAmount(0.01D);
-                    quickPayInfo.setMinAmount(0.01D);
-                }
-                incomeDistributionTopup(quickPayInfo);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
@@ -1011,25 +991,51 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * </ol>
      */
     private void doPosSettleStuff() {
-        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(curPosTradeNo,
-                PosOrderEntity.ORDER_STATUS_STAY_PAY, productAdapter.getEntityList());
-        if (cashierOrderInfo == null) {
-            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "订单创建失败", true);
-            btnSettle.setEnabled(true);
-            return;
-        }
-        ZLogger.df(String.format("[点击结算]--生成结算信息：%s",
-                JSON.toJSONString(cashierOrderInfo)));
+        Observable.create(new Observable.OnSubscribe<CashierOrderInfo>() {
+            @Override
+            public void call(Subscriber<? super CashierOrderInfo> subscriber) {
+                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(curPosTradeNo,
+                        PosOrderEntity.ORDER_STATUS_STAY_PAY, productAdapter.getEntityList());
+                if (cashierOrderInfo != null) {
+                    //显示客显
+                    CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
+                }
+                ZLogger.df(String.format("[点击结算]--生成结算信息：%s",
+                        JSON.toJSONString(cashierOrderInfo)));
 
-        //显示客显
-        CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
+                subscriber.onNext(cashierOrderInfo);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<CashierOrderInfo>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
 
-        Intent intent = new Intent(this, CashierPayActivity.class);
-        Bundle extras = new Bundle();
-        extras.putSerializable(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_MFPAY);
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CashierOrderInfo cashierOrderInfo) {
+                        if (cashierOrderInfo != null){
+                            hideProgressDialog();
+                            Intent intent = new Intent(MainActivity.this, CashierPayActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putSerializable(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
+                            intent.putExtras(extras);
+                            startActivityForResult(intent, Constants.ARC_MFPAY);
+                        }
+                        else{
+                            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "订单创建失败", true);
+                            btnSettle.setEnabled(true);
+                        }
+                    }
+                });
     }
 
 
@@ -1039,12 +1045,12 @@ public class MainActivity extends CashierActivity implements ICashierView {
             case Constants.ARC_MFPAY: {
                 if (resultCode == Activity.RESULT_OK) {
                     ZLogger.df("订单支付成功");
-                    CashierOrderInfo cashierOrderInfo = null;
                     if (data != null) {
-                        cashierOrderInfo = (CashierOrderInfo) data
+                        CashierOrderInfo cashierOrderInfo = (CashierOrderInfo) data
                                 .getSerializableExtra(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO);
+
+                        new SettleAsyncTask(curPosTradeNo).execute(cashierOrderInfo);
                     }
-                    new SettleAsyncTask(curPosTradeNo).execute(cashierOrderInfo);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     ZLogger.df("取消收银订单支付");
                     boolean isClearOrder = false;
@@ -1149,12 +1155,31 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 }
             }
 
-
             //同步订单信息
             OrderSyncManager2.get().stepUploadPosOrder(orderEntities);
 
             //打印订单
             PrintManager.printPosOrder(orderEntities, true);
+
+            if (lastOrderInfo != null){
+
+                int payType = lastOrderInfo.getPayType();
+                Double finalAmount = lastOrderInfo.getFinalAmount();
+                Double changeAmount = lastOrderInfo.getChangeAmount();
+                Double bCount = lastOrderInfo.getbCount();
+
+                //显示找零
+//        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
+                SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
+
+                if (changeAmount >= 0.01) {
+                    cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
+                            WayType.name(payType), finalAmount, changeAmount, bCount));
+                } else {
+                    cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
+                            WayType.name(payType), finalAmount, bCount));
+                }
+            }
 
             //统计订单
 //            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
@@ -1427,27 +1452,10 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     private void refreshLastOrder(LastOrderInfo lastOrderInfo) {
         if (lastOrderInfo != null) {
-            int payType = lastOrderInfo.getPayType();
-            Double finalAmount = lastOrderInfo.getFinalAmount();
-            Double changeAmount = lastOrderInfo.getChangeAmount();
-            Double bCount = lastOrderInfo.getbCount();
-
-            tvLastAmount.setText(String.format("合计: ¥%.2f", finalAmount));
+            tvLastAmount.setText(String.format("合计: ¥%.2f", lastOrderInfo.getFinalAmount()));
             tvLastQuantity.setText(String.format("数量: %.2f", lastOrderInfo.getbCount()));
             tvLastDiscount.setText(String.format("优惠: ¥%.2f", lastOrderInfo.getDiscountAmount()));
-            tvLastCharge.setText(String.format("找零: ¥%.2f", changeAmount));
-
-            //显示找零
-//        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
-            SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
-
-            if (changeAmount >= 0.01) {
-                cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
-                        WayType.name(payType), finalAmount, changeAmount, bCount));
-            } else {
-                cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
-                        WayType.name(payType), finalAmount, bCount));
-            }
+            tvLastCharge.setText(String.format("找零: ¥%.2f", lastOrderInfo.getChangeAmount()));
         } else {
             tvLastAmount.setText(String.format("合计: ¥%.2f", 0D));
             tvLastQuantity.setText(String.format("数量: %.2f", 0D));
@@ -1638,6 +1646,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 }
 
                 subscriber.onNext(goods);
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -1689,7 +1698,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
             final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
             if (weightVal > 0) {
-                productAdapter.append(curPosTradeNo, goods, weightVal);
+                addGoods2Cashier(curPosTradeNo, goods, weightVal);
             } else {
                 if (quantityCheckDialog == null) {
                     quantityCheckDialog = new DoubleInputDialog(this);
@@ -1700,7 +1709,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         new DoubleInputDialog.OnResponseCallback() {
                             @Override
                             public void onQuantityChanged(Double quantity) {
-                                productAdapter.append(curPosTradeNo, goods, quantity);
+                                addGoods2Cashier(curPosTradeNo, goods, quantity);
                             }
                         });
                 quantityCheckDialog.show();
@@ -1708,9 +1717,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         } else {
             if (packFlag == 1) {
-                productAdapter.append(curPosTradeNo, goods, goods.getPackageNum());
+                addGoods2Cashier(curPosTradeNo, goods, goods.getPackageNum());
             } else {
-                productAdapter.append(curPosTradeNo, goods, 1D);
+                addGoods2Cashier(curPosTradeNo, goods, 1D);
             }
         }
     }
@@ -1730,10 +1739,10 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
             //计重商品直接读取条码中的重量信息
-            productAdapter.append(curPosTradeNo, goods, weight);
+            addGoods2Cashier(curPosTradeNo, goods, weight);
         } else {
             //计件商品默认商品数量加1
-            productAdapter.append(curPosTradeNo, goods, 1D);
+            addGoods2Cashier(curPosTradeNo, goods, 1D);
         }
     }
 
@@ -1751,6 +1760,44 @@ public class MainActivity extends CashierActivity implements ICashierView {
         startActivityForResult(intent, Constants.ARC_CREATE_PURCHASE_GOODS);
     }
 
+    /**
+     * 添加商品到收银台
+     * */
+    private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount){
+        Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
+                //添加商品
+                CashierShopcartService.getInstance().append(orderBarCode, goods, bCount);
+
+                //刷新订单列表
+                List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
+                        .queryAllByDesc(String.format("posTradeNo = '%s'", orderBarCode));
+
+                subscriber.onNext(shopcartEntities);
+                subscriber.onCompleted();
+
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<CashierShopcartEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CashierShopcartEntity> cashierShopcartEntities) {
+                        productAdapter.setEntityList(cashierShopcartEntities);
+                    }
+                });
+    }
     /**
      * 跳转至登录页面,清空账号信息
      */
@@ -1777,7 +1824,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     /**
      * 针对当前用户所属网点提交营业现金，并触发一次日结操作
      */
-    private void incomeDistributionTopup(QuickPayInfo quickPayInfo) {
+    private void incomeDistributionTopup(final QuickPayInfo quickPayInfo) {
         ZLogger.df(String.format(">>>准备提交营业现金: %s", JSONObject.toJSONString(quickPayInfo)));
 
         if (alipayDialog == null) {
@@ -1787,8 +1834,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
         alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
             @Override
-            public void onPaySucceed(Double amount, String outTradeNo) {
-                // TODO: 8/4/16 解锁POS机，清分余额不足或现金额度超限，支付成功后在后台提交，不影响主线程。
+            public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
+                PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+
                 UploadSyncManager.getInstance().sync();
 
                 Calendar trigger = Calendar.getInstance();

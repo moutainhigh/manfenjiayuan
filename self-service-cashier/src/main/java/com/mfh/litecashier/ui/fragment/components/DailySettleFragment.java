@@ -35,7 +35,7 @@ import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.utils.AnalysisHelper;
@@ -182,7 +182,7 @@ public class DailySettleFragment extends BaseProgressFragment {
      */
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        SerialManager.printDailySettleBill(dailysettleEntity);
+        PrintManagerImpl.printDailySettleBill(dailysettleEntity);
     }
 
     private void initAggRecyclerView() {

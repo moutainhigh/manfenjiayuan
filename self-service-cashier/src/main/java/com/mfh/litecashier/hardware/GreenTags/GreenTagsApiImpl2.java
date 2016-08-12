@@ -100,7 +100,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
         envelope.addMapping(SOAP_ENTITYEX_NAMESPACE, "ModelType", ModelType.class);
         envelope.addMapping(SOAP_ENTITYEX_NAMESPACE, "ReaderInfoEX", ReaderInfoEX.class);
         envelope.addMapping(SOAP_ENTITYEX_NAMESPACE, "ReaderStatus", ReaderStatus.class);
-        ZLogger.df(String.format("envelope: %s", envelope.toString()));
+        ZLogger.d(String.format("envelope: %s", envelope.toString()));
 
 //        ZHttpTransportSE.getInstance().printDump(envelope);
 

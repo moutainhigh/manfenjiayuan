@@ -62,13 +62,7 @@ public class SharedPreferencesHelper {
     //同步账号
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
     private static final String PK_SYNC_COMPANY_HUMAN_ENABLED = "pk_sync_company_human_enabled";
-    //前台商品类目
-    public static final String PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED = "pk_sync_public_frontcategory_enabled";//公共类目
-    public static final String PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED = "pk_sync_custom_frontcategory_enabled";//私有类目
-    public static final String PK_SYNC_PUBLIC_LAUNDRY_FRONTCATEGORY_ENABLED = "pk_sync_public_laundry_frontcategory_enabled";//洗衣类目
-    public static final String PK_SYNC_FRONTEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_frontend_categoryinfo_fresh_enabled";//生鲜类目
-    public static final String PK_SYNC_FRONTEND_CATEGORYINFO_FRUIT_ENABLED = "pk_sync_frontend_categoryinfo_fruit_enabled";//生鲜类目
-    // 后台商品类目
+   // 后台商品类目
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_ENABLED = "pk_sync_bakend_categoryinfo_enabled";
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_bakend_categoryinfo_fresh_enabled";
     //流水

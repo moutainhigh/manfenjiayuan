@@ -75,7 +75,7 @@ public class AlipayDialog extends CommonDialog {
 
     public interface DialogClickListener {
         /**支付完成*/
-        void onPaySucceed(Double amount, String outTradeNo);
+        void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo);
         /**取消支付*/
         void onPayCanceled();
     }
@@ -509,7 +509,7 @@ public class AlipayDialog extends CommonDialog {
             @Override
             public void run() {
                 if (mListener != null){
-                    mListener.onPaySucceed(paidAmount, outTradeNo);
+                    mListener.onPaySucceed(mQuickPayInfo, outTradeNo);
                 }
 
                 frameOperation.setVisibility(View.GONE);

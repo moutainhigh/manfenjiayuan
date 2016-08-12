@@ -21,7 +21,7 @@ public class CloudSyncManager {
     /**
      * 返回 DataSyncManager 实例
      *
-     * @return
+     * @return CloudSyncManager
      */
     public static CloudSyncManager get() {
         if (instance == null) {

@@ -159,7 +159,6 @@ public class PrintManagerImpl extends PrintManager{
         return esc;
     }
 
-
     /**
      * 打印线上订单
      * */
@@ -168,6 +167,7 @@ public class PrintManagerImpl extends PrintManager{
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeEsc(curOrder));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -385,6 +385,7 @@ public class PrintManagerImpl extends PrintManager{
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeEsc());
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -575,6 +576,7 @@ public class PrintManagerImpl extends PrintManager{
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeEsc(handOverBill));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -702,6 +704,7 @@ public class PrintManagerImpl extends PrintManager{
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeEsc(dailysettleEntity));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())
@@ -799,6 +802,7 @@ public class PrintManagerImpl extends PrintManager{
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeEsc(orderItems));
+                subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io())

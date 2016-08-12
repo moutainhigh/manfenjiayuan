@@ -14,8 +14,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.im.IMClient;
+import com.mfh.framework.BizConfig;
+import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -31,15 +36,19 @@ import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
+import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.OrderSyncManager2;
+import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
+import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
 import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
 import com.mfh.litecashier.ui.dialog.TopupDialog;
@@ -50,6 +59,7 @@ import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -252,6 +262,11 @@ public class AdministratorActivity extends BaseActivity {
             @Override
             public void onHandOver() {
                 handoverAnalysis();
+            }
+
+            @Override
+            public void onCommitCash() {
+                commitCash();
             }
 
             @Override
@@ -646,11 +661,7 @@ public class AdministratorActivity extends BaseActivity {
         mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
         tvUsername.setText(MfhLoginService.get().getHumanName());
 
-        //设置需要更新前台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_LAUNDRY_FRONTCATEGORY_ENABLED, true);
-        //设置需要更新前台类目
+       //设置需要更新前台类目
         SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
@@ -682,11 +693,62 @@ public class AdministratorActivity extends BaseActivity {
 
 //        AppHelper.clearCache();
 //        hideSyncDataDialog();
-        if (isSlient) {
-            DataSyncManager.get().sync();
-        } else {
+        if (!isSlient) {
             showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", false);
-            DataSyncManager.get().sync();
+        }
+        DataSyncManager.get().sync();
+    }
+
+    private AlipayDialog alipayDialog = null;
+    /**
+     * 针对当前用户所属网点提交营业现金，并触发一次日结操作
+     */
+    private void commitCash() {
+        final QuickPayInfo quickPayInfo = new QuickPayInfo();
+        quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
+        quickPayInfo.setPayType(WayType.ALI_F2F);
+        quickPayInfo.setSubject("提交营业现金");
+        quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
+        if (!BizConfig.RELEASE){
+            quickPayInfo.setAmount(100D);
+            quickPayInfo.setMinAmount(100D);
+        }
+        else{
+            quickPayInfo.setAmount(0.01D);
+            quickPayInfo.setMinAmount(0.01D);
+        }
+
+        ZLogger.df(String.format(">>>准备提交营业现金: %s", JSONObject.toJSONString(quickPayInfo)));
+
+        if (alipayDialog == null) {
+            alipayDialog = new AlipayDialog(this);
+            alipayDialog.setCancelable(false);
+            alipayDialog.setCanceledOnTouchOutside(false);
+        }
+        alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
+            @Override
+            public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
+                PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+
+                UploadSyncManager.getInstance().sync();
+
+                Calendar trigger = Calendar.getInstance();
+                //第二天凌晨2点钟
+                trigger.add(Calendar.DAY_OF_MONTH, 1);
+                trigger.set(Calendar.HOUR_OF_DAY, 2);
+                trigger.set(Calendar.MINUTE, 2);
+                trigger.set(Calendar.SECOND, 0);
+                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+            }
+
+            @Override
+            public void onPayCanceled() {
+            }
+
+        });
+
+        if (!alipayDialog.isShowing()) {
+            alipayDialog.show();
         }
     }
 

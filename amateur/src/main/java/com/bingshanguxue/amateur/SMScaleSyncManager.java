@@ -176,8 +176,8 @@ public class SMScaleSyncManager extends FTPManager {
             return;
         }
 
-        String lastCursor = SharedPreferencesManager.getText(SMScaleSyncManager.PREF_SMSCALE,
-                SMScaleSyncManager.PK_S_SMSCALE_LASTCURSOR);
+        String lastCursor = SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR);
 //        if (FULLSCALE_ENABLED) {
 //            ZLogger.d("全量同步");
 //            lastCursor = "";
@@ -210,7 +210,7 @@ public class SMScaleSyncManager extends FTPManager {
 
         public WriteFileAsyncTask(String lastCursor) {
             this.lastCursor = lastCursor;
-            this.file = SMScaleSyncManager.getCSVFile();
+            this.file = SMScaleSyncManager2.getCSVFile();
         }
 
         @Override
@@ -371,8 +371,8 @@ public class SMScaleSyncManager extends FTPManager {
 
         public void completed() {
             String currentCursor = TimeUtil.format(cursor, TimeCursor.InnerFormat);
-            SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE,
-                    SMScaleSyncManager.PK_S_SMSCALE_LASTCURSOR, currentCursor);
+            SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                    SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, currentCursor);
             ZLogger.df(String.format("保存商品同步电子秤游标:%s", currentCursor));
 
             // Transfer completed

@@ -14,6 +14,7 @@ public class AffairEvent {
 
     public static final int EVENT_ID_LOCK_POS_CLIENT = 0X05;//锁定POS机器
     public static final int EVENT_ID_PRE_LOCK_POS_CLIENT = 0X06;//锁定POS机器提示
+    public static final int EVENT_ID_UNLOCK_POS_CLIENT = 0X07;//锁定POS机器
     public static final int EVENT_ID_RESET_CASHIER = 0X08;//初始化收银
 
     //同步数据

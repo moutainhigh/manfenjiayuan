@@ -51,6 +51,17 @@
             android:background="@drawable/btn_rectange_green"
             android:layout_marginTop="16dp"/>
 
+        <!--交接班-->
+        <Button
+            android:id="@+id/button_commit_cash"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="提交营业现金"
+            style="@style/mfh_button_text"
+            android:gravity="center"
+            android:background="@drawable/btn_rectange_green"
+            android:layout_marginTop="16dp"/>
+
         <!--退出-->
         <Button
             android:id="@+id/button_logout"

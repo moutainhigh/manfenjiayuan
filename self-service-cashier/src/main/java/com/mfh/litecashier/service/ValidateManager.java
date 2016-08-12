@@ -38,6 +38,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.database.entity.QuotaEntity;
 import com.mfh.litecashier.database.logic.QuotaService;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
+import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.utils.AnalysisHelper;
 
 import java.util.Calendar;
@@ -356,7 +357,7 @@ public class ValidateManager {
                             Bundle args = new Bundle();
                             args.putString("dailysettleDatetime",
                                     TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(yesterday));
-                            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_DAILYSETTLE,
+                            validateFinished(ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP,
                                     args, String.format("%s 未清分，即将锁定POS机，" +
                                             "可以通过提交营业现金来解锁", aggDateStr));
                         }
@@ -497,6 +498,7 @@ public class ValidateManager {
                                                     "可以通过提交营业现金来解锁", amount));
                                 }
                                 else{
+                                    EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT));
                                     nextStep();
                                 }
                             }
@@ -599,7 +601,6 @@ public class ValidateManager {
         public static final int EVENT_ID_INTERRUPT_NEED_LOGIN        = 0X02;//需要登录
         public static final int EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER = 0X04;//设备未注册
         public static final int EVENT_ID_RETRY_SIGNIN_SUCCEED       = 0X03;//重登录成功
-        public static final int EVENT_ID_VALIDATE_NEED_DAILYSETTLE  = 0X05;//需要日结
         public static final int EVENT_ID_INCOME_DESTRIBUTION_TOPUP  = 0x06;//清分充值
         public static final int EVENT_ID_CASH_QUOTA_TOPUP           = 0x07;//授权额度超限充值
         public static final int EVENT_ID_VALIDATE_FINISHED          = 0X08;//验证结束

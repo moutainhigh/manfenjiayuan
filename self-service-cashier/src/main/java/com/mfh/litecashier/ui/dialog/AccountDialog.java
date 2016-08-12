@@ -21,7 +21,7 @@ import com.mfh.litecashier.R;
  *
  * 1.收银员离开 {@link DialogClickListener#onLock()}<br>
  * 2.收银员交接班 {@link DialogClickListener#onHandOver()}<br>
- * 3.收银员日结 {@link DialogClickListener#onDailySettle()}<br>
+ * 3.提交营业现金 {@link DialogClickListener#onCommitCash()} ()}<br>
  * 4.收银员退出账号 {@link DialogClickListener#onLogout()}<br>
  *
  * @author NAT.ZZN(bingshanguxue)
@@ -31,13 +31,15 @@ public class AccountDialog extends CommonDialog {
 
     private AvatarView ivHeader;
     private TextView tvUsername;
-    private Button btnLock, btnHandOver, btnLogout;
+    private Button btnLock, btnHandOver, btnCommitCash, btnLogout;
 
     public interface DialogClickListener {
         /**收银员离开*/
         void onLock();
         /**收银员交接班*/
         void onHandOver();
+        /**提交营业现金*/
+        void onCommitCash();
         /**收银员退出账号*/
         void onLogout();
     }
@@ -61,6 +63,7 @@ public class AccountDialog extends CommonDialog {
         tvUsername = (TextView) rootView.findViewById(R.id.tv_username);
         btnLock = (Button) rootView.findViewById(R.id.button_lock);
         btnHandOver = (Button) rootView.findViewById(R.id.button_handover);
+        btnCommitCash = (Button) rootView.findViewById(R.id.button_commit_cash);
         btnLogout = (Button) rootView.findViewById(R.id.button_logout);
 
         ivHeader.setBorderWidth(3);
@@ -81,6 +84,15 @@ public class AccountDialog extends CommonDialog {
                     mListener.onHandOver();
                 }
                 dismiss();
+            }
+        });
+        btnCommitCash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+                if (mListener != null){
+                    mListener.onCommitCash();
+                }
             }
         });
         btnLogout.setOnClickListener(new View.OnClickListener() {

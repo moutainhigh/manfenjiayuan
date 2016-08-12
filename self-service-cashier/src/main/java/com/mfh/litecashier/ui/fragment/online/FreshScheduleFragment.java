@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
-import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
@@ -21,7 +21,9 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -38,11 +40,8 @@ import com.mfh.litecashier.bean.wrapper.FreshScheduleGoods;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.event.InvSendOrderEvent;
 import com.mfh.litecashier.event.PurchaseSendEvent;
-import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.ui.adapter.FreshScheduleGoodsAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
@@ -51,6 +50,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 生鲜预定
@@ -162,25 +166,6 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
         if (!mTextInputDialog.isShowing()) {
             mTextInputDialog.show();
         }
-
-//
-//        showConfirmDialog("确定要取消订单吗？",
-//                "取消", new DialogInterface.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                        btnCancel.setEnabled(true);
-//                        InvSendOrderApiImpl.cancelOrderById(curOrder.getId(), cancelRC);
-//                    }
-//                }, "点错了", new DialogInterface.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                        btnCancel.setEnabled(true);
-//                    }
-//                });
     }
 
     NetCallBack.NetTaskCallBack cancelRC = new NetCallBack.NetTaskCallBack<String,
@@ -360,7 +345,7 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(PurchaseSendEvent event) {
-        ZLogger.d(String.format("FreshScheduleFragment: PurchaseSendEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("PurchaseSendEvent(%d)", event.getEventId()));
         if (event.getEventId() == PurchaseSendEvent.EVENT_ID_RELOAD_DATA) {
             notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
         } else if (event.getEventId() == PurchaseSendEvent.EVENT_ID_RELAOD_ITEM_DATA) {
@@ -368,14 +353,6 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
             if (args != null) {
                 loadGoodsList((InvSendOrder) args.getSerializable("order"));
             }
-        }
-    }
-
-    public void onEventMainThread(PurchaseShopcartSyncEvent event) {
-        ZLogger.d(String.format("FreshScheduleFragment: PurchaseShopcartSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == PurchaseShopcartSyncEvent.EVENT_ID_ORDER_SUCCESS) {
-            //刷新供应商
-            notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
         }
     }
 
@@ -418,23 +395,51 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
     }
 
     @Override
-    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> dataList) {
-        List<FreshScheduleGoods> scheduleGoodsList = new ArrayList<>();
-        if (dataList != null && dataList.size() > 0){
-            for (InvSendOrderItem invSendOrderItem : dataList){
-                FreshScheduleGoods goods = new FreshScheduleGoods();
-                goods.setImgUrl(invSendOrderItem.getImgUrl());
-                goods.setProductName(invSendOrderItem.getProductName());
-                goods.setBarcode(invSendOrderItem.getBarcode());
-                goods.setBuyUnit(invSendOrderItem.getBuyUnit());
-                goods.setAskTotalCount(invSendOrderItem.getAskTotalCount());
-                goods.setQuantityCheck(invSendOrderItem.getAskTotalCount());
-                scheduleGoodsList.add(goods);
+    public void onIInvSendOrderViewItemsSuccess(final List<InvSendOrderItem> dataList) {
+        Observable.create(new Observable.OnSubscribe<List<FreshScheduleGoods>>() {
+            @Override
+            public void call(Subscriber<? super List<FreshScheduleGoods>> subscriber) {
+                List<FreshScheduleGoods> goodses = new ArrayList<>();
+                if (dataList != null && dataList.size() > 0){
+                    for (InvSendOrderItem invSendOrderItem : dataList){
+                        FreshScheduleGoods goods = new FreshScheduleGoods();
+                        goods.setImgUrl(invSendOrderItem.getImgUrl());
+                        goods.setProductName(invSendOrderItem.getProductName());
+                        goods.setBarcode(invSendOrderItem.getBarcode());
+                        goods.setBuyUnit(invSendOrderItem.getBuyUnit());
+                        goods.setAskTotalCount(invSendOrderItem.getAskTotalCount());
+                        goods.setQuantityCheck(invSendOrderItem.getAskTotalCount());
+                        goodses.add(goods);
+                    }
+                }
+
+                subscriber.onNext(goodses);
+                subscriber.onCompleted();
             }
-        }
-        if (goodsListAdapter != null) {
-            goodsListAdapter.setEntityList(scheduleGoodsList);
-        }
-        progressBar.setVisibility(View.GONE);
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<FreshScheduleGoods>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<FreshScheduleGoods> goodses) {
+                        if (goodsListAdapter != null) {
+                            goodsListAdapter.setEntityList(goodses);
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+
+
+
     }
 }

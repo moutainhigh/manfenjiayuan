@@ -12,18 +12,18 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.litecashier.bean.PosOrder;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.ExpressOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
@@ -179,8 +179,7 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
 
     @OnClick(R.id.fab_print)
     public void printOrder(){
-        //TODO,打印订单
-        SerialManager.printOrder(orderListAdapter.getCurPosOrder(), true);
+        PrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
     }
 
     /**

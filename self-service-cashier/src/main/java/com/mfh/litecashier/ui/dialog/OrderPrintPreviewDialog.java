@@ -251,8 +251,8 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                                     - payWrapper.getRuleDiscount()
                                     + payWrapper.getChange(),
                             payWrapper.getChange()));
-                    sbHtml.append(String.format("<p>" +
-                                    "--------------------------------\n"));
+
+                    sbHtml.append("--------------------------------\n");
                     sbHtml.append(String.format(
                                     "<div><font color=#000000>合计：%.2f</font></div>\n",
                             mPosOrderEntity.getFinalAmount()));

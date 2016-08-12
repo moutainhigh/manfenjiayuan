@@ -22,7 +22,6 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosCategory;
-import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -72,14 +70,6 @@ public class FrontCategoryFragment extends BaseFragment {
 
         initCategoryGoodsView();
         reload();
-    }
-
-    /**
-     * 关闭二级服务台
-     */
-    @OnClick(R.id.btn_service_back)
-    public void close() {
-        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_HIDE_RIGHTSLIDE));
     }
 
     public void init(Bundle args) {

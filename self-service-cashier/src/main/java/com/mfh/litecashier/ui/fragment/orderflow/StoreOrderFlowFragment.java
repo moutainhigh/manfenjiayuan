@@ -23,7 +23,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosOrder;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.StoreOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
@@ -184,8 +184,7 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
 
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        //TODO,打印订单
-        SerialManager.printOrder(orderListAdapter.getCurPosOrder(), true);
+        PrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
     }
 
     /**

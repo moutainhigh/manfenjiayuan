@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
@@ -25,7 +24,6 @@ import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 
@@ -47,7 +45,6 @@ public class CashierHelper {
      * 删除订单,同时删除对应订单的商品明细和支付记录
      *
      * @param orderEntity 订单
-     * @return
      */
     public static void deleteCashierOrder(PosOrderEntity orderEntity) {
         if (orderEntity == null) {
@@ -59,7 +56,6 @@ public class CashierHelper {
         //删除支付记录
         PosOrderPayService.get().deleteBy(String.format("orderId = '%d'", orderEntity.getId()));
     }
-
 
 
     /**
@@ -170,26 +166,6 @@ public class CashierHelper {
         return null;
     }
 
-    /**
-     * 读取前台类目缓存
-     */
-    public static List<PosCategory> readFrontCatetoryCache() {
-        List<PosCategory> entityList = new ArrayList<>();
-        //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
-        String publicCateCache = ACacheHelper.getAsString(ACacheHelper.CK_PUBLIC_FRONT_CATEGORY);
-        String customCateCache = ACacheHelper.getAsString(ACacheHelper.CK_CUSTOM_FRONT_CATEGORY);
-        List<PosCategory> publicData = JSONArray.parseArray(publicCateCache, PosCategory.class);
-        List<PosCategory> customData = JSONArray.parseArray(customCateCache, PosCategory.class);
-
-        if (publicData != null) {
-            entityList.addAll(publicData);
-        }
-        if (customData != null) {
-            entityList.addAll(customData);
-        }
-
-        return entityList;
-    }
 
     /**
      * 购物车数字

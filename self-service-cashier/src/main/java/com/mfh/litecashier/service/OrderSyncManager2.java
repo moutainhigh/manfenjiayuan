@@ -4,17 +4,17 @@ package com.mfh.litecashier.service;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
-import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -22,6 +22,11 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * POS-- 订单同步
@@ -107,75 +112,104 @@ public class OrderSyncManager2 extends OrderSyncManager{
      * 根据上一次同步游标同步订单数据
      */
     private void batchUploadPosOrder() {
-        if (!MfhLoginService.get().haveLogined()) {
-            uploadFailed("会话已失效，暂停同步POS订单数据。");
-            return;
-        }
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            uploadFailed("网络未连接，暂停同步POS订单数据。");
-            return;
-        }
-
-        List<PosOrderEntity> orderEntityList = PosOrderService.get()
-                .queryAllAsc(sqlWhere, pageInfo);
-        if (orderEntityList == null || orderEntityList.size() < 1) {
-            uploadFinished(String.format("没有POS订单需要上传(%s)。", startCursor));
-            return;
-        }
-        uploadProcess(String.format("查询到 %d 个订单需要同步，" +
-                        "当前页数 %d/%d,每页最多 %d 个订单(%s)",
-                pageInfo.getTotalCount(), pageInfo.getPageNo(), pageInfo.getTotalPage(),
-                pageInfo.getPageSize(), startCursor));
-
-        Date newCursor = null;
-        JSONArray orders = new JSONArray();
-        for (PosOrderEntity orderEntity : orderEntityList) {
-            //保存最大时间游标
-            if (newCursor == null || orderEntity.getUpdatedDate() == null
-                    || newCursor.compareTo(orderEntity.getUpdatedDate()) <= 0) {
-                newCursor = orderEntity.getUpdatedDate();
-            }
-
-            orders.add(generateOrderJson(orderEntity));
-        }
-
-        final Date finalNewCursor = newCursor;
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        ZLogger.df("上传POS订单成功");
-                        // 保存批量上传订单时间
-                        SharedPreferencesHelper.setPosOrderLastUpdate(finalNewCursor);
-
-                        //需要更新订单流水
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
-
-                        //继续上传订单
-                        if (pageInfo.hasNextPage()){
-                            pageInfo.moveToNext();
-                            batchUploadPosOrder();
-                        }
-                        else{
-                            uploadFinished(String.format("上传订单数据完成。%s",
-                                    SharedPreferencesHelper.getPosOrderLastUpdate()
-                            ));
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        uploadFailed(String.format("上传订单失败: %s", errMsg));
-                    }
+                if (!MfhLoginService.get().haveLogined()) {
+                    uploadFailed("会话已失效，暂停同步POS订单数据。");
+                    return;
                 }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
 
-        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+                if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+                    uploadFailed("网络未连接，暂停同步POS订单数据。");
+                    return;
+                }
+
+                List<PosOrderEntity> orderEntityList = PosOrderService.get()
+                        .queryAllAsc(sqlWhere, pageInfo);
+                if (orderEntityList == null || orderEntityList.size() < 1) {
+                    uploadFinished(String.format("没有POS订单需要上传(%s)。", startCursor));
+                    return;
+                }
+                uploadProcess(String.format("查询到 %d 个订单需要同步，" +
+                                "当前页数 %d/%d,每页最多 %d 个订单(%s)",
+                        pageInfo.getTotalCount(), pageInfo.getPageNo(), pageInfo.getTotalPage(),
+                        pageInfo.getPageSize(), startCursor));
+
+                Date newCursor = null;
+                JSONArray orders = new JSONArray();
+                for (PosOrderEntity orderEntity : orderEntityList) {
+                    //保存最大时间游标
+                    if (newCursor == null || orderEntity.getUpdatedDate() == null
+                            || newCursor.compareTo(orderEntity.getUpdatedDate()) <= 0) {
+                        newCursor = orderEntity.getUpdatedDate();
+                    }
+
+                    orders.add(generateOrderJson(orderEntity));
+                }
+
+                final Date finalNewCursor = newCursor;
+                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                        NetProcessor.Processor<String>>(
+                        new NetProcessor.Processor<String>() {
+                            @Override
+                            public void processResult(IResponseData rspData) {
+                                ZLogger.df("上传POS订单成功");
+                                // 保存批量上传订单时间
+                                SharedPreferencesHelper.setPosOrderLastUpdate(finalNewCursor);
+
+                                //需要更新订单流水
+                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
+
+                                //继续上传订单
+                                if (pageInfo.hasNextPage()){
+                                    pageInfo.moveToNext();
+                                    batchUploadPosOrder();
+                                }
+                                else{
+                                    uploadFinished(String.format("上传订单数据完成。%s",
+                                            SharedPreferencesHelper.getPosOrderLastUpdate()
+                                    ));
+                                }
+                            }
+
+                            @Override
+                            protected void processFailure(Throwable t, String errMsg) {
+                                super.processFailure(t, errMsg);
+                                uploadFailed(String.format("上传订单失败: %s", errMsg));
+                            }
+                        }
+                        , String.class
+                        , CashierApp.getAppContext()) {
+                };
+
+                CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+
+//                subscriber.onNext(cashierOrderInfo);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+                });
+
+
     }
 
     /**
