@@ -59,7 +59,6 @@ public class UploadSyncManager {
             nextStep = SyncStep.INCOME_DISTRIBUTION_TOPUP;
             return;
         }
-
         processStep(SyncStep.INCOME_DISTRIBUTION_TOPUP, SyncStep.CASH_QUOTA_TOPUP);
     }
 
@@ -85,6 +84,7 @@ public class UploadSyncManager {
     private void processStep(int step, int nextStep) {
         this.nextStep = nextStep;
         this.bSyncInProgress = true;
+        ZLogger.df(String.format("step=%d, nextStep=%d", step, nextStep));
 
         switch (step) {
             case SyncStep.INCOME_DISTRIBUTION_TOPUP: {
@@ -126,7 +126,7 @@ public class UploadSyncManager {
             return;
         }
 
-        String sqlWhere = String.format("bizType = '%' and paystatus = '%d' and syncStatus = '%d'",
+        String sqlWhere = String.format("bizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
                 BizType.INCOME_DISTRIBUTION, PayStatus.FINISH, SyncStatus.INIT);
 
         PosTopupEntity topupEntity = null;
@@ -183,7 +183,7 @@ public class UploadSyncManager {
             return;
         }
 
-        String sqlWhere = String.format("bizType = '%' and paystatus = '%d' and syncStatus = '%d'",
+        String sqlWhere = String.format("bizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
                 BizType.CASH_QUOTA, PayStatus.FINISH, SyncStatus.INIT);
 
         PosTopupEntity topupEntity = null;
@@ -192,43 +192,42 @@ public class UploadSyncManager {
             topupEntity = entities.get(0);
         }
 
-        if (topupEntity != null){
-            final PosTopupEntity finalTopupEntity = topupEntity;
-            NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
-                    NetProcessor.Processor<String>>(
-                    new NetProcessor.Processor<String>() {
-                        @Override
-                        public void processResult(IResponseData rspData) {
-                            //{"code":"0","msg":"操作成功!","version":"1","data":false}
-                            //java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
-                            //RspValue<Boolean> retValue = (RspValue<Boolean>) rspData;
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-
-                            if (finalTopupEntity != null){
-                                finalTopupEntity.setSyncStatus(SyncStatus.SYNCED);
-                                PosTopupService.get().saveOrUpdate(finalTopupEntity);
-                            }
-
-                            commintCash();
-                        }
-
-                        @Override
-                        protected void processFailure(Throwable t, String errMsg) {
-                            super.processFailure(t, errMsg);
-//                        {"code":"1","msg":"未找到支付交易号:2016-08-02","data":null,"version":1}
-
-                            nextStep();
-                        }
-                    }
-                    , String.class
-                    , CashierApp.getAppContext()) {
-            };
-
-            AnalysisApiImpl.commintCash(topupEntity.getOutTradeNo(), responseRC);
-        }
-        else{
+        if (topupEntity == null){
+            ZLogger.d("没有支付记录需要上传");
             nextStep();
+            return;
         }
+
+        final PosTopupEntity finalTopupEntity = topupEntity;
+        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //{"code":"0","msg":"操作成功!","version":"1","data":false}
+                        //java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
+                        //RspValue<Boolean> retValue = (RspValue<Boolean>) rspData;
+                        RspValue<String> retValue = (RspValue<String>) rspData;
+                        ZLogger.d("提交支付记录成功:" + retValue.getValue());
+                        finalTopupEntity.setSyncStatus(SyncStatus.SYNCED);
+                        PosTopupService.get().saveOrUpdate(finalTopupEntity);
+
+                        commintCash();
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+//                        {"code":"1","msg":"未找到支付交易号:2016-08-02","data":null,"version":1}
+                        ZLogger.d("提交支付记录失败：" + errMsg);
+                        nextStep();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        AnalysisApiImpl.commintCash(topupEntity.getOutTradeNo(), responseRC);
     }
 
 //    public static class DataSyncEvent {
