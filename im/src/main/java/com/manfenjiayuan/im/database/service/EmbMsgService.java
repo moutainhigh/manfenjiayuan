@@ -50,6 +50,26 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
     private SimpleDateFormat format = new SimpleDateFormat(TimeCursor.INNER_DATAFORMAT);
    // private String lastUpdateDate;
 
+    private static EmbMsgService instance = null;
+
+    /**
+     * 返回 CashierShopcartService 实例
+     *
+     * @return
+     */
+    public static EmbMsgService getInstance() {
+        if (instance == null) {
+            synchronized (EmbMsgService.class) {
+                if (instance == null) {
+                    instance = new EmbMsgService();
+                }
+            }
+        }
+        return instance;
+    }
+
+
+
     @Override
     protected Class<EmbMsgDao> getDaoClass() {
         return EmbMsgDao.class;
@@ -231,6 +251,16 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
         }
 
     }
+    /**
+     * 清理当前用户的所有消息
+     * @param ownerId
+     */
+    public void clearMsgs(String ownerId) {
+        if (dao != null){
+            dao.clearMsgs(ownerId);
+        }
+    }
+
 
     /**
      * 向后台发送消息

@@ -1,5 +1,6 @@
 package com.mfh.framework.api;
 
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 
@@ -40,11 +41,16 @@ public class ScApi {
      * 查询商品销量记录
      * @param proSkuId 产品sku编号
      * */
-    public static void productAggDateList(Long proSkuId,
+    public static void productAggDateList(Long proSkuId, PageInfo pageInfo,
                                   AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
         params.put("proSkuId", String.valueOf(proSkuId));
+
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
 
         AfinalFactory.postDefault(URL_PRODUCT_AGGDATE_LIST, params, responseCallback);
     }

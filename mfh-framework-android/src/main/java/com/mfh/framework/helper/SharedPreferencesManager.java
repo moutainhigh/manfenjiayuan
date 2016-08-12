@@ -28,6 +28,8 @@ public class SharedPreferencesManager {
     public static final String PREF_KEY_CONFIG_NOTIFICATION_ACCEPT  = "PREF_KEY_CONFIG_NOTIFICATION_ACCEPT";//开启通知
     public static final String PREF_KEY_CONFIG_LOCATION_ACCEPT      = "PREF_KEY_CONFIG_LOCATION_ACCEPT";//开启位置服务
     public static final String PK_B_SOFTKEYBOARD_ENABLED    = "pk_softkeyboard_enabled";//软键盘
+    public static final String PK_B_TTS_ENABLED    = "pk_tts_enabled";//语音播报
+
 
     //
     public static SharedPreferences getPreferences(String prefName) {
