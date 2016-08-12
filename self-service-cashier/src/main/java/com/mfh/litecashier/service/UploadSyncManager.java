@@ -123,7 +123,7 @@ public class UploadSyncManager {
 
 
     private void uploadIncomeDistribution() {
-        incomeDistributionPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
+        incomeDistributionPageInfo = new PageInfo(1, 1);//翻页
 
         commintCashAndTrigDateEnd();
     }
@@ -140,6 +140,10 @@ public class UploadSyncManager {
         String sqlWhere = String.format("bizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
                 BizType.INCOME_DISTRIBUTION, PayStatus.FINISH, SyncStatus.INIT);
 
+//        ZLogger.d(String.format("查询清分充值支付记录:%s (%d/%d %d)",
+//                sqlWhere, incomeDistributionPageInfo.getPageNo(),
+//                incomeDistributionPageInfo.getTotalPage(), incomeDistributionPageInfo.getTotalCount()));
+
         List<PosTopupEntity> entities = PosTopupService.get().queryAll(sqlWhere, incomeDistributionPageInfo);
         if (entities == null || entities.size() <= 0) {
             ZLogger.df("没有清分充值支付记录需要上传");
@@ -147,7 +151,10 @@ public class UploadSyncManager {
             return;
         }
         final PosTopupEntity topupEntity = entities.get(0);
-        ZLogger.df("提交清分充值支付记录:" + topupEntity.getOutTradeNo());
+        ZLogger.df(String.format("提交清分充值支付记录:%s (%d/%d %d)",
+                topupEntity.getOutTradeNo(), incomeDistributionPageInfo.getPageNo(),
+                incomeDistributionPageInfo.getTotalPage(), incomeDistributionPageInfo.getTotalCount()));
+
 
         NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
@@ -163,8 +170,8 @@ public class UploadSyncManager {
                         PosTopupService.get().saveOrUpdate(topupEntity);
 
                         //继续上传订单
-                        if (commitCashPageInfo.hasNextPage()) {
-                            commitCashPageInfo.moveToNext();
+                        if (incomeDistributionPageInfo.hasNextPage()) {
+                            incomeDistributionPageInfo.moveToNext();
                             commintCashAndTrigDateEnd();
                         } else {
                             nextStep();
@@ -177,8 +184,8 @@ public class UploadSyncManager {
 //                        {"code":"1","msg":"未找到支付交易号:2016-08-02","data":null,"version":1}
 //继续上传订单
                         ZLogger.df("提交清分充值支付记录失败：" + errMsg);
-                        if (commitCashPageInfo.hasNextPage()) {
-                            commitCashPageInfo.moveToNext();
+                        if (incomeDistributionPageInfo.hasNextPage()) {
+                            incomeDistributionPageInfo.moveToNext();
                             commintCashAndTrigDateEnd();
                         } else {
                             nextStep();
@@ -194,7 +201,7 @@ public class UploadSyncManager {
 
 
     private void commitCashAll() {
-        commitCashPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
+        commitCashPageInfo = new PageInfo(1, 1);//翻页
 
         commintCash();
     }
@@ -219,7 +226,9 @@ public class UploadSyncManager {
         }
 
         final PosTopupEntity topupEntity = entities.get(0);
-        ZLogger.df("提交现金授权支付记录:" + topupEntity.getOutTradeNo());
+        ZLogger.df(String.format("提交现金授权支付记录:%s (%d/%d %d)",
+                topupEntity.getOutTradeNo(), commitCashPageInfo.getPageNo(),
+                commitCashPageInfo.getTotalPage(), commitCashPageInfo.getTotalCount()));
 
         NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
