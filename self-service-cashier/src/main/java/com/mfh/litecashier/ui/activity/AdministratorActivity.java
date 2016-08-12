@@ -705,7 +705,7 @@ public class AdministratorActivity extends BaseActivity {
      */
     private void commitCash() {
         final QuickPayInfo quickPayInfo = new QuickPayInfo();
-        quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
+        quickPayInfo.setBizType(BizType.CASH_QUOTA);
         quickPayInfo.setPayType(WayType.ALI_F2F);
         quickPayInfo.setSubject("提交营业现金");
         quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");

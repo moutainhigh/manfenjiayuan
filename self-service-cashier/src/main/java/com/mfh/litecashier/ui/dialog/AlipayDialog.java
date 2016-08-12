@@ -200,7 +200,7 @@ public class AlipayDialog extends CommonDialog {
         etAuthCode.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("keyCode=%d, action=%d", keyCode, event.getAction()));
+//                ZLogger.d(String.format("keyCode=%d, action=%d", keyCode, event.getAction()));
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         submitOrder();
