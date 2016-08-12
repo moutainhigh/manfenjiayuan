@@ -449,6 +449,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 跳转到线上订单
      */
     public void redirectToOnlineOrder() {
+        if (menuAdapter != null) {
+            menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
+                    0);
+        }
+
         ZLogger.df(">>>打开线上订单页面");
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -1089,7 +1094,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 异步处理订单支付结果
-     * <p/>
+     * <p>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
     private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
@@ -1773,8 +1778,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 针对当前用户所属网点提交营业现金，并触发一次日结操作
      */
     private void incomeDistributionTopup(QuickPayInfo quickPayInfo) {
-        ZLogger.df(">>>准备提交营业现金");
-
+        ZLogger.df(String.format(">>>准备提交营业现金: %s", JSONObject.toJSONString(quickPayInfo)));
 
         if (alipayDialog == null) {
             alipayDialog = new AlipayDialog(this);
