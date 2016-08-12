@@ -113,6 +113,7 @@ public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
      * </ol>
      */
     public static void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike,
+                                               PageInfo pageInfo,
                                                 AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (!StringUtils.isEmpty(barcode)){
@@ -123,6 +124,10 @@ public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
         }
         if (!StringUtils.isEmpty(nameLike)){
             params.put("nameLike", nameLike);
+        }
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 

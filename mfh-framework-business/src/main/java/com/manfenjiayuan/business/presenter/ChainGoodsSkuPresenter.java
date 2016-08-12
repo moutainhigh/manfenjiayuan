@@ -86,8 +86,8 @@ public class ChainGoodsSkuPresenter {
      * 查询批发商商品
      * @param barcode 商品条码
      * */
-    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike){
-        iChainGoodsSkuMode.findSupplyChainGoodsSku(barcode, proSkuId, nameLike,
+    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike, PageInfo pageInfo){
+        iChainGoodsSkuMode.findSupplyChainGoodsSku(barcode, proSkuId, nameLike, pageInfo,
                 new OnPageModeListener<ChainGoodsSku>() {
                     @Override
                     public void onProcess() {

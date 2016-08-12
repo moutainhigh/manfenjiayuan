@@ -111,6 +111,7 @@ public class ChainGoodsSkuMode {
     }
 
     public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike,
+                                        PageInfo pageInfo,
                                         final OnPageModeListener<ChainGoodsSku> listener) {
 
         if (listener != null) {
@@ -143,7 +144,7 @@ public class ChainGoodsSkuMode {
                     }
                 }, ChainGoodsSku.class, MfhApplication.getAppContext());
 
-        ScChainGoodsSkuApiImpl.findSupplyChainGoodsSku(barcode, proSkuId, nameLike,
+        ScChainGoodsSkuApiImpl.findSupplyChainGoodsSku(barcode, proSkuId, nameLike, pageInfo,
                 queryRsCallBack);
     }
 

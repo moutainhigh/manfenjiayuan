@@ -48,13 +48,12 @@ import java.util.List;
 
 /**
  * 消息会话服务类
- * Created by Administrator on 14-5-6.
+ * Created by bingshanguxue on 14-5-6.
  */
 public class IMConversationService extends BaseService<IMConversation, Long, IMConversationDao> {
     private static final int MAX_PAGE_SIZE = 100;
     private static final Boolean QUERY_RESULT_SYNC = false;
     private EmbSessionNetDao netDao = new EmbSessionNetDao();
-    private EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class);
 
     private Long cursorValue = -1L;//临时游标，因为要多次分页查询，故需要暂存此轮查询得到的最大游标值
     private boolean bHaveAlert = false;
@@ -123,7 +122,7 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
         String ownerName = MfhLoginService.get().getLoginName();
         try {
             getDao().clearSessions(ownerName);
-            msgService.getDao().clearMsgs(ownerName);
+            EmbMsgService.getInstance().clearMsgs(ownerName);
             IMConfig.clearSessionConfig();
         }
         catch (Throwable ex) {
@@ -418,7 +417,7 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
                     for(IMConversation session : sessionList){
                         sessionIds.add(session.getId());
                     }
-                    msgService.queryFromNets(sessionIds);
+                    EmbMsgService.getInstance().queryFromNets(sessionIds);
                 }
             } catch (Throwable ex) {
                 logger.error(ex.getMessage(), ex);

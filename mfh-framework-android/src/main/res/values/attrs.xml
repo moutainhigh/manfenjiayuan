@@ -33,31 +33,7 @@
         <attr name="inflateResource" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="SettingsItem">
-        <attr name="text"/>
-        <attr name="textColor"/>
-        <attr name="textSize"/>
-        <attr name="subText"/>
-        <attr name="subTextColor"/>
-        <attr name="subTextSize"/>
-        <attr name="subTextGravity"/>
-        <attr name="subTextMaxLines"/>
-        <attr name="isArrowVisible" format="boolean"/>
-        <attr name="isLogoVisible" format="boolean"/>
-        <attr name="logoSrc" format="reference"/>
-        <attr name="position"/>
-    </declare-styleable>
-    <declare-styleable name="ToggleSettingItem">
-        <attr name="text"/>
-        <attr name="textColor"/>
-        <attr name="textSize"/>
-        <attr name="subText"/>
-        <attr name="subTextColor"/>
-        <attr name="subTextSize"/>
-        <attr name="subTextGravity"/>
-        <attr name="subTextMaxLines"/>
-        <attr name="position"/>
-    </declare-styleable>
+
     <declare-styleable name="BadgeViewButton">
         <attr name="textVisible" format="boolean"/>
         <attr name="text"/>
