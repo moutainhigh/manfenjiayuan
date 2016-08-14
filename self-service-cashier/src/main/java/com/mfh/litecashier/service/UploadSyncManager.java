@@ -25,8 +25,8 @@ import java.util.List;
 public class UploadSyncManager {
     public interface SyncStep {
         int STANDBY = -1;
-        int INCOME_DISTRIBUTION_TOPUP = 1;//清分充值
-        int CASH_QUOTA_TOPUP = 2;//现金授权充值
+        int INCOME_DISTRIBUTION_TOPUP = 0;//清分充值
+        int CASH_QUOTA_TOPUP = 1;//现金授权充值
     }
 
     private boolean bSyncInProgress = false;//是否正在同步

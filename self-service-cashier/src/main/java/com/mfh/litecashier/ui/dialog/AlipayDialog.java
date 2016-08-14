@@ -508,13 +508,13 @@ public class AlipayDialog extends CommonDialog {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mListener != null){
-                    mListener.onPaySucceed(mQuickPayInfo, outTradeNo);
-                }
-
                 frameOperation.setVisibility(View.GONE);
                 bPayProcessing = false;
                 dismiss();
+
+                if (mListener != null){
+                    mListener.onPaySucceed(mQuickPayInfo, outTradeNo);
+                }
             }
         }, 500);
     }
@@ -568,6 +568,12 @@ public class AlipayDialog extends CommonDialog {
             this.btnClose.setVisibility(View.GONE);
         }
 
+        etAuthCode.getText().clear();
+        etAuthCode.setVisibility(View.VISIBLE);
+        etAuthCode.requestFocus();
+        frameProcess.setVisibility(View.GONE);
+        frameOperation.setVisibility(View.GONE);
 
+        bPayProcessing = false;
     }
 }
