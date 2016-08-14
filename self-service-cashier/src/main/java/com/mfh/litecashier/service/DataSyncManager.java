@@ -50,10 +50,9 @@ import de.greenrobot.event.EventBus;
 public class DataSyncManager {
     public static final int SYNC_STEP_NA = -1;
     public static final int SYNC_STEP_BACKEND_CATEGORYINFO          = 0;//后台类目信息
-    public static final int SYNC_STEP_BACKEND_CATEGORYINFO_FRESH    = 1;//后台生鲜类目信息
-    public static final int SYNC_STEP_PRODUCT_SKU   = 4;//一品多码
-    public static final int SYNC_STEP_PRODUCTS      = 5;//商品库
-    public static final int SYNC_STEP_COMPANY_HUMAN = 6;//账号
+    public static final int SYNC_STEP_PRODUCT_SKU   = 1;//一品多码
+    public static final int SYNC_STEP_PRODUCTS      = 2;//商品库
+    public static final int SYNC_STEP_COMPANY_HUMAN = 3;//账号
 
 
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 60;
@@ -101,7 +100,7 @@ public class DataSyncManager {
             return;
         }
 
-        processStep(SYNC_STEP_BACKEND_CATEGORYINFO, SYNC_STEP_BACKEND_CATEGORYINFO_FRESH);
+        processStep(SYNC_STEP_BACKEND_CATEGORYINFO, SYNC_STEP_PRODUCT_SKU);
     }
 
     public void sync(int step) {
