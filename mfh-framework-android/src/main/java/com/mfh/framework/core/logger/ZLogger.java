@@ -419,7 +419,10 @@ public class ZLogger {
         calendar.set(Calendar.SECOND, 0);
 //        ZLogger.d("" + DATE_FORMAT.format(calendar.getTime()));
 
-        File file = new File(FileUtil.getSavePath(CRASH_FOLDER_PATH));
+        String path = FileUtil.getSavePath(CRASH_FOLDER_PATH);
+        ZLogger.d(path);
+        File file = new File(path);
+
         if (!file.exists()) {
 //            ZLogger.d(String.format("%s 不存在", file.getAbsolutePath()));
             return;

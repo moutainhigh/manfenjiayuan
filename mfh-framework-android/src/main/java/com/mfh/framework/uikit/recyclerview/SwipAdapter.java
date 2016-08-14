@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,6 +66,19 @@ public abstract class SwipAdapter<D, VH extends RecyclerView.ViewHolder>
 
     public void setEntityList(List<D> entityList) {
         this.entityList = entityList;
+    }
+
+    public void appendEntityList(List<D> entityList){
+        if (entityList == null){
+            return;
+        }
+
+        if (this.entityList == null){
+            this.entityList = new ArrayList<>();
+        }
+
+        this.entityList.addAll(entityList);
+        notifyDataSetChanged();
     }
 
     /**
