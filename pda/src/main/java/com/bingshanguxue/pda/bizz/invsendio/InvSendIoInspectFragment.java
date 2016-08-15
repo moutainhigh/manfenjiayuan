@@ -294,8 +294,8 @@ public class InvSendIoInspectFragment extends PDAScanFragment
      * 提交成功
      */
     public void onSubmitSuccess() {
-        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
-//        hideProgressDialog();
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
 
         refreshPackage(null);
     }
@@ -437,12 +437,16 @@ public class InvSendIoInspectFragment extends PDAScanFragment
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
 //        entity.setOrderId(productEntity.getOrderId());
+
+            entity.setChainSkuId(goods.getId());
             entity.setProSkuId(goods.getProSkuId());
             entity.setProductName(goods.getSkuName());
             entity.setPrice(goods.getSingleCostPrice());
             entity.setUnit(goods.getUnit());
             entity.setBarcode(goods.getBarcode());
             entity.setQuantityCheck(0D);
+            entity.setAmount(0D);
+            entity.setProviderId(goods.getProviderId());
             entity.setUpdatedDate(new Date());
 
             InvSendIoGoodsService.get().saveOrUpdate(entity);

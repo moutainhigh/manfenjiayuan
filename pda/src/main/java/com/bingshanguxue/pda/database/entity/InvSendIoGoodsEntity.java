@@ -2,6 +2,7 @@ package com.bingshanguxue.pda.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
+import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.MfhEntity;
 
 /**
@@ -20,7 +21,7 @@ public class InvSendIoGoodsEntity extends MfhEntity<Long> implements ILongId{
     private String barcode;//条码
 
     private Long providerId;//供应商编号
-    private Integer isPrivate;//（0：不是 1：是）
+    private Integer isPrivate = IsPrivate.PLATFORM;//（0：不是 1：是）
 
     private Double quantityCheck;//实际签收数量，默认与单据数量一致
 
@@ -92,6 +93,9 @@ public class InvSendIoGoodsEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Integer getIsPrivate() {
+        if (isPrivate == null){
+            return IsPrivate.PLATFORM;
+        }
         return isPrivate;
     }
 

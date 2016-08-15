@@ -19,8 +19,8 @@ android {
         applicationId "com.manfenjiayuan.pda_wholesaler"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 18
-        versionName "0.1.0"
+        versionCode 20
+        versionName "0.1.1"
         multiDexEnabled true
 
         ndk {
@@ -112,10 +112,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':mfh-framework-all')
-//    compile project(':mfh-framework-android')
     compile project(':im')
-//    compile project(':mfh-framework-business')
     compile project(':pda')
-    compile project(path: ':vector_user')
 }
