@@ -73,9 +73,10 @@ public class BackendCategoryFragment extends BaseFragment {
             @Override
             public void onChanged(int page) {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(page);
-
-                EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
-                        viewPageInfo.args));
+                if (viewPageInfo != null){
+                    EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
+                            viewPageInfo.args));
+                }
             }
         });
 
@@ -109,7 +110,13 @@ public class BackendCategoryFragment extends BaseFragment {
                     DialogUtil.showHint(String.format("选中%s(%s)",
                             entity.getName(), entity.getValue()));
                     ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(mCategoryGoodsTabStrip.getCurrentPosition());
-                    Bundle args = viewPageInfo.args;
+                    Bundle args = null;
+                    if (viewPageInfo != null){
+                        args = viewPageInfo.args;
+                    }
+                    else{
+                        args = new Bundle();
+                    }
                     args.putString("sortLetter", entity.getValue());
                     EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_SORT_UPDATE, args));
                 }
@@ -207,11 +214,11 @@ public class BackendCategoryFragment extends BaseFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                ZLogger.d("加载采购订单");
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(mCategoryGoodsTabStrip.getCurrentPosition());
-
-                EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
-                        viewPageInfo.args));
+                if (viewPageInfo != null){
+                    EventBus.getDefault().post(new PosCategoryGoodsEvent(PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA,
+                            viewPageInfo.args));
+                }
             }
         }, 1000);
 

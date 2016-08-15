@@ -25,7 +25,6 @@ import com.mfh.litecashier.R;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -186,7 +185,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
     /**
      * 重新加载数据
      */
-    @OnClick(R.id.empty_view)
     public synchronized void reload() {
         if (bSyncInProgress) {
 //            onLoadFinished();
@@ -200,14 +198,14 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
         }
 
         onLoadStart();
-
-        mPageInfo = new PageInfo(-1, 200);
         if (adapter != null) {
             adapter.setEntityList(null);
         }
+
+        mPageInfo.reset();
+        mPageInfo.setPageNo(1);
         //从第一页开始请求，每页最多50条记录
         load(mPageInfo);
-        mPageInfo.setPageNo(1);
     }
 
 
@@ -226,7 +224,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
             return;
         }
 
-        if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
+        if (mPageInfo.hasNextPage()) {
             mPageInfo.moveToNext();
 
             onLoadStart();
@@ -239,9 +237,17 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
 
     private void load(PageInfo pageInfo) {
         String sqlWhere = String.format("frontCategoryId = '%d'", categoryId);
-        List<PosProductEntity> entities = PosProductService.get().queryAll(sqlWhere, null);
+        List<PosProductEntity> entities = PosProductService.get().queryAll(sqlWhere, pageInfo);
+        if (entities == null || entities.size() < 1) {
+            ZLogger.d("没有更多的商品。");
+            onLoadFinished();
+            return;
+        }
+        ZLogger.d(String.format("共找到%d条商品(%d/%d-%d)", entities.size(),
+                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
+
         if (adapter != null) {
-            adapter.setEntityList(entities);
+            adapter.appendEntityList(entities);
         }
 
         onLoadFinished();

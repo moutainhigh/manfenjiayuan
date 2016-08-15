@@ -17,6 +17,7 @@ import com.mfh.litecashier.ui.fragment.canary.SettingsDailysettleFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsGoodsFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsTestFragment;
 import com.mfh.litecashier.ui.fragment.goods.BackendCategoryFragment;
+import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
 import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
 import com.mfh.litecashier.ui.fragment.online.OnlineFragment;
 import com.mfh.litecashier.ui.fragment.orderflow.StoreOrderFlowFragment;
@@ -34,7 +35,6 @@ import butterknife.Bind;
  */
 public class SimpleActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
-    public static final String EXTRA_KEY_COURIER = "EXTRA_KEY_COURIER";
 
     public static final int FT_PURCHASE_MANUAL = 0x06;//手动订货
     public static final int FT_PURCHASE_MANUAL_SHOPCART = 0x07;//采购商品－购物车
@@ -43,10 +43,10 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_INVENTORY = 0x11;//库存
     public static final int FT_ORDERFLOW = 0x12;//POS流水
     public static final int FT_ONLINE_ORDER = 0x14;//线上订单:(生鲜预定)
-    public static final int FT_GOODS_LIST = 0x18;//商品列表
     public static final int FT_RECEIPT = 0x16;//单据
     public static final int FT_SETTINGS = 0x17;//设置
-
+    public static final int FT_GOODS_LIST = 0x18;//商品列表
+    public static final int FT_ADDMORE_LOCALFRONTGOODS = 0x19;//添加更多前台类目商品
 
     public static final int FT_CANARY_GOODS = 0x20;//商品
     public static final int FT_CANARY_ORDERFLOW = 0x21;//流水
@@ -165,7 +165,7 @@ public class SimpleActivity extends BaseActivity {
             case FT_CANARY_ORDERFLOW:
             case FT_CANARY_CANARY:
             case FT_GOODS_LIST:
-            case FT_CANARY_DAILYSETTLE: {
+            case FT_CANARY_DAILYSETTLE:{
                 getMenuInflater().inflate(R.menu.menu_empty, menu);
             }
             break;
@@ -175,6 +175,7 @@ public class SimpleActivity extends BaseActivity {
             }
             break;
             case FT_ONLINE_ORDER:
+            case FT_ADDMORE_LOCALFRONTGOODS:
             default: {
                 getMenuInflater().inflate(R.menu.menu_normal, menu);
             }
@@ -319,6 +320,17 @@ public class SimpleActivity extends BaseActivity {
             case FT_CANARY_CANARY: {
                 toolbar.setTitle("测试");
                 SettingsTestFragment fragment = new SettingsTestFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_ADDMORE_LOCALFRONTGOODS: {
+                toolbar.setTitle("选择商品");
+
+                Intent intent = this.getIntent();
+                FrontCategoryFragment fragment = FrontCategoryFragment.newInstance(intent.getExtras());
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)

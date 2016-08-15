@@ -169,8 +169,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private ReceiveGoodsDialog receiveGoodsDialog = null;
     private ActionDialog registerPlatDialog = null;
 
-//    private HomeAdvFragment mHomeAdvFragment;
-
     /**
      * POS唯一订单号，由POS机本地生成的12位字符串
      */
@@ -217,8 +215,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
         initMenuRecyclerView();
         initBarCodeInput();
         initCashierRecyclerView();
-        showAdvFragment();
-//        showLocalFrontCategoryFragment();
+//        showAdvFragment();
+        showLocalFrontCategoryFragment();
 
         if (menuAdapter != null) {
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
@@ -905,7 +903,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 QuickPayInfo quickPayInfo = new QuickPayInfo();
                 quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
                 quickPayInfo.setPayType(WayType.ALI_F2F);
-                quickPayInfo.setSubject("提交营业现金");
+                quickPayInfo.setSubject("账户充值");
                 quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
                 quickPayInfo.setAmount(amount);
                 quickPayInfo.setMinAmount(amount);
@@ -1798,6 +1796,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                     }
                 });
     }
+
     /**
      * 跳转至登录页面,清空账号信息
      */

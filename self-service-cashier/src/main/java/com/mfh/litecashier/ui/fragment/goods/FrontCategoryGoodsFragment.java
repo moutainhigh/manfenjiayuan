@@ -12,22 +12,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
 import com.mfh.litecashier.event.AddCategoryGoodsEvent;
-import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import net.tsz.afinal.core.AsyncTask;
@@ -43,7 +42,7 @@ import de.greenrobot.event.EventBus;
  * 前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
+public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGoods> {
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -59,7 +58,6 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
     private Long categoryId;
     private String cacheKey;
 
-    private ActionDialog actionDialog;
 
     @Override
     protected int getLayoutResId() {
@@ -176,7 +174,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
             public void onItemLongClick(View view, final int position) {
 
                 // TODO: 4/15/16 暂时不支持加入我的功能
-//                final ScGoodsSku goods = adapter.getEntity(position);
+//                final FrontCategoryGoods goods = adapter.getEntity(position);
 //                if (goods == null) {
 //                    return;
 //                }
@@ -247,7 +245,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
     public synchronized boolean readCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(cacheKey);
-        List<ScGoodsSku> cacheData = JSONArray.parseArray(cacheStr, ScGoodsSku.class);
+        List<FrontCategoryGoods> cacheData = JSONArray.parseArray(cacheStr, FrontCategoryGoods.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目商品", cacheKey, cacheData.size()));
             if (adapter != null) {
@@ -289,9 +287,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
 //        ZLogger.d(String.format("pageInfo:page=%d,rows=%d(%d)", mPageInfo.getPageNo(), mPageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size())));
         ZLogger.d(String.format("加载类目商品开始,pageInfo':page=%d,rows=%d(%d)", mPageInfo.getPageNo(), mPageInfo.getPageSize(), mPageInfo.getTotalCount()));
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<ScGoodsSku>(pageInfo) {
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
             @Override
-            public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
+            public void processQueryResult(RspQueryResult<FrontCategoryGoods> rs) {
                 //此处在主线程中执行。
                 new QueryAsyncTask(pageInfo).execute(rs);
             }
@@ -302,12 +300,12 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
                 ZLogger.d("加载类目商品失败:" + errMsg);
                 onLoadFinished();
             }
-        }, ScGoodsSku.class, CashierApp.getAppContext());
+        }, FrontCategoryGoods.class, CashierApp.getAppContext());
 
         ScGoodsSkuApiImpl.findGoodsListByFrontCategory(categoryId, pageInfo, queryRsCallBack);
     }
 
-    public class QueryAsyncTask extends AsyncTask<RspQueryResult<ScGoodsSku>, Integer, Long> {
+    public class QueryAsyncTask extends AsyncTask<RspQueryResult<FrontCategoryGoods>, Integer, Long> {
         private PageInfo pageInfo;
 
         public QueryAsyncTask(PageInfo pageInfo) {
@@ -315,8 +313,42 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
         }
 
         @Override
-        protected Long doInBackground(RspQueryResult<ScGoodsSku>... params) {
-            saveQueryResult(params[0], pageInfo);
+        protected Long doInBackground(RspQueryResult<FrontCategoryGoods>... params) {
+            RspQueryResult<FrontCategoryGoods> rs = params[0];
+            try {
+                mPageInfo = pageInfo;
+
+                if (rs == null) {
+                    return -1L;
+                }
+
+                //第一页，缓存数据
+                if (mPageInfo.getPageNo() == 1) {
+                    if (entityList == null) {
+                        entityList = new ArrayList<>();
+                    } else {
+                        entityList.clear();
+                    }
+                    ZLogger.d("缓存第一页前台类目数据");
+                    JSONArray cacheArrays = new JSONArray();
+                    for (EntityWrapper<FrontCategoryGoods> wrapper : rs.getRowDatas()) {
+                        cacheArrays.add(wrapper.getBean());
+                        entityList.add(wrapper.getBean());
+                    }
+                    ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
+                } else {
+                    if (entityList == null) {
+                        entityList = new ArrayList<>();
+                    }
+                    for (EntityWrapper<FrontCategoryGoods> wrapper : rs.getRowDatas()) {
+                        entityList.add(wrapper.getBean());
+                    }
+                }
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.e(String.format("加载类目商品失败: %s", ex.toString()));
+            }
+
             return -1L;
 //        return null;
         }
@@ -329,48 +361,6 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku> {
                 adapter.setEntityList(entityList);
             }
             onLoadFinished();
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<ScGoodsSku> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
-                mPageInfo = pageInfo;
-
-                if (rs == null) {
-                    return;
-                }
-
-                //第一页，缓存数据
-                if (mPageInfo.getPageNo() == 1) {
-                    if (entityList == null) {
-                        entityList = new ArrayList<>();
-                    } else {
-                        entityList.clear();
-                    }
-                    ZLogger.d("缓存第一页前台类目数据");
-                    JSONArray cacheArrays = new JSONArray();
-                    for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
-                        cacheArrays.add(wrapper.getBean());
-                        entityList.add(wrapper.getBean());
-                    }
-                    ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                } else {
-                    if (entityList == null) {
-                        entityList = new ArrayList<>();
-                    }
-                    for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
-                        entityList.add(wrapper.getBean());
-                    }
-                }
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("加载类目商品失败: %s", ex.toString()));
-            }
         }
     }
 

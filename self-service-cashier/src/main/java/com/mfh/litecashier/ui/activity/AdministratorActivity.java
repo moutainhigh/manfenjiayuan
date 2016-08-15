@@ -711,7 +711,7 @@ public class AdministratorActivity extends BaseActivity {
         quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
         if (!BizConfig.RELEASE){
             quickPayInfo.setAmount(100D);
-            quickPayInfo.setMinAmount(100D);
+            quickPayInfo.setMinAmount(0.01D);
         }
         else{
             quickPayInfo.setAmount(0.01D);
@@ -725,7 +725,7 @@ public class AdministratorActivity extends BaseActivity {
             alipayDialog.setCancelable(false);
             alipayDialog.setCanceledOnTouchOutside(false);
         }
-        alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
+        alipayDialog.initialize(quickPayInfo, true, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
                 PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);

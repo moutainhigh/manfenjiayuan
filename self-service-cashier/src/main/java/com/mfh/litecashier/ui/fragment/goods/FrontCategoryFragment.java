@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
@@ -32,20 +31,22 @@ import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
 /**
- * 收银－－前台类目(公共&自定义)
+ * 收银－－前台类目
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class FrontCategoryFragment extends BaseFragment {
-    @Bind(R.id.tv_service_title)
-    TextView tvTitle;
+
+    public static final String EXTRA_CATEGORY_ID = "categoryId";
+    public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
+
     @Bind(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
     @Bind(R.id.viewpager_category_goods)
     ViewPager mCategoryGoodsViewPager;
     private TopFragmentPagerAdapter categoryGoodsPagerAdapter;
 
+    private Long posFrontCategoryId;//pos本地前台类目
     private Long categoryId;
-    private String title;
     private String cacheKey;
     private List<PosCategory> curCategoryList;//当前子类目
 
@@ -60,7 +61,7 @@ public class FrontCategoryFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_cashier_category;
+        return R.layout.fragment_front_category;
     }
 
 
@@ -74,8 +75,8 @@ public class FrontCategoryFragment extends BaseFragment {
 
     public void init(Bundle args) {
         if (args != null) {
-            this.categoryId = args.getLong("categoryId");
-            this.title = args.getString("title");
+            this.posFrontCategoryId = args.getLong(EXTRA_CATEGORY_ID_POS);
+            this.categoryId = args.getLong(EXTRA_CATEGORY_ID);
         }
         this.cacheKey = String.format("%s_%d",
                 ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);
@@ -91,19 +92,16 @@ public class FrontCategoryFragment extends BaseFragment {
             }
         });
 
-        categoryGoodsPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(), mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text);
+        categoryGoodsPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(),
+                mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text);
     }
 
     /**
      * 加载数据
      */
     public void reload() {
-        if (tvTitle != null) {
-            tvTitle.setText(title);
-        }
-
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
-        String cacheStr = ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).getAsString(cacheKey);
+        String cacheStr = ACacheHelper.getAsString(cacheKey);
         List<PosCategory> cacheData = JSONArray.parseArray(cacheStr, PosCategory.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目", cacheKey, cacheData.size()));
@@ -140,6 +138,7 @@ public class FrontCategoryFragment extends BaseFragment {
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         for (PosCategory category : curCategoryList) {
             Bundle args = new Bundle();
+            args.putLong(EXTRA_CATEGORY_ID_POS, posFrontCategoryId);
             args.putLong("parentId", category.getParentId());
             args.putLong("categoryId", category.getId());
 

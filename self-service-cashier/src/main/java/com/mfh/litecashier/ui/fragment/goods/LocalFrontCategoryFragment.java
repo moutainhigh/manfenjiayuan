@@ -10,9 +10,12 @@ import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.mfh.framework.api.CateApi;
+import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
 
@@ -37,6 +40,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     private List<PosLocalCategoryEntity> curCategoryList;//当前子类目
 
     private ModifyLocalCategoryDialog mModifyLocalCategoryDialog = null;
+    private TextInputDialog mTextInputDialog = null;
 
     public static LocalFrontCategoryFragment newInstance(Bundle args) {
         LocalFrontCategoryFragment fragment = new LocalFrontCategoryFragment();
@@ -69,7 +73,6 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
             @Override
             public void onLongClickTab(View tab, int index) {
-
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(index);
                 if (viewPageInfo != null) {
                     changeName(viewPageInfo.args.getLong("id"));
@@ -117,8 +120,10 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         }
     }
 
-    private TextInputDialog mTextInputDialog = null;
 
+    /**
+     * 新增类目
+     * */
     @OnClick(R.id.ib_add)
     public void addCategory(){
         if (mTextInputDialog == null) {
@@ -134,9 +139,9 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
                     @Override
                     public void onConfirm(String text) {
-                        PosLocalCategoryEntity categoryEntity = new PosLocalCategoryEntity();
-                        categoryEntity.setName(text);
-                        PosLocalCategoryService.get().saveOrUpdate(categoryEntity);
+                        PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
+                        entity.setName(text);
+                        PosLocalCategoryService.get().saveOrUpdate(entity);
 
                         reload();
                     }
@@ -146,6 +151,9 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 修改类目名称
+     * */
     private void changeName(Long categoryId){
         if (categoryId == null){
             return;
@@ -174,4 +182,20 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 添加更多商品
+     * */
+    @OnClick(R.id.fab_add_more)
+    public void addMoreGoods(){
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_ADDMORE_LOCALFRONTGOODS);
+        ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(mCategoryGoodsTabStrip.getCurrentPosition());
+        if (viewPageInfo != null) {
+            extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID_POS, viewPageInfo.args.getLong("id"));
+        }
+        extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID, CateApi.FRONT_CATEGORY_ID_POS);
+
+        UIHelper.startActivity(getActivity(), SimpleActivity.class, extras);
+    }
 }
