@@ -1,0 +1,128 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/contentview_dialog_header"/>
+
+    <!--商品金额-->
+    <LinearLayout
+        android:id="@+id/ll_quota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_top"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:baselineAligned="false"
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:dividerPadding="12dp"
+        android:padding="12dp"
+        android:showDividers="middle">
+        <!--商品金额-->
+        <com.mfh.framework.uikit.compound.MultiLayerLabel
+            android:id="@+id/label_quota"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bottomText="授信金额"
+            app:bottomTextColor="@color/black_70"
+            app:bottomTextSize="16sp"
+            app:topText="0.00"
+            app:topTextColor="@color/material_black"
+            app:topTextSize="30sp"/>
+
+        <!--价格调整-->
+        <com.mfh.framework.uikit.compound.MultiLayerLabel
+            android:id="@+id/label_out"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bottomText="已用金额"
+            app:bottomTextColor="@color/black_70"
+            app:bottomTextSize="16sp"
+            app:topText="0.00"
+            app:topTextColor="@color/mfh_colorPrimary"
+            app:topTextSize="30sp"/>
+
+        <!--已付金额-->
+        <com.mfh.framework.uikit.compound.MultiLayerLabel
+            android:id="@+id/label_left"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bottomText="可用金额"
+            app:bottomTextColor="@color/black_70"
+            app:bottomTextSize="16sp"
+            app:topText="0.00"
+            app:topTextColor="#FE5000"
+            app:topTextSize="30sp"/>
+
+    </LinearLayout>
+
+    <!--头部-->
+    <include
+        android:id="@+id/frame_header_goods_list"
+        layout="@layout/itemview_cashquota_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/ll_quota"/>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/frame_header_goods_list"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_double"
+        android:layout_marginStart="@dimen/spacing_double"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--android:layout_height="308dp"-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!--空视图-->
+                <TextView
+                    android:id="@+id/empty_view"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="暂无数据"
+                    android:visibility="gone"/>
+
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/order_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_print_white"/>
+
+</RelativeLayout>

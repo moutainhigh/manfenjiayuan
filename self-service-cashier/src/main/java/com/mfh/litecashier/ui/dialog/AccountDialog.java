@@ -31,15 +31,13 @@ public class AccountDialog extends CommonDialog {
 
     private AvatarView ivHeader;
     private TextView tvUsername;
-    private Button btnLock, btnHandOver, btnCommitCash, btnLogout;
+    private Button btnLock, btnHandOver, btnLogout;
 
     public interface DialogClickListener {
         /**收银员离开*/
         void onLock();
         /**收银员交接班*/
         void onHandOver();
-        /**提交营业现金*/
-        void onCommitCash();
         /**收银员退出账号*/
         void onLogout();
     }
@@ -63,7 +61,6 @@ public class AccountDialog extends CommonDialog {
         tvUsername = (TextView) rootView.findViewById(R.id.tv_username);
         btnLock = (Button) rootView.findViewById(R.id.button_lock);
         btnHandOver = (Button) rootView.findViewById(R.id.button_handover);
-        btnCommitCash = (Button) rootView.findViewById(R.id.button_commit_cash);
         btnLogout = (Button) rootView.findViewById(R.id.button_logout);
 
         ivHeader.setBorderWidth(3);
@@ -84,15 +81,6 @@ public class AccountDialog extends CommonDialog {
                     mListener.onHandOver();
                 }
                 dismiss();
-            }
-        });
-        btnCommitCash.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-                if (mListener != null){
-                    mListener.onCommitCash();
-                }
             }
         });
         btnLogout.setOnClickListener(new View.OnClickListener() {
