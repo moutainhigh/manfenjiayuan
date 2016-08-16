@@ -1,6 +1,6 @@
 package com.bingshanguxue.cashier.database.entity;
 
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.MfhEntity;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;

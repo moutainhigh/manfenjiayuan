@@ -10,12 +10,22 @@ import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.framework.api.CateApi;
+import com.mfh.comn.net.data.IResponseData;
+import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.api.category.CateApi;
+import com.mfh.framework.api.category.CateApiImpl;
+import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.net.NetCallBack;
+import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
+import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.activity.SimpleActivity;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
+import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
 
@@ -76,9 +86,12 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(index);
                 if (viewPageInfo != null) {
                     changeName(viewPageInfo.args.getLong("id"));
+                } else {
+                    ZLogger.d("no tabs");
                 }
             }
         });
+        mCategoryGoodsTabStrip.setClickEnabled(true);
         mCategoryGoodsTabStrip.setOnPagerChange(new TopSlidingTabStrip.OnPagerChangeLis() {
             @Override
             public void onChanged(int page) {
@@ -92,7 +105,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     }
 
 
-    private void reload(){
+    private void reload() {
         curCategoryList = PosLocalCategoryService.get().queryAll(null, null);
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
@@ -123,9 +136,10 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
     /**
      * 新增类目
-     * */
+     */
     @OnClick(R.id.ib_add)
-    public void addCategory(){
+    public void addCategory() {
+        ZLogger.d("新增类目");
         if (mTextInputDialog == null) {
             mTextInputDialog = new TextInputDialog(getActivity());
             mTextInputDialog.setCancelable(false);
@@ -139,11 +153,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
                     @Override
                     public void onConfirm(String text) {
-                        PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
-                        entity.setName(text);
-                        PosLocalCategoryService.get().saveOrUpdate(entity);
-
-                        reload();
+                        createCategoryInfo(text);
                     }
                 });
         if (!mTextInputDialog.isShowing()) {
@@ -152,19 +162,68 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     }
 
     /**
+     * 创建前台类目
+     */
+    private void createCategoryInfo(final String nameCn) {
+        NetCallBack.NetTaskCallBack createRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("创建前台类目失败, " + errMsg);
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //新建类目成功，保存类目信息，并触发同步。
+                        try {
+                            if (rspData == null) {
+                                return;
+                            }
+
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            String result = retValue.getValue();
+                            Long code = Long.valueOf(result);
+
+                            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
+//                            if (code != null) {
+//                                // TODO: 8/15/16
+//                                PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
+//                                entity.setName(nameCn);
+//                                entity.setId(code);
+//                                PosLocalCategoryService.get().saveOrUpdate(entity);
+//
+//                                reload();
+//                            }
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        CateApiImpl.createScCategoryInfo(CateApi.DOMAIN_TYPE_PROD,
+                CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
+                nameCn, createRC);
+    }
+
+    /**
      * 修改类目名称
-     * */
-    private void changeName(Long categoryId){
-        if (categoryId == null){
+     */
+    private void changeName(Long id) {
+        if (id == null) {
             return;
         }
         PosLocalCategoryEntity categoryEntity = PosLocalCategoryService.get()
-                .getEntityById(String.valueOf(categoryId));
+                .getEntityById(String.valueOf(id));
         if (categoryEntity == null) {
-             return;
+            return;
         }
 
-        if (mModifyLocalCategoryDialog == null){
+        if (mModifyLocalCategoryDialog == null) {
             mModifyLocalCategoryDialog = new ModifyLocalCategoryDialog(getActivity());
             mModifyLocalCategoryDialog.setCanceledOnTouchOutside(true);
             mModifyLocalCategoryDialog.setCancelable(false);
@@ -177,25 +236,27 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             }
         });
 
-        if (!mModifyLocalCategoryDialog.isShowing()){
+        if (!mModifyLocalCategoryDialog.isShowing()) {
             mModifyLocalCategoryDialog.show();
         }
     }
 
     /**
      * 添加更多商品
-     * */
+     */
     @OnClick(R.id.fab_add_more)
-    public void addMoreGoods(){
+    public void addMoreGoods() {
+        PosCategoryGodosTempService.getInstance().clear();
+
         Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_ADDMORE_LOCALFRONTGOODS);
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE,
+                FragmentActivity.FT_ADDMORE_LOCALFRONTGOODS);
         ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(mCategoryGoodsTabStrip.getCurrentPosition());
         if (viewPageInfo != null) {
             extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID_POS, viewPageInfo.args.getLong("id"));
         }
         extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID, CateApi.FRONT_CATEGORY_ID_POS);
 
-        UIHelper.startActivity(getActivity(), SimpleActivity.class, extras);
+        UIHelper.startActivity(getActivity(), FragmentActivity.class, extras);
     }
 }

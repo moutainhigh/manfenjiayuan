@@ -1,11 +1,11 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/material_white"
-              android:divider="@drawable/divider_horizontal_line_primary"
-              android:orientation="vertical"
-              android:showDividers="middle">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/material_white"
+                                                 android:divider="@drawable/divider_horizontal_line_primary"
+                                                 android:orientation="vertical"
+                                                 android:showDividers="middle">
 
     <!--导航-->
     <android.support.design.widget.AppBarLayout
@@ -49,10 +49,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <!--内容区-->
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_category_goods"
+        android:layout_below="@+id/app_bar"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -60,7 +61,8 @@
         android:id="@+id/fab_add_more"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_gravity="end|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
         android:src="@mipmap/ic_add_white"
         app:backgroundTint="@color/material_green_500"
@@ -69,4 +71,4 @@
         app:pressedTranslationZ="0dp"
         app:rippleColor="@color/material_green_800"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

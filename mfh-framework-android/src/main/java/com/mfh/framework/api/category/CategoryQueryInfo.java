@@ -1,4 +1,4 @@
-package com.manfenjiayuan.business.bean;
+package com.mfh.framework.api.category;
 
 
 import java.util.List;
@@ -8,11 +8,11 @@ import java.util.List;
  * Created by Nat.ZZN(bingshanguxue) on 2015/8/18.
  *
  */
-public class CategoryInfo implements java.io.Serializable{
+public class CategoryQueryInfo implements java.io.Serializable{
     private String parent;
     private List<CategoryOption> options;
 
-    public CategoryInfo(){
+    public CategoryQueryInfo(){
     }
 
 

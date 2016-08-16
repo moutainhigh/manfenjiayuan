@@ -56,6 +56,7 @@ public class SharedPreferencesHelper {
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
     private static final String PK_SYNC_PRODUCTS_MODE = "pk_sync_products_mode";//同步方式：0全量，1增量。
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
+    public static final String PK_SYNC_PRODUCTCATALOG_STARTCURSOR = "pk_sync_PRODUCTCATALOG_STARTCURSOR";
     //同步订单
     private static final String PK_POS_ORDER_LAST_UPDATE = "pos_order_lastUpdate";//最后一次更新时间
     private static final String PK_SYNC_ORDER_INTERVAL = "pk_sync_order_interval";//同步间隔（单位，秒）

@@ -112,12 +112,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<ScGoodsSku
                     mRecyclerView.scrollToPosition(position);
                 }
             }
-
         }
     }
 
     private void initRecyclerView() {
-        linearLayoutManager = new GridLayoutManager(getContext(), 6);
+        linearLayoutManager = new GridLayoutManager(getContext(), 9);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         //enable optimizations if all item views are of the same height and width for

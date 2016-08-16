@@ -3,6 +3,8 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,7 +13,8 @@ import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
-import com.mfh.framework.api.impl.CateApiImpl;
+import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.category.CateApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.net.NetCallBack;
@@ -21,6 +24,8 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosCategory;
+import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -39,6 +44,9 @@ public class FrontCategoryFragment extends BaseFragment {
     public static final String EXTRA_CATEGORY_ID = "categoryId";
     public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
 
+
+        @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
     @Bind(R.id.viewpager_category_goods)
@@ -68,6 +76,30 @@ public class FrontCategoryFragment extends BaseFragment {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         init(getArguments());
+
+        mToolbar.setTitle("选择商品");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_addprodudts2category);
 
         initCategoryGoodsView();
         reload();
@@ -209,5 +241,63 @@ public class FrontCategoryFragment extends BaseFragment {
 
         CateApiImpl.listPublicCategory(categoryId, queryRsCallBack);
     }
+
+    /**
+     * 添加商品到类目
+     * */
+    private void submit(){
+        List<PosCategoryGoodsTempEntity> entities = PosCategoryGodosTempService.getInstance().queryAll();
+
+        StringBuilder sb = new StringBuilder();
+        if (entities != null && entities.size() > 0){
+            for (PosCategoryGoodsTempEntity entity : entities){
+                if (sb.length() > 0){
+                    sb.append(",");
+                }
+                sb.append(entity.getProductId());
+            }
+        }
+        CashierApiImpl.addProducts2Category(String.valueOf(posFrontCategoryId),
+                sb.toString(), submitRC);
+    }
+
+    NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
+            NetProcessor.Processor<String>>(
+            new NetProcessor.Processor<String>() {
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    ZLogger.df("创建前台类目失败, " + errMsg);
+                }
+
+                @Override
+                public void processResult(IResponseData rspData) {
+                    //新建类目成功，保存类目信息，并触发同步。
+                    try {
+                        if (rspData == null) {
+                            return;
+                        }
+
+//                        RspValue<String> retValue = (RspValue<String>) rspData;
+//                        String result = retValue.getValue();
+//                        Long code = Long.valueOf(result);
+//
+//                        if (code != null) {
+//                            // TODO: 8/15/16
+//                            PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
+//                            entity.setName(nameCn);
+//                            entity.setId(code);
+//                            PosLocalCategoryService.get().saveOrUpdate(entity);
+//
+//                            reload();
+//                        }
+                    } catch (Exception e) {
+                        ZLogger.ef(e.toString());
+                    }
+                }
+            }
+            , String.class
+            , CashierApp.getAppContext()) {
+    };
 
 }

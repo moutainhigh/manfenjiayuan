@@ -1,5 +1,6 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.category;
 
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.net.NetFactory;
 
 /**
@@ -8,8 +9,9 @@ import com.mfh.framework.net.NetFactory;
  */
 public class CateApi {
 
-    //codeId=685,是开发服务器上的根目录值；正式服务器上待定
-    public final static Long POS_CATEGORY_LAUNDRY = 3543L;//洗衣
+    //
+    public final static Long FRONT_CATEGORY_ID_LAUNDRY = 3543L;//洗衣
+    public final static Long FRONT_CATEGORY_ID_POS = 3407L;//POS
 
 
     /**
@@ -27,6 +29,13 @@ public class CateApi {
      * 类目查询－－一级类目
      */
     public final static String URL_SCCATEGORYINFO_LIST = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/list";
+
+
+    /**
+     * /scCategoryInfo/create?jsonStr={},
+     * 上面tenantId是当前pos机所属租户（注意不是网点，现在还没细化到网点或pos机），catePosition此次为1，domain为0
+     */
+    public final static String URL_SCCATEGORYINFO_CREATE = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/create";
 
 
     /**

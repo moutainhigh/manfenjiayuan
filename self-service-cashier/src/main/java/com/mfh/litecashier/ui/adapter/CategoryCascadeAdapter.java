@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.manfenjiayuan.business.bean.CategoryOption;
+import com.mfh.framework.api.category.CategoryOption;
 
 import java.util.List;
 

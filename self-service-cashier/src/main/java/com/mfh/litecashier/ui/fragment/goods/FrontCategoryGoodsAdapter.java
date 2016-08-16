@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 
 import java.util.List;
 
@@ -43,7 +45,8 @@ public class FrontCategoryGoodsAdapter
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MenuOptioinViewHolder(mLayoutInflater.inflate(R.layout.itemview_frontcategory_goods,
+        return new MenuOptioinViewHolder(mLayoutInflater
+                .inflate(R.layout.itemview_frontcategory_goods,
                 parent, false));
     }
 
@@ -53,6 +56,13 @@ public class FrontCategoryGoodsAdapter
 
         holder.tvName.setText(entity.getSkuName());
         holder.tvPrice.setText(String.format("¥ %.2f", entity.getCostPrice()));
+
+        if (entity.isSelected()){
+            holder.ibRatio.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.ibRatio.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -70,7 +80,7 @@ public class FrontCategoryGoodsAdapter
         @Bind(R.id.tv_price)
         TextView tvPrice;
         @Bind(R.id.ib_ratio)
-        TextView ibRatio;
+        ImageButton ibRatio;
 
         public MenuOptioinViewHolder(final View itemView) {
             super(itemView);
@@ -80,10 +90,20 @@ public class FrontCategoryGoodsAdapter
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if (entityList == null || position < 0 || position >= entityList.size()) {
-//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                    FrontCategoryGoods entity = getEntity(position);
+                    if (entity == null){
                         return;
                     }
+
+                    if (entity.isSelected()) {
+                        entity.setSelected(false);
+                    } else {
+                        entity.setSelected(true);
+
+                        PosCategoryGodosTempService.getInstance().saveOrUpdateGoods(entity);
+                    }
+//                //刷新列表
+                    notifyItemChanged(position);
 
                     if (adapterListener != null) {
                         adapterListener.onItemClick(itemView, position);

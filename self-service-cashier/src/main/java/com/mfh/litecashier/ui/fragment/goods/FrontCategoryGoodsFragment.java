@@ -61,7 +61,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_inv_sendorder;
+        return R.layout.fragment_frontcategory_goods;
     }
 
     @Override
@@ -80,7 +80,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             categoryId = args.getLong("categoryId");
         }
         //format:CACHE_KEY_FRONT_CATEGORY_GOODS_[parentId]_[categoryId]
-        cacheKey = String.format("%s_%d_%d", ACacheHelper.CK_FRONT_CATEGORY_GOODS, parentId, categoryId);
+        cacheKey = String.format("%s_%d_%d", ACacheHelper.CK_FRONT_CATEGORY_GOODS,
+                parentId, categoryId);
 
         initRecyclerView();
         setupSwipeRefresh();
@@ -100,7 +101,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(FrontCategoryGoodsEvent event) {
-        ZLogger.d(String.format("FrontCategoryGoodsEvent(%d/%d)", event.getAffairId(), event.getCategoryId()));
+        ZLogger.d(String.format("FrontCategoryGoodsEvent(%d/%d)",
+                event.getAffairId(), event.getCategoryId()));
         if (event.getCategoryId().compareTo(categoryId) != 0) {
             return;
         }
@@ -120,7 +122,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     }
 
     private void initRecyclerView() {
-        mRLayoutManager = new GridLayoutManager(CashierApp.getAppContext(), 6);
+        mRLayoutManager = new GridLayoutManager(CashierApp.getAppContext(), 9);
 
         mRecyclerView.setLayoutManager(mRLayoutManager);
         //enable optimizations if all item views are of the same height and width for
@@ -285,7 +287,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
     private void load(PageInfo pageInfo) {
 //        ZLogger.d(String.format("pageInfo:page=%d,rows=%d(%d)", mPageInfo.getPageNo(), mPageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size())));
-        ZLogger.d(String.format("加载类目商品开始,pageInfo':page=%d,rows=%d(%d)", mPageInfo.getPageNo(), mPageInfo.getPageSize(), mPageInfo.getTotalCount()));
+        ZLogger.d(String.format("加载类目商品开始,pageInfo':page=%d,rows=%d(%d)",
+                mPageInfo.getPageNo(), mPageInfo.getPageSize(), mPageInfo.getTotalCount()));
 
         NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
             @Override
