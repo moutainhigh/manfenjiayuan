@@ -15,15 +15,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
+import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.category.ScCategoryInfoApi;
+import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.net.NetCallBack;
+import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
+import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.service.DataSyncManager;
 
 
 /**
@@ -79,7 +90,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
                     }
                 }
                 etName.requestFocus();
-//                etInput.setSelection(etInput.length());
+                etName.setSelection(etName.length());
                 //返回true,不再继续传递事件
                 return true;
             }
@@ -187,19 +198,61 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
             return;
         }
 
-
         if (mCategoryEntity == null){
             DialogUtil.showHint("类目无效");
             return;
         }
 
-        mCategoryEntity.setName(queryText);
-        PosLocalCategoryService.get().saveOrUpdate(mCategoryEntity);
-        DialogUtil.showHint("修改成功");
-        dismiss();
-        if (listener != null){
-            listener.onComplete();
+        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("创建前台类目失败, " + errMsg);
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"删除成功!","version":"1","data":""}
+                        //新建类目成功，保存类目信息，并触发同步。
+                        try {
+                            if (rspData == null) {
+                                return;
+                            }
+//
+//                            RspValue<String> retValue = (RspValue<String>) rspData;
+//                            String result = retValue.getValue();
+//                            Long code = Long.valueOf(result);
+
+                            mCategoryEntity.setName(queryText);
+                            PosLocalCategoryService.get().saveOrUpdate(mCategoryEntity);
+                            DialogUtil.showHint("修改成功");
+                            dismiss();
+                            if (listener != null){
+                                listener.onComplete();
+                            }
+
+                            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())){
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
         }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", mCategoryEntity.getId());
+        jsonObject.put("nameCn", queryText);
+        jsonObject.put("tenantId", MfhLoginService.get().getSpid());
+        ScCategoryInfoApi.update(jsonObject.toJSONString(), responseRC);
     }
 
     /**
@@ -211,14 +264,52 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
             return;
         }
 
+        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("创建前台类目失败, " + errMsg);
+                    }
 
-        PosLocalCategoryService.get().deleteById(String.valueOf(mCategoryEntity.getId()));
-        DialogUtil.showHint("删除成功");
-        dismiss();
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"删除成功!","version":"1","data":""}
+                        //新建类目成功，保存类目信息，并触发同步。
+                        try {
+                            if (rspData == null) {
+                                return;
+                            }
+//
+//                            RspValue<String> retValue = (RspValue<String>) rspData;
+//                            String result = retValue.getValue();
+//                            Long code = Long.valueOf(result);
 
-        if (listener != null){
-            listener.onComplete();
+
+                            PosLocalCategoryService.get().deleteById(String.valueOf(mCategoryEntity.getId()));
+                            DialogUtil.showHint("删除成功");
+                            dismiss();
+
+                            if (listener != null){
+                                listener.onComplete();
+                            }
+
+                            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())){
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
         }
-    }
 
+        ScCategoryInfoApi.delete(mCategoryEntity.getId(), responseRC);
+    }
 }

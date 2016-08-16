@@ -2,6 +2,8 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +15,17 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.api.category.CateApiImpl;
+import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
 
@@ -66,14 +66,59 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         return R.layout.fragment_local_frontcategory;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        EventBus.getDefault().register(this);
+
+    }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         initCategoryGoodsView();
 
         reload();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
+            }
+        }, 1000);
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 通知刷新数据
+     * */
+    private void notifyDataChanged(int page){
+        ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(page);
+        if (viewPageInfo != null) {
+            Bundle args = viewPageInfo.args;
+            EventBus.getDefault().post(
+                    new LocalFrontCategoryGoodsEvent(LocalFrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, args));
+        }
+    }
+
+    /**
+     * 在主线程接收CashierEvent事件，必须是public void
+     */
+    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
+        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
+            reload();
+        } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
+            notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
+        }
+    }
 
     private void initCategoryGoodsView() {
         mCategoryGoodsTabStrip.setOnClickTabListener(new TopSlidingTabStrip.OnClickTabListener() {
@@ -85,7 +130,8 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             public void onLongClickTab(View tab, int index) {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(index);
                 if (viewPageInfo != null) {
-                    changeName(viewPageInfo.args.getLong("id"));
+                    ZLogger.d(StringUtils.decodeBundle(viewPageInfo.args));
+                    changeName(viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID));
                 } else {
                     ZLogger.d("no tabs");
                 }
@@ -95,13 +141,12 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         mCategoryGoodsTabStrip.setOnPagerChange(new TopSlidingTabStrip.OnPagerChangeLis() {
             @Override
             public void onChanged(int page) {
-                Long categoryId = curCategoryList.get(page).getId();
-                EventBus.getDefault().post(new FrontCategoryGoodsEvent(FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
+                notifyDataChanged(page);
             }
         });
 
         categoryGoodsPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(),
-                mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text);
+                mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text_80);
     }
 
 
@@ -111,7 +156,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         for (PosLocalCategoryEntity category : curCategoryList) {
             Bundle args = new Bundle();
-            args.putLong("id", category.getId());
+            args.putLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID, category.getId());
 
             mTabs.add(new ViewPageInfo(category.getName(), category.getName(),
                     LocalFrontCategoryGoodsFragment.class, args));
@@ -122,12 +167,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
         mCategoryGoodsViewPager.setOffscreenPageLimit(mTabs.size());
         if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
-            //如果直接加载，可能会出现加载两次的问题
-            if (curCategoryList != null && curCategoryList.size() > 0) {
-                Long categoryId = curCategoryList.get(0).getId();
-
-                EventBus.getDefault().post(new FrontCategoryGoodsEvent(FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
-            }
+            notifyDataChanged(0);
         } else {
             mCategoryGoodsViewPager.setCurrentItem(0, false);
         }
@@ -205,7 +245,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        CateApiImpl.createScCategoryInfo(CateApi.DOMAIN_TYPE_PROD,
+        ScCategoryInfoApi.create(CateApi.DOMAIN_TYPE_PROD,
                 CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
                 nameCn, createRC);
     }
@@ -220,6 +260,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         PosLocalCategoryEntity categoryEntity = PosLocalCategoryService.get()
                 .getEntityById(String.valueOf(id));
         if (categoryEntity == null) {
+            ZLogger.d("类目无效");
             return;
         }
 
@@ -241,22 +282,4 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         }
     }
 
-    /**
-     * 添加更多商品
-     */
-    @OnClick(R.id.fab_add_more)
-    public void addMoreGoods() {
-        PosCategoryGodosTempService.getInstance().clear();
-
-        Bundle extras = new Bundle();
-        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE,
-                FragmentActivity.FT_ADDMORE_LOCALFRONTGOODS);
-        ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(mCategoryGoodsTabStrip.getCurrentPosition());
-        if (viewPageInfo != null) {
-            extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID_POS, viewPageInfo.args.getLong("id"));
-        }
-        extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID, CateApi.FRONT_CATEGORY_ID_POS);
-
-        UIHelper.startActivity(getActivity(), FragmentActivity.class, extras);
-    }
 }

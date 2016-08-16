@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.manfenjiayuan.business.bean.CategoryOption;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;

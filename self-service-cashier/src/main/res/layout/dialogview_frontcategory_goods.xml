@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="600dp"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom|center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_quantity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="end"
+            android:hint=""
+            android:inputType="numberDecimal"
+            android:maxLength="8"
+            android:padding="16dp"
+            android:singleLine="true"
+            android:text="@string/default_amount"
+            android:textColor="#FE5000"
+            android:textIsSelectable="false"
+            android:textSize="@dimen/textsize_huge"/>
+
+        <TextView
+            android:id="@+id/tv_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/spacing_micro"
+            android:text=""
+            android:textColor="@color/material_black"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/ll_keyboard"
+        layout="@layout/view_mf_keyboard_number"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/mf_dividerColorPrimary"/>
+
+    <!--按键-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:padding="@dimen/spacing_double"
+                  android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_update"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_corner_green"
+            android:gravity="center"
+            android:text="修改零售价"
+            android:textColor="@color/material_white"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/button_delete"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_corner_red"
+            android:gravity="center"
+            android:text="删除商品"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:textColor="@color/material_white"
+            android:textSize="16dp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

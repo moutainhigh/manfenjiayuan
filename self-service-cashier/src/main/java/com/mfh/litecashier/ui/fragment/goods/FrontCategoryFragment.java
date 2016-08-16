@@ -1,6 +1,7 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -13,19 +14,24 @@ import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
-import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
+import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -161,11 +167,11 @@ public class FrontCategoryFragment extends BaseFragment {
         if (items != null) {
             curCategoryList.addAll(items);
         }
-        PosCategory rootClone = new PosCategory();
-        rootClone.setNameCn("全部");
-        rootClone.setId(categoryId);
-        rootClone.setParentId(categoryId);
-        curCategoryList.add(rootClone);
+//        PosCategory rootClone = new PosCategory();
+//        rootClone.setNameCn("全部");
+//        rootClone.setId(categoryId);
+//        rootClone.setParentId(categoryId);
+//        curCategoryList.add(rootClone);
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         for (PosCategory category : curCategoryList) {
@@ -246,6 +252,12 @@ public class FrontCategoryFragment extends BaseFragment {
      * 添加商品到类目
      * */
     private void submit(){
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())){
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在发送请求...", false);
         List<PosCategoryGoodsTempEntity> entities = PosCategoryGodosTempService.getInstance().queryAll();
 
         StringBuilder sb = new StringBuilder();
@@ -257,7 +269,7 @@ public class FrontCategoryFragment extends BaseFragment {
                 sb.append(entity.getProductId());
             }
         }
-        CashierApiImpl.addProducts2Category(String.valueOf(posFrontCategoryId),
+        ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
                 sb.toString(), submitRC);
     }
 
@@ -268,29 +280,23 @@ public class FrontCategoryFragment extends BaseFragment {
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
                     ZLogger.df("创建前台类目失败, " + errMsg);
+                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
                 }
 
                 @Override
                 public void processResult(IResponseData rspData) {
                     //新建类目成功，保存类目信息，并触发同步。
                     try {
+
+                        hideProgressDialog();
                         if (rspData == null) {
                             return;
                         }
 
-//                        RspValue<String> retValue = (RspValue<String>) rspData;
-//                        String result = retValue.getValue();
-//                        Long code = Long.valueOf(result);
-//
-//                        if (code != null) {
-//                            // TODO: 8/15/16
-//                            PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
-//                            entity.setName(nameCn);
-//                            entity.setId(code);
-//                            PosLocalCategoryService.get().saveOrUpdate(entity);
-//
-//                            reload();
-//                        }
+                        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTENDCATEGORY_GOODS);
+
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
                     } catch (Exception e) {
                         ZLogger.ef(e.toString());
                     }

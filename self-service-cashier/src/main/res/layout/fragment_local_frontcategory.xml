@@ -40,6 +40,7 @@
                     android:layout_width="56dp"
                     android:layout_height="match_parent"
                     android:background="@null"
+                    android:layout_marginStart="@dimen/spacing_normal"
                     android:scaleType="centerInside"
                     android:src="@mipmap/ic_add_black"/>
 
@@ -56,19 +57,5 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add_more"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_add_white"
-        app:backgroundTint="@color/material_green_500"
-        app:borderWidth="0dp"
-        app:elevation="0dp"
-        app:pressedTranslationZ="0dp"
-        app:rippleColor="@color/material_green_800"/>
 
 </RelativeLayout>

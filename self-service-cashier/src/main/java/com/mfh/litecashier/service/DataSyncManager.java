@@ -15,13 +15,14 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.api.ProductCatalogApi;
 import com.mfh.framework.api.cashier.CashierApi;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CateApiImpl;
 import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.category.CategoryQueryInfo;
+import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
@@ -36,6 +37,7 @@ import com.mfh.litecashier.bean.CompanyHuman;
 import com.mfh.litecashier.bean.ProductSkuBarcode;
 import com.mfh.litecashier.database.dao.PosProductNetDao;
 import com.mfh.litecashier.database.dao.PosProductSkuNetDao;
+import com.mfh.litecashier.database.entity.ProductCatalogEntity;
 import com.mfh.litecashier.database.logic.CompanyHumanService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.database.logic.ProductCatalogService;
@@ -64,8 +66,8 @@ public class DataSyncManager {
     public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 5;//前台类目&商品库－关系表
 
 
-    private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 60;
-    private static final int MAX_SYNC_PAGESIZE = 30;
+    private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
+    private static final int MAX_SYNC_PAGESIZE = 40;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
     private PosProductNetDao posProductNetDao = new PosProductNetDao();
@@ -786,8 +788,6 @@ public class DataSyncManager {
                 new NetProcessor.QueryRsProcessor<CategoryInfo>(new PageInfo(1, 20)) {
                     @Override
                     public void processQueryResult(RspQueryResult<CategoryInfo> rs) {
-                        //此处在主线程中执行。
-                        //此处在主线程中执行。
                         new FrontendCategoryAsyncTask(pageInfo).execute(rs);
                     }
 
@@ -800,7 +800,7 @@ public class DataSyncManager {
                     }
                 }, CategoryInfo.class, CashierApp.getAppContext());
 
-        CateApiImpl.listCategory(CateApi.DOMAIN_TYPE_PROD, CateApi.PLAT,
+        ScCategoryInfoApi.list(CateApi.DOMAIN_TYPE_PROD, CateApi.PLAT,
                 CateApi.CATE_POSITION_FRONT, 1, MfhLoginService.get().getSpid(), queryRsCallBack);
     }
 
@@ -831,12 +831,8 @@ public class DataSyncManager {
                 ZLogger.df(String.format("保存 %d/%d 个前台类目", retSize, rs.getTotalNum()));
                 for (EntityWrapper<CategoryInfo> wrapper : rs.getRowDatas()) {
                     CategoryInfo categoryInfo = wrapper.getBean();
-                    if (categoryInfo != null) {
-                        PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
-                        entity.setName(categoryInfo.getNameCn());
-                        entity.setId(categoryInfo.getId());
-                        PosLocalCategoryService.get().saveOrUpdate(entity);
-                    }
+                    PosLocalCategoryService.get().saveOrUpdate(categoryInfo);
+
                 }
 
             } catch (Throwable ex) {
@@ -853,13 +849,25 @@ public class DataSyncManager {
             //若还有继续发起请求
             if (pageInfo.hasNextPage()) {
                 pageInfo.moveToNext();
-                downloadCompanyHuman(pageInfo);
+                downloadFrontendCategory2(pageInfo);
             } else {
-                ZLogger.df("同步账号数据结束");
+                List<PosLocalCategoryEntity> entities = PosLocalCategoryService.get().queryAll(null, null);
+                if (entities != null) {
+                    if (entities.size() == pageInfo.getTotalCount()) {
+                        ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)一致。",
+                                pageInfo.getTotalCount(), entities.size()));
+                    } else {
+                        ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)不一致，下次需要全量更新",
+                                pageInfo.getTotalCount(), entities.size()));
+                    }
+                }
+
+                //通知刷新数据
+                EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+
                 nextStep();
             }
         }
-
     }
 
 
@@ -972,7 +980,7 @@ public class DataSyncManager {
                     public void processQueryResult(RspQueryResult<ProductCatalog> rs) {
                         //此处在主线程中执行。
                         //此处在主线程中执行。
-                        new downLoadProductCatalog3Async(pageInfo, startCusror).execute(rs);
+                        new downLoadProductCatalogAsync(pageInfo, startCusror).execute(rs);
                     }
 
                     @Override
@@ -987,25 +995,23 @@ public class DataSyncManager {
 
         ZLogger.df(String.format("同步类目商品关系表开始(%d/%d)", pageInfo.getPageNo(), pageInfo.getTotalPage()));
 
-        CashierApiImpl.downLoadProductCatalog(startCusror, pageInfo, queryRsCallBack);
-
+        ProductCatalogApi.downLoadProductCatalog(startCusror, pageInfo, queryRsCallBack);
     }
 
-    private class downLoadProductCatalog3Async extends AsyncTask<RspQueryResult<ProductCatalog>, Integer, Long> {
+    private class downLoadProductCatalogAsync extends AsyncTask<RspQueryResult<ProductCatalog>, Integer, Long> {
         private PageInfo pageInfo;
         private String lastCursor;
 
 
-        public downLoadProductCatalog3Async(PageInfo pageInfo, String lastCursor) {
+        public downLoadProductCatalogAsync(PageInfo pageInfo, String lastCursor) {
             this.pageInfo = pageInfo;
             this.lastCursor = lastCursor;
         }
 
         @Override
         protected Long doInBackground(RspQueryResult<ProductCatalog>... params) {
-//            saveQueryResult(params[0], pageInfo);
-            RspQueryResult<ProductCatalog> rs = params[0];
             try {
+                RspQueryResult<ProductCatalog> rs = params[0];
                 mPosSkuPageInfo = pageInfo;
 
                 if (rs == null) {
@@ -1029,10 +1035,8 @@ public class DataSyncManager {
                 if (cursor != null) {
                     SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                             TimeCursor.InnerFormat.format(cursor));
-                    SharedPreferencesHelper.setPosSkuLastUpdate(cursor);
                 }
                 ZLogger.df(String.format("同步 %d/%d 个商品类目关系表", retSize, rs.getTotalNum()));
-
             } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
                 ZLogger.ef(String.format("同步商品类目关系表失败: %s", ex.toString()));
@@ -1050,7 +1054,21 @@ public class DataSyncManager {
                 pageInfo.moveToNext();
                 downLoadProductCatalog2(lastCursor, pageInfo);
             } else {
-                ZLogger.df("同步商品类目关系表结束:" + SharedPreferencesHelper.getSyncProductSkuCursor());
+                List<ProductCatalogEntity> entities = ProductCatalogService.getInstance().queryAll();
+                if (entities != null) {
+                    if (entities.size() == pageInfo.getTotalCount()) {
+                        ZLogger.df(String.format("同步商品类目关系表结束,云端(%d)和本地数量(%d)一致。",
+                                pageInfo.getTotalCount(), entities.size()));
+                    } else {
+                        ZLogger.df(String.format("同步商品类目关系表结束,云端(%d)和本地数量(%d)不一致，下次需要全量更新",
+                                pageInfo.getTotalCount(), entities.size()));
+
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+                                "");
+                    }
+                }
+
+                EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED));
 
                 nextStep();
             }
@@ -1060,6 +1078,8 @@ public class DataSyncManager {
 
     public static class DataSyncEvent {
         public static final int EVENT_ID_REFRESH_BACKEND_CATEGORYINFO = 0X03;//刷新后台类目树
+        public static final int EVENT_FRONTEND_CATEGORY_UPDATED = 0X04;//前台类目更新
+        public static final int EVENT_PRODUCT_CATALOG_UPDATED = 0X05;//前台类目和商品库关系更新
         public static final int EVENT_ID_SYNC_DATA_PROGRESS = 0X11;//同步进度
         public static final int EVENT_ID_SYNC_DATA_FINISHED = 0X12;//同步结束
 

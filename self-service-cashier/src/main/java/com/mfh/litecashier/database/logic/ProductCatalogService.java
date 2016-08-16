@@ -127,7 +127,7 @@ public class ProductCatalogService extends BaseService<ProductCatalogEntity, Str
 
 
     /**
-     * 保存生鲜商品
+     * 保存类目和商品关系表
      * */
     public void saveOrUpdate(ProductCatalog goods){
         if (goods == null){

@@ -17,7 +17,6 @@ import com.mfh.litecashier.ui.fragment.canary.SettingsDailysettleFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsGoodsFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsTestFragment;
 import com.mfh.litecashier.ui.fragment.goods.BackendCategoryFragment;
-import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
 import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
 import com.mfh.litecashier.ui.fragment.online.OnlineFragment;
 import com.mfh.litecashier.ui.fragment.orderflow.StoreOrderFlowFragment;
@@ -46,7 +45,6 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_RECEIPT = 0x16;//单据
     public static final int FT_SETTINGS = 0x17;//设置
     public static final int FT_GOODS_LIST = 0x18;//商品列表
-    public static final int FT_ADDMORE_LOCALFRONTGOODS = 0x19;//添加更多前台类目商品
 
     public static final int FT_CANARY_GOODS = 0x20;//商品
     public static final int FT_CANARY_ORDERFLOW = 0x21;//流水
@@ -56,9 +54,7 @@ public class SimpleActivity extends BaseActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-//    MenuItem freshShopcartMenu = null;
     MenuItem standardShopcartMenu = null;
-
     /**
      * 0: 快递代收
      */
@@ -138,9 +134,6 @@ public class SimpleActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-//        if (freshShopcartMenu != null) {
-//            freshShopcartMenu.setEnabled(true);
-//        }
         if (standardShopcartMenu != null) {
             standardShopcartMenu.setEnabled(true);
         }
@@ -175,7 +168,6 @@ public class SimpleActivity extends BaseActivity {
             }
             break;
             case FT_ONLINE_ORDER:
-            case FT_ADDMORE_LOCALFRONTGOODS:
             default: {
                 getMenuInflater().inflate(R.menu.menu_normal, menu);
             }
@@ -320,17 +312,6 @@ public class SimpleActivity extends BaseActivity {
             case FT_CANARY_CANARY: {
                 toolbar.setTitle("测试");
                 SettingsTestFragment fragment = new SettingsTestFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_ADDMORE_LOCALFRONTGOODS: {
-                toolbar.setTitle("选择商品");
-
-                Intent intent = this.getIntent();
-                FrontCategoryFragment fragment = FrontCategoryFragment.newInstance(intent.getExtras());
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)
