@@ -37,6 +37,7 @@ import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.database.entity.ProductCatalogEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.database.logic.ProductCatalogService;
+import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 
@@ -76,6 +77,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
+
+        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 40);
 
     }
 
@@ -178,12 +181,16 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
             @Override
             public void onClickGoods(LocalFrontCategoryGoods goods) {
-                modifyGoods(goods);
+
+                Bundle args = new Bundle();
+                args.putSerializable("goods", goods);
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS, args));
+
             }
 
             @Override
             public void onLongClickGoods(LocalFrontCategoryGoods goods) {
-                DialogUtil.showHint("长按商品");
+                modifyGoods(goods);
             }
 
             @Override
@@ -272,11 +279,15 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                 LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
                 goods.setType(0);
                 goods.setId(entity1.getId());
+                goods.setProSkuId(entity1.getProSkuId());
                 goods.setProductId(entity1.getProductId());
-                goods.setName(entity1.getName());
                 goods.setBarcode(entity1.getBarcode());
+                goods.setName(entity1.getName());
+                goods.setProviderId(entity1.getProviderId());
                 goods.setCostPrice(entity1.getCostPrice());
                 goods.setUnit(entity1.getUnit());
+                goods.setPriceType(entity1.getPriceType());
+                goods.setProdLineId(entity1.getProdLineId());
                 productEntities.add(goods);
             } else {
                 ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));

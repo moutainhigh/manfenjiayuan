@@ -59,6 +59,7 @@ import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LastOrderInfo;
+import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.database.logic.CommonlyGoodsService;
@@ -692,11 +693,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
     @OnClick(R.id.button_sync)
     public void syncData() {
         btnSync.startSync();
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            btnSync.stopSync();
-            return;
-        }
 
         //设置需要更新前台类目
         SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
@@ -706,6 +702,12 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
         btnSync.setBadgeEnabled(false);
+
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            btnSync.stopSync();
+            return;
+        }
 
         //同步数据
         DataSyncManager.get().sync();
@@ -857,6 +859,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
             initCashierOrder();
         }
+        else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
+            LocalFrontCategoryGoods goods = (LocalFrontCategoryGoods) bundle.getSerializable("goods");
+            cashierGoods(goods);
+        }
+
     }
 
     /**
@@ -1427,7 +1434,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             changeQuantityDialog.setCancelable(true);
             changeQuantityDialog.setCanceledOnTouchOutside(true);
         }
-        changeQuantityDialog.initialzie("数量", 2, entity.getBcount(), entity.getUnit(),
+        changeQuantityDialog.initialzie("数量", 3, entity.getBcount(), entity.getUnit(),
                 new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
@@ -1756,6 +1763,43 @@ public class MainActivity extends CashierActivity implements ICashierView {
         extras.putString(StockScSkuGoodsFragment.EXTRY_KEY_BARCODE, barcode);
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_CREATE_PURCHASE_GOODS);
+    }
+
+    private void cashierGoods(final LocalFrontCategoryGoods goods) {
+        if (goods == null) {
+            DialogUtil.showHint("商品无效");
+            return;
+        }
+
+        if (goods.getStatus() != 1) {
+            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
+            return;
+        }
+
+        //添加商品
+        if (goods.getPriceType().equals(PriceType.WEIGHT)) {
+            final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
+            if (weightVal > 0) {
+                addGoods2Cashier(curPosTradeNo, goods, weightVal);
+            } else {
+                if (quantityCheckDialog == null) {
+                    quantityCheckDialog = new DoubleInputDialog(this);
+                    quantityCheckDialog.setCancelable(true);
+                    quantityCheckDialog.setCanceledOnTouchOutside(true);
+                }
+                quantityCheckDialog.initialzie("重量", 3, weightVal, goods.getUnit(),
+                        new DoubleInputDialog.OnResponseCallback() {
+                            @Override
+                            public void onQuantityChanged(Double quantity) {
+                                addGoods2Cashier(curPosTradeNo, goods, quantity);
+                            }
+                        });
+                quantityCheckDialog.show();
+            }
+
+        } else {
+            addGoods2Cashier(curPosTradeNo, goods, 1D);
+        }
     }
 
     /**
