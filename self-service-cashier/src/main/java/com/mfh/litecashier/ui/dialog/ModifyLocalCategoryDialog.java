@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,13 +21,13 @@ import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
@@ -78,16 +79,14 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
 
         tvTitle.setText("编辑栏目");
 
+
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(etName, InputMethodManager.SHOW_IMPLICIT);
         etName.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()){
-                        DeviceUtils.showSoftInput(getContext(), etName);
-                    }
-                    else{
-                        DeviceUtils.hideSoftInput(getContext(), etName);
-                    }
+                    DeviceUtils.showSoftInput(getContext(), etName);
                 }
                 etName.requestFocus();
                 etName.setSelection(etName.length());
@@ -95,16 +94,27 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
                 return true;
             }
         });
+        //获取焦点后自动弹出键盘
+//        etName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    // request keyboard// request keyboard
+//                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//                }
+//            }
+//        });
         etName.setOnKeyListener(new EditText.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d(String.format("setOnKeyListener(etQuery):keyCode=%d, action=%d", keyCode, event.getAction()));
+                ZLogger.d(String.format("setOnKeyListener(etQuery):keyCode=%d, action=%d", keyCode, event.getAction()));
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     //按下回车键后会执行两次，
                     // 猜测一，输入框会自动捕获回车按键，自动切换焦点到下一个控件；
                     // 猜测二，通过打印日志观察发现，每次按下按键，都会监听到两次键盘事件，重复导致。
                     if (event.getAction() == MotionEvent.ACTION_UP) {
 //                        doUpdate();
+                        DeviceUtils.hideSoftInput(getContext(), etName);
                     }
                     return true;
                 }
@@ -161,7 +171,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
 //        getWindow().setAttributes(p);
 
         //hide soft input
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     public void init(PosLocalCategoryEntity categoryEntity, DialogListener dialogListener){
@@ -185,7 +195,13 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
         super.show();
 
         etName.requestFocus();
-        DeviceUtils.hideSoftInput(getOwnerActivity());
+        etName.setSelection(etName.length());
+//        DeviceUtils.showSoftInput(getContext(), etName);
+//        DeviceUtils.hideSoftInput(getOwnerActivity());
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(etName, InputMethodManager.SHOW_IMPLICIT);
+
+        DeviceUtils.toggleSoftInput(getContext());
     }
 
     /**
@@ -251,6 +267,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", mCategoryEntity.getId());
         jsonObject.put("nameCn", queryText);
+        jsonObject.put("catePosition", CateApi.CATE_POSITION_FRONT);
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
         ScCategoryInfoApi.update(jsonObject.toJSONString(), responseRC);
     }

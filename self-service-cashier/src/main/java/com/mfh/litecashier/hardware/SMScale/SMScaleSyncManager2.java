@@ -9,7 +9,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.Encoding;
@@ -605,7 +605,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                     }
                     String name = child.getName();
                     //文件名格式是smscale_mixicook2016-06-15-1465997239811.csv，所以格式不对的，也要删除。系统中可能存在很多2016-0001-01.log等等这样的文件。
-                    if (StringUtils.isEmpty(name) || name.startsWith("smscale-")) {
+                    if (StringUtils.isEmpty(name) || name.startsWith("smscale")) {
                         ZLogger.df(String.format("删除无效csv文件 %s", name));
                         child.delete();
                     }

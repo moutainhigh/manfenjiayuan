@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
+import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 
 import java.util.List;
@@ -57,11 +58,17 @@ public class FrontCategoryGoodsAdapter
         holder.tvName.setText(entity.getSkuName());
         holder.tvPrice.setText(String.format("¥ %.2f", entity.getCostPrice()));
 
-        if (entity.isSelected()){
+        String sqlWhere = String.format("productId = '%d'", entity.getProductId());
+
+
+        List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance().queryAllBy(sqlWhere);
+        if (goodsTempEntities != null && goodsTempEntities.size() > 0){
             holder.ibRatio.setVisibility(View.VISIBLE);
+            entity.setSelected(true);
         }
         else{
             holder.ibRatio.setVisibility(View.GONE);
+            entity.setSelected(false);
         }
     }
 
@@ -99,9 +106,9 @@ public class FrontCategoryGoodsAdapter
                         entity.setSelected(false);
                     } else {
                         entity.setSelected(true);
-
-                        PosCategoryGodosTempService.getInstance().saveOrUpdateGoods(entity);
                     }
+
+                    PosCategoryGodosTempService.getInstance().saveOrUpdateGoods(entity);
 //                //刷新列表
                     notifyItemChanged(position);
 

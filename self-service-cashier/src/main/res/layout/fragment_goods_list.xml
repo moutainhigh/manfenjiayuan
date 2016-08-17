@@ -4,8 +4,6 @@
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
-    <!--android:background="@color/material_white"-->
-
     <!-- google 官方下拉刷新 -->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swiperefreshlayout"

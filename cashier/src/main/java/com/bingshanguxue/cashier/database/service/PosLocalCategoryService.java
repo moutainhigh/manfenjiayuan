@@ -3,6 +3,7 @@ package com.bingshanguxue.cashier.database.service;
 import com.bingshanguxue.cashier.database.dao.PosLocalCategoryDao;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
@@ -111,52 +112,41 @@ public class PosLocalCategoryService extends BaseService<PosLocalCategoryEntity,
         }
     }
 
-//    /**
-//     * 保存货更新订单的支付记录
-//     * 2016-07-01 重构订单，支持订单支付明细
-//     *
-//     * @param quickPayInfo    支付信息
-//     * @param outTradeNo 商户交易订单号，每次发起订单支付请求都不同
-//     * @param payType    支付方式
-//     * @param status     支付状态
-//     */
-//    public void saveOrUpdate(QuickPayInfo quickPayInfo, String outTradeNo, Integer payType, int status) {
-//        try {
-//            //检查参数
-//            if (StringUtils.isEmpty(outTradeNo) || quickPayInfo == null) {
-//                ZLogger.d("参数无效");
-//                return;
-//            }
-//
-//            PosLocalCategoryEntity entity;
-//            //查询订单，更多的匹配条件
-//            //注意这里要根据orderId，outTradeNo和payType三者确定支付记录的唯一性，
-//            // 因为一个订单对应多个商户交易订单号，同时一个商户交易订单号也有可能对应多个支付类型
-//            // （会员支付时，优惠券和规则是在会员支付页面一起支付，公用一个商户交易订单号）
-//            String sqlWhere = String.format("outTradeNo = '%s'and payType = '%d'",
-//                    outTradeNo, payType);
-//            List<PosLocalCategoryEntity> entityList = queryAllBy(sqlWhere);
-//            if (entityList != null && entityList.size() > 0) {
-//                entity = entityList.get(0);
-//            } else {
-//                entity = new PosLocalCategoryEntity();
-//                entity.setCreatedDate(new Date());
-//                entity.setOutTradeNo(outTradeNo);
-//                entity.setPayType(payType);
-//            }
-//
-//            entity.setBizType(quickPayInfo.getBizType());
-//            entity.setAmount(quickPayInfo.getAmount());
-//            entity.setPaystatus(status);
-//            entity.setSyncStatus(SyncStatus.INIT);
-//            entity.setUpdatedDate(new Date());
-//            saveOrUpdate(entity);
-//            ZLogger.df(String.format("保存or更新支付流水:\n%s",
-//                    JSONObject.toJSONString(entity)));
-//        } catch (Exception e) {
-//            ZLogger.e(e.toString());
-//        }
-//    }
-//
+    /**
+     * 保存前台类目
+     * */
+    public void saveOrUpdate(CategoryInfo categoryInfo){
+        if (categoryInfo == null){
+            return;
+        }
+
+        PosLocalCategoryEntity entity = getEntityById(String.valueOf(categoryInfo.getId()));
+        if (entity == null){
+            entity = new PosLocalCategoryEntity();
+            entity.setId(categoryInfo.getId());
+        }
+        entity.setName(categoryInfo.getNameCn());
+        entity.setIsCloudActive(PosLocalCategoryEntity.CLOUD_ACTIVE);
+        PosLocalCategoryService.get().saveOrUpdate(entity);
+    }
+
+    /**
+     * 下线所有类目
+     * */
+    public void deactiveAll(){
+        List<PosLocalCategoryEntity> entities = queryAll(null, null);
+        if (entities != null && entities.size() > 0){
+            for (PosLocalCategoryEntity entity : entities){
+                entity.setIsCloudActive(PosLocalCategoryEntity.CLOUD_DEACTIVE);
+                saveOrUpdate(entity);
+            }
+        }
+    }
+
+    public int getCount(){
+        List<PosLocalCategoryEntity> entities = queryAll(null, null);
+        return entities != null ? entities.size() : 0;
+    }
+
 
 }

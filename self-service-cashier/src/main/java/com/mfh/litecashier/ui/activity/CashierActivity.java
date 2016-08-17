@@ -125,7 +125,7 @@ public abstract class CashierActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ZLogger.d("onConfigurationChanged" + newConfig.toString());
+//        ZLogger.d("onConfigurationChanged" + newConfig.toString());
         CloseComPort(comDisplay);
         CloseComPort(comPrint);
         CloseComPort(comScale);

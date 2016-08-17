@@ -69,7 +69,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_goods_list;
+        return R.layout.fragment_frontcategory_goods;
     }
 
     @Override
@@ -144,9 +144,10 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //        mRecyclerView.addItemDecoration(new LineItemDecoration(
 //                getActivity(), LineItemDecoration.VERTICAL_LIST));
         mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0f));
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
+                ContextCompat.getColor(getActivity(), R.color.green_select), 0.01f,
+                ContextCompat.getColor(getActivity(), R.color.transparent), 0f));
+//        mRecyclerView.addItemDecoration(new GridItemDecoration(5, 1, false));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -494,7 +495,9 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         String retStr = retValue.getValue();
                         ZLogger.d("删除商品成功:" + retStr);
 
-                        ProductCatalogService.getInstance().deleteById(String.valueOf(finalCatalogEntity.getId()));
+                        ProductCatalogService.getInstance()
+                                .deleteById(String.valueOf(finalCatalogEntity.getId()));
+                        reload();
                     }
 
                     @Override

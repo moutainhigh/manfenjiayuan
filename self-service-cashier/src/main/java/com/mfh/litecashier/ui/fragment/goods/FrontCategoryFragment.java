@@ -149,6 +149,9 @@ public class FrontCategoryFragment extends BaseFragment {
                 //加载子类目
                 loadSubCategory(categoryId, false);
             }
+            else{
+                SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
+            }
         } else {
             //加载子类目
             loadSubCategory(categoryId, true);

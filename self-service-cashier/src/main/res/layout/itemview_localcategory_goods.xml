@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/rootview"
-              android:layout_width="106dp"
+              android:layout_width="match_parent"
               android:layout_height="106dp"
               android:background="@null"
               android:gravity="center"
@@ -12,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:lines="2"
         android:padding="8dp"
         android:text="冰珊孤雪"

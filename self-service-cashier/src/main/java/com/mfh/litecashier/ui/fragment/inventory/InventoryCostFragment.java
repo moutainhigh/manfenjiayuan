@@ -757,9 +757,6 @@ public class InventoryCostFragment extends BaseProgressFragment
 
                                 goods.setCostPrice(quantity);
                                 goodsListAdapter.notifyDataSetChanged();
-
-                                //切换到收银页面后需要同步商品
-                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTS_ENABLED, true);
                             }
 
                             @Override
@@ -822,9 +819,6 @@ public class InventoryCostFragment extends BaseProgressFragment
 
                                 goods.setCostPrice(quantity);
                                 goodsListAdapter.notifyDataSetChanged();
-
-                                //切换到收银页面后需要同步商品
-                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTS_ENABLED, true);
                             }
 
                             @Override

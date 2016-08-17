@@ -9,7 +9,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.EntityWrapper;
@@ -49,7 +48,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     @Bind(R.id.order_list)
     RecyclerViewEmptySupport mRecyclerView;
     @Bind(R.id.empty_view)
-    TextView emptyView;
+    View emptyView;
 
     GridLayoutManager mRLayoutManager;
     private FrontCategoryGoodsAdapter adapter;
@@ -69,6 +68,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
+
+        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
     }
 
     @Override

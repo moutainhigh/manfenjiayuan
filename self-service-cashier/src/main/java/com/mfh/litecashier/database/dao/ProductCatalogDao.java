@@ -9,17 +9,17 @@ import com.mfh.litecashier.database.entity.ProductCatalogEntity;
 import java.util.List;
 
 /**
- * 采购订单购物车商品明细
+ * 类目商品关系表
  * 主键：自增
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public class ProductCatalogDao extends BaseSeqAbleDao<ProductCatalogEntity, String> {
 
-    private static final String TABLE_NAME = "tb_product_catalog_v1";
+    private static final String TABLE_NAME = "tb_product_catalog_v001";
 
     @Override
     protected Pair<String, String> initTableChName() {
-        return new Pair<>("tb_product_catalog_v1", TABLE_NAME);
+        return new Pair<>("类目商品关系表", TABLE_NAME);
     }
 
     @Override
@@ -43,12 +43,14 @@ public class ProductCatalogDao extends BaseSeqAbleDao<ProductCatalogEntity, Stri
     }
 
     public List<ProductCatalogEntity> queryAll(String strWhere, PageInfo pageInfo) {
-        return getFinalDb().findAllByWhere(ProductCatalogEntity.class, strWhere, "createdDate desc", pageInfo);//"id desc"/asc
+        return getFinalDb().findAllByWhere(ProductCatalogEntity.class,
+                strWhere, "createdDate desc", pageInfo);//"id desc"/asc
     }
 
     public List<ProductCatalogEntity> queryAllAsc(String strWhere, PageInfo pageInfo) {
         try {
-            return getFinalDb().findAllByWhere(ProductCatalogEntity.class, strWhere, "updatedDate asc", pageInfo);//升序
+            return getFinalDb().findAllByWhere(ProductCatalogEntity.class,
+                    strWhere, "updatedDate asc", pageInfo);//升序
         } catch (Exception ex) {
             ZLogger.e(ex.toString());
             return null;
@@ -57,7 +59,8 @@ public class ProductCatalogDao extends BaseSeqAbleDao<ProductCatalogEntity, Stri
 
     public List<ProductCatalogEntity> queryAllDesc(String strWhere, PageInfo pageInfo) {
         try {
-            return getFinalDb().findAllByWhere(ProductCatalogEntity.class, strWhere, "updatedDate desc", pageInfo);//降序
+            return getFinalDb().findAllByWhere(ProductCatalogEntity.class,
+                    strWhere, "updatedDate desc", pageInfo);//降序
         } catch (Exception ex) {
             ZLogger.e(ex.toString());
             return null;
@@ -70,7 +73,8 @@ public class ProductCatalogDao extends BaseSeqAbleDao<ProductCatalogEntity, Stri
 
     public List<ProductCatalogEntity> queryAllBy(String strWhere) {
         try {
-            return getFinalDb().findAllByWhere(ProductCatalogEntity.class, strWhere, "updatedDate asc");//升序
+            return getFinalDb().findAllByWhere(ProductCatalogEntity.class,
+                    strWhere, "updatedDate asc");//升序
         } catch (Exception ex) {
             ZLogger.e(ex.toString());
             return null;
@@ -88,7 +92,8 @@ public class ProductCatalogDao extends BaseSeqAbleDao<ProductCatalogEntity, Stri
 
     public List<ProductCatalogEntity> syncQueryBy(String strWhere) {
         try {
-            return getFinalDb().findAllByWhere(ProductCatalogEntity.class, strWhere, "updatedDate asc");//升序
+            return getFinalDb().findAllByWhere(ProductCatalogEntity.class,
+                    strWhere, "updatedDate asc");//升序
         } catch (Exception ex) {
             ZLogger.e(ex.toString());
             return null;

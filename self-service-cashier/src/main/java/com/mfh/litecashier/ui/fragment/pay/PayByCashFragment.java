@@ -76,9 +76,11 @@ public class PayByCashFragment extends BasePayFragment {
     @Override
     public void onInitializeMode() {
         super.onInitializeMode();
-        inlvPaidMoney.clear();
-        inlvPaidMoney.requestFocusEnd();
-        inlvPaidMoney.setEnabled(true);
+        if (inlvPaidMoney != null){
+            inlvPaidMoney.clear();
+            inlvPaidMoney.requestFocusEnd();
+            inlvPaidMoney.setEnabled(true);
+        }
     }
 
     @Override
@@ -165,9 +167,10 @@ public class PayByCashFragment extends BasePayFragment {
     @Override
     protected void submitOrder() {
         super.submitOrder();
-        //混合支付
+        //混合支付aas
         if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)
-                && paidAmount.compareTo(handleAmount) < 0) {
+                && rechargeAmount < 0) {
+            ZLogger.df("收取金额不足");
 //            DialogUtil.showHint("收取金额不足");
             return;
         }
@@ -242,13 +245,13 @@ public class PayByCashFragment extends BasePayFragment {
         ZLogger.df(String.format("现金支付成功，收取金额：%.2f\n%s",
                 paidAmount, JSON.toJSONString(paymentInfo)));
 
+        //清空之前，先计算找零金额
+        onInitializeMode();
+
         Bundle args = new Bundle();
         args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
                 paymentInfo);
         EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
-
-        //清空之前，先计算找零金额
-        onInitializeMode();
     }
 
 }

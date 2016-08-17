@@ -20,14 +20,13 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <!--空视图-->
-    <TextView
+    <ImageView
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/mfh_textview_text"
-        android:text="@string/label_nodata_reload"
-        android:gravity="center"
         android:clickable="true"
+        android:scaleType="centerInside"
+        android:src="@mipmap/emptyimage_no_goods"
         android:visibility="gone"/>
 
 </RelativeLayout>

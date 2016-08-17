@@ -12,10 +12,12 @@ import com.mfh.framework.core.MfhEntity;
  * </ol>
  * Created by <bingshanguxue> on 16-06-02
  */
-@Table(name="tb_product_catalog_v1")
+@Table(name="tb_product_catalog_v001")
 public class ProductCatalogEntity extends MfhEntity<Long> implements ILongId{
     private Long paramValueId;
     private Long cataItemId;//spuId,productId
+    /**是否和云端同步:默认1同步，0不同步*/
+    private int isCloudActive = 1;
 
 
     public Long getParamValueId() {
@@ -32,5 +34,13 @@ public class ProductCatalogEntity extends MfhEntity<Long> implements ILongId{
 
     public void setCataItemId(Long cataItemId) {
         this.cataItemId = cataItemId;
+    }
+
+    public int getIsCloudActive() {
+        return isCloudActive;
+    }
+
+    public void setIsCloudActive(int isCloudActive) {
+        this.isCloudActive = isCloudActive;
     }
 }

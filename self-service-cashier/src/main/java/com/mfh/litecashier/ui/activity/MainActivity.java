@@ -820,7 +820,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             DataSyncManager.get().sync();
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
-            if (count > 2) {
+            if (count > 1) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
                 btnSync.setBadgeEnabled(false);
                 btnSync.startSync();

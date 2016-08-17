@@ -4,6 +4,7 @@ package com.mfh.litecashier.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.bingshanguxue.vector_user.CommonUserAccountApi;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -185,10 +187,11 @@ public class AdministratorSigninDialog extends CommonDialog {
 
         getWindow().setGravity(Gravity.CENTER);
 
-//        WindowManager m = getWindow().getWindowManager();
-//        Display d = m.getDefaultDisplay();
-//        WindowManager.LayoutParams p = getWindow().getAttributes();
-////        p.width = d.getWidth() * 2 / 3;
+        WindowManager m = getWindow().getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = getWindow().getAttributes();
+        p.width = DensityUtil.dip2px(getContext(), 400);
+//        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);

@@ -138,19 +138,21 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //现金超过授权额度，要求锁定pos机
         else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
-            JSONObject jsonObject = JSONObject.parseObject(data);
-            JSONObject msgObj = jsonObject.getJSONObject("msg");
-            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
-            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
-            String content = bodyObj.getString("content");
+//            JSONObject jsonObject = JSONObject.parseObject(data);
+//            JSONObject msgObj = jsonObject.getJSONObject("msg");
+//            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
+//            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
+//            String content = bodyObj.getString("content");
+//
+//            Double cashLimitAmount = Double.valueOf(content);
+//            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
+//            Bundle args = new Bundle();
+//            args.putDouble("amount", cashLimitAmount);
+//
+//            //同步数据
+//            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
 
-            Double cashLimitAmount = Double.valueOf(content);
-            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
-            Bundle args = new Bundle();
-            args.putDouble("amount", cashLimitAmount);
-
-            //同步数据
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
+            ValidateManager.get().batchValidate();
         }
         //现金授权额度将要用完，即将锁定pos机
         else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){

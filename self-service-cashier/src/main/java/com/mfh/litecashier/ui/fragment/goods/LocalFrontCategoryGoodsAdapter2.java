@@ -71,7 +71,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
 
         if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_GOODS.ordinal()){
             ((GoodsViewHolder)holder).tvName.setText(entity.getName());
-            ((GoodsViewHolder)holder).tvCostPrice.setText(String.format("¥ %.2f/%s",
+            ((GoodsViewHolder)holder).tvCostPrice.setText(String.format("%.2f/%s",
                     entity.getCostPrice(), entity.getUnit()));
         }
     }
@@ -173,13 +173,16 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
     }
 
     public void setEntityList(List<LocalFrontCategoryGoods> goodsList) {
-        this.entityList = goodsList;
+//        this.entityList = goodsList;
         if (this.entityList == null){
             this.entityList = new ArrayList<>();
         }
-//        if (goodsList != null){
-//            this.entityList.(goodsList);
-//        }
+        else{
+            this.entityList.clear();
+        }
+        if (goodsList != null){
+            this.entityList.addAll(goodsList);
+        }
 
         LocalFrontCategoryGoods action = new LocalFrontCategoryGoods();
         action.setType(1);

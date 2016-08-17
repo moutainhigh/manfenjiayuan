@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PosLocalCategoryDao extends BaseSeqAbleDao<PosLocalCategoryEntity, String> {
 
-    private static final String TABLE_NAME = "tb_pos_local_category_v1";
+    private static final String TABLE_NAME = "tb_pos_local_category_v0001";
 
 
     public static final String ORDER_BY_UPDATEDDATE_ASC = "updatedDate asc";//升序

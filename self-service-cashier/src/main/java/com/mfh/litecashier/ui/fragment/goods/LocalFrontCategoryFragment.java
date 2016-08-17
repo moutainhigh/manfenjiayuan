@@ -185,7 +185,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             mTextInputDialog.setCancelable(false);
             mTextInputDialog.setCanceledOnTouchOutside(false);
         }
-        mTextInputDialog.initialize("添加栏目", "请输入栏目名称", true,
+        mTextInputDialog.initialize("添加栏目", "请输入栏目名称", false,
                 new TextInputDialog.OnTextInputListener() {
                     @Override
                     public void onCancel() {

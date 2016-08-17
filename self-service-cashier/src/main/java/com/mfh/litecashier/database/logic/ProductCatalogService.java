@@ -135,7 +135,7 @@ public class ProductCatalogService extends BaseService<ProductCatalogEntity, Str
             return;
         }
 
-        String sqlWhere = String.format("id = '%d'", goods.getParamValueId());
+        String sqlWhere = String.format("id = '%d'", goods.getId());
         ProductCatalogEntity entity = null;
         List<ProductCatalogEntity> entityList =  getDao().queryAllBy(sqlWhere);
         if (entityList != null && entityList.size() > 0){
@@ -146,10 +146,28 @@ public class ProductCatalogService extends BaseService<ProductCatalogEntity, Str
             entity.setId(goods.getId());
         }
 
+        entity.setIsCloudActive(1);
         entity.setCataItemId(goods.getCataItemId());
         entity.setParamValueId(goods.getParamValueId());
         saveOrUpdate(entity);
+    }
 
+    /**
+     * 下线所有类目
+     * */
+    public void deactiveAll(){
+        List<ProductCatalogEntity> entities = queryAll(null, null);
+        if (entities != null && entities.size() > 0){
+            for (ProductCatalogEntity entity : entities){
+                entity.setIsCloudActive(0);
+                saveOrUpdate(entity);
+            }
+        }
+    }
+
+    public int getCount(){
+        List<ProductCatalogEntity> entities = queryAll(null, null);
+        return entities != null ? entities.size() : 0;
     }
 
 }

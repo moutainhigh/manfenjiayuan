@@ -123,6 +123,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_print_white"/>
+        android:src="@mipmap/ic_cash_white"/>
 
 </RelativeLayout>

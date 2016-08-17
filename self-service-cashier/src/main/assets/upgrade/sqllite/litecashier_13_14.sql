@@ -1,0 +1,1 @@
+ALTER TABLE tb_pos_procuct_v1 ADD COLUMN isCloudActive INTEGER;
