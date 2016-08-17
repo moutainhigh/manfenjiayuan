@@ -29,6 +29,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.bingshanguxue.vector_uikit.R;
+import com.mfh.framework.core.logger.ZLogger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -208,6 +209,7 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 	@Override
 	public void onClick(View view) {
 		if (!clickEnabled){
+			ZLogger.d("不可点击");
 			return;
 		}
 		int index = (Integer) view.getTag();
@@ -222,6 +224,7 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 	@Override
 	public boolean onLongClick(View view) {
 		if (!clickEnabled){
+			ZLogger.d("不可点击");
 			return false;
 		}
 		int index = (Integer) view.getTag();
@@ -549,7 +552,7 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 	 */
 	public void setOnClickTabListener(OnClickTabListener onClickTabListener) {
 		this.onClickTabListener = onClickTabListener;
-		clickEnabled = true;
+		this.clickEnabled = true;
 	}
 
 	/**

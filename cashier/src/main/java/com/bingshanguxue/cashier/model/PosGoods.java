@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.model;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 
 import java.io.Serializable;

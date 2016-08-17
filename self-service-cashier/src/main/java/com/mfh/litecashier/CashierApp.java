@@ -11,6 +11,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.core.AppException;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -44,6 +45,7 @@ public class CashierApp extends MfhApplication {
         super.onCreate();
 
         ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
+        SMScaleSyncManager2.FOLDER_PATH_SMSCALE = getPackageName() + File.separator + "smscale";
 
         mRefWatcher = LeakCanary.install(this);
 

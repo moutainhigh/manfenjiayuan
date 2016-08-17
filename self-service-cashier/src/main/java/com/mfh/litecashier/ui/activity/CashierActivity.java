@@ -125,7 +125,7 @@ public abstract class CashierActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ZLogger.d("onConfigurationChanged" + newConfig.toString());
+//        ZLogger.d("onConfigurationChanged" + newConfig.toString());
         CloseComPort(comDisplay);
         CloseComPort(comPrint);
         CloseComPort(comScale);
@@ -198,11 +198,10 @@ public abstract class CashierActivity extends BaseActivity {
 //            sendBroadcast(intent);
 
             DS781A ds781A = DigiDS781Agent.parseData(comBean.bRec);
-            if (ds781A != null){
+            if (ds781A != null) {
                 DataCacheHelper.getInstance().setNetWeight(ds781A.getNetWeight());
             }
-        }
-        else{
+        } else {
             String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
                     comBean.sRecTime, comBean.sComPort,
                     new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
@@ -225,7 +224,7 @@ public abstract class CashierActivity extends BaseActivity {
         setControls();
     }
 
-    private class OpenPortRunnable implements Runnable{
+    private class OpenPortRunnable implements Runnable {
         private SerialHelper serialHelper;
 
         public OpenPortRunnable(SerialHelper serialHelper) {
@@ -235,7 +234,7 @@ public abstract class CashierActivity extends BaseActivity {
         @Override
         public void run() {
             try {
-                if (serialHelper == null || serialHelper.isOpen()){
+                if (serialHelper == null || serialHelper.isOpen()) {
                     return;
                 }
 
@@ -309,7 +308,7 @@ public abstract class CashierActivity extends BaseActivity {
         ZLogger.d("devicePath:" + allDevices.toString());
         DataCacheHelper.getInstance().setComDevicesPath(allDevices);//保存devices
 
-        if (!BizConfig.RELEASE){
+        if (!BizConfig.RELEASE) {
             String[] entryValues2 = mSerialPortFinder.getAllDevices();
             List<String> allDevices2 = new ArrayList<>();
             if (entryValues2 != null) {
@@ -513,8 +512,6 @@ public abstract class CashierActivity extends BaseActivity {
     /**
      * 参数设置
      *
-     * @param
-     * @return
      */
     private void setParam() {
         mTts.setParameter(SpeechConstant.PARAMS, null);
@@ -553,7 +550,7 @@ public abstract class CashierActivity extends BaseActivity {
 
     public void cloudSpeak(String text) {
         if (!SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
-                SharedPreferencesManager.PK_B_TTS_ENABLED, true)){
+                SharedPreferencesManager.PK_B_TTS_ENABLED, true)) {
             ZLogger.d("请在设置中开启语音播报功能");
             return;
         }
@@ -562,7 +559,11 @@ public abstract class CashierActivity extends BaseActivity {
             return;
         }
 
-        if (mTts == null){
+        if (!BizConfig.RELEASE) {
+            text = "1";
+        }
+
+        if (mTts == null) {
             initSpeechSynthesizer();
         }
 

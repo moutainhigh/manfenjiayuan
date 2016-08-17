@@ -21,7 +21,7 @@ import com.mfh.litecashier.R;
  *
  * 1.收银员离开 {@link DialogClickListener#onLock()}<br>
  * 2.收银员交接班 {@link DialogClickListener#onHandOver()}<br>
- * 3.收银员日结 {@link DialogClickListener#onDailySettle()}<br>
+ * 3.提交营业现金 {@link DialogClickListener#onCommitCash()} ()}<br>
  * 4.收银员退出账号 {@link DialogClickListener#onLogout()}<br>
  *
  * @author NAT.ZZN(bingshanguxue)

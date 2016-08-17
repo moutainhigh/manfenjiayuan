@@ -1,6 +1,6 @@
 package com.bingshanguxue.cashier.database.entity;
 
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.MfhEntity;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
@@ -39,9 +39,12 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     private Long procateId; //商品类目
 
     //2016-08-01，改用产品线编号统计商品，cateType将被废弃掉。
-    @Deprecated
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
     private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
+
+
+    /**是否和云端同步:默认1同步，0不同步*/
+    private int isCloudActive = 1;
 
     public Long getProSkuId() {
         return proSkuId;
@@ -203,5 +206,13 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     public void setProdLineId(Integer prodLineId) {
         this.prodLineId = prodLineId;
+    }
+
+    public int getIsCloudActive() {
+        return isCloudActive;
+    }
+
+    public void setIsCloudActive(int isCloudActive) {
+        this.isCloudActive = isCloudActive;
     }
 }

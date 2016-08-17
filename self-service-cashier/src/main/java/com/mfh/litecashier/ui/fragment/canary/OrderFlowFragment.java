@@ -38,7 +38,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.OrderflowLocalWarehouseEvent;
-import com.mfh.litecashier.service.OrderSyncManager2;
+import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.ExceptionOrderflowAdapter;
 import com.mfh.litecashier.ui.dialog.DailysettlePreviewDialog;
 import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
@@ -362,7 +362,7 @@ public class OrderFlowFragment extends BaseFragment {
             @Override
             public void onDatasetChanged() {
                 reload();
-                OrderSyncManager2.get().sync();
+                UploadSyncManager.getInstance().sync();
             }
         });
         if (!mPosOrderDetailDialog.isShowing()) {
@@ -390,7 +390,7 @@ public class OrderFlowFragment extends BaseFragment {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING);
 
         JSONArray orders = new JSONArray();
-        orders.add(OrderSyncManager2.get().generateOrderJson(orderEntity));
+        orders.add(UploadSyncManager.getInstance().generateOrderJson(orderEntity));
 
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(

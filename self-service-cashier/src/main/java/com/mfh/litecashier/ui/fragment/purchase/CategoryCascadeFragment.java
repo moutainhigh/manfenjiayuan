@@ -13,7 +13,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.bean.CategoryOption;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.litecashier.event.OrderGoodsEvent;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.adapter.CategoryCascadeAdapter;

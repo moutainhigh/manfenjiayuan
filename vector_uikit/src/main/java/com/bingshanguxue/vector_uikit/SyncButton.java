@@ -29,11 +29,11 @@ public class SyncButton extends RelativeLayout {
 
         View rootView = View.inflate(getContext(), R.layout.widget_sync_button, this);
 
-        ivSync = (ImageView)rootView.findViewById(R.id.iv_sync);
-        ivBadge = (ImageView)rootView.findViewById(R.id.iv_badge);
-        mProgressBar = (ProgressBar)rootView.findViewById(R.id.progressBar);
+        ivSync = (ImageView) rootView.findViewById(R.id.iv_sync);
+        ivBadge = (ImageView) rootView.findViewById(R.id.iv_badge);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
 
-        if (attrs != null){
+        if (attrs != null) {
 //            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomSearchView);
 //
 //            etQueryText.setTextColor(a.getColor(R.styleable.CustomSearchView_textColor, Color.BLACK));
@@ -46,8 +46,8 @@ public class SyncButton extends RelativeLayout {
 
     /**
      * 开始同步
-     * */
-    public void startSync(){
+     */
+    public void startSync() {
         this.setEnabled(false);
         ivSync.setVisibility(INVISIBLE);
         mProgressBar.setVisibility(VISIBLE);
@@ -55,21 +55,21 @@ public class SyncButton extends RelativeLayout {
 
     /**
      * 停止同步
-     * */
-    public void stopSync(){
+     */
+    public void stopSync() {
         this.setEnabled(true);
         ivSync.setVisibility(VISIBLE);
         mProgressBar.setVisibility(INVISIBLE);
+        ivBadge.setVisibility(GONE);
     }
 
     /**
      * 设置红点是否可见
-     * */
-    public void setBadgeEnabled(boolean enabled){
-        if (enabled){
+     */
+    public void setBadgeEnabled(boolean enabled) {
+        if (enabled) {
             ivBadge.setVisibility(VISIBLE);
-        }
-        else{
+        } else {
             ivBadge.setVisibility(GONE);
         }
     }

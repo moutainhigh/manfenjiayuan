@@ -1,20 +1,11 @@
 package com.mfh.litecashier.service;
 
 
-import android.os.AsyncTask;
-import android.os.Bundle;
-
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.network.NetWorkUtil;
-import com.mfh.litecashier.CashierApp;
+import com.mfh.framework.api.constant.PriceType;
 import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
 
-import org.century.GreenTagsApi;
 import org.century.schemas.ArrayOfGoodsInfoEX;
 import org.century.schemas.ArrayOfProperty;
 import org.century.schemas.GoodsInfoEX;
@@ -24,8 +15,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
 
 /**
  * 绿泰价签数据同步管理
@@ -42,174 +31,33 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public class EslSyncManager {
-    /**
-     * 同步状态
-     */
-    public static final Integer SYNC_STATUS_NA = 0;//未同步
-    public static final Integer SYNC_STATUS_UPDATE = 1;//有更新
-    public static final Integer SYNC_STATUS_LATEST = 2;//最新的
-
-    public static final int SYNC_MODE_FULLSCALE = 0;//全量更新
-    public static final int SYNC_MODE_INCREMENTAL = 1;//增量更新
-
     //每次同步最大数量
-    private static final int MAX_SYNC_PAGESIZE = 30;
-
-    private boolean bSyncInProgress = false;//是否正在同步
-
-    private static EslSyncManager instance = null;
+    public static final int ESL_MAX_SYNC_PAGESIZE = 20;
 
 
-    /**
-     * 返回 EslSyncManager 实例
-     *
-     * @return
-     */
-    public static EslSyncManager getInstance() {
-        if (instance == null) {
-            synchronized (EslSyncManager.class) {
-                if (instance == null) {
-                    instance = new EslSyncManager();
-                }
+    public GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult makeEslPushRequest(List<PosProductEntity> goodsList, Date newCursor) {
+        if (goodsList == null || goodsList.size() < 1) {
+            return new GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult(false);
+        }
+
+        ArrayOfGoodsInfoEX arrayOfGoodsInfoEX = new ArrayOfGoodsInfoEX();
+        for (PosProductEntity goods : goodsList) {
+            //记录最大时间游标
+            if (newCursor == null || goods.getUpdatedDate() == null
+                    || newCursor.compareTo(goods.getUpdatedDate()) <= 0) {
+                newCursor = goods.getUpdatedDate();
             }
+
+            arrayOfGoodsInfoEX.add(createFromPosProductEntity(goods));
         }
-        return instance;
-    }
-
-    public EslSyncManager() {
-    }
-
-
-    /**
-     * 上传POS订单
-     */
-    public synchronized void sync() {
-        if (bSyncInProgress) {
-            uploadProcess("正在同步价签商品...");
-            return;
-        }
-
-        if (GreenTagsApi.FULLSCALE_ENABLED) {
-            ZLogger.d("全量同步");
-            SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
-                    GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
-        }
-        batchUploadGoodsInfo();
-    }
-
-
-    /**
-     * 上传结束
-     */
-    private void uploadProcess(String msg) {
-        ZLogger.df(msg);
-        bSyncInProgress = true;
-        EventBus.getDefault().post(new EslSyncManagerEvent(EslSyncManagerEvent.EVENT_ID_SYNC_DATA_PROCESS));
-    }
-
-    /**
-     * 上传结束
-     */
-    private void uploadFinished(String msg) {
-        ZLogger.df(msg);
-        bSyncInProgress = false;
-        EventBus.getDefault().post(new EslSyncManagerEvent(EslSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED));
-    }
-
-    /**
-     * 上传结束失败
-     */
-    private void uploadFailed(String msg) {
-        ZLogger.df(msg);
-        bSyncInProgress = false;
-        EventBus.getDefault().post(new EslSyncManagerEvent(EslSyncManagerEvent.EVENT_ID_SYNC_DATA_FAILED));
-    }
-
-    /**
-     * 批量推送商品数据<br>
-     * 根据上一次同步游标同步订单数据
-     */
-    private void batchUploadGoodsInfo() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            uploadFailed("网络未连接，暂停同步价签商品。");
-            return;
-        }
-
-        String lastCursor = SharedPreferencesManager.getText(GreenTagsApi.PREF_GREENTAGS,
-                GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR);
-        ZLogger.d(String.format("最后一次同步商品的更新时间(%s)。", lastCursor));
-
-        ESLPushGoodsExInfoPackAsyncTask asyncTask = new ESLPushGoodsExInfoPackAsyncTask(lastCursor);
-        asyncTask.execute();
-    }
-
-    private class ESLPushGoodsExInfoPackAsyncTask extends AsyncTask<String, Void, Boolean> {
-        private String lastCursor;
-
-
-        public ESLPushGoodsExInfoPackAsyncTask(String lastCursor) {
-            this.lastCursor = lastCursor;
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                //上传未同步并且已完成的订单
-//        SELECT * FROM tb_pos_order_v2 WHERE updatedDate > '2016-02-17 14:38:43' and sellerId = '134221' and status = '4' and paystatus = '1' ORDER BY updatedDate asc limit 0,10
-//                String strWhere = String.format("cateType = '%d' and updatedDate > '%s'",
-//                        CateApi.BACKEND_CATE_BTYPE_FRESH, lastCursor);
-                String strWhere = String.format("updatedDate > '%s'", lastCursor);
-                List<PosProductEntity> goodsList = PosProductService.get()
-                        .queryAllAsc(strWhere, new PageInfo(1, MAX_SYNC_PAGESIZE));
-                if (goodsList == null || goodsList.size() < 1) {
-                    uploadFinished(String.format("没有商品需要推送(%s)", lastCursor));
-                    return false;
-                }
-                uploadProcess(String.format("准备推送%d商品到价签(%s)", goodsList.size(), lastCursor));
-
-                Date newCursor = null;
-                ArrayOfGoodsInfoEX arrayOfGoodsInfoEX = new ArrayOfGoodsInfoEX();
-                for (PosProductEntity goods : goodsList) {
-                    //保存最大时间游标
-                    if (newCursor == null || goods.getUpdatedDate() == null
-                            || newCursor.compareTo(goods.getUpdatedDate()) <= 0) {
-                        newCursor = goods.getUpdatedDate();
-                    }
-
-                    arrayOfGoodsInfoEX.add(createFromPosProductEntity(goods));
-                }
-                return GreenTagsApiImpl2.ESLPushGoodsInfoExPack(arrayOfGoodsInfoEX, newCursor);
-            } catch (XmlPullParserException | IOException e) {
-                e.printStackTrace();
-                ZLogger.e(String.format("ESLPushGoodsInfoExPack failed, %s", e.toString()));
-                return false;
-            } catch (Exception e) {
-                e.printStackTrace();
-                ZLogger.e(String.format("ESLPushGoodsInfoExPack failed, %s", e.toString()));
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-
-            if (aBoolean) {
-                uploadFailed("等待继续推送商品");
-                //继续上传订单
-                batchUploadGoodsInfo();
-            } else {
-                uploadFailed("批量推送商品结束");
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            ZLogger.d("onProgressUpdate");
+        try {
+            return GreenTagsApiImpl2.ESLPushGoodsInfoExPack2(arrayOfGoodsInfoEX, newCursor);
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+            return new GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult(false);
         }
     }
 
@@ -223,38 +71,22 @@ public class EslSyncManager {
         propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_GOODSCODE, goods.getBarcode()));
         propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_NAME, goods.getName()));
 //        propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_ORIGIN, "米西厨房"));
-        propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_PRICE, MUtils.formatDouble(goods.getCostPrice(), "0")));
-        propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_UNIT, goods.getUnit()));
+
+        //2016-07-16 计重商品单位按“斤”显示，价格／2
+        if (PriceType.WEIGHT.equals(goods.getPriceType())){
+            propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_PRICE,
+                    MUtils.formatDouble(goods.getCostPrice()/2, "0")));
+            propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_UNIT, "斤"));
+        }
+        else{
+            propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_PRICE,
+                    MUtils.formatDouble(goods.getCostPrice(), "0")));
+            propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_UNIT, goods.getUnit()));
+        }
+
         googsInfoEX.setProperties(propertyList);
 
         return googsInfoEX;
-    }
-
-    public class EslSyncManagerEvent {
-        public static final int EVENT_ID_SYNC_DATA_START = 0X03;//同步数据开始
-        public static final int EVENT_ID_SYNC_DATA_PROCESS = 0X04;//同步数据处理中
-        public static final int EVENT_ID_SYNC_DATA_FINISHED = 0X05;//同步数据结束
-        public static final int EVENT_ID_SYNC_DATA_FAILED = 0X06;//同步数据失败
-
-        private int eventId;
-        private Bundle args;//参数
-
-        public EslSyncManagerEvent(int eventId) {
-            this.eventId = eventId;
-        }
-
-        public EslSyncManagerEvent(int eventId, Bundle args) {
-            this.eventId = eventId;
-            this.args = args;
-        }
-
-        public int getEventId() {
-            return eventId;
-        }
-
-        public Bundle getArgs() {
-            return args;
-        }
     }
 
 }

@@ -53,7 +53,7 @@ public class GreenTagsApiImpl extends GreenTagsApi {
         goodsInfoEXArray.setArrayGoodsInfoEx(arrayOfGoodsInfoEX);
         request.addProperty("goodsInfoExArray", goodsInfoEXArray);
 //        request.addProperty("goodsInfoExArray", new ArrayOfGoodsInfoEX(arrayGoodsInfoEx));
-        ZLogger.d(String.format("ESLPushGoodsInfoExPack.request: %s", request.toString()));
+        ZLogger.df(String.format("ESLPushGoodsInfoExPack.request: %s", request.toString()));
 
         //Step 2: Create envelope
         SoapSerializationEnvelope envelope = KSoapHelper.getSoapSerializationEnvelope(request);

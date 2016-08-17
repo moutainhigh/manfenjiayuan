@@ -5,33 +5,41 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 
+import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.Encoding;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import de.greenrobot.event.EventBus;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 寺冈电子秤数据同步管理
@@ -61,6 +69,9 @@ public class SMScaleSyncManager2 extends FTPManager {
 
     public static boolean FULLSCALE_ENABLED = true;
     public static String SMSCALE_CSV_FILENAME = "smscale_mixicook";//.csv
+    public static String FOLDER_PATH_SMSCALE = "smscale";
+    public static final SimpleDateFormat FORMAT_YYYYMMDD = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
     /**
      * Digistore @Label 模版
      * <ol>
@@ -201,9 +212,9 @@ public class SMScaleSyncManager2 extends FTPManager {
 
         public WriteFileAsyncTask(String startCursor) {
             this.startCursor = startCursor;
-            this.file = SMScaleSyncManager2.getCSVFile();
+            this.file = SMScaleSyncManager2.getCSVFile2();
             this.sqlWhere = String.format("(cateType = '%d' or cateType = '%d') " +
-                    "and updatedDate >= '%s'",
+                            "and updatedDate >= '%s'",
                     CateApi.BACKEND_CATE_BTYPE_FRESH, CateApi.BACKEND_CATE_BTYPE_FRUIT,
                     startCursor);
         }
@@ -255,7 +266,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                             String.format("%.0f", goods.getCostPrice() * 100),
                             plu,
                             FLAG_F12,
-                            String.valueOf(goods.getProdLineId()),
+                            String.valueOf(goods.getCateType()),
                             goods.getName(),
                             PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
                 }
@@ -298,7 +309,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                                 String.format("%.0f", goods.getCostPrice() * 100),
                                 plu,
                                 FLAG_F12,
-                                String.valueOf(goods.getProdLineId()),
+                                String.valueOf(goods.getCateType()),
                                 goods.getName(),
                                 PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
                     }
@@ -436,18 +447,29 @@ public class SMScaleSyncManager2 extends FTPManager {
 
     /**
      * 获取CSV文件，提交成功后需要手动删除文件，程序内部采用增量的方式更新。
+     * smscale_mixicook2016-06-15-1465997239811.csv
      */
+    @Deprecated
     public static File getCSVFile() {
-        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
-
         long timestamp = System.currentTimeMillis();
         String time = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
         String fileName = SMSCALE_CSV_FILENAME + time + "-" + timestamp + ".csv";//
         ZLogger.df("csvFile: " + fileName);
+
+        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
         return new File(exportDir, fileName);
+    }
+
+    public static File getCSVFile2() {
+        long timestamp = System.currentTimeMillis();
+        String time = FORMAT_YYYYMMDD.format(new Date());
+        String fileName = SMSCALE_CSV_FILENAME + time + "-" + timestamp + ".csv";//
+        ZLogger.df("csvFile: " + fileName);
+
+        return FileUtil.getSaveFile(FOLDER_PATH_SMSCALE, fileName);
     }
 
     public class SMScaleSyncManagerEvent {
@@ -475,6 +497,138 @@ public class SMScaleSyncManager2 extends FTPManager {
         public Bundle getArgs() {
             return args;
         }
+    }
+
+
+    /**
+     * 删除过期文件
+     */
+    public static void deleteOldFiles(final int saveDate) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DATE, 0 - saveDate);
+                calendar.set(Calendar.HOUR, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+//        ZLogger.d("" + DATE_FORMAT.format(calendar.getTime()));
+
+//        /storage/emulated/0/smscale
+                String path = FileUtil.getSavePath(FOLDER_PATH_SMSCALE);
+                ZLogger.d(path);
+                File file = new File(path);
+                if (!file.exists()) {
+//            ZLogger.d(String.format("%s 不存在", file.getAbsolutePath()));
+                    return;
+                }
+
+                if (!file.isDirectory()) {
+//            ZLogger.d(String.format("%s 不是目录", file.getAbsolutePath()));
+                    return;
+                }
+
+                for (File child : file.listFiles()) {
+                    if (child.isDirectory()) {
+//                ZLogger.d(String.format("%s是目录，不需要删除", child.getName()));
+                        continue;
+                    }
+
+                    try {
+                        String name = child.getName();
+                        //文件名格式是smscale_mixicook2016-06-15-1465997239811.csv，所以格式不对的，也要删除。系统中可能存在很多2016-0001-01.log等等这样的文件。
+                        if (StringUtils.isEmpty(name) || name.length() != 44) {
+                            ZLogger.df(String.format("删除无效csv文件 %s", name));
+                            child.delete();
+                            continue;
+                        }
+                        String dateStr = name.substring(16, 26);
+                        Date date = FORMAT_YYYYMMDD.parse(dateStr);
+//                ZLogger.d(" child:" + DATE_FORMAT.format(date));
+                        if (date.before(calendar.getTime())) {
+                            ZLogger.df(String.format("csv文件已经过期，删除%s", name));
+                            child.delete();
+                        } else {
+//                    ZLogger.d(String.format("日志有效，%s", child.getName()));
+//                    child.delete();
+                        }
+                    } catch (ParseException e) {
+                        child.delete();
+//                e.printStackTrace();
+                        ZLogger.ef(String.format("%s", e.toString()));
+                    }
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String escCommand) {
+                    }
+                });
+    }
+
+
+    public static void deleteOldFiles2() {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+//        /storage/emulated/0/smscale
+                String path = FileUtil.getSavePath("");
+                ZLogger.d(path);
+                File file = new File(path);
+                if (!file.exists()) {
+//            ZLogger.d(String.format("%s 不存在", file.getAbsolutePath()));
+                    return;
+                }
+
+                if (!file.isDirectory()) {
+//            ZLogger.d(String.format("%s 不是目录", file.getAbsolutePath()));
+                    return;
+                }
+
+                for (File child : file.listFiles()) {
+                    if (child.isDirectory()) {
+//                ZLogger.d(String.format("%s是目录，不需要删除", child.getName()));
+                        continue;
+                    }
+                    String name = child.getName();
+                    //文件名格式是smscale_mixicook2016-06-15-1465997239811.csv，所以格式不对的，也要删除。系统中可能存在很多2016-0001-01.log等等这样的文件。
+                    if (StringUtils.isEmpty(name) || name.startsWith("smscale")) {
+                        ZLogger.df(String.format("删除无效csv文件 %s", name));
+                        child.delete();
+                    }
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String escCommand) {
+                    }
+                });
     }
 
 }

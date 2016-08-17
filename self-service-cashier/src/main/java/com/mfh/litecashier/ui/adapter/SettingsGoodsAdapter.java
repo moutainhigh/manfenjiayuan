@@ -14,7 +14,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;

@@ -37,7 +37,7 @@ import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.service.OrderSyncManager2;
+import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
@@ -153,7 +153,7 @@ public class AdministratorActivity extends BaseActivity {
 
         initMenuRecyclerView();
 
-        OrderSyncManager2.get().sync();
+        UploadSyncManager.getInstance().sync();
     }
 
     @Override
@@ -422,8 +422,8 @@ public class AdministratorActivity extends BaseActivity {
 //                "充值", R.mipmap.ic_service_recharge));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_EXCEPTION_ORDERS,
-//                "异常订单", R.mipmap.ic_admin_menu_settings));
+        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CASHQUOTA,
+                "异常订单", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CANARY,
                 "金丝雀", R.mipmap.ic_canary));
 
@@ -454,8 +454,10 @@ public class AdministratorActivity extends BaseActivity {
             dailySettle(null, true);
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_TOPUP) == 0) {
             topupService();
-        }else if (id.compareTo(CashierFunctional.ADMIN_MENU_SETTINGS) == 0) {
+        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_SETTINGS) == 0) {
             redirect2Settings();
+        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CASHQUOTA) == 0) {
+            redirect2CashQuota();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CANARY) == 0) {
             redirect2Canary();
         } else {
@@ -547,6 +549,19 @@ public class AdministratorActivity extends BaseActivity {
                 SimpleActivity.FT_SETTINGS);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
+    /**
+     * 现金授权
+     */
+    public void redirect2CashQuota() {
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_CANARY_CASH_QUOTA);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
+//        extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
+        UIHelper.startActivity(this, SimpleDialogActivity.class, extras);
+    }
+
     /**
      * 金丝雀
      */
@@ -646,11 +661,7 @@ public class AdministratorActivity extends BaseActivity {
         mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
         tvUsername.setText(MfhLoginService.get().getHumanName());
 
-        //设置需要更新前台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PUBLIC_LAUNDRY_FRONTCATEGORY_ENABLED, true);
-        //设置需要更新前台类目
+       //设置需要更新前台类目
         SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
@@ -682,12 +693,12 @@ public class AdministratorActivity extends BaseActivity {
 
 //        AppHelper.clearCache();
 //        hideSyncDataDialog();
-        if (isSlient) {
-            DataSyncManager.get().sync();
-        } else {
+        if (!isSlient) {
             showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", false);
-            DataSyncManager.get().sync();
         }
+        DataSyncManager.get().sync();
     }
+
+
 
 }

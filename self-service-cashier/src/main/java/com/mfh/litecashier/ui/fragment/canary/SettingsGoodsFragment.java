@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -300,17 +300,12 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
         }
 
         onLoadStart();
-
-//        mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-        mPageInfo.reset();
-//        if (orderListAdapter != null) {
-//            orderListAdapter.setEntityList(null);
-//        }
-
         if (orderListAdapter != null) {
             orderListAdapter.setEntityList(null);
         }
 
+//        mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
+        mPageInfo.reset();
         mPageInfo.setPageNo(1);
         load(mPageInfo);
     }
@@ -397,22 +392,22 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
             break;
         }
 
-        List<PosProductEntity> entityList  = PosProductService.get()
+        List<PosProductEntity> entities  = PosProductService.get()
                 .queryAllBy(sbWhere.toString(), "updatedDate desc", pageInfo);
 
-        if (entityList == null || entityList.size() < 1) {
+        if (entities == null || entities.size() < 1) {
             ZLogger.d("没有找到商品。");
 
             tvBrief.setText("商品总数：0");
             onLoadFinished();
             return;
         }
-        ZLogger.d(String.format("共找到%d条商品(%d/%d-%d)", entityList.size(),
+        ZLogger.d(String.format("共找到%d条商品(%d/%d-%d)", entities.size(),
                 pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
         tvBrief.setText(String.format("商品总数：%d", pageInfo.getTotalCount()));
         if (orderListAdapter != null) {
-            orderListAdapter.appendEntityList(entityList);
+            orderListAdapter.appendEntityList(entities);
         }
         onLoadFinished();
     }

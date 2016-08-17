@@ -26,18 +26,18 @@ import com.mfh.framework.api.impl.StockApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.StockOutItem;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.StockOutAdapter;
 
 import java.util.ArrayList;
@@ -233,7 +233,7 @@ public class StockDetailFragment extends BaseFragment {
 //                                tvMemberCompany.setText(option.getValue());
 //                            }
                             //打印出库单
-                            SerialManager.printStockOut(stockOutItems);
+                            PrintManagerImpl.printStockOut(stockOutItems);
 
                             animProgress.setVisibility(View.GONE);
                             btnStockOut.setEnabled(true);

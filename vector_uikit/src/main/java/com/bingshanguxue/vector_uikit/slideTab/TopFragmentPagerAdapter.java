@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.R;
+import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import java.util.ArrayList;
@@ -114,6 +115,9 @@ public class TopFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
+        if (mTabs == null){
+            return 0;
+        }
         return mTabs.size();
     }
 
@@ -137,6 +141,10 @@ public class TopFragmentPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public ViewPageInfo getTab(int position) {
+        ZLogger.d(String.format("position=%d, size=%d", position, mTabs.size()));
+        if (position < 0 || position >= mTabs.size()){
+            return null;
+        }
         return mTabs.get(position);
     }
 }

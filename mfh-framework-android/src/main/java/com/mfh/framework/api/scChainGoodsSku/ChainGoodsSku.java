@@ -25,6 +25,7 @@ public class ChainGoodsSku implements ILongId, Serializable {
     private Double singleStartNum;  //给门店的单件起送数量
     private Double singleCostPrice; //给门店的单件批发价
     private Double hintPrice = 0D;//批发商的建议零售价
+    private Long providerId;
     private String companyName = "";//批发商名称
     private Long tenantId;      // 租户信息，即微超公司id,供应商编号
 //    private Date createdDate;
@@ -127,6 +128,14 @@ public class ChainGoodsSku implements ILongId, Serializable {
 
     public void setHintPrice(Double hintPrice) {
         this.hintPrice = hintPrice;
+    }
+
+    public Long getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
     }
 
     public String getCompanyName() {

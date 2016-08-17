@@ -52,23 +52,17 @@ public class SharedPreferencesHelper {
 
     //同步商品
     public static final String PK_SKU_UPDATE_UNREADNUMBER = "pk_sku_update_unreadnumber";   //上一次交接班班次
-    public static final String PK_SYNC_PRODUCTS_ENABLED = "pk_sync_products_enabled";//同步商品
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
     private static final String PK_SYNC_PRODUCTS_MODE = "pk_sync_products_mode";//同步方式：0全量，1增量。
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
+    public static final String PK_SYNC_PRODUCTCATALOG_STARTCURSOR = "pk_sync_PRODUCTCATALOG_STARTCURSOR";
     //同步订单
     private static final String PK_POS_ORDER_LAST_UPDATE = "pos_order_lastUpdate";//最后一次更新时间
     private static final String PK_SYNC_ORDER_INTERVAL = "pk_sync_order_interval";//同步间隔（单位，秒）
     //同步账号
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
     private static final String PK_SYNC_COMPANY_HUMAN_ENABLED = "pk_sync_company_human_enabled";
-    //前台商品类目
-    public static final String PK_SYNC_PUBLIC_FRONTCATEGORY_ENABLED = "pk_sync_public_frontcategory_enabled";//公共类目
-    public static final String PK_SYNC_CUSTOM_FRONTCATEGORY_ENABLED = "pk_sync_custom_frontcategory_enabled";//私有类目
-    public static final String PK_SYNC_PUBLIC_LAUNDRY_FRONTCATEGORY_ENABLED = "pk_sync_public_laundry_frontcategory_enabled";//洗衣类目
-    public static final String PK_SYNC_FRONTEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_frontend_categoryinfo_fresh_enabled";//生鲜类目
-    public static final String PK_SYNC_FRONTEND_CATEGORYINFO_FRUIT_ENABLED = "pk_sync_frontend_categoryinfo_fruit_enabled";//生鲜类目
-    // 后台商品类目
+   // 后台商品类目
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_ENABLED = "pk_sync_bakend_categoryinfo_enabled";
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_bakend_categoryinfo_fresh_enabled";
     //流水

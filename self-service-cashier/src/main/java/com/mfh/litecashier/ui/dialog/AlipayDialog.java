@@ -75,7 +75,7 @@ public class AlipayDialog extends CommonDialog {
 
     public interface DialogClickListener {
         /**支付完成*/
-        void onPaySucceed(Double amount, String outTradeNo);
+        void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo);
         /**取消支付*/
         void onPayCanceled();
     }
@@ -200,7 +200,7 @@ public class AlipayDialog extends CommonDialog {
         etAuthCode.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("keyCode=%d, action=%d", keyCode, event.getAction()));
+//                ZLogger.d(String.format("keyCode=%d, action=%d", keyCode, event.getAction()));
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         submitOrder();
@@ -508,13 +508,13 @@ public class AlipayDialog extends CommonDialog {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mListener != null){
-                    mListener.onPaySucceed(paidAmount, outTradeNo);
-                }
-
                 frameOperation.setVisibility(View.GONE);
                 bPayProcessing = false;
                 dismiss();
+
+                if (mListener != null){
+                    mListener.onPaySucceed(mQuickPayInfo, outTradeNo);
+                }
             }
         }, 500);
     }
@@ -568,6 +568,12 @@ public class AlipayDialog extends CommonDialog {
             this.btnClose.setVisibility(View.GONE);
         }
 
+        etAuthCode.getText().clear();
+        etAuthCode.setVisibility(View.VISIBLE);
+        etAuthCode.requestFocus();
+        frameProcess.setVisibility(View.GONE);
+        frameOperation.setVisibility(View.GONE);
 
+        bPayProcessing = false;
     }
 }

@@ -8,22 +8,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mfh.framework.uikit.base.BaseFragment;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosOrder;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
 import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.ui.fragment.orderflow.GoodsListFragment;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import de.greenrobot.event.EventBus;
 
 /**
  * 线上订单－－订单流水
- * Created by kun on 15/8/31.
+ * Created by bingshanguxue on 15/8/31.
  */
 public class OnlineOrderFlowFragment extends BaseFragment {
 
@@ -147,8 +147,7 @@ public class OnlineOrderFlowFragment extends BaseFragment {
 
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        //TODO,打印订单
-        SerialManager.printOrder(curOrder, true);
+        PrintManagerImpl.printPosOrder(curOrder, true);
     }
 
     /**

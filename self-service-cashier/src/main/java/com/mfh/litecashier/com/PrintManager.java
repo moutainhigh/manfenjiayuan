@@ -6,11 +6,12 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.gprinter.command.EscCommand;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -23,26 +24,126 @@ import com.mfh.litecashier.event.SerialPortEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by bingshanguxue on 6/22/16.
  */
 public class PrintManager {
+    public static java.text.SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.US);
+    public static final int PRINT_PRODUCT_NAME_MAX_LEN = 24;
 
     /**
-     * 打印生鲜预定订单
-     * 适用场景：线上订单－生鲜预定－确认订单并打印
-     * */
-    public static void printScheduleOrder(InvSendOrder invSendOrder, List<FreshScheduleGoods> goodsList){
-        if (invSendOrder == null || goodsList == null || goodsList.size() < 1){
-            return;
+     * 空格对齐方式
+     **/
+    public enum BLANK_GRAVITY {
+        NONE(0),
+        LEFT(1),
+        CENTER(2),
+        RIGHT(3);
+
+        private final int value;
+
+        BLANK_GRAVITY(int value) {
+            this.value = value;
         }
 
+        public byte getValue() {
+            return (byte) this.value;
+        }
+    }
+
+    public static void print(EscCommand escCommand){
+        if (escCommand != null) {
+            //获得打印命令
+            Vector<Byte> datas = escCommand.getCommand();
+            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
+//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+        }
+    }
+
+    /**
+     * 添加空格
+     */
+    public static String genBlankspace(int len) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 返回字节数
+     */
+    public static int getLength(String text) {
+        if (StringUtils.isEmpty(text)) {
+            return 0;
+        }
+
+        int len = 0;
+        if (!text.equals("")) {
+            try {
+                byte[] bs = text.getBytes("GB2312");
+                len = bs.length;
+            } catch (UnsupportedEncodingException var4) {
+                var4.printStackTrace();
+                ZLogger.e(var4.toString());
+            }
+        }
+//        ZLogger.d(String.format("text=%s, len=%d", text, len));
+
+        return len;
+    }
+
+    /**
+     * */
+    public static String formatShort(String raw, int maxWidth, BLANK_GRAVITY blankGravity) {
+//        Pattern p = Pattern.compile("[0-9]*");
+//        p=Pattern.compile("[\u4e00-\u9fa5]");
+
+//        String formated = raw.trim();
+//        char[] rawChars = raw.trim().toCharArray();
+//        int len = rawChars.length;
+        int len = getLength(raw);
+        String subStr = DataConvertUtil.subString(raw, Math.min(len, maxWidth));//截取字符串 String.valueOf(rawChars, 0, len2)
+        String blankStr = genBlankspace(Math.max(maxWidth - len, 0));
+//        ZLogger.d(String.format("subString([%s%s]", subStr, blankStr));
+        if (len > maxWidth) {
+            return subStr;
+        } else {
+            //右对齐，在前面补空格
+            if (blankGravity == BLANK_GRAVITY.LEFT) {
+                return blankStr + subStr;
+            }
+            //左对齐，在后面补空格
+            else if (blankGravity == BLANK_GRAVITY.RIGHT) {
+                return subStr + blankStr;
+            } else {
+                return subStr;
+            }
+        }
+    }
+
+
+    private static EscCommand makeScheduleOrderEsc(InvSendOrder invSendOrder, List<FreshScheduleGoods> goodsList) {
+        if (invSendOrder == null || goodsList == null || goodsList.size() < 1) {
+            return null;
+        }
         EscCommand esc = new EscCommand();
         esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
         //设置打印居中
@@ -51,9 +152,9 @@ public class PrintManager {
 //        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
 //                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
         /**打印 标题*/
-        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())){
+        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
             esc.addText("购物清单\n");
-        }else{
+        } else {
             //显示当前网点名称
             esc.addText(MfhLoginService.get().getCurOfficeName());
         }
@@ -68,7 +169,10 @@ public class PrintManager {
         /**打印 机器设备号＋订单号*/
         esc.addText(String.format("%s \n", invSendOrder.getName()));
         /**打印 订购日期*/
-        esc.addText(String.format("%s \n", TimeUtil.format(invSendOrder.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("下单时间：%s \n", TimeUtil.format(invSendOrder.getCreatedDate(),
+                TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("姓名：%s \n", invSendOrder.getContact()));
+        esc.addText(String.format("电话：%s \n", invSendOrder.getReceiveMobile()));
         esc.addText("--------------------------------\n");//32个
 //        esc.addPrintAndLineFeed();
 
@@ -78,7 +182,7 @@ public class PrintManager {
         //设置为倍高倍宽
         esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-        for (FreshScheduleGoods entity : goodsList){
+        for (FreshScheduleGoods entity : goodsList) {
             makeSheduleLine(esc, String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
                     entity.getBuyUnit(), MUtils.formatDouble(entity.getAskTotalCount(), ""));
         }
@@ -105,34 +209,27 @@ public class PrintManager {
 //        esc.addPrintAndLineFeed();
         esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
 
-        //获得打印命令
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+        return esc;
     }
 
-
     private static EscCommand makeSheduleLine(EscCommand rawEsc, String name, String unit,
-                                              String bcount){
+                                              String bcount) {
         EscCommand esc = rawEsc;
-        if (esc == null){
+        if (esc == null) {
             esc = new EscCommand();
         }
 
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
 
         //最多显示17*0.6=10.2个汉字
-        if (getLength(name) > 21){
+        if (getLength(name) > 21) {
             esc.addText(name);//显示名称
             esc.addText("\n");
             //另起一行显示单价/数量/小计，居右显示
             esc.addSelectJustification(EscCommand.JUSTIFICATION.RIGHT);//设置打印左对齐
             esc.addText(String.format("%s%s", formatShort(unit, 5, BLANK_GRAVITY.RIGHT),
                     formatShort(bcount, 5, BLANK_GRAVITY.LEFT)));
-        }
-        else{
+        } else {
             //在名称后面显示单价/数量/小计
             String printText = String.format("%s%s%s",
                     formatShort(name, 21, BLANK_GRAVITY.RIGHT),
@@ -147,13 +244,42 @@ public class PrintManager {
         return esc;
     }
 
-
     /**
-     * 打印POS订单流水
-     * */
-    public static void printPosOrder(List<PosOrderEntity> orderEntities, boolean withCode128){
-        if (orderEntities == null){
-            return;
+     * 打印生鲜预定订单
+     * 适用场景：线上订单－生鲜预定－确认订单并打印
+     */
+    public static void printScheduleOrder(final InvSendOrder invSendOrder, final List<FreshScheduleGoods> goodsList) {
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                subscriber.onNext(makeScheduleOrderEsc(invSendOrder, goodsList));
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        print(escCommand);
+                    }
+                });
+    }
+
+
+    private static EscCommand makePosOrderEsc(List<PosOrderEntity> orderEntities){
+        if (orderEntities == null) {
+            return null;
         }
 
         PosOrderEntity firstOrderEntity = orderEntities.get(0);
@@ -166,9 +292,9 @@ public class PrintManager {
 //        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
 //                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
         /**打印 标题*/
-        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())){
+        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
             esc.addText("购物清单\n");
-        }else{
+        } else {
             //显示当前网点名称
             esc.addText(MfhLoginService.get().getCurOfficeName());
         }
@@ -198,8 +324,8 @@ public class PrintManager {
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
 
         List<PosOrderItemEntity> posOrderItemEntityList = CashierFactory.fetchOrderItems(orderEntities);
-        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0){
-            for (PosOrderItemEntity entity : posOrderItemEntityList){
+        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
+            for (PosOrderItemEntity entity : posOrderItemEntityList) {
 //                makeTemp(esc, entity.getName(), String.format("%.2f", entity.getCostPrice() * entity.getBcount()));
                 makePosOrderLine(esc, String.format("%s/%s", entity.getBarcode(),
                         entity.getName()), String.format("%.2f", entity.getFinalPrice()),
@@ -215,13 +341,13 @@ public class PrintManager {
         esc.addText("--------------------------------\n");//32个
         Double finalAmount = 0D, ruleDis = 0D, paidAmount = 0D, payableAmount = 0D, change = 0D;
         List<PayWay> payWays = new ArrayList<>();
-        for (PosOrderEntity orderEntity : orderEntities){
-            ZLogger.df(JSONObject.toJSONString(orderEntity));
+        for (PosOrderEntity orderEntity : orderEntities) {
+            ZLogger.d(JSONObject.toJSONString(orderEntity));
             finalAmount += orderEntity.getFinalAmount();
             ruleDis += orderEntity.getRuleDiscountAmount();
             paidAmount += (orderEntity.getPaidAmount() + orderEntity.getChange());
             Double payableTemp = orderEntity.getFinalAmount() - orderEntity.getRuleDiscountAmount();
-            if (payableTemp < 0.01){
+            if (payableTemp < 0.01) {
                 payableTemp = 0D;
             }
             payableAmount += payableTemp;
@@ -230,7 +356,7 @@ public class PrintManager {
 
             //支付记录
             OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-            if (payWrapper.getPayWays() != null){
+            if (payWrapper.getPayWays() != null) {
                 payWays.addAll(payWrapper.getPayWays());
             }
         }
@@ -239,15 +365,14 @@ public class PrintManager {
 //        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
         esc.addText(String.format("应收:%.2f\n", payableAmount));
 //        esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
-        if (payWays != null && payWays.size() > 0){
-            for (PayWay payWay : payWays){
-                // TODO: 8/2/16 ，以后如果考虑多种支付方式多次支付，应该要做一次合并统计，一种支付方式暂时可以不做。 
-                esc.addText(String.format("%s:%.2f\n", 
+        if (payWays.size() > 0) {
+            for (PayWay payWay : payWays) {
+                // TODO: 8/2/16 ，以后如果考虑多种支付方式多次支付，应该要做一次合并统计，一种支付方式暂时可以不做。
+                esc.addText(String.format("%s:%.2f\n",
                         WayType.name(payWay.getPayType()), payWay.getAmount()));
             }
-        }
-        else{
-            esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis)); 
+        } else {
+            esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
         }
         esc.addText(String.format("找零:%.2f\n", Math.abs(change)));
 
@@ -261,19 +386,15 @@ public class PrintManager {
 //        esc.addPrintAndLineFeed();
         esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
 
-        //获得打印命令
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+        return esc;
     }
 
-    /**
-     * 打印POS订单流水
-     * */
-    public static void printPosOrder(PosOrderEntity posOrderEntity, boolean withCode128){
-        ZLogger.df(JSONObject.toJSONString(posOrderEntity));
+    private static EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity){
+        if (posOrderEntity == null) {
+            return null;
+        }
+
+        ZLogger.d(JSONObject.toJSONString(posOrderEntity));
         EscCommand esc = new EscCommand();
         esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
         //设置打印居中
@@ -282,9 +403,9 @@ public class PrintManager {
 //        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
 //                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
         /**打印 标题*/
-        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())){
+        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
             esc.addText("购物清单\n");
-        }else{
+        } else {
             //显示当前网点名称
             esc.addText(MfhLoginService.get().getCurOfficeName());
         }
@@ -312,8 +433,8 @@ public class PrintManager {
         esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
         List<PosOrderItemEntity> posOrderItemEntityList = CashierFactory.fetchOrderItems(posOrderEntity);
-        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0){
-            for (PosOrderItemEntity entity : posOrderItemEntityList){
+        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
+            for (PosOrderItemEntity entity : posOrderItemEntityList) {
 //                makeTemp(esc, entity.getName(), String.format("%.2f", entity.getCostPrice() * entity.getBcount()));
                 makePosOrderLine(esc, String.format("%s/%s", entity.getBarcode(),
                         entity.getName()), String.format("%.2f", entity.getFinalPrice()),
@@ -347,12 +468,7 @@ public class PrintManager {
 //        esc.addPrintAndLineFeed();
         esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
 
-        //获得打印命令
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+        return esc;
     }
 
     /**
@@ -362,10 +478,10 @@ public class PrintManager {
      * esc.addText("01234567890123456789012345678901\n");//32(正确)
      * esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
      * esc.addText("零一二三四五六七八九零一二三四五六七八\n");//19.2(错误)
-     *
+     * <p/>
      * esc.addText("01234567890123456789012345678901\n");//32(正确)
      * esc.addText("商品名           00.0100.02000.03\n");32=16+5+5+6
-     *
+     * <p/>
      * esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
      * esc.addText("货号/品名       单价 数量 小计\n");
      * esc.addText("货号/品名       单价 数量   小计\n");
@@ -374,18 +490,18 @@ public class PrintManager {
      * esc.addText("货号/品名        单价数量   小计\n");
      * esc.addText("货号/品名       单价 数量   小计\n");
      * esc.addText("业务类型            数量    金额\n");
-     * */
+     */
     private static EscCommand makePosOrderLine(EscCommand rawEsc, String name,
-                                               String price, String bcount, String amount){
+                                               String price, String bcount, String amount) {
         EscCommand esc = rawEsc;
-        if (esc == null){
+        if (esc == null) {
             esc = new EscCommand();
         }
 
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
 
         //最多显示17*0.6=10.2个汉字
-        if (getLength(name) > 16){
+        if (getLength(name) > 16) {
             esc.addText(name);//显示名称
             esc.addText("\n");
             //另起一行显示单价/数量/小计，居右显示
@@ -393,8 +509,7 @@ public class PrintManager {
             esc.addText(String.format("%s%s%s", formatShort(price, 5, BLANK_GRAVITY.RIGHT),
                     formatShort(bcount, 5, BLANK_GRAVITY.RIGHT),
                     formatShort(amount, 6, BLANK_GRAVITY.LEFT)));
-        }
-        else{
+        } else {
             //在名称后面显示单价/数量/小计
             String printText = String.format("%s%s%s%s",
                     formatShort(name, 16, BLANK_GRAVITY.RIGHT),
@@ -410,18 +525,17 @@ public class PrintManager {
         return esc;
     }
 
-    private static String makePosOrderLine(String name, String price, String bcount, String amount){
+    private static String makePosOrderLine(String name, String price, String bcount, String amount) {
         StringBuilder sb = new StringBuilder();
 
         //最多显示17*0.6=10.2个汉字
-        if (getLength(name) > 16){
+        if (getLength(name) > 16) {
             sb.append(name);//显示名称
             sb.append("\n");
             sb.append(String.format("%s%s%s", formatShort(price, 5, BLANK_GRAVITY.RIGHT),
                     formatShort(bcount, 5, BLANK_GRAVITY.RIGHT),
                     formatShort(amount, 6, BLANK_GRAVITY.LEFT)));
-        }
-        else{
+        } else {
             //在名称后面显示单价/数量/小计
             String printText = String.format("%s%s%s%s",
                     formatShort(name, 16, BLANK_GRAVITY.RIGHT),
@@ -439,87 +553,149 @@ public class PrintManager {
 
 
     /**
-     * 返回字节数
-     * */
-    public static int getLength(String text){
-        if (StringUtils.isEmpty(text)){
-            return 0;
-        }
-
-        int len = 0;
-        if(!text.equals("")) {
-            try {
-                byte[] bs = text.getBytes("GB2312");
-                len = bs.length;
-            } catch (UnsupportedEncodingException var4) {
-                var4.printStackTrace();
-                ZLogger.e(var4.toString());
+     * 打印POS订单流水
+     */
+    public static void printPosOrder(final List<PosOrderEntity> orderEntities, boolean withCode128) {
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                subscriber.onNext(makePosOrderEsc(orderEntities));
+                subscriber.onCompleted();
             }
-        }
-//        ZLogger.d(String.format("text=%s, len=%d", text, len));
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
 
-        return len;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        print(escCommand);
+                    }
+                });
     }
 
     /**
-     * */
-    public static String formatShort(String raw, int maxWidth, BLANK_GRAVITY blankGravity){
-//        Pattern p = Pattern.compile("[0-9]*");
-//        p=Pattern.compile("[\u4e00-\u9fa5]");
+     * 打印POS订单流水
+     */
+    public static void printPosOrder(final PosOrderEntity posOrderEntity, boolean withCode128) {
 
-//        String formated = raw.trim();
-//        char[] rawChars = raw.trim().toCharArray();
-//        int len = rawChars.length;
-        int len = getLength(raw);
-        String subStr = DataConvertUtil.subString(raw, Math.min(len, maxWidth));//截取字符串 String.valueOf(rawChars, 0, len2)
-        String blankStr = genBlankspace(Math.max(maxWidth - len, 0));
-//        ZLogger.d(String.format("subString([%s%s]", subStr, blankStr));
-        if (len > maxWidth){
-            return subStr;
-        }
-        else{
-            //右对齐，在前面补空格
-            if (blankGravity == BLANK_GRAVITY.LEFT){
-                return blankStr +  subStr;
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                subscriber.onNext(makePosOrderEsc(posOrderEntity));
+                subscriber.onCompleted();
             }
-            //左对齐，在后面补空格
-            else if (blankGravity == BLANK_GRAVITY.RIGHT){
-                return subStr + blankStr;
-            }else{
-                return subStr;
-            }
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        print(escCommand);
+                    }
+                });
     }
+
+    private static EscCommand makeTopupEsc(QuickPayInfo mQuickPayInfo, String outTradeNo) {
+        if (mQuickPayInfo == null || StringUtils.isEmpty(outTradeNo)) {
+            return null;
+        }
+        EscCommand esc = new EscCommand();
+        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
+        //设置打印居中
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
+//        //设置为倍高倍宽
+//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+        /**打印 标题*/
+        if (!StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
+            //显示当前网点名称
+            esc.addText(MfhLoginService.get().getCurOfficeName());
+        }
+//        //取消倍高倍宽
+//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+
+
+        esc.addPrintAndLineFeed();//进纸一行
+        //设置打印左对齐
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
+        /**打印 机器设备号＋订单号*/
+        esc.addText(String.format("设备编号：%s \n", SharedPreferencesManager.getTerminalId()));
+        /**打印 日期*/
+        esc.addText(String.format("订单日期：%s \n", TimeUtil.format(new Date(),
+                TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("支付方式：%s \n", WayType.name(mQuickPayInfo.getPayType())));
+        esc.addText(String.format("流水号  ：%s \n", outTradeNo));
+        esc.addText(String.format("金额   ：%.2f \n", mQuickPayInfo.getAmount()));
+        esc.addText("--------------------------------\n");//32个
+//        esc.addPrintAndLineFeed();
+
+//
+        /**
+         * 打印 结束语
+         * */
+        esc.addPrintAndLineFeed();
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
+        esc.addText("请注意保管好您的交易凭条!\n");
+//        esc.addPrintAndLineFeed();
+        esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
+
+        return esc;
+    }
+
 
     /**
-     * 空格对齐方式
-     * **/
-    public enum BLANK_GRAVITY {
-        NONE(0),
-        LEFT(1),
-        CENTER(2),
-        RIGHT(3);
-
-        private final int value;
-
-        BLANK_GRAVITY(int value) {
-            this.value = value;
-        }
-
-        public byte getValue() {
-            return (byte)this.value;
-        }
-    }
-
-    /**
-     * 添加空格
+     * 打印充值单据
      * */
-    private static String genBlankspace(int len){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++){
-            sb.append(' ');
-        }
-        return sb.toString();
+    public static void printTopupReceipt(final QuickPayInfo mQuickPayInfo, final String outTradeNo){
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                subscriber.onNext(makeTopupEsc(mQuickPayInfo, outTradeNo));
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        print(escCommand);
+                    }
+                });
     }
+
+
+
 
 }
