@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditQueryView;
+import com.bingshanguxue.pda.widget.EditLabelView;
+import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
@@ -39,11 +40,9 @@ import butterknife.OnClick;
 public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSkuGoodsView {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+    @Bind(R.id.scanBar)
+    public ScanBar mScanBar;
 
-    @Bind(R.id.eqv_shelve)
-    EditQueryView eqvShelve;
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
     @Bind(R.id.label_barcodee)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
@@ -52,6 +51,8 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
     TextLabelView labelQuantity;
     @Bind(R.id.label_costPrice)
     TextLabelView labelCostPrice;
+    @Bind(R.id.label_tagno)
+    EditLabelView labelTagNo;
 
     @Bind(R.id.fab_submit)
     FloatingActionButton btnBind;
@@ -75,11 +76,15 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
 
     @Override
     protected void onScanCode(String code) {
-        if (eqvShelve.hasFocus()) {
-            eqvShelve.setInputString(code);
-            eqvBarcode.requestFocus();
+        if (!isAcceptBarcodeEnabled) {
+            return;
+        }
+        isAcceptBarcodeEnabled = false;
+
+        if (labelTagNo.hasFocus()) {
+            labelTagNo.setInput(code);
+            labelTagNo.requestFocus();
         } else {
-            eqvBarcode.setInputString(code);
             query(code);
         }
     }
@@ -118,41 +123,37 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
         });
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_bindshelves);
-
-        initProgressDialog("正在同步数据", "同步成功", "同步失败");
-
-        eqvShelve.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvShelve.setSoftKeyboardEnabled(true);
-        eqvShelve.setInputSubmitEnabled(true);
-        eqvShelve.setOnViewListener(new EditQueryView.OnViewListener() {
+        mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
             @Override
-            public void onSubmit(String text) {
-                eqvBarcode.requestFocus();
+            public void onKeycodeEnterClick(String text) {
+                query(text);
             }
-        });
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
             @Override
-            public void onSubmit(String text) {
+            public void onAction1Click(String text) {
                 query(text);
             }
         });
 
-        eqvShelve.requestFocus();
+        initProgressDialog("正在同步数据", "同步成功", "同步失败");
+
+        labelTagNo.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelTagNo.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (curGoods == null) {
-            loadInit();
-        } else {
-            refreshGoodsInfo(curGoods);
-        }
+        refreshGoodsInfo(curGoods);
     }
 
     public void onEventMainThread(ShelveSyncManager.ShelveSyncManagerEvent event) {
@@ -200,17 +201,17 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
             return;
         }
 
-        String rackNo = eqvShelve.getInputString();
+        String rackNo = labelTagNo.getInput();
         if (StringUtils.isEmpty(rackNo)) {
             DialogUtil.showHint("请扫描货架编号");
-            eqvShelve.requestFocus();
+            labelTagNo.requestFocusEnd();
             btnBind.setEnabled(true);
             return;
         }
 
         if (rackNo.length() > 10) {
             DialogUtil.showHint("货架编号格式不正确");
-            eqvBarcode.requestFocus();
+            labelTagNo.requestFocusEnd();
             btnBind.setEnabled(true);
             return;
         }
@@ -225,72 +226,53 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
         //保存商品到待盘点列表,在后台进行盘点。
         ShelveService.get().addNewEntity(rackNo, curGoods.getBarcode());
         ShelveSyncManager.get().sync();
-        loadInit();
+        refreshGoodsInfo(null);
     }
 
     /**
      * 查询包裹信息
      */
     public void query(final String barcode) {
+        isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
-            eqvBarcode.requestFocus();
+            mScanBar.reset();
+            isAcceptBarcodeEnabled = true;
             return;
         }
 
-        eqvBarcode.clear();
-
         if (!NetWorkUtil.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
+            isAcceptBarcodeEnabled = true;
             return;
         }
 
         mInvSkuGoodsPresenter.getByBarcodeMust(barcode);
     }
 
-    private void loadInit() {
-        curGoods = null;
-
-        eqvShelve.clear();
-        eqvShelve.requestFocus();
-        eqvBarcode.clear();
-
-        labelBarcode.setTvSubTitle("");
-        labelProductName.setTvSubTitle("");
-        labelCostPrice.setTvSubTitle("");
-        labelQuantity.setTvSubTitle("");
-
-        btnBind.setEnabled(false);
-
-        DeviceUtils.hideSoftInput(getActivity(), eqvShelve);
-    }
-
     private void refreshGoodsInfo(InvSkuGoods goods) {
         curGoods = goods;
         if (goods != null) {
-//            eqvShelve.clear();
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
-
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getName());
             labelCostPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), ""));
-
+            labelTagNo.setInput("");
+            labelTagNo.requestFocusEnd();
             btnBind.setEnabled(true);
-            DeviceUtils.hideSoftInput(getActivity(), eqvBarcode);
         } else {
-//            eqvShelve.clear();
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
+            mScanBar.reset();
 
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelCostPrice.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
+            labelTagNo.setInput("");
 
             btnBind.setEnabled(false);
-            DeviceUtils.hideSoftInput(getActivity(), eqvShelve);
         }
+
+        DeviceUtils.hideSoftInput(getActivity(), labelTagNo);
+        isAcceptBarcodeEnabled = true;
     }
 
     @Override
