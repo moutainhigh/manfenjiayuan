@@ -63,12 +63,12 @@ import rx.schedulers.Schedulers;
  */
 public class DataSyncManager {
     public static final int SYNC_STEP_NA = -1;
-    public static final int SYNC_STEP_BACKEND_CATEGORYINFO = 0;//后台类目信息
+    public static final int SYNC_STEP_PRODUCTS = 0;//商品库
     public static final int SYNC_STEP_PRODUCT_SKU = 1;//一品多码
-    public static final int SYNC_STEP_PRODUCTS = 2;//商品库
-    public static final int SYNC_STEP_COMPANY_HUMAN = 3;//账号,交接班切换账号需要
-    public static final int SYNC_STEP_FRONTEND_CATEGORY = 4;//前台类目(一级类目)
-    public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 5;//前台类目&商品库－关系表
+    public static final int SYNC_STEP_BACKEND_CATEGORYINFO = 2;//后台类目信息
+    public static final int SYNC_STEP_FRONTEND_CATEGORY = 3;//前台类目(一级类目)
+    public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 4;//前台类目&商品库－关系表
+    public static final int SYNC_STEP_COMPANY_HUMAN = 5;//账号,交接班切换账号需要
 
 
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
@@ -118,7 +118,7 @@ public class DataSyncManager {
             return;
         }
 
-        processStep(SYNC_STEP_BACKEND_CATEGORYINFO, SYNC_STEP_PRODUCT_SKU);
+        processStep(SYNC_STEP_PRODUCTS, SYNC_STEP_PRODUCT_SKU);
     }
 
     public void sync(int step) {
@@ -230,12 +230,12 @@ public class DataSyncManager {
 
                 //需要全量同步
                 if (SharedPreferencesHelper.getSyncProductsMode() == 0) {
+                    ZLogger.df("同步商品库：全量更新，重置游标，删除旧数据");
                     //设置时间游标
                     SharedPreferencesHelper.setSyncProductsCursor("");
                     //删除旧数据
 //            PosProductService.get().clear();
                     PosProductService.get().deactiveAll();
-                    ZLogger.df("同步商品库：全量更新，重置游标，删除旧数据");
                 }
 
                 String startCursor = getPosLastUpdateCursor();
@@ -304,6 +304,7 @@ public class DataSyncManager {
     private void savePosProducts(final RspQueryResult<PosGoods> rs, final PageInfo pageInfo, final String startCursor) {
         if (rs == null) {
             nextStep();
+            return;
         }
 
         Observable.create(new Observable.OnSubscribe<String>() {

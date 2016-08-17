@@ -126,16 +126,16 @@ public class SplashActivity extends InitActivity {
 //            SharedPreferencesHelper.setSyncCompanyHumanInterval(30 * 60);
 
             CashierShopcartService.getInstance().clear();
-            AnalysisHelper.deleteOldDailysettle(30);
-            CashierHelper.clearOldPosOrder(30);
+            AnalysisHelper.deleteOldDailysettle(15);
+            CashierHelper.clearOldPosOrder(15);
             CashierShopcartService.getInstance().clear();
             PurchaseShopcartHelper.getInstance().clear();
             FreshShopcartHelper.getInstance().clear();
-            PosTopupService.get().deleteOldData(30);
+            PosTopupService.get().deleteOldData(15);
             SMScaleSyncManager2.deleteOldFiles(1);
             SMScaleSyncManager2.deleteOldFiles2();
 
-            ZLogger.deleteOldFiles(15);
+            ZLogger.deleteOldFiles(7);
         }
 
         // 清空缓存数据

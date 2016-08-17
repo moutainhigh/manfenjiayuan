@@ -10,6 +10,7 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.ZIntent;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.litecashier.CashierApp;
 
 import java.util.Calendar;
 
@@ -22,6 +23,34 @@ public class AlarmManagerHelper {
     public static final int REQUEST_CODE_BUGLY_UPGRADE = 101;
 
     /**
+     * 触发下一次日结
+     * */
+    public static void triggleNextDailysettle(int type){
+        Calendar trigger = Calendar.getInstance();
+        //失败或异常情况，十分钟自动重试
+        if (type == 1){
+            trigger.add(Calendar.MINUTE, 30);
+        }
+        //锁定后，10分钟后自动重试，多台POS可以自动解锁
+        else if (type == 2){
+            trigger.add(Calendar.MINUTE, 10);
+        }
+        //正常解锁后，1小时后自动重试
+        else if (type == 3){
+            trigger.add(Calendar.HOUR_OF_DAY, 1);
+        }
+        //第二天凌晨2点钟
+        else{
+            trigger.add(Calendar.DAY_OF_MONTH, 1);
+            trigger.set(Calendar.HOUR_OF_DAY, 2);
+            trigger.set(Calendar.MINUTE, 2);
+            trigger.set(Calendar.SECOND, 0);
+        }
+
+        AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+    }
+
+    /**
      * 注册日结监听器
      * <p/>
      * <p> 1.程序启动时注册<br>
@@ -30,21 +59,6 @@ public class AlarmManagerHelper {
      * <p/>
      * TODO,在设置中添加取消方法。
      */
-    public static void registerDailysettle(Context context) {
-        Calendar trigger = Calendar.getInstance();
-
-        if (BizConfig.RELEASE) {
-            //第二天凌晨2点钟
-            trigger.add(Calendar.DAY_OF_MONTH, 1);
-            trigger.set(Calendar.HOUR_OF_DAY, 0);
-            trigger.set(Calendar.MINUTE, 2);
-            trigger.set(Calendar.SECOND, 0);
-        } else {
-            trigger.add(Calendar.MINUTE, 10);
-        }
-        registerDailysettle(context, trigger);
-    }
-
     public static void registerDailysettle(Context context, Calendar trigger) {
         Calendar rightNow = Calendar.getInstance();
         ZLogger.d(String.format("trigger : %s",

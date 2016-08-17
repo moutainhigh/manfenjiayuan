@@ -383,10 +383,7 @@ public class ValidateManager {
 //        ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            //十分钟后自动重试
-            Calendar trigger = Calendar.getInstance();
-            trigger.add(Calendar.MINUTE, 10);
-            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+            AlarmManagerHelper.triggleNextDailysettle(1);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
                     "网络未连接，暂停验证(昨日是否已经清分)。");
@@ -408,16 +405,10 @@ public class ValidateManager {
                                 validateFinished(ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP,
                                         args, String.format("余额不足(%2f)清分失败，即将锁定POS机，" +
                                                 "可以通过提交营业现金来解锁", amount));
+
+                                AlarmManagerHelper.triggleNextDailysettle(0);
                             } else {
                                 ZLogger.df(String.format("清分完成: %.2f, 可以正常使用POS机", amount));
-
-                                Calendar trigger = Calendar.getInstance();
-                                //第二天凌晨2点钟
-                                trigger.add(Calendar.DAY_OF_MONTH, 1);
-                                trigger.set(Calendar.HOUR_OF_DAY, 2);
-                                trigger.set(Calendar.MINUTE, 2);
-                                trigger.set(Calendar.SECOND, 0);
-                                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
 
                                 nextStep();
                             }
@@ -449,10 +440,7 @@ public class ValidateManager {
      */
     private void needLockPos() {
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-//            //十分钟后自动重试
-//            Calendar trigger = Calendar.getInstance();
-//            trigger.add(Calendar.MINUTE, 10);
-//            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+            AlarmManagerHelper.triggleNextDailysettle(1);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
                     "网络未连接，暂停验证(昨日是否已经清分)。");
@@ -483,18 +471,22 @@ public class ValidateManager {
                                     validateFinished(ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP,
                                             args, String.format("现金超过授权金额(%2f)，即将锁定POS机，" +
                                                     "可以通过提交营业现金来解锁", amount));
+                                    AlarmManagerHelper.triggleNextDailysettle(2);
                                 } else {
+                                    AlarmManagerHelper.triggleNextDailysettle(3);
                                     EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT));
                                     nextStep();
                                 }
                             } else {
                                 ZLogger.df("判断是否需要锁定POS机:" + result);
+                                AlarmManagerHelper.triggleNextDailysettle(1);
                                 nextStep();
                             }
                         } catch (NumberFormatException e) {
 //                            e.printStackTrace();
                             ZLogger.ef(e.toString());
 
+                            AlarmManagerHelper.triggleNextDailysettle(1);
                             nextStep();
                         }
                     }
@@ -505,6 +497,8 @@ public class ValidateManager {
                         //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
                         ZLogger.df("判读是否锁定POS机失败：" + errMsg);
                         nextStep();
+
+                        AlarmManagerHelper.triggleNextDailysettle(1);
                     }
                 }
                 , String.class
@@ -513,6 +507,7 @@ public class ValidateManager {
 
         CashierApiImpl.needLockPos(responseCallback);
     }
+
 
     public class ValidateManagerEvent {
         public static final int EVENT_ID_INTERRUPT_NEED_LOGIN = 0X02;//需要登录

@@ -70,7 +70,6 @@ import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.EslSyncManager2;
-import com.mfh.litecashier.service.OrderSyncManager2;
 import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
@@ -106,7 +105,6 @@ import net.tsz.afinal.FinalDb;
 
 import org.century.GreenTagsApi;
 
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -238,7 +236,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         ZLogger.d("小版本标记：2016-07-28-001");
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
-        AlarmManagerHelper.registerDailysettle(this);
+        AlarmManagerHelper.triggleNextDailysettle(0);
     }
 
     @Override
@@ -701,7 +699,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
-        btnSync.setBadgeEnabled(false);
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
@@ -822,7 +819,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
             if (count > 1) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
-                btnSync.setBadgeEnabled(false);
                 btnSync.startSync();
                 DataSyncManager.get().sync();
             } else {
@@ -852,7 +848,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
                     "为了不影响您使用POS设备，请及时充值", amount));
 
         }  else if (eventId == AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT) {
-
             if (alipayDialog != null) {
                 alipayDialog.dismiss();
             }
@@ -875,7 +870,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             hideProgressDialog();
             btnSync.stopSync();
             //同步数据结束后开始同步订单
-            OrderSyncManager2.get().sync();
+            UploadSyncManager.getInstance().sync();
 
             CloudSyncManager.get().importFromChainSku();
             EslSyncManager2.getInstance().sync();
@@ -1161,7 +1156,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
 
             //同步订单信息
-            OrderSyncManager2.get().stepUploadPosOrder(orderEntities);
+            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
 
             //打印订单
             PrintManager.printPosOrder(orderEntities, true);
@@ -1881,14 +1876,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
 
                 UploadSyncManager.getInstance().sync();
-
-                Calendar trigger = Calendar.getInstance();
-                //第二天凌晨2点钟
-                trigger.add(Calendar.DAY_OF_MONTH, 1);
-                trigger.set(Calendar.HOUR_OF_DAY, 2);
-                trigger.set(Calendar.MINUTE, 2);
-                trigger.set(Calendar.SECOND, 0);
-                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
             }
 
             @Override

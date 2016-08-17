@@ -4,7 +4,6 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.database.dao.PurchaseGoodsDao;
 import com.mfh.litecashier.database.entity.PurchaseGoodsEntity;
 
@@ -150,26 +149,6 @@ public class PurchaseGoodsService extends BaseService<PurchaseGoodsEntity, Strin
     /**
      * 查询采购订单明细
      * */
-    public PurchaseGoodsEntity fetchGoods(Integer purchaseType, Long providerId, String barcode){
-        try{
-            if (purchaseType == null || providerId == null || StringUtils.isEmpty(barcode)){
-                return null;
-            }
-
-            String sqlWhere = String.format("purchaseType = '%d' and providerId = '%d' " +
-                    "and barcode = '%d'", purchaseType, providerId, barcode);
-            List<PurchaseGoodsEntity> entityList =  getDao().queryAllBy(sqlWhere);
-            if (entityList != null && entityList.size() > 0){
-                return entityList.get(0);
-            }
-        }catch (Exception e){
-            ZLogger.e( e.toString());
-        }
-
-        return null;
-    }
-
-
     public List<PurchaseGoodsEntity> fetchGoodsEntities(Integer purchaseType, Long providerId){
         try{
             if (purchaseType == null || providerId == null){

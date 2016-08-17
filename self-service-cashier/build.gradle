@@ -57,7 +57,7 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 290
+        versionCode 291
 
         // Defines a user-friendly version name for your app.
         versionName "1.21.5"
@@ -188,7 +188,7 @@ dependencies {
     compile rootProject.ext.dependencies["cardview-v7"]
     debugCompile rootProject.ext.dependencies["leakcanary"]
     releaseCompile rootProject.ext.dependencies["leakcanary-release"]
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+//    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile project(':im')
     compile project(':mfh-framework-business')
     compile project(':cashier')

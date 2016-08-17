@@ -225,17 +225,9 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             String result = retValue.getValue();
                             Long code = Long.valueOf(result);
+                            ZLogger.df("新建前台类目成功:" + code);
 
                             DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
-//                            if (code != null) {
-//                                // TODO: 8/15/16
-//                                PosLocalCategoryEntity entity = new PosLocalCategoryEntity();
-//                                entity.setName(nameCn);
-//                                entity.setId(code);
-//                                PosLocalCategoryService.get().saveOrUpdate(entity);
-//
-//                                reload();
-//                            }
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }

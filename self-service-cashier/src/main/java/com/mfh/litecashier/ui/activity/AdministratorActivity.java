@@ -37,7 +37,7 @@ import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.service.OrderSyncManager2;
+import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
@@ -153,7 +153,7 @@ public class AdministratorActivity extends BaseActivity {
 
         initMenuRecyclerView();
 
-        OrderSyncManager2.get().sync();
+        UploadSyncManager.getInstance().sync();
     }
 
     @Override
