@@ -26,19 +26,6 @@ public class CateApi {
     public final static String URL_CATEGORYINFO_COMNQUERY = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/comnQuery";
 
     /**
-     * 类目查询－－一级类目
-     */
-    public final static String URL_SCCATEGORYINFO_LIST = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/list";
-
-
-    /**
-     * /scCategoryInfo/create?jsonStr={},
-     * 上面tenantId是当前pos机所属租户（注意不是网点，现在还没细化到网点或pos机），catePosition此次为1，domain为0
-     */
-    public final static String URL_SCCATEGORYINFO_CREATE = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/create";
-
-
-    /**
      * pos类目查询接口：/scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
      */
     public final static String URL_CATEGORYINFO_GETCODEVALUE = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/getCodeValue";

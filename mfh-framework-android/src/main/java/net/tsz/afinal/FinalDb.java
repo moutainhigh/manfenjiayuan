@@ -227,7 +227,6 @@ public class FinalDb {
 		}else{
 			Log.w(TAG, "insertContentValues: List<KeyValue> is empty or ContentValues is empty!");
 		}
-		
 	}
 	
 	/**
