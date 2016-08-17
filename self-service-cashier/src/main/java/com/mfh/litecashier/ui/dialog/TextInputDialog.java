@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
@@ -131,7 +132,18 @@ public class TextInputDialog extends CommonDialog {
 //        getWindow().setAttributes(p);
 
         //hide soft input
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    @Override
+    public void show() {
+        super.show();
+
+//        DeviceUtils.showSoftInput(getContext(), etContent);
+
+        etContent.requestFocus();
+        etContent.setSelection(etContent.length());
+        DeviceUtils.toggleSoftInput(getContext());
     }
 
     public void initialize(String title, String hint, boolean isEmptyAllowed, OnTextInputListener listener) {
@@ -147,8 +159,10 @@ public class TextInputDialog extends CommonDialog {
 
 
     private void submit() {
+        DeviceUtils.hideSoftInput(getContext(), etContent);
         String content = etContent.getText().toString();
         if (StringUtils.isEmpty(content) && !isEmptyAllowed) {
+            DialogUtil.showHint("输入内容不能为空");
             return;
         }
 
@@ -156,7 +170,6 @@ public class TextInputDialog extends CommonDialog {
         if (mListener != null) {
             mListener.onConfirm(content);
         }
-
     }
 
 }

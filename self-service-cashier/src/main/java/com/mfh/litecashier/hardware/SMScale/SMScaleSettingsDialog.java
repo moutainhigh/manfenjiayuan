@@ -101,7 +101,8 @@ public class SMScaleSettingsDialog extends CommonDialog {
         tvTitle.setText("寺冈电子秤参数设置");
 
         etIp.setFilters(new IpInputFilter[]{new IpInputFilter()});
-        soapSpinnerAdapter = new ArrayAdapter<>(context, R.layout.mfh_spinner_item_text, SMScaleSyncManager.ENCODING_CHARSET_SET);
+        soapSpinnerAdapter = new ArrayAdapter<>(context, R.layout.mfh_spinner_item_text,
+                SMScaleSyncManager2.ENCODING_CHARSET_SET);
         soapSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mEncodingSpinner.setAdapter(soapSpinnerAdapter);
         mEncodingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -200,11 +201,11 @@ public class SMScaleSettingsDialog extends CommonDialog {
      * 刷新会员信息
      */
     public void refresh() {
-        etIp.setText(SMScaleSyncManager.FTP_HOST);
-        etPort.setText(String.valueOf(SMScaleSyncManager.FTP_PORT));
-        etUsername.setText(SMScaleSyncManager.FTP_USER);
-        etPassword.setText(SMScaleSyncManager.FTP_PASS);
-        switch (SMScaleSyncManager.PK_S_SMSCALE_ENCODING) {
+        etIp.setText(SMScaleSyncManager2.FTP_HOST);
+        etPort.setText(String.valueOf(SMScaleSyncManager2.FTP_PORT));
+        etUsername.setText(SMScaleSyncManager2.FTP_USER);
+        etPassword.setText(SMScaleSyncManager2.FTP_PASS);
+        switch (SMScaleSyncManager2.PK_S_SMSCALE_ENCODING) {
             case Encoding.CHARSET_GBK:
                 mEncodingSpinner.setSelection(0);
                 break;
@@ -215,7 +216,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
                 mEncodingSpinner.setSelection(0);
                 break;
         }
-        mSwitchSyncMode.setChecked(SMScaleSyncManager.FULLSCALE_ENABLED);
+        mSwitchSyncMode.setChecked(SMScaleSyncManager2.FULLSCALE_ENABLED);
     }
 
     private void submit() {
@@ -258,20 +259,27 @@ public class SMScaleSettingsDialog extends CommonDialog {
             return;
         }
 
-        SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_S_SMSCALE_HOST, host);
-        SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_I_SMSCALE_PORT, Integer.parseInt(port));
-        SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_S_SMSCALE_USERNAME, username);
-        SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_S_SMSCALE_PASSWORD, password);
+        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_S_SMSCALE_HOST, host);
+        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_I_SMSCALE_PORT, Integer.parseInt(port));
+        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_S_SMSCALE_USERNAME, username);
+        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_S_SMSCALE_PASSWORD, password);
 
         String encoding = mEncodingSpinner.getSelectedItem().toString();
-        SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_S_SMSCALE_ENCODING, encoding);
+        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_S_SMSCALE_ENCODING, encoding);
 
-        SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_B_SMSCALE_FULLSCALE, mSwitchSyncMode.isChecked());
-        if (SMScaleSyncManager.FULLSCALE_ENABLED || mSwitchSyncMode.isChecked()) {
-            SharedPreferencesManager.set(SMScaleSyncManager.PREF_SMSCALE, SMScaleSyncManager.PK_S_SMSCALE_LASTCURSOR, "");
+        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_B_SMSCALE_FULLSCALE, mSwitchSyncMode.isChecked());
+        if (SMScaleSyncManager2.FULLSCALE_ENABLED || mSwitchSyncMode.isChecked()) {
+            SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+                    SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
         }
 
-        SMScaleSyncManager.initialize();
+        SMScaleSyncManager2.initialize();
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
 

@@ -6,12 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -72,22 +69,22 @@ public class BackendCategoryGoodsAdapter
         }
     }
 
-    @Override
-    public void appendEntityList(List<ScGoodsSkuWrapper> entityList) {
-//        super.appendEntityList(entityList);
-        if (entityList == null){
-            return;
-        }
-
-        if (this.entityList == null){
-            this.entityList = new ArrayList<>();
-        }
-
-        this.entityList.addAll(entityList);
-
-        Collections.sort(this.entityList, new PinyinComparator());
-        notifyDataSetChanged();
-    }
+//    @Override
+//    public void appendEntityList(List<ScGoodsSkuWrapper> entityList) {
+////        super.appendEntityList(entityList);
+//        if (entityList == null){
+//            return;
+//        }
+//
+//        if (this.entityList == null){
+//            this.entityList = new ArrayList<>();
+//        }
+//
+//        this.entityList.addAll(entityList);
+//
+//        Collections.sort(this.entityList, new PinyinComparator());
+//        notifyDataSetChanged();
+//    }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_name)
@@ -138,7 +135,7 @@ public class BackendCategoryGoodsAdapter
     public int getPositionForSelection(int selection) {
         for (int i = 0; i < entityList.size(); i++){
             String sortLetter = entityList.get(i).getNameSortLetter();
-            ZLogger.d("sortLetter=" + sortLetter);
+//            ZLogger.d("sortLetter=" + sortLetter);
             char letter = sortLetter.toUpperCase().charAt(0);
             if (letter == selection){
                 return i;

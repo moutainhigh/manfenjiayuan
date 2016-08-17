@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.components.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
@@ -36,6 +37,7 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x10;//选择批发商&门店
     public static final int FRAGMENT_TYPE_DAILY_SETTLE              = 0x20;//日结
     public static final int FRAGMENT_TYPE_HANDOVER                  = 0x21;//交接班
+    public static final int FT_CANARY_CASH_QUOTA = 0x22;//现金授权
     private int serviceType = 0;
 
 
@@ -221,6 +223,13 @@ public class SimpleDialogActivity extends BaseActivity {
                 fragment = SelectWholesalerWithTenantFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
+        else if (serviceType == FT_CANARY_CASH_QUOTA)  {
+            CashQuotaFragment fragment = new CashQuotaFragment();
+            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         }

@@ -665,6 +665,14 @@ public class MfhApplication extends Application {
             ZLogger.d(String.format("%d = %02X", i, (byte) i));//00,01,02
         }
 
+
+        Double recharegeAmount = 0.0028D;
+        if (recharegeAmount < 0.01){
+            ZLogger.d(String.format("%f < 0.01", recharegeAmount));
+        }
+        else{
+            ZLogger.d(String.format("%f >= 0.01", recharegeAmount));
+        }
         String testStr = "12345556665453";
         String testStr2 = "{BNo.12478855";
         String testStr3 = "12306\r\n";

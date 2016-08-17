@@ -4,13 +4,14 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.litecashier.R;
+import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
+import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 
 import java.util.List;
 
@@ -22,9 +23,9 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class FrontCategoryGoodsAdapter
-        extends RegularAdapter<ScGoodsSku, FrontCategoryGoodsAdapter.MenuOptioinViewHolder> {
+        extends RegularAdapter<FrontCategoryGoods, FrontCategoryGoodsAdapter.MenuOptioinViewHolder> {
 
-    public FrontCategoryGoodsAdapter(Context context, List<ScGoodsSku> entityList) {
+    public FrontCategoryGoodsAdapter(Context context, List<FrontCategoryGoods> entityList) {
         super(context, entityList);
     }
 
@@ -45,23 +46,34 @@ public class FrontCategoryGoodsAdapter
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MenuOptioinViewHolder(mLayoutInflater.inflate(R.layout.itemview_measure, parent, false));
+        return new MenuOptioinViewHolder(mLayoutInflater
+                .inflate(R.layout.itemview_frontcategory_goods,
+                parent, false));
     }
 
     @Override
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
-        final ScGoodsSku entity = entityList.get(position);
-//            holder.ivHeader.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 156), DensityUtil.dip2px(mContext, 156)));
-
-        Glide.with(mContext).load(entity.getImgUrl()).error(R.mipmap.ic_image_error)
-                .into(holder.ivHeader);
+        final FrontCategoryGoods entity = entityList.get(position);
 
         holder.tvName.setText(entity.getSkuName());
         holder.tvPrice.setText(String.format("¥ %.2f", entity.getCostPrice()));
+
+        String sqlWhere = String.format("productId = '%d'", entity.getProductId());
+
+
+        List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance().queryAllBy(sqlWhere);
+        if (goodsTempEntities != null && goodsTempEntities.size() > 0){
+            holder.ibRatio.setVisibility(View.VISIBLE);
+            entity.setSelected(true);
+        }
+        else{
+            holder.ibRatio.setVisibility(View.GONE);
+            entity.setSelected(false);
+        }
     }
 
     @Override
-    public void setEntityList(List<ScGoodsSku> entityList) {
+    public void setEntityList(List<FrontCategoryGoods> entityList) {
         super.setEntityList(entityList);
 
         if (adapterListener != null) {
@@ -70,12 +82,12 @@ public class FrontCategoryGoodsAdapter
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
-        ImageView ivHeader;
         @Bind(R.id.tv_name)
         TextView tvName;
         @Bind(R.id.tv_price)
         TextView tvPrice;
+        @Bind(R.id.ib_ratio)
+        ImageButton ibRatio;
 
         public MenuOptioinViewHolder(final View itemView) {
             super(itemView);
@@ -85,10 +97,20 @@ public class FrontCategoryGoodsAdapter
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if (entityList == null || position < 0 || position >= entityList.size()) {
-//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                    FrontCategoryGoods entity = getEntity(position);
+                    if (entity == null){
                         return;
                     }
+
+                    if (entity.isSelected()) {
+                        entity.setSelected(false);
+                    } else {
+                        entity.setSelected(true);
+                    }
+
+                    PosCategoryGodosTempService.getInstance().saveOrUpdateGoods(entity);
+//                //刷新列表
+                    notifyItemChanged(position);
 
                     if (adapterListener != null) {
                         adapterListener.onItemClick(itemView, position);

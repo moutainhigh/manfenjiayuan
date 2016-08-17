@@ -35,7 +35,7 @@ public class CommonlyGoodsDao extends BaseDbDao<CommonlyGoodsEntity, String> {
     /**
      * 查询指定session下的消息类比，按照逆序
      * @param pageInfo
-     * @return
+     * @return List<CommonlyGoodsEntity>
      */
     public List<CommonlyGoodsEntity> queryAll(PageInfo pageInfo) {
         return queryAll(null, pageInfo);

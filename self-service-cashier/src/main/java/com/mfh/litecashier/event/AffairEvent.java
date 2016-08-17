@@ -14,7 +14,9 @@ public class AffairEvent {
 
     public static final int EVENT_ID_LOCK_POS_CLIENT = 0X05;//锁定POS机器
     public static final int EVENT_ID_PRE_LOCK_POS_CLIENT = 0X06;//锁定POS机器提示
+    public static final int EVENT_ID_UNLOCK_POS_CLIENT = 0X07;//锁定POS机器
     public static final int EVENT_ID_RESET_CASHIER = 0X08;//初始化收银
+    public static final int EVENT_ID_CASHIER_FRONTCATA_GOODS = 0X09;//前台类目收银
 
     //同步数据
     public static final int EVENT_ID_SYNC_DATA_INITIALIZE = 0X20;//恢复出厂设置
@@ -24,8 +26,6 @@ public class AffairEvent {
     //常用商品
     public static final int EVENT_ID_SHOW_EXPRESS = 0X11;//寄快递
     public static final int EVENT_ID_SHOW_LAUNDRY = 0X12;//洗衣服务
-    public static final int EVENT_ID_SHOW_FRONT_CATEGORY = 0X14;//显示前台类目，带数据
-    public static final int EVENT_ID_HIDE_RIGHTSLIDE = 0X15;//
 
     private int affairId;
     private Bundle args;//参数

@@ -6,10 +6,22 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.net.NetCallBack;
+import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +29,11 @@ import java.util.List;
  * POS-- 订单同步
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class OrderSyncManager {
+public abstract class OrderSyncManager {
     public static final int MAX_SYNC_ORDER_PAGESIZE = 2;
+    protected PageInfo mOrderPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, MAX_SYNC_ORDER_PAGESIZE);//翻页
+    protected String orderStartCursor;
+    protected String orderSqlWhere;
 
     /**
      * 生成订单同步数据结构
@@ -95,5 +110,130 @@ public class OrderSyncManager {
         }
 
         return order;
+    }
+
+    /**
+     * 单条上传POS订单<br>
+     * 订单结束时立刻同步
+     */
+    public void stepUploadPosOrder(final PosOrderEntity orderEntity) {
+        if (orderEntity == null){
+            ZLogger.df("订单无效，不需要同步...");
+            return;
+        }
+        if (orderEntity.getStatus() != PosOrderEntity.ORDER_STATUS_FINISH){
+            ZLogger.df(String.format("订单未完成(%d)，不需要同步...", orderEntity.getStatus()));
+            return;
+        }
+
+        if (!MfhLoginService.get().haveLogined()) {
+            ZLogger.df("会话已失效，暂停同步POS订单数据。");
+            return;
+        }
+
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            ZLogger.df("网络未连接，暂停同步POS订单数据。");
+            return;
+        }
+
+        ZLogger.df(String.format("准备上传POS订单(%d/%s)", orderEntity.getId(),
+                orderEntity.getBarCode()));
+
+        JSONArray orders = new JSONArray();
+        orders.add(generateOrderJson(orderEntity));
+
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //修改订单同步状态
+                        orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_SYNCED);
+                        PosOrderService.get().saveOrUpdate(orderEntity);
+
+                        //需要更新订单流水
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
+
+                        //继续检查是否还有其他订单需要上传
+//                        batchUploadPosOrder();
+                        ZLogger.df("上传POS订单成功");
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df(String.format("上传订单失败: %s", errMsg));
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+    }
+
+
+    /**
+     * 单条上传POS订单<br>
+     * 订单结束时立刻同步
+     */
+    public void stepUploadPosOrder(final List<PosOrderEntity> orderEntities) {
+        if (orderEntities == null || orderEntities.size() <= 0){
+            ZLogger.df("订单无效，不需要同步...");
+            return;
+        }
+
+        if (!MfhLoginService.get().haveLogined()) {
+            ZLogger.df("会话已失效，暂停同步POS订单数据。");
+            return;
+        }
+
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            ZLogger.df("网络未连接，暂停同步POS订单数据。");
+            return;
+        }
+
+        ZLogger.df(String.format("准备上传 %d 条POS订单", orderEntities.size()));
+
+        JSONArray orders = new JSONArray();
+        final List<PosOrderEntity> syncOrderList = new ArrayList<>();
+        for (PosOrderEntity orderEntity : orderEntities) {
+            //保存最大时间游标
+            if (orderEntity.getStatus() == PosOrderEntity.ORDER_STATUS_FINISH) {
+                orders.add(generateOrderJson(orderEntity));
+                syncOrderList.add(orderEntity);
+            }
+        }
+
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //修改订单同步状态
+                        for (PosOrderEntity orderEntity : syncOrderList){
+                            orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_SYNCED);
+                            orderEntity.setUpdatedDate(new Date());
+                            PosOrderService.get().saveOrUpdate(orderEntity);
+                        }
+
+                        //需要更新订单流水
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
+
+                        //继续检查是否还有其他订单需要上传
+                        ZLogger.df("上传POS订单成功");
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df(String.format("上传订单失败: %s", errMsg));
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
     }
 }

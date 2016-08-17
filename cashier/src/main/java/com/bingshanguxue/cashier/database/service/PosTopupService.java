@@ -85,8 +85,8 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
      * @param pageInfo
      * @return
      */
-    public List<PosTopupEntity> queryAll(PageInfo pageInfo) {
-        return getDao().queryAll(pageInfo);
+    public List<PosTopupEntity> queryAll(String strWhere, PageInfo pageInfo) {
+        return getDao().queryAll(strWhere, pageInfo);
     }
 
     public List<PosTopupEntity> queryAllBy(String strWhere) {

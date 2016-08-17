@@ -17,7 +17,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
-import com.mfh.litecashier.service.OrderSyncManager2;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 
 import java.util.ArrayList;
@@ -106,8 +105,6 @@ public class CanaryActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         initMenuRecyclerView();
-
-        OrderSyncManager2.get().sync();
     }
 
     @Override

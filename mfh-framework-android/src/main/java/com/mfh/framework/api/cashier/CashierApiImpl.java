@@ -349,12 +349,27 @@ public class CashierApiImpl extends CashierApi {
         AfinalFactory.getHttp(true).post(URL_TRANSFERFROMMYACCOUNT, params, responseCallback);
     }
 
+    /**
+     * 创建订单
+     * */
     public static void createPayOrder(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         params.put("jsonStr", jsonStr);
 
         AfinalFactory.getHttp(true).post(URL_PAYORDER_CREATE, params, responseCallback);
+    }
+
+    /**
+     * 查询订单
+     * */
+    public static void listPayOrder(Integer bizType, Integer status, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        params.put("status", String.valueOf(status));
+        params.put("bizType", String.valueOf(bizType));
+        params.put("sellOffice", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        AfinalFactory.getHttp(true).post(URL_PAYORDER_LIST, params, responseCallback);
     }
 
     /**
@@ -367,4 +382,33 @@ public class CashierApiImpl extends CashierApi {
 
         AfinalFactory.getHttp(true).post(URL_NEEDLOCKPOS, params, responseCallback);
     }
+
+    /**
+     * 查询限额情况,第一个是限额（0代表没有设置或限额无穷大），第二个是未缴现金
+     * /scNetRealInfo/queryLimitInfo
+     * */
+    public static void queryLimitInfo(AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_QUERYLIMITINFO, params, responseCallback);
+    }
+
+    /**
+     * 查pos订单的现金流水：
+     * /orderPayWay/list?payType=1&officeId=136076&orderby=CREATED_DATE&orderbydesc=true
+     * */
+    public static void listOrderPayWay(Integer payType, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("payType", String.valueOf(payType));
+        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_ORDERPAYWAY_LIST, params, responseCallback);
+    }
+
+
+
+
 }

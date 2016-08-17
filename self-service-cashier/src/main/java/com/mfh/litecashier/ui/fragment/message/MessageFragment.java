@@ -62,7 +62,6 @@ public class MessageFragment extends BaseFragment {
     EditText etMessage;
     @Bind(R.id.et_query) EditText etQuery;
 
-
     @Bind(R.id.ib_emoji)
     ImageButton ibEmoji;
     @Bind(R.id.ib_goods)

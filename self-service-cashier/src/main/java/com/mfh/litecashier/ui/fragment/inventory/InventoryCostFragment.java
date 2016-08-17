@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.CategoryOption;
+import com.mfh.framework.api.category.CategoryOption;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
@@ -757,9 +757,6 @@ public class InventoryCostFragment extends BaseProgressFragment
 
                                 goods.setCostPrice(quantity);
                                 goodsListAdapter.notifyDataSetChanged();
-
-                                //切换到收银页面后需要同步商品
-                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTS_ENABLED, true);
                             }
 
                             @Override
@@ -822,9 +819,6 @@ public class InventoryCostFragment extends BaseProgressFragment
 
                                 goods.setCostPrice(quantity);
                                 goodsListAdapter.notifyDataSetChanged();
-
-                                //切换到收银页面后需要同步商品
-                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTS_ENABLED, true);
                             }
 
                             @Override

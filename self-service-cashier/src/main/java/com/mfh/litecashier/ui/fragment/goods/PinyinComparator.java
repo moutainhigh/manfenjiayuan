@@ -16,9 +16,9 @@ public class PinyinComparator implements Comparator<ScGoodsSkuWrapper> {
      * */
     private int sort(ScGoodsSkuWrapper lhs, ScGoodsSkuWrapper rhs) {
         try {
-            ZLogger.d(String.format("lhs(%s-%s), rhs(%s-%s)",
-                    lhs.getNameSortLetter(), lhs.getNamePinyin(),
-                    rhs.getNameSortLetter(), rhs.getNamePinyin()));
+//            ZLogger.d(String.format("lhs(%s-%s), rhs(%s-%s)",
+//                    lhs.getNameSortLetter(), lhs.getNamePinyin(),
+//                    rhs.getNameSortLetter(), rhs.getNamePinyin()));
 //        // 获取ascii值
             int lhs_ascii = lhs.getNameSortLetter().toUpperCase().charAt(0);
             int rhs_ascii = rhs.getNameSortLetter().toUpperCase().charAt(0);

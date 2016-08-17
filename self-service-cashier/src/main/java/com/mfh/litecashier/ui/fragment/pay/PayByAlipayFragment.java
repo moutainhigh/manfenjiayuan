@@ -584,6 +584,9 @@ public class PayByAlipayFragment extends BasePayFragment {
                 llPayInfo.setVisibility(View.VISIBLE);
                 llPayLoading.setVisibility(View.GONE);
 
+                etBarCode.requestFocus();
+                etBarCode.setSelection(etBarCode.length());
+
                 bPayProcessing = false;
             }
         }, 500);
@@ -621,6 +624,8 @@ public class PayByAlipayFragment extends BasePayFragment {
 
                 llPayInfo.setVisibility(View.VISIBLE);
                 llPayLoading.setVisibility(View.GONE);
+                etBarCode.requestFocus();
+                etBarCode.setSelection(etBarCode.length());
 
                 bPayProcessing = false;
             }

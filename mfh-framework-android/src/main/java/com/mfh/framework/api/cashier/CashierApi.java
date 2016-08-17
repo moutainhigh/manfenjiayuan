@@ -174,11 +174,29 @@ public class CashierApi {
     public final static String URL_PAYORDER_CREATE = MfhApi.URL_BASE_SERVER +
             "/payOrder/create";
 
+    /**
+     * 打款明细：/payOrder/list?status=2&sellOffice=136076&bizType=2001
+     */
+    public final static String URL_PAYORDER_LIST = MfhApi.URL_BASE_SERVER +
+            "/payOrder/list";
 
     /**
      * 判断是否需要锁定pos，由pos端主动发起询问,/scNetRealInfo/needLockPos?netId=
      * */
     public final static String URL_NEEDLOCKPOS = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/needLockPos";
+
+    /**
+     * 查询限额情况,第一个是限额（0代表没有设置或限额无穷大），第二个是未缴现金
+     * /scNetRealInfo/queryLimitInfo
+     * */
+    public final static String URL_QUERYLIMITINFO = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/queryLimitInfo";
+
+
+    /**
+     * 查pos订单的现金流水：
+     * /orderPayWay/list?payType=1&officeId=136076&orderby=CREATED_DATE&orderbydesc=true
+     * */
+    public final static String URL_ORDERPAYWAY_LIST = MfhApi.URL_BASE_SERVER + "/orderPayWay/list";
 
 
 }

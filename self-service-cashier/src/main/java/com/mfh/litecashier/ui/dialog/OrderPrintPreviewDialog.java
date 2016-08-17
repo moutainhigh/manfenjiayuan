@@ -32,7 +32,7 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.litecashier.com.PrintManager;
-import com.mfh.litecashier.service.OrderSyncManager2;
+import com.mfh.litecashier.service.UploadSyncManager;
 
 import java.util.List;
 
@@ -103,7 +103,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
         fabSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OrderSyncManager2.get().stepUploadPosOrder(mPosOrderEntity);
+                UploadSyncManager.getInstance().stepUploadPosOrder(mPosOrderEntity);
             }
         });
         fabPrint.setOnClickListener(new View.OnClickListener() {
@@ -251,8 +251,8 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                                     - payWrapper.getRuleDiscount()
                                     + payWrapper.getChange(),
                             payWrapper.getChange()));
-                    sbHtml.append(String.format("<p>" +
-                                    "--------------------------------\n"));
+
+                    sbHtml.append("--------------------------------\n");
                     sbHtml.append(String.format(
                                     "<div><font color=#000000>合计：%.2f</font></div>\n",
                             mPosOrderEntity.getFinalAmount()));

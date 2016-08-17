@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.vector_user.UserApiImpl;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
@@ -26,9 +28,12 @@ import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
+import com.mfh.litecashier.utils.FreshShopcartHelper;
+import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import butterknife.Bind;
@@ -59,6 +64,7 @@ public class SplashActivity extends InitActivity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
+        ZLogger.d("adb 000019");
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
         ZLogger.df("initializing getui sdk...");
@@ -77,7 +83,7 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 13);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 14);
 
         AnalysisHelper.validateHandoverInfo();
     }
@@ -99,7 +105,7 @@ public class SplashActivity extends InitActivity {
                 CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
                 CashierApp.getVersionName(), CashierApp.getVersionCode()));
 
-        if(SharedPreferencesManager.isAppFirstStart()){
+        if (SharedPreferencesManager.isAppFirstStart()) {
             ZLogger.df(String.format("application first running: %s-%s(%s)",
                     CashierApp.getVersionName(), CashierApp.getVersionCode(),
                     CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
@@ -111,7 +117,7 @@ public class SplashActivity extends InitActivity {
 //            SharedPreferencesHelper.setSyncIntervalCompanyHuman(30 * 60);//30分钟同步一次
 
             SharedPreferencesManager.setAppFirstStart(false);
-        }else{
+        } else {
             //清空旧缓存
 //            AppHelper.clearAppCache();
             //清除数据缓存
@@ -119,10 +125,17 @@ public class SplashActivity extends InitActivity {
 //            SharedPreferencesHelper.setPosOrderSyncInterval(25 * 60);
 //            SharedPreferencesHelper.setSyncCompanyHumanInterval(30 * 60);
 
-            // 保留最近30天的订单流水
-            CashierHelper.clearOldPosOrder(30);
-            AnalysisHelper.deleteOldDailysettle(30);
-            ZLogger.deleteOldFiles(15);
+            CashierShopcartService.getInstance().clear();
+            AnalysisHelper.deleteOldDailysettle(15);
+            CashierHelper.clearOldPosOrder(15);
+            CashierShopcartService.getInstance().clear();
+            PurchaseShopcartHelper.getInstance().clear();
+            FreshShopcartHelper.getInstance().clear();
+            PosTopupService.get().deleteOldData(15);
+            SMScaleSyncManager2.deleteOldFiles(1);
+            SMScaleSyncManager2.deleteOldFiles2();
+
+            ZLogger.deleteOldFiles(7);
         }
 
         // 清空缓存数据
@@ -153,8 +166,8 @@ public class SplashActivity extends InitActivity {
 
     /**
      * 注册设备
-     * */
-    protected void registerTerminal(){
+     */
+    protected void registerTerminal() {
         if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())
                 && NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -194,9 +207,9 @@ public class SplashActivity extends InitActivity {
     }
 
     /**
-     *  初始化完成
+     * 初始化完成
      */
-    private void onInitializedCompleted(){
+    private void onInitializedCompleted() {
         //验证登录状态是否有效
         if (MfhLoginService.get().haveLogined()) {
             if (NetWorkUtil.isConnect(CashierApp.getAppContext())) {

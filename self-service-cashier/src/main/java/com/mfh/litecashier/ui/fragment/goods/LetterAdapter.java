@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
+import com.bingshanguxue.vector_uikit.TextDrawable;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.CashierApp;

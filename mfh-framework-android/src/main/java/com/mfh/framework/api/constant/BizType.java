@@ -23,8 +23,8 @@ public class BizType {
     public final static Integer RECHARGE        = 99;//代充值
 
     //自定义业务类型
-    public final static Integer CASH_QUOTA        = 2001;//现金授权
-    public final static Integer INCOME_DISTRIBUTION        = 2002;//现金授权
+    public final static Integer CASH_QUOTA        = 98;//现金授权
+    public final static Integer INCOME_DISTRIBUTION        = 98;//现金授权
 
     public static String name(Integer value) {
         if (value == null){

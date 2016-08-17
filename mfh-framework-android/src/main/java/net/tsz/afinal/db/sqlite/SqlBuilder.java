@@ -306,11 +306,11 @@ public class SqlBuilder {
 		return sqlInfo;
 	}
 	
-	public static SqlInfo getUpdateSqlAsSqlInfo(Object entity,String  strWhere){
+	public static SqlInfo getUpdateSqlAsSqlInfo(Object entity, String strWhere){
 		
 		TableInfo table=TableInfo.get(entity.getClass());
 		
-		List<KeyValue> keyValueList = new ArrayList<KeyValue>();
+		List<KeyValue> keyValueList = new ArrayList<>();
 		
 		//添加属性
 		Collection<Property> propertys = table.propertyMap.values();
@@ -322,11 +322,11 @@ public class SqlBuilder {
 		//添加外键（多对一）
 		Collection<ManyToOne> manyToOnes = table.manyToOneMap.values();
 		for(ManyToOne many:manyToOnes){
-			KeyValue kv = manyToOne2KeyValue(many,entity);
+			KeyValue kv = manyToOne2KeyValue(many, entity);
 			if(kv!=null) keyValueList.add(kv);
 		}
 		
-		if(keyValueList == null || keyValueList.size()==0) {
+		if(keyValueList.size()==0) {
 			throw new DbException("this entity["+entity.getClass()+"] has no property"); 
 		}
 		
@@ -434,9 +434,7 @@ public class SqlBuilder {
 		}
 		return sbSQL.toString();
 	}
-	
-	
-	
+
 	private static KeyValue property2KeyValue(Property property , Object entity){
 		KeyValue kv = null ;
 		String pcolumn=property.getColumn();

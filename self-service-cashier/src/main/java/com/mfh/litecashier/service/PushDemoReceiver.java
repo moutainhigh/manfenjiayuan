@@ -17,6 +17,7 @@ import com.mfh.framework.helper.PayloadHelper;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -138,6 +139,27 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //现金超过授权额度，要求锁定pos机
         else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
+            AlarmManagerHelper.triggleNextDailysettle(0);
+//            JSONObject jsonObject = JSONObject.parseObject(data);
+//            JSONObject msgObj = jsonObject.getJSONObject("msg");
+//            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
+//            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
+//            String content = bodyObj.getString("content");
+//
+//            Double cashLimitAmount = Double.valueOf(content);
+//            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
+//            Bundle args = new Bundle();
+//            args.putDouble("amount", cashLimitAmount);
+//
+//            //同步数据
+//            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
+
+            ValidateManager.get().batchValidate();
+        }
+        //现金授权额度将要用完，即将锁定pos机
+        else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
+            AlarmManagerHelper.triggleNextDailysettle(0);
+
             JSONObject jsonObject = JSONObject.parseObject(data);
             JSONObject msgObj = jsonObject.getJSONObject("msg");
             JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
@@ -149,18 +171,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
             Bundle args = new Bundle();
             args.putDouble("amount", cashLimitAmount);
 
-            //同步数据
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
-        }
-        //现金授权额度将要用完，即将锁定pos机
-        else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
-            int count = SharedPreferencesHelper
-                    .getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
-            SharedPreferencesHelper
-                    .set(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, count+1);
-
-            //同步数据
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT));
+            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
         }
     }
 }

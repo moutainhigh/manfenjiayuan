@@ -1,6 +1,5 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
@@ -26,11 +24,17 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.PinyinUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 前台类目商品
@@ -262,79 +266,17 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
     }
 
     @Override
-    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, final List<ScGoodsSku> scGoodsSkus) {
 
         mPageInfo = pageInfo;
-        new SortAsyncTask().execute(scGoodsSkus);
 
-//        List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
-//
-//        if (scGoodsSkus != null && scGoodsSkus.size() > 0){
-//            for (ScGoodsSku sku : scGoodsSkus){
-//                ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
-//                wrapper.setSkuName(sku.getSkuName());
-//                wrapper.setBarcode(sku.getBarcode());
-//                wrapper.setCostPrice(sku.getCostPrice());
-//                wrapper.setUnit(sku.getUnit());
-//
-//                //设置商品名称的拼音和排序字母
-//                String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
-//                wrapper.setNamePinyin(namePinyin);
-//                String sortLetter = null;
-//                if (!StringUtils.isEmpty(namePinyin)){
-//                    sortLetter = namePinyin.substring(0, 1).toUpperCase();
-//                }
-//                if (sortLetter != null && sortLetter.matches("[A-Z]")) {
-//                    wrapper.setNameSortLetter(sortLetter);
-//                } else {
-//                    wrapper.setNameSortLetter("#");
-//                }
-//                wrappers.add(wrapper);
-//            }
-//        }
-//
-//        if (adapter != null) {
-//            adapter.appendEntityList(wrappers);
-//        }
-//        onLoadFinished();
-    }
-
-    @Override
-    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
-
-    }
-
-    private class SortAsyncTask extends AsyncTask<List<ScGoodsSku>, Integer, List<ScGoodsSkuWrapper>> {
-
-        @Override
-        protected List<ScGoodsSkuWrapper> doInBackground(List<ScGoodsSku>... params) {
-            return saveQueryResult(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(List<ScGoodsSkuWrapper> scGoodsSkuWrappers) {
-            super.onPostExecute(scGoodsSkuWrappers);
-
-            if (adapter != null) {
-                adapter.appendEntityList(scGoodsSkuWrappers);
-            }
-
-            onLoadFinished();
-        }
-
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private List<ScGoodsSkuWrapper> saveQueryResult(List<ScGoodsSku> goodsList) {
-            try {
+        Observable.create(new Observable.OnSubscribe<List<ScGoodsSkuWrapper>>() {
+            @Override
+            public void call(Subscriber<? super List<ScGoodsSkuWrapper>> subscriber) {
                 List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
 
-                if (goodsList != null && goodsList.size() > 0){
-                    for (ScGoodsSku sku : goodsList){
+                if (scGoodsSkus != null && scGoodsSkus.size() > 0){
+                    for (ScGoodsSku sku : scGoodsSkus){
                         ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
                         wrapper.setSkuName(sku.getSkuName());
                         wrapper.setBarcode(sku.getBarcode());
@@ -356,16 +298,52 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
                         wrappers.add(wrapper);
                     }
                 }
-                return wrappers;
 
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.ef(ex.toString());
-                return null;
+                subscriber.onNext(wrappers);
+                subscriber.onCompleted();
+
             }
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<ScGoodsSkuWrapper>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<ScGoodsSkuWrapper> scGoodsSkuWrappers) {
+                        List<ScGoodsSkuWrapper> entityList = adapter.getEntityList();
+                        if (entityList == null){
+                            entityList = new ArrayList<>();
+                        }
+                        if (scGoodsSkuWrappers != null){
+                            entityList.addAll(scGoodsSkuWrappers);
+                        }
+
+                        Collections.sort(entityList, new PinyinComparator());
+
+                        if (adapter != null) {
+                            adapter.setEntityList(entityList);
+                        }
+
+                        onLoadFinished();
+                    }
+                });
 
     }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
+
+    }
+
 
     /**
      * 设置刷新

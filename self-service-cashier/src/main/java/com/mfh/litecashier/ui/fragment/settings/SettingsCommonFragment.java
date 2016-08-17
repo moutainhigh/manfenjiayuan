@@ -6,16 +6,16 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.vector_uikit.SettingsItem;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.view.IPosRegisterView;
-import com.mfh.framework.api.CateApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.bingshanguxue.vector_uikit.SettingsItem;
-import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -25,7 +25,7 @@ import com.mfh.litecashier.event.SerialPortEvent;
 import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
 import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSettingsDialog;
-import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager;
+import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
@@ -462,7 +462,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
             smscaleFtpSettingsItem.setSubTitle(String.format("%s:%d",
-                    SMScaleSyncManager.FTP_HOST, SMScaleSyncManager.FTP_PORT));
+                    SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
             greentagsSettingsItem.setSubTitle(GreenTagsApi.URL);
             tsiSoftKeyboard.setChecked(SharedPreferencesManager.isSoftKeyboardEnabled());
             ttsToggleItem.setChecked(

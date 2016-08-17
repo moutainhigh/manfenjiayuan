@@ -3,6 +3,7 @@ package com.bingshanguxue.cashier.database.service;
 
 import com.bingshanguxue.cashier.database.dao.PosProductDao;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.model.PosGoods;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
@@ -100,6 +101,14 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         }
     }
 
+    public void deleteBy(String strWhere) {
+        try {
+            getDao().deleteBy(strWhere);
+        } catch (Exception e) {
+            ZLogger.e(e.toString());
+        }
+    }
+
     /**
      * 查询本地商品库搜索商品
      * @param barcode 商品条码
@@ -122,4 +131,61 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 
         return null;
     }
+
+    /**
+     * 保存商品档案
+     * */
+    public void saveOrUpdate(PosGoods posGoods){
+        Long id = posGoods.getId();
+        PosProductEntity entity = PosProductService.get().getEntityById(String.valueOf(id));
+        if (entity == null) {
+            entity = new PosProductEntity();
+            entity.setId(id);
+        }
+        //更新商品信息
+        entity.setCreatedDate(posGoods.getCreatedDate());
+        entity.setUpdatedDate(posGoods.getUpdatedDate());//使用商品的更新日期
+
+        entity.setProSkuId(posGoods.getProSkuId());
+        entity.setBarcode(posGoods.getBarcode());
+        entity.setProductId(posGoods.getProductId());
+        entity.setName(posGoods.getName());
+        entity.setUnit(posGoods.getUnit());
+        entity.setCostPrice(posGoods.getCostPrice());
+        entity.setQuantity(posGoods.getQuantity());
+        entity.setTenantId(posGoods.getTenantId());
+        entity.setProviderId(posGoods.getProviderId());
+        entity.setStatus(posGoods.getStatus());
+        entity.setPriceType(posGoods.getPriceType());
+        entity.setPackageNum(posGoods.getPackageNum());
+        entity.setProcateId(posGoods.getProcateId());
+        entity.setCateType(posGoods.getCateType());
+        entity.setProdLineId(posGoods.getProdLineId());
+        entity.setIsCloudActive(1);
+
+        // TODO: 8/2/16 用不到，影响效率，暂时忽略。
+//                    //设置商品名称的拼音和排序字母
+//                    String namePinyin = PinyinUtils.getPingYin(posGoods.getName());
+//                    entity.setNamePinyin(namePinyin);
+//                    String sortLetter = null;
+//                    if (!StringUtils.isEmpty(namePinyin)){
+//                        sortLetter = namePinyin.substring(0, 1).toUpperCase();
+//                    }
+//                    if (sortLetter != null && sortLetter.matches("[A-Z]")) {
+//                        entity.setNameSortLetter(sortLetter);
+//                    } else {
+//                        entity.setNameSortLetter("#");
+//                    }
+
+        PosProductService.get().saveOrUpdate(entity);
+    }
+
+    public void deactiveAll(){
+        List<PosProductEntity> entities = PosProductService.get().queryAll();
+        for (PosProductEntity entity : entities){
+            entity.setIsCloudActive(0);
+            saveOrUpdate(entity);
+        }
+    }
+
 }
