@@ -382,9 +382,14 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
 //                        animProgress.setVisibility(View.GONE);
                     ZLogger.d("新建发货单成功: ");
-                    changeSendCompany(null);
-                    officeAdapter.setEntityList(null);
-                    showProgressDialog(ProgressDialog.STATUS_DONE, "发货成功", true);
+//                    changeSendCompany(null);
+//                    InvSendIoGoodsService.get().clear();
+//                    officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+//                    showProgressDialog(ProgressDialog.STATUS_DONE, "发货成功", true);
+                    hideProgressDialog();
+                    DialogUtil.showHint("发货成功");
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
                 }
             }
             , String.class
