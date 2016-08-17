@@ -11,6 +11,8 @@ import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 
+import java.util.Map;
+
 /**
  * 采购订单明细
  * Created by bingshanguxue on 16/3/17.
@@ -45,6 +47,10 @@ public class InvSendIoOrderItemMode implements IInvSendIoOrderItemMode<InvSendIo
                             //com.mfh.comn.net.data.EntityWrapper cannot be cast to com.mfh.comn.net.data.RspBean
                             EntityWrapper<InvSendIoOrderItemBrief> retValue = (EntityWrapper<InvSendIoOrderItemBrief>) rspData;
                             invSendIoOrderItemBrief = retValue.getBean();
+                            Map<String, String> caption = retValue.getCaption();
+                            if (invSendIoOrderItemBrief != null){
+                                invSendIoOrderItemBrief.setCaptionStatus(caption.get("status"));
+                            }
                         }
 
                         if (listener != null) {

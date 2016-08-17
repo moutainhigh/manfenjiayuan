@@ -1,0 +1,99 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+
+    <include layout="@layout/appbar_scan_barcode"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--内容区-->
+            <!--单据编号-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_barcode"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:endTextSingleLine="false"
+                app:startText="单据编号:"
+                app:startTextWidth="130dp"/>
+            <!--单据名称-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_orderName"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:endTextSingleLine="false"
+                app:startText="单据编号:"
+                app:startTextWidth="130dp"/>
+            <!--订单金额-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_totalFee"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:endTextSingleLine="false"
+                app:startText="订单金额:"
+                app:startTextWidth="130dp"/>
+            <!--商品总数-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_totalCount"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="44dp"
+                app:endTextSingleLine="false"
+                app:startText="商品总数:"
+                app:startTextWidth="130dp"/>
+            <!--发货方-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_sendCompanyName"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:startText="发货方:"
+                app:startTextWidth="130dp"/>
+            <!--发货方-->
+            <com.bingshanguxue.pda.widget.TextLabelView
+                android:id="@+id/label_status"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:startText="状态:"
+                app:startTextWidth="130dp"/>
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        app:backgroundTint="@color/mfh_colorPrimary"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
+
+</android.support.design.widget.CoordinatorLayout>
