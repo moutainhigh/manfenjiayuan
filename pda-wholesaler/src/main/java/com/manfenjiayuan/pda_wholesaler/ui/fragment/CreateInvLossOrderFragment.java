@@ -233,7 +233,8 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         }
 
         if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR, getString(R.string.toast_network_error), true);
+            showProgressDialog(ProgressDialog.STATUS_ERROR,
+                    getString(R.string.toast_network_error), true);
             return;
         }
 

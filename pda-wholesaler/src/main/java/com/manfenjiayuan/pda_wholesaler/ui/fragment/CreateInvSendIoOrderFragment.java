@@ -10,23 +10,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
+import com.bingshanguxue.pda.bizz.invsendio.InvSendIoGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
-import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
+import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
+import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
-import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;
-import com.manfenjiayuan.business.view.IInvFindOrderView;
 import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
-import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
-import com.bingshanguxue.pda.bizz.invsendio.InvSendIoGoodsAdapter;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
@@ -40,11 +36,10 @@ import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -62,13 +57,10 @@ import butterknife.OnClick;
  * 拣货发货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvSendIoOrderFragment extends PDAScanFragment
-        implements IInvFindOrderView {
+public class CreateInvSendIoOrderFragment extends BaseFragment {
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.rl_scan_sendioorder)
-    RelativeLayout rlScanSendIoOrder;
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
@@ -78,11 +70,13 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
     @Bind(R.id.empty_view)
     View emptyView;
 
+
+    private ActionDialog mActionDialog = null;
+
     /**
      * 接收方网点信息
      */
     private NetInfoWrapper mNetInfoWrapper = null;
-    private InvFindOrderPresenter mInvFindOrderPresenter;
 
     public static CreateInvSendIoOrderFragment newInstance(Bundle args) {
         CreateInvSendIoOrderFragment fragment = new CreateInvSendIoOrderFragment();
@@ -106,21 +100,10 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
     }
 
     @Override
-    protected void onScanCode(String code) {
-        if (!isAcceptBarcodeEnabled) {
-            return;
-        }
-        isAcceptBarcodeEnabled = false;
-//        inspect(code);
-        importSendIoOrder(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         InvSendIoGoodsService.get().clear();
-        mInvFindOrderPresenter = new InvFindOrderPresenter(this);
     }
 
     @Override
@@ -141,8 +124,6 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
                 int id = item.getItemId();
                 if (id == R.id.action_submit) {
                     submit();
-                } else if (id == R.id.action_sendioorder) {
-                    fetchSendIoOrder();
                 }
                 return true;
             }
@@ -150,11 +131,10 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_sendio);
 
+        mProviderView.setEnabled(false);
         initRecyclerView();
 
-        if (mNetInfoWrapper == null) {
-            selectInvCompProvider();
-        }
+        selectEntryMode();
     }
 
     @Override
@@ -196,16 +176,30 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                isAcceptBarcodeEnabled = true;
                 officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
             }
             break;
             case Constants.ARC_COMPANY_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
-                    if (companyInfo != null){
+                    if (companyInfo != null) {
                         changeSendCompany(companyInfo);
                     }
+                }
+
+                if (mNetInfoWrapper == null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
+            }
+            break;
+            case Constants.ARC_INVFINDORDER_INSPECT: {
+                if (resultCode == Activity.RESULT_OK) {
+                    NetInfoWrapper netInfoWrapper = (NetInfoWrapper) data.getSerializableExtra("netInfoWrapper");
+                    importInvFindOrder(netInfoWrapper);
+                } else {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
                 }
             }
             break;
@@ -213,6 +207,41 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+
+    /**
+     * 选择入口
+     */
+    private void selectEntryMode() {
+        if (mActionDialog == null) {
+            mActionDialog = new ActionDialog(getActivity());
+            mActionDialog.setCancelable(false);
+            mActionDialog.setCanceledOnTouchOutside(false);
+        }
+        mActionDialog.init("新建发货单", "可以选择以下方式新建收货单",
+                new ActionDialog.DialogClickListener() {
+                    @Override
+                    public void onAction1Click() {
+                        if (mNetInfoWrapper == null) {
+                            selectInvCompProvider();
+                        }
+                    }
+
+                    @Override
+                    public void onAction2Click() {
+//                        entryMode = SendIoEntryMode.SENDIOORDER;
+//                        fetchSendIoOrder();
+                    }
+
+                    @Override
+                    public void onAction3Click() {
+                        fetchInvFindOrder();
+                    }
+                });
+        mActionDialog.registerActions("手动输入商品", null, "导入拣货单");
+        if (!mActionDialog.isShowing()) {
+            mActionDialog.show();
+        }
+    }
 
     /**
      * 切换发货方
@@ -265,14 +294,14 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
                 operateDialog.setPositiveButton("拒收",
                         new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        InvSendIoGoodsService.get().reject(entity);
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                InvSendIoGoodsService.get().reject(entity);
 
-                        officeAdapter.notifyItemChanged(position);
-                    }
-                });
+                                officeAdapter.notifyItemChanged(position);
+                            }
+                        });
                 operateDialog.setNegativeButton("删除", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -382,9 +411,14 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
 //                        animProgress.setVisibility(View.GONE);
                     ZLogger.d("新建发货单成功: ");
-                    changeSendCompany(null);
-                    officeAdapter.setEntityList(null);
-                    showProgressDialog(ProgressDialog.STATUS_DONE, "发货成功", true);
+//                    changeSendCompany(null);
+//                    InvSendIoGoodsService.get().clear();
+//                    officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+//                    showProgressDialog(ProgressDialog.STATUS_DONE, "发货成功", true);
+                    hideProgressDialog();
+                    DialogUtil.showHint("发货成功");
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
                 }
             }
             , String.class
@@ -393,86 +427,43 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
 
     /**
-     * 导入发货单
+     * 导入拣货单
      */
-    public void fetchSendIoOrder() {
-        // TODO: 8/2/16 扫描发货单条码， 显示一个扫描对话框
-        DialogUtil.showHint("扫描发货单条码");
-        setScanEnabled(true);
-    }
+    private void fetchInvFindOrder() {
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVFINDORDER_INSPECT);
 
-    public void setScanEnabled(boolean enabled) {
-        isAcceptBarcodeEnabled = enabled;
-        if (enabled) {
-            rlScanSendIoOrder.setVisibility(View.VISIBLE);
-        } else {
-            rlScanSendIoOrder.setVisibility(View.GONE);
-        }
+        Intent intent = new Intent(getActivity(), SecondaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_INVFINDORDER_INSPECT);
     }
 
     /**
-     * 扫描到发货单条码后，加载订单明细
+     * 导入拣货单
      */
-    private void importSendIoOrder(String barcode) {
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            isAcceptBarcodeEnabled = true;
+    private void importInvFindOrder(final NetInfoWrapper netInfoWrapper) {
+        if (netInfoWrapper == null) {
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
             return;
         }
 
-        if (StringUtils.isEmpty(barcode)) {
-            return;
-        }
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "加载数据...", false);
 
-        mInvFindOrderPresenter.loadOrderItemsByBarcode(barcode);
-    }
+        mNetInfoWrapper = netInfoWrapper;
+        List<InvSendIoGoodsEntity> entities = InvSendIoGoodsService.get().queryAll();
 
-
-    @OnClick(R.id.rl_scan_sendioorder)
-    public void hideScanSendIoOrder() {
-        setScanEnabled(false);
-    }
-
-
-    @Override
-    public void onQueryInvFindOrderProcess() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在加载拣货单明细", false);
-    }
-
-    @Override
-    public void onQueryInvFindOrderError(String errorMsg) {
-        hideProgressDialog();
-    }
-
-    @Override
-    public void onQueryInvFindOrderSuccess(InvFindOrderItemBrief data) {
-        if (data != null) {
-            this.mNetInfoWrapper = new NetInfoWrapper();
-            mNetInfoWrapper.setNetId(data.getTargetNetId());
-            mNetInfoWrapper.setName(data.getTargetNetCaption());
-
-            InvSendIoGoodsService.get().saveInvFindOrderItems(data.getItems());
-            officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
-
-            // TODO: 6/8/16 获取商品批发价（拣货单商品没有批发价）
-            retrieveGoodsPrice();
-        }
-
-        hideProgressDialog();
-        setScanEnabled(false);
+        // TODO: 6/8/16 获取商品批发价（拣货单商品没有批发价）
+        retrieveGoodsPrice(entities);
     }
 
     /**
      * 获取商品价格*
      */
-    private void retrieveGoodsPrice() {
-        List<InvSendIoGoodsEntity> entityList = officeAdapter.getEntityList();
-        if (entityList == null || entityList.size() < 1) {
-            return;
-        }
-
+    private void retrieveGoodsPrice(List<InvSendIoGoodsEntity> entities) {
         StringBuilder sb = new StringBuilder();
-        for (InvSendIoGoodsEntity wrapper : entityList) {
+        for (InvSendIoGoodsEntity wrapper : entities) {
             if (wrapper.getProSkuId() == null) {
                 continue;
             }
@@ -482,24 +473,23 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
             sb.append(wrapper.getProSkuId());
         }
 
-        PageInfo pageInfo = new PageInfo(1, entityList.size());
+        PageInfo pageInfo = new PageInfo(1, entities.size());
 
         NetCallBack.QueryRsCallBack retrievePriceRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<ScGoodsSku>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
                 //此处在主线程中执行。
-                if (rs == null) {
-                    return;
-                }
-
                 List<ScGoodsSku> scGoodsSkus = new ArrayList<>();
-                for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
-                    scGoodsSkus.add(wrapper.getBean());
+                if (rs != null) {
+                    for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
+                        scGoodsSkus.add(wrapper.getBean());
+                    }
                 }
 
                 //刷新商品价格
                 InvSendIoGoodsService.get().infusePriceList(scGoodsSkus);
                 officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                hideProgressDialog();
             }
 
             @Override
@@ -507,6 +497,8 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
                 super.processFailure(t, errMsg);
 
                 ZLogger.d("获取拣货单商品价格失败：" + errMsg);
+                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                hideProgressDialog();
             }
         }, ScGoodsSku.class, MfhApplication.getAppContext());
 
@@ -515,7 +507,7 @@ public class CreateInvSendIoOrderFragment extends PDAScanFragment
 
     /**
      * 验货
-     * */
+     */
     @OnClick(R.id.fab_add)
     public void inspect() {
         inspect(null);

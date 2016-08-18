@@ -10,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.widget.EditQueryView;
+import com.bingshanguxue.pda.widget.EditLabelView;
+import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
@@ -46,11 +47,9 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+    @Bind(R.id.scanBar)
+    public ScanBar mScanBar;
 
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
-    @Bind(R.id.eqv_tagno)
-    EditQueryView eqvTagNo;
     @Bind(R.id.label_barcodee)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
@@ -59,6 +58,8 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
     TextLabelView labelQuantity;
     @Bind(R.id.label_costPrice)
     TextLabelView labelCostPrice;
+    @Bind(R.id.label_tagno)
+    EditLabelView labelTagNo;
 
     @Bind(R.id.fab_submit)
     FloatingActionButton btnBind;
@@ -82,12 +83,17 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     @Override
     protected void onScanCode(String code) {
-        if (eqvTagNo.hasFocus()) {
-            eqvTagNo.setInputString(code);
-            eqvBarcode.requestFocus();
+        if (!isAcceptBarcodeEnabled) {
+            return;
+        }
+        isAcceptBarcodeEnabled = false;
+
+        if (labelTagNo.hasFocus()) {
+            labelTagNo.setInput(code);
+            labelTagNo.requestFocusEnd();
         } else {
 //            eqvBarcode.setInputString(code);
-            eqvBarcode.clear();
+//            eqvBarcode.clear();
             queryGoods(code);
         }
     }
@@ -124,46 +130,46 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
         });
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_bindtags);
-
-        initProgressDialog("正在同步数据", "同步成功", "同步失败");
-
-        eqvTagNo.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvTagNo.setSoftKeyboardEnabled(true);
-        eqvTagNo.setInputSubmitEnabled(true);
-        eqvTagNo.setOnViewListener(new EditQueryView.OnViewListener() {
+        mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
             @Override
-            public void onSubmit(String text) {
-                eqvBarcode.requestFocus();
+            public void onKeycodeEnterClick(String text) {
+                queryGoods(text);
             }
-        });
 
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(true);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
             @Override
-            public void onSubmit(String text) {
+            public void onAction1Click(String text) {
                 queryGoods(text);
             }
         });
+        initProgressDialog("正在同步数据", "同步成功", "同步失败");
 
-        eqvTagNo.requestFocus();
+        labelTagNo.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelTagNo.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+                refresh(null);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        eqvTagNo.requestFocus();
+        mScanBar.requestFocus();
 
-        if (!GreenTagsApi.validate()){
+        if (!GreenTagsApi.validate()) {
             showGreenTagsDialog();
         }
     }
 
     private GreenTagsSettingsDialog mGreenTagsSettingsDialog = null;
 
-    private void showGreenTagsDialog(){
+    private void showGreenTagsDialog() {
         if (mGreenTagsSettingsDialog == null) {
             mGreenTagsSettingsDialog = new GreenTagsSettingsDialog(getActivity());
             mGreenTagsSettingsDialog.setCancelable(true);
@@ -182,17 +188,17 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
     public void bindGoods2Tag() {
         btnBind.setEnabled(false);
 
-        if (curGoods == null){
+        if (curGoods == null) {
             DialogUtil.showHint("请重新扫描货条码");
-            eqvBarcode.requestFocus();
+            mScanBar.requestFocus();
             btnBind.setEnabled(true);
             return;
         }
 
-        String tagNo = eqvTagNo.getInputString();
+        String tagNo = labelTagNo.getInput();
         if (StringUtils.isEmpty(tagNo)) {
             DialogUtil.showHint("请扫描货架编号");
-            eqvTagNo.requestFocus();
+            labelTagNo.requestFocus();
             btnBind.setEnabled(true);
             return;
         }
@@ -211,12 +217,14 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
      */
     public void queryGoods(String barcode) {
         if (StringUtils.isEmpty(barcode)) {
-            eqvBarcode.requestFocus();
+            mScanBar.requestFocus();
+            isAcceptBarcodeEnabled = true;
             return;
         }
 
         if (!NetWorkUtil.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
+            isAcceptBarcodeEnabled = true;
             refresh(null);
             return;
         }
@@ -234,26 +242,30 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
             labelProductName.setTvSubTitle("");
             labelCostPrice.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
+            labelTagNo.setInput("");
 
             btnBind.setEnabled(false);
 
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
+            mScanBar.reset();
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
+            mScanBar.setInputText("");
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getName());
             labelCostPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getCostPrice(), ""));
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
+            labelTagNo.setInput("");
+            labelTagNo.requestFocusEnd();
 
             btnBind.setEnabled(true);
         }
 
-        DeviceUtils.hideSoftInput(getActivity(), labelCostPrice);
+        isAcceptBarcodeEnabled = true;
+        DeviceUtils.hideSoftInput(getActivity(), labelTagNo);
     }
 
-    public void bindDefaultTag2Goods(String goodsCode, String tagNo){
+    public void bindDefaultTag2Goods(String goodsCode, String tagNo) {
         GoodsInfoEX googsInfoEX = GoodsInfoEX.createDefault(goodsCode, false);
         TagInfoEX tagInfoEX = TagInfoEX.createDefault(tagNo);
 //        tagInfoEX.tagId = 1;
@@ -271,7 +283,6 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     @Override
     public void onIInvSkuGoodsViewError(String errorMsg) {
-
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
         refresh(null);
@@ -279,7 +290,6 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     @Override
     public void onIInvSkuGoodsViewSuccess(InvSkuGoods invSkuGoods) {
-
         hideProgressDialog();
 
         refresh(invSkuGoods);
@@ -318,14 +328,10 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
             ZLogger.d("onPostExecute: 绑定" + (aBoolean ? "成功" : "失败"));
             btnBind.setEnabled(true);
 
-
-            if (aBoolean){
+            if (aBoolean) {
                 showProgressDialog(ProgressDialog.STATUS_ERROR, "绑定成功", true);
                 refresh(null);
-                eqvTagNo.clear();
-                eqvTagNo.requestFocusEnd();
-            }
-            else{
+            } else {
                 showProgressDialog(ProgressDialog.STATUS_ERROR, "绑定失败", true);
             }
 //            hideProgressDialog();
@@ -339,7 +345,6 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
         @Override
         protected void onProgressUpdate(Void... values) {
-            ZLogger.d("onProgressUpdate");
         }
     }
 }

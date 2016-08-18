@@ -75,7 +75,7 @@ public class ScanBar extends LinearLayout {
             etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
 
-        boolean isAction1Enabled = ta.getBoolean(R.styleable.ScanBar_action1Enabled, true);
+        boolean isAction1Enabled = ta.getBoolean(R.styleable.ScanBar_action1Enabled, false);
         if (isAction1Enabled){
             ivAction1.setVisibility(VISIBLE);
         }
@@ -199,6 +199,9 @@ public class ScanBar extends LinearLayout {
         return etInput.getText().toString();
     }
 
+    public void setInputText(String text){
+        etInput.setText(text);
+    }
     public boolean isSoftKeyboardEnabled() {
         return softKeyboardEnabled;
     }

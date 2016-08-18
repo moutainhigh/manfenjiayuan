@@ -6,10 +6,4 @@
         android:orderInCategory="100"
         android:title="@string/action_submit"
         app:showAsAction="always|withText" />
-    <item
-        android:id="@+id/action_sendioorder"
-        android:orderInCategory="100"
-        android:icon="@mipmap/actionbar_icon_more_normal"
-        android:title="@string/action_import_findorder"
-        app:showAsAction="never" />
 </menu>

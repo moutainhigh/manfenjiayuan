@@ -4,92 +4,81 @@
                                                  android:layout_height="match_parent"
                                                  android:orientation="vertical">
 
-<include layout="@layout/appbar"/>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    <include layout="@layout/appbar_scan_barcode"/>
 
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_shelve"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
-        app:editQueryView_inputHint="请扫描货架编号"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="16sp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.bingshanguxue.pda.widget.EditQueryView
-        android:id="@+id/eqv_barcode"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginTop="@dimen/spacing_normal"
-        app:editLabelView_inputTextColorHint="@color/black_35"
-        app:editLabelView_rightImageButtonSrc="@mipmap/ic_search_green"
-        app:editQueryView_inputHint="请扫描商品条码"
-        app:editQueryView_inputTextColor="@color/black"
-        app:editQueryView_inputTextSize="16sp"/>
-
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_barcodee"
-                style="@style/mfh_textlabelview"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                app:startText="商品条码:"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_productName"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                app:startText="商品名称:"/>
+                <com.bingshanguxue.pda.widget.TextLabelView
+                    android:id="@+id/label_barcodee"
+                    style="@style/mfh_textlabelview"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    app:startText="商品条码:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_costPrice"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                app:startText="零售价:"/>
+                <com.bingshanguxue.pda.widget.TextLabelView
+                    android:id="@+id/label_productName"
+                    style="@style/mfh_textlabelview"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    app:startText="商品名称:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
-                android:id="@+id/label_quantity"
-                style="@style/mfh_textlabelview"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                app:startText="库存:"/>
+                <com.bingshanguxue.pda.widget.TextLabelView
+                    android:id="@+id/label_costPrice"
+                    style="@style/mfh_textlabelview"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    app:startText="零售价:"/>
 
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+                <com.bingshanguxue.pda.widget.TextLabelView
+                    android:id="@+id/label_quantity"
+                    style="@style/mfh_textlabelview"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    app:startText="库存:"/>
 
-</LinearLayout>
+                <com.bingshanguxue.pda.widget.EditLabelView
+                    android:id="@+id/label_tagno"
+                    style="@style/mfh_editlabelview"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:startText="货架编号:"
+                    app:startTextWidth="130dp"
+                    app:editInputType="numberDecimal"
+                    app:editTextHint="请输入货架编号"/>
 
-<!--结算-->
-<android.support.design.widget.FloatingActionButton
-    android:id="@+id/fab_submit"
-    android:layout_width="64dp"
-    android:layout_height="64dp"
-    android:layout_gravity="bottom|end"
-    android:layout_margin="@dimen/spacing_double"
-    android:src="@mipmap/ic_fab_confirm"
-    app:backgroundTint="@color/mfh_positive_default"
-    app:borderWidth="0dp"
-    app:elevation="0dp"
-    app:pressedTranslationZ="0dp"
-    app:rippleColor="@color/material_green_800"/>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </LinearLayout>
+
+    <!--结算-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        app:backgroundTint="@color/mfh_positive_default"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
 
 </android.support.design.widget.CoordinatorLayout>
 

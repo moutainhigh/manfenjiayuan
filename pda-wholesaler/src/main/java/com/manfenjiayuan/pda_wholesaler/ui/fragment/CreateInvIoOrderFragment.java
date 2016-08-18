@@ -369,13 +369,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
                     super.processFailure(t, errMsg);
                     ZLogger.df("提交出入库订单失败: " + errMsg);
 //                    {"code":"1","msg":"132079网点有仓储单正在处理中...","version":"1","data":null}
-                    //查询失败
-//                        animProgress.setVisibility(View.GONE);
-//                    DialogUtil.showHint("新建退货单失败" + errMsg);
-                    DialogUtil.showHint(errMsg);
-                    hideProgressDialog();
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
+                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
                 }
 
                 @Override

@@ -10,6 +10,7 @@ import com.bingshanguxue.pda.bizz.company.InvCompanyListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.InvSendIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckHistoryFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertToFragment;
@@ -38,6 +39,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x10;//盘点
     public static final int FRAGMENT_TYPE_STOCKTAKE_LIST = 0x11;//盘点记录
     public static final int FT_INV_COMPANYLIST = 0x12;//批发商
+    public static final int FT_INVSENDIO_ORDERINSPECT = 0x13;//导入发货单
 
     /**
      * 0: 快递代收
@@ -249,6 +251,20 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = InvCompanyListFragment.newInstance(intent.getExtras());
             }else{
                 fragment = InvCompanyListFragment.newInstance(null);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, invCheckInspectFragment).show(invCheckInspectFragment)
+                    .commit();
+        }
+        else if(serviceType == FT_INVSENDIO_ORDERINSPECT){
+            InvSendIoOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = InvSendIoOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = InvSendIoOrderFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

@@ -20,8 +20,8 @@ android {
 
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 17
-        versionName "0.1.0"
+        versionCode 19
+        versionName "0.1.1"
         multiDexEnabled true
 
         ndk {
@@ -115,10 +115,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile project(':mfh-framework-all')
-//    compile project(':mfh-framework-android')
-//    compile project(':mfh-framework-business')
-//    compile project(path: ':vector_user')
     compile project(':im')
     compile project(':pda')
 }

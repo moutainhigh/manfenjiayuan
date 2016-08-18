@@ -105,7 +105,6 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
 
         initRecyclerView();
 
-
         reload();
     }
 

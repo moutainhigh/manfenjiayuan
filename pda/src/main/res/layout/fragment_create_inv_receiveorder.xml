@@ -50,7 +50,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-
     </RelativeLayout>
 
 
@@ -68,42 +67,4 @@
         app:pressedTranslationZ="0dp"
         app:rippleColor="@color/material_green_800"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_scan_sendioorder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/mf_dividerColorPrimary"
-        android:padding="@dimen/spacing_double"
-        android:visibility="gone">
-
-        <!--发货单编号-->
-        <com.bingshanguxue.pda.widget.EditLabelView
-            android:id="@+id/label_order_barcode"
-            style="@style/mfh_editlabelview"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            app:startText="单据编号:"
-            app:startTextWidth="130dp"
-            android:layout_marginTop="@dimen/spacing_4x"
-            app:startTextColor="@color/material_white"
-            app:editTextColor="@color/material_white"
-            app:editInputType="numberDecimal"
-            app:editTextHint="请输入单据编号"/>
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_submit"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/spacing_double"
-            android:src="@mipmap/ic_fab_confirm"
-            app:backgroundTint="@color/mfh_colorPrimary"
-            app:borderWidth="0dp"
-            app:elevation="0dp"
-            app:pressedTranslationZ="0dp"
-            app:rippleColor="@color/material_green_800"/>
-
-    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

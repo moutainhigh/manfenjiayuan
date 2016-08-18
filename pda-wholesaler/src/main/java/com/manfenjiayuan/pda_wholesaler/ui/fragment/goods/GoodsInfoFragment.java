@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.DataSyncManager;
 import com.bingshanguxue.pda.bizz.goods.ScGoodsSkuEvent;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.TextLabelView;
@@ -209,7 +208,7 @@ public class GoodsInfoFragment extends BaseFragment {
                     ZLogger.d("修改成功:" + retStr);
                     onSubmitSuccess();
 
-                    DataSyncManager.getInstance().notifyUpdateSku();
+//                    DataSyncManager.getInstance().notifyUpdateSku();
                 }
 
                 @Override
@@ -244,6 +243,7 @@ public class GoodsInfoFragment extends BaseFragment {
 
     public void onSubmitSuccess() {
         showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        btnSubmit.setEnabled(true);
         //修改商品信息成功后，清空商品信息
 //        refresh(null);
     }

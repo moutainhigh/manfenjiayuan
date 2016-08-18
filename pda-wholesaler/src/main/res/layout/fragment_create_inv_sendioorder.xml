@@ -68,31 +68,4 @@
         app:pressedTranslationZ="0dp"
         app:rippleColor="@color/material_green_800"/>
 
-    <RelativeLayout
-        android:id="@+id/rl_scan_sendioorder"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/mf_dividerColorPrimary"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/animProgress"
-            android:layout_alignParentTop="true"
-            android:layout_margin="@dimen/spacing_double"
-            android:gravity="center"
-            android:text="请扫描发货单条码\n单击返回收货单列表"
-            android:textColor="@color/material_white"
-            android:textSize="18sp"/>
-
-        <ProgressBar
-            android:id="@+id/animProgress"
-            style="@style/loading"
-            android:layout_width="60dip"
-            android:layout_height="60dip"
-            android:layout_centerInParent="true"/>
-
-    </RelativeLayout>
-
 </android.support.design.widget.CoordinatorLayout>
