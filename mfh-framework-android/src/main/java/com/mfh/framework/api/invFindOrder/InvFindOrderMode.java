@@ -1,8 +1,7 @@
-package com.manfenjiayuan.business.mode;
+package com.mfh.framework.api.invFindOrder;
 
-import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
+import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
@@ -36,16 +35,21 @@ public class InvFindOrderMode  {
                 new NetProcessor.Processor<InvFindOrderItemBrief>() {
                     @Override
                     public void processResult(IResponseData rspData) {
-                        if (rspData == null) {
-                            if (listener != null) {
-                                listener.onSuccess(null);
+                        try{
+                            InvFindOrderItemBrief data = null;
+                            if (rspData != null) {
+                                //com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
+                                EntityWrapper<InvFindOrderItemBrief> retValue = (EntityWrapper<InvFindOrderItemBrief>) rspData;
+                                data = retValue.getBean();
                             }
-                            return;
+                            if (listener != null) {
+                                listener.onSuccess(data);
+                            }
                         }
-                        //com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-                        RspBean<InvFindOrderItemBrief> retValue = (RspBean<InvFindOrderItemBrief>) rspData;
-                        if (listener != null) {
-                            listener.onSuccess(retValue.getValue());
+                        catch (Exception e){
+                            if (listener != null) {
+                                listener.onError("解析数据失败:" + e.toString());
+                            }
                         }
                     }
 
@@ -62,7 +66,7 @@ public class InvFindOrderMode  {
                 , MfhApplication.getAppContext()) {
         };
 
-        InvOrderApiImpl.getInvFindOrderByBarcode(barcode, null, responseCallback);
+        InvOrderApiImpl.getInvFindOrderByBarcode(barcode, responseCallback);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.manfenjiayuan.business.bean;
+package com.mfh.framework.api.invFindOrder;
 
 
 import com.mfh.framework.api.constant.IsPrivate;

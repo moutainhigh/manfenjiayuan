@@ -129,14 +129,12 @@ public class InvOrderApiImpl extends InvOrderApi {
      * 根据拣货单编号或条码检索一个拣货单及其所有明细
      * @param barcode 单据条码，采购单以“4”开头。
      */
-    public static void getInvFindOrderByBarcode(String barcode, String wrapper, AjaxCallBack<? extends Object> responseCallback) {
+    public static void getInvFindOrderByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (!StringUtils.isEmpty(barcode)) {
             params.put("barcode", barcode);
         }
-        if (!StringUtils.isEmpty(wrapper)){
-            params.put("wrapper", "wrapper");
-        }
+        params.put("wrapper", "true");
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_INVFINDORDER_GETBYID, params, responseCallback);
     }

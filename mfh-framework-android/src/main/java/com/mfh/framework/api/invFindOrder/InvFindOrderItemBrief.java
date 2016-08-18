@@ -1,4 +1,4 @@
-package com.manfenjiayuan.business.bean;
+package com.mfh.framework.api.invFindOrder;
 
 import com.mfh.comn.bean.ILongId;
 
@@ -12,14 +12,16 @@ import java.util.List;
 public class InvFindOrderItemBrief implements ILongId, Serializable {
     private Long id;//订单编号
     private String barcode;//单号
+    private String orderName;//单据编号
     private Long targetNetId;//目标收货网点，根据拣货单发货会需要
     private String targetNetCaption;//收货网点名称
 
-    private Double goodsFee;//商品金额
-//    private Double transFee;//配送费
+    private Double commitNum;//商品类别数量
+    private Double commitGoodsNum;//商品总数量
     private Double totalFee;//总金额
     private Double totalCount;//总数
     private Integer status;//订单状态
+    private String statusCaption;//订单状态
 
 
     private List<InvFindOrderItem> items;
@@ -40,21 +42,37 @@ public class InvFindOrderItemBrief implements ILongId, Serializable {
         this.barcode = barcode;
     }
 
-    public Double getGoodsFee() {
-        return goodsFee;
+    public String getOrderName() {
+        return orderName;
     }
 
-    public void setGoodsFee(Double goodsFee) {
-        this.goodsFee = goodsFee;
+    public void setOrderName(String orderName) {
+        this.orderName = orderName;
     }
 
-//    public Double getTransFee() {
-//        return transFee;
-//    }
-//
-//    public void setTransFee(Double transFee) {
-//        this.transFee = transFee;
-//    }
+    public Double getCommitNum() {
+        return commitNum;
+    }
+
+    public void setCommitNum(Double commitNum) {
+        this.commitNum = commitNum;
+    }
+
+    public Double getCommitGoodsNum() {
+        return commitGoodsNum;
+    }
+
+    public void setCommitGoodsNum(Double commitGoodsNum) {
+        this.commitGoodsNum = commitGoodsNum;
+    }
+
+    public String getStatusCaption() {
+        return statusCaption;
+    }
+
+    public void setStatusCaption(String statusCaption) {
+        this.statusCaption = statusCaption;
+    }
 
     public Double getTotalFee() {
         return totalFee;

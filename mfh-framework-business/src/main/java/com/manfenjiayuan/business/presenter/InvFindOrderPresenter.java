@@ -1,7 +1,7 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
-import com.manfenjiayuan.business.mode.InvFindOrderMode;
+import com.mfh.framework.api.invFindOrder.InvFindOrderItemBrief;
+import com.mfh.framework.api.invFindOrder.InvFindOrderMode;
 import com.manfenjiayuan.business.view.IInvFindOrderView;
 import com.mfh.framework.mvp.OnModeListener;
 
@@ -22,7 +22,6 @@ public class InvFindOrderPresenter {
         mInvFindOrderMode.loadOrderItemsByBarcode(barcode, new OnModeListener<InvFindOrderItemBrief>() {
             @Override
             public void onProcess() {
-
                 if (mIInvFindOrderView != null) {
                     mIInvFindOrderView.onQueryInvFindOrderProcess();
                 }
@@ -30,7 +29,6 @@ public class InvFindOrderPresenter {
 
             @Override
             public void onSuccess(InvFindOrderItemBrief data) {
-
                 if (mIInvFindOrderView != null) {
                     mIInvFindOrderView.onQueryInvFindOrderSuccess(data);
                 }
@@ -38,7 +36,6 @@ public class InvFindOrderPresenter {
 
             @Override
             public void onError(String errorMsg) {
-
                 if (mIInvFindOrderView != null) {
                     mIInvFindOrderView.onQueryInvFindOrderError(errorMsg);
                 }

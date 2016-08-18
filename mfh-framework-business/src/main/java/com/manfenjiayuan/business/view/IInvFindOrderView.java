@@ -1,6 +1,6 @@
 package com.manfenjiayuan.business.view;
 
-import com.manfenjiayuan.business.bean.InvFindOrderItemBrief;
+import com.mfh.framework.api.invFindOrder.InvFindOrderItemBrief;
 import com.mfh.framework.mvp.MvpView;
 
 /**

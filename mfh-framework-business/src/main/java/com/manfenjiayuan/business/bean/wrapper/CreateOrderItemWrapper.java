@@ -2,7 +2,7 @@ package com.manfenjiayuan.business.bean.wrapper;
 
 
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.manfenjiayuan.business.bean.InvFindOrderItem;
+import com.mfh.framework.api.invFindOrder.InvFindOrderItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
