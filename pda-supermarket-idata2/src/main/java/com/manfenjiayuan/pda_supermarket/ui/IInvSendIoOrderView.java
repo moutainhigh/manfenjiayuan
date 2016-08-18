@@ -1,7 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.ui;
 
 import com.mfh.framework.mvp.MvpView;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 
 /**
  * 采购订单

@@ -131,6 +131,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_sendio);
 
+        mProviderView.setEnabled(false);
         initRecyclerView();
 
         selectEntryMode();

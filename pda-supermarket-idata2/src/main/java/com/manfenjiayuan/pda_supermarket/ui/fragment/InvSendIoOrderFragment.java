@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.widget.ScanBar;
 import com.bingshanguxue.pda.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.presenter.InvSendIoOrderPresenter;
@@ -187,6 +187,7 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
             labelTotalCount.setTvSubTitle("");
             labelSendCompanyName.setTvSubTitle("");
             labelStatus.setTvSubTitle("");
+            btnSubmit.setVisibility(View.GONE);
         }
         else{
             labelBarcode.setTvSubTitle(orderItemBrief.getBarcode());
@@ -195,6 +196,7 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
             labelTotalCount.setTvSubTitle(MUtils.formatDouble(orderItemBrief.getCommitGoodsNum(), ""));
             labelSendCompanyName.setTvSubTitle(orderItemBrief.getSendCompanyName());
             labelStatus.setTvSubTitle(orderItemBrief.getCaptionStatus());
+            btnSubmit.setVisibility(View.VISIBLE);
         }
         mInvSendIoOrderItemBrief = orderItemBrief;
         hideProgressDialog();

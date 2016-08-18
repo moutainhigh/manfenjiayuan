@@ -125,6 +125,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_io);
 
+        mProviderView.setEnabled(false);
         initRecyclerView();
 
 //        Bundle args = getArguments();
@@ -347,6 +348,11 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
                     if (companyInfo != null){
                         changeSendCompany(companyInfo);
                     }
+                }
+
+                if (companyInfo == null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
                 }
             }
             break;

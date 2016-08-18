@@ -114,4 +114,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':im')
     compile project(':pda')
+    compile rootProject.ext.dependencies["rxjava"]
+    compile rootProject.ext.dependencies["rxandroid"]
 }

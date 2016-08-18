@@ -1,6 +1,6 @@
 package com.manfenjiayuan.pda_supermarket.presenter;
 
-import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.pda_supermarket.mode.InvSendIoOrderItemMode;
 import com.manfenjiayuan.pda_supermarket.ui.IInvSendIoOrderView;
 import com.mfh.framework.mvp.OnModeListener;

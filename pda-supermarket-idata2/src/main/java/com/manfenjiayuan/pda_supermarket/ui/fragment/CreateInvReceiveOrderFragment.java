@@ -24,7 +24,7 @@ import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.bingshanguxue.pda.dialog.InvSendIoOrderPayDialog;
-import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;

@@ -1,6 +1,6 @@
 package com.manfenjiayuan.pda_supermarket.mode;
 
-import com.manfenjiayuan.business.bean.InvSendIoOrderItemBrief;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
