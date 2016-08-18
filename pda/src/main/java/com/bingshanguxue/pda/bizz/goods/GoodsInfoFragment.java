@@ -85,7 +85,6 @@ public class GoodsInfoFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcodee);
         labelBuyprice = (TextLabelView) rootView.findViewById(R.id.label_buyprice);

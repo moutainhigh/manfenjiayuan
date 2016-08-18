@@ -1,7 +1,7 @@
 package com.bingshanguxue.pda.database.service;
 
 import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
-import com.manfenjiayuan.business.bean.InvFindOrderItem;
+import com.mfh.framework.api.invFindOrder.InvFindOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.bingshanguxue.pda.database.dao.InvSendIoGoodsDao;
 import com.mfh.comn.bean.PageInfo;

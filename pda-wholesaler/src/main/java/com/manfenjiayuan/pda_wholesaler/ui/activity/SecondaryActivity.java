@@ -13,12 +13,12 @@ import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invsendio.InvSendIoInspectFragment;
-import com.bingshanguxue.pda.bizz.office.OfficeListFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvReceiveOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvFindOrderFragment;
+import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvLossInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckHistoryFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.invcheck.InvCheckInspectFragment;
-import com.manfenjiayuan.pda_wholesaler.ui.fragment.InvLossInspectFragment;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves.GoodsShelvesHistoryFragment;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -44,6 +44,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FT_INVLOSS_INSPECTGOODS = 0x25;//退货验货
     public static final int FT_COMPANYLIST = 0x26;//批发商列表
     public static final int FT_INV_COMPROVIDER_LIST = 0x27;//批发商供应商列表
+    public static final int FT_INVFINDORDER_INSPECT = 0x28;//拣货单
 
 
 
@@ -277,7 +278,6 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
 //                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
                     .commit();
         }
-
         else if(serviceType == FT_INV_COMPROVIDER_LIST){
             InvCompProviderListFragment fragment;
             Intent intent = this.getIntent();
@@ -285,6 +285,19 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = InvCompProviderListFragment.newInstance(intent.getExtras());
             }else{
                 fragment = InvCompProviderListFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
+                    .commit();
+        }
+        else if(serviceType == FT_INVFINDORDER_INSPECT){
+            InvFindOrderFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = InvFindOrderFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = InvFindOrderFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

@@ -123,9 +123,10 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_return);
 
+        mProviderView.setEnabled(false);
         initRecyclerView();
 
-        if (companyInfo == null){
+        if (companyInfo == null) {
             selectInvCompProvider();
         }
     }
@@ -155,8 +156,7 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
                             dialog.dismiss();
                         }
                     });
-        }
-        else{
+        } else {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
@@ -205,7 +205,7 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
             return;
         }
 
-        if (companyInfo == null){
+        if (companyInfo == null) {
             hideProgressDialog();
             selectInvCompProvider();
             return;
@@ -338,9 +338,14 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
             case Constants.ARC_INV_COMPROVIDER_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     MyProvider myProvider = (MyProvider) data.getSerializableExtra("myProvider");
-                    if (myProvider != null){
+                    if (myProvider != null) {
                         changeSendCompany(myProvider);
                     }
+                }
+
+                if (companyInfo == null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
                 }
             }
             break;

@@ -86,7 +86,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
     private InvSendOrderPresenter invSendOrderPresenter;
 
-    protected Double totalAmount = 0D;
     private int entryMode = SendIoEntryMode.MANUAL;
     private ActionDialog mActionDialog = null;
 
@@ -186,6 +185,9 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                 // TODO: 8/2/16  
                 if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
+                }else {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
                 }
             }
             break;
@@ -195,6 +197,11 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                     if (myProvider != null){
                         changeSendCompany(myProvider);
                     }
+                }
+
+                if (companyInfo == null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
                 }
             }
             break;
@@ -239,8 +246,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 //        this.mLabelProvider.setLabelText(companyInfo != null ? companyInfo.getName() : "");
         this.mProviderView.setText(companyInfo != null ? companyInfo.getName() : "");
 
-//        goodsAdapter.setEntityList(null);//清空商品
-//        InvRecvGoodsService.get().clear();
     }
 
     /**
@@ -365,7 +370,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         jsonStrObject.put("tenantId", MfhLoginService.get().getSpid());
         jsonStrObject.put("remark", "");
         jsonStrObject.put("items", itemsArray);
-        totalAmount = amount;
 
 //        ZLogger.d("jsonStr:\n " + JSON.toJSONString(jsonStrObject));
         InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
@@ -425,7 +429,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             }
         }, 1000);
     }
-
 
     /**
      * 验货
