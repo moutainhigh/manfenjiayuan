@@ -1,1 +1,6 @@
-include ':mfh-framework-all', ':mfh-framework-android', ':im', ':self-service-cashier', ':mfh-framework-business', ':pda-wholesaler', ':pda-supermarket', ':pda-supermarket-idata2', ':pda-supermarket-gpio', ':mixicook-vip', ':cashier', ':pda', ':enjoycity', ':mfowner', ':litecashier-display', ':vector_user', ':loveshopping', ':vector_uikit'
+include ':mfh-framework-all', ':mfh-framework-android', ':im', ':mfh-framework-business'
+include ':vector_user', ':vector_uikit'
+include ':pda', ':pda-wholesaler', ':pda-supermarket-idata2'
+include ':cashier', ':self-service-cashier', ':litecashier-display'
+include ':enjoycity', ':mfowner', ':mixicook-vip', ':loveshopping'
+

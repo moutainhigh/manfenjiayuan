@@ -2,6 +2,7 @@ package com.mfh.framework.api.cashier;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.AfinalFactory;
 import com.mfh.framework.net.NetFactory;
@@ -199,8 +200,6 @@ public class CashierApiImpl extends CashierApi {
     }
 
 
-
-
     /**
      * 收货时租户sku档案登记,参数同上，除了没有库存信息
      * /scMartGoodsSku/saveTenantSku?jsonStr={
@@ -216,8 +215,6 @@ public class CashierApiImpl extends CashierApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_SCMARTGOODSSKU_SAVETENANTSKU, params, responseCallback);
     }
-
-
 
 
 
@@ -363,12 +360,16 @@ public class CashierApiImpl extends CashierApi {
     /**
      * 查询订单
      * */
-    public static void listPayOrder(Integer bizType, Integer status, AjaxCallBack<? extends Object> responseCallback) {
+    public static void listPayOrder(Integer bizType, Integer status, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         params.put("status", String.valueOf(status));
         params.put("bizType", String.valueOf(bizType));
         params.put("sellOffice", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         AfinalFactory.getHttp(true).post(URL_PAYORDER_LIST, params, responseCallback);
     }
 
@@ -399,10 +400,14 @@ public class CashierApiImpl extends CashierApi {
      * 查pos订单的现金流水：
      * /orderPayWay/list?payType=1&officeId=136076&orderby=CREATED_DATE&orderbydesc=true
      * */
-    public static void listOrderPayWay(Integer payType, AjaxCallBack<? extends Object> responseCallback) {
+    public static void listOrderPayWay(Integer payType, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("payType", String.valueOf(payType));
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.getHttp(true).post(URL_ORDERPAYWAY_LIST, params, responseCallback);

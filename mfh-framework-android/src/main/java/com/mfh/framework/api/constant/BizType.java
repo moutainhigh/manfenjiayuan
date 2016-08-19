@@ -23,8 +23,8 @@ public class BizType {
     public final static Integer RECHARGE        = 99;//代充值
 
     //自定义业务类型
-    public final static Integer CASH_QUOTA        = 98;//现金授权
-    public final static Integer INCOME_DISTRIBUTION        = 98;//现金授权
+    public final static Integer CASH_QUOTA        = 9801;//现金授权
+    public final static Integer INCOME_DISTRIBUTION        = 9802;//现金授权
 
     public static String name(Integer value) {
         if (value == null){
@@ -74,10 +74,10 @@ public class BizType {
             return "代充值";
         }
         else if (value.equals(CASH_QUOTA)) {
-            return "自定义－现金授权";
+            return "自定义－日结(现金授权)";
         }
         else if (value.equals(INCOME_DISTRIBUTION)) {
-            return "自定义－清分";
+            return "自定义－日结(清分)";
         }
         else{
             return "Unknow";
