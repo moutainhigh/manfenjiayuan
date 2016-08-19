@@ -834,7 +834,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
         } else if (eventId == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
             Double amount = bundle.getDouble("amount");
             QuickPayInfo quickPayInfo = new QuickPayInfo();
-            quickPayInfo.setBizType(BizType.CASH_QUOTA);
+            quickPayInfo.setBizType(BizType.DAILYSETTLE);
+            quickPayInfo.setSubBizType(BizType.CASH_QUOTA);
             quickPayInfo.setPayType(WayType.ALI_F2F);
             quickPayInfo.setSubject("提交营业现金");
             quickPayInfo.setBody("营业现金已超出授权限额，请尽快提交现金，解锁POS设备！");
@@ -903,7 +904,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
                 Double amount = args.getDouble("amount");
                 QuickPayInfo quickPayInfo = new QuickPayInfo();
-                quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
+                quickPayInfo.setBizType(BizType.DAILYSETTLE);
+                quickPayInfo.setSubBizType(BizType.INCOME_DISTRIBUTION);
                 quickPayInfo.setPayType(WayType.ALI_F2F);
                 quickPayInfo.setSubject("账户充值");
                 quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
@@ -916,7 +918,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP: {
                 Double amount = args.getDouble("amount");
                 QuickPayInfo quickPayInfo = new QuickPayInfo();
-                quickPayInfo.setBizType(BizType.CASH_QUOTA);
+                quickPayInfo.setBizType(BizType.DAILYSETTLE);
+                quickPayInfo.setSubBizType(BizType.CASH_QUOTA);
                 quickPayInfo.setPayType(WayType.ALI_F2F);
                 quickPayInfo.setSubject("提交营业现金");
                 quickPayInfo.setBody("营业现金已超出授权限额，请尽快提交现金，解锁POS设备！");
@@ -1890,7 +1893,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     }
 
     /**
-     * 领取商品
+     * 注册设备
      */
     private void registerPlat() {
         if (registerPlatDialog == null) {

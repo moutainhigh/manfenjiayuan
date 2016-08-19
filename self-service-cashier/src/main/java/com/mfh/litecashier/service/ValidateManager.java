@@ -300,10 +300,8 @@ public class ValidateManager {
         ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            //十分钟后自动重试
-            Calendar trigger = Calendar.getInstance();
-            trigger.add(Calendar.MINUTE, 10);
-            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+
+            AlarmManagerHelper.triggleNextDailysettle(0);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
                     "网络未连接，暂停验证(昨日是否已经清分)。");
@@ -325,11 +323,7 @@ public class ValidateManager {
                         if (dailysettleEntity == null) {
                             ZLogger.df(String.format("创建日结单失败：%s", aggDateStr));
 
-                            //十分钟后自动重试
-                            Calendar trigger = Calendar.getInstance();
-                            trigger.add(Calendar.MINUTE, 10);
-                            AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
-
+                            AlarmManagerHelper.triggleNextDailysettle(0);
                             nextStep();
                             return;
                         }
@@ -383,7 +377,7 @@ public class ValidateManager {
 //        ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            AlarmManagerHelper.triggleNextDailysettle(1);
+            AlarmManagerHelper.triggleNextDailysettle(0);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
                     "网络未连接，暂停验证(昨日是否已经清分)。");
@@ -406,7 +400,7 @@ public class ValidateManager {
                                         args, String.format("余额不足(%2f)清分失败，即将锁定POS机，" +
                                                 "可以通过提交营业现金来解锁", amount));
 
-                                AlarmManagerHelper.triggleNextDailysettle(0);
+                                AlarmManagerHelper.triggleNextDailysettle(1);
                             } else {
                                 ZLogger.df(String.format("清分完成: %.2f, 可以正常使用POS机", amount));
 
@@ -440,7 +434,7 @@ public class ValidateManager {
      */
     private void needLockPos() {
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            AlarmManagerHelper.triggleNextDailysettle(1);
+            AlarmManagerHelper.triggleNextDailysettle(0);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
                     "网络未连接，暂停验证(昨日是否已经清分)。");
@@ -471,22 +465,22 @@ public class ValidateManager {
                                     validateFinished(ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP,
                                             args, String.format("现金超过授权金额(%2f)，即将锁定POS机，" +
                                                     "可以通过提交营业现金来解锁", amount));
-                                    AlarmManagerHelper.triggleNextDailysettle(2);
+                                    AlarmManagerHelper.triggleNextDailysettle(1);
                                 } else {
-                                    AlarmManagerHelper.triggleNextDailysettle(3);
+                                    AlarmManagerHelper.triggleNextDailysettle(0);
                                     EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT));
                                     nextStep();
                                 }
                             } else {
                                 ZLogger.df("判断是否需要锁定POS机:" + result);
-                                AlarmManagerHelper.triggleNextDailysettle(1);
+                                AlarmManagerHelper.triggleNextDailysettle(0);
                                 nextStep();
                             }
                         } catch (NumberFormatException e) {
 //                            e.printStackTrace();
                             ZLogger.ef(e.toString());
 
-                            AlarmManagerHelper.triggleNextDailysettle(1);
+                            AlarmManagerHelper.triggleNextDailysettle(0);
                             nextStep();
                         }
                     }
@@ -498,7 +492,7 @@ public class ValidateManager {
                         ZLogger.df("判读是否锁定POS机失败：" + errMsg);
                         nextStep();
 
-                        AlarmManagerHelper.triggleNextDailysettle(1);
+                        AlarmManagerHelper.triggleNextDailysettle(0);
                     }
                 }
                 , String.class

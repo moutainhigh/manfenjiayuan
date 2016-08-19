@@ -206,16 +206,6 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         mRecyclerView.setAdapter(adapter);
     }
 
-
-    public void reset() {
-        mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        if (entityList == null) {
-            entityList = new ArrayList<>();
-        } else {
-            entityList.clear();
-        }
-    }
-
     /**
      * 重新加载数据
      */
@@ -291,7 +281,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         ZLogger.d(String.format("加载类目商品开始,pageInfo':page=%d,rows=%d(%d)",
                 mPageInfo.getPageNo(), mPageInfo.getPageSize(), mPageInfo.getTotalCount()));
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<FrontCategoryGoods> rs) {
                 //此处在主线程中执行。

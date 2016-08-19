@@ -21,7 +21,7 @@ public class KeepAlarmLiveReceiver extends BroadcastReceiver{
         }
 
         if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
-            AlarmManagerHelper.triggleNextDailysettle(0);
+            AlarmManagerHelper.triggleNextDailysettle(-1);
             AlarmManagerHelper.registerBuglyUpgrade(context);
         }
         else if (ZIntent.ACTION_BETA_BUGLY_CHECKUPDATE.equals(intent.getAction())) {

@@ -139,7 +139,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //现金超过授权额度，要求锁定pos机
         else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
-            AlarmManagerHelper.triggleNextDailysettle(0);
+            AlarmManagerHelper.triggleNextDailysettle(1);
 //            JSONObject jsonObject = JSONObject.parseObject(data);
 //            JSONObject msgObj = jsonObject.getJSONObject("msg");
 //            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
@@ -158,7 +158,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //现金授权额度将要用完，即将锁定pos机
         else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
-            AlarmManagerHelper.triggleNextDailysettle(0);
+            AlarmManagerHelper.triggleNextDailysettle(1);
 
             JSONObject jsonObject = JSONObject.parseObject(data);
             JSONObject msgObj = jsonObject.getJSONObject("msg");

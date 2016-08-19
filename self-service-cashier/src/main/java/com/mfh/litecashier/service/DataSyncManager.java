@@ -63,11 +63,11 @@ import rx.schedulers.Schedulers;
  */
 public class DataSyncManager {
     public static final int SYNC_STEP_NA = -1;
-    public static final int SYNC_STEP_PRODUCTS = 0;//商品库
-    public static final int SYNC_STEP_PRODUCT_SKU = 1;//一品多码
-    public static final int SYNC_STEP_BACKEND_CATEGORYINFO = 2;//后台类目信息
-    public static final int SYNC_STEP_FRONTEND_CATEGORY = 3;//前台类目(一级类目)
-    public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 4;//前台类目&商品库－关系表
+    public static final int SYNC_STEP_FRONTEND_CATEGORY = 0;//前台类目(一级类目)
+    public static final int SYNC_STEP_PRODUCTS = 1;//商品库
+    public static final int SYNC_STEP_PRODUCT_SKU = 2;//一品多码
+    public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 3;//前台类目&商品库－关系表
+    public static final int SYNC_STEP_BACKEND_CATEGORYINFO = 4;//后台类目信息
     public static final int SYNC_STEP_COMPANY_HUMAN = 5;//账号,交接班切换账号需要
 
 
@@ -118,7 +118,7 @@ public class DataSyncManager {
             return;
         }
 
-        processStep(SYNC_STEP_PRODUCTS, SYNC_STEP_PRODUCT_SKU);
+        processStep(SYNC_STEP_FRONTEND_CATEGORY, SYNC_STEP_PRODUCTS);
     }
 
     public void sync(int step) {

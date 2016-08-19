@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -47,7 +48,6 @@ import com.mfh.litecashier.ui.adapter.CashQuotaAdapter;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.Bind;
@@ -81,6 +81,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
     Spinner spinnerBiztype;
     @Bind(R.id.order_list)
     RecyclerViewEmptySupport aggRecyclerView;
+    private LinearLayoutManager mRLayoutManager;
     private CashQuotaAdapter aggListAdapter;
     @Bind(R.id.empty_view)
     TextView emptyView;
@@ -95,6 +96,9 @@ public class CashQuotaFragment extends BaseProgressFragment {
     private boolean cancelable = true;//是否可以关闭窗口
     private CashQuotaInfo mCashQuotaInfo;
 
+    protected boolean bSyncInProgress = false;//是否正在同步
+    protected static final int MAX_SYNC_PAGESIZE = 20;
+    protected PageInfo mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, MAX_SYNC_PAGESIZE);
 
     public static CashQuotaFragment newInstance(Bundle args) {
         CashQuotaFragment fragment = new CashQuotaFragment();
@@ -178,7 +182,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
     }
 
     private void initAggRecyclerView() {
-        LinearLayoutManager mRLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
+        mRLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
         mRLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         aggRecyclerView.setLayoutManager(mRLayoutManager);
         //enable optimizations if all item views are of the same height and width for
@@ -189,6 +193,30 @@ public class CashQuotaFragment extends BaseProgressFragment {
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         aggRecyclerView.setEmptyView(emptyView);
+        aggRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItem = mRLayoutManager.findLastVisibleItemPosition();
+                int totalItemCount = mRLayoutManager.getItemCount();
+                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"),
+                        lastVisibleItem, totalItemCount));
+                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
+                    if (!isLoadingMore) {
+                        loadMore();
+                    }
+                } else if (dy < 0) {
+                    isLoadingMore = false;
+                }
+            }
+        });
         aggListAdapter = new CashQuotaAdapter(CashierApp.getAppContext(), null);
         aggListAdapter.setOnAdapterListener(new CashQuotaAdapter.OnAdapterListener() {
 
@@ -208,9 +236,15 @@ public class CashQuotaFragment extends BaseProgressFragment {
      */
     private void refresh() {
         try {
-            tvQuota.setTopText(MUtils.formatDouble(mCashQuotaInfo.getLimit(), ""));
             tvOut.setTopText(MUtils.formatDouble(mCashQuotaInfo.getUnpaid(), ""));
-            tvLeft.setTopText(MUtils.formatDouble(mCashQuotaInfo.getLimit() - mCashQuotaInfo.getUnpaid(), ""));
+            if (mCashQuotaInfo.getLimit() == null || mCashQuotaInfo.getLimit().compareTo(0D) == 0){
+                tvQuota.setTopText("未设置");
+                tvLeft.setTopText("无限");
+            }
+            else{
+                tvQuota.setTopText(MUtils.formatDouble(mCashQuotaInfo.getLimit(), "未设置"));
+                tvLeft.setTopText(MUtils.formatDouble(mCashQuotaInfo.getLimit() - mCashQuotaInfo.getUnpaid(), ""));
+            }
 
             //显示经营数据
             if (aggListAdapter != null) {
@@ -227,24 +261,14 @@ public class CashQuotaFragment extends BaseProgressFragment {
         }
     }
 
-    @Override
-    public void onLoadProcess(String description) {
-        super.onLoadProcess(description);
-    }
-
-    @Override
-    public void onLoadFinished() {
-        super.onLoadFinished();
-    }
-
     /**
      * 查询
      */
     private void queryLimitInfo() {
-        onLoadProcess("正在统计日结数据");
+        onLoadProcess("正在查询授权金额信息");
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            onLoadError("统计失败，网络未连接，请重新日结。");
+            onLoadError("网络未连接");
             return;
         }
 
@@ -262,7 +286,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
                         RspValue<String> retValue = (RspValue<String>) rspData;
                         String result = retValue.getValue();
                         String[] ret = result.split(",");
-                        if (ret.length >=2){
+                        if (ret.length >= 2) {
 //                                Boolean.parseBoolean()1
 //                                boolean isNeedLock = Boolean.valueOf(ret[0]).booleanValue();
                             Double limitAmount = Double.valueOf(ret[0]);
@@ -270,16 +294,14 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
                             mCashQuotaInfo.setLimit(limitAmount);
                             mCashQuotaInfo.setUnpaid(amount);
-                            ZLogger.df(String.format("查询限额，limitAmount=%.2f, 未缴纳现金=%.2f",
+                            ZLogger.df(String.format("查询授权限额成功，limitAmount=%.2f, 未缴纳现金=%.2f",
                                     limitAmount, amount));
-
-                        }
-                        else{
-                            ZLogger.df("查询限额:" + result);
+                        } else {
+                            ZLogger.df("解析授权限额数据失败:" + result);
                         }
                     } catch (NumberFormatException e) {
 //                            e.printStackTrace();
-                        ZLogger.ef(e.toString());
+                        ZLogger.ef("查询授权限额失败:" + e.toString());
                     }
                     loadDetailList();
                 }
@@ -288,62 +310,123 @@ public class CashQuotaFragment extends BaseProgressFragment {
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
                     //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                    onLoadError("查询限额失败：" + errMsg);
+                    onLoadError("查询授权限额失败：" + errMsg);
+                    loadDetailList();
                 }
             }
             , String.class
             , CashierApp.getAppContext()) {
     };
 
-    private void loadDetailList(){
-        String bizType = spinnerBiztype.getSelectedItem().toString();
-
-        if (bizType.equals("现金订单")) {
-            listOrderPayWay();
-        } else if (bizType.equals("授信充值")) {
-            listPayOrder();
-        }
-
-    }
-    /**
-     * 经营分析,查询业务类型日结数据
-     */
-    private void listOrderPayWay() {
-        onLoadProcess("正在查询经营分析数据...");
-
+    private void loadDetailList() {
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            onLoadError("网络未连接，暂停查询日结经营分析数据!");
+            onLoadError("网络未连接。");
             return;
         }
 
-        CashierApiImpl.listOrderPayWay(WayType.CASH, orderPayWayRC);
+        onLoadProcess("加载中...");
+        mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
+        String bizType = spinnerBiztype.getSelectedItem().toString();
+        if (bizType.equals("现金订单")) {
+            listOrderPayWay(mPageInfo);
+        } else if (bizType.equals("授信充值")) {
+            listPayOrder(mPageInfo);
+        }
+        mPageInfo.setPageNo(1);
     }
 
-    NetCallBack.QueryRsCallBack orderPayWayRC = new NetCallBack.QueryRsCallBack<>(
-            new NetProcessor.QueryRsProcessor<CashQuotOrderInfo>(new PageInfo(1, 20)) {
-        @Override
-        public void processQueryResult(RspQueryResult<CashQuotOrderInfo> rs) {
-            //保存日结数据
-            saveOrderPayWay(rs);
-            onLoadFinished();
+    private void loadMore(){
+        if (bSyncInProgress) {
+            ZLogger.d("正在加载数据...");
+            return;
+        }
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            onLoadError("网络未连接。");
+            return;
         }
 
-        @Override
-        protected void processFailure(Throwable t, String errMsg) {
-            super.processFailure(t, errMsg);
-            onLoadError("查询日结经营分析数据失败：" + errMsg);
+        if (mPageInfo.hasNextPage()) {
+            mPageInfo.moveToNext();
+            String bizType = spinnerBiztype.getSelectedItem().toString();
+            if (bizType.equals("现金订单")) {
+                listOrderPayWay(mPageInfo);
+            } else if (bizType.equals("授信充值")) {
+                listPayOrder(mPageInfo);
+            }
+        } else {
+            ZLogger.d("加载类目商品，已经是最后一页。");
+            onLoadFinished();
         }
-    }, CashQuotOrderInfo.class, CashierApp.getAppContext());
+    }
+
+    /**
+     * 查询现金订单
+     */
+    private void listOrderPayWay(PageInfo pageInfo) {
+        onLoadProcess("正在查询现金订单...");
+
+        ZLogger.d(String.format("保存现金订单流水, 请求%d/%d--%d",
+                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getPageSize()));
+
+        NetCallBack.QueryRsCallBack responseRC = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<CashQuotOrderInfo>(pageInfo) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<CashQuotOrderInfo> rs) {
+                        //保存日结数据
+                        mPageInfo = pageInfo;
+                        saveOrderPayWay(rs);
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        onLoadError("查询查询现金订单失败：" + errMsg);
+                    }
+                }, CashQuotOrderInfo.class, CashierApp.getAppContext());
+
+        CashierApiImpl.listOrderPayWay(WayType.CASH, pageInfo, responseRC);
+    }
+
+    /**
+     * 查询授权充值
+     */
+    private void listPayOrder(PageInfo pageInfo) {
+        onLoadProcess("正在查询授信充值");
+
+        ZLogger.d(String.format("保存授信充值流水, 请求%d/%d--%d",
+                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getPageSize()));
+
+        NetCallBack.QueryRsCallBack responseRC = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<PayOrder>(pageInfo) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<PayOrder> rs) {
+                        //保存日结数据
+                        mPageInfo = pageInfo;
+                        saveAccData(rs);
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        onLoadError("查询授信充值失败：" + errMsg);
+                    }
+                }, PayOrder.class, CashierApp.getAppContext());
+
+        CashierApiImpl.listPayOrder(BizType.DAILYSETTLE, 2, pageInfo, responseRC);
+    }
+
 
     /**
      * 保存经营分析数据
      */
     private void saveOrderPayWay(RspQueryResult<CashQuotOrderInfo> rs) {
         try {
-
             List<CashQuotOrderInfo> temp = mCashQuotaInfo.getOrderPayWays();
-            if (temp == null){
+            if (temp == null) {
                 temp = new ArrayList<>();
+            }
+            if (mPageInfo.getPageNo() == 1){
+                temp.clear();
             }
 
             if (rs != null && rs.getReturnNum() > 0) {
@@ -358,44 +441,16 @@ public class CashQuotaFragment extends BaseProgressFragment {
             }
 
             mCashQuotaInfo.setOrderPayWays(temp);
+            ZLogger.d(String.format("更新现金收银流水, 请求%d/%d ,已加载(%d)",
+                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),mPageInfo.getTotalCount()));
 
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.d("保存查询现金订单失败:" + ex.toString());
         }
 
+        onLoadFinished();
     }
-
-    /**
-     * 流水分析,查询支付方式日结数据
-     * TODO,加载等待窗口
-     */
-    private void listPayOrder() {
-        onLoadProcess("正在查询流水分析数据");
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            onLoadError("统计失败，网络未连接，暂停查询日结流水分析数据。");
-            return;
-        }
-
-        CashierApiImpl.listPayOrder(BizType.CASH_QUOTA, 2, payOrderRC);
-    }
-
-    NetCallBack.QueryRsCallBack payOrderRC = new NetCallBack.QueryRsCallBack<>(
-            new NetProcessor.QueryRsProcessor<PayOrder>(new PageInfo(1, 20)) {
-        @Override
-        public void processQueryResult(RspQueryResult<PayOrder> rs) {
-            //保存日结数据
-            saveAccData(rs);
-
-            onLoadFinished();
-        }
-
-        @Override
-        protected void processFailure(Throwable t, String errMsg) {
-            super.processFailure(t, errMsg);
-            onLoadError("查询日结流水分析数据失败：" + errMsg);
-        }
-    }, PayOrder.class, CashierApp.getAppContext());
 
     /**
      * 保存流水分析数据
@@ -403,15 +458,19 @@ public class CashQuotaFragment extends BaseProgressFragment {
     private void saveAccData(RspQueryResult<PayOrder> rs) {
         try {
             List<CashQuotOrderInfo> temp = mCashQuotaInfo.getPosOrders();
-            if (temp == null){
+            if (temp == null) {
                 temp = new ArrayList<>();
+            }
+            if (mPageInfo.getPageNo() == 1){
+                temp.clear();
             }
 
             if (rs != null && rs.getReturnNum() > 0) {
                 for (EntityWrapper<PayOrder> wrapper : rs.getRowDatas()) {
                     PayOrder posOrder = wrapper.getBean();
                     CashQuotOrderInfo cashQuotaOrderInfo = new CashQuotOrderInfo();
-                    cashQuotaOrderInfo.setAmount(posOrder.getTotalFee());
+                    //单位是分，转换成元。
+                    cashQuotaOrderInfo.setAmount(posOrder.getTotalFee() / 100);
                     cashQuotaOrderInfo.setCreatedDate(posOrder.getUpdatedDate());
                     cashQuotaOrderInfo.setBizType(1);
                     cashQuotaOrderInfo.setBizTypeCaption("授权充值");
@@ -420,11 +479,14 @@ public class CashQuotaFragment extends BaseProgressFragment {
             }
 
             mCashQuotaInfo.setPosOrders(temp);
-
+            ZLogger.d(String.format("更新授信充值流水, 请求%d/%d ,已加载(%d)",
+                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),mPageInfo.getTotalCount()));
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.d("保存授信充值失败:" + ex.toString());
         }
+
+        onLoadFinished();
     }
 
     /**
@@ -433,15 +495,15 @@ public class CashQuotaFragment extends BaseProgressFragment {
     @OnClick(R.id.fab_print)
     public void commitCash() {
         final QuickPayInfo quickPayInfo = new QuickPayInfo();
-        quickPayInfo.setBizType(BizType.CASH_QUOTA);
+        quickPayInfo.setBizType(BizType.DAILYSETTLE);
+        quickPayInfo.setSubBizType(BizType.CASH_QUOTA);
         quickPayInfo.setPayType(WayType.ALI_F2F);
         quickPayInfo.setSubject("提交营业现金");
-        quickPayInfo.setBody("为了不影响您使用POS设备，请尽快充值！");
-        if (!BizConfig.RELEASE){
+        quickPayInfo.setBody("为了不影响您使用POS设备，请及时提交营业现金！");
+        if (!BizConfig.RELEASE) {
             quickPayInfo.setAmount(100D);
             quickPayInfo.setMinAmount(0.01D);
-        }
-        else{
+        } else {
             quickPayInfo.setAmount(0.01D);
             quickPayInfo.setMinAmount(0.01D);
         }
@@ -460,13 +522,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
                 UploadSyncManager.getInstance().sync();
 
-                Calendar trigger = Calendar.getInstance();
-                //第二天凌晨2点钟
-                trigger.add(Calendar.DAY_OF_MONTH, 1);
-                trigger.set(Calendar.HOUR_OF_DAY, 2);
-                trigger.set(Calendar.MINUTE, 2);
-                trigger.set(Calendar.SECOND, 0);
-                AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+                AlarmManagerHelper.triggleNextDailysettle(0);
             }
 
             @Override

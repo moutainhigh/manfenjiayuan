@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public class QuickPayInfo implements Serializable{
     private Integer bizType;//业务类型
+    private Integer subBizType;
     private String subject;//主题
     private String body;//内容
     private Integer payType = WayType.NA;
@@ -22,6 +23,14 @@ public class QuickPayInfo implements Serializable{
 
     public void setBizType(Integer bizType) {
         this.bizType = bizType;
+    }
+
+    public Integer getSubBizType() {
+        return subBizType;
+    }
+
+    public void setSubBizType(Integer subBizType) {
+        this.subBizType = subBizType;
     }
 
     public String getSubject() {

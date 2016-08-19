@@ -155,8 +155,8 @@ public class UploadSyncManager extends OrderSyncManager {
             return;
         }
 
-        String sqlWhere = String.format("bizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
-                BizType.INCOME_DISTRIBUTION, PayStatus.FINISH, SyncStatus.INIT);
+        String sqlWhere = String.format("bizType = '%d' and subBizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
+                BizType.DAILYSETTLE, BizType.INCOME_DISTRIBUTION, PayStatus.FINISH, SyncStatus.INIT);
 
 //        ZLogger.d(String.format("查询清分充值支付记录:%s (%d/%d %d)",
 //                sqlWhere, incomeDistributionPageInfo.getPageNo(),
@@ -216,7 +216,6 @@ public class UploadSyncManager extends OrderSyncManager {
         AnalysisApiImpl.commintCashAndTrigDateEnd(topupEntity.getOutTradeNo(), responseRC);
     }
 
-
     private void uploadCashQuota() {
         commitCashPageInfo = new PageInfo(1, 1);//翻页
 
@@ -232,8 +231,8 @@ public class UploadSyncManager extends OrderSyncManager {
             return;
         }
 
-        String sqlWhere = String.format("bizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
-                BizType.CASH_QUOTA, PayStatus.FINISH, SyncStatus.INIT);
+        String sqlWhere = String.format("bizType = '%d' and subBizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
+                BizType.DAILYSETTLE, BizType.CASH_QUOTA, PayStatus.FINISH, SyncStatus.INIT);
 
         List<PosTopupEntity> entities = PosTopupService.get().queryAll(sqlWhere, commitCashPageInfo);
         if (entities == null || entities.size() <= 0) {

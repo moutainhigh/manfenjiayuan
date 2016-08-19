@@ -157,6 +157,7 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
             }
 
             entity.setBizType(quickPayInfo.getBizType());
+            entity.setSubBizType(quickPayInfo.getSubBizType());
             entity.setAmount(quickPayInfo.getAmount());
             entity.setPaystatus(status);
             entity.setSyncStatus(SyncStatus.INIT);
@@ -165,7 +166,7 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
             ZLogger.df(String.format("保存or更新支付流水:\n%s",
                     JSONObject.toJSONString(entity)));
         } catch (Exception e) {
-            ZLogger.e(e.toString());
+            ZLogger.ef(e.toString());
         }
     }
 
@@ -179,7 +180,7 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 0 - saveDate);//
         String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
-        ZLogger.d(String.format("清分支付记录过期时间(%s)保留最近30天数据。", expireCursor));
+        ZLogger.d(String.format("清分支付记录过期时间(%s)保留最近%d天数据。", expireCursor, saveDate));
 
         deleteBy(String.format("updatedDate < '%s'", expireCursor));
     }

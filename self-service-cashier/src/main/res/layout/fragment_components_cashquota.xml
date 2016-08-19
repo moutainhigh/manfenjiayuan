@@ -71,11 +71,12 @@
         layout="@layout/itemview_cashquota_header"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_below="@+id/ll_quota"/>
+        android:layout_below="@+id/ll_quota"
+        android:layout_marginEnd="@dimen/spacing_double"
+        android:layout_marginStart="@dimen/spacing_double"/>
 
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scrollView"
+    <!--android:layout_height="308dp"-->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
@@ -83,38 +84,25 @@
         android:layout_marginBottom="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/spacing_double"
         android:layout_marginStart="@dimen/spacing_double"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:scrollbars="vertical">
-
-        <LinearLayout
+        android:layout_marginTop="@dimen/spacing_normal">
+        <!--空视图-->
+        <TextView
+            android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="暂无数据"
+            android:visibility="gone"/>
 
-            <!--android:layout_height="308dp"-->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!--空视图-->
-                <TextView
-                    android:id="@+id/empty_view"
-                    style="@style/mfh_textview_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="暂无数据"
-                    android:visibility="gone"/>
+        <!--订单列表-->
+        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+            android:id="@+id/order_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"/>
 
-                <!--订单列表-->
-                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-                    android:id="@+id/order_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-            </FrameLayout>
-
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_print"
