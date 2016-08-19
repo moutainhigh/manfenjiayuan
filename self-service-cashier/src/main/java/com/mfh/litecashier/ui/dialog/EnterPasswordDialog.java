@@ -4,6 +4,7 @@ package com.mfh.litecashier.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -28,6 +30,7 @@ public class EnterPasswordDialog extends CommonDialog {
 
     public interface OnEnterPasswordListener {
         void onSubmit(String password);
+
         void onCancel();
     }
 
@@ -66,62 +69,62 @@ public class EnterPasswordDialog extends CommonDialog {
         rootView.findViewById(R.id.key_0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_0));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_0));
             }
         });
         rootView.findViewById(R.id.key_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_1));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_1));
             }
         });
         rootView.findViewById(R.id.key_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_2));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_2));
             }
         });
         rootView.findViewById(R.id.key_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_3));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_3));
             }
         });
         rootView.findViewById(R.id.key_4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_4));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_4));
             }
         });
         rootView.findViewById(R.id.key_5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_5));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_5));
             }
         });
         rootView.findViewById(R.id.key_6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_6));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_6));
             }
         });
         rootView.findViewById(R.id.key_7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_7));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_7));
             }
         });
         rootView.findViewById(R.id.key_8).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_8));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_8));
             }
         });
         rootView.findViewById(R.id.key_dot).setVisibility(View.INVISIBLE);
         rootView.findViewById(R.id.key_9).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_9));
+                mGridPasswordView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_9));
             }
         });
         rootView.findViewById(R.id.key_del).setOnClickListener(new View.OnClickListener() {
@@ -141,7 +144,7 @@ public class EnterPasswordDialog extends CommonDialog {
         rootView.findViewById(R.id.button_header_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null){
+                if (mListener != null) {
                     mListener.onCancel();
                 }
                 dismiss();
@@ -180,9 +183,10 @@ public class EnterPasswordDialog extends CommonDialog {
 
         getWindow().setGravity(Gravity.CENTER);
 
-//        WindowManager m = getWindow().getWindowManager();
-//        Display d = m.getDefaultDisplay();
-//        WindowManager.LayoutParams p = getWindow().getAttributes();
+        WindowManager m = getWindow().getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = getWindow().getAttributes();
+        p.width = DensityUtil.dip2px(getContext(), 400);
 ////        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
@@ -223,7 +227,7 @@ public class EnterPasswordDialog extends CommonDialog {
             return;
         }
 
-        if (passWord.length() < 6){
+        if (passWord.length() < 6) {
             progressBar.setVisibility(View.INVISIBLE);
             btnSubmit.setEnabled(true);
             DialogUtil.showHint("密码长度不能小于6位");
@@ -233,7 +237,7 @@ public class EnterPasswordDialog extends CommonDialog {
         btnSubmit.setEnabled(true);
         dismiss();
 
-        if (mListener != null){
+        if (mListener != null) {
             mListener.onSubmit(passWord);
         }
     }

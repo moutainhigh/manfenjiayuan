@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierAgent;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
@@ -84,7 +83,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
         }
 
         // TODO: 7/5/16 注意这里需要重新生成订单支付信息，如果允许多次支付的话，可能还需要清空页面优惠券信息。
-        cashierOrderInfo = CashierFactory.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
+        cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
                 cashierOrderInfo.getPosTradeNo(), cashierOrderInfo.getVipMember());
 
         //根据实际应用场景，金额小于1分即认为支付完成

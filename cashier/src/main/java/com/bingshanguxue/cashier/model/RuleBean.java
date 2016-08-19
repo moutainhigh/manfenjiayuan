@@ -8,30 +8,6 @@ import java.util.Date;
  * Created by Nat.ZZN(bingshanguxue) on 15/9/30.
  */
 public class RuleBean implements Serializable {
-//    "ruleBeans": [
-//    {
-//        "planTypeCaption": "满额优惠",
-//            "execTypeCaption": "减金额",
-//            "otherIdCaption": null,
-//            "tenantName": "满分家园",
-//            "title": "西湖牌优惠",
-//            "planType": 2,
-//            "packageId": null,
-//            "execType": 5,
-//            "execNum": 3,
-//            "execNumType": 0,
-//            "otherId": null,
-//            "status": 1,
-//            "finishDate": "2015-12-09 17:54:38",
-//            "tenantId": 130222,
-//            "id": 116,
-//            "createdBy": "",
-//            "createdDate": "2015-12-09 18:38:44",
-//            "updatedBy": "131291",
-//            "updatedDate": "2015-12-09 18:38:44"
-//    }
-//    ]
-
     private Long id;
     private String title; //计划名称
     private Integer planType; //促销类型，间接决定exec_type

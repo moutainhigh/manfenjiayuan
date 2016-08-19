@@ -53,6 +53,7 @@ public abstract class OrderSyncManager {
         order.put("posId", orderEntity.getPosId());//设备编号
         order.put("sellOffice", orderEntity.getSellOffice());//curoffice id
         order.put("sellerId", orderEntity.getSellerId());//spid
+        //由后台计算折扣
 //        if (orderEntity.getRetailAmount() == 0D) {
 //            order.put("discount", Double.valueOf(String.valueOf(Integer.MAX_VALUE)));
 //        } else {

@@ -1887,7 +1887,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         });
 
-        if (!alipayDialog.isShowing()) {
+        if (BizConfig.RELEASE && !alipayDialog.isShowing()) {
             alipayDialog.show();
         }
     }

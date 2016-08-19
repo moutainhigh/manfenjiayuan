@@ -225,7 +225,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
         CashierAgent.updateCashierOrder(cashierOrderInfo, paymentInfo);
 
-        cashierOrderInfo = CashierFactory.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
+        cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
                 cashierOrderInfo.getPosTradeNo(),cashierOrderInfo.getVipMember());
         ZLogger.df(String.format("退单成功:%s", JSONObject.toJSONString(cashierOrderInfo)));
 

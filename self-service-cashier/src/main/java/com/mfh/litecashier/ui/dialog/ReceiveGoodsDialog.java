@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.CashierAgent;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
@@ -254,8 +253,8 @@ public class ReceiveGoodsDialog extends CommonDialog {
      * 提交订单,新建订单并保存订单明细，标记为挂单状态，然后设置调单。
      * */
     private void submitOrder(){
-        CashierAgent.settle(orderBarcode, productAdapter.getEntityList());
-        CashierOrderInfo cashierOrderInfo = CashierFactory.makeCashierOrderInfo(BizType.POS,
+        CashierAgent.simpleSettle(orderBarcode, productAdapter.getEntityList());
+        CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(BizType.POS,
                 orderBarcode, null);
         if (cashierOrderInfo == null) {
             DialogUtil.showHint("创建订单失败");
