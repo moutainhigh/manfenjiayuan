@@ -8,10 +8,16 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
  * Created by bingshanguxue on 16/3/24.
  */
 public abstract class BaseProgressFragment extends BaseFragment {
+
+
+    protected boolean isLoadingMore;
+    protected boolean bSyncInProgress = false;//是否正在同步
     /**
      * 加载中
      */
     public void onLoadProcess(String description){
+        isLoadingMore = true;
+        bSyncInProgress = true;
         ZLogger.d(description);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, description, false);
     }
@@ -19,6 +25,8 @@ public abstract class BaseProgressFragment extends BaseFragment {
      * 加载失败
      */
     public void onLoadError(String errMessage){
+        bSyncInProgress = false;
+        isLoadingMore = false;
         ZLogger.d(errMessage);
         showProgressDialog(ProgressDialog.STATUS_ERROR, errMessage, true);
 //        hideProgressDialog();
@@ -28,6 +36,8 @@ public abstract class BaseProgressFragment extends BaseFragment {
      * 加载完成
      */
     public void onLoadFinished(){
+        isLoadingMore = false;
+        bSyncInProgress = false;
         hideProgressDialog();
     }
 
