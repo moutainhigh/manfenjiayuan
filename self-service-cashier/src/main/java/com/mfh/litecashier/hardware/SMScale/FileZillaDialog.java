@@ -32,7 +32,7 @@ import com.mfh.litecashier.R;
  * 绿泰参数设置
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class SMScaleSettingsDialog extends CommonDialog {
+public class FileZillaDialog extends CommonDialog {
 
     private View rootView;
     private TextView tvTitle;
@@ -51,12 +51,12 @@ public class SMScaleSettingsDialog extends CommonDialog {
     }
     private DialogViewClickListener mDialogViewClickListener;
 
-    private SMScaleSettingsDialog(Context context, boolean flag, OnCancelListener listener) {
+    private FileZillaDialog(Context context, boolean flag, OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private SMScaleSettingsDialog(Context context, int defStyle) {
+    private FileZillaDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
                 R.layout.dialogview_smscale_settings, null);
@@ -98,7 +98,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
 //            }
 //        });
 
-        tvTitle.setText("寺冈电子秤参数设置");
+        tvTitle.setText("File Zilla");
 
         etIp.setFilters(new IpInputFilter[]{new IpInputFilter()});
         soapSpinnerAdapter = new ArrayAdapter<>(context, R.layout.mfh_spinner_item_text,
@@ -158,7 +158,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
         setContent(rootView, 0);
     }
 
-    public SMScaleSettingsDialog(Context context) {
+    public FileZillaDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 
@@ -191,7 +191,8 @@ public class SMScaleSettingsDialog extends CommonDialog {
     }
 
 
-    public void init(DialogViewClickListener mDialogViewClickListener){
+    public void init(String title, DialogViewClickListener mDialogViewClickListener){
+        this.tvTitle.setText(title);
         this.mDialogViewClickListener = mDialogViewClickListener;
 
         refresh();

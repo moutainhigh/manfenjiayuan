@@ -24,7 +24,7 @@ import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.event.SerialPortEvent;
 import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
 import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
-import com.mfh.litecashier.hardware.SMScale.SMScaleSettingsDialog;
+import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
@@ -81,7 +81,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
 
     private SetPortDialog setPortDialog = null;
-    private SMScaleSettingsDialog mSMScaleSettingsDialog = null;
+    private FileZillaDialog mFileZillaDialog = null;
     private UmsipsDialog mUmsipsDialog = null;
     private GreenTagsSettingsDialog mGreenTagsSettingsDialog = null;
     private PosRegisterPresenter mPosRegisterPresenter;
@@ -241,7 +241,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         }
                     });
         } else {
-            showConfirmDialog("同步商品库到最新版本，同步过程中会先删除历史数据，可能会影响正常收银，确定要同步吗？",
+            showConfirmDialog("确定要更新设备注册信息吗？",
                     "更新", new DialogInterface.OnClickListener() {
 
                         @Override
@@ -401,19 +401,19 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     @OnClick(R.id.item_smscale_ftp)
     public void configureSmscaleFtp() {
-        if (mSMScaleSettingsDialog == null) {
-            mSMScaleSettingsDialog = new SMScaleSettingsDialog(getActivity());
-            mSMScaleSettingsDialog.setCancelable(false);
-            mSMScaleSettingsDialog.setCanceledOnTouchOutside(false);
+        if (mFileZillaDialog == null) {
+            mFileZillaDialog = new FileZillaDialog(getActivity());
+            mFileZillaDialog.setCancelable(false);
+            mFileZillaDialog.setCanceledOnTouchOutside(false);
         }
-        mSMScaleSettingsDialog.init(new SMScaleSettingsDialog.DialogViewClickListener() {
+        mFileZillaDialog.init("FileZila 参数设置", new FileZillaDialog.DialogViewClickListener() {
             @Override
             public void onSubmit() {
                 refresh();
             }
         });
-        if (!mSMScaleSettingsDialog.isShowing()) {
-            mSMScaleSettingsDialog.show();
+        if (!mFileZillaDialog.isShowing()) {
+            mFileZillaDialog.show();
         }
     }
 

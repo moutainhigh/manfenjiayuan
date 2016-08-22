@@ -98,7 +98,7 @@
             app:position="top"
             app:subText=""
             app:src="@mipmap/ic_ftp"
-            app:text="寺冈电子秤"/>
+            app:text="FileZilla (寺冈电子秤)"/>
 
         <!--绿泰电子价签-->
         <com.bingshanguxue.vector_uikit.SettingsItem
