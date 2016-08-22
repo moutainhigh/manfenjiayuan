@@ -65,9 +65,7 @@ public class SharedPreferencesHelper {
    // 后台商品类目
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_ENABLED = "pk_sync_bakend_categoryinfo_enabled";
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_bakend_categoryinfo_fresh_enabled";
-    //流水
-    public static final String PK_SYNC_STORE_ORDERFLOW_ENABLED = "pk_sync_store_orderflow_enabled";// 线下订单流水
-    //库存
+      //库存
     public static final String PK_SYNC_STOCKCHECK_ORDER_ENABLED = "pk_sync_stockcheck_order_enabled";//库存盘点订单
     public static final String PK_SYNC_STOCKLOSS_ORDER_ENABLED = "pk_sync_stockloss_order_enabled";//库存报损订单
     public static final String PK_SYNC_INVIOORDER_IN_ENABLED = "pk_sync_invioorder_in_enabled";//库存批次流水（入库）
@@ -218,14 +216,6 @@ public class SharedPreferencesHelper {
 
     public static void setSyncFrontCategorySubEnabled(boolean enabled) {
         set(PK_SYNC_FRONTCATEGORY_SUB_ENABLED, enabled);
-    }
-
-    public static boolean isSyncStoreOrderFlowEnabled() {
-        return getBoolean(PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
-    }
-
-    public static void setSyncStoreOrderFlowEnabled(boolean enabled) {
-        set(PK_SYNC_STORE_ORDERFLOW_ENABLED, enabled);
     }
 
     /**

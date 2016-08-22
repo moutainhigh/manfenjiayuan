@@ -19,7 +19,6 @@ import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +26,11 @@ import java.util.List;
 
 /**
  * POS-- 订单同步
+ * <ol>
+ *     <li>多台POS机如果同时有大量数据提交到后台，可能会影响性能，所以订单同步不需要要实时同步</li>
+ *     <li>定时任务每隔10分钟同步一次。{@link TimeTaskManager#syncPosOrderTimer}</li>
+ *     <li>如果没有订单需要同步，则取消定时器</li>
+ * </ol>
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public abstract class OrderSyncManager {
@@ -34,6 +38,7 @@ public abstract class OrderSyncManager {
     protected PageInfo mOrderPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, MAX_SYNC_ORDER_PAGESIZE);//翻页
     protected String orderStartCursor;
     protected String orderSqlWhere;
+
 
     /**
      * 生成订单同步数据结构
@@ -140,9 +145,6 @@ public abstract class OrderSyncManager {
         ZLogger.df(String.format("准备上传POS订单(%d/%s)", orderEntity.getId(),
                 orderEntity.getBarCode()));
 
-        JSONArray orders = new JSONArray();
-        orders.add(generateOrderJson(orderEntity));
-
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {
@@ -151,9 +153,6 @@ public abstract class OrderSyncManager {
                         //修改订单同步状态
                         orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_SYNCED);
                         PosOrderService.get().saveOrUpdate(orderEntity);
-
-                        //需要更新订单流水
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
 
                         //继续检查是否还有其他订单需要上传
 //                        batchUploadPosOrder();
@@ -170,9 +169,10 @@ public abstract class OrderSyncManager {
                 , CashierApp.getAppContext()) {
         };
 
+        JSONArray orders = new JSONArray();
+        orders.add(generateOrderJson(orderEntity));
         CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
     }
-
 
     /**
      * 单条上传POS订单<br>
@@ -217,9 +217,6 @@ public abstract class OrderSyncManager {
                             orderEntity.setUpdatedDate(new Date());
                             PosOrderService.get().saveOrUpdate(orderEntity);
                         }
-
-                        //需要更新订单流水
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, true);
 
                         //继续检查是否还有其他订单需要上传
                         ZLogger.df("上传POS订单成功");

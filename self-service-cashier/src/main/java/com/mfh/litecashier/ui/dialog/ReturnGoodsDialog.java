@@ -40,7 +40,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.presenter.CashierPresenter;
-import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -237,7 +236,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         List<PosOrderEntity> orderEntities = CashierFactory.fetchActiveOrderEntities(BizType.POS,
                 cashierOrderInfo.getPosTradeNo());
         //同步订单信息
-        UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
+//        UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
         //打印订单
         PrintManager.printPosOrder(orderEntities, true);
         CashierShopcartService.getInstance()

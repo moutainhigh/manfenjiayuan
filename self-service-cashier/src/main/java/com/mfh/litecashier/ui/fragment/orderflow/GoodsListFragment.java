@@ -11,15 +11,15 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.litecashier.bean.PosOrder;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
@@ -27,7 +27,6 @@ import com.mfh.litecashier.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -275,9 +274,6 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
             if (dataList != null){
                 entityList.addAll(dataList);
             }
-            //下次进入不自动更新
-             SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, false);
-
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
             ZLogger.e(String.format("加载线上销售订单流水失败: %s", ex.toString()));
