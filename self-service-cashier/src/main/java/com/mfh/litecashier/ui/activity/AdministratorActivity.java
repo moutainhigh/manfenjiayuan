@@ -37,7 +37,6 @@ import com.mfh.litecashier.database.logic.CommonlyGoodsService;
 import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
@@ -153,7 +152,8 @@ public class AdministratorActivity extends BaseActivity {
 
         initMenuRecyclerView();
 
-        UploadSyncManager.getInstance().sync();
+        //2016-08-22,单个POS机可以强制同步数据，多台POS机情况，依靠用户主动打开页面同步数据不显示，所以注释掉下面行代码
+//        UploadSyncManager.getInstance().sync();
     }
 
     @Override

@@ -25,6 +25,8 @@
             <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                 android:id="@+id/order_list"
                 android:layout_width="match_parent"
+                android:paddingStart="@dimen/spacing_double"
+                android:paddingEnd="@dimen/spacing_double"
                 android:layout_height="match_parent"/>
 
         </android.support.v4.widget.SwipeRefreshLayout>
@@ -107,7 +109,7 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:background="@drawable/btn_rectange_primary"
             android:gravity="center"
-            android:text="日结"
+            android:text="统计"
             android:textColor="@color/material_white"
             android:textSize="24sp"
             android:visibility="visible"/>

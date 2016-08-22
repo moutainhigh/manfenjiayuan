@@ -1,7 +1,6 @@
 package com.mfh.litecashier.ui.fragment.canary;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,23 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -368,69 +360,6 @@ public class OrderFlowFragment extends BaseFragment {
         if (!mPosOrderDetailDialog.isShowing()) {
             mPosOrderDetailDialog.show();
         }
-    }
-
-
-    /**
-     * 同步订单
-     */
-    public void syncOrder() {
-        final PosOrderEntity orderEntity = orderListAdapter.getCurPosOrder();
-        if (orderEntity == null) {
-            ZLogger.d("订单无效");
-            DialogUtil.showHint("请先选择订单");
-            return;
-        }
-
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING);
-
-        JSONArray orders = new JSONArray();
-        orders.add(UploadSyncManager.getInstance().generateOrderJson(orderEntity));
-
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        ZLogger.d("上传POS订单成功");
-
-                        //修改订单同步状态
-                        orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_SYNCED);
-                        PosOrderService.get().saveOrUpdate(orderEntity);
-
-                        showProgressDialog(ProgressDialog.STATUS_DONE);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                hideProgressDialog();
-                            }
-                        }, 1000);
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("上传订单失败: " + errMsg);
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                hideProgressDialog();
-//                            }
-//                        }, 1000);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
     }
 
     /**
