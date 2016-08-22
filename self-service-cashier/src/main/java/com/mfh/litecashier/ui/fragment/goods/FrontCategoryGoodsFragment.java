@@ -69,7 +69,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
         EventBus.getDefault().register(this);
 
-        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
+        MAX_SYNC_PAGESIZE = 50;
+//        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
     }
 
     @Override
