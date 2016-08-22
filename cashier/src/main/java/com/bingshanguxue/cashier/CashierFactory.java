@@ -9,6 +9,7 @@ import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.logger.ZLogger;
@@ -202,6 +203,28 @@ public class CashierFactory {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 上一订单信息
+     * */
+    public static LastOrderInfo genLastOrderInfo(List<PosOrderEntity> orderEntities){
+        LastOrderInfo lastOrderInfo = null;
+
+        if (orderEntities != null && orderEntities.size() > 0) {
+            lastOrderInfo = new LastOrderInfo();
+            for (PosOrderEntity orderEntity : orderEntities) {
+                OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+
+                lastOrderInfo.setPayType(lastOrderInfo.getPayType() | payWrapper.getPayType());
+                lastOrderInfo.setFinalAmount(lastOrderInfo.getFinalAmount() + orderEntity.getFinalAmount());
+                lastOrderInfo.setbCount(lastOrderInfo.getbCount() + orderEntity.getBcount());
+                lastOrderInfo.setDiscountAmount(lastOrderInfo.getDiscountAmount() + payWrapper.getRuleDiscount());
+                lastOrderInfo.setChangeAmount(lastOrderInfo.getChangeAmount() + payWrapper.getChange());
+            }
+        }
+
+        return lastOrderInfo;
     }
 
 }
