@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.widget;
+package com.bingshanguxue.vector_uikit;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -11,6 +11,11 @@ import android.widget.TextView;
 public class FontFitTextView extends TextView {
     private final static float DEFAULT_MIN_TEXT_SIZE = 12;
     private final static float DEFAULT_MAX_TEXT_SIZE = 64;
+
+    //Attributes
+    private Paint testPaint;
+    private float minTextSize;
+    private float maxTextSize;
 
     public FontFitTextView(Context context) {
         super(context);
@@ -90,9 +95,5 @@ public class FontFitTextView extends TextView {
         this.maxTextSize = minTextSize;
     }
 
-    //Attributes
-    private Paint testPaint;
-    private float minTextSize;
-    private float maxTextSize;
 
 }
