@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -29,7 +30,7 @@ import com.mfh.litecashier.R;
 
 
 /**
- * 绿泰参数设置
+ * FileZilla参数设置
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class FileZillaDialog extends CommonDialog {
@@ -39,8 +40,8 @@ public class FileZillaDialog extends CommonDialog {
     private EditText etIp, etPort, etUsername, etPassword;
     private Spinner mEncodingSpinner;
     private ArrayAdapter<String> soapSpinnerAdapter;
+    private TextView tvSmscaleCursor;
     private SwitchCompat mSwitchSyncMode;
-
     private Button btnSubmit;
     private ImageButton btnClose;
     private ProgressBar progressBar;
@@ -59,7 +60,7 @@ public class FileZillaDialog extends CommonDialog {
     private FileZillaDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_smscale_settings, null);
+                R.layout.dialogview_filezilla, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -68,6 +69,7 @@ public class FileZillaDialog extends CommonDialog {
         etUsername = (EditText) rootView.findViewById(R.id.et_username);
         etPassword = (EditText) rootView.findViewById(R.id.et_password);
         mEncodingSpinner = (Spinner) rootView.findViewById(R.id.spinner_encoding);
+        tvSmscaleCursor = (TextView) rootView.findViewById(R.id.tv_smscale_cursor);
         mSwitchSyncMode = (SwitchCompat) rootView.findViewById(R.id.switchCompat_sync_mode);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
@@ -101,6 +103,22 @@ public class FileZillaDialog extends CommonDialog {
         tvTitle.setText("File Zilla");
 
         etIp.setFilters(new IpInputFilter[]{new IpInputFilter()});
+        etIp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                        DeviceUtils.showSoftInput(getContext(), etIp);
+                    } else {
+                        DeviceUtils.hideSoftInput(getContext(), etIp);
+                    }
+                }
+                etIp.requestFocus();
+                etIp.setSelection(etIp.length());
+                //返回true,不再继续传递事件
+                return true;
+            }
+        });
         soapSpinnerAdapter = new ArrayAdapter<>(context, R.layout.mfh_spinner_item_text,
                 SMScaleSyncManager2.ENCODING_CHARSET_SET);
         soapSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -140,6 +158,18 @@ public class FileZillaDialog extends CommonDialog {
 //                etInput.setSelection(etInput.length());
                 //返回true,不再继续传递事件
                 return true;
+            }
+        });
+        mSwitchSyncMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    tvSmscaleCursor.setText("");
+                }
+                else{
+                    tvSmscaleCursor.setText(SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
+                            SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, ""));
+                }
             }
         });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +247,7 @@ public class FileZillaDialog extends CommonDialog {
                 mEncodingSpinner.setSelection(0);
                 break;
         }
-        mSwitchSyncMode.setChecked(SMScaleSyncManager2.FULLSCALE_ENABLED);
+        mSwitchSyncMode.setChecked(false);
     }
 
     private void submit() {
@@ -272,10 +302,7 @@ public class FileZillaDialog extends CommonDialog {
         String encoding = mEncodingSpinner.getSelectedItem().toString();
         SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_ENCODING, encoding);
-
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
-                SMScaleSyncManager2.PK_B_SMSCALE_FULLSCALE, mSwitchSyncMode.isChecked());
-        if (SMScaleSyncManager2.FULLSCALE_ENABLED || mSwitchSyncMode.isChecked()) {
+        if (mSwitchSyncMode.isChecked()) {
             SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
                     SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
         }

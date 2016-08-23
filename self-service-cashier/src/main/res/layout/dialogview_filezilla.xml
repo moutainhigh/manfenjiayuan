@@ -57,7 +57,7 @@
                     android:layout_weight="1"
                     android:digits="0123456789."
                     android:hint="主机IP"
-                    android:inputType="number|numberDecimal"/>
+                    android:inputType="text"/>
             </LinearLayout>
 
             <LinearLayout

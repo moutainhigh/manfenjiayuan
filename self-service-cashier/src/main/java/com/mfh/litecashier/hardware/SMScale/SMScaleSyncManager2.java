@@ -64,10 +64,8 @@ public class SMScaleSyncManager2 extends FTPManager {
     public static final String PK_S_SMSCALE_USERNAME = "pk_smscale_username";//用户名
     public static final String PK_S_SMSCALE_PASSWORD = "pk_smscale_password";//密码
     public static final String PK_S_SMSCALE_ENCODING = "pk_smscale_encoding";//文件编码
-    public static final String PK_B_SMSCALE_FULLSCALE = "pk_smscale_fullscale";//全量更新
     public static final String PK_S_SMSCALE_LASTCURSOR = "pk_smscale_lastcursor";//更新游标
 
-    public static boolean FULLSCALE_ENABLED = true;
     public static String SMSCALE_CSV_FILENAME = "smscale_mixicook";//.csv
     public static String FOLDER_PATH_SMSCALE = "smscale";
     public static final SimpleDateFormat FORMAT_YYYYMMDD = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -114,8 +112,6 @@ public class SMScaleSyncManager2 extends FTPManager {
                 .getText(PREF_SMSCALE, PK_S_SMSCALE_PASSWORD, "");
         ENCODING_CHARSET = SharedPreferencesManager
                 .getText(PREF_SMSCALE, PK_S_SMSCALE_ENCODING, "");
-        FULLSCALE_ENABLED = SharedPreferencesManager
-                .getBoolean(PREF_SMSCALE, PK_B_SMSCALE_FULLSCALE, true);
     }
 
     /**
@@ -190,10 +186,6 @@ public class SMScaleSyncManager2 extends FTPManager {
 
         String lastCursor = SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR);
-        if (FULLSCALE_ENABLED) {
-            ZLogger.df("全量同步");
-            lastCursor = "";
-        }
         ZLogger.df(String.format("最后一次同步商品的更新时间(%s)。", lastCursor));
 
         WriteFileAsyncTask asyncTask = new WriteFileAsyncTask(lastCursor);
