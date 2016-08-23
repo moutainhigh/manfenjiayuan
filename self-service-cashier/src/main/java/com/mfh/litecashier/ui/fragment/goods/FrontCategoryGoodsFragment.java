@@ -69,7 +69,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
         EventBus.getDefault().register(this);
 
-        MAX_SYNC_PAGESIZE = 50;
+        MAX_SYNC_PAGESIZE = 72;
 //        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
     }
 
@@ -109,17 +109,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             return;
         }
         if (event.getAffairId() == FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
-            //内容为空，自动重新加载
-            if (adapter == null || adapter.getItemCount() <= 0) {
-                //优先读取缓存，加载缓存失败，重新加载
-                if (!readCache()) {
-                    reload();
-                }
-            }
-            //更新缓存数据
-            else {
-                readCache();
-            }
+            reload();
         }
     }
 
@@ -218,8 +208,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         }
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载类目商品。");
-            onLoadFinished();
+            ZLogger.d("网络未连接，读取缓存数据。");
+            readCache();
             return;
         }
 
@@ -236,7 +226,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     /**
      * 读取缓存
      */
-    public synchronized boolean readCache() {
+    public synchronized void readCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(cacheKey);
         List<FrontCategoryGoods> cacheData = JSONArray.parseArray(cacheStr, FrontCategoryGoods.class);
@@ -245,10 +235,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             if (adapter != null) {
                 adapter.setEntityList(cacheData);
             }
-            return true;
         }
 
-        return false;
+        onLoadFinished();
     }
 
     /**
@@ -377,7 +366,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
                         return;
                     }
 
-                    reload();
+//                    reload();
+                    setRefreshing(false);
                 }
             });
         }
