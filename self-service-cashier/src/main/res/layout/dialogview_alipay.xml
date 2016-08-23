@@ -66,7 +66,7 @@
             android:singleLine="true"
             android:text="@string/default_amount"
             android:textColor="#FE5000"
-            android:textSize="64sp"/>
+            android:textSize="60sp"/>
 
         <TextView
             android:id="@+id/tv_subtitle"

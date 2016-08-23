@@ -244,7 +244,7 @@ public class AlipayDialog extends CommonDialog {
             changePriceDialog.setCancelable(true);
             changePriceDialog.setCanceledOnTouchOutside(true);
         }
-        changePriceDialog.initialzie("修改金额", 2, mQuickPayInfo.getMinAmount(), "元",
+        changePriceDialog.initialzie("修改金额", 2, mQuickPayInfo.getAmount(), "元",
                 new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
@@ -253,7 +253,7 @@ public class AlipayDialog extends CommonDialog {
                         tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
                     }
                 });
-        changePriceDialog.setMinimumDoubleCheck(mQuickPayInfo.getAmount(), true);
+        changePriceDialog.setMinimumDoubleCheck(mQuickPayInfo.getMinAmount(), true);
         changePriceDialog.show();
     }
 
@@ -568,7 +568,12 @@ public class AlipayDialog extends CommonDialog {
     /**
      * 初始化
      */
-    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, DialogClickListener callback) {
+    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled,
+                           DialogClickListener callback) {
+        initialize(quickPayInfo, isCancelAbled, true, callback);
+    }
+    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, boolean isRefreshEnabled,
+                           DialogClickListener callback) {
         this.mQuickPayInfo = quickPayInfo;
         this.mListener = callback;
         if (quickPayInfo != null) {
@@ -583,8 +588,15 @@ public class AlipayDialog extends CommonDialog {
             this.btnClose.setVisibility(View.GONE);
         }
 
+        if (isRefreshEnabled) {
+            this.btnSync.setVisibility(View.VISIBLE);
+        } else {
+            this.btnSync.setVisibility(View.GONE);
+        }
+
         enterStandardMode();
     }
+
 
     /**
      * 标准
@@ -735,6 +747,7 @@ public class AlipayDialog extends CommonDialog {
                                 }
                             } else {
                                 ZLogger.df("判断是否需要锁定POS机:" + result);
+                                dismiss();
                                 enterStandardMode();
                             }
                         } catch (NumberFormatException e) {

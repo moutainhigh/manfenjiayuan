@@ -515,7 +515,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
             alipayDialog.setCancelable(false);
             alipayDialog.setCanceledOnTouchOutside(false);
         }
-        alipayDialog.initialize(quickPayInfo, true, new AlipayDialog.DialogClickListener() {
+        alipayDialog.initialize(quickPayInfo, true, false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
                 PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
