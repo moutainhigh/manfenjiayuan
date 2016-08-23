@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.service.DailysettleService;
+import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.vector_user.UserApiImpl;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
@@ -33,11 +34,17 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.utils.AnalysisHelper;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * <h1>POS--验证</h1>
@@ -265,43 +272,10 @@ public class ValidateManager {
                         RspValue<String> retValue = (RspValue<String>) rspData;
                         String retStr = retValue.getValue();
                         ZLogger.df("注册设备成功:" + retStr);
-                        if (!StringUtils.isEmpty(retStr)){
-                            String[] retA = retStr.split(",");
-                            if (retA.length > 0){
-                                SharedPreferencesManager.setTerminalId(retA[0]);
-                            }
-                            if (retA.length > 1){
-                                // TODO: 8/22/16 修改本地系统时间
-                                ZLogger.d(String.format("当前系统时间1: %s",
-                                TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
-                                Date serverDateTime = TimeUtil.parse(retA[1], TimeUtil.FORMAT_YYYYMMDDHHMMSS);
-//                                Date serverDateTime = TimeUtil.parse("2016-08-22 13:09:57", TimeUtil.FORMAT_YYYYMMDDHHMMSS);
-                                if (serverDateTime != null){
-                                    //设置时间
-                                    try{
-                                        boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
-                                        ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
-                                                TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
-                                    }
-                                    catch (Exception e){
-                                        ZLogger.ef("修改系统时间失败:" + e.toString());
-                                    }
-                                }
-                            }
-                        }
-                        else{
-                            ZLogger.df("注册设备成功,返回数据为空");
-                        }
+                        saveTerminalId(retStr);
                     }
-                    if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
-                        validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
-                                null, "设备注册失败，需要重新注册");
-                    } else {
-                        if (!BizConfig.RELEASE){
-                            validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
-                                    null, "测试注册设备功能");
-                        }
-                        nextStep();
+                    else{
+                        saveTerminalId(null);
                     }
                 }
 
@@ -321,6 +295,72 @@ public class ValidateManager {
             , String.class
             , MfhApplication.getAppContext()) {
     };
+
+    private void saveTerminalId(final String respnse){
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                if (!StringUtils.isEmpty(respnse)){
+                    ZLogger.df("注册设备成功:" + respnse);
+                    String[] retA = respnse.split(",");
+                    if (retA.length > 1){
+                        SharedPreferencesManager.setTerminalId(retA[0]);
+                        // TODO: 8/22/16 修改本地系统时间
+                        ZLogger.d(String.format("当前系统时间1: %s",
+                                TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+                        Date serverDateTime = TimeUtil.parse(retA[1], TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+//                                Date serverDateTime = TimeUtil.parse("2016-08-22 13:09:57", TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+                        if (serverDateTime != null){
+                            //设置时间
+                            try{
+                                boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
+                                ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
+                                        TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+                            }
+                            catch (Exception e){
+                                ZLogger.ef("修改系统时间失败:" + e.toString());
+                            }
+                        }
+                    }
+                }
+                else{
+                    ZLogger.df("注册设备成功,返回数据为空");
+                }
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        nextStep();
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+                        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+                            validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                                    null, "设备注册失败，需要重新注册");
+                        } else {
+                            if (!BizConfig.RELEASE){
+                                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                                        null, "测试注册设备功能");
+                            }
+                            nextStep();
+                        }
+
+                    }
+
+                });
+    }
 
     /**
      * 检测昨日是否清分完毕：针对当前用户所属网点判断是否进行过日结清分操作；如果发现未清分，则锁定pos机，
