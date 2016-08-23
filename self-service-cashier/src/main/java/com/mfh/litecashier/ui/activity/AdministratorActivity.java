@@ -289,6 +289,7 @@ public class AdministratorActivity extends BaseActivity {
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FRAGMENT_TYPE_HANDOVER);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
 //        extras.putString(SelectPlatformGoodsFragment.EXTRA_KEY_BARCODE, barcode);
 
         intent.putExtras(extras);
@@ -420,10 +421,10 @@ public class AdministratorActivity extends BaseActivity {
                 "日结", R.mipmap.ic_admin_menu_dailysettle));
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_TOPUP,
 //                "充值", R.mipmap.ic_service_recharge));
+        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CASHQUOTA,
+                "授信", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CASHQUOTA,
-                "异常订单", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CANARY,
                 "金丝雀", R.mipmap.ic_canary));
 

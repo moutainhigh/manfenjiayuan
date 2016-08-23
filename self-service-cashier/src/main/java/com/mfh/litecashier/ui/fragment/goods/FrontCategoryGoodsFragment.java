@@ -124,7 +124,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     }
 
     private void initRecyclerView() {
-        mRLayoutManager = new GridLayoutManager(CashierApp.getAppContext(), 9);
+        mRLayoutManager = new GridLayoutManager(CashierApp.getAppContext(), 12);
 
         mRecyclerView.setLayoutManager(mRLayoutManager);
         //enable optimizations if all item views are of the same height and width for
@@ -139,9 +139,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
         mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0f));
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
+                ContextCompat.getColor(getActivity(), R.color.transparent), 1f,
+                ContextCompat.getColor(getActivity(), R.color.transparent), 1f));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

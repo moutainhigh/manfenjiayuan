@@ -132,6 +132,8 @@ public class UmsipsDialog extends CommonDialog {
         mBaudrateSpinner.setSelection(0);
 
         tvTitle.setText("银联参数设置");
+        etIp.setEnabled(false);
+        etPort.setEnabled(false);
 
 //        etIp.setOnTouchListener(new View.OnTouchListener() {
 //            @Override

@@ -70,7 +70,6 @@ public class DataSyncManager {
     public static final int SYNC_STEP_BACKEND_CATEGORYINFO = 4;//后台类目信息
     public static final int SYNC_STEP_COMPANY_HUMAN = 5;//账号,交接班切换账号需要
 
-
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
     private static final int MAX_SYNC_PAGESIZE = 40;
 
