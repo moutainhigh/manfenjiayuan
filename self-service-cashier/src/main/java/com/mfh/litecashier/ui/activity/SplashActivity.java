@@ -6,18 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.vector_user.UserApiImpl;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
@@ -145,8 +141,7 @@ public class SplashActivity extends InitActivity {
         IMClient.getInstance().groupManager().loadAllGroups();
         IMClient.getInstance().chatManager().loadAllConversations();
 
-        //  注册设备
-        registerTerminal();
+        onInitializedCompleted();
     }
 
     @Override
@@ -161,49 +156,6 @@ public class SplashActivity extends InitActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    /**
-     * 注册设备
-     */
-    protected void registerTerminal() {
-        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())
-                && NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                    NetProcessor.Processor<String>>(
-                    new NetProcessor.Processor<String>() {
-                        @Override
-                        public void processResult(IResponseData rspData) {
-                            if (rspData != null) {
-                                RspValue<String> retValue = (RspValue<String>) rspData;
-                                String retStr = retValue.getValue();
-                                ZLogger.df("注册设备成功:" + retStr);
-                                SharedPreferencesManager.setTerminalId(retStr);
-                                onInitializedCompleted();
-                            }
-                        }
-
-                        @Override
-                        protected void processFailure(Throwable t, String errMsg) {
-                            super.processFailure(t, errMsg);
-                            ZLogger.df(String.format("get terminal id failed(%s),please set manual", errMsg));
-                            onInitializedCompleted();
-                        }
-                    }
-                    , String.class
-                    , CashierApp.getAppContext()) {
-            };
-
-            JSONObject order = new JSONObject();
-            order.put("serialNo", CashierApp.getWifiMac15Bit());
-
-            ZLogger.df("register terminal id," + order.toJSONString());
-            MfhApiImpl.posRegisterCreate(order.toJSONString(), responseCallback);
-        } else {
-            ZLogger.df("terminal id: " + SharedPreferencesManager.getTerminalId());
-            onInitializedCompleted();
-        }
     }
 
     /**

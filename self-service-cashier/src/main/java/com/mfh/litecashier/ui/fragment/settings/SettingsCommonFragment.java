@@ -13,7 +13,6 @@ import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -27,6 +26,7 @@ import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
+import com.mfh.litecashier.service.DialogManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
@@ -223,43 +223,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
      */
     @OnClick(R.id.item_terminal)
     public void registerPlat() {
-        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
-            showConfirmDialog("确定要重新注册设备吗？",
-                    "注册", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-
-                            mPosRegisterPresenter.register(true);
-                        }
-                    }, "点错了", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            showConfirmDialog("确定要更新设备注册信息吗？",
-                    "更新", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-
-                            mPosRegisterPresenter.register(true);
-                        }
-                    }, "点错了", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-        }
-
-
+        DialogManager.getInstance().registerPos(getActivity());
     }
 
     @OnClick(R.id.item_version)

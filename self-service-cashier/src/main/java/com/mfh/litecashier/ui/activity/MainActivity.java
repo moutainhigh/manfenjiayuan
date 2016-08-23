@@ -68,6 +68,7 @@ import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DialogManager;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
@@ -167,6 +168,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private LaundryDialog laundryDialog = null;
     private ReceiveGoodsDialog receiveGoodsDialog = null;
     private ActionDialog registerPlatDialog = null;
+
 
     /**
      * POS唯一订单号，由POS机本地生成的12位字符串
@@ -899,8 +901,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
-                DialogUtil.showHint("需要注册");
-//                redirectToLogin();
+                DialogManager.getInstance().registerPos(MainActivity.this);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
