@@ -37,9 +37,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.entity.Office;
-import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.Callback;
-import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.NaviAddressView;
@@ -220,7 +218,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     configMenuOptions();
                     //注册到消息桥
                     IMClient.getInstance().registerBridge();
-
 
                     Beta.checkUpgrade(false, false);
                 }
@@ -496,8 +493,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_START: {
             }
             break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_SESSION_EXPIRED: {
-                retryLogin();
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_RETRYLOGIN_SUCCEED: {
+                loadOffices();
+                Beta.checkUpgrade(false, false);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN: {
@@ -513,36 +511,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             }
             break;
         }
-    }
-
-    /**
-     * 尝试登录
-     */
-    private void retryLogin() {
-        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(), MfhLoginService.get().getPassword(), new LoginCallback() {
-            @Override
-            public void loginSuccess(UserMixInfo user) {
-                //登录成功
-                ZLogger.d("重登录成功");
-                DialogUtil.showHint("重登录成功");
-
-                loadOffices();
-
-                //注册到消息桥
-                IMClient.getInstance().registerBridge();
-
-
-                Beta.checkUpgrade(false, false);
-            }
-
-            @Override
-            public void loginFailed(String errMsg) {
-                //登录失败
-                ZLogger.d("重登录失败：" + errMsg);
-                //TODO,这里即使不跳转至登录，但是登录状态已经失效，仍然需要清空登录信息
-                redirectToLogin();
-            }
-        });
     }
 
     /**

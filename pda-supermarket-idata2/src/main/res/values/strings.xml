@@ -3,7 +3,6 @@
 
     <string name="app_name">MixiCook PDA</string>
 
-    <!--提示文字-->
     <!--按键文字-->
     <string name="button_submit">提交</string>
     <string name="button_confirm">确定</string>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_user.UserApiImpl;
+import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -15,6 +16,8 @@ import com.mfh.framework.core.DeviceUuidFactory;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
@@ -102,6 +105,16 @@ public class ValidateManager {
             }
             break;
         }
+    }
+
+    /**
+     * 验证更新
+     */
+    private void validateUpdate(int eventId, Bundle args, String msg) {
+        if (!StringUtils.isEmpty(msg)) {
+            ZLogger.df(msg);
+        }
+        EventBus.getDefault().post(new ValidateManagerEvent(eventId, args));
     }
 
     /**
@@ -203,9 +216,8 @@ public class ValidateManager {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("" + errMsg);
-                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_SESSION_EXPIRED,
-                                null, "会话过期，自动重登录");
+//                        {"code":"1","msg":"会话已失效，请重新登录","version":"1","data":""}
+                        retryLogin();
                     }
                 }
                 , String.class
@@ -216,10 +228,37 @@ public class ValidateManager {
     }
 
 
+    /**
+     * 自动重登录
+     */
+    private void retryLogin() {
+        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
+                MfhLoginService.get().getPassword(), new LoginCallback() {
+                    @Override
+                    public void loginSuccess(UserMixInfo user) {
+                        //登录成功
+                        ZLogger.df("重登录成功：");
+
+                        //注册到消息桥
+                        IMClient.getInstance().registerBridge();
+
+                        validateUpdate(ValidateManagerEvent.EVENT_ID_RETRYLOGIN_SUCCEED,
+                                null, "重登录成功");
+                        nextStep();
+                    }
+
+                    @Override
+                    public void loginFailed(String errMsg) {
+                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN,
+                                null, "登录已失效－－" + errMsg);
+                    }
+                });
+    }
+
     public class ValidateManagerEvent {
         public static final int EVENT_ID_VALIDATE_START             = 0X01;//验证开始
         public static final int EVENT_ID_VALIDATE_NEED_LOGIN        = 0X02;//需要登录
-        public static final int EVENT_ID_VALIDATE_SESSION_EXPIRED   = 0X03;//会话过期
+        public static final int EVENT_ID_RETRYLOGIN_SUCCEED   = 0X03;//重登录成功
         public static final int EVENT_ID_VALIDATE_PLAT_NOT_REGISTER = 0X04;//设备未注册
         public static final int EVENT_ID_VALIDATE_FINISHED          = 0X06;//验证结束
 
