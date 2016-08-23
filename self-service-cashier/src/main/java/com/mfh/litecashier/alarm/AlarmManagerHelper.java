@@ -24,30 +24,39 @@ public class AlarmManagerHelper {
 
     /**
      * 触发下一次日结
+     * @param type <ul>
+     *             <li>0,失败或异常情况，正常解锁后，6小时后自动重试 </li>
+     *             <li>1,锁定后，1小时后自动重试 </li>
+     *             <li>others,10分钟小时后自动重试 </li>
+     *             </ul>
+     *
      * */
     public static void triggleNextDailysettle(int type){
         Calendar trigger = Calendar.getInstance();
-        //失败或异常情况，十分钟自动重试
-        if (type == 1){
-            trigger.add(Calendar.MINUTE, 30);
-        }
         //锁定后，10分钟后自动重试，多台POS可以自动解锁
-        else if (type == 2){
-            trigger.add(Calendar.MINUTE, 10);
+        if (BizConfig.RELEASE){
+            if (type == 0){
+                trigger.add(Calendar.HOUR_OF_DAY, 6);
+            }
+            if (type == 1){
+                trigger.add(Calendar.HOUR_OF_DAY, 1);
+            }
+            //失败或异常情况，正常解锁后，6小时后自动重试
+            else{
+                trigger.add(Calendar.MINUTE, 10);
+            }
         }
-        //正常解锁后，1小时后自动重试
-        else if (type == 3){
-            trigger.add(Calendar.HOUR_OF_DAY, 1);
-        }
-        //第二天凌晨2点钟
         else{
-            trigger.add(Calendar.DAY_OF_MONTH, 1);
-            trigger.set(Calendar.HOUR_OF_DAY, 2);
-            trigger.set(Calendar.MINUTE, 2);
-            trigger.set(Calendar.SECOND, 0);
+            if (type == 1){
+                trigger.add(Calendar.SECOND, 10);
+            }
+            //失败或异常情况，正常解锁后，6小时后自动重试
+            else{
+                trigger.add(Calendar.SECOND, 20);
+            }
         }
 
-        AlarmManagerHelper.registerDailysettle(CashierApp.getAppContext(), trigger);
+        registerDailysettle(CashierApp.getAppContext(), trigger);
     }
 
     /**

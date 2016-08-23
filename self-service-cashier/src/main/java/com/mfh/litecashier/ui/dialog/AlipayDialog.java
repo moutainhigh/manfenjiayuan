@@ -26,7 +26,11 @@ import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
+import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.PayApi;
+import com.mfh.framework.api.analysis.AnalysisApiImpl;
+import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -38,6 +42,7 @@ import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
+import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.EmptyEntity;
@@ -45,18 +50,18 @@ import com.mfh.litecashier.bean.EmptyEntity;
 
 /**
  * <h1>账号操作：锁定/交接班/登录/退出</h1><br>
- *
+ * <p/>
  * 1.支付完成 {@link DialogClickListener#onPaySucceed(Double, String)} ()}<br>
  * 2.支付异常 {@link DialogClickListener#onPayCanceled()} ()}<br>
  *
  * @author NAT.ZZN(bingshanguxue)
- * 
  */
 public class AlipayDialog extends CommonDialog {
 
     private View rootView;
-    private ImageButton btnClose;
-    private TextView tvTitle, tvHandleAmount, tvSubTitle;
+    private ImageButton btnSync, btnClose;
+    private TextView tvTitle, tvSubTitle;
+    private FontFitTextView tvHandleAmount;
     private EditText etAuthCode;
     private LinearLayout frameOperation;
     private Button btnQueryOrder, btnCancelOrder;
@@ -74,9 +79,14 @@ public class AlipayDialog extends CommonDialog {
     private DoubleInputDialog changePriceDialog = null;
 
     public interface DialogClickListener {
-        /**支付完成*/
+        /**
+         * 支付完成
+         */
         void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo);
-        /**取消支付*/
+
+        /**
+         * 取消支付
+         */
         void onPayCanceled();
     }
 
@@ -95,8 +105,9 @@ public class AlipayDialog extends CommonDialog {
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
+        btnSync = (ImageButton) rootView.findViewById(R.id.button_sync);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
-        tvHandleAmount = (TextView) rootView.findViewById(R.id.tv_handle_amount);
+        tvHandleAmount = (FontFitTextView) rootView.findViewById(R.id.tv_handle_amount);
         tvSubTitle = (TextView) rootView.findViewById(R.id.tv_subtitle);
         etAuthCode = (EditText) rootView.findViewById(R.id.et_authcode);
         frameOperation = (LinearLayout) rootView.findViewById(R.id.frame_operation);
@@ -113,6 +124,12 @@ public class AlipayDialog extends CommonDialog {
                 changeAmount();
             }
         });
+        btnSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reload();
+            }
+        });
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,7 +137,7 @@ public class AlipayDialog extends CommonDialog {
 
                 PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
                         WayType.ALI_F2F, PayStatus.CANCELED);
-                if (mListener != null){
+                if (mListener != null) {
                     mListener.onPayCanceled();
                 }
             }
@@ -129,7 +146,7 @@ public class AlipayDialog extends CommonDialog {
         btnQueryOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                queryOrder(outTradeNo, mQuickPayInfo.getAmount());
+                queryOrder(outTradeNo);
             }
         });
         btnCancelOrder.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +191,7 @@ public class AlipayDialog extends CommonDialog {
 
         etAuthCode.requestFocus();
 
-        if (mQuickPayInfo == null){
+        if (mQuickPayInfo == null) {
             dismiss();
         }
     }
@@ -220,14 +237,14 @@ public class AlipayDialog extends CommonDialog {
 
     /**
      * 修改金额
-     * */
-    private void changeAmount(){
+     */
+    private void changeAmount() {
         if (changePriceDialog == null) {
             changePriceDialog = new DoubleInputDialog(getContext());
             changePriceDialog.setCancelable(true);
             changePriceDialog.setCanceledOnTouchOutside(true);
         }
-        changePriceDialog.initialzie("修改金额", 2, mQuickPayInfo.getMinAmount(), "元",
+        changePriceDialog.initialzie("修改金额", 2, mQuickPayInfo.getAmount(), "元",
                 new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double quantity) {
@@ -236,7 +253,7 @@ public class AlipayDialog extends CommonDialog {
                         tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
                     }
                 });
-        changePriceDialog.setMinimumDoubleCheck(mQuickPayInfo.getAmount(), true);
+        changePriceDialog.setMinimumDoubleCheck(mQuickPayInfo.getMinAmount(), true);
         changePriceDialog.show();
     }
 
@@ -285,19 +302,19 @@ public class AlipayDialog extends CommonDialog {
 //        支付授权码(条码)
         String authCode = etAuthCode.getText().toString();
         if (StringUtils.isEmpty(authCode)) {
-            bPayProcessing = false;
             DialogUtil.showHint("请输入授权码");
+            enterStandardMode();
             return;
         }
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
-            bPayProcessing = false;
+            enterStandardMode();
             return;
         }
 
         bPayProcessing = true;
-        onBarpayProcessing("正在发送支付请求...");
+        onProcessing("正在发送支付请求...");
 
         //TODO,调用支付宝支付接口
 //        {"code":"0","msg":"操作成功!","version":"1","data":{"code":"40004","msg":"错误码：ACQ.CONTEXT_INCONSISTENT错误描述：支付失败，商户订单号重复，请收银员取消本笔交易并重新收款。[CONTEXT_INCONSISTENT]"}}
@@ -312,12 +329,11 @@ public class AlipayDialog extends CommonDialog {
                     public void processResult(ResponseBody rspBody) {
                         ZLogger.df(String.format("支付宝条码支付:%s--%s",
                                 rspBody.getRetCode(), rspBody.getReturnInfo()));
-                        switch (rspBody.getRetCode()){
+                        switch (rspBody.getRetCode()) {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
-                            case "0":{
-                                onBarpayFinished(mQuickPayInfo.getAmount(), outTradeNo,
-                                        "支付成功", Color.parseColor("#FE5000"));
+                            case "0": {
+                                onBarpayFinished(outTradeNo, "支付成功", Color.parseColor("#FE5000"));
                             }
                             break;
                             //下单成功等待用户输入密码
@@ -327,15 +343,15 @@ public class AlipayDialog extends CommonDialog {
                             //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
                             // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
                             // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
-                            case "1":{
-                                queryOrder(outTradeNo, mQuickPayInfo.getAmount());
+                            case "1": {
+                                queryOrder(outTradeNo);
                             }
                             break;
                             //{"code":"1","msg":"bizType参数不能为空!","version":"1","data":null}
                             ////交易创建失败
                             //40004--错误码：ACQ.INVALID_PARAMETER错误描述：支付失败，交易参数异常，请顾客刷新付款码后重新收款。如再次收款失败，请联系管理员处理。[INVALID_PARAMETER]
                             //40004--错误码：ACQ.PAYMENT_AUTH_CODE_INVALID错误描述：支付失败，获取顾客账户信息失败，请顾客刷新付款码后重新收款，如再次收款失败，请联系管理员处理。[SOUNDWAVE_PARSER_FAIL]
-                            default:{//-1
+                            default: {//-1
                                 onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FF009B4E"), false);
 //                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FE5000"), true);
 //                                queryOrder(outTradeNo, lastPaidAmount);
@@ -375,8 +391,8 @@ public class AlipayDialog extends CommonDialog {
      * 2. 调用扫码支付支付接口后，返回系统错误或未知交易状态情况；<br>
      * 3. 调用扫码支付请求后，如果结果返回处理中（返回结果中的code等于10003）的状态；<br>
      * 4. 调用撤销接口API之前，需确认该笔交易目前支付状态。<br>
-     * */
-    private void queryOrder(final String outTradeNo, final Double paidAmount) {
+     */
+    private void queryOrder(final String outTradeNo) {
         NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
                 NetProcessor.RawProcessor<EmptyEntity>>(
                 new NetProcessor.RawProcessor<EmptyEntity>() {
@@ -389,7 +405,7 @@ public class AlipayDialog extends CommonDialog {
                             //业务处理成功
                             // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
                             case "0":
-                                onBarpayFinished(paidAmount, outTradeNo, "支付成功", Color.parseColor("#FE5000"));
+                                onBarpayFinished(outTradeNo, "支付成功", Color.parseColor("#FE5000"));
                                 break;
                             //{"code":"-1","msg":"Success","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
@@ -423,7 +439,7 @@ public class AlipayDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        onBarpayProcessing("正在查询订单状态...");
+        onProcessing("正在查询订单状态...");
         PayApi.queryAliBarpayStatus(outTradeNo, payRespCallback);
     }
 
@@ -435,7 +451,7 @@ public class AlipayDialog extends CommonDialog {
      * 只有发生支付系统超时或者支付结果未知时可调用撤销，其他正常支付 的单如需实现相同功能请调用申请退款 API。提交支付交易后调用【查询订单 API】， 没有明确的支付结果再调用【撤销订单 API】。
      */
     private void cancelOrder(String outTradeNo) {
-        onBarpayProcessing("正在发送撤单请求...");
+        onProcessing("正在发送撤单请求...");
         NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
                 NetProcessor.RawProcessor<EmptyEntity>>(
                 new NetProcessor.RawProcessor<EmptyEntity>() {
@@ -481,8 +497,10 @@ public class AlipayDialog extends CommonDialog {
      * 正在取消支付订单
      * "正在取消支付订单..."
      */
-    private void onBarpayProcessing(String msg) {
-        etAuthCode.setVisibility(View.GONE);
+    private void onProcessing(String msg) {
+        btnSync.setEnabled(false);
+        btnClose.setEnabled(false);
+        etAuthCode.setEnabled(false);
         frameOperation.setVisibility(View.GONE);
         frameProcess.setVisibility(View.VISIBLE);
         tvProcess.setText(msg);
@@ -492,8 +510,8 @@ public class AlipayDialog extends CommonDialog {
 
     /**
      * 支付成功
-     * */
-    private void onBarpayFinished(final Double paidAmount, final String outTradeNo,
+     */
+    private void onBarpayFinished(final String outTradeNo,
                                   String msg, int color) {
 
         PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
@@ -503,16 +521,13 @@ public class AlipayDialog extends CommonDialog {
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);
 
-        etAuthCode.getText().clear();//清空授权码
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                frameOperation.setVisibility(View.GONE);
-                bPayProcessing = false;
+                enterStandardMode();
                 dismiss();
 
-                if (mListener != null){
+                if (mListener != null) {
                     mListener.onPaySucceed(mQuickPayInfo, outTradeNo);
                 }
             }
@@ -526,54 +541,236 @@ public class AlipayDialog extends CommonDialog {
         tvProcess.setText(msg);
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);
-        if (isException){
-            frameOperation.setVisibility(View.VISIBLE);
+        if (isException) {
             PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
                     WayType.ALI_F2F, PayStatus.EXCEPTION);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    enterExceptionMode();
+                }
+            }, 2000);
 
-        }else{
-            frameOperation.setVisibility(View.GONE);
-
+        } else {
             PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
                     WayType.ALI_F2F, PayStatus.FAILED);
+            PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
+                    WayType.ALI_F2F, PayStatus.EXCEPTION);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    enterStandardMode();
+                }
+            }, 2000);
         }
-
-        etAuthCode.getText().clear();//清空授权码
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                etAuthCode.setVisibility(View.VISIBLE);
-                etAuthCode.requestFocus();
-                frameProcess.setVisibility(View.GONE);
-
-                bPayProcessing = false;
-            }
-        }, 2000);
     }
 
-    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, DialogClickListener callback) {
+    /**
+     * 初始化
+     */
+    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled,
+                           DialogClickListener callback) {
+        initialize(quickPayInfo, isCancelAbled, true, callback);
+    }
+    public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, boolean isRefreshEnabled,
+                           DialogClickListener callback) {
         this.mQuickPayInfo = quickPayInfo;
         this.mListener = callback;
-        if (quickPayInfo != null){
+        if (quickPayInfo != null) {
             this.tvTitle.setText(quickPayInfo.getSubject());
             this.tvSubTitle.setText(quickPayInfo.getBody());
             this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
         }
 
-        if (isCancelAbled){
+        if (isCancelAbled) {
             this.btnClose.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             this.btnClose.setVisibility(View.GONE);
         }
 
-        etAuthCode.getText().clear();
-        etAuthCode.setVisibility(View.VISIBLE);
+        if (isRefreshEnabled) {
+            this.btnSync.setVisibility(View.VISIBLE);
+        } else {
+            this.btnSync.setVisibility(View.GONE);
+        }
+
+        enterStandardMode();
+    }
+
+
+    /**
+     * 标准
+     */
+    private void enterStandardMode() {
+        bPayProcessing = false;
+        btnSync.setEnabled(true);
+        btnClose.setEnabled(true);
+
+        etAuthCode.getText().clear();//清空授权码
+        etAuthCode.setEnabled(true);
         etAuthCode.requestFocus();
         frameProcess.setVisibility(View.GONE);
         frameOperation.setVisibility(View.GONE);
+    }
 
+    /**
+     * 支付
+     */
+    private void enterPayMode() {
+        bPayProcessing = true;
+        btnSync.setEnabled(false);
+        btnClose.setEnabled(false);
+    }
+
+    /**
+     * 异常
+     */
+    private void enterExceptionMode() {
         bPayProcessing = false;
+        btnSync.setEnabled(true);
+        btnClose.setEnabled(true);
+
+        etAuthCode.getText().clear();
+        etAuthCode.setEnabled(true);
+        etAuthCode.requestFocus();
+        frameProcess.setVisibility(View.GONE);
+        frameOperation.setVisibility(View.VISIBLE);
+    }
+
+    private void reload() {
+        if (mQuickPayInfo == null) {
+            return;
+        }
+
+        Integer subBizType = mQuickPayInfo.getSubBizType();
+        if (BizType.CASH_QUOTA.equals(subBizType)) {
+            needLockPos();
+        } else {
+            haveNoMoneyEnd();
+        }
+    }
+
+    /**
+     * 针对当前用户所属网点判断是否存在过清分时余额不足情况
+     * /analysisAccDate/haveNoMoneyEnd?date=2016-02-02
+     *
+     * @param request date可空,默认是昨天。代表昨天包括昨天以前的时间内有无存在余额不足情况。
+     */
+    private void haveNoMoneyEnd() {
+        onProcessing("加载数据...");
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            enterStandardMode();
+            return;
+        }
+
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"10.4"}}
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            Double amount = Double.valueOf(retValue.getValue());
+                            if (amount >= 0.01) {
+                                if (mQuickPayInfo != null){
+                                    mQuickPayInfo.setMinAmount(amount);
+                                    mQuickPayInfo.setAmount(amount);
+                                }
+                                tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+                                enterStandardMode();
+                            } else {
+                                dismiss();
+                            }
+
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                            enterStandardMode();
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
+                        ZLogger.df("判读是否清分失败：" + errMsg);
+                        enterStandardMode();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        AnalysisApiImpl.haveNoMoneyEnd(responseCallback);
+    }
+
+
+    /**
+     * 判断是否需要锁定pos
+     */
+    private void needLockPos() {
+        onProcessing("加载数据...");
+        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+
+            enterStandardMode();
+            return;
+        }
+
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"查询成功!","version":"1","data":"false,8.99"}
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            String result = retValue.getValue();
+                            String[] ret = result.split(",");
+                            if (ret.length >= 2) {
+//                                Boolean.parseBoolean()1
+//                                boolean isNeedLock = Boolean.valueOf(ret[0]).booleanValue();
+                                boolean isNeedLock = Boolean.parseBoolean(ret[0]);
+                                Double amount = Double.valueOf(ret[1]);
+
+                                ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
+                                        isNeedLock, amount));
+                                if (isNeedLock && amount >= 0.01) {
+                                    if (mQuickPayInfo != null){
+                                        mQuickPayInfo.setMinAmount(amount);
+                                        mQuickPayInfo.setAmount(amount);
+                                    }
+                                    tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+                                    enterStandardMode();
+                                } else {
+                                   dismiss();
+                                }
+                            } else {
+                                ZLogger.df("判断是否需要锁定POS机:" + result);
+                                dismiss();
+                                enterStandardMode();
+                            }
+                        } catch (NumberFormatException e) {
+//                            e.printStackTrace();
+                            ZLogger.ef(e.toString());
+
+                            enterStandardMode();
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
+                        ZLogger.df("判读是否锁定POS机失败：" + errMsg);
+
+                        enterStandardMode();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        CashierApiImpl.needLockPos(responseCallback);
     }
 }

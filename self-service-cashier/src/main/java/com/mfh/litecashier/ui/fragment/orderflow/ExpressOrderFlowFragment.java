@@ -30,7 +30,6 @@ import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
 import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -262,9 +261,6 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
                 }
                 entityList.addAll(dataList);
             }
-
-            //下次进入不自动更新
-             SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, false);
 
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);

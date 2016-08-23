@@ -57,7 +57,7 @@
                     android:layout_weight="1"
                     android:digits="0123456789."
                     android:hint="主机IP"
-                    android:inputType="number|numberDecimal"/>
+                    android:inputType="text"/>
             </LinearLayout>
 
             <LinearLayout
@@ -161,7 +161,7 @@
                 android:layout_marginTop="32dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="同步策略"
+                android:text="寺冈电子秤"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_normal"/>
 
@@ -175,8 +175,19 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="全量更新"
+                    android:text="同步时间戳"
                     android:textColor="@color/black_70"
+                    android:textSize="@dimen/textsize_normal"/>
+
+                <TextView
+                    android:id="@+id/tv_smscale_cursor"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="同步时间戳"
+                    android:textColor="@color/material_black"
                     android:textSize="@dimen/textsize_normal"/>
 
                 <android.support.v7.widget.SwitchCompat
@@ -192,7 +203,6 @@
                     android:textOn="全量更新"
                     app:showText="true"/>
             </LinearLayout>
-
 
         </LinearLayout>
     </ScrollView>

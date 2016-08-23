@@ -51,7 +51,7 @@ public class FrontCategoryFragment extends BaseFragment {
     public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
 
 
-        @Bind(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
@@ -148,8 +148,7 @@ public class FrontCategoryFragment extends BaseFragment {
             if (SharedPreferencesHelper.isSyncFrontCategorySubEnabled()) {
                 //加载子类目
                 loadSubCategory(categoryId, false);
-            }
-            else{
+            } else {
                 SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
             }
         } else {
@@ -253,9 +252,9 @@ public class FrontCategoryFragment extends BaseFragment {
 
     /**
      * 添加商品到类目
-     * */
-    private void submit(){
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())){
+     */
+    private void submit() {
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
@@ -263,14 +262,18 @@ public class FrontCategoryFragment extends BaseFragment {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在发送请求...", false);
         List<PosCategoryGoodsTempEntity> entities = PosCategoryGodosTempService.getInstance().queryAll();
 
+        if (entities == null || entities.size() < 1){
+            hideProgressDialog();
+            DialogUtil.showHint("请先选择商品");
+            return;
+        }
+
         StringBuilder sb = new StringBuilder();
-        if (entities != null && entities.size() > 0){
-            for (PosCategoryGoodsTempEntity entity : entities){
-                if (sb.length() > 0){
-                    sb.append(",");
-                }
-                sb.append(entity.getProductId());
+        for (PosCategoryGoodsTempEntity entity : entities) {
+            if (sb.length() > 0) {
+                sb.append(",");
             }
+            sb.append(entity.getProductId());
         }
         ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
                 sb.toString(), submitRC);
@@ -290,7 +293,6 @@ public class FrontCategoryFragment extends BaseFragment {
                 public void processResult(IResponseData rspData) {
                     //新建类目成功，保存类目信息，并触发同步。
                     try {
-
                         hideProgressDialog();
                         if (rspData == null) {
                             return;

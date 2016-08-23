@@ -1,0 +1,1 @@
+ALTER TABLE tb_pos_topup_v1 ADD COLUMN subBizType INTEGER;

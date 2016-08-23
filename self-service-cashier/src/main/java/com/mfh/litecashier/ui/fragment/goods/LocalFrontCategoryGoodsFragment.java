@@ -275,7 +275,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             List<PosProductEntity> productEntities1 = PosProductService.get()
                     .queryAllByDesc(sqlWhere2);
             if (productEntities1 != null && productEntities1.size() > 0) {
-                ZLogger.d(String.format("找到%d个商品，spuId=%d", productEntities1.size(), entity.getCataItemId()));
+                ZLogger.d(String.format("找到%d个商品，spuId=%d",
+                        productEntities1.size(), entity.getCataItemId()));
                 PosProductEntity entity1 = productEntities1.get(0);
                 LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
                 goods.setType(0);

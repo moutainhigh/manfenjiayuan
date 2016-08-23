@@ -28,7 +28,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
@@ -58,7 +58,6 @@ import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
-import com.mfh.litecashier.bean.wrapper.LastOrderInfo;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
@@ -69,7 +68,9 @@ import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DialogManager;
 import com.mfh.litecashier.service.EslSyncManager2;
+import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
@@ -168,6 +169,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private ReceiveGoodsDialog receiveGoodsDialog = null;
     private ActionDialog registerPlatDialog = null;
 
+
     /**
      * POS唯一订单号，由POS机本地生成的12位字符串
      */
@@ -237,6 +239,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
+//        AlarmManagerHelper.triggleSyncPosOrder(this);
+        TimeTaskManager.getInstance().start();
     }
 
     @Override
@@ -834,7 +838,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
         } else if (eventId == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
             Double amount = bundle.getDouble("amount");
             QuickPayInfo quickPayInfo = new QuickPayInfo();
-            quickPayInfo.setBizType(BizType.CASH_QUOTA);
+            quickPayInfo.setBizType(BizType.DAILYSETTLE);
+            quickPayInfo.setSubBizType(BizType.CASH_QUOTA);
             quickPayInfo.setPayType(WayType.ALI_F2F);
             quickPayInfo.setSubject("提交营业现金");
             quickPayInfo.setBody("营业现金已超出授权限额，请尽快提交现金，解锁POS设备！");
@@ -896,14 +901,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
-                DialogUtil.showHint("需要注册");
-//                redirectToLogin();
+                DialogManager.getInstance().registerPos(MainActivity.this);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
                 Double amount = args.getDouble("amount");
                 QuickPayInfo quickPayInfo = new QuickPayInfo();
-                quickPayInfo.setBizType(BizType.INCOME_DISTRIBUTION);
+                quickPayInfo.setBizType(BizType.DAILYSETTLE);
+                quickPayInfo.setSubBizType(BizType.INCOME_DISTRIBUTION);
                 quickPayInfo.setPayType(WayType.ALI_F2F);
                 quickPayInfo.setSubject("账户充值");
                 quickPayInfo.setBody("清分余额不足,请尽快充值,解锁POS设备！");
@@ -916,7 +921,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_CASH_QUOTA_TOPUP: {
                 Double amount = args.getDouble("amount");
                 QuickPayInfo quickPayInfo = new QuickPayInfo();
-                quickPayInfo.setBizType(BizType.CASH_QUOTA);
+                quickPayInfo.setBizType(BizType.DAILYSETTLE);
+                quickPayInfo.setSubBizType(BizType.CASH_QUOTA);
                 quickPayInfo.setPayType(WayType.ALI_F2F);
                 quickPayInfo.setSubject("提交营业现金");
                 quickPayInfo.setBody("营业现金已超出授权限额，请尽快提交现金，解锁POS设备！");
@@ -1135,32 +1141,18 @@ public class MainActivity extends CashierActivity implements ICashierView {
                     WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
                     JSONObject.toJSONString(cashierOrderInfo)));
 
-            LastOrderInfo lastOrderInfo = null;
+
             // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
             CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
 
             List<PosOrderEntity> orderEntities = CashierFactory
                     .fetchActiveOrderEntities(BizType.POS, cashierOrderInfo.getPosTradeNo());
-            if (orderEntities != null && orderEntities.size() > 0) {
-
-                lastOrderInfo = new LastOrderInfo();
-                for (PosOrderEntity orderEntity : orderEntities) {
-                    OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-
-                    lastOrderInfo.setPayType(lastOrderInfo.getPayType() | payWrapper.getPayType());
-                    lastOrderInfo.setFinalAmount(lastOrderInfo.getFinalAmount() + orderEntity.getFinalAmount());
-                    lastOrderInfo.setbCount(lastOrderInfo.getbCount() + orderEntity.getBcount());
-                    lastOrderInfo.setDiscountAmount(lastOrderInfo.getDiscountAmount() + payWrapper.getRuleDiscount());
-                    lastOrderInfo.setChangeAmount(lastOrderInfo.getChangeAmount() + payWrapper.getChange());
-                }
-            }
-
             //同步订单信息
-            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
-
+//            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
             //打印订单
             PrintManager.printPosOrder(orderEntities, true);
-
+            //保存上一单信息
+            LastOrderInfo lastOrderInfo = CashierFactory.genLastOrderInfo(orderEntities);
             if (lastOrderInfo != null){
 
                 int payType = lastOrderInfo.getPayType();
@@ -1884,13 +1876,13 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         });
 
-        if (!alipayDialog.isShowing()) {
+        if (BizConfig.RELEASE && !alipayDialog.isShowing()) {
             alipayDialog.show();
         }
     }
 
     /**
-     * 领取商品
+     * 注册设备
      */
     private void registerPlat() {
         if (registerPlatDialog == null) {

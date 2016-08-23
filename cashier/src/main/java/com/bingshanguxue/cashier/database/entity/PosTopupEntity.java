@@ -38,6 +38,7 @@ public class PosTopupEntity extends MfhEntity<Long> implements ILongId {
      * */
     private String outTradeNo = "";
     private Integer bizType = -1;
+    private Integer subBizType = -1;
     private Double amount = 0D;//支付/找零金额
 
     //支付状态
@@ -102,5 +103,13 @@ public class PosTopupEntity extends MfhEntity<Long> implements ILongId {
 
     public void setBizType(Integer bizType) {
         this.bizType = bizType;
+    }
+
+    public Integer getSubBizType() {
+        return subBizType;
+    }
+
+    public void setSubBizType(Integer subBizType) {
+        this.subBizType = subBizType;
     }
 }

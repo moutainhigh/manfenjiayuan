@@ -18,7 +18,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:singleLine="true"
         android:text="金额"/>
 

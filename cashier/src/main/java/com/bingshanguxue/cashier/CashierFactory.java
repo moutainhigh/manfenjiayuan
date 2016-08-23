@@ -7,12 +7,11 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.api.constant.BizType;
-import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -87,33 +86,6 @@ public class CashierFactory {
                 .queryAllBy(String.format("orderId = '%s'", orderEntity.getId()));
     }
 
-    /**
-     * 订单结算信息
-     * @param orderBarCode 订单流水号
-     * */
-    public static CashierOrderInfo makeCashierOrderInfo(Integer bizType,
-                                                        String orderBarCode,
-                                                        Human customerMembershipInfo) {
-        String subject = String.format("订单信息：流水号：%s，交易类型：%s",
-                orderBarCode, BizType.name(bizType));
-
-        //加载拆分订单
-        List<CashierOrderItemInfo> cashierOrderItemInfos = new ArrayList<>();
-        Double paidAmount = 0D;
-        List<PosOrderEntity> orderEntities = fetchActiveOrderEntities(bizType, orderBarCode);
-        for (PosOrderEntity orderEntity : orderEntities) {
-            cashierOrderItemInfos.add(genCashierorderItemInfo(orderEntity));
-
-            OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-            paidAmount += payWrapper.getPaidAmount();
-        }
-
-        CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
-        cashierOrderInfo.initCashierSetle(orderBarCode, bizType, cashierOrderItemInfos,
-                subject, customerMembershipInfo, paidAmount);
-
-        return cashierOrderInfo;
-    }
 
     /**
      * 生成订单结算明细信息
@@ -231,6 +203,28 @@ public class CashierFactory {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 上一订单信息
+     * */
+    public static LastOrderInfo genLastOrderInfo(List<PosOrderEntity> orderEntities){
+        LastOrderInfo lastOrderInfo = null;
+
+        if (orderEntities != null && orderEntities.size() > 0) {
+            lastOrderInfo = new LastOrderInfo();
+            for (PosOrderEntity orderEntity : orderEntities) {
+                OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+
+                lastOrderInfo.setPayType(lastOrderInfo.getPayType() | payWrapper.getPayType());
+                lastOrderInfo.setFinalAmount(lastOrderInfo.getFinalAmount() + orderEntity.getFinalAmount());
+                lastOrderInfo.setbCount(lastOrderInfo.getbCount() + orderEntity.getBcount());
+                lastOrderInfo.setDiscountAmount(lastOrderInfo.getDiscountAmount() + payWrapper.getRuleDiscount());
+                lastOrderInfo.setChangeAmount(lastOrderInfo.getChangeAmount() + payWrapper.getChange());
+            }
+        }
+
+        return lastOrderInfo;
     }
 
 }

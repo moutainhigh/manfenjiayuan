@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.mfh.framework.ZIntent;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.litecashier.service.TimeTaskManager;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
 
@@ -21,8 +22,9 @@ public class KeepAlarmLiveReceiver extends BroadcastReceiver{
         }
 
         if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
-            AlarmManagerHelper.triggleNextDailysettle(0);
+            AlarmManagerHelper.triggleNextDailysettle(-1);
             AlarmManagerHelper.registerBuglyUpgrade(context);
+            TimeTaskManager.getInstance().start();
         }
         else if (ZIntent.ACTION_BETA_BUGLY_CHECKUPDATE.equals(intent.getAction())) {
             StringBuilder info = new StringBuilder();

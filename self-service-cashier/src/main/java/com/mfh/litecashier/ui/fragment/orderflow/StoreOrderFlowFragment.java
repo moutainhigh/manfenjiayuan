@@ -30,7 +30,6 @@ import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.StoreOrderflowOrderAdapter;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.List;
 
@@ -247,7 +246,7 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
                 }
 
                 JSONArray cacheArrays = new JSONArray();
-                if (dataList != null){
+                if (dataList != null) {
                     cacheArrays.addAll(dataList);
                 }
 //                if (orderListAdapter != null) {
@@ -259,9 +258,6 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
                     orderListAdapter.appendEntityList(dataList);
                 }
             }
-
-            //下次进入不自动更新
-            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STORE_ORDERFLOW_ENABLED, false);
 
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
@@ -288,7 +284,7 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
                 orderListAdapter.setEntityList(cacheData);
             }
 
-            return SharedPreferencesHelper.isSyncStoreOrderFlowEnabled();
+            return false;
         }
         return true;
     }

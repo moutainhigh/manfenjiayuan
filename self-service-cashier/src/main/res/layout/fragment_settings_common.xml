@@ -98,7 +98,7 @@
             app:position="top"
             app:subText=""
             app:src="@mipmap/ic_ftp"
-            app:text="寺冈电子秤"/>
+            app:text="FileZilla (寺冈电子秤)"/>
 
         <!--绿泰电子价签-->
         <com.bingshanguxue.vector_uikit.SettingsItem
@@ -129,7 +129,7 @@
             android:layout_marginBottom="@dimen/sectioin_divider_height"
             app:src="@mipmap/ic_memory"
             app:position="center"
-            app:subText="吃饱了别忘记减肥"
+            app:subText="吃饱了别忘记减肥噢"
             app:text="内存"/>
 
 
@@ -149,7 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="@dimen/sectioin_divider_height"
-            app:src="@mipmap/ic_memory"
+            app:src="@mipmap/ic_upgrade"
             app:position="bottom"
             app:subText=""
             app:text="应用版本"/>

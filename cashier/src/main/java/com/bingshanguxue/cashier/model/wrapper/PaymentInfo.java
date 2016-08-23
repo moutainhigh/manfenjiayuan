@@ -15,10 +15,10 @@ public class PaymentInfo implements Serializable {
     private int payType = WayType.NA;//支付方式
     private int status = PosOrderPayEntity.PAY_STATUS_INIT;//支付状态
     /**
-     * 当前订单批次流水总的应付金额，用于计算拆分订单实际分配的支付金额。
+     * 当前订单批次流水总的应付金额，用于计算拆分订单实际分配的支付金额。（包括优惠券优惠）
      * */
     private Double payableAmount = 0D;
-    private Double paidAmount = 0D;//实际支付金额
+    private Double paidAmount = 0D;//实际支付金额到账户的钱
     private Double change = 0D;//找零金额
 
     /**

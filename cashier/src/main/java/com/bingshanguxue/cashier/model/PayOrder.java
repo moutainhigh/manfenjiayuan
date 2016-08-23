@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class PayOrder implements Serializable {
     private Date updatedDate;
-    private Double totalFee;
+    private Double totalFee = 0D;//单位是分
 
     public Date getUpdatedDate() {
         return updatedDate;
@@ -19,6 +19,9 @@ public class PayOrder implements Serializable {
     }
 
     public Double getTotalFee() {
+        if (totalFee == null){
+            return 0D;
+        }
         return totalFee;
     }
 

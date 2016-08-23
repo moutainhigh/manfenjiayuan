@@ -69,7 +69,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
         EventBus.getDefault().register(this);
 
-        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
+        MAX_SYNC_PAGESIZE = 72;
+//        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
     }
 
     @Override
@@ -108,22 +109,12 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             return;
         }
         if (event.getAffairId() == FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
-            //内容为空，自动重新加载
-            if (adapter == null || adapter.getItemCount() <= 0) {
-                //优先读取缓存，加载缓存失败，重新加载
-                if (!readCache()) {
-                    reload();
-                }
-            }
-            //更新缓存数据
-            else {
-                readCache();
-            }
+            reload();
         }
     }
 
     private void initRecyclerView() {
-        mRLayoutManager = new GridLayoutManager(CashierApp.getAppContext(), 9);
+        mRLayoutManager = new GridLayoutManager(CashierApp.getAppContext(), 12);
 
         mRecyclerView.setLayoutManager(mRLayoutManager);
         //enable optimizations if all item views are of the same height and width for
@@ -138,9 +129,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
         mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0.1f,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 0f));
+                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
+                ContextCompat.getColor(getActivity(), R.color.transparent), 1f,
+                ContextCompat.getColor(getActivity(), R.color.transparent), 1f));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -206,16 +197,6 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         mRecyclerView.setAdapter(adapter);
     }
 
-
-    public void reset() {
-        mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        if (entityList == null) {
-            entityList = new ArrayList<>();
-        } else {
-            entityList.clear();
-        }
-    }
-
     /**
      * 重新加载数据
      */
@@ -227,8 +208,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         }
 
         if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载类目商品。");
-            onLoadFinished();
+            ZLogger.d("网络未连接，读取缓存数据。");
+            readCache();
             return;
         }
 
@@ -245,7 +226,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     /**
      * 读取缓存
      */
-    public synchronized boolean readCache() {
+    public synchronized void readCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(cacheKey);
         List<FrontCategoryGoods> cacheData = JSONArray.parseArray(cacheStr, FrontCategoryGoods.class);
@@ -254,10 +235,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             if (adapter != null) {
                 adapter.setEntityList(cacheData);
             }
-            return true;
         }
 
-        return false;
+        onLoadFinished();
     }
 
     /**
@@ -291,7 +271,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         ZLogger.d(String.format("加载类目商品开始,pageInfo':page=%d,rows=%d(%d)",
                 mPageInfo.getPageNo(), mPageInfo.getPageSize(), mPageInfo.getTotalCount()));
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<FrontCategoryGoods> rs) {
                 //此处在主线程中执行。
@@ -385,7 +366,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
                         return;
                     }
 
-                    reload();
+//                    reload();
+                    setRefreshing(false);
                 }
             });
         }

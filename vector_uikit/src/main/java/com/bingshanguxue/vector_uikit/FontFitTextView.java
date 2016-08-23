@@ -1,9 +1,12 @@
-package com.mfh.framework.uikit.widget;
+package com.bingshanguxue.vector_uikit;
 
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.TextView;
+
+import com.mfh.framework.core.logger.ZLogger;
 
 /**
  * 自适应改变文本字体大小
@@ -11,6 +14,11 @@ import android.widget.TextView;
 public class FontFitTextView extends TextView {
     private final static float DEFAULT_MIN_TEXT_SIZE = 12;
     private final static float DEFAULT_MAX_TEXT_SIZE = 64;
+
+    //Attributes
+    private Paint testPaint;
+    private float minTextSize;
+    private float maxTextSize;
 
     public FontFitTextView(Context context) {
         super(context);
@@ -40,7 +48,8 @@ public class FontFitTextView extends TextView {
      */
     private void refitText(String text, int textWidth) {
 
-//        ZLogger.d(String.format("refitText start:%s,%d(%f,%f)", text, textWidth, minTextSize, maxTextSize));
+        ZLogger.d(String.format("refitText start:%s,%d(%f,%f)", text, textWidth,
+                minTextSize, maxTextSize));
         if (textWidth > 0) {
             int availableWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
             float trySize = maxTextSize;
@@ -55,9 +64,13 @@ public class FontFitTextView extends TextView {
                 testPaint.setTextSize(trySize);
             }
 
-            this.setTextSize(trySize);
 
-//            ZLogger.d(String.format("refitText start:%s,%f(%f,%f)", text, trySize, minTextSize, maxTextSize));
+            //注意，使用像素大小设置
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, trySize);
+//            this.setTextSize(DensityUtil.px2sp(getContext(), trySize));
+
+            ZLogger.d(String.format("refitText end:%s,%f(%f,%f)", text, trySize,
+                    minTextSize, maxTextSize));
         }
     }
 
@@ -90,9 +103,5 @@ public class FontFitTextView extends TextView {
         this.maxTextSize = minTextSize;
     }
 
-    //Attributes
-    private Paint testPaint;
-    private float minTextSize;
-    private float maxTextSize;
 
 }

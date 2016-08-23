@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -29,18 +30,18 @@ import com.mfh.litecashier.R;
 
 
 /**
- * 绿泰参数设置
+ * FileZilla参数设置
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class SMScaleSettingsDialog extends CommonDialog {
+public class FileZillaDialog extends CommonDialog {
 
     private View rootView;
     private TextView tvTitle;
     private EditText etIp, etPort, etUsername, etPassword;
     private Spinner mEncodingSpinner;
     private ArrayAdapter<String> soapSpinnerAdapter;
+    private TextView tvSmscaleCursor;
     private SwitchCompat mSwitchSyncMode;
-
     private Button btnSubmit;
     private ImageButton btnClose;
     private ProgressBar progressBar;
@@ -51,15 +52,15 @@ public class SMScaleSettingsDialog extends CommonDialog {
     }
     private DialogViewClickListener mDialogViewClickListener;
 
-    private SMScaleSettingsDialog(Context context, boolean flag, OnCancelListener listener) {
+    private FileZillaDialog(Context context, boolean flag, OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private SMScaleSettingsDialog(Context context, int defStyle) {
+    private FileZillaDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_smscale_settings, null);
+                R.layout.dialogview_filezilla, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -68,6 +69,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
         etUsername = (EditText) rootView.findViewById(R.id.et_username);
         etPassword = (EditText) rootView.findViewById(R.id.et_password);
         mEncodingSpinner = (Spinner) rootView.findViewById(R.id.spinner_encoding);
+        tvSmscaleCursor = (TextView) rootView.findViewById(R.id.tv_smscale_cursor);
         mSwitchSyncMode = (SwitchCompat) rootView.findViewById(R.id.switchCompat_sync_mode);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
@@ -98,9 +100,25 @@ public class SMScaleSettingsDialog extends CommonDialog {
 //            }
 //        });
 
-        tvTitle.setText("寺冈电子秤参数设置");
+        tvTitle.setText("File Zilla");
 
         etIp.setFilters(new IpInputFilter[]{new IpInputFilter()});
+        etIp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                        DeviceUtils.showSoftInput(getContext(), etIp);
+                    } else {
+                        DeviceUtils.hideSoftInput(getContext(), etIp);
+                    }
+                }
+                etIp.requestFocus();
+                etIp.setSelection(etIp.length());
+                //返回true,不再继续传递事件
+                return true;
+            }
+        });
         soapSpinnerAdapter = new ArrayAdapter<>(context, R.layout.mfh_spinner_item_text,
                 SMScaleSyncManager2.ENCODING_CHARSET_SET);
         soapSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -142,6 +160,18 @@ public class SMScaleSettingsDialog extends CommonDialog {
                 return true;
             }
         });
+        mSwitchSyncMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    tvSmscaleCursor.setText("");
+                }
+                else{
+                    tvSmscaleCursor.setText(SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
+                            SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, ""));
+                }
+            }
+        });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +188,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
         setContent(rootView, 0);
     }
 
-    public SMScaleSettingsDialog(Context context) {
+    public FileZillaDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 
@@ -191,7 +221,8 @@ public class SMScaleSettingsDialog extends CommonDialog {
     }
 
 
-    public void init(DialogViewClickListener mDialogViewClickListener){
+    public void init(String title, DialogViewClickListener mDialogViewClickListener){
+        this.tvTitle.setText(title);
         this.mDialogViewClickListener = mDialogViewClickListener;
 
         refresh();
@@ -216,7 +247,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
                 mEncodingSpinner.setSelection(0);
                 break;
         }
-        mSwitchSyncMode.setChecked(SMScaleSyncManager2.FULLSCALE_ENABLED);
+        mSwitchSyncMode.setChecked(false);
     }
 
     private void submit() {
@@ -271,10 +302,7 @@ public class SMScaleSettingsDialog extends CommonDialog {
         String encoding = mEncodingSpinner.getSelectedItem().toString();
         SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_ENCODING, encoding);
-
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
-                SMScaleSyncManager2.PK_B_SMSCALE_FULLSCALE, mSwitchSyncMode.isChecked());
-        if (SMScaleSyncManager2.FULLSCALE_ENABLED || mSwitchSyncMode.isChecked()) {
+        if (mSwitchSyncMode.isChecked()) {
             SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
                     SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
         }

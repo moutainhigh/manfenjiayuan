@@ -1,4 +1,4 @@
-package com.mfh.litecashier.bean.wrapper;
+package com.bingshanguxue.cashier.model.wrapper;
 
 import com.mfh.framework.api.constant.WayType;
 
