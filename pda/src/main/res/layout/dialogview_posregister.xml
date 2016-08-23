@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="400dp">
+
+    <include layout="@layout/contentview_dialog_header"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="@dimen/spacing_4x">
+
+        <com.mfh.framework.uikit.widget.AvatarView
+            android:id="@+id/iv_header"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:src="@mipmap/ic_device"/>
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_header"
+            android:gravity="center"
+            android:padding="@dimen/spacing_double"
+            android:text=""
+            android:textColor="@color/material_black"
+            android:textSize="18sp"/>
+
+        <!--交接班-->
+        <Button
+            android:id="@+id/button_create"
+            android:layout_below="@+id/tv_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:background="@drawable/btn_rectange_green"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/material_white"
+            android:text="注册"/>
+
+        <!--退出-->
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:layout_below="@+id/button_create"
+            android:background="@drawable/btn_rectange_gray"
+            android:gravity="center"
+            android:text="暂不注册"
+            android:textSize="16sp"
+            android:textColor="@color/material_black"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/animProgress"
+            style="@style/loading"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

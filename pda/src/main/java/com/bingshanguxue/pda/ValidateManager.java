@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket;
+package com.bingshanguxue.pda;
 
 
 import android.os.Bundle;
@@ -30,8 +30,6 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public class ValidateManager {
-
-    private static final String TAG = "ValidateManager";
 
     public static final int STEP_VALIDATE_NA = -1;
     public static final int STEP_VALIDATE_SESSION = 0;// 检查是否已经登录/会话是否有效
@@ -96,12 +94,7 @@ public class ValidateManager {
             }
             break;
             case STEP_REGISTER_PLAT: {
-                if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())){
-                    registerPlat();
-                }
-                else{
-                    nextStep();
-                }
+                registerPlat();
             }
             break;
             default: {
@@ -163,8 +156,9 @@ public class ValidateManager {
                             String ret = retValue.getValue();
                             ZLogger.df("注册设备成功:" + ret);
                             SharedPreferencesManager.setTerminalId(ret);
-                            nextStep();
+
                         }
+                        nextStep();
                     }
 
                     @Override

@@ -20,6 +20,7 @@ import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
+import com.bingshanguxue.pda.utils.DialogManager;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
@@ -27,7 +28,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ValidateManager;
+import com.bingshanguxue.pda.ValidateManager;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.api.constant.AbilityItem;
@@ -512,7 +513,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER: {
-                showRegisterPlatDialog();
+                DialogManager.getInstance().registerPos(MainActivity.this);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
@@ -569,31 +570,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             }
         });
         dialog.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-
-    /**
-     * 显示退出提示框
-     */
-    public void showRegisterPlatDialog() {
-        CommonDialog dialog = new CommonDialog(this);
-        dialog.setMessage("设备未注册，可能会影响使用，是否立刻注册？");
-        dialog.setPositiveButton("立刻注册", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                mPosRegisterPresenter.create();
-
-            }
-        });
-        dialog.setNegativeButton("暂不注册", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
