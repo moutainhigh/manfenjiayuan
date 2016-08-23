@@ -2,6 +2,7 @@ package com.bingshanguxue.pda;
 
 
 import android.os.Bundle;
+import android.os.SystemClock;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_user.UserApiImpl;
@@ -9,12 +10,13 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.impl.MfhApiImpl;
-import com.mfh.framework.core.DeviceUuidFactory;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
@@ -23,7 +25,14 @@ import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 
+import java.util.Date;
+
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * <h1>POS--验证</h1>
@@ -159,45 +168,123 @@ public class ValidateManager {
      * 注册设备
      * */
     private void registerPlat(){
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String ret = retValue.getValue();
-                            ZLogger.df("注册设备成功:" + ret);
-                            SharedPreferencesManager.setTerminalId(ret);
+        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+            if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
+                        null, "设备注册失败，需要重新注册");
+            } else {
+                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
+                        "网络未连接，暂停注册设备。");
+            }
+        } else {
+            JSONObject order = new JSONObject();
+            order.put("serialNo", MfhApplication.getDeviceUuid());
+//        order.put("serialNo", MfhApplication.getWifiMac15Bit());
+            order.put("channelId", MfhApi.CHANNEL_ID);
+            order.put("channelPointId", IMConfig.getPushClientId());
+            order.put("netId", MfhLoginService.get().getCurOfficeId());
+            ZLogger.df("注册设备中..." + order.toJSONString());
+            MfhApiImpl.posRegisterCreate(order.toJSONString(), posRegisterCreateRC);
+        }
+    }
 
+    private NetCallBack.NetTaskCallBack posRegisterCreateRC = new NetCallBack.NetTaskCallBack<String,
+            NetProcessor.Processor<String>>(
+            new NetProcessor.Processor<String>() {
+                @Override
+                public void processResult(IResponseData rspData) {
+//                    {"code":"0","msg":"新增成功!","version":"1","data":"67,2016-08-22 13:09:57"}
+                    if (rspData != null) {
+                        RspValue<String> retValue = (RspValue<String>) rspData;
+                        String retStr = retValue.getValue();
+                        ZLogger.df("注册设备成功:" + retStr);
+                        saveTerminalId(retStr);
+                    }
+                    else{
+                        saveTerminalId(null);
+                    }
+                }
+
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    ZLogger.df(String.format("注册设备失败,%s", errMsg));
+
+                    if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
+                                null, "设备注册失败，需要重新注册");
+                    } else {
+                        nextStep();
+                    }
+                }
+            }
+            , String.class
+            , MfhApplication.getAppContext()) {
+    };
+
+    private void saveTerminalId(final String respnse){
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                if (!StringUtils.isEmpty(respnse)){
+                    ZLogger.df("注册设备成功:" + respnse);
+                    String[] retA = respnse.split(",");
+                    if (retA.length > 1){
+                        SharedPreferencesManager.setTerminalId(retA[0]);
+                        // TODO: 8/22/16 修改本地系统时间
+                        ZLogger.d(String.format("当前系统时间1: %s",
+                                TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+                        Date serverDateTime = TimeUtil.parse(retA[1], TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+//                                Date serverDateTime = TimeUtil.parse("2016-08-22 13:09:57", TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+                        if (serverDateTime != null){
+                            //设置时间
+                            try{
+                                boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
+                                ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
+                                        TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+                            }
+                            catch (Exception e){
+                                ZLogger.ef("修改系统时间失败:" + e.toString());
+                            }
                         }
+                    }
+                }
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
                         nextStep();
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df(String.format("注册设备失败,%s", errMsg));
+                    public void onNext(String startCursor) {
+                        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+                            validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
+                                    null, "设备注册失败，需要重新注册");
+                        } else {
+                            if (!BizConfig.RELEASE){
+                                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
+                                        null, "测试注册设备功能");
+                            }
+                            nextStep();
+                        }
 
-                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
-                                null, "设备注册失败，需要重新注册");
                     }
-                }
-                , String.class
-                , MfhApplication.getAppContext()) {
-        };
 
-        JSONObject order = new JSONObject();
-        order.put("serialNo", String.format("%s@%s",
-                MfhApplication.getPackageInfo().packageName,
-                new DeviceUuidFactory(MfhApplication.getAppContext()).getDeviceUuid()));
-        order.put("channelId", MfhApi.CHANNEL_ID);
-        order.put("channelPointId", IMConfig.getPushClientId());
-        order.put("netId", MfhLoginService.get().getCurOfficeId());
-
-        ZLogger.df("注册设备中..." + order.toJSONString());
-        MfhApiImpl.posRegisterCreate(order.toJSONString(), responseCallback);
+                });
     }
+
 
     /**
      * 登录状态验证:进入需要登录的功能时需要
