@@ -31,7 +31,7 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     protected boolean isLoadingMore;
     protected boolean bSyncInProgress = false;//是否正在同步
-    protected static final int MAX_SYNC_PAGESIZE = 20;
+    protected static int MAX_SYNC_PAGESIZE = 20;
     protected static final int MAX_PAGE = 20;
     protected PageInfo mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, MAX_SYNC_PAGESIZE);
     protected List<T> entityList = new ArrayList<>();

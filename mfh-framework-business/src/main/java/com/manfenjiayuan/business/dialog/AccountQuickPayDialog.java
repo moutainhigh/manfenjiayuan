@@ -22,7 +22,6 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -32,7 +31,7 @@ import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.widget.FontFitTextView;
+import com.bingshanguxue.vector_uikit.FontFitTextView;
 
 /**
  * <h1>快捷帐号支付：采购收货单</h1><br>

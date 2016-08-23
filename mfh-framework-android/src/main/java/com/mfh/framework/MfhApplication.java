@@ -151,6 +151,15 @@ public class MfhApplication extends Application {
     }
 
     /**
+     * 获取设备序列号
+     * */
+    public static String getDeviceUuid(){
+        return String.format("%s@%s",
+                getPackageInfo().packageName,
+                new DeviceUuidFactory(getAppContext()).getDeviceUuid());
+    }
+
+    /**
      * 获取UserAgent,登录时填入Header
      */
     public static String getUserAgent() {
@@ -166,8 +175,8 @@ public class MfhApplication extends Application {
             ua.append("/" + getAppId());//客户端唯一标识
             userAgent = ua.toString();
 
-            SharedPreferencesUtil.set(getAppContext(),
-                    SharedPreferencesManager.PREF_NAME_APP, SharedPreferencesManager.PREF_KEY_APP_USERAGENT, userAgent);
+            SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
+                    SharedPreferencesManager.PREF_KEY_APP_USERAGENT, userAgent);
         }
         return userAgent;
     }
