@@ -86,14 +86,11 @@ public class PosRegisterPresenter {
 
     public void register(boolean coverEnabled) {
         String teminalId = SharedPreferencesManager.getTerminalId();
-        if (StringUtils.isEmpty(teminalId)){
+        if (StringUtils.isEmpty(teminalId) || coverEnabled){
             create();
         }
         else{
-            if (coverEnabled){
-//                update(teminalId);
-                create();
-            }
+            update(teminalId);
         }
     }
 

@@ -1,5 +1,8 @@
 package com.mfh.framework.core.utils;
 
+import com.mfh.framework.core.logger.ZLogger;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +17,8 @@ public class TimeUtil {
     public static final String DATE_TIME_FORMAT_12_HOUR = "MMM d, yyyy  h:mm a";
     public static final String DATE_TIME_FORMAT_24_HOUR = "MMM d, yyyy  k:mm";
 
+    public static final SimpleDateFormat FORMAT_YYYYMMDDHHMM = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
+    public static final SimpleDateFormat FORMAT_YYYYMMDDHHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     public static final SimpleDateFormat timeDateFormat12 = new SimpleDateFormat(DATE_TIME_FORMAT_12_HOUR, Locale.US);
     public static final SimpleDateFormat timeDateFormat24 = new SimpleDateFormat(DATE_TIME_FORMAT_24_HOUR, Locale.US);
 
@@ -30,6 +35,20 @@ public class TimeUtil {
             return "";
         }
         return df.format(date);
+    }
+
+
+    public static Date parse(String source, SimpleDateFormat df){
+        try {
+            if (StringUtils.isEmpty(source)){
+                return null;
+            }
+            return df.parse(source);
+        } catch (ParseException e) {
+//            e.printStackTrace();
+            ZLogger.ef(e.toString());
+            return null;
+        }
     }
 
     /**

@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
+import com.mfh.framework.core.logger.ZLogger;
+
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
@@ -47,6 +49,7 @@ public class DeviceUuidFactory {
                                     .randomUUID();
                             }
                         } catch (UnsupportedEncodingException e) {
+                            ZLogger.ef(e.toString());
                             throw new RuntimeException(e);
                         }
                         // Write the value out to the prefs file
