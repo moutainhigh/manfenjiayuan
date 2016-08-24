@@ -170,8 +170,6 @@ public class CanaryActivity extends BaseActivity {
                 "库存", R.mipmap.ic_admin_menu_inventory));
         functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_DAILYSETTLE,
-                "日结", R.mipmap.ic_admin_menu_dailysettle));
         functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_CANARY,
                 "设置", R.mipmap.ic_admin_menu_settings));
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRUIT,
@@ -217,9 +215,6 @@ public class CanaryActivity extends BaseActivity {
         else if (id.compareTo(CashierFunctional.CANARY_MENU_ORDERFLOW) == 0) {
             redirect2Orderflow();
         }
-        else if (id.compareTo(CashierFunctional.CANARY_MENU_DAILYSETTLE) == 0) {
-            redirect2Dailysettle();
-        }
         else if (id.compareTo(CashierFunctional.CANARY_MENU_CANARY) == 0) {
             redirect2Canary();
         }  else {
@@ -246,17 +241,6 @@ public class CanaryActivity extends BaseActivity {
                 SimpleActivity.FT_CANARY_ORDERFLOW);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
-
-    /**
-     * 日结
-     */
-    public void redirect2Dailysettle() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_CANARY_DAILYSETTLE);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
 
     /**
      * 异常订单

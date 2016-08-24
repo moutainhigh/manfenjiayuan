@@ -74,36 +74,6 @@ public class AnalysisHelper {
         return handOverBill;
     }
 
-    /**
-     * 判断是否已经（确认）日结
-     * @param dailySettleDatetime 日结日期
-     * */
-    public static boolean validateHaveDateEnd(String dailySettleDatetime){
-        DailysettleEntity dailysettleEntity = createDailysettle(dailySettleDatetime);
-        if (dailysettleEntity == null){
-            ZLogger.d(String.format("创建日结单失败：%s", dailySettleDatetime));
-            return false;
-        }
-        if (dailysettleEntity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_YES){
-            ZLogger.d(String.format("日结单已经确认：%s", dailySettleDatetime));
-            return true;
-        }
-        return false;
-    }
-    public static boolean validateHaveDateEnd(Date dailySettleDate){
-        DailysettleEntity dailysettleEntity = createDailysettle(dailySettleDate);
-        if (dailysettleEntity == null){
-            ZLogger.df(String.format("创建日结单失败：%s",
-                    TimeCursor.FORMAT_YYYYMMDD.format(dailySettleDate)));
-            return false;
-        }
-        if (dailysettleEntity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_YES){
-            ZLogger.df(String.format("日结单已经确认：%s",
-                    TimeCursor.FORMAT_YYYYMMDD.format(dailySettleDate)));
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 创建日结单

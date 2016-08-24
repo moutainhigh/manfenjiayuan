@@ -24,7 +24,6 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long OPTION_ID_SYNC= 30L;//同步
     public static final Long OPTION_ID_MONEYBOX= 31L;//钱箱
     public static final Long OPTION_ID_HANGUP_ORDER= 33L;//挂单
-    public static final Long OPTION_ID_CLEAR_ORDER= 34L;//清空并开始新的收银流水
 
     public static final Long OPTION_ID_ONLINE_ORDER     = 40L;//线上订单
     public static final Long OPTION_ID_GOODS_LIST       = 41L;//商品列表
@@ -50,7 +49,6 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long ADMIN_MENU_CANARY    = 70L;//异常订单
     public static final Long CANARY_MENU_GOODS    = 71L;//商品
     public static final Long CANARY_MENU_ORDERFLOW= 72L;//流水
-    public static final Long CANARY_MENU_DAILYSETTLE= 73L;//日结
     public static final Long CANARY_MENU_CANARY= 74L;//日结
 
     private int type = 0;//0:local;1-category

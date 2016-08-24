@@ -21,12 +21,12 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
+import com.mfh.framework.uikit.compound.OptionalLabel;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -38,9 +38,11 @@ import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
+import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
 import com.mfh.litecashier.utils.AnalysisHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,8 +58,6 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class DailySettleFragment extends BaseProgressFragment {
-
-    public static final String EXTRA_KEY_CANCELABLE = "cancelable";
     public static final String EXTRA_KEY_DATETIME = "datetime";
 
     @Bind(R.id.tv_header_title)
@@ -67,8 +67,8 @@ public class DailySettleFragment extends BaseProgressFragment {
     TextView tvOfficeName;
     @Bind(R.id.tv_humanName)
     TextView tvHumanName;
-    @Bind(R.id.tv_date)
-    TextView tvDate;
+    @Bind(R.id.label_date)
+    OptionalLabel labelDate;
     @Bind(R.id.tv_amount)
     TextView tvAmount;
     @Bind(R.id.tv_not_cash)
@@ -93,9 +93,9 @@ public class DailySettleFragment extends BaseProgressFragment {
     @Bind(R.id.fab_print)
     FloatingActionButton fabPrint;
 
-    private boolean cancelable = true;//是否可以关闭窗口
     private String dailySettleDatetime = null;//日结日期
     private DailysettleEntity dailysettleEntity = null;
+    private DateTimePickerDialog dateTimePickerDialog = null;
 
     public static DailySettleFragment newInstance(Bundle args) {
         DailySettleFragment fragment = new DailySettleFragment();
@@ -123,19 +123,12 @@ public class DailySettleFragment extends BaseProgressFragment {
         Bundle args = getArguments();
         ZLogger.df(String.format(">>开始日结：%s", StringUtils.decodeBundle(args)));
         if (args != null) {
-            cancelable = args.getBoolean(EXTRA_KEY_CANCELABLE, true);
             dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
         }
 
         tvHeaderTitle.setText("日结");
         initAggRecyclerView();
         initAccRecyclerView();
-
-        if (cancelable) {
-            btnClose.setVisibility(View.VISIBLE);
-        } else {
-            btnClose.setVisibility(View.INVISIBLE);
-        }
 
         refresh();
 
@@ -145,18 +138,7 @@ public class DailySettleFragment extends BaseProgressFragment {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
-        //判断是否进行过日结，如果已经进行过日结，则不需要尽
-        else if (dailysettleEntity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_YES) {
-            DialogUtil.showHint("该网点已经日结过！");
-            ZLogger.d("已经日结过，不需要再进行日结");
-//            autoDateEnd();
-        } else {
-            //TODO,先提交本地订单再进行日结
-//            OrderSyncManager.get().sync();
-
-            //TODO 判断是否已经支付过,如果支付过则判断是否,由于支付状态只保存在本地，不能同步多台POS机，所以暂时不考虑。
-            autoDateEnd();
-        }
+        autoDateEnd();
     }
 
     @Override
@@ -169,10 +151,6 @@ public class DailySettleFragment extends BaseProgressFragment {
 
     @OnClick(R.id.button_header_close)
     public void finishActivity() {
-        if (!cancelable) {
-            DialogUtil.showHint("请先确认当前日结");
-            return;
-        }
         getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
     }
@@ -256,11 +234,7 @@ public class DailySettleFragment extends BaseProgressFragment {
 
             tvOfficeName.setText(String.format("门店：%s", dailysettleEntity.getOfficeName()));
             tvHumanName.setText(String.format("结算人：%s", dailysettleEntity.getHumanName()));
-            tvDate.setText(String.format("日结时间：%s",
-                    (dailysettleEntity.getDailysettleDate() != null
-                            ? TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(dailysettleEntity.getDailysettleDate())
-                            : "")
-            ));
+            labelDate.setLabelText(TimeCursor.FORMAT_YYYYMMDD.format(dailysettleEntity.getDailysettleDate()));
 
             Double turnover = dailysettleEntity.getTurnover();
             tvAmount.setText(String.format("营业额合计：%.2f", turnover));
@@ -292,6 +266,37 @@ public class DailySettleFragment extends BaseProgressFragment {
     public void onLoadFinished() {
         super.onLoadFinished();
     }
+
+    @OnClick(R.id.label_date)
+    public void changeDate() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
+        if (dateTimePickerDialog == null) {
+            dateTimePickerDialog = new DateTimePickerDialog(getActivity());
+            dateTimePickerDialog.setCancelable(true);
+            dateTimePickerDialog.setCanceledOnTouchOutside(true);
+        }
+        dateTimePickerDialog.init(calendar, new DateTimePickerDialog.OnDateTimeSetListener() {
+            @Override
+            public void onDateTimeSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minute) {
+
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                calendar.set(Calendar.MINUTE, minute);
+
+                dailysettleEntity = AnalysisHelper.createDailysettle(calendar.getTime());
+                refresh();
+                autoDateEnd();
+            }
+        });
+        if (!dateTimePickerDialog.isShowing()) {
+            dateTimePickerDialog.show();
+        }
+    }
+
 
     /**
      * 启动日结统计
