@@ -323,9 +323,6 @@ public class ValidateManager {
                         }
                     }
                 }
-                else{
-                    ZLogger.df("注册设备成功,返回数据为空");
-                }
 
                 subscriber.onNext(null);
                 subscriber.onCompleted();
@@ -351,7 +348,7 @@ public class ValidateManager {
                                     null, "设备注册失败，需要重新注册");
                         } else {
                             if (!BizConfig.RELEASE){
-                                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                                validateUpdate(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
                                         null, "测试注册设备功能");
                             }
                             nextStep();
