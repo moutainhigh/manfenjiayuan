@@ -1,113 +1,124 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:divider="@drawable/divider_vertical_line_primary"
-              android:showDividers="middle"
-              android:orientation="horizontal"
-              android:baselineAligned="false">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:baselineAligned="false">
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent">
+    <include layout="@layout/appbar"/>
 
-        <!-- google 官方下拉刷新 -->
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swiperefreshlayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <com.mfh.framework.hybrid.HybridWebView
-                android:id="@+id/webview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
-
-        <com.mfh.framework.uikit.widget.EmptyLayout
-            android:id="@+id/error_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/frame_groupon_native"
-        android:layout_width="0dp"
-        android:layout_weight="1"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/spacing_double">
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ScrollView
-            android:id="@+id/scrollView2"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_above="@+id/tv_groupon_status"
-            android:layout_alignParentTop="true">
+            android:layout_weight="1">
 
-            <LinearLayout
+            <!-- google 官方下拉刷新 -->
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swiperefreshlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.mfh.framework.hybrid.HybridWebView
+                    android:id="@+id/webview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <com.mfh.framework.uikit.widget.EmptyLayout
+                android:id="@+id/error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/frame_groupon_native"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/spacing_double">
+
+            <ScrollView
+                android:id="@+id/scrollView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/tv_groupon_status"
+                android:layout_alignParentTop="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="标题"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="团购价"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="订购数量"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+
+                    <com.manfenjiayuan.business.widget.NumberPickerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="总价"
+                        android:textColor="@color/material_black"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+            </ScrollView>
+
+
+            <TextView
+                android:id="@+id/tv_groupon_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_above="@+id/button_groupon"
+                android:gravity="center"
+                android:text="已有98人订购，满100人开团"
+                android:textColor="@color/material_black"
+                android:textSize="18sp"/>
 
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="标题"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="团购价"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="订购数量"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
-
-                <com.manfenjiayuan.business.widget.NumberPickerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="总价"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-        </ScrollView>
+            <Button
+                android:id="@+id/button_groupon"
+                style="@style/mfh_button_text"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/spacing_double"
+                android:background="@drawable/btn_corner_green"
+                android:text="马上参团"/>
 
 
-        <TextView
-            android:id="@+id/tv_groupon_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/button_groupon"
-            android:gravity="center"
-            android:text="已有98人订购，满100人开团"
-            android:textColor="@color/material_black"
-            android:textSize="18sp"/>
-
-        <Button
-            android:id="@+id/button_groupon"
-            style="@style/mfh_button_text"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="@dimen/spacing_double"
-            android:background="@drawable/btn_corner_green"
-            android:text="马上参团"/>
+        </RelativeLayout>
+    </LinearLayout>
 
 
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

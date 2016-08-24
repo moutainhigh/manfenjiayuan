@@ -72,7 +72,7 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
- * 手动订货
+ * 手动订货&智能订货
  * Created by bingshanguxue on 17/07/20.
  */
 public class ManualPurchaseFragment extends BaseProgressFragment

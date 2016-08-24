@@ -21,7 +21,6 @@ import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
 import com.mfh.litecashier.ui.fragment.online.OnlineFragment;
 import com.mfh.litecashier.ui.fragment.orderflow.StoreOrderFlowFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFragment;
-import com.mfh.litecashier.ui.fragment.purchase.intelligent.IntelligentShopcartFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseShopcartFragment;
 import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
@@ -37,7 +36,6 @@ public class SimpleActivity extends BaseActivity {
 
     public static final int FT_PURCHASE_MANUAL = 0x06;//手动订货
     public static final int FT_PURCHASE_MANUAL_SHOPCART = 0x07;//采购商品－购物车
-    public static final int FT_PURCHASE_INTELLIGENT_SHOPCART = 0x08;//智能订货－购物车
 
     public static final int FT_INVENTORY = 0x11;//库存
     public static final int FT_ORDERFLOW = 0x12;//POS流水
@@ -153,7 +151,6 @@ public class SimpleActivity extends BaseActivity {
             case FT_SETTINGS:
             case FT_PURCHASE_MANUAL:
             case FT_PURCHASE_MANUAL_SHOPCART:
-            case FT_PURCHASE_INTELLIGENT_SHOPCART:
             case FT_CANARY_GOODS:
             case FT_CANARY_ORDERFLOW:
             case FT_CANARY_CANARY:
@@ -237,15 +234,7 @@ public class SimpleActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_PURCHASE_INTELLIGENT_SHOPCART: {
-                toolbar.setTitle("智能订货");
-                IntelligentShopcartFragment fragment = new IntelligentShopcartFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
+
             case FT_INVENTORY: {
                 toolbar.setTitle("库存成本");
                 InventoryCostFragment fragment = new InventoryCostFragment();

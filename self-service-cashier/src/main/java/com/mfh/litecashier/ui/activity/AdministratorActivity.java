@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
@@ -33,8 +32,6 @@ import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
-import com.mfh.litecashier.database.logic.CommonlyGoodsService;
-import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
@@ -44,8 +41,7 @@ import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
 import com.mfh.litecashier.ui.dialog.TopupDialog;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.FreshShopcartHelper;
-import com.mfh.litecashier.utils.PurchaseShopcartHelper;
+import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
@@ -54,6 +50,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+
+//import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 
 
 /**
@@ -441,8 +439,6 @@ public class AdministratorActivity extends BaseActivity {
 
         if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
             manualPurchase();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT) == 0) {
-            purchaseIntelligent();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_INVENTORY) == 0) {
             redirect2Inventory();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_ORDERFLOW) == 0) {
@@ -467,22 +463,12 @@ public class AdministratorActivity extends BaseActivity {
     }
 
     /**
-     * 手动订货
+     * 手动订货&智能订货
      */
     public void manualPurchase() {
         Bundle extras = new Bundle();
         extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleActivity.FT_PURCHASE_MANUAL);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 智能订货
-     */
-    public void purchaseIntelligent() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_PURCHASE_INTELLIGENT_SHOPCART);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
 
@@ -683,13 +669,7 @@ public class AdministratorActivity extends BaseActivity {
 // TODO: 5/20/16 刷新用户信息
         //账号发生改变
         if (MfhLoginService.get().isCompanyOrOfficeChanged()) {
-            PurchaseShopcartHelper.getInstance().clear();
-            FreshShopcartHelper.getInstance().clear();
-            CommonlyGoodsService.get().clear();// 清空常用商品
-            PosProductService.get().clear();
-            PosProductSkuService.get().clear();
-            SharedPreferencesHelper.setSyncProductsCursor("");
-            SharedPreferencesHelper.setPosSkuLastUpdate("");
+            AppHelper.clearAppData();
         }
 
 //        AppHelper.clearCache();

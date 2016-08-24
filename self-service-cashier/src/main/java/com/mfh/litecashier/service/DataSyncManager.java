@@ -35,12 +35,12 @@ import com.mfh.framework.net.NetProcessor;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.CompanyHuman;
-import com.mfh.litecashier.bean.ProductSkuBarcode;
+import com.bingshanguxue.cashier.model.ProductSkuBarcode;
 import com.mfh.litecashier.database.dao.PosProductNetDao;
 import com.mfh.litecashier.database.dao.PosProductSkuNetDao;
 import com.mfh.litecashier.database.logic.CompanyHumanService;
-import com.mfh.litecashier.database.logic.PosProductSkuService;
-import com.mfh.litecashier.database.logic.ProductCatalogService;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 

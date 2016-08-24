@@ -61,8 +61,7 @@ import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
-import com.mfh.litecashier.database.logic.CommonlyGoodsService;
-import com.mfh.litecashier.database.logic.PosProductSkuService;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
@@ -97,8 +96,6 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.DataCacheHelper;
-import com.mfh.litecashier.utils.FreshShopcartHelper;
-import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.tencent.bugly.beta.Beta;
 
@@ -203,11 +200,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         //hide soft input
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
-        //清空商品采购购物车
-        CashierShopcartService.getInstance().clear();
-        PurchaseShopcartHelper.getInstance().clear();
-        FreshShopcartHelper.getInstance().clear();
 
         if (!BizConfig.RELEASE) {
             DialogUtil.showHint("您正在使用的是测试版本，如需切换到正式版本请联系服务商。");
@@ -408,16 +400,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 取包裹
      */
     private void packageService() {
-//        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
-//            DialogUtil.showHint(R.string.toast_network_error);
-//            return;
-//        }
-
         //直接根据取货码查询
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_STOCK_DETAIL);
-        ServiceActivity.actionStart(this, extras);
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_STOCK_DETAIL);
+        FragmentActivity.actionStart(this, extras);
     }
 
     /**
@@ -722,13 +709,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private void dataSync(boolean isSlient) {
         //账号发生改变
         if (MfhLoginService.get().isCompanyOrOfficeChanged()) {
-            PurchaseShopcartHelper.getInstance().clear();
-            FreshShopcartHelper.getInstance().clear();
-            CommonlyGoodsService.get().clear();// 清空常用商品
-            PosProductService.get().clear();
-            PosProductSkuService.get().clear();
-            SharedPreferencesHelper.setSyncProductsCursor("");
-            SharedPreferencesHelper.setPosSkuLastUpdate("");
+            AppHelper.clearAppData();
         }
 
 //        AppHelper.clearCache();
@@ -852,14 +833,13 @@ public class MainActivity extends CashierActivity implements ICashierView {
             DialogUtil.showHint(String.format("现金授权额度(%.2f)即将用完，" +
                     "为了不影响您使用POS设备，请及时充值", amount));
 
-        }  else if (eventId == AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT) {
+        } else if (eventId == AffairEvent.EVENT_ID_UNLOCK_POS_CLIENT) {
             if (alipayDialog != null) {
                 alipayDialog.dismiss();
             }
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
             initCashierOrder();
-        }
-        else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
+        } else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
             LocalFrontCategoryGoods goods = (LocalFrontCategoryGoods) bundle.getSerializable("goods");
             cashierGoods(goods);
         }
@@ -1028,15 +1008,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
                     @Override
                     public void onNext(CashierOrderInfo cashierOrderInfo) {
-                        if (cashierOrderInfo != null){
+                        if (cashierOrderInfo != null) {
                             hideProgressDialog();
                             Intent intent = new Intent(MainActivity.this, CashierPayActivity.class);
                             Bundle extras = new Bundle();
                             extras.putSerializable(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
                             intent.putExtras(extras);
                             startActivityForResult(intent, Constants.ARC_MFPAY);
-                        }
-                        else{
+                        } else {
                             showProgressDialog(ProgressDialog.STATUS_PROCESSING, "订单创建失败", true);
                             btnSettle.setEnabled(true);
                         }
@@ -1106,7 +1085,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 异步处理订单支付结果
-     * <p>
+     * <p/>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
     private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
@@ -1153,7 +1132,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             PrintManager.printPosOrder(orderEntities, true);
             //保存上一单信息
             LastOrderInfo lastOrderInfo = CashierFactory.genLastOrderInfo(orderEntities);
-            if (lastOrderInfo != null){
+            if (lastOrderInfo != null) {
 
                 int payType = lastOrderInfo.getPayType();
                 Double finalAmount = lastOrderInfo.getFinalAmount();
@@ -1516,7 +1495,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //清除屏幕上的字符
         SerialManager.clear();
         //Step 1:
-        if (productAdapter.getItemCount() > 0){
+        if (productAdapter.getItemCount() > 0) {
             ZLogger.d(String.format("挂单：%s", curPosTradeNo));
             CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
                     productAdapter.getEntityList());
@@ -1542,7 +1521,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //清除屏幕上的字符
         SerialManager.clear();
 
-        if (productAdapter.getItemCount() > 0){
+        if (productAdapter.getItemCount() > 0) {
             //挂起当前订单
             ZLogger.df(String.format("挂单：%s", curPosTradeNo));
             CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
@@ -1797,8 +1776,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 添加商品到收银台
-     * */
-    private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount){
+     */
+    private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount) {
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {

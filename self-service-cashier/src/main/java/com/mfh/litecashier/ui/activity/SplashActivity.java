@@ -28,11 +28,15 @@ import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.FreshShopcartHelper;
 import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import butterknife.Bind;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -67,7 +71,8 @@ public class SplashActivity extends InitActivity {
         PushManager.getInstance().initialize(CashierApp.getAppContext());
 //        PushManager.getInstance().stopService(this);
 
-        tvVersion.setText(String.format("%s-%d", CashierApp.getVersionName(), CashierApp.getVersionCode()));
+        tvVersion.setText(String.format("%s-%d",
+                CashierApp.getVersionName(), CashierApp.getVersionCode()));
     }
 
     @Override
@@ -80,8 +85,6 @@ public class SplashActivity extends InitActivity {
         super.initPrimary();
         ZLogger.df("set database version.");
         DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 15);
-
-        AnalysisHelper.validateHandoverInfo();
     }
 
     @Override
@@ -92,56 +95,80 @@ public class SplashActivity extends InitActivity {
     @Override
     protected void initComleted() {
 
-        AppHelper.saveAppStartupDatetime();
-        /**
-         *
-         首次启动(由于应用程序{@link com.mfh.litecashier.CashierApp}可能会被多次执行在不同的进程中，所以这里在启动页调用，)
-         */
-        ZLogger.df(String.format("application running: %s_%s-%s",
-                CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
-                CashierApp.getVersionName(), CashierApp.getVersionCode()));
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
 
-        if (SharedPreferencesManager.isAppFirstStart()) {
-            ZLogger.df(String.format("application first running: %s-%s(%s)",
-                    CashierApp.getVersionName(), CashierApp.getVersionCode(),
-                    CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
-            SharedPreferencesHelper.setSyncProductsCursor("");
-            SharedPreferencesHelper.setPosOrderLastUpdate("");
-            SharedPreferencesManager.setTerminalId("");
-            SharedPreferencesManager.setSoftKeyboardEnabled(false);
+                AppHelper.saveAppStartupDatetime();
+                /**
+                 *
+                 首次启动(由于应用程序{@link com.mfh.litecashier.CashierApp}可能会被多次执行在不同的进程中，所以这里在启动页调用，)
+                 */
+                ZLogger.df(String.format("application running: %s_%s-%s",
+                        CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
+                        CashierApp.getVersionName(), CashierApp.getVersionCode()));
+
+                if (SharedPreferencesManager.isAppFirstStart()) {
+                    ZLogger.df(String.format("application first running: %s-%s(%s)",
+                            CashierApp.getVersionName(), CashierApp.getVersionCode(),
+                            CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
+                    SharedPreferencesHelper.setSyncProductsCursor("");
+                    SharedPreferencesHelper.setPosOrderLastUpdate("");
+                    SharedPreferencesManager.setTerminalId("");
+                    SharedPreferencesManager.setSoftKeyboardEnabled(false);
 //            SharedPreferencesHelper.setPosOrderSyncInterval(15 * 60);//15分钟同步一次
 //            SharedPreferencesHelper.setSyncIntervalCompanyHuman(30 * 60);//30分钟同步一次
 
-            SharedPreferencesManager.setAppFirstStart(false);
-        } else {
-            //清空旧缓存
+                    SharedPreferencesManager.setAppFirstStart(false);
+                } else {
+                    //清空旧缓存
 //            AppHelper.clearAppCache();
-            //清除数据缓存
+                    //清除数据缓存
 //            DataCleanManager.cleanInternalCache(getApplicationContext());
 //            SharedPreferencesHelper.setPosOrderSyncInterval(25 * 60);
 //            SharedPreferencesHelper.setSyncCompanyHumanInterval(30 * 60);
 
-            CashierShopcartService.getInstance().clear();
-            AnalysisHelper.deleteOldDailysettle(15);
-            CashierHelper.clearOldPosOrder(15);
-            CashierShopcartService.getInstance().clear();
-            PurchaseShopcartHelper.getInstance().clear();
-            FreshShopcartHelper.getInstance().clear();
-            PosTopupService.get().deleteOldData(15);
-            SMScaleSyncManager2.deleteOldFiles(1);
-            SMScaleSyncManager2.deleteOldFiles2();
+                    CashierShopcartService.getInstance().clear();//购物车－收银
+                    PurchaseShopcartHelper.getInstance().clear();//购物车－采购
+                    AnalysisHelper.deleteOldDailysettle(7);//日结
+                    CashierHelper.clearOldPosOrder(15);//收银订单
+                    PosTopupService.get().deleteOldData(15);
+                    SMScaleSyncManager2.deleteOldFiles(1);
+                    SMScaleSyncManager2.deleteOldFiles2();
 
-            ZLogger.deleteOldFiles(7);
-        }
+                    ZLogger.deleteOldFiles(7);
+                }
 
-        // 清空缓存数据
-        AppHelper.clearTempData();
+                // 清空缓存数据
+                AppHelper.clearTempData();
 
-        //加载会话和群组
-        IMClient.getInstance().groupManager().loadAllGroups();
-        IMClient.getInstance().chatManager().loadAllConversations();
+                //加载会话和群组
+                IMClient.getInstance().groupManager().loadAllGroups();
+                IMClient.getInstance().chatManager().loadAllConversations();
 
-        onInitializedCompleted();
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+
+                        onInitializedCompleted();
+                    }
+
+                });
     }
 
     @Override

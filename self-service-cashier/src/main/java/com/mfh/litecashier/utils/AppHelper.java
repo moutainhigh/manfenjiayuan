@@ -3,6 +3,10 @@ package com.mfh.litecashier.utils;
 
 import android.graphics.Color;
 
+import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
+import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
@@ -12,6 +16,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -49,7 +54,7 @@ public class AppHelper {
                 SharedPreferencesManager.setAppDayFirstStartupDateTime(TimeCursor.InnerFormat.format(currentDate));
             }
         }
-        ZLogger.d(String.format("Initialize--application startup datetime: %s application day first startup datetime: %s",
+        ZLogger.d(String.format("application startup datetime: %s application day first startup datetime: %s",
                 SharedPreferencesManager.getAppStartupDateTime(), SharedPreferencesManager.getAppDayFirstStartupDateTime()));
 
     }
@@ -124,6 +129,27 @@ public class AppHelper {
 //        Glide.get(CashierApp.getAppContext()).clearMemory();
 
         DataCacheHelper.getInstance().reset();
+    }
+
+    /**
+     * 清除数据（文件，设置，账户，数据库等）
+     * <ol>
+     *     <li>应用首次启动</li>
+     *     <li>切换账号</li>
+     * </ol>
+     * */
+    public static void clearAppData(){
+        CashierShopcartService.getInstance().clear();
+        PurchaseShopcartHelper.getInstance().clear();
+        //商品库
+        PosProductService.get().clear();//商品库
+        PosProductSkuService.get().clear();//一品多码
+        PosLocalCategoryService.get().clear();//前台类目关联商品
+        ProductCatalogService.getInstance().clear();//前台类目
+        SharedPreferencesHelper.setSyncProductsCursor("");
+        SharedPreferencesHelper.setPosSkuLastUpdate("");
+        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+                "");
     }
 
     /**

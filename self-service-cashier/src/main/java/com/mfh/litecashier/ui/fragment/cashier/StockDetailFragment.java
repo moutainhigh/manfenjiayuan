@@ -3,6 +3,7 @@ package com.mfh.litecashier.ui.fragment.cashier;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -51,6 +52,9 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class StockDetailFragment extends BaseFragment {
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.et_query_content)
     EditText etQueryContent;
     @Bind(R.id.button_query)
@@ -87,7 +91,15 @@ public class StockDetailFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
+        mToolbar.setTitle("包裹明细");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
         etQueryContent.setInputType(InputType.TYPE_CLASS_TEXT);
         etQueryContent.setHint("手机号/面单号/楼幢号/取货码");
         etQueryContent.addTextChangedListener(new TextWatcher() {

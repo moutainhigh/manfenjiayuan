@@ -39,16 +39,6 @@ import java.util.List;
  * Created by Nat.ZZN(bingshanguxue) on 15/9/9.
  */
 public class AnalysisHelper {
-
-    /**
-     * 检查交接班信息
-     * */
-    public static void validateHandoverInfo(){
-        //上一次交接班时间
-        String lastHandoverDate = SharedPreferencesHelper.getLastHandoverDateTimeStr();
-        int lastHandoverShiftId = SharedPreferencesHelper.getLastHandoverShiftId();
-        ZLogger.d(String.format("lastHandover：shiftId %d, datetime %s", lastHandoverShiftId, lastHandoverDate));
-    }
     /**
      * 创建交接班订单<br>
      * 使用上一次交接班时间作为本次交接班统计的开始时间<br>
@@ -57,7 +47,7 @@ public class AnalysisHelper {
         //上一次交接班时间
         Date lastHandoverDate = SharedPreferencesHelper.getLastHandoverDateTime();
         int lastHandoverShiftId = SharedPreferencesHelper.getLastHandoverShiftId();
-        ZLogger.d(String.format("Create daily settle--last shiftId：%d, datetime：%s",
+        ZLogger.d(String.format("创建交接班订单--last shiftId：%d, datetime：%s",
                 lastHandoverShiftId, TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(lastHandoverDate)));
 
         //当前交接班时间
