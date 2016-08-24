@@ -20,7 +20,7 @@ android {
 
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 20
+        versionCode 21
         versionName "0.1.1"
         multiDexEnabled true
 
