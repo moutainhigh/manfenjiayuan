@@ -64,9 +64,11 @@ public class CashierAgent {
         //更新订单明细
         PosOrderItemService.get().deleteBy(String.format("orderBarCode = '%s'",
                 orderBarCode));
-        for (CashierShopcartEntity goods : shopcartEntities) {
-            PosOrderItemService.get().saveOrUpdate(orderEntity.getBarCode(),
-                    orderEntity.getId(), goods);
+        if (shopcartEntities != null && shopcartEntities.size() > 0){
+            for (CashierShopcartEntity goods : shopcartEntities) {
+                PosOrderItemService.get().saveOrUpdate(orderEntity.getBarCode(),
+                        orderEntity.getId(), goods);
+            }
         }
 
         return true;

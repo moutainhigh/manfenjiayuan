@@ -1515,18 +1515,21 @@ public class MainActivity extends CashierActivity implements ICashierView {
         inlvBarcode.clear();
         //清除屏幕上的字符
         SerialManager.clear();
-        //TODO,清除客显屏幕
         //Step 1:
-        ZLogger.d(String.format("挂单：%s", curPosTradeNo));
-        CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
-                productAdapter.getEntityList());
-//刷新挂单
-        refreshFloatHangup();
-        //重新生成订单
-        if (StringUtils.isEmpty(curPosTradeNo)) {
-            CashierShopcartService.getInstance()
-                    .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+        if (productAdapter.getItemCount() > 0){
+            ZLogger.d(String.format("挂单：%s", curPosTradeNo));
+            CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
+                    productAdapter.getEntityList());
+
+            //刷新挂单
+            refreshFloatHangup();
         }
+
+//        //重新生成订单
+//        if (!StringUtils.isEmpty(curPosTradeNo)) {
+//            CashierShopcartService.getInstance()
+//                    .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+//        }
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
     }
@@ -1539,12 +1542,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //清除屏幕上的字符
         SerialManager.clear();
 
-        //挂起当前订单
-        CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
-                productAdapter.getEntityList());
+        if (productAdapter.getItemCount() > 0){
+            //挂起当前订单
+            ZLogger.df(String.format("挂单：%s", curPosTradeNo));
+            CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
+                    productAdapter.getEntityList());
+        }
 
         ZLogger.df(String.format("调单：%s", posTradeNo));
-
         //加载新订单
         obtaincurPosTradeNo(posTradeNo);
         //加载明细
@@ -1733,6 +1738,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             //计重商品直接读取条码中的重量信息
             addGoods2Cashier(curPosTradeNo, goods, weight);
         } else {
+            // TODO: 8/24/16 如果是扫描秤打印的条码，计件商品又可能不是1
             //计件商品默认商品数量加1
             addGoods2Cashier(curPosTradeNo, goods, 1D);
         }
