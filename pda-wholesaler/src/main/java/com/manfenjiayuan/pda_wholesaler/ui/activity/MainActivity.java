@@ -219,6 +219,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     //注册到消息桥
                     IMClient.getInstance().registerBridge();
 
+
+                    ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
+
                     Beta.checkUpgrade(false, false);
                 }
             }

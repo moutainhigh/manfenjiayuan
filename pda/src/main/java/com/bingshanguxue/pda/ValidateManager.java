@@ -197,7 +197,6 @@ public class ValidateManager {
                     if (rspData != null) {
                         RspValue<String> retValue = (RspValue<String>) rspData;
                         String retStr = retValue.getValue();
-                        ZLogger.df("注册设备成功:" + retStr);
                         saveTerminalId(retStr);
                     }
                     else{
@@ -223,6 +222,7 @@ public class ValidateManager {
     };
 
     private void saveTerminalId(final String respnse){
+        ZLogger.d("saveTerminalId start");
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
@@ -239,6 +239,7 @@ public class ValidateManager {
                         if (serverDateTime != null){
                             //设置时间
                             try{
+                                //Unable to open alarm driver: Permission denied
                                 boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
                                 ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
                                         TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
@@ -248,6 +249,12 @@ public class ValidateManager {
                             }
                         }
                     }
+                    else{
+                        ZLogger.d("返回数据不完整");
+                    }
+                }
+                else{
+                    ZLogger.d("返回数据为空");
                 }
 
                 subscriber.onNext(null);
