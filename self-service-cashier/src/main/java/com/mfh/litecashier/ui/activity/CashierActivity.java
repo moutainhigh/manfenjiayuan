@@ -12,7 +12,7 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;

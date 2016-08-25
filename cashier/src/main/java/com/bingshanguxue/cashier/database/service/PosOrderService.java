@@ -2,7 +2,7 @@ package com.bingshanguxue.cashier.database.service;
 
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.bingshanguxue.cashier.database.dao.PosOrderDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.mfh.comn.bean.PageInfo;

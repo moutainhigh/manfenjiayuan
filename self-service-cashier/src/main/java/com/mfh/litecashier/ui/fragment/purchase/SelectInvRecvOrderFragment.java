@@ -16,8 +16,8 @@ import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -100,7 +100,7 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
         setupSwipeRefresh();
         initRecyclerView();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             readCache();
         } else {
             reload();
@@ -264,7 +264,7 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载收货订单。");
             onLoadFinished();
             return;
@@ -285,7 +285,7 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载收货订单。");
             onLoadFinished();
             return;

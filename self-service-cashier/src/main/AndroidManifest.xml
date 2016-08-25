@@ -197,6 +197,7 @@
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="${UMENG_APP_KEY}"/>
+        <!--渠道名-->
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}"/>

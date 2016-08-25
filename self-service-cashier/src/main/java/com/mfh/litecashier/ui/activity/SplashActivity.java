@@ -10,7 +10,10 @@ import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.AnalysisAgent;
+import com.mfh.framework.anlaysis.AppInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -63,8 +66,15 @@ public class SplashActivity extends InitActivity {
         PushManager.getInstance().initialize(CashierApp.getAppContext());
 //        PushManager.getInstance().stopService(this);
 
-        tvVersion.setText(String.format("%s-%d",
-                CashierApp.getVersionName(), CashierApp.getVersionCode()));
+        AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
+        if (appInfo != null){
+            tvVersion.setText(String.format("%s-%d",
+                    appInfo.getVersionName(), appInfo.getVersionCode()));
+        }
+        else{
+            tvVersion.setText("");
+        }
+
     }
 
     @Override
@@ -93,9 +103,8 @@ public class SplashActivity extends InitActivity {
 
                 AppHelper.saveAppStartupDatetime();
                 //首次启动(由于应用程序可能会被多次执行在不同的进程中，所以这里在启动页调用)
-                ZLogger.df(String.format("process: %s, %s-%s",
-                        CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
-                        CashierApp.getVersionName(), CashierApp.getVersionCode()));
+                ZLogger.df(String.format("process: %s",
+                        CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
 
                 if (SharedPreferencesManager.isAppFirstStart()) {
                     SharedPreferencesHelper.setSyncProductsCursor("");

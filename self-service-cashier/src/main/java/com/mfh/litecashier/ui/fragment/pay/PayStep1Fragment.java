@@ -14,7 +14,7 @@ import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
 import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
@@ -192,7 +192,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             public void onChanged(int page) {
                 notifyPayInfoChanged(page);
 //                if (page == 1 || page == 2 || page == 4 || page == 5) {
-//                    if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+//                    if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
 //                        DialogUtil.showHint("网络异常,请选择其他支付方式");
 ////                        paySlidingTabStrip.setSelected();
 //                    }

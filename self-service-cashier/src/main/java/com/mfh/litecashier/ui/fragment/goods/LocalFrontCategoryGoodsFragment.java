@@ -19,14 +19,14 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
@@ -213,7 +213,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载类目商品。");
             onLoadFinished();
             return;
@@ -240,7 +240,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载类目商品。");
             onLoadFinished();
             return;
@@ -427,7 +427,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
      * 修改零售价
      */
     private void changePrice(final LocalFrontCategoryGoods goods, final Double costPrice) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
         }
@@ -512,7 +512,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         };
 
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
         }

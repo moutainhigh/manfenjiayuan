@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

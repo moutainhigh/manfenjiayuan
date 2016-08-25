@@ -32,15 +32,15 @@ import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.mfh.litecashier.CashierApp;
@@ -307,7 +307,7 @@ public class AlipayDialog extends CommonDialog {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             enterStandardMode();
             return;
@@ -658,7 +658,7 @@ public class AlipayDialog extends CommonDialog {
      */
     private void haveNoMoneyEnd() {
         onProcessing("加载数据...");
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             enterStandardMode();
             return;
@@ -711,7 +711,7 @@ public class AlipayDialog extends CommonDialog {
      */
     private void needLockPos() {
         onProcessing("加载数据...");
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
 
             enterStandardMode();
             return;

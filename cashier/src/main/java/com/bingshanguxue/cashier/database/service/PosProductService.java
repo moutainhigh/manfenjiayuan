@@ -5,7 +5,7 @@ import com.bingshanguxue.cashier.database.dao.PosProductDao;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.model.PosGoods;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.login.logic.MfhLoginService;

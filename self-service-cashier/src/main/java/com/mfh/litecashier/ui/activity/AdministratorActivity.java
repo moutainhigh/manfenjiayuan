@@ -16,7 +16,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.manfenjiayuan.im.IMClient;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.entity.UserMixInfo;

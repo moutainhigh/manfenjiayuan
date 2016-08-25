@@ -23,12 +23,12 @@ import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -126,7 +126,7 @@ public class InventoryTransFragment extends BaseFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             btnStockIn.setEnabled(true);
             DialogUtil.showHint(R.string.toast_network_error);
             return;
@@ -193,7 +193,7 @@ public class InventoryTransFragment extends BaseFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             btnPay.setEnabled(true);
             DialogUtil.showHint(R.string.toast_network_error);
             return;

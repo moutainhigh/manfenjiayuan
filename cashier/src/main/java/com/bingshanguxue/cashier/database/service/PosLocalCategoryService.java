@@ -4,7 +4,7 @@ import com.bingshanguxue.cashier.database.dao.PosLocalCategoryDao;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.category.CategoryInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 

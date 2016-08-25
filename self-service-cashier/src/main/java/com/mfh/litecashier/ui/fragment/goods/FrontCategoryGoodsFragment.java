@@ -15,10 +15,10 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -207,7 +207,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，读取缓存数据。");
             readCache();
             return;
@@ -248,7 +248,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载类目商品。");
             onLoadFinished();
             return;

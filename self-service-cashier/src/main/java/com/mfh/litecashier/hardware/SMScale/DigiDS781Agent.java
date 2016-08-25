@@ -2,7 +2,7 @@ package com.mfh.litecashier.hardware.SMScale;
 
 import com.alibaba.fastjson.JSON;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 

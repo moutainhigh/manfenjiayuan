@@ -40,13 +40,13 @@ import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -576,7 +576,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 寄快递
      */
     private void expressService() {
-//        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+//        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
 //            DialogUtil.showHint(getString(R.string.toast_network_error));
 //            return;
 //        }
@@ -684,7 +684,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSync.stopSync();
             return;
@@ -799,7 +799,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         Bundle bundle = event.getArgs();
         ZLogger.d(String.format("AffairEvent(%d)", eventId));
         if (eventId == AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE) {
-            if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+            if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
                 DialogUtil.showHint(R.string.toast_network_error);
                 return;
             }

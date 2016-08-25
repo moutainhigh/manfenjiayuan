@@ -23,8 +23,8 @@ import com.mfh.framework.api.companyInfo.CompanyInfoPresenter;
 import com.mfh.framework.api.companyInfo.ICompanyInfoView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.AbilityItem;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -172,7 +172,7 @@ public class SelectCompanyInfoDialog extends CommonDialog
     public void show() {
         super.show();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             readCache();
         } else {
             reload();
@@ -334,7 +334,7 @@ public class SelectCompanyInfoDialog extends CommonDialog
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载关联租户。");
             onLoadFinished();
             return;
@@ -357,7 +357,7 @@ public class SelectCompanyInfoDialog extends CommonDialog
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载关联租户。");
             onLoadFinished();
             return;

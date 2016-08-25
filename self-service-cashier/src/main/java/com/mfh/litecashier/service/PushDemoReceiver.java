@@ -11,7 +11,7 @@ import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.constants.IMBizType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.PayloadHelper;
 import com.mfh.framework.helper.SharedPreferencesManager;

@@ -16,7 +16,7 @@
 
 package android_serialport_api;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.io.File;
 import java.io.FileReader;

@@ -16,11 +16,11 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -292,7 +292,7 @@ public class HandoverFragment extends BaseProgressFragment {
     private void autoShiftAnalyasis() {
         onLoadProcess("正在统计交接班数据");
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接，暂停启动交接班统计。");
             btnSubmit.setEnabled(false);
             return;
@@ -334,7 +334,7 @@ public class HandoverFragment extends BaseProgressFragment {
     private void analysisAggShift() {
         onLoadProcess("正在查询经营分析数据");
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接，暂停查询交接班经营分析数据。");
             btnSubmit.setEnabled(false);
             return;
@@ -383,7 +383,7 @@ public class HandoverFragment extends BaseProgressFragment {
     private void accAnalysisAggShift() {
         onLoadProcess("正在查询流水分析数据");
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接，查询交接班流水分析数据。");
             btnSubmit.setEnabled(false);
             return;

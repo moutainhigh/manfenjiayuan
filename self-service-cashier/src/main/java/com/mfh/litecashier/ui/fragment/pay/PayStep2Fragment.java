@@ -36,13 +36,13 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.cashier.CashierApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -255,7 +255,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSubmit.setEnabled(true);
             hideProgressDialog();
@@ -333,7 +333,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             if (couponRule != null) {
                 couponRule.toggleSelected();
@@ -422,7 +422,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
     public void submitOrder() {
         btnSubmit.setEnabled(false);
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSubmit.setEnabled(true);
             return;

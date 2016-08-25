@@ -8,8 +8,7 @@ import com.iflytek.cloud.SpeechUtility;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -40,7 +39,7 @@ public class CashierApp extends MfhApplication {
     public void onCreate() {
         initIflytek();
 
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
+//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();
 
@@ -64,6 +63,7 @@ public class CashierApp extends MfhApplication {
 
             debugPrint();
         }
+
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);

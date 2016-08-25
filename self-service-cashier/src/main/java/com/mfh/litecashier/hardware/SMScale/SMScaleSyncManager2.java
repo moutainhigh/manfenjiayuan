@@ -11,13 +11,13 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.Encoding;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
 import com.opencsv.CSVWriter;
 
@@ -350,7 +350,7 @@ public class SMScaleSyncManager2 extends FTPManager {
      * 上传CSV文件到FTP
      */
     private void uploadFile2Ftp(File file, Date cursor) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             syncFailed("网络未连接，暂停上传CSV文件到FTP服务器。");
             return;
         }

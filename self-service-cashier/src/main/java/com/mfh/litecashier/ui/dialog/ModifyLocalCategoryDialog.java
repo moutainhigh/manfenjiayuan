@@ -23,15 +23,15 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -259,7 +259,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())){
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())){
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
@@ -322,7 +322,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())){
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())){
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }

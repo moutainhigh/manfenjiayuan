@@ -7,10 +7,10 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
 
@@ -125,7 +125,7 @@ public class EslSyncManager2 extends EslSyncManager{
      * 根据上一次同步游标同步订单数据
      */
     private void batchUploadGoodsInfo() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             uploadFailed("网络未连接，暂停同步价签商品。");
             return;
         }

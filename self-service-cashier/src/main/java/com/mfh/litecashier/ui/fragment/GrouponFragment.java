@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.WebViewDelegate;

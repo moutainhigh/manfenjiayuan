@@ -27,12 +27,12 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -267,7 +267,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
     private void queryLimitInfo() {
         onLoadProcess("正在查询授权金额信息");
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接");
             return;
         }
@@ -319,7 +319,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
     };
 
     private void loadDetailList() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接。");
             return;
         }
@@ -340,7 +340,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
             ZLogger.d("正在加载数据...");
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("网络未连接。");
             return;
         }

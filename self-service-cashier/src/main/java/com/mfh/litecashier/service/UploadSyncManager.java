@@ -14,11 +14,11 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
@@ -119,7 +119,7 @@ public class UploadSyncManager extends OrderSyncManager {
             }
             break;
             default: {
-                ZLogger.df("同步POS数据结束");
+                ZLogger.df("上传POS数据结束");
                 bSyncInProgress = false;
 //                EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
             }
@@ -149,7 +149,7 @@ public class UploadSyncManager extends OrderSyncManager {
      * 提交营业现金，并触发一次日结操作
      */
     private void commintCashAndTrigDateEnd() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onError("网络未连接，暂停同步清分充值支付记录。");
             return;
         }
@@ -225,7 +225,7 @@ public class UploadSyncManager extends OrderSyncManager {
      * 提交营业现金
      */
     private void commintCash() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onError("网络未连接，暂停同步营业额现金支付记录。");
             return;
         }
@@ -328,7 +328,7 @@ public class UploadSyncManager extends OrderSyncManager {
                     return;
                 }
 
-                if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+                if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
                     onError("网络未连接，暂停同步收银订单数据。");
                     return;
                 }
@@ -433,7 +433,7 @@ public class UploadSyncManager extends OrderSyncManager {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onError("网络未连接，暂停同步POS订单数据。");
             return;
         }

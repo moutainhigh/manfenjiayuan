@@ -1,7 +1,7 @@
 package com.mfh.litecashier.ui.fragment.purchase.manual;
 
 import com.alibaba.fastjson.JSON;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.database.entity.PurchaseGoodsEntity;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;

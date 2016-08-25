@@ -5,13 +5,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
-import com.bingshanguxue.cashier.database.service.DailysettleService;
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.vector_user.UserApiImpl;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
-import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
@@ -20,23 +16,21 @@ import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.impl.MfhApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.utils.AnalysisHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
@@ -183,7 +177,7 @@ public class ValidateManager {
         }
 
         //已经登录,检查会话是否过期
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             nextStep();
         } else {
             NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -242,7 +236,7 @@ public class ValidateManager {
      * 注册设备，报告版本并同步日期
      */
     private void registerPlat() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
                 validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
                         null, "设备注册失败，需要重新注册");
@@ -252,7 +246,7 @@ public class ValidateManager {
             }
         } else {
             JSONObject order = new JSONObject();
-            order.put("serialNo", MfhApplication.getDeviceUuid());
+            order.put("serialNo", SystemUtils.getDeviceUuid(MfhApplication.getAppContext()));
 //        order.put("serialNo", MfhApplication.getWifiMac15Bit());
             order.put("channelId", MfhApi.CHANNEL_ID);
             order.put("channelPointId", IMConfig.getPushClientId());
@@ -373,7 +367,7 @@ public class ValidateManager {
 //        final String aggDateStr = TimeCursor.FORMAT_YYYYMMDD.format(yesterday);
 //        ZLogger.df(String.format("检测 %s 是否清分完毕", aggDateStr));
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             AlarmManagerHelper.triggleNextDailysettle(0);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,
@@ -430,7 +424,7 @@ public class ValidateManager {
      * 判断是否需要锁定pos
      */
     private void needLockPos() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             AlarmManagerHelper.triggleNextDailysettle(0);
 
             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED, null,

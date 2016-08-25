@@ -12,7 +12,7 @@ import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 

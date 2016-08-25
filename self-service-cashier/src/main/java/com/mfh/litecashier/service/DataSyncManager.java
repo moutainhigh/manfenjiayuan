@@ -24,15 +24,15 @@ import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.category.CategoryQueryInfo;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetFactory;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.CompanyHuman;
 import com.bingshanguxue.cashier.model.ProductSkuBarcode;
@@ -84,6 +84,7 @@ public class DataSyncManager {
     private PageInfo productCateslogPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
 
     private boolean bSyncInProgress = false;//是否正在同步
+    private int rollback = -1;
     //当前同步进度
     private int nextStep = SYNC_STEP_NA;
 
@@ -110,13 +111,15 @@ public class DataSyncManager {
      */
     public synchronized void sync() {
         if (bSyncInProgress) {
-            ZLogger.df("正在同步POS数据...");
+            rollback ++;
+            ZLogger.df(String.format("正在同步POS数据..., rollback=%d", rollback));
             if (nextStep > SYNC_STEP_BACKEND_CATEGORYINFO) {
                 nextStep = SYNC_STEP_BACKEND_CATEGORYINFO;
             }
             return;
         }
 
+        rollback = -1;
         processStep(SYNC_STEP_FRONTEND_CATEGORY, SYNC_STEP_PRODUCTS);
     }
 
@@ -267,7 +270,7 @@ public class DataSyncManager {
     }
 
     private void downloadProducts(final String lastCursor, PageInfo pageInfo) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }
@@ -553,7 +556,7 @@ public class DataSyncManager {
     }
 
     private void downloadProductSku(final String lastCursor, PageInfo pageInfo) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }
@@ -667,7 +670,7 @@ public class DataSyncManager {
     }
 
     private void downloadWorkerBeanInfoOfCompany(PageInfo pageInfo) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }
@@ -767,7 +770,7 @@ public class DataSyncManager {
     }
 
     public void downloadCompanyHuman(PageInfo pageInfo) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }
@@ -875,7 +878,7 @@ public class DataSyncManager {
     }
 
     public void downloadFrontendCategory2(PageInfo pageInfo) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }
@@ -973,7 +976,7 @@ public class DataSyncManager {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }
@@ -1093,7 +1096,7 @@ public class DataSyncManager {
     }
 
     private void downLoadProductCatalog2(final String startCusror, PageInfo pageInfo) {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
         }

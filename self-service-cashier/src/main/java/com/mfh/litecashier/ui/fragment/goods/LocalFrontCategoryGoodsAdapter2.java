@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 

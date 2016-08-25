@@ -13,9 +13,9 @@ import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -207,7 +207,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载类目商品。");
             onLoadFinished();
             return;
@@ -234,7 +234,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载类目商品。");
             onLoadFinished();
             return;

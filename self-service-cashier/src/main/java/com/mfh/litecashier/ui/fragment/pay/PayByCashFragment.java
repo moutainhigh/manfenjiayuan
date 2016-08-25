@@ -20,7 +20,7 @@ import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
 import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.mfh.litecashier.Constants;

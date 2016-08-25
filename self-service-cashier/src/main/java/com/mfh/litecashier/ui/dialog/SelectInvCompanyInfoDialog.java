@@ -23,8 +23,8 @@ import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.invCompany.InvCompanyPresenter;
 import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -179,7 +179,7 @@ public class SelectInvCompanyInfoDialog extends CommonDialog
     public void show() {
         super.show();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             readSuppliersCache();
         } else {
             reload();
@@ -345,7 +345,7 @@ public class SelectInvCompanyInfoDialog extends CommonDialog
         }
         onLoadStart();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;
@@ -366,7 +366,7 @@ public class SelectInvCompanyInfoDialog extends CommonDialog
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;

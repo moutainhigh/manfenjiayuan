@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.model.CoupBean;
 import com.bingshanguxue.cashier.model.RuleBean;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DrawableUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;

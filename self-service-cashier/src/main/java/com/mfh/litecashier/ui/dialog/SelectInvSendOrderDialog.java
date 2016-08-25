@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -194,7 +194,7 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
     public void show() {
         super.show();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             readCache();
         } else {
             reload();
@@ -371,7 +371,7 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载订单流水。");
             onLoadFinished();
             return;
@@ -393,7 +393,7 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
             onLoadFinished();
             return;

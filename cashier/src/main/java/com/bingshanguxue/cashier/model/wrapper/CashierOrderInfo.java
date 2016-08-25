@@ -5,7 +5,7 @@ import com.bingshanguxue.cashier.CashierAgent;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
 import com.bingshanguxue.cashier.model.PayAmount;
 import com.bingshanguxue.vector_user.bean.Human;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.ArrayList;
 import java.util.List;

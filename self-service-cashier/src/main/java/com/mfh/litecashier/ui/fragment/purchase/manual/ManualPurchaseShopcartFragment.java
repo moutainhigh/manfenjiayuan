@@ -20,12 +20,12 @@ import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfoApi;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -119,7 +119,7 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
      * 提交采购订单
      */
     private void doSubmitStuff() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSubmit.setEnabled(true);
             return;
@@ -343,7 +343,7 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
      * 加载用户网点信息
      */
     private void loadNetInfo() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
 //            DialogUtil.showHint("网络未连接");
             return;
         }

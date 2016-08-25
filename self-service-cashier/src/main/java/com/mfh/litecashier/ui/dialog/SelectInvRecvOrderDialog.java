@@ -19,8 +19,8 @@ import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -199,7 +199,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendI
     public void show() {
         super.show();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             readCache();
         } else {
             reload();
@@ -375,7 +375,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendI
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载采购收货订单。");
             onLoadFinished();
             return;
@@ -397,7 +397,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendI
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载采购收货订单。");
             onLoadFinished();
             return;

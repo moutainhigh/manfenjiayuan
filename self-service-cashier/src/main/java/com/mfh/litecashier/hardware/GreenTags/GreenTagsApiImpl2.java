@@ -1,7 +1,7 @@
 package com.mfh.litecashier.hardware.GreenTags;
 
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 

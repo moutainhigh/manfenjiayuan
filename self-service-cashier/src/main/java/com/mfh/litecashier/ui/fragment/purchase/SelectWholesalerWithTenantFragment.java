@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
@@ -95,7 +95,7 @@ public class SelectWholesalerWithTenantFragment extends BaseFragment {
             public void onChanged(int page) {
 //                notifyPayInfoChanged(page);
 //                if (page == 1 || page == 2 || page == 4 || page == 5) {
-//                    if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+//                    if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
 //                        DialogUtil.showHint("网络异常,请选择其他支付方式");
 ////                        paySlidingTabStrip.setSelected();
 //                    }

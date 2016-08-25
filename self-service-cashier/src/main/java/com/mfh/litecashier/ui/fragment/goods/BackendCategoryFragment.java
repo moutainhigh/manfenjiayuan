@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.api.category.CategoryOption;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;

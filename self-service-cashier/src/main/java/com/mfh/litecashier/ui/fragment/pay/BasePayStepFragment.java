@@ -13,7 +13,7 @@ import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.com.SerialManager;

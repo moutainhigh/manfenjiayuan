@@ -17,12 +17,12 @@ import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
@@ -254,7 +254,7 @@ public class FrontCategoryFragment extends BaseFragment {
      * 添加商品到类目
      */
     private void submit() {
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }

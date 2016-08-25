@@ -30,9 +30,9 @@ import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.compound.OptionalLabel;
@@ -790,7 +790,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
      * TODO,加载等待窗口
      */
     private void loadGoodsList() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;
@@ -809,7 +809,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
      * 翻页加载更多数据
      */
     private void loadMore() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;

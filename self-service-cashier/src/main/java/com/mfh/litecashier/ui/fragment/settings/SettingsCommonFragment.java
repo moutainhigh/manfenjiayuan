@@ -10,8 +10,10 @@ import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.mfh.framework.anlaysis.AnalysisAgent;
+import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -411,8 +413,11 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             String terminalId = SharedPreferencesManager.getTerminalId();
             terminalSettingsItem.setSubTitle(terminalId);
 
-            versonSettingsItem.setSubTitle(String.format(Locale.US, "%s - %d",
-                    CashierApp.getVersionName(), CashierApp.getVersionCode()));
+            AppInfo appInfo = AnalysisAgent.getAppInfo(CashierApp.getAppContext());
+            if (appInfo != null){
+                versonSettingsItem.setSubTitle(String.format(Locale.US, "%s - %d",
+                        appInfo.getVersionName(), appInfo.getVersionCode()));
+            }
             tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getLedPort(), SerialManager.getLedBaudrate()));
             tsiLedDisplay.setChecked(false);

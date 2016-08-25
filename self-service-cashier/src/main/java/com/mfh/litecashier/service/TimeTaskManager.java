@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.Timer;
 import java.util.TimerTask;

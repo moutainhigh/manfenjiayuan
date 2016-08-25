@@ -14,14 +14,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.manfenjiayuan.im.IMClient;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -165,7 +165,7 @@ public class SignInActivity extends BaseActivity {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             setProcessingStep(STEP_NA);
             Snackbar.make(etUserName, R.string.toast_network_error, Snackbar.LENGTH_SHORT)
                     .setAction("Action", null).show();

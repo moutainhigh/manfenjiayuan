@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.cashier.CashierFactory;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseFragment;
 
 /**

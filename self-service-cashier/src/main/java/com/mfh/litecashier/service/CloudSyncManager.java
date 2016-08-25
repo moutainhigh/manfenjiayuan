@@ -4,9 +4,9 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
