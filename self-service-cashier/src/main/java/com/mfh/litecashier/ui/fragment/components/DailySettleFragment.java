@@ -21,6 +21,7 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
@@ -160,6 +161,7 @@ public class DailySettleFragment extends BaseProgressFragment {
      */
     @OnClick(R.id.fab_print)
     public void printOrder() {
+        DialogUtil.showHint("开始打印");
         PrintManagerImpl.printDailySettleBill(dailysettleEntity);
     }
 
@@ -232,16 +234,19 @@ public class DailySettleFragment extends BaseProgressFragment {
 
             fabPrint.setVisibility(View.VISIBLE);
 
-            tvOfficeName.setText(String.format("门店：%s", dailysettleEntity.getOfficeName()));
-            tvHumanName.setText(String.format("结算人：%s", dailysettleEntity.getHumanName()));
+            tvOfficeName.setText(String.format("门店：%s",
+                    dailysettleEntity.getOfficeName()));
+            tvHumanName.setText(String.format("结算人：%s",
+                    dailysettleEntity.getHumanName()));
             labelDate.setLabelText(TimeCursor.FORMAT_YYYYMMDD.format(dailysettleEntity.getDailysettleDate()));
 
             Double turnover = dailysettleEntity.getTurnover();
-            tvAmount.setText(String.format("营业额合计：%.2f", turnover));
-
+            tvAmount.setText(String.format("营业额合计：%.2f",
+                    turnover));
             tvNotCash.setText(String.format("非现金收取：%.2f",
                     dailysettleEntity.getTurnover() - dailysettleEntity.getCash()));
-            tvCash.setText(String.format("现金收取：%.2f", dailysettleEntity.getCash()));
+            tvCash.setText(String.format("现金收取：%.2f",
+                    dailysettleEntity.getCash()));
 
             //显示经营数据
             if (aggListAdapter != null) {

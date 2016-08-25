@@ -52,8 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="日结时间："
-                android:textColor="@color/black_35"/>
+                android:text="日结时间："/>
             <!--交班时间-->
             <com.mfh.framework.uikit.compound.OptionalLabel
                 android:id="@+id/label_date"
@@ -116,8 +115,8 @@
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/ll_brief_2"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="@dimen/spacing_double"
         android:scrollbars="vertical">
 

@@ -290,7 +290,8 @@ public class AnalysisHelper {
     }
     public static List<AnalysisItemWrapper> getAccAnalysisList(AccWrapper accWrapper){
         if (accWrapper == null){
-            return null;
+            accWrapper = new AccWrapper();
+            accWrapper.initWithDailysettleAccItems(null);
         }
 
         List<AnalysisItemWrapper> items = new ArrayList<>();

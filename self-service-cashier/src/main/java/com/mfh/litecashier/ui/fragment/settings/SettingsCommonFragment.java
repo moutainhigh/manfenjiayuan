@@ -153,7 +153,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                        AppHelper.clearCache();
+                        AppHelper.clearCacheData();
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 

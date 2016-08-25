@@ -6,6 +6,8 @@ import android.graphics.Color;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logger.ZLogger;
@@ -16,7 +18,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
-import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -115,30 +117,24 @@ public class AppHelper {
 //                new WxPayEvent(errCode, errStr));
 //    }
 
-    public static void clearCache() {
-        ZLogger.d("清空缓存");
+
+    /**
+     * 恢复出厂设置
+     * */
+    public static void resetFactoryData(){
+        clearAppData();
+
         DataCleanManager.cleanDatabases(CashierApp.getAppContext());
-        //清除数据缓存
-        DataCleanManager.clearCache(CashierApp.getAppContext());
-
-        //清除编辑器保存的临时内容Properties
-        //清除webview缓存
-//        WebViewUtils.clearCacheFolder();
-
-        //清除图片缓存
-//        Glide.get(CashierApp.getAppContext()).clearMemory();
-
-        DataCacheHelper.getInstance().reset();
     }
 
     /**
      * 清除数据（文件，设置，账户，数据库等）
      * <ol>
-     *     <li>应用首次启动</li>
-     *     <li>切换账号</li>
+     * <li>应用首次启动</li>
+     * <li>切换账号</li>
      * </ol>
-     * */
-    public static void clearAppData(){
+     */
+    public static void clearAppData() {
         CashierShopcartService.getInstance().clear();
         PurchaseShopcartHelper.getInstance().clear();
         //商品库
@@ -150,12 +146,27 @@ public class AppHelper {
         SharedPreferencesHelper.setPosSkuLastUpdate("");
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                 "");
+
+        clearRedunantData();
+        clearCacheData();
+
+        SMScaleSyncManager2.deleteOldFiles(1);
+    }
+
+    /**
+     * 清空无效数据
+     */
+    public static void clearRedunantData(){
+        AnalysisHelper.deleteOldDailysettle(7);//日结
+        CashierHelper.clearOldPosOrder(15);//收银订单
+        PosTopupService.get().deleteOldData(15);
+        ZLogger.deleteOldFiles(7);
     }
 
     /**
      * 清空缓存数据
      */
-    public static void clearTempData() {
+    public static void clearCacheData() {
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_ORDER_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_SUPPLY_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_GOODS_DATA);
@@ -165,6 +176,18 @@ public class AppHelper {
         ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_TENANT_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_GOODS_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
+
+        //清除数据缓存
+        DataCleanManager.clearCache(CashierApp.getAppContext());
+
+        //清除编辑器保存的临时内容Properties
+        //清除webview缓存
+//        WebViewUtils.clearCacheFolder();
+
+        //清除图片缓存
+//        Glide.get(CashierApp.getAppContext()).clearMemory();
+
+        DataCacheHelper.getInstance().reset();
     }
 //
 //    /**
@@ -245,14 +268,15 @@ public class AppHelper {
 
     /**
      * 获取正确状态的文字颜色
-     * */
-    public static int getOkTextColor(){
+     */
+    public static int getOkTextColor() {
         return Color.parseColor("#FF009B4E");
     }
+
     /**
      * 获取错误状态的文字颜色
-     * */
-    public static int getErrorTextColor(){
+     */
+    public static int getErrorTextColor() {
         return Color.parseColor("#FE5000");
     }
 

@@ -10,13 +10,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.entity.UserMixInfo;
@@ -33,16 +33,12 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
 import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
 import com.mfh.litecashier.ui.dialog.TopupDialog;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
-import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +46,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-
-//import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 
 
 /**
@@ -115,20 +109,20 @@ public class AdministratorActivity extends BaseActivity {
                     }
                 });
         // Set an OnMenuItemClickListener to handle menu item clicks
-//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                // Handle the menu item
-//                int id = item.getItemId();
-//                if (id == R.id.action_close) {
-//                    AdministratorActivity.this.onBackPressed();
-//                }
-//                return true;
-//            }
-//        });
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_canary) {
+                    redirect2Canary();
+                }
+                return true;
+            }
+        });
 
         // Inflate a menu to be displayed in the toolbar
-        toolbar.inflateMenu(R.menu.menu_empty);
+        toolbar.inflateMenu(R.menu.menu_administrator);
     }
 
     @Override
@@ -149,15 +143,12 @@ public class AdministratorActivity extends BaseActivity {
         tvUsername.setText(MfhLoginService.get().getHumanName());
 
         initMenuRecyclerView();
-
-        //2016-08-22,单个POS机可以强制同步数据，多台POS机情况，依靠用户主动打开页面同步数据不显示，所以注释掉下面行代码
-//        UploadSyncManager.getInstance().sync();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_empty, menu);
+        getMenuInflater().inflate(R.menu.menu_administrator, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -215,9 +206,11 @@ public class AdministratorActivity extends BaseActivity {
             case Constants.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
-                    //初始化收银
+                    mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
+                    tvUsername.setText(MfhLoginService.get().getHumanName());
+
+                    //初始化收银,createdBy(humanId)已经改变
                     EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
-                    reload(true);
                 }
             }
             break;
@@ -305,15 +298,16 @@ public class AdministratorActivity extends BaseActivity {
             resumeMachineDialog.setCanceledOnTouchOutside(false);
         }
 
-        resumeMachineDialog.init(ResumeMachineDialog.DTYPE_HANDOVER, entity, new ResumeMachineDialog.DialogClickListener() {
-            @Override
-            public void onChangeHuman() {
+        resumeMachineDialog.init(ResumeMachineDialog.DTYPE_HANDOVER, entity,
+                new ResumeMachineDialog.DialogClickListener() {
+                    @Override
+                    public void onChangeHuman() {
+                        mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
+                        tvUsername.setText(MfhLoginService.get().getHumanName());
 
-                //初始化收银,createdBy(humanId)已经改变
-                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
-                retryLogin(true);
-            }
-        });
+                        retryLogin(true);
+                    }
+                });
         resumeMachineDialog.show();
     }
 
@@ -346,7 +340,6 @@ public class AdministratorActivity extends BaseActivity {
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FRAGMENT_TYPE_DAILY_SETTLE);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
         extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
-        extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -386,7 +379,7 @@ public class AdministratorActivity extends BaseActivity {
 
     /**
      * 获取菜单
-     * */
+     */
     public synchronized List<CashierFunctional> getAdminMenus() {
         List<CashierFunctional> functionalList = new ArrayList<>();
 //        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRESH,
@@ -423,8 +416,6 @@ public class AdministratorActivity extends BaseActivity {
                 "授信", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CANARY,
-                "金丝雀", R.mipmap.ic_canary));
 
         return functionalList;
     }
@@ -455,8 +446,6 @@ public class AdministratorActivity extends BaseActivity {
             redirect2Settings();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CASHQUOTA) == 0) {
             redirect2CashQuota();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CANARY) == 0) {
-            redirect2Canary();
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }
@@ -536,6 +525,7 @@ public class AdministratorActivity extends BaseActivity {
                 SimpleActivity.FT_SETTINGS);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
+
     /**
      * 现金授权
      */
@@ -606,13 +596,17 @@ public class AdministratorActivity extends BaseActivity {
                         //注册到消息桥
                         IMClient.getInstance().registerBridge();
 
-                        dataSync(true);
+                        //初始化收银,createdBy(humanId)已经改变
+                        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
                     }
 
                     @Override
                     public void loginFailed(String errMsg) {
                         //登录失败
                         ZLogger.df("重登录失败：" + errMsg);
+                        //初始化收银,createdBy(humanId)已经改变
+                        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
+
                         if (!bSlient) {
                             redirectToLogin();
                         }
@@ -643,43 +637,5 @@ public class AdministratorActivity extends BaseActivity {
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
     }
-
-    private void reload(boolean isSlient) {
-        mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
-        tvUsername.setText(MfhLoginService.get().getHumanName());
-
-       //设置需要更新前台类目
-        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
-        //设置需要更新商品中心,商品后台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
-
-        //清除缓存数据
-        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
-
-        dataSync(isSlient);
-    }
-
-    /**
-     * 数据同步
-     *
-     * @param isSlient true:后台同步数据；false:显示进度对话框。
-     */
-    private void dataSync(boolean isSlient) {
-// TODO: 5/20/16 刷新用户信息
-        //账号发生改变
-        if (MfhLoginService.get().isCompanyOrOfficeChanged()) {
-            AppHelper.clearAppData();
-        }
-
-//        AppHelper.clearCache();
-//        hideSyncDataDialog();
-        if (!isSlient) {
-            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", false);
-        }
-        DataSyncManager.get().sync();
-    }
-
-
 
 }

@@ -183,7 +183,8 @@ public class SerialManager {
      * 打开钱箱
      * */
     public static void openMoneyBox(){
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_STX_M));
+        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                CommandConstants.CMD_HEX_STX_M));
 
         EscCommand esc = new EscCommand();
         esc.addGeneratePluseAtRealtime(TscCommand.FOOT.F2, (byte)20);

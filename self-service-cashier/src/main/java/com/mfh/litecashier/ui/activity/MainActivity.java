@@ -27,6 +27,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
@@ -61,7 +62,6 @@ import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.SerialManager;
-import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
@@ -218,16 +218,13 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //刷新挂单
         refreshFloatHangup();
 
-        initCashierOrder();
-
         reload(true);
+        ValidateManager.get().batchValidate();
 
         //打开秤的串口
         OpenComPort(comScale);
 
         cloudSpeak("欢迎使用米西厨房智能收银系统");
-
-        ZLogger.d("小版本标记：2016-07-28-001");
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
@@ -264,9 +261,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     protected void onDestroy() {
         super.onDestroy();
 
-        DataCacheHelper.getInstance().reset();
-
-        AppHelper.clearTempData();
+        AppHelper.clearCacheData();
     }
 
 
@@ -385,9 +380,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             SerialManager.feedPaper();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_MONEYBOX) == 0) {
             openMoneyBox();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_CLEAR_ORDER) == 0) {
-            initCashierOrder();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
+        }else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
             hangUpOrder();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_SETTINGS) == 0) {
             redirectToSettings();
@@ -751,8 +744,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             @Override
             public void onSignInSuccess() {
                 UIHelper.startActivity(MainActivity.this, AdministratorActivity.class);
-// TODO: 5/19/16
-//                UIHelper.startActivity(this, SettingsActivity.class);
             }
         });
         mAdministratorSigninDialog.show();
@@ -762,20 +753,45 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 重新加载数据
      */
     private void reload(boolean isSlient) {
-        //设置需要更新前台类目
-        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
-        //设置需要更新商品中心,商品后台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
+        try {
+            if (inlvBarcode != null) {
+                inlvBarcode.clear();
+                inlvBarcode.requestFocusEnd();
+            }
 
-        //清除缓存数据
-        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
+            //刷新上一单数据
+            refreshLastOrder(null);
+
+            //加载订单
+            if (!StringUtils.isEmpty(curPosTradeNo)) {
+                CashierShopcartService.getInstance()
+                        .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+            }
+            obtaincurPosTradeNo(null);
+            if (productAdapter != null){
+                productAdapter.setEntityList(null);
+            }
+
+            //刷新挂单
+            refreshFloatHangup();
+
+            UploadSyncManager.getInstance().sync();
+
+            //设置需要更新前台类目
+            SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
+            //设置需要更新商品中心,商品后台类目
+            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
+            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
+
+            //清除缓存数据
+            ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
 
 //        hideRightSideFragment();
 
-        dataSync(isSlient);
-
-        ValidateManager.get().batchValidate();
+            dataSync(isSlient);
+        } catch (Exception e) {
+            ZLogger.ef(e.toString());
+        }
     }
 
     public void onEventMainThread(AffairEvent event) {
@@ -838,7 +854,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 alipayDialog.dismiss();
             }
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
-            initCashierOrder();
+            reload(true);
         } else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
             LocalFrontCategoryGoods goods = (LocalFrontCategoryGoods) bundle.getSerializable("goods");
             cashierGoods(goods);
@@ -1059,8 +1075,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
                     ZLogger.df("取消收银订单支付2");
                     btnSettle.setEnabled(true);
                 }
-
-
             }
             break;
             case Constants.ARC_CREATE_PURCHASE_GOODS: {
@@ -1073,8 +1087,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             case Constants.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
-                    //初始化收银
-                    initCashierOrder();
                     reload(true);
                 }
             }
@@ -1119,7 +1131,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
                     WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
                     JSONObject.toJSONString(cashierOrderInfo)));
-
 
             // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
             CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
@@ -1256,10 +1267,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 开钱箱
      */
     public void openMoneyBox() {
-        //打开钱箱
         SerialManager.openMoneyBox();
     }
-
 
     /**
      * 初始化条码输入
@@ -1432,6 +1441,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
             tvLastQuantity.setText(String.format("数量: %.2f", 0D));
             tvLastDiscount.setText(String.format("优惠: ¥%.2f", 0D));
             tvLastCharge.setText(String.format("找零: ¥%.2f", 0D));
+
+            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
         }
     }
 
@@ -1446,37 +1457,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
         } else {
             fabHangup.setText("0");
             fabHangup.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * 初始化收银
-     */
-    private void initCashierOrder() {
-        try {
-            if (inlvBarcode != null) {
-                inlvBarcode.clear();
-                inlvBarcode.requestFocusEnd();
-            }
-
-            //刷新上一单数据
-            refreshLastOrder(null);
-
-            //加载订单
-            if (StringUtils.isEmpty(curPosTradeNo)) {
-                CashierShopcartService.getInstance()
-                        .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
-            }
-            obtaincurPosTradeNo(null);
-            productAdapter.setEntityList(null);
-
-            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
-            //刷新挂单
-            refreshFloatHangup();
-
-            UploadSyncManager.getInstance().sync();
-        } catch (Exception e) {
-            ZLogger.e(e.toString());
         }
     }
 
@@ -1505,10 +1485,10 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
 
 //        //重新生成订单
-//        if (!StringUtils.isEmpty(curPosTradeNo)) {
-//            CashierShopcartService.getInstance()
-//                    .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
-//        }
+        if (!StringUtils.isEmpty(curPosTradeNo)) {
+            CashierShopcartService.getInstance()
+                    .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+        }
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
     }

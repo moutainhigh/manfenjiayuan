@@ -206,8 +206,8 @@ public class CashQuotaFragment extends BaseProgressFragment {
                 int totalItemCount = mRLayoutManager.getItemCount();
                 //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
                 // dy>0 表示向下滑动
-                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"),
-                        lastVisibleItem, totalItemCount));
+//                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"),
+//                        lastVisibleItem, totalItemCount));
                 if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
                     if (!isLoadingMore) {
                         loadMore();

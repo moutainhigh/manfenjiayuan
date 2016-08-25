@@ -154,7 +154,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
 //            //同步数据
 //            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
 
-            ValidateManager.get().batchValidate();
+            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
         }
         //现金授权额度将要用完，即将锁定pos机
         else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){

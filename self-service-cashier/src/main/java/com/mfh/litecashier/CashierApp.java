@@ -86,7 +86,7 @@ public class CashierApp extends MfhApplication {
         //do release operation
         ZLogger.d("onLowMemory");
 
-        AppHelper.clearCache();
+        AppHelper.clearCacheData();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CashierApp extends MfhApplication {
         ZLogger.d("onTrimMemory:" + level);
 
         if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
-            AppHelper.clearCache();
+            AppHelper.clearCacheData();
         }
     }
 
