@@ -13,22 +13,24 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_user.bean.Human;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -40,13 +42,10 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.ui.adapter.InventoryTransGoodsAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -211,20 +210,18 @@ public class InventoryTransFragment extends BaseFragment {
         human.setHeadimageUrl(MfhLoginService.get().getHeadimage());
 
         //当前收银信息
-        List<CashierOrderItemInfo> cashierOrderItemInfos = new ArrayList<>();
-        CashierOrderItemInfo itemInfo = new CashierOrderItemInfo();
-        itemInfo.setOrderId(orderId);
-        itemInfo.setbCount(1D);
-        itemInfo.setRetailAmount(amount);
-        itemInfo.setFinalAmount(amount);
-        itemInfo.setAdjustDiscountAmount(0D);
-        itemInfo.setDiscountRate(1D);
-        itemInfo.setBrief("库存调拨订单支付");
-        itemInfo.setProductsInfo(null);
-        cashierOrderItemInfos.add(itemInfo);
+        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
+        cashierOrderItemInfo.setOrderId(orderId);
+        cashierOrderItemInfo.setbCount(1D);
+        cashierOrderItemInfo.setRetailAmount(amount);
+        cashierOrderItemInfo.setFinalAmount(amount);
+        cashierOrderItemInfo.setAdjustDiscountAmount(0D);
+        cashierOrderItemInfo.setDiscountRate(1D);
+        cashierOrderItemInfo.setBrief("库存调拨订单支付");
+        cashierOrderItemInfo.setProductsInfo(null);
 
         CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
-        cashierOrderInfo.initQuickPayment(BizType.STOCK, "", cashierOrderItemInfos,
+        cashierOrderInfo.initQuickPayment(BizType.STOCK, "", cashierOrderItemInfo,
                 "支付调拨入库单", human);
 
         //支付

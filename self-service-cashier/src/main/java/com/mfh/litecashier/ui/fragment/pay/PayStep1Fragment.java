@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.mfh.framework.api.constant.WayType;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
@@ -23,11 +25,8 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
@@ -205,13 +204,11 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         Bundle parArgs = new Bundle();
-        List<CashierOrderItemInfo> cashierOrderItemInfoList = cashierOrderInfo.getCashierOrderItemInfos();
-        if (cashierOrderItemInfoList != null && cashierOrderItemInfoList.size() > 0) {
-            parArgs.putLong(BasePayFragment.EXTRA_KEY_ORDER_ID,
-                    cashierOrderItemInfoList.get(0).getOrderId());
-            parArgs.putString(BasePayFragment.EXTRA_KEY_BODY,
-                    cashierOrderItemInfoList.get(0).getBrief());
-        }
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+        parArgs.putLong(BasePayFragment.EXTRA_KEY_ORDER_ID,
+                cashierOrderItemInfo.getOrderId());
+        parArgs.putString(BasePayFragment.EXTRA_KEY_BODY,
+                cashierOrderItemInfo.getBrief());
         parArgs.putString(BasePayFragment.EXTRA_KEY_ORDER_BARCODE,
                 cashierOrderInfo.getPosTradeNo());
         parArgs.putString(BasePayFragment.EXTRA_KEY_SUBJECT,

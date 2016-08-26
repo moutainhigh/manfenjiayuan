@@ -194,10 +194,8 @@ public class PayStep2Fragment extends BasePayStepFragment {
     @Override
     protected void refresh() {
         if (cashierOrderInfo != null) {
-            List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
-            if (cashierOrderItemInfos != null && cashierOrderItemInfos.size() > 0) {
-                orderId = cashierOrderItemInfos.get(0).getOrderId();
-            }
+            CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+            orderId = cashierOrderItemInfo.getOrderId();
             bizType = String.valueOf(cashierOrderInfo.getBizType());
 
             handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
@@ -263,21 +261,16 @@ public class PayStep2Fragment extends BasePayStepFragment {
         }
 
         JSONArray jsonArray = new JSONArray();
-        List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
-        if (cashierOrderItemInfos != null && cashierOrderItemInfos.size() > 0) {
-            for (CashierOrderItemInfo cashierOrderItemInfo : cashierOrderItemInfos) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("payType", curPayType);
-                jsonObject.put("humanId", mMemberInfo.getId());
-                jsonObject.put("btype", cashierOrderInfo.getBizType());
-                jsonObject.put("discount", cashierOrderItemInfo.getDiscountRate());
-                jsonObject.put("createdDate", TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS));
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("payType", curPayType);
+        jsonObject.put("humanId", mMemberInfo.getId());
+        jsonObject.put("btype", cashierOrderInfo.getBizType());
+        jsonObject.put("discount", cashierOrderItemInfo.getDiscountRate());
+        jsonObject.put("createdDate", TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS));
 //        jsonObject.put("subdisId", new Date());//会员所属小区
-                jsonObject.put("items", cashierOrderItemInfo.getProductsInfo());
-
-                jsonArray.add(jsonObject);
-            }
-        }
+        jsonObject.put("items", cashierOrderItemInfo.getProductsInfo());
+        jsonArray.add(jsonObject);
 
         CashierApiImpl.findMarketRulesByOrderInfos(jsonArray.toJSONString(), marketRulesRC);
     }
@@ -347,28 +340,24 @@ public class PayStep2Fragment extends BasePayStepFragment {
         final Map<Long, List<CouponRule>> selectCouponsMap = couponAdapter.getSelectSplitCoupons();
 
         JSONArray jsonstr = new JSONArray();
-        List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
-        if (cashierOrderItemInfos != null && cashierOrderItemInfos.size() > 0) {
-            for (CashierOrderItemInfo cashierOrderItemInfo : cashierOrderItemInfos) {
-                JSONObject orderInfo = new JSONObject();
-                orderInfo.put("humanId", mMemberInfo.getId());
-                orderInfo.put("payType", curPayType);
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+        JSONObject orderInfo = new JSONObject();
+        orderInfo.put("humanId", mMemberInfo.getId());
+        orderInfo.put("payType", curPayType);
 //        jsonObject.put("discount", cashierOrderInfo.getDiscountRate());
 //        jsonObject.put("discount", 1);
-                orderInfo.put("amount",
-                        cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount());
-                orderInfo.put("createdDate", TimeCursor.InnerFormat.format(new Date()));
+        orderInfo.put("amount",
+                cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount());
+        orderInfo.put("createdDate", TimeCursor.InnerFormat.format(new Date()));
 //        jsonObject.put("subdisId", new Date());//会员所属小区
-                orderInfo.put("items", cashierOrderItemInfo.getProductsInfo());
+        orderInfo.put("items", cashierOrderItemInfo.getProductsInfo());
 
-                JSONObject jsonstrItem = new JSONObject();
-                jsonstrItem.put("rules", CashierAgent.getRuleIds(cashierOrderItemInfo.getOrderMarketRules()));
-                jsonstrItem.put("couponsIds", CashierAgent.getSelectCouponIds(selectCouponsMap,
-                        cashierOrderItemInfo.getOrderId()));
-                jsonstrItem.put("orderInfo", orderInfo);
-                jsonstr.add(jsonstrItem);
-            }
-        }
+        JSONObject jsonstrItem = new JSONObject();
+        jsonstrItem.put("rules", CashierAgent.getRuleIds(cashierOrderItemInfo.getOrderMarketRules()));
+        jsonstrItem.put("couponsIds", CashierAgent.getSelectCouponIds(selectCouponsMap,
+                cashierOrderItemInfo.getOrderId()));
+        jsonstrItem.put("orderInfo", orderInfo);
+        jsonstr.add(jsonstrItem);
 
         //保存
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PayAmount,

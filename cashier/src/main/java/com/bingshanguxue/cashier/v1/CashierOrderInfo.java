@@ -25,7 +25,7 @@ public class CashierOrderInfo implements java.io.Serializable {
     private String subject;
 
     //订单明细
-    private List<CashierOrderItemInfo> mCashierOrderItemInfos;
+    private CashierOrderItemInfo mCashierOrderItemInfo = new CashierOrderItemInfo();
     //当mCashierOrderItemInfos发生改变的时候，更新下面数据信息
     private Double bCount = 0D;//商品总数量
     private Double retailAmount = 0D;//商品零售总金额
@@ -85,22 +85,13 @@ public class CashierOrderInfo implements java.io.Serializable {
     }
 
     private void onDatasetChanged(){
-        Double bCount = 0D, retailAmount = 0D, finalAmount = 0D, adjustAmount = 0D;
         List<DiscountInfo> discountInfos = new ArrayList<>();
-        if (mCashierOrderItemInfos != null && mCashierOrderItemInfos.size() > 0) {
-            for (CashierOrderItemInfo itemInfo : mCashierOrderItemInfos) {
-                bCount += itemInfo.getbCount();
-                retailAmount += itemInfo.getRetailAmount();
-                finalAmount += itemInfo.getFinalAmount();
-                adjustAmount += itemInfo.getAdjustDiscountAmount();
-                discountInfos.add(itemInfo.getDiscountInfo());
-            }
-        }
+        discountInfos.add(mCashierOrderItemInfo.getDiscountInfo());
 
-        this.bCount = bCount;
-        this.retailAmount = retailAmount;
-        this.finalAmount = finalAmount;
-        this.adjustAmount = adjustAmount;
+        this.bCount = mCashierOrderItemInfo.getbCount();
+        this.retailAmount = mCashierOrderItemInfo.getRetailAmount();
+        this.finalAmount = mCashierOrderItemInfo.getFinalAmount();
+        this.adjustAmount = mCashierOrderItemInfo.getAdjustDiscountAmount();
         this.mDiscountInfos = discountInfos;
     }
 
@@ -128,12 +119,12 @@ public class CashierOrderInfo implements java.io.Serializable {
         this.posTradeNo = posTradeNo;
     }
 
-    public List<CashierOrderItemInfo> getCashierOrderItemInfos() {
-        return mCashierOrderItemInfos;
+    public CashierOrderItemInfo getCashierOrderItemInfo() {
+        return mCashierOrderItemInfo;
     }
 
-    public void setCashierOrderItemInfos(List<CashierOrderItemInfo> cashierOrderItemInfos) {
-        mCashierOrderItemInfos = cashierOrderItemInfos;
+    public void setCashierOrderItemInfo(CashierOrderItemInfo cashierOrderItemInfo) {
+        mCashierOrderItemInfo = cashierOrderItemInfo;
     }
 
     public String getSubject() {
@@ -169,15 +160,15 @@ public class CashierOrderInfo implements java.io.Serializable {
      *
      * @param orderBarCode 订单编号
      * @param bizType    业务类型
-     * @param mCashierOrderItemInfos 结算明细
+     * @param cashierOrderItemInfo 结算明细
      *                   TOTO,修改支付类型和已结算金额
      */
     public void initCashierSetle(String orderBarCode, Integer bizType,
-                                 List<CashierOrderItemInfo> mCashierOrderItemInfos,
+                                 CashierOrderItemInfo cashierOrderItemInfo,
                                  String subject, Human vipMember, Double paidAmount) {
         this.posTradeNo = orderBarCode;
         this.bizType = bizType;
-        this.mCashierOrderItemInfos = mCashierOrderItemInfos;
+        this.mCashierOrderItemInfo = cashierOrderItemInfo;
         this.subject = subject;
         this.vipMember = vipMember;
         this.paidAmount = paidAmount;
@@ -193,11 +184,11 @@ public class CashierOrderInfo implements java.io.Serializable {
      *                               TOTO,修改支付类型和已结算金额
      */
     public void initQuickPayment(Integer bizType, String orderBarCode,
-                                 List<CashierOrderItemInfo> mCashierOrderItemInfos,
+                                 CashierOrderItemInfo cashierOrderItemInfo,
                                  String subject, Human vipMember) {
         this.posTradeNo = orderBarCode;
         this.bizType = bizType;
-        this.mCashierOrderItemInfos = mCashierOrderItemInfos;
+        this.mCashierOrderItemInfo = cashierOrderItemInfo;
         this.subject = subject;
         this.vipMember = vipMember;
         onDatasetChanged();
@@ -208,27 +199,22 @@ public class CashierOrderInfo implements java.io.Serializable {
      * 保存卡券和促销规则
      */
     public void couponPrivilege(List<OrderMarketRules> marketRulesList) {
-        //没有明细，无法保存优惠券
-        if (mCashierOrderItemInfos == null || mCashierOrderItemInfos.size() < 1) {
+        //没有明细，无法保存优惠券计算结果
+        if (mCashierOrderItemInfo == null) {
+            ZLogger.df("没有明细，无法保存优惠券");
             return;
         }
 
         //优惠券和明细不匹配
-        if (marketRulesList == null || marketRulesList.size() != mCashierOrderItemInfos.size()) {
-            for (CashierOrderItemInfo cashierOrderItemInfo : mCashierOrderItemInfos) {
-                cashierOrderItemInfo.setOrderMarketRules(null);
-            }
+        if (marketRulesList == null || marketRulesList.size() < 1) {
+            mCashierOrderItemInfo.setOrderMarketRules(null);
             return;
         }
 
-        for (int i = 0; i < marketRulesList.size(); i++) {
-            CashierOrderItemInfo cashierOrderItemInfo = mCashierOrderItemInfos.get(i);
-
-            OrderMarketRules orderMarketRules = marketRulesList.get(i);
-            orderMarketRules.setSplitOrderId(cashierOrderItemInfo.getOrderId());
-            orderMarketRules.setFinalAmount(cashierOrderItemInfo.getFinalAmount());
-            cashierOrderItemInfo.setOrderMarketRules(orderMarketRules);
-        }
+        OrderMarketRules orderMarketRules = marketRulesList.get(0);
+        orderMarketRules.setSplitOrderId(mCashierOrderItemInfo.getOrderId());
+        orderMarketRules.setFinalAmount(mCashierOrderItemInfo.getFinalAmount());
+        mCashierOrderItemInfo.setOrderMarketRules(orderMarketRules);
     }
 
     /**
@@ -238,37 +224,34 @@ public class CashierOrderInfo implements java.io.Serializable {
      */
     public boolean saveCouponDiscount(List<PayAmount> amountArray,
                           Map<Long, List<CouponRule>> couponsMap) {
-        //没有明细，无法保存优惠券计算结果
-        if (mCashierOrderItemInfos == null || mCashierOrderItemInfos.size() < 1) {
-            ZLogger.df("没有明细，无法保存优惠券计算结果");
-            return false;
-        }
-
         //检查输入参数是否正确
         if (amountArray == null ||
-                amountArray.size() != mCashierOrderItemInfos.size()) {
+                amountArray.size() < 1) {
             ZLogger.df("输入参数不正确");
             return false;
         }
         ZLogger.df(String.format("保存会员/优惠券优惠金额\n%s", JSON.toJSONString(amountArray)));
 
-        for (int i = 0; i < mCashierOrderItemInfos.size(); i++) {
-            CashierOrderItemInfo cashierOrderItemInfo = mCashierOrderItemInfos.get(i);
-            PayAmount payAmount = amountArray.get(i);
-
-            //2016-07-04 这里的促销卡券优惠金额都是后台返回来的，可能单个值或累加值大于应付金额，
-            // 保存的时候应该有所裁剪，否则可能会影响后面的计算结果
-            DiscountInfo discountInfo = cashierOrderItemInfo.getDiscountInfo();
-            discountInfo.setRuleDiscountAmount(payAmount.getRuleAmount());
-            discountInfo.setCouponDiscountAmount(payAmount.getCoupAmount());
-            discountInfo.setEffectAmount(cashierOrderItemInfo.getFinalAmount()
-                    - cashierOrderItemInfo.getPaidAmount() - payAmount.getPayAmount());
-            // TODO: 5/26/16 选中的优惠券和订单可用的优惠券进行二次校验
-            discountInfo.setCouponsIds(CashierAgent.getSelectCouponIds(couponsMap,
-                    cashierOrderItemInfo.getOrderId()));
-            discountInfo.setRuleIds(CashierAgent.getRuleIds(cashierOrderItemInfo.getOrderMarketRules()));
-            cashierOrderItemInfo.setDiscountInfo(discountInfo);
+        //没有明细，无法保存优惠券计算结果
+        if (mCashierOrderItemInfo == null) {
+            ZLogger.df("没有明细，无法保存优惠券计算结果");
+            return false;
         }
+
+        PayAmount payAmount = amountArray.get(0);
+
+        //2016-07-04 这里的促销卡券优惠金额都是后台返回来的，可能单个值或累加值大于应付金额，
+        // 保存的时候应该有所裁剪，否则可能会影响后面的计算结果
+        DiscountInfo discountInfo = mCashierOrderItemInfo.getDiscountInfo();
+        discountInfo.setRuleDiscountAmount(payAmount.getRuleAmount());
+        discountInfo.setCouponDiscountAmount(payAmount.getCoupAmount());
+        discountInfo.setEffectAmount(mCashierOrderItemInfo.getFinalAmount()
+                - mCashierOrderItemInfo.getPaidAmount() - payAmount.getPayAmount());
+        // TODO: 5/26/16 选中的优惠券和订单可用的优惠券进行二次校验
+        discountInfo.setCouponsIds(CashierAgent.getSelectCouponIds(couponsMap,
+                mCashierOrderItemInfo.getOrderId()));
+        discountInfo.setRuleIds(CashierAgent.getRuleIds(mCashierOrderItemInfo.getOrderMarketRules()));
+        mCashierOrderItemInfo.setDiscountInfo(discountInfo);
 
         onDatasetChanged();
 

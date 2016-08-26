@@ -70,15 +70,14 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
 
-        Double amount = 0D;
-        if (cashierOrderItemInfos != null && cashierOrderItemInfos.size() > 0) {
-            for (CashierOrderItemInfo itemInfo : cashierOrderItemInfos) {
-                amount += itemInfo.getChange();
-            }
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+        if (cashierOrderItemInfo != null){
+            return cashierOrderItemInfo.getChange();
         }
-        return amount;
+        else{
+            return 0D;
+        }
     }
 
     /**
@@ -88,15 +87,13 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
-
-        Double amount = 0D;
-        if (cashierOrderItemInfos != null && cashierOrderItemInfos.size() > 0) {
-            for (CashierOrderItemInfo itemInfo : cashierOrderItemInfos) {
-                amount += (itemInfo.getFinalAmount() - itemInfo.getPaidAmount());
-            }
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+        if (cashierOrderItemInfo != null){
+            return cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount();
         }
-        return amount;
+        else{
+            return 0D;
+        }
     }
 
     /**
@@ -107,12 +104,11 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
-
         Double amount = 0D;
-        for (CashierOrderItemInfo itemInfo : cashierOrderItemInfos) {
-            Double temp = itemInfo.getFinalAmount() - itemInfo.getPaidAmount();
-            DiscountInfo discountInfo = itemInfo.getDiscountInfo();
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
+        if (cashierOrderItemInfo != null){
+            Double temp = cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount();
+            DiscountInfo discountInfo = cashierOrderItemInfo.getDiscountInfo();
             if (discountInfo != null) {
                 temp -= discountInfo.getEffectAmount();
             }
@@ -133,26 +129,5 @@ public class CashierOrderInfoImpl {
 
         //精确到分
         return Double.valueOf(String.format("%.2f", amount));
-    }
-
-    /**
-     * 根据拆分订单编号找到订单支付信息
-     */
-    public static CashierOrderItemInfo getCashierOrderItemInfo(CashierOrderInfo cashierOrderInfo,
-                                                               Long orderId) {
-        if (cashierOrderInfo == null || orderId == null) {
-            return null;
-        }
-
-        List<CashierOrderItemInfo> cashierOrderItemInfos = cashierOrderInfo.getCashierOrderItemInfos();
-        if (cashierOrderItemInfos != null && cashierOrderItemInfos.size() > 0) {
-            for (CashierOrderItemInfo itemInfo : cashierOrderItemInfos) {
-                if (itemInfo.getOrderId().equals(orderId)) {
-                    return itemInfo;
-                }
-            }
-        }
-
-        return null;
     }
 }

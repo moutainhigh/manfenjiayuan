@@ -129,19 +129,18 @@ public class CashierAgent {
 
         String subject = String.format("订单信息：流水号：%s，交易类型：%s",
                 orderBarCode, BizType.name(bizType));
-        //加载拆分订单
-        List<CashierOrderItemInfo> cashierOrderItemInfos = new ArrayList<>();
+        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
         Double paidAmount = 0D;
         PosOrderEntity orderEntity = fetchOrderEntity(bizType, orderBarCode);
         if (orderEntity != null){
             //加载订单明细
-            cashierOrderItemInfos.add(genCashierorderItemInfo(orderEntity));
+            cashierOrderItemInfo = genCashierorderItemInfo(orderEntity);
             //加载已支付金额
             OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
             paidAmount += payWrapper.getPaidAmount();
         }
 
-        cashierOrderInfo.initCashierSetle(orderBarCode, bizType, cashierOrderItemInfos,
+        cashierOrderInfo.initCashierSetle(orderBarCode, bizType, cashierOrderItemInfo,
                 subject, customerMembershipInfo, paidAmount);
 
         return cashierOrderInfo;
@@ -269,8 +268,7 @@ public class CashierAgent {
             return false;
         }
 
-        CashierOrderItemInfo cashierOrderItemInfo = CashierOrderInfoImpl
-                .getCashierOrderItemInfo(cashierOrderInfo, orderEntity.getId());
+        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
         if (cashierOrderItemInfo == null) {
             return false;
         }

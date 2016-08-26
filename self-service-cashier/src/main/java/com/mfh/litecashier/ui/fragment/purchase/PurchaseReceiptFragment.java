@@ -13,16 +13,18 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_user.bean.Human;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -35,12 +37,9 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvRecvOrderEvent;
 import com.mfh.litecashier.event.PurchaseReceiptEvent;
 import com.mfh.litecashier.ui.adapter.PurchaseReceiptGoodsAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -228,21 +227,19 @@ public class PurchaseReceiptFragment extends BaseFragment {
         human.setHeadimageUrl(MfhLoginService.get().getHeadimage());
 
         //当前收银信息
-        List<CashierOrderItemInfo> cashierOrderItemInfos = new ArrayList<>();
-        CashierOrderItemInfo itemInfo = new CashierOrderItemInfo();
-        itemInfo.setOrderId(receivableOrder.getId());
-        itemInfo.setbCount(1D);
-        itemInfo.setRetailAmount(receivableOrder.getCommitPrice());
-        itemInfo.setFinalAmount(receivableOrder.getCommitPrice());
-        itemInfo.setAdjustDiscountAmount(0D);
-        itemInfo.setDiscountRate(1D);
-        itemInfo.setBrief(String.format("收货单%s支付", receivableOrder.getOrderName()));
-        itemInfo.setProductsInfo(null);
-        cashierOrderItemInfos.add(itemInfo);
+        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
+        cashierOrderItemInfo.setOrderId(receivableOrder.getId());
+        cashierOrderItemInfo.setbCount(1D);
+        cashierOrderItemInfo.setRetailAmount(receivableOrder.getCommitPrice());
+        cashierOrderItemInfo.setFinalAmount(receivableOrder.getCommitPrice());
+        cashierOrderItemInfo.setAdjustDiscountAmount(0D);
+        cashierOrderItemInfo.setDiscountRate(1D);
+        cashierOrderItemInfo.setBrief(String.format("收货单%s支付", receivableOrder.getOrderName()));
+        cashierOrderItemInfo.setProductsInfo(null);
 
         CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
         cashierOrderInfo.initQuickPayment(BizType.STOCK, "",
-                cashierOrderItemInfos, "支付采购收货单", human);
+                cashierOrderItemInfo, "支付采购收货单", human);
 
         //支付
         if (payDialog == null) {
