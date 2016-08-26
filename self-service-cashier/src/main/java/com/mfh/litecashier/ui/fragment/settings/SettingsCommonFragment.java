@@ -12,8 +12,8 @@ import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -28,10 +28,10 @@ import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
-import com.mfh.litecashier.service.DialogManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.tencent.bugly.beta.Beta;
 
@@ -179,8 +179,14 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         dialog.dismiss();
 
                         showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
+
+                        // 强制同步
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 99);
+                        SharedPreferencesHelper.setSyncProductsCursor("");
+                        SharedPreferencesHelper.setPosSkuLastUpdate("");
+
                         EventBus.getDefault().post(
-                                new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE));
+                                new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -225,7 +231,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
      */
     @OnClick(R.id.item_terminal)
     public void registerPlat() {
-        DialogManager.getInstance().registerPos(getActivity());
+        GlobalInstance.getInstance().registerPos(getActivity());
     }
 
     @OnClick(R.id.item_version)

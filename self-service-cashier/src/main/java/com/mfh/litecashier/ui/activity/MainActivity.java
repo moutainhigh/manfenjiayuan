@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -26,10 +25,10 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.v1.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -44,7 +43,6 @@ import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -66,7 +64,6 @@ import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
-import com.mfh.litecashier.service.DialogManager;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
@@ -92,13 +89,11 @@ import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.tencent.bugly.beta.Beta;
 
 import net.tsz.afinal.FinalDb;
-
-import org.century.GreenTagsApi;
 
 import java.util.List;
 
@@ -626,6 +621,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
 
         //同步数据
+        ZLogger.d("点击同步按钮，准备同步数据...");
         DataSyncManager.get().sync();
     }
 
@@ -719,8 +715,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             //清除缓存数据
             ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
 
-//        hideRightSideFragment();
-
+            ZLogger.d("重新加载数据，准备同步数据...");
             dataSync(isSlient);
         } catch (Exception e) {
             ZLogger.ef(e.toString());
@@ -731,30 +726,13 @@ public class MainActivity extends CashierActivity implements ICashierView {
         int eventId = event.getAffairId();
         Bundle bundle = event.getArgs();
         ZLogger.d(String.format("AffairEvent(%d)", eventId));
-        if (eventId == AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE) {
-            if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-                DialogUtil.showHint(R.string.toast_network_error);
-                return;
-            }
-
-            PosProductService.get().clear();
-            PosProductSkuService.get().clear();
-            SharedPreferencesHelper.setSyncProductsCursor("");
-            SharedPreferencesHelper.setPosSkuLastUpdate("");
-            SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
-                    GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
-            SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
-                    SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
-
-//            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...", true, false);
-            btnSync.startSync();
-            DataSyncManager.get().sync();
-        } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
+        if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
             int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
             if (count > 1) {
+                ZLogger.d("SKU更新，准备同步数据...");
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
                 btnSync.startSync();
-                DataSyncManager.get().sync();
+                DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
             } else {
                 btnSync.setBadgeEnabled(true);
             }
@@ -826,11 +804,12 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED: {
+                ZLogger.d("重登录成功，准备同步数据...");
                 dataSync(true);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
-                DialogManager.getInstance().registerPos(MainActivity.this);
+                GlobalInstance.getInstance().registerPos(MainActivity.this);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INCOME_DESTRIBUTION_TOPUP: {
@@ -932,11 +911,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 CashierOrderInfo cashierOrderInfo = CashierAgent.settle(curPosTradeNo,
                         PosOrderEntity.ORDER_STATUS_STAY_PAY, productAdapter.getEntityList());
                 if (cashierOrderInfo != null) {
+                    ZLogger.df(String.format("[点击结算]--生成结算信息：%s",
+                            JSON.toJSONString(cashierOrderInfo)));
                     //显示客显
                     CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
                 }
-                ZLogger.df(String.format("[点击结算]--生成结算信息：%s",
-                        JSON.toJSONString(cashierOrderInfo)));
 
                 subscriber.onNext(cashierOrderInfo);
                 subscriber.onCompleted();
@@ -983,7 +962,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         CashierOrderInfo cashierOrderInfo = (CashierOrderInfo) data
                                 .getSerializableExtra(CashierPayActivity.EXTRA_KEY_CASHIER_ORDERINFO);
 
-                        new SettleAsyncTask(curPosTradeNo).execute(cashierOrderInfo);
+                        saveSettleResult(curPosTradeNo, cashierOrderInfo);
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     ZLogger.df("取消收银订单支付");
@@ -1033,81 +1012,81 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * <p/>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
-    private class SettleAsyncTask extends AsyncTask<CashierOrderInfo, Integer, LastOrderInfo> {
-        private String posTradeNo;
+    private void saveSettleResult(final String posTradeNo, final CashierOrderInfo cashierOrderInfo){
+        //清空当前收银列表，开始新的订单
+        obtaincurPosTradeNo(null);
+        productAdapter.setEntityList(null);
 
-        public SettleAsyncTask(String posTradeNo) {
-            this.posTradeNo = posTradeNo;
-        }
+        Observable.create(new Observable.OnSubscribe<LastOrderInfo>() {
+            @Override
+            public void call(Subscriber<? super LastOrderInfo> subscriber) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            //清空当前收银列表，开始新的订单
-            obtaincurPosTradeNo(null);
-            productAdapter.setEntityList(null);
-        }
-
-        @Override
-        protected LastOrderInfo doInBackground(CashierOrderInfo... params) {
-            //重新生成订单，清空购物车
-            if (!StringUtils.isEmpty(posTradeNo)) {
-                CashierShopcartService.getInstance()
-                        .deleteBy(String.format("posTradeNo = '%s'", posTradeNo));
-            }
-
-            CashierOrderInfo cashierOrderInfo = params[0];
-            if (cashierOrderInfo == null) {
-                return null;
-            }
-            ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
-                    WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
-                    JSONObject.toJSONString(cashierOrderInfo)));
-
-            // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
-            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
-
-            PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
-                    cashierOrderInfo.getPosTradeNo());
-            //同步订单信息
-//            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
-            //打印订单
-            PrintManager.printPosOrder(orderEntity, true);
-            //保存上一单信息
-            LastOrderInfo lastOrderInfo = CashierAgent.genLastOrderInfo(orderEntity);
-            if (lastOrderInfo != null) {
-                int payType = lastOrderInfo.getPayType();
-                Double finalAmount = lastOrderInfo.getFinalAmount();
-                Double changeAmount = lastOrderInfo.getChangeAmount();
-                Double bCount = lastOrderInfo.getbCount();
-
-                //显示找零
-//        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
-                SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
-
-                if (changeAmount >= 0.01) {
-                    cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
-                            WayType.name(payType), finalAmount, changeAmount, bCount));
-                } else {
-                    cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
-                            WayType.name(payType), finalAmount, bCount));
+                //重新生成订单，清空购物车
+                if (!StringUtils.isEmpty(posTradeNo)) {
+                    CashierShopcartService.getInstance()
+                            .deleteBy(String.format("posTradeNo = '%s'", posTradeNo));
                 }
+
+                ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
+                        WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
+                        JSONObject.toJSONString(cashierOrderInfo)));
+
+                // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
+                CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
+
+                PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
+                        cashierOrderInfo.getPosTradeNo());
+                //同步订单信息
+//            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
+                //打印订单
+                PrintManager.printPosOrder(orderEntity, true);
+                //保存上一单信息
+                LastOrderInfo lastOrderInfo = CashierAgent.genLastOrderInfo(orderEntity);
+                if (lastOrderInfo != null) {
+                    int payType = lastOrderInfo.getPayType();
+                    Double finalAmount = lastOrderInfo.getFinalAmount();
+                    Double changeAmount = lastOrderInfo.getChangeAmount();
+                    Double bCount = lastOrderInfo.getbCount();
+
+                    //显示找零
+//        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
+                    SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
+
+                    if (changeAmount >= 0.01) {
+                        cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
+                                WayType.name(payType), finalAmount, changeAmount, bCount));
+                    } else {
+                        cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
+                                WayType.name(payType), finalAmount, bCount));
+                    }
+                }
+
+
+                subscriber.onNext(lastOrderInfo);
+                subscriber.onCompleted();
             }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<LastOrderInfo>() {
+                    @Override
+                    public void onCompleted() {
 
-            //统计订单
-//            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
-            return lastOrderInfo;
-        }
+                    }
 
-        @Override
-        protected void onPostExecute(LastOrderInfo lastOrderInfo) {
-            super.onPostExecute(lastOrderInfo);
-            refreshLastOrder(lastOrderInfo);
+                    @Override
+                    public void onError(Throwable e) {
 
-            btnSettle.setEnabled(true);
-        }
+                    }
 
+                    @Override
+                    public void onNext(LastOrderInfo lastOrderInfo) {
+                        refreshLastOrder(lastOrderInfo);
+
+                        btnSettle.setEnabled(true);
+                    }
+
+                });
     }
 
     @OnClick(R.id.float_hangup)
@@ -1584,7 +1563,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
-            final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
+            final Double weightVal = GlobalInstance.getInstance().getNetWeight();
             if (weightVal > 0) {
                 addGoods2Cashier(curPosTradeNo, goods, weightVal);
             } else {
@@ -1662,7 +1641,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
-            final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
+            final Double weightVal = GlobalInstance.getInstance().getNetWeight();
             if (weightVal > 0) {
                 addGoods2Cashier(curPosTradeNo, goods, weightVal);
             } else {

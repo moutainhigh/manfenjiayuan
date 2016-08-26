@@ -329,7 +329,7 @@ public class QueryDialog extends CommonDialog {
 //                protected void processFailure(Throwable t, String errMsg) {
 //                    super.processFailure(t, errMsg);
 //                    btnSubmit.setEnabled(false);
-//                    DataCacheHelper.getInstance().setCourier(null);
+//                    GlobalInstance.getInstance().setCourier(null);
 //                }
 //
 //
@@ -361,7 +361,7 @@ public class QueryDialog extends CommonDialog {
 //
 //                    if(human != null){
 //                        ZLogger.d("查询用户成功");
-//                        DataCacheHelper.getInstance().setMfMemberInfo(human);
+//                        GlobalInstance.getInstance().setMfMemberInfo(human);
 //
 //                        Message msg = new Message();
 //                        msg.what = MSG_REFRESH_HUMANINFO;
@@ -370,7 +370,7 @@ public class QueryDialog extends CommonDialog {
 //                    }else {
 //                        ZLogger.d("查询用户失败");
 //                        btnSubmit.setEnabled(false);
-//                        DataCacheHelper.getInstance().setMfMemberInfo(null);
+//                        GlobalInstance.getInstance().setMfMemberInfo(null);
 //                    }
                 }
 
@@ -407,7 +407,7 @@ public class QueryDialog extends CommonDialog {
 //                            public void run() {
 //                                if (human != null) {
 //                                    ZLogger.d("查询用户che成功");
-//                                    DataCacheHelper.getInstance().setCourier(human);
+//                                    GlobalInstance.getInstance().setCourier(human);
 //
 //                                    tvSubTitle.setText(human.getName());
 //                                    ivHeader.setAvatarUrl(human.getHeadimageUrl());

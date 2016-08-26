@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.chinaums.mis.bank.BankDAO;
 import com.chinaums.mis.bank.ICallBack;
 import com.chinaums.mis.bean.RequestPojo;

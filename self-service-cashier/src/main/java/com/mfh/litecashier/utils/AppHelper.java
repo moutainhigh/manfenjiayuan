@@ -187,7 +187,7 @@ public class AppHelper {
         //清除图片缓存
 //        Glide.get(CashierApp.getAppContext()).clearMemory();
 
-        DataCacheHelper.getInstance().reset();
+        GlobalInstance.getInstance().reset();
     }
 //
 //    /**

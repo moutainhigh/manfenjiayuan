@@ -9,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -204,22 +203,16 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         Bundle parArgs = new Bundle();
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
         parArgs.putLong(BasePayFragment.EXTRA_KEY_ORDER_ID,
-                cashierOrderItemInfo.getOrderId());
+                cashierOrderInfo.getOrderId());
         parArgs.putString(BasePayFragment.EXTRA_KEY_BODY,
-                cashierOrderItemInfo.getBrief());
+                cashierOrderInfo.getBody());
         parArgs.putString(BasePayFragment.EXTRA_KEY_ORDER_BARCODE,
                 cashierOrderInfo.getPosTradeNo());
         parArgs.putString(BasePayFragment.EXTRA_KEY_SUBJECT,
                 cashierOrderInfo.getSubject());
-
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
-
-//        cashArags.putString(BasePayFragment.EXTRA_KEY_SUBJECT, cashierOrderInfo.getSubject());
-//        cashArags.putString(BasePayFragment.EXTRA_KEY_BODY, cashierOrderInfo.getBody());
-//        cashArags.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE, String.valueOf(cashierOrderInfo.getBizType()));
 
         mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));
@@ -231,8 +224,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
                 parArgs));
         mTabs.add(new ViewPageInfo("银行卡", "银行卡", PayByBandcardFragment.class,
                 parArgs));
-//        mTabs.add(new ViewPageInfo("赊账", "赊账", PayByCreditFragment.class,
-//                parArgs));
 
         viewPagerAdapter.addAllTab(mTabs);
 

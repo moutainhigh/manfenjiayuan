@@ -22,8 +22,8 @@ import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -42,7 +42,7 @@ import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 
 
 /**
@@ -265,7 +265,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
-            final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
+            final Double weightVal = GlobalInstance.getInstance().getNetWeight();
             if (weightVal > 0){
                 productAdapter.append(curOrderTradeNo, goods, 0 - weightVal);
             }

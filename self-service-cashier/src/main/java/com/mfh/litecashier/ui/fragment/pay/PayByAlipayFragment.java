@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
@@ -266,7 +266,7 @@ public class PayByAlipayFragment extends BasePayFragment {
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
         orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
         orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
-//        Human member = DataCacheHelper.getInstance().getMfMemberInfo();
+//        Human member = GlobalInstance.getInstance().getMfMemberInfo();
 //        if (member != null) {
 //            orderInfo.put("seller_id", member.getGuid());
 //        }

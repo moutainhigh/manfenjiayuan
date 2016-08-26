@@ -11,7 +11,7 @@ import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;

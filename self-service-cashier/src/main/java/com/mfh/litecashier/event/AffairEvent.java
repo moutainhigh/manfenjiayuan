@@ -19,7 +19,7 @@ public class AffairEvent {
     public static final int EVENT_ID_CASHIER_FRONTCATA_GOODS = 0X09;//前台类目收银
 
     //同步数据
-    public static final int EVENT_ID_SYNC_DATA_INITIALIZE = 0X20;//恢复出厂设置
+    public static final int EVENT_ID_FACTORY_DATA_RESET = 0X20;//恢复出厂设置
     public static final int EVENT_ID_SYNC_DATA_START = 0X21;//同步数据开始
     public static final int EVENT_ID_REDIRECT_TO_LOGIN = 0X11;//跳转至登录页面
 

@@ -1,10 +1,12 @@
-package com.bingshanguxue.cashier.model.wrapper;
+package com.bingshanguxue.cashier.v2;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
@@ -53,9 +55,8 @@ public class PaymentInfoImpl{
     /**
      * 拆分并保存支付信息
      * */
-    @Deprecated
     public static boolean splitSaveOrUpdate(PaymentInfo paymentInfo, Integer bizType,
-                             String orderBarCode, Human member){
+                                            String orderBarCode, Human member){
         //参数检查
         List<PosOrderEntity> orderEntities = CashierFactory
                 .fetchActiveOrderEntities(bizType, orderBarCode);

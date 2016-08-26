@@ -13,17 +13,16 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
 import com.bingshanguxue.cashier.model.PayAmount;
+import com.bingshanguxue.cashier.model.wrapper.CouponRule;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
-import com.bingshanguxue.cashier.model.wrapper.CouponRule;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.bingshanguxue.vector_user.CommonUserAccountApi;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -34,15 +33,15 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -194,8 +193,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
     @Override
     protected void refresh() {
         if (cashierOrderInfo != null) {
-            CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
-            orderId = cashierOrderItemInfo.getOrderId();
+            orderId = cashierOrderInfo.getOrderId();
             bizType = String.valueOf(cashierOrderInfo.getBizType());
 
             handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
@@ -261,15 +259,14 @@ public class PayStep2Fragment extends BasePayStepFragment {
         }
 
         JSONArray jsonArray = new JSONArray();
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("payType", curPayType);
         jsonObject.put("humanId", mMemberInfo.getId());
         jsonObject.put("btype", cashierOrderInfo.getBizType());
-        jsonObject.put("discount", cashierOrderItemInfo.getDiscountRate());
+        jsonObject.put("discount", cashierOrderInfo.getDiscountRate());
         jsonObject.put("createdDate", TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS));
 //        jsonObject.put("subdisId", new Date());//会员所属小区
-        jsonObject.put("items", cashierOrderItemInfo.getProductsInfo());
+        jsonObject.put("items", cashierOrderInfo.getProductsInfo());
         jsonArray.add(jsonObject);
 
         CashierApiImpl.findMarketRulesByOrderInfos(jsonArray.toJSONString(), marketRulesRC);
@@ -340,22 +337,20 @@ public class PayStep2Fragment extends BasePayStepFragment {
         final Map<Long, List<CouponRule>> selectCouponsMap = couponAdapter.getSelectSplitCoupons();
 
         JSONArray jsonstr = new JSONArray();
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
         JSONObject orderInfo = new JSONObject();
         orderInfo.put("humanId", mMemberInfo.getId());
         orderInfo.put("payType", curPayType);
 //        jsonObject.put("discount", cashierOrderInfo.getDiscountRate());
 //        jsonObject.put("discount", 1);
-        orderInfo.put("amount",
-                cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount());
+        orderInfo.put("amount", cashierOrderInfo.getFinalAmount() - cashierOrderInfo.getPaidAmount());
         orderInfo.put("createdDate", TimeCursor.InnerFormat.format(new Date()));
 //        jsonObject.put("subdisId", new Date());//会员所属小区
-        orderInfo.put("items", cashierOrderItemInfo.getProductsInfo());
+        orderInfo.put("items", cashierOrderInfo.getProductsInfo());
 
         JSONObject jsonstrItem = new JSONObject();
-        jsonstrItem.put("rules", CashierAgent.getRuleIds(cashierOrderItemInfo.getOrderMarketRules()));
+        jsonstrItem.put("rules", CashierAgent.getRuleIds(cashierOrderInfo.getOrderMarketRules()));
         jsonstrItem.put("couponsIds", CashierAgent.getSelectCouponIds(selectCouponsMap,
-                cashierOrderItemInfo.getOrderId()));
+                cashierOrderInfo.getOrderId()));
         jsonstrItem.put("orderInfo", orderInfo);
         jsonstr.add(jsonstrItem);
 
@@ -442,7 +437,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
         PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
                 PosOrderPayEntity.PAY_STATUS_PROCESS,
                 handleAmount, handleAmount, 0D,
-                cashierOrderInfo.getDiscountInfos());
+                cashierOrderInfo.getDiscountInfo());
 
         onPayStepProcess(paymentInfo);
     }
@@ -487,7 +482,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
                     onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
                             PosOrderPayEntity.PAY_STATUS_FINISH,
                             handleAmount, handleAmount, 0D,
-                            cashierOrderInfo.getDiscountInfos()));
+                            cashierOrderInfo.getDiscountInfo()));
                 }
 
                 @Override
@@ -499,14 +494,13 @@ public class PayStep2Fragment extends BasePayStepFragment {
                     PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
                             PosOrderPayEntity.PAY_STATUS_FAILED,
                             handleAmount, handleAmount, 0D,
-                            cashierOrderInfo.getDiscountInfos());
+                            cashierOrderInfo.getDiscountInfo());
                     onPayStepFailed(paymentInfo, errMsg);
                 }
             }
             , String.class
             , CashierApp.getAppContext()) {
     };
-
 
     @Override
     public void onPayStepFinish() {

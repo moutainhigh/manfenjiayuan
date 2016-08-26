@@ -2,8 +2,6 @@ package com.bingshanguxue.cashier.v1;
 
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 
-import java.util.List;
-
 /**
  * 收银信息
  * Created by bingshanguxue on 7/2/16.
@@ -11,21 +9,14 @@ import java.util.List;
 public class CashierOrderInfoImpl {
     /**
      * /**
-     * 获取卡券优惠
+     * 获取促销规则优惠
      */
     public static Double getRuleDiscountAmount(CashierOrderInfo cashierOrderInfo) {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        List<DiscountInfo> discountInfos = cashierOrderInfo.getDiscountInfos();
-
-        Double amount = 0D;
-        if (discountInfos != null && discountInfos.size() > 0) {
-            for (DiscountInfo discountInfo : discountInfos) {
-                amount += discountInfo.getRuleDiscountAmount();
-            }
-        }
-        return amount;
+        DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
+        return discountInfo != null ? discountInfo.getRuleDiscountAmount() : 0D;
     }
 
     /**
@@ -35,14 +26,8 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        List<DiscountInfo> discountInfos = cashierOrderInfo.getDiscountInfos();
-        Double amount = 0D;
-        if (discountInfos != null && discountInfos.size() > 0) {
-            for (DiscountInfo discountInfo : discountInfos) {
-                amount += discountInfo.getCouponDiscountAmount();
-            }
-        }
-        return amount;
+        DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
+        return discountInfo != null ? discountInfo.getCouponDiscountAmount() : 0D;
     }
 
     /**
@@ -52,32 +37,15 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        List<DiscountInfo> discountInfos = cashierOrderInfo.getDiscountInfos();
-
-        Double amount = 0D;
-        if (discountInfos != null && discountInfos.size() > 0) {
-            for (DiscountInfo discountInfo : discountInfos) {
-                amount += discountInfo.getEffectAmount();
-            }
-        }
-        return amount;
+        DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
+        return discountInfo != null ? discountInfo.getEffectAmount() : 0D;
     }
 
     /**
      * 计算找零金额
      */
     public static Double getChange(CashierOrderInfo cashierOrderInfo) {
-        if (cashierOrderInfo == null) {
-            return 0D;
-        }
-
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
-        if (cashierOrderItemInfo != null){
-            return cashierOrderItemInfo.getChange();
-        }
-        else{
-            return 0D;
-        }
+        return cashierOrderInfo != null ? cashierOrderInfo.getChange() : 0D;
     }
 
     /**
@@ -87,13 +55,7 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
-        if (cashierOrderItemInfo != null){
-            return cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount();
-        }
-        else{
-            return 0D;
-        }
+        return cashierOrderInfo.getFinalAmount() - cashierOrderInfo.getPaidAmount();
     }
 
     /**
@@ -104,25 +66,15 @@ public class CashierOrderInfoImpl {
         if (cashierOrderInfo == null) {
             return 0D;
         }
-        Double amount = 0D;
-        CashierOrderItemInfo cashierOrderItemInfo = cashierOrderInfo.getCashierOrderItemInfo();
-        if (cashierOrderItemInfo != null){
-            Double temp = cashierOrderItemInfo.getFinalAmount() - cashierOrderItemInfo.getPaidAmount();
-            DiscountInfo discountInfo = cashierOrderItemInfo.getDiscountInfo();
-            if (discountInfo != null) {
-                temp -= discountInfo.getEffectAmount();
-            }
-
-            //实际场景中应付金额不会小于1分钱，所以这里要保留两位小数
-            //2016-07-04，判断需要放在循环里，因为折扣券是对拆分后的子订单生效，不是整个大订单
-            //2016-08－15，现金支付完成后，重新计算应付金额，负数被忽略导致支付窗口没有关闭。
-//            if (temp < 0.01){
-//                temp = 0D;
-//            }
-            amount += temp;
+        Double amount = cashierOrderInfo.getFinalAmount() - cashierOrderInfo.getPaidAmount();
+        DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
+        if (discountInfo != null) {
+            amount -= discountInfo.getEffectAmount();
         }
 
-        //2016-08-15,实际场景中应付金额不会小于1分钱，所以这里要保留两位小数
+        //实际场景中应付金额不会小于1分钱，所以这里要保留两位小数
+        //2016-07-04，判断需要放在循环里，因为折扣券是对拆分后的子订单生效，不是整个大订单
+        //2016-08－15，现金支付完成后，重新计算应付金额，负数被忽略导致支付窗口没有关闭。
         if (amount < 0.01) {
             amount = 0D;
         }

@@ -234,22 +234,6 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                         payableAmount = 0D;
                     }
 
-                    sbHtml.append(String.format("<p>" +
-                                    "--------------------------------\n" +
-                                    "<div><font color=#000000>合计：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>会员/卡券/促销优惠：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>应收：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>付款：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>找零：%.2f</font></div>\n" +
-                                    "</p>",
-                            mPosOrderEntity.getFinalAmount(),
-                            payWrapper.getRuleDiscount(),
-                            payableAmount,
-                            mPosOrderEntity.getPaidAmount()
-                                    - payWrapper.getRuleDiscount()
-                                    + payWrapper.getChange(),
-                            payWrapper.getChange()));
-
                     sbHtml.append("--------------------------------\n");
                     sbHtml.append(String.format(
                                     "<div><font color=#000000>合计：%.2f</font></div>\n",

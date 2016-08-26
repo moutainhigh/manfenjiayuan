@@ -1,6 +1,7 @@
-package com.bingshanguxue.cashier.model.wrapper;
+package com.bingshanguxue.cashier.v2;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.mfh.framework.api.constant.WayType;
 
 import java.io.Serializable;

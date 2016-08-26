@@ -29,7 +29,6 @@ public class FTPManager {
     /*********  FTP PASSWORD ***********/
     public static String FTP_PASS  ="123456";
 
-
     public static String ENCODING_CHARSET  = Encoding.CHARSET_GBK;
 
     /**
@@ -60,8 +59,9 @@ public class FTPManager {
             try {
                 ftpClient.disconnect(true);
             } catch (Exception e2){
-                e2.printStackTrace();
-                ZLogger.e(e2.toString());
+//                java.lang.IllegalStateException: Client not connected
+//                e2.printStackTrace();
+                ZLogger.ef(e2.toString());
             }
         }
     }

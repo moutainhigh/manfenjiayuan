@@ -279,7 +279,7 @@ public class AlipayDialog extends CommonDialog {
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
         orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
         orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
-//        Human member = DataCacheHelper.getInstance().getMfMemberInfo();
+//        Human member = GlobalInstance.getInstance().getMfMemberInfo();
 //        if (member != null) {
 //            orderInfo.put("seller_id", member.getGuid());
 //        }

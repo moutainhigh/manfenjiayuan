@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_user.bean.Human;
@@ -131,10 +130,9 @@ public class InventoryTransFragment extends BaseFragment {
             return;
         }
 
-        if (InvOrderApi.PAY_STATUS_NOT_PAID.equals(invTransOrder.getPayStatus())){
+        if (InvOrderApi.PAY_STATUS_NOT_PAID.equals(invTransOrder.getPayStatus())) {
             doPayWork(1, invTransOrder.getId(), invTransOrder.getCommitPrice());
-        }
-        else{
+        } else {
             doReceiveWork(invTransOrder.getId());
         }
     }
@@ -185,6 +183,7 @@ public class InventoryTransFragment extends BaseFragment {
     public void doPay() {
         btnPay.setEnabled(false);
 
+
         final InvSendIoOrder invTransOrder = curOrder;
         if (invTransOrder == null || invTransOrder.getId() == null) {
             ZLogger.d("订单无效");
@@ -203,6 +202,7 @@ public class InventoryTransFragment extends BaseFragment {
     }
 
     private AccountQuickPayDialog payDialog;
+
     private void doPayWork(int dialogType, Long orderId, Double amount) {
         Human human = new Human();
         human.setGuid(String.valueOf(MfhLoginService.get().getCurrentGuId()));
@@ -210,19 +210,17 @@ public class InventoryTransFragment extends BaseFragment {
         human.setHeadimageUrl(MfhLoginService.get().getHeadimage());
 
         //当前收银信息
-        CashierOrderItemInfo cashierOrderItemInfo = new CashierOrderItemInfo();
-        cashierOrderItemInfo.setOrderId(orderId);
-        cashierOrderItemInfo.setbCount(1D);
-        cashierOrderItemInfo.setRetailAmount(amount);
-        cashierOrderItemInfo.setFinalAmount(amount);
-        cashierOrderItemInfo.setAdjustDiscountAmount(0D);
-        cashierOrderItemInfo.setDiscountRate(1D);
-        cashierOrderItemInfo.setBrief("库存调拨订单支付");
-        cashierOrderItemInfo.setProductsInfo(null);
-
         CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
-        cashierOrderInfo.initQuickPayment(BizType.STOCK, "", cashierOrderItemInfo,
-                "支付调拨入库单", human);
+        cashierOrderInfo.setOrderId(orderId);
+        cashierOrderInfo.setbCount(1D);
+        cashierOrderInfo.setRetailAmount(amount);
+        cashierOrderInfo.setFinalAmount(amount);
+        cashierOrderInfo.setAdjustAmount(0D);
+        cashierOrderInfo.setDiscountRate(1D);
+        cashierOrderInfo.setProductsInfo(null);
+        cashierOrderInfo.setBizType(BizType.STOCK);
+        cashierOrderInfo.setSubject("支付调拨入库单");
+        cashierOrderInfo.setVipMember(human);
 
         //支付
         if (payDialog == null) {
@@ -233,31 +231,31 @@ public class InventoryTransFragment extends BaseFragment {
         payDialog.init(dialogType, String.valueOf(orderId),
                 CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo),
                 new AccountQuickPayDialog.DialogClickListener() {
-            @Override
-            public void onPaySucceed() {
-                //刷新数据
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
-                //刷新订单列表
-                notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
+                    @Override
+                    public void onPaySucceed() {
+                        //刷新数据
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
+                        //刷新订单列表
+                        notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
 //                        Bundle args = new Bundle();
 //                        args.putLong(InvRecvOrderFragment.EXTRA_KEY_ID, receivableOrder.getId());
 //                        EventBus.getDefault().post(new InvRecvOrderEvent(InvRecvOrderEvent.EVENT_ID_REMOVE_ITEM, args));
 //
-                btnPay.setEnabled(true);
-                btnStockIn.setEnabled(true);
-            }
+                        btnPay.setEnabled(true);
+                        btnStockIn.setEnabled(true);
+                    }
 
-            @Override
-            public void onPayFailed() {
+                    @Override
+                    public void onPayFailed() {
 
-            }
+                    }
 
-            @Override
-            public void onPayCanceled() {
-                btnPay.setEnabled(true);
-                btnStockIn.setEnabled(true);
-            }
-        });
+                    @Override
+                    public void onPayCanceled() {
+                        btnPay.setEnabled(true);
+                        btnStockIn.setEnabled(true);
+                    }
+                });
         payDialog.show();
     }
 
@@ -382,18 +380,17 @@ public class InventoryTransFragment extends BaseFragment {
         }
 
         //调入
-        if (netFlag ) {
+        if (netFlag) {
             //未签收
-            if (InvOrderApi.ORDER_STATUS_ON_TRANS.equals(curOrder.getStatus())){
+            if (InvOrderApi.ORDER_STATUS_ON_TRANS.equals(curOrder.getStatus())) {
                 btnStockIn.setVisibility(View.VISIBLE);
                 btnPay.setVisibility(View.INVISIBLE);
             }
             //未支付
-            else if (InvOrderApi.PAY_STATUS_NOT_PAID.equals(curOrder.getPayStatus())){
+            else if (InvOrderApi.PAY_STATUS_NOT_PAID.equals(curOrder.getPayStatus())) {
                 btnStockIn.setVisibility(View.GONE);
                 btnPay.setVisibility(View.VISIBLE);
-            }
-            else{
+            } else {
                 btnStockIn.setVisibility(View.GONE);
                 btnPay.setVisibility(View.INVISIBLE);
             }

@@ -33,7 +33,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.util.List;
 
@@ -238,7 +238,7 @@ public class ReceiveGoodsDialog extends CommonDialog {
 
         //添加商品
         if (productEntity.getPriceType().equals(PriceType.WEIGHT)) {
-            productAdapter.append(orderBarcode, productEntity, 0 - DataCacheHelper.getInstance().getNetWeight());
+            productAdapter.append(orderBarcode, productEntity, 0 - GlobalInstance.getInstance().getNetWeight());
         } else {
             if (packFlag == 1) {
                 productAdapter.append(orderBarcode, productEntity, 0 - productEntity.getPackageNum());
