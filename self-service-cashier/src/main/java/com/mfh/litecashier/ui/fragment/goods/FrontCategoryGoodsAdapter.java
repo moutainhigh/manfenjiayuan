@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
@@ -56,11 +57,11 @@ public class FrontCategoryGoodsAdapter
         final FrontCategoryGoods entity = entityList.get(position);
 
         holder.tvName.setText(entity.getSkuName());
-        holder.tvPrice.setText(String.format("¥ %.2f", entity.getCostPrice()));
+        holder.tvPrice.setText(MUtils.formatDouble("¥", "", entity.getHintPrice(), "0", null, null));
 
         String sqlWhere = String.format("productId = '%d'", entity.getProductId());
-
-        List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance().queryAllBy(sqlWhere);
+        List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance()
+                .queryAllBy(sqlWhere);
         if (goodsTempEntities != null && goodsTempEntities.size() > 0){
             holder.ibRatio.setVisibility(View.VISIBLE);
             entity.setSelected(true);

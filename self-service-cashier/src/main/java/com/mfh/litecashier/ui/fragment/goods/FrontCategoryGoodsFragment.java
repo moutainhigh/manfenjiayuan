@@ -11,24 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.comn.bean.EntityWrapper;
+import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
-import com.mfh.litecashier.event.AddCategoryGoodsEvent;
 import com.mfh.litecashier.utils.ACacheHelper;
-
-import net.tsz.afinal.core.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +31,17 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGoods> {
+public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGoods> implements IChainGoodsSkuView {
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -56,6 +56,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     private Long parentId;
     private Long categoryId;
     private String cacheKey;
+    private ChainGoodsSkuPresenter mChainGoodsSkuPresenter;
 
 
     @Override
@@ -68,6 +69,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
+        mChainGoodsSkuPresenter = new ChainGoodsSkuPresenter(this);
 
         MAX_SYNC_PAGESIZE = 72;
 //        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
@@ -161,7 +163,6 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         adapter.setOnAdapterLitener(new FrontCategoryGoodsAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                EventBus.getDefault().post(new AddCategoryGoodsEvent(adapter.getEntity(position)));
             }
 
             @Override
@@ -267,86 +268,102 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     }
 
     private void load(PageInfo pageInfo) {
-//        ZLogger.d(String.format("pageInfo:page=%d,rows=%d(%d)", mPageInfo.getPageNo(), mPageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size())));
-        ZLogger.d(String.format("加载类目商品开始,pageInfo':page=%d,rows=%d(%d)",
-                mPageInfo.getPageNo(), mPageInfo.getPageSize(), mPageInfo.getTotalCount()));
-
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<FrontCategoryGoods>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<FrontCategoryGoods> rs) {
-                //此处在主线程中执行。
-                new QueryAsyncTask(pageInfo).execute(rs);
-            }
-
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.d("加载类目商品失败:" + errMsg);
-                onLoadFinished();
-            }
-        }, FrontCategoryGoods.class, CashierApp.getAppContext());
-
-        ScGoodsSkuApiImpl.findGoodsListByFrontCategory(categoryId, pageInfo, queryRsCallBack);
+        mChainGoodsSkuPresenter.findTenantSku(pageInfo, null, categoryId, null);
     }
 
-    public class QueryAsyncTask extends AsyncTask<RspQueryResult<FrontCategoryGoods>, Integer, Long> {
-        private PageInfo pageInfo;
+    @Override
+    public void onChainGoodsSkuViewProcess() {
+        onLoadStart();
+    }
 
-        public QueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
+    @Override
+    public void onChainGoodsSkuViewError(String errorMsg) {
+        onLoadFinished();
+    }
 
-        @Override
-        protected Long doInBackground(RspQueryResult<FrontCategoryGoods>... params) {
-            RspQueryResult<FrontCategoryGoods> rs = params[0];
-            try {
-                mPageInfo = pageInfo;
+    @Override
+    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+        saveChainGoodsSku(pageInfo, dataList);
+    }
 
-                if (rs == null) {
-                    return -1L;
-                }
+    @Override
+    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
+        onLoadFinished();
+    }
 
-                //第一页，缓存数据
-                if (mPageInfo.getPageNo() == 1) {
-                    if (entityList == null) {
-                        entityList = new ArrayList<>();
+    private void saveChainGoodsSku(final PageInfo pageInfo, final List<ChainGoodsSku> dataList) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try{
+                    mPageInfo = pageInfo;
+
+                    //第一页，缓存数据
+                    if (mPageInfo.getPageNo() == 1) {
+                        if (entityList == null) {
+                            entityList = new ArrayList<>();
+                        } else {
+                            entityList.clear();
+                        }
+                        ZLogger.d("缓存第一页前台类目数据");
+                        JSONArray cacheArrays = new JSONArray();
+                        if (dataList != null && dataList.size() > 0) {
+                            for (ChainGoodsSku goodsSku : dataList) {
+                                FrontCategoryGoods goods = new FrontCategoryGoods();
+                                goods.setHintPrice(goodsSku.getHintPrice());
+                                goods.setSkuName(goodsSku.getSkuName());
+                                goods.setProductId(goodsSku.getProductId());
+                                entityList.add(goods);
+                                cacheArrays.add(goods);
+                            }
+                        }
+                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
                     } else {
-                        entityList.clear();
-                    }
-                    ZLogger.d("缓存第一页前台类目数据");
-                    JSONArray cacheArrays = new JSONArray();
-                    for (EntityWrapper<FrontCategoryGoods> wrapper : rs.getRowDatas()) {
-                        cacheArrays.add(wrapper.getBean());
-                        entityList.add(wrapper.getBean());
-                    }
-                    ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                } else {
-                    if (entityList == null) {
-                        entityList = new ArrayList<>();
-                    }
-                    for (EntityWrapper<FrontCategoryGoods> wrapper : rs.getRowDatas()) {
-                        entityList.add(wrapper.getBean());
+                        if (entityList == null) {
+                            entityList = new ArrayList<>();
+                        }
+
+                        if (dataList != null && dataList.size() > 0) {
+                            for (ChainGoodsSku goodsSku : dataList) {
+                                FrontCategoryGoods goods = new FrontCategoryGoods();
+                                goods.setHintPrice(goodsSku.getHintPrice());
+                                goods.setSkuName(goodsSku.getSkuName());
+                                goods.setProductId(goodsSku.getProductId());
+                                entityList.add(goods);
+                            }
+                        }
                     }
                 }
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("加载类目商品失败: %s", ex.toString()));
+                catch (Exception e){
+                    ZLogger.ef(e.toString());
+                }
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
             }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
 
-            return -1L;
-//        return null;
-        }
+                    }
 
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-            if (adapter != null) {
-                adapter.setEntityList(entityList);
-            }
-            onLoadFinished();
-        }
+                    @Override
+                    public void onNext(String startCursor) {
+                        ZLogger.d("显示前台类目商品: " + entityList.size());
+                        if (adapter != null) {
+                            adapter.setEntityList(entityList);
+                        }
+                        onLoadFinished();
+                    }
+
+                });
     }
 
     /**
