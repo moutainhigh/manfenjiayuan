@@ -118,8 +118,8 @@ public class DataSyncManager {
             if (rollback > 2) {
                 bSyncInProgress = false;
             }
-            if (nextStep > SYNC_STEP_BACKEND_CATEGORYINFO) {
-                nextStep = SYNC_STEP_BACKEND_CATEGORYINFO;
+            if (nextStep > SYNC_STEP_FRONTEND_CATEGORY) {
+                nextStep = SYNC_STEP_FRONTEND_CATEGORY;
             }
             return;
         }
@@ -143,6 +143,7 @@ public class DataSyncManager {
             return;
         }
 
+        rollback = -1;
         processStep(step, SYNC_STEP_NA);
     }
 
@@ -150,16 +151,18 @@ public class DataSyncManager {
      * 下一步
      */
     private void nextStep() {
+        ZLogger.d(String.format("nextStep ＝ %d", nextStep));
         processStep(nextStep, nextStep + 1);
     }
 
     private void processStep(int step, int nextStep) {
+        ZLogger.d(String.format("step ＝ %d， nextStep ＝ %d", step, nextStep));
         this.nextStep = nextStep;
         this.bSyncInProgress = true;
 
         switch (step) {
-            case SYNC_STEP_BACKEND_CATEGORYINFO: {
-                downloadBackendCategoryInfo();
+            case SYNC_STEP_FRONTEND_CATEGORY: {
+                downloadFrontendCategory();
             }
             break;
             case SYNC_STEP_PRODUCTS: {
@@ -174,8 +177,8 @@ public class DataSyncManager {
                 startSyncHuman();
             }
             break;
-            case SYNC_STEP_FRONTEND_CATEGORY: {
-                downloadFrontendCategory();
+            case SYNC_STEP_BACKEND_CATEGORYINFO: {
+                downloadBackendCategoryInfo();
             }
             break;
             case SYNC_STEP_FRONTENDCATEGORY_GOODS: {
@@ -233,11 +236,12 @@ public class DataSyncManager {
      * 同步商品库
      */
     private void startSyncProducts() {
+        ZLogger.d("准备同步POS商品档案...");
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                if (MfhLoginService.get().haveLogined()) {
-                    subscriber.onError(null);
+                if (!MfhLoginService.get().haveLogined()) {
+                    sessionError();
                     return;
                 }
 
@@ -247,7 +251,6 @@ public class DataSyncManager {
                     //设置时间游标
                     SharedPreferencesHelper.setSyncProductsCursor("");
                     //删除旧数据
-//            PosProductService.get().clear();
                     PosProductService.get().deactiveAll();
                 }
 
@@ -266,6 +269,7 @@ public class DataSyncManager {
 
                     @Override
                     public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
                         sessionError();
                     }
 
@@ -276,7 +280,6 @@ public class DataSyncManager {
                         downloadProducts(startCursor, mPageInfo);
                         mPageInfo.setPageNo(1);
                     }
-
                 });
     }
 
@@ -314,6 +317,9 @@ public class DataSyncManager {
         }, "/scGoodsSku/downLoadPosProduct");
     }
 
+    /**
+     * 保存POS商品档案
+     * */
     private void savePosProducts(final RspQueryResult<PosGoods> rs, final PageInfo pageInfo,
                                  final String startCursor) {
         if (rs == null) {
@@ -880,10 +886,9 @@ public class DataSyncManager {
             return;
         }
 
+        ZLogger.d("准备开始同步前台类目...");
         frontCatalogPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-
         PosLocalCategoryService.get().deactiveAll();
-
         //从第一页开始请求，每页最多50条记录
         downloadFrontendCategory2(frontCatalogPageInfo);
         frontCatalogPageInfo.setPageNo(1);
@@ -899,7 +904,8 @@ public class DataSyncManager {
                 new NetProcessor.QueryRsProcessor<CategoryInfo>(pageInfo) {
                     @Override
                     public void processQueryResult(RspQueryResult<CategoryInfo> rs) {
-                        new FrontendCategoryAsyncTask(pageInfo).execute(rs);
+//                        new FrontendCategoryAsyncTask(pageInfo).execute(rs);
+                        saveFrontendCategory(pageInfo, rs);
                     }
 
                     @Override
@@ -914,6 +920,80 @@ public class DataSyncManager {
                 CateApi.CATE_POSITION_FRONT, 1, MfhLoginService.get().getSpid(), pageInfo, queryRsCallBack);
     }
 
+    /**
+     * 保存前台类目
+     * */
+    private void saveFrontendCategory(final PageInfo pageInfo, final RspQueryResult<CategoryInfo> rspQueryResult){
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    frontCatalogPageInfo = pageInfo;
+
+                    //保存前台类目数据
+                    if (rspQueryResult != null) {
+                        int retSize = rspQueryResult.getReturnNum();
+                        ZLogger.df(String.format("保存 %d/%d 个前台类目数据", retSize, rspQueryResult.getTotalNum()));
+                        for (EntityWrapper<CategoryInfo> wrapper : rspQueryResult.getRowDatas()) {
+                            CategoryInfo categoryInfo = wrapper.getBean();
+                            PosLocalCategoryService.get().saveOrUpdate(categoryInfo);
+                        }
+                    }
+
+                    //若还有继续发起请求
+                    if (pageInfo.hasNextPage()) {
+                        pageInfo.moveToNext();
+                        downloadFrontendCategory2(pageInfo);
+                    } else {
+                        int count = PosLocalCategoryService.get().getCount();
+                        int cloudNum = pageInfo.getTotalCount();
+                        if (count == cloudNum) {
+                            ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)一致。",
+                                    cloudNum, count));
+                        } else {
+                            ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)不一致",
+                                    cloudNum, count));
+
+                            //删除无效的数据
+                            PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
+                                    PosLocalCategoryEntity.CLOUD_DEACTIVE));
+                            ZLogger.d(String.format("删除无效的数据，本地类目数量:%d",
+                                    PosLocalCategoryService.get().getCount()));
+                        }
+
+                        //通知刷新数据
+                        EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+
+                        nextStep();
+                    }
+
+                } catch (Throwable ex) {
+                    ZLogger.ef(String.format("保存前台类目数据失败: %s", ex.toString()));
+                }
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+
+                    }
+
+                });
+    }
     public class FrontendCategoryAsyncTask extends AsyncTask<RspQueryResult<CategoryInfo>, Integer, Long> {
         private PageInfo pageInfo;
 
@@ -1066,7 +1146,7 @@ public class DataSyncManager {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 if (!MfhLoginService.get().haveLogined()) {
-                    subscriber.onError(null);
+                    sessionError();
                     return;
                 }
 
@@ -1104,7 +1184,6 @@ public class DataSyncManager {
                     }
 
                 });
-
     }
 
     private void downLoadProductCatalog2(final String startCusror, PageInfo pageInfo) {
