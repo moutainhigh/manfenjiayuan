@@ -3,6 +3,8 @@ package com.mfh.litecashier.com;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.gprinter.command.EscCommand;
@@ -333,14 +335,27 @@ public class PrintManager {
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
         esc.addText("--------------------------------\n");//32个
         esc.addText(String.format("合计:%.2f\n", posOrderEntity.getFinalAmount()));
-        esc.addText(String.format("优惠:%.2f\n", posOrderEntity.getRuleDiscountAmount()));
+
+        //支付记录
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(posOrderEntity.getId());
+        Double payableAmount = posOrderEntity.getFinalAmount() - payWrapper.getRuleDiscount();
+        if (payableAmount < 0.01) {
+            payableAmount = 0D;
+        }
+
+        esc.addText(String.format("优惠:%.2f\n", payWrapper.getRuleDiscount()));
 //        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
-        esc.addText(String.format("应收:%.2f\n",
-                posOrderEntity.getFinalAmount() - posOrderEntity.getRuleDiscountAmount()));
-        esc.addText(String.format("付款:%.2f\n",
-                posOrderEntity.getPaidAmount() - posOrderEntity.getRuleDiscountAmount()
-                        + posOrderEntity.getChange()));
-        esc.addText(String.format("找零:%.2f\n", Math.abs(posOrderEntity.getChange())));
+        esc.addText(String.format("应收:%.2f\n", payableAmount));
+
+        List<PayWay> payWays = payWrapper.getPayWays();
+        if (payWays != null && payWays.size() > 0){
+            for (PayWay payWay : payWays){
+                esc.addText(String.format("%s:%.2f\n",
+                        WayType.name(payWay.getPayType()) , payWay.getAmount()));
+            }
+        }
+
+        esc.addText(String.format("找零:%.2f\n", payWrapper.getChange()));
 
         /**
          * 打印 结束语
