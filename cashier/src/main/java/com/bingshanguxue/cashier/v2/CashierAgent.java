@@ -1,13 +1,16 @@
-package com.bingshanguxue.cashier;
+package com.bingshanguxue.cashier.v2;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.api.constant.BizType;
@@ -26,7 +29,78 @@ import java.util.Map;
  * Created by bingshanguxue on 8/19/16.
  */
 @Deprecated
-public class CashierSplitAgent {
+public class CashierAgent {
+
+    /**
+     * 获取订单列表
+     * */
+    public static List<PosOrderEntity> fetchOrderEntities(Integer bizType,
+                                                          String orderBarCode) {
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' " +
+                        "and barCode = '%s'",
+                MfhLoginService.get().getSpid(), bizType, orderBarCode);
+        return PosOrderService.get().queryAllBy(sqlOrder);
+    }
+
+    /**
+     * 查找激活状态的订单明细
+     * @param orderBarCode 订单流水号
+     * */
+    public static List<PosOrderItemEntity> fetchActiveOrderItems(String orderBarCode) {
+        return fetchOrderItems(CashierFactory.fetchActiveOrderEntities(BizType.POS, orderBarCode));
+    }
+
+    /**
+     * 获取订单明细
+     * */
+    public static List<PosOrderItemEntity> fetchOrderItems(List<PosOrderEntity> orderEntities) {
+        if (orderEntities == null || orderEntities.size() < 1) {
+            return null;
+        }
+
+        List<PosOrderItemEntity> itemEntities = new ArrayList<>();
+
+        for (PosOrderEntity orderEntity : orderEntities) {
+            //加载订单明细
+            List<PosOrderItemEntity> temp = PosOrderItemService.get()
+                    .queryAllBy(String.format("orderId = '%s'", orderEntity.getId()));
+            if (temp != null){
+                itemEntities.addAll(temp);
+            }
+        }
+
+        return itemEntities;
+    }
+
+    /**
+     * 获取订单明细
+     * */
+    public static List<PosOrderItemEntity> fetchOrderItems(PosOrderEntity orderEntity) {
+        return PosOrderItemService.get()
+                .queryAllBy(String.format("orderId = '%s'", orderEntity.getId()));
+    }
+
+    /**
+     * 上一订单信息
+     * */
+    public static LastOrderInfo genLastOrderInfo(List<PosOrderEntity> orderEntities){
+        LastOrderInfo lastOrderInfo = null;
+
+        if (orderEntities != null && orderEntities.size() > 0) {
+            lastOrderInfo = new LastOrderInfo();
+            for (PosOrderEntity orderEntity : orderEntities) {
+                OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+
+                lastOrderInfo.setPayType(lastOrderInfo.getPayType() | payWrapper.getPayType());
+                lastOrderInfo.setFinalAmount(lastOrderInfo.getFinalAmount() + orderEntity.getFinalAmount());
+                lastOrderInfo.setbCount(lastOrderInfo.getbCount() + orderEntity.getBcount());
+                lastOrderInfo.setDiscountAmount(lastOrderInfo.getDiscountAmount() + payWrapper.getRuleDiscount());
+                lastOrderInfo.setChangeAmount(lastOrderInfo.getChangeAmount() + payWrapper.getChange());
+            }
+        }
+
+        return lastOrderInfo;
+    }
 
     /**
      * 结算（POS拆分订单）
@@ -61,7 +135,7 @@ public class CashierSplitAgent {
         }
 
         //Step 3.1 更新已有订单
-        List<PosOrderEntity> orderEntities = CashierFactory.fetchOrderEntities(BizType.POS, orderBarCode);
+        List<PosOrderEntity> orderEntities = fetchOrderEntities(BizType.POS, orderBarCode);
         if (orderEntities != null && orderEntities.size() > 0) {
             for (PosOrderEntity orderEntity : orderEntities) {
                 Integer subType = orderEntity.getSubType();
@@ -134,7 +208,7 @@ public class CashierSplitAgent {
         Double paidAmount = 0D;
         List<PosOrderEntity> orderEntities = CashierFactory.fetchActiveOrderEntities(bizType, orderBarCode);
         for (PosOrderEntity orderEntity : orderEntities) {
-            cashierOrderItemInfos.add(CashierFactory.genCashierorderItemInfo(orderEntity));
+            cashierOrderItemInfos.add(genCashierorderItemInfo(orderEntity));
 
             OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
             paidAmount += payWrapper.getPaidAmount();
@@ -145,6 +219,69 @@ public class CashierSplitAgent {
                 subject, customerMembershipInfo, paidAmount);
 
         return cashierOrderInfo;
+    }
+
+    /**
+     * 生成订单结算明细信息
+     * @param orderEntity 收银订单
+     */
+    public static CashierOrderItemInfo genCashierorderItemInfo(PosOrderEntity orderEntity) {
+        Double bCount = 0D;
+        Double retailAmount = 0D;
+        Double finalAmount = 0D;
+        Double discountAmount = 0D;
+        Double discountRate = 0D;
+        StringBuilder sbBody = new StringBuilder();
+        JSONArray productsInfo = new JSONArray();
+        List<PosOrderItemEntity> orderItemEntityList = fetchOrderItems(orderEntity);
+        if (orderItemEntityList != null && orderItemEntityList.size() > 0) {
+            for (PosOrderItemEntity itemEntity : orderItemEntityList) {
+                bCount += itemEntity.getBcount();
+                retailAmount += itemEntity.getAmount();
+                finalAmount += itemEntity.getFinalAmount();
+
+                if (sbBody.length() > 0) {
+                    sbBody.append(",");
+                }
+                sbBody.append(itemEntity.getName());
+
+                JSONObject item = new JSONObject();
+                item.put("goodsId", itemEntity.getGoodsId());
+                item.put("skuId", itemEntity.getProSkuId());
+                item.put("bcount", itemEntity.getBcount());
+                item.put("price", itemEntity.getCostPrice());
+                item.put("whereId", MfhLoginService.get().getCurOfficeId());//网点ID,netid,
+                productsInfo.add(item);
+            }
+        }
+        discountAmount = retailAmount - finalAmount;
+        if (retailAmount == 0D) {
+            discountRate = Double.valueOf(String.valueOf(Integer.MAX_VALUE));
+        } else {
+            discountRate = finalAmount / retailAmount;
+        }
+
+        CashierOrderItemInfo orderItemInfo = new CashierOrderItemInfo();
+        orderItemInfo.setOrderId(orderEntity.getId());
+        orderItemInfo.setbCount(bCount);
+        orderItemInfo.setRetailAmount(retailAmount);
+        orderItemInfo.setFinalAmount(finalAmount);
+        orderItemInfo.setAdjustDiscountAmount(discountAmount);
+        orderItemInfo.setDiscountRate(discountRate);
+        orderItemInfo.setBrief(sbBody.length() > 20 ? sbBody.substring(0, 20) : sbBody.toString());
+        orderItemInfo.setProductsInfo(productsInfo);
+        orderItemInfo.setDiscountInfo(new DiscountInfo(orderEntity.getId()));
+
+        //读取支付记录
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+        if (payWrapper != null){
+            orderItemInfo.setPayType(payWrapper.getPayType());
+            orderItemInfo.setPaidAmount(payWrapper.getPaidAmount());
+            orderItemInfo.setChange(payWrapper.getChange());
+        }
+
+        ZLogger.d(JSON.toJSONString(orderItemInfo));
+        return orderItemInfo;
     }
 
     /**

@@ -1,9 +1,11 @@
-package com.bingshanguxue.cashier.model.wrapper;
+package com.bingshanguxue.cashier.v2;
 
 import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
 import com.bingshanguxue.cashier.model.PayAmount;
+import com.bingshanguxue.cashier.model.wrapper.CouponRule;
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
@@ -23,7 +25,7 @@ public class CashierOrderInfo implements java.io.Serializable {
     private String posTradeNo;
     private String subject;
 
-    //订单明细
+    //拆分子订单明细
     private List<CashierOrderItemInfo> mCashierOrderItemInfos;
     //当mCashierOrderItemInfos发生改变的时候，更新下面数据信息
     private Double bCount = 0D;//商品总数量

@@ -19,8 +19,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierAgent;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
@@ -28,22 +26,23 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -81,9 +80,7 @@ import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.ExpressDialog;
 import com.mfh.litecashier.ui.dialog.HangupOrderDialog;
 import com.mfh.litecashier.ui.dialog.InitCardByStepDialog;
-import com.mfh.litecashier.ui.dialog.LaundryDialog;
 import com.mfh.litecashier.ui.dialog.QueryBalanceDialog;
-import com.mfh.litecashier.ui.dialog.ReceiveGoodsDialog;
 import com.mfh.litecashier.ui.dialog.RegisterUserDialog;
 import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
@@ -162,9 +159,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private InitCardByStepDialog initCardDialog = null;
     private ReturnGoodsDialog returnGoodsDialog = null;
     private ExpressDialog expressDialog = null;
-    private LaundryDialog laundryDialog = null;
-    private ReceiveGoodsDialog receiveGoodsDialog = null;
     private ActionDialog registerPlatDialog = null;
+    private AdministratorSigninDialog mAdministratorSigninDialog = null;
 
 
     /**
@@ -369,12 +365,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
             initVipCardStep1();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_EXPRESS) == 0) {
             expressService();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_LAUNDRY) == 0) {
-            laundryService();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_RETURN_GOODS) == 0) {
             returnGoods();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_RECEIVE_GOODS) == 0) {
-            receiveGoodsService();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_FEEDPAPER) == 0) {
             //走纸
             SerialManager.feedPaper();
@@ -576,11 +568,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 寄快递
      */
     private void expressService() {
-//        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-//            DialogUtil.showHint(getString(R.string.toast_network_error));
-//            return;
-//        }
-
         if (expressDialog == null) {
             expressDialog = new ExpressDialog(this);
             expressDialog.setCancelable(false);
@@ -604,36 +591,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
     }
 
     /**
-     * 洗衣
-     */
-    private void laundryService() {
-        if (laundryDialog == null) {
-            laundryDialog = new LaundryDialog(this);
-            laundryDialog.setCancelable(false);
-            laundryDialog.setCanceledOnTouchOutside(false);
-        }
-        laundryDialog.init(new LaundryDialog.DialogListener() {
-
-            @Override
-            public void onNextStep(String text) {
-                // TODO: 5/23/16 跳转到新的页面洗衣
-//                //挂起POS收银
-//                hangUpOrder();
-//
-//                //保存衣袋编号，同时标记开始进行洗衣服务，挂起当前订单
-//                packageCode = text;
-//                curBizType = BizType.LAUNDRY;
-
-                //显示洗衣商品
-                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SHOW_LAUNDRY));
-            }
-        });
-        if (!laundryDialog.isShowing()) {
-            laundryDialog.show();
-        }
-    }
-
-    /**
      * 退货
      */
     private void returnGoods() {
@@ -646,28 +603,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             returnGoodsDialog.show();
         }
     }
-
-    /**
-     * 领取商品
-     */
-    private void receiveGoodsService() {
-        if (receiveGoodsDialog == null) {
-            receiveGoodsDialog = new ReceiveGoodsDialog(this);
-            receiveGoodsDialog.setCancelable(false);
-            receiveGoodsDialog.setCanceledOnTouchOutside(false);
-        }
-        receiveGoodsDialog.init(new ReceiveGoodsDialog.DialogListener() {
-            @Override
-            public void onOrderConfirmed(String orderBarcode) {
-                // TODO: 5/23/16
-//                resumeOrder(orderBarcode);
-            }
-        });
-        if (!receiveGoodsDialog.isShowing()) {
-            receiveGoodsDialog.show();
-        }
-    }
-
 
     /**
      * 同步数据
@@ -729,16 +664,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
     }
 
 
-    private AdministratorSigninDialog mAdministratorSigninDialog = null;
-
     /**
      * 进入管理员模式
      */
     private void enterAdministratorMode() {
         if (mAdministratorSigninDialog == null) {
             mAdministratorSigninDialog = new AdministratorSigninDialog(this);
-            mAdministratorSigninDialog.setCancelable(true);
-            mAdministratorSigninDialog.setCanceledOnTouchOutside(true);
+            mAdministratorSigninDialog.setCancelable(false);
+            mAdministratorSigninDialog.setCanceledOnTouchOutside(false);
         }
         mAdministratorSigninDialog.init("管理员密码", new AdministratorSigninDialog.OnResponseCallback() {
             @Override
@@ -1135,16 +1068,15 @@ public class MainActivity extends CashierActivity implements ICashierView {
             // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
             CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
 
-            List<PosOrderEntity> orderEntities = CashierFactory
-                    .fetchActiveOrderEntities(BizType.POS, cashierOrderInfo.getPosTradeNo());
+            PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
+                    cashierOrderInfo.getPosTradeNo());
             //同步订单信息
 //            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
             //打印订单
-            PrintManager.printPosOrder(orderEntities, true);
+            PrintManager.printPosOrder(orderEntity, true);
             //保存上一单信息
-            LastOrderInfo lastOrderInfo = CashierFactory.genLastOrderInfo(orderEntities);
+            LastOrderInfo lastOrderInfo = CashierAgent.genLastOrderInfo(orderEntity);
             if (lastOrderInfo != null) {
-
                 int payType = lastOrderInfo.getPayType();
                 Double finalAmount = lastOrderInfo.getFinalAmount();
                 Double changeAmount = lastOrderInfo.getChangeAmount();

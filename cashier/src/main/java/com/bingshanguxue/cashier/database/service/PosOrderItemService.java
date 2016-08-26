@@ -144,7 +144,7 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
         entity.setUpdatedDate(new Date());
 
         saveOrUpdate(entity);
-        ZLogger.df(JSON.toJSONString(entity));
+        ZLogger.d(String.format("保存or更新订单明细:%s\n%s", goods.getBarcode(), JSON.toJSONString(entity)));
     }
 
 

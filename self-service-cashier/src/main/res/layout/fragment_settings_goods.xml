@@ -102,16 +102,6 @@
             app:inputNumberLabelView_inputHint="商品条码"
             app:inputNumberLabelView_inputTextColor="@color/black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_sync"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="@dimen/spacing_normal"
-            android:layout_marginEnd="@dimen/spacing_double"
-            android:src="@mipmap/ic_sync_data_normal"/>
     </RelativeLayout>
 
 </LinearLayout>

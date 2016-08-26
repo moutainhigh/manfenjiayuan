@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierOrderItemInfo;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;

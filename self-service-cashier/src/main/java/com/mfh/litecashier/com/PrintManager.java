@@ -1,18 +1,16 @@
 package com.mfh.litecashier.com;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
-import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.gprinter.command.EscCommand;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -25,7 +23,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -276,119 +273,6 @@ public class PrintManager {
                 });
     }
 
-
-    private static EscCommand makePosOrderEsc(List<PosOrderEntity> orderEntities){
-        if (orderEntities == null) {
-            return null;
-        }
-
-        PosOrderEntity firstOrderEntity = orderEntities.get(0);
-
-        EscCommand esc = new EscCommand();
-        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
-        //设置打印居中
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
-//        //设置为倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
-        /**打印 标题*/
-        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
-            esc.addText("购物清单\n");
-        } else {
-            //显示当前网点名称
-            esc.addText(MfhLoginService.get().getCurOfficeName());
-        }
-//        //取消倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-
-
-        esc.addPrintAndLineFeed();//进纸一行
-        //设置打印左对齐
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
-        /**打印 机器设备号＋订单号*/
-        esc.addText(String.format("%s NO.%s \n",
-                SharedPreferencesManager.getTerminalId(), firstOrderEntity.getBarCode()));
-        /**打印 订购日期*/
-        esc.addText(String.format("%s \n",
-                TimeUtil.format(firstOrderEntity.getCreatedDate(),
-                        TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-        esc.addText("--------------------------------\n");//32个
-//        esc.addPrintAndLineFeed();
-
-        /**打印 商品明细*/
-        esc.addText("货号/品名       单价 数量   小计\n");
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-        //设置为倍高倍宽
-        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
-                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-
-        List<PosOrderItemEntity> posOrderItemEntityList = CashierFactory.fetchOrderItems(orderEntities);
-        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
-            for (PosOrderItemEntity entity : posOrderItemEntityList) {
-//                makeTemp(esc, entity.getName(), String.format("%.2f", entity.getCostPrice() * entity.getBcount()));
-                makePosOrderLine(esc, String.format("%s/%s", entity.getBarcode(),
-                        entity.getName()), String.format("%.2f", entity.getFinalPrice()),
-                        String.format("%.2f", entity.getBcount()),
-                        String.format("%.2f", entity.getFinalAmount()));
-            }
-        }
-
-        /**
-         * 打印合计信息
-         * */
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
-        esc.addText("--------------------------------\n");//32个
-        Double finalAmount = 0D, ruleDis = 0D, paidAmount = 0D, payableAmount = 0D, change = 0D;
-        List<PayWay> payWays = new ArrayList<>();
-        for (PosOrderEntity orderEntity : orderEntities) {
-            ZLogger.d(JSONObject.toJSONString(orderEntity));
-            finalAmount += orderEntity.getFinalAmount();
-            ruleDis += orderEntity.getRuleDiscountAmount();
-            paidAmount += (orderEntity.getPaidAmount() + orderEntity.getChange());
-            Double payableTemp = orderEntity.getFinalAmount() - orderEntity.getRuleDiscountAmount();
-            if (payableTemp < 0.01) {
-                payableTemp = 0D;
-            }
-            payableAmount += payableTemp;
-
-            change += orderEntity.getChange();
-
-            //支付记录
-            OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-            if (payWrapper.getPayWays() != null) {
-                payWays.addAll(payWrapper.getPayWays());
-            }
-        }
-        esc.addText(String.format("合计:%.2f\n", finalAmount));
-        esc.addText(String.format("优惠:%.2f\n", ruleDis));
-//        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
-        esc.addText(String.format("应收:%.2f\n", payableAmount));
-//        esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
-        if (payWays.size() > 0) {
-            for (PayWay payWay : payWays) {
-                // TODO: 8/2/16 ，以后如果考虑多种支付方式多次支付，应该要做一次合并统计，一种支付方式暂时可以不做。
-                esc.addText(String.format("%s:%.2f\n",
-                        WayType.name(payWay.getPayType()), payWay.getAmount()));
-            }
-        } else {
-            esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
-        }
-        esc.addText(String.format("找零:%.2f\n", Math.abs(change)));
-
-        /**
-         * 打印 结束语
-         * */
-        esc.addPrintAndLineFeed();
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
-        esc.addText("谢谢惠顾!\n");
-        esc.addText("欢迎下次光临\n");
-//        esc.addPrintAndLineFeed();
-        esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
-
-        return esc;
-    }
-
     private static EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity){
         if (posOrderEntity == null) {
             return null;
@@ -432,7 +316,7 @@ public class PrintManager {
         //设置为倍高倍宽
         esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-        List<PosOrderItemEntity> posOrderItemEntityList = CashierFactory.fetchOrderItems(posOrderEntity);
+        List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
             for (PosOrderItemEntity entity : posOrderItemEntityList) {
 //                makeTemp(esc, entity.getName(), String.format("%.2f", entity.getCostPrice() * entity.getBcount()));
@@ -552,36 +436,151 @@ public class PrintManager {
     }
 
 
-    /**
-     * 打印POS订单流水
-     */
-    public static void printPosOrder(final List<PosOrderEntity> orderEntities, boolean withCode128) {
-        Observable.create(new Observable.OnSubscribe<EscCommand>() {
-            @Override
-            public void call(Subscriber<? super EscCommand> subscriber) {
-                subscriber.onNext(makePosOrderEsc(orderEntities));
-                subscriber.onCompleted();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<EscCommand>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(EscCommand escCommand) {
-                        print(escCommand);
-                    }
-                });
-    }
+//    @Deprecated
+//    private static EscCommand makePosOrderEsc(List<PosOrderEntity> orderEntities){
+//        if (orderEntities == null) {
+//            return null;
+//        }
+//
+//        PosOrderEntity firstOrderEntity = orderEntities.get(0);
+//
+//        EscCommand esc = new EscCommand();
+//        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
+//        //设置打印居中
+//        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
+////        //设置为倍高倍宽
+////        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+////                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+//        /**打印 标题*/
+//        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
+//            esc.addText("购物清单\n");
+//        } else {
+//            //显示当前网点名称
+//            esc.addText(MfhLoginService.get().getCurOfficeName());
+//        }
+////        //取消倍高倍宽
+////        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+////                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+//
+//
+//        esc.addPrintAndLineFeed();//进纸一行
+//        //设置打印左对齐
+//        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
+//        /**打印 机器设备号＋订单号*/
+//        esc.addText(String.format("%s NO.%s \n",
+//                SharedPreferencesManager.getTerminalId(), firstOrderEntity.getBarCode()));
+//        /**打印 订购日期*/
+//        esc.addText(String.format("%s \n",
+//                TimeUtil.format(firstOrderEntity.getCreatedDate(),
+//                        TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
+//        esc.addText("--------------------------------\n");//32个
+////        esc.addPrintAndLineFeed();
+//
+//        /**打印 商品明细*/
+//        esc.addText("货号/品名       单价 数量   小计\n");
+//        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+//        //设置为倍高倍宽
+//        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
+//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+//
+//        List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent.fetchOrderItems(orderEntities);
+//        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
+//            for (PosOrderItemEntity entity : posOrderItemEntityList) {
+////                makeTemp(esc, entity.getName(), String.format("%.2f", entity.getCostPrice() * entity.getBcount()));
+//                makePosOrderLine(esc, String.format("%s/%s", entity.getBarcode(),
+//                        entity.getName()), String.format("%.2f", entity.getFinalPrice()),
+//                        String.format("%.2f", entity.getBcount()),
+//                        String.format("%.2f", entity.getFinalAmount()));
+//            }
+//        }
+//
+//        /**
+//         * 打印合计信息
+//         * */
+//        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+//        esc.addText("--------------------------------\n");//32个
+//        Double finalAmount = 0D, ruleDis = 0D, paidAmount = 0D, payableAmount = 0D, change = 0D;
+//        List<PayWay> payWays = new ArrayList<>();
+//        for (PosOrderEntity orderEntity : orderEntities) {
+//            ZLogger.d(JSONObject.toJSONString(orderEntity));
+//            finalAmount += orderEntity.getFinalAmount();
+//            ruleDis += orderEntity.getRuleDiscountAmount();
+//            paidAmount += (orderEntity.getPaidAmount() + orderEntity.getChange());
+//            Double payableTemp = orderEntity.getFinalAmount() - orderEntity.getRuleDiscountAmount();
+//            if (payableTemp < 0.01) {
+//                payableTemp = 0D;
+//            }
+//            payableAmount += payableTemp;
+//
+//            change += orderEntity.getChange();
+//
+//            //支付记录
+//            OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+//            if (payWrapper.getPayWays() != null) {
+//                payWays.addAll(payWrapper.getPayWays());
+//            }
+//        }
+//        esc.addText(String.format("合计:%.2f\n", finalAmount));
+//        esc.addText(String.format("优惠:%.2f\n", ruleDis));
+////        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
+//        esc.addText(String.format("应收:%.2f\n", payableAmount));
+////        esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
+//        if (payWays.size() > 0) {
+//            for (PayWay payWay : payWays) {
+//                // TODO: 8/2/16 ，以后如果考虑多种支付方式多次支付，应该要做一次合并统计，一种支付方式暂时可以不做。
+//                esc.addText(String.format("%s:%.2f\n",
+//                        WayType.name(payWay.getPayType()), payWay.getAmount()));
+//            }
+//        } else {
+//            esc.addText(String.format("付款:%.2f\n", paidAmount - ruleDis));
+//        }
+//        esc.addText(String.format("找零:%.2f\n", Math.abs(change)));
+//
+//        /**
+//         * 打印 结束语
+//         * */
+//        esc.addPrintAndLineFeed();
+//        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
+//        esc.addText("谢谢惠顾!\n");
+//        esc.addText("欢迎下次光临\n");
+////        esc.addPrintAndLineFeed();
+//        esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
+//
+//        return esc;
+//    }
+//
+//
+//    /**
+//     * 打印POS订单流水
+//     */
+//    @Deprecated
+//    public static void printPosOrder(final List<PosOrderEntity> orderEntities, boolean withCode128) {
+//        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+//            @Override
+//            public void call(Subscriber<? super EscCommand> subscriber) {
+//                subscriber.onNext(makePosOrderEsc(orderEntities));
+//                subscriber.onCompleted();
+//            }
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<EscCommand>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(EscCommand escCommand) {
+//                        print(escCommand);
+//                    }
+//                });
+//    }
 
     /**
      * 打印POS订单流水

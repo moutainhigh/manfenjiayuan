@@ -37,7 +37,6 @@ import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
 import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
-import com.mfh.litecashier.ui.dialog.TopupDialog;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 
 import java.util.ArrayList;
@@ -69,7 +68,6 @@ public class AdministratorActivity extends BaseActivity {
     private AccountDialog mAccountDialog = null;
     private ResumeMachineDialog resumeMachineDialog = null;
     private SelectCompanyHumanDialog selectCompanyHumanDialog = null;
-    private TopupDialog topupDialog = null;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, AdministratorActivity.class);
@@ -168,9 +166,6 @@ public class AdministratorActivity extends BaseActivity {
         if (selectCompanyHumanDialog != null) {
             selectCompanyHumanDialog.dismiss();
         }
-        if (topupDialog != null) {
-            topupDialog.dismiss();
-        }
     }
 
     @Override
@@ -191,12 +186,6 @@ public class AdministratorActivity extends BaseActivity {
             selectCompanyHumanDialog.dismiss();
             selectCompanyHumanDialog = null;
         }
-        if (topupDialog != null) {
-            topupDialog.dismiss();
-            topupDialog = null;
-        }
-
-//        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -332,7 +321,7 @@ public class AdministratorActivity extends BaseActivity {
     /**
      * 日结－
      */
-    private void dailySettle(String datetime, boolean cancelable) {
+    private void dailySettle(String datetime) {
 //        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));
         Intent intent = new Intent(this, SimpleDialogActivity.class);
         Bundle extras = new Bundle();
@@ -382,30 +371,14 @@ public class AdministratorActivity extends BaseActivity {
      */
     public synchronized List<CashierFunctional> getAdminMenus() {
         List<CashierFunctional> functionalList = new ArrayList<>();
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRESH,
-//                "生鲜", R.mipmap.ic_admin_menu_fresh));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRUIT,
-//                "水果", R.mipmap.ic_admin_menu_fruit));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_STANDARD_GOODS,
-//                "普货", R.mipmap.ic_admin_menu_standard_goods));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL,
                 "手动订货", R.mipmap.ic_admin_purchase_manual));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_INTELLIGENT,
-//                "智能订货", R.mipmap.ic_admin_menu_intellegent_purchase));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRECVORDER,
-//                "收货", R.mipmap.ic_admin_menu_invrecvorder));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVENTORY,
                 "库存", R.mipmap.ic_admin_menu_inventory));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_RECEIPT,
                 "单据", R.mipmap.ic_admin_menu_receipt));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRETURNORDER,
-//                "退货", R.mipmap.ic_admin_menu_invreturnorder));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ONLINEORDER,
-//                "线上订单", R.mipmap.ic_admin_menu_onlineorder));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVLOSSORDER,
-//                "报损", R.mipmap.ic_admin_menu_invlossorder));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ANALYSIS,
                 "统计", R.mipmap.ic_admin_menu_analysis));
         functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_DAILYSETTLE,
@@ -439,9 +412,7 @@ public class AdministratorActivity extends BaseActivity {
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_ONLINEORDER) == 0) {
             redirect2OnlineOrder();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_DAILYSETTLE) == 0) {
-            dailySettle(null, true);
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_TOPUP) == 0) {
-            topupService();
+            dailySettle(null);
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_SETTINGS) == 0) {
             redirect2Settings();
         } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CASHQUOTA) == 0) {
@@ -499,21 +470,6 @@ public class AdministratorActivity extends BaseActivity {
         extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleActivity.FT_ONLINE_ORDER);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 充值
-     */
-    private void topupService() {
-        if (topupDialog == null) {
-            topupDialog = new TopupDialog(this);
-            topupDialog.setCancelable(false);
-            topupDialog.setCanceledOnTouchOutside(false);
-        }
-        topupDialog.init();
-        if (!topupDialog.isShowing()) {
-            topupDialog.show();
-        }
     }
 
     /**

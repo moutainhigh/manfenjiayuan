@@ -1,4 +1,6 @@
-package com.bingshanguxue.cashier.model.wrapper;
+package com.bingshanguxue.cashier.v2;
+
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 
 import java.util.List;
 

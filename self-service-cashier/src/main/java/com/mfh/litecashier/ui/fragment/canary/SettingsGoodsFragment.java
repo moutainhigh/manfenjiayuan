@@ -19,14 +19,13 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.adapter.SettingsGoodsAdapter;
 import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
 import com.mfh.litecashier.ui.widget.InputSearchView;
@@ -260,14 +259,6 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
             }
         }
     };
-
-    /**
-     * 同步商品
-     * */
-    @OnClick(R.id.fab_sync)
-    public void syncGoods() {
-        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
-    }
 
     /**
      * 在主线程接收CashierEvent事件，必须是public void

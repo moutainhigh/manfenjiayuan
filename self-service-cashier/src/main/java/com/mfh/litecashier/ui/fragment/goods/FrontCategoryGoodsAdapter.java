@@ -60,7 +60,6 @@ public class FrontCategoryGoodsAdapter
 
         String sqlWhere = String.format("productId = '%d'", entity.getProductId());
 
-
         List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance().queryAllBy(sqlWhere);
         if (goodsTempEntities != null && goodsTempEntities.size() > 0){
             holder.ibRatio.setVisibility(View.VISIBLE);

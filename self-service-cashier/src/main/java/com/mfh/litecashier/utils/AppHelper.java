@@ -154,13 +154,13 @@ public class AppHelper {
     }
 
     /**
-     * 清空无效数据
+     * 清空过期数据，保留最近7天的数据。
      */
     public static void clearRedunantData(){
         AnalysisHelper.deleteOldDailysettle(7);//日结
-        CashierHelper.clearOldPosOrder(15);//收银订单
-        PosTopupService.get().deleteOldData(15);
-        ZLogger.deleteOldFiles(7);
+        CashierHelper.clearOldPosOrder(7);//收银订单
+        PosTopupService.get().deleteOldData(7);
+        ZLogger.deleteOldFiles(14);
     }
 
     /**

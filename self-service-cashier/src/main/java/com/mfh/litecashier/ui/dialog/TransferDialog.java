@@ -40,10 +40,10 @@ import com.mfh.litecashier.bean.ActivateAccountResult;
 
 
 /**
- * 对话框 -- 充值
+ * 账号转账充值
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class TopupDialog extends CommonDialog {
+public class TransferDialog extends CommonDialog {
 
     private View rootView;
     private TextView tvTitle;
@@ -56,15 +56,15 @@ public class TopupDialog extends CommonDialog {
 
     private Human humanTo = null;
 
-    private TopupDialog(Context context, boolean flag, OnCancelListener listener) {
+    private TransferDialog(Context context, boolean flag, OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private TopupDialog(Context context, int defStyle) {
+    private TransferDialog(Context context, int defStyle) {
         super(context, defStyle);
         rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_topup, null);
+                R.layout.dialogview_transfer, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -182,7 +182,7 @@ public class TopupDialog extends CommonDialog {
         setContent(rootView, 0);
     }
 
-    public TopupDialog(Context context) {
+    public TransferDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 

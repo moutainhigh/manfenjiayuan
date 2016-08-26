@@ -285,7 +285,7 @@ public class FrontCategoryFragment extends BaseFragment {
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.df("创建前台类目失败, " + errMsg);
+                    ZLogger.df("导入前台类目商品失败, " + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
                 }
 

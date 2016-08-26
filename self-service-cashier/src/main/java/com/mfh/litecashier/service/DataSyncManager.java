@@ -111,8 +111,13 @@ public class DataSyncManager {
      */
     public synchronized void sync() {
         if (bSyncInProgress) {
-            rollback ++;
+            rollback++;
             ZLogger.df(String.format("正在同步POS数据..., rollback=%d", rollback));
+
+            //自动恢复同步
+            if (rollback > 2) {
+                bSyncInProgress = false;
+            }
             if (nextStep > SYNC_STEP_BACKEND_CATEGORYINFO) {
                 nextStep = SYNC_STEP_BACKEND_CATEGORYINFO;
             }
@@ -125,7 +130,13 @@ public class DataSyncManager {
 
     public void sync(int step) {
         if (bSyncInProgress) {
-            ZLogger.df("正在同步POS数据...");
+            rollback++;
+            ZLogger.df(String.format("正在同步POS数据..., rollback=%d", rollback));
+
+            //自动恢复同步
+            if (rollback > 2) {
+                bSyncInProgress = false;
+            }
             if (nextStep > step) {
                 nextStep = step;
             }
@@ -151,12 +162,12 @@ public class DataSyncManager {
                 downloadBackendCategoryInfo();
             }
             break;
-            case SYNC_STEP_PRODUCT_SKU: {
-                startSyncProductSku();
-            }
-            break;
             case SYNC_STEP_PRODUCTS: {
                 startSyncProducts();
+            }
+            break;
+            case SYNC_STEP_PRODUCT_SKU: {
+                startSyncProductSku();
             }
             break;
             case SYNC_STEP_COMPANY_HUMAN: {
@@ -225,7 +236,7 @@ public class DataSyncManager {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                if (!MfhLoginService.get().haveLogined()) {
+                if (MfhLoginService.get().haveLogined()) {
                     subscriber.onError(null);
                     return;
                 }
@@ -283,8 +294,8 @@ public class DataSyncManager {
 //        params.put("rows", Integer.toString(pageInfo.getPageSize()));
 //        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
 
-        bSyncInProgress = true;
-        ZLogger.df(String.format("同步商品开始(%d/%d/%s)", pageInfo.getPageNo(), pageInfo.getTotalPage(), lastCursor));
+        ZLogger.df(String.format("同步商品开始(%d/%d/%s)",
+                pageInfo.getPageNo(), pageInfo.getTotalPage(), lastCursor));
         posProductNetDao.query(params, new NetProcessor.QueryRsProcessor<PosGoods>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<PosGoods> rs) {
@@ -303,7 +314,8 @@ public class DataSyncManager {
         }, "/scGoodsSku/downLoadPosProduct");
     }
 
-    private void savePosProducts(final RspQueryResult<PosGoods> rs, final PageInfo pageInfo, final String startCursor) {
+    private void savePosProducts(final RspQueryResult<PosGoods> rs, final PageInfo pageInfo,
+                                 final String startCursor) {
         if (rs == null) {
             nextStep();
             return;

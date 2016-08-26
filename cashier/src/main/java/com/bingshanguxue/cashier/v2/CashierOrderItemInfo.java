@@ -1,13 +1,14 @@
-package com.bingshanguxue.cashier.model.wrapper;
+package com.bingshanguxue.cashier.v2;
 
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
+import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.mfh.framework.api.constant.WayType;
 
 import java.io.Serializable;
 
 /**
- * 收银订单明细
+ * 收银订单拆分自订单支付信息
  * Created by bingshanguxue on 5/26/16.
  */
 public class CashierOrderItemInfo implements Serializable {
@@ -24,7 +25,6 @@ public class CashierOrderItemInfo implements Serializable {
     private Double adjustDiscountAmount = 0D;
 
     private String couponsIds = "";//使用的卡券
-
 
     //卡券&促销规则
     private OrderMarketRules mOrderMarketRules;

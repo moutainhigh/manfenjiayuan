@@ -25,7 +25,6 @@ public class AffairEvent {
 
     //常用商品
     public static final int EVENT_ID_SHOW_EXPRESS = 0X11;//寄快递
-    public static final int EVENT_ID_SHOW_LAUNDRY = 0X12;//洗衣服务
 
     private int affairId;
     private Bundle args;//参数

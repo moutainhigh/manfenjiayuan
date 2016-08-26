@@ -1,6 +1,6 @@
 package com.mfh.litecashier.bean.wrapper;
 
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 
 /**
  * 收银订单
