@@ -23,14 +23,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.category.CateApi;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -48,6 +49,7 @@ import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.PurchasePresenter;
+import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
@@ -925,7 +927,19 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         } else {
             selectPlatformProvider();
         }
+    }
 
+    /**
+     * 智能订货
+     * */
+    @OnClick(R.id.fab_importFromChainSku)
+    public void importFromChainSku(){
+        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+        if (companyInfo != null) {
+//            CloudSyncManager.get().importFromChainSku(companyInfo.getTenantId(),
+//                    String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRUIT));
+            CloudSyncManager.get().importFromChainSku();
+        }
     }
 
     @Override

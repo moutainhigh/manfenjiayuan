@@ -49,11 +49,6 @@ public class CloudSyncManager {
      * @param cateType     类目
      */
     public void importFromChainSku(Long sendTenantId, String cateType) {
-//        if (!MfhLoginService.get().haveLogined()) {
-//            sessionError();
-//            return;
-//        }
-
         final String startCursorKey = String.format("%s_%d_%s",
                 SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR, sendTenantId, cateType);
         String startCursorValue = SharedPreferencesHelper.getText(startCursorKey, "");
