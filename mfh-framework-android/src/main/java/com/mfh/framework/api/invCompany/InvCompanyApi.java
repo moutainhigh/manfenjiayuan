@@ -4,8 +4,8 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -19,7 +19,6 @@ public class InvCompanyApi {
     public static final Integer STATUS_ONLINE = 2;
 
     public final static String URL_INV_COMPANY = MfhApi.URL_BASE_SERVER + "/invCompany/";
-
 
     /**
      * 查询批发商租户，使用这个接口/invCompany/list?status=2&shortCode=，shortCode是速记码，status=2代表上线的

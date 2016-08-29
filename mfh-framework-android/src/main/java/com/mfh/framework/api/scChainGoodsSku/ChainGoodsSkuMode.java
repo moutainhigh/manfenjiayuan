@@ -6,11 +6,11 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class ChainGoodsSkuMode {
         }
 
         NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<ChainGoodsSku>(new PageInfo(1, 50)) {
+                new NetProcessor.QueryRsProcessor<ChainGoodsSku>(pageInfo) {
                     @Override
                     public void processQueryResult(RspQueryResult<ChainGoodsSku> rs) {
                         //此处在主线程中执行。
@@ -149,21 +149,18 @@ public class ChainGoodsSkuMode {
     }
 
 
-    public void findTenantSku(PageInfo pageInfo, Long companyId, String barcode,
+    /**
+     * 查询供应商商品
+     * */
+    public void findTenantSku(PageInfo pageInfo, Long companyId, Long frontCategoryId,
+                              String barcode,
                               final OnPageModeListener<ChainGoodsSku> listener) {
         if (listener != null) {
             listener.onProcess();
         }
 
-        //检查参数：
-//        if (companyId == null) {
-//            if (listener != null) {
-//                listener.onError("缺少必要参数companyId");
-//            }
-//            return;
-//        }
-
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<ChainGoodsSku>(pageInfo) {
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<ChainGoodsSku>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<ChainGoodsSku> rs) {
                 //此处在主线程中执行。
@@ -188,7 +185,8 @@ public class ChainGoodsSkuMode {
             }
         }, ChainGoodsSku.class, MfhApplication.getAppContext());
 
-        ScChainGoodsSkuApiImpl.findTenantSku(barcode, companyId, pageInfo, queryRsCallBack);
+        ScChainGoodsSkuApiImpl.findTenantSku(barcode, companyId, frontCategoryId,
+                pageInfo, queryRsCallBack);
     }
 
     public void getTenantSkuMust(Long tenantId, String barcode,

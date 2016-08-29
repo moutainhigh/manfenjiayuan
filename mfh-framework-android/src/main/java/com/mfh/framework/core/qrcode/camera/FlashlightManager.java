@@ -20,7 +20,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

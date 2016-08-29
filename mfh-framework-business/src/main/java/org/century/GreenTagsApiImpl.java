@@ -1,11 +1,8 @@
 package org.century;
 
-import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import org.century.ksoap2.KSoapHelper;
-import org.century.ksoap2.ZHttpTransportSE;
 import org.century.schemas.ArrayOfGoodsInfoEX;
 import org.century.schemas.ArrayOfProperty;
 import org.century.schemas.DataType;
@@ -20,7 +17,6 @@ import org.century.schemas.ReaderInfoEX;
 import org.century.schemas.ReaderStatus;
 import org.century.schemas.TagInfoEX;
 import org.century.schemas.TagStatus;
-import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;

@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.R;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import org.json.JSONObject;
 
@@ -86,7 +86,7 @@ public class WebViewJavascriptBridge implements Serializable {
 
         webSettings.setUserAgentString(MfhApplication.getUserAgent());
         webSettings.setJavaScriptEnabled(true);
-        if(NetWorkUtil.isConnect(mContext)){
+        if(NetworkUtils.isConnect(mContext)){
             webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         }else{
             webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);

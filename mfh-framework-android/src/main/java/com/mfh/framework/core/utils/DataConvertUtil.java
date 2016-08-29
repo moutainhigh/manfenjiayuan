@@ -1,7 +1,6 @@
 package com.mfh.framework.core.utils;
 
-import com.mfh.comn.utils.MD5;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 /**
  * Created by kun on 15/9/7.

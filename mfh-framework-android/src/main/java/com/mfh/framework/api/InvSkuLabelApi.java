@@ -1,6 +1,6 @@
 package com.mfh.framework.api;
 
-import com.mfh.framework.net.AfinalFactory;
+import com.mfh.framework.network.AfinalFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;

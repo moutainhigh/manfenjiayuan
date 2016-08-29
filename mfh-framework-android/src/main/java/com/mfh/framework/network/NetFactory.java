@@ -1,9 +1,9 @@
-package com.mfh.framework.net;
+package com.mfh.framework.network;
 
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.configure.UConfigHelper;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import org.apache.http.cookie.Cookie;
 

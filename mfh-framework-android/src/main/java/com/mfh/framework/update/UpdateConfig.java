@@ -1,7 +1,7 @@
 package com.mfh.framework.update;
 
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.NetFactory;
 
 /**
  * 应用更新参数配置

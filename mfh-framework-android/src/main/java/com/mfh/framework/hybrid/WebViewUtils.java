@@ -12,8 +12,8 @@ import android.webkit.WebView;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.URLHelper;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.network.URLHelper;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 
 import java.io.File;

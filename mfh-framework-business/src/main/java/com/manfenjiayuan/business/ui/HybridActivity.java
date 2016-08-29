@@ -3,49 +3,24 @@ package com.manfenjiayuan.business.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.R;
-import com.manfenjiayuan.business.bean.AccountPayResponse;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.PayApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.hybrid.BaseHybridActivity;
 import com.mfh.framework.hybrid.JBridgeConf;
 import com.mfh.framework.hybrid.WebViewJavascriptBridge;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
-import com.mfh.framework.pay.alipay.AlipayUtil;
-import com.mfh.framework.pay.alipay.PayResult;
-import com.mfh.framework.uikit.dialog.ShareDialog;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -329,7 +304,7 @@ public class HybridActivity extends BaseHybridActivity {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
 //        animProgress.setVisibility(View.VISIBLE);
 
-//        if (!NetWorkUtil.isConnect(this)) {
+//        if (!NetworkUtils.isConnect(this)) {
 ////            animProgress.setVisibility(View.GONE);
 ////            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
 //            DialogUtil.showHint(getString(R.string.toast_network_error));
@@ -431,7 +406,7 @@ public class HybridActivity extends BaseHybridActivity {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
 //        animProgress.setVisibility(View.VISIBLE);
 
-//        if (!NetWorkUtil.isConnect(this)) {
+//        if (!NetworkUtils.isConnect(this)) {
 ////            animProgress.setVisibility(View.GONE);
 ////            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
 //            DialogUtil.showHint(getString(R.string.toast_network_error));

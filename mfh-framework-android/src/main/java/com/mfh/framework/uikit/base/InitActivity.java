@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.IBaseViewComponent;
 import com.mfh.framework.core.logic.MyMultiAsyncTask;
 import com.mfh.framework.core.logic.UpdateResultsRunable;

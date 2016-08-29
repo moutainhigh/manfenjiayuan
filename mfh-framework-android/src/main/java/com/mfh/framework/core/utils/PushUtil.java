@@ -16,7 +16,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.widget.Toast;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;

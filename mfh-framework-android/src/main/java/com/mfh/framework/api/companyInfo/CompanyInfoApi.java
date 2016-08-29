@@ -5,8 +5,8 @@ import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;

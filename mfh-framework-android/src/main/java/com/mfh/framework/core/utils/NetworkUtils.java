@@ -1,5 +1,6 @@
-package com.mfh.framework.network;
+package com.mfh.framework.core.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -8,28 +9,36 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 
-import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 /**
  * 网络工具类
- * Created by 李潇阳 on 2014/11/6.
+ * Created by bingshanguxue on 2014/11/6.
  */
-public class NetWorkUtil {
+public class NetworkUtils {
+    public static final String DEFAULT_WIFI_MACADDRESS = "00-00-00-00-00-00";
+    public static final String G2G3 = "2G/3G";
+    public static final String WIFI = "Wi-Fi";
+
     /**
-     * Check if the device has connected network.
-     * */
+     * Check whether the device has connected network or not.<br>
+     * need permissoin{@link android.Manifest.permission#ACCESS_NETWORK_STATE}
+     */
     public static boolean isConnect(Context context) {
-        if(context != null){
+        if (context != null) {
             ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if(conManager != null) {
-                NetworkInfo info = conManager.getActiveNetworkInfo();
-                if(info != null) {
-                    return info.isAvailable();
+            if (conManager != null) {
+                try {
+                    NetworkInfo info = conManager.getActiveNetworkInfo();
+                    if (info != null) {
+                        return info.isAvailable();
 //                return e.isConnected();
+                    }
+                } catch (Exception e) {
+                    ZLogger.e("检查网络是否连接:" + e.toString());
                 }
             }
         }
-
 
 //        NetworkInfo[] info = cm.getAllNetworkInfo();
 //        if (info != null) {
@@ -44,7 +53,8 @@ public class NetWorkUtil {
     }
 
     /**
-     * Check the network is Wifi or not
+     * Check whether the network is Wifi or not
+     *
      * @param context
      * @return
      */
@@ -63,7 +73,7 @@ public class NetWorkUtil {
 
     /**
      * 互联网连接的类型
-     * */
+     */
     public static String getNetworkType(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -99,94 +109,79 @@ public class NetWorkUtil {
         }
     }
 
+    /**
+     * 获取网络状态
+     * Wi-Fi, GPRS, UMTS, etc.
+     */
     public static String[] getNetworkState(Context context) {
         String[] arrayOfString = new String[]{"Unknown", "Unknown"};
 
         try {
-            PackageManager e = context.getPackageManager();
-
-            if(e.checkPermission("android.permission.ACCESS_NETWORK_STATE", context.getPackageName()) != 0) {
+            PackageManager packageManager = context.getPackageManager();
+            if (packageManager.checkPermission(Manifest.permission.ACCESS_NETWORK_STATE,
+                    context.getPackageName()) != PackageManager.PERMISSION_GRANTED) {
                 arrayOfString[0] = "Unknown";
-                return arrayOfString;
+            } else {
+                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connectivityManager == null) {
+                    arrayOfString[0] = "Unknown";
+                } else {
+                    NetworkInfo wifiNetworkInfo = connectivityManager.getNetworkInfo(1);
+                    if (wifiNetworkInfo != null && wifiNetworkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                        arrayOfString[0] = WIFI;
+                    } else {
+                        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(0);
+                        if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                            arrayOfString[0] = G2G3;
+                            arrayOfString[1] = networkInfo.getSubtypeName();
+                        }
+                    }
+                }
             }
-
-            ConnectivityManager localConnectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if(localConnectivityManager == null) {
-                arrayOfString[0] = "Unknown";
-                return arrayOfString;
-            }
-
-            NetworkInfo localNetworkInfo1 = localConnectivityManager.getNetworkInfo(1);
-            if(localNetworkInfo1 != null && localNetworkInfo1.getState() == NetworkInfo.State.CONNECTED) {
-                arrayOfString[0] = "Wi-Fi";
-                return arrayOfString;
-            }
-
-            NetworkInfo localNetworkInfo2 = localConnectivityManager.getNetworkInfo(0);
-            if(localNetworkInfo2 != null && localNetworkInfo2.getState() == NetworkInfo.State.CONNECTED) {
-                arrayOfString[0] = "2G/3G";
-                arrayOfString[1] = localNetworkInfo2.getSubtypeName();
-                return arrayOfString;
-            }
-        } catch (Exception var6) {
-
+        } catch (Exception e) {
+            ZLogger.e(e.toString());
         }
 
         return arrayOfString;
     }
 
-    public static String getWifiAddress(Context context) {
-        if(context != null) {
-            WifiManager wifimanage = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+    /**
+     * 使用手机Wifi或蓝牙的MAC地址作为设备标识
+     * <ol>
+     * <li>android.permission.ACCESS_WIFI_STATE</li>
+     * <li>格式: 54:e4:bd:ff:b4:7c</li>
+     * <li>硬件限制：并不是所有的设备都有Wifi和蓝牙硬件，硬件不存在自然也就得不到这一信息。</li>
+     * <li>如果Wifi没有打开过，是无法获取其Mac地址的；而蓝牙是只有在打开的时候才能获取到其Mac地址。</li>
+     * </ol>
+     */
+    public static String getWifiMacAddress(Context context) {
+        if (context != null) {
+            WifiManager wifimanage = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiinfo = wifimanage.getConnectionInfo();
-            if(wifiinfo != null) {
+            if (wifiinfo != null) {
                 String address = wifiinfo.getMacAddress();
-                if(StringUtils.isEmpty(address)) {
-                    address = "00-00-00-00-00-00";
+                if (!StringUtils.isEmpty(address)) {
+                    return address;
                 }
-
-                return address;
-            } else {
-                return "00-00-00-00-00-00";
             }
-        } else {
-            return "00-00-00-00-00-00";
         }
-    }
-
-    private static String _convertIntToIp(int i) {
-        return (i & 255) + "." + (i >> 8 & 255) + "." + (i >> 16 & 255) + "." + (i >> 24 & 255);
+        return DEFAULT_WIFI_MACADDRESS;
     }
 
     public static String getWifiIpAddress(Context context) {
-        if(context != null) {
-            try {
-                WifiManager e = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-                WifiInfo wifiinfo = e.getConnectionInfo();
-                if(wifiinfo != null) {
-                    return _convertIntToIp(wifiinfo.getIpAddress());
-                }
-
-                return null;
-            } catch (Exception var3) {
-
+        if (context != null) {
+            WifiManager e = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = e.getConnectionInfo();
+            if (wifiInfo != null) {
+                return convertIntToIp(wifiInfo.getIpAddress());
             }
         }
 
         return null;
     }
 
-    public static boolean isWifi(Context context) {
-        if(context != null) {
-            try {
-                if(getNetworkState(context)[0].equals("Wi-Fi")) {
-                    return true;
-                }
-            } catch (Exception var2) {
-
-            }
-        }
-
-        return false;
+    private static String convertIntToIp(int i) {
+        return (i & 255) + "." + (i >> 8 & 255) + "." + (i >> 16 & 255) + "." + (i >> 24 & 255);
     }
+
 }

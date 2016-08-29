@@ -3,8 +3,8 @@ package com.mfh.framework.api.scChainGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -14,27 +14,35 @@ import net.tsz.afinal.http.AjaxParams;
  */
 public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
 
-
     /**
-     * 查询供应链商品,解决不在采购计划内的商品也能被收货
+     * 查询供应链商品
      * <p/>
      * <ol>
      * 适用场景
-     * <li>门店采购收货，companyId字段可查询指定批发商的商品</li>
-     * <li>批发商拣货（发货），companyId不需要填</li>
+     * <li>门店导入前台类目商品查询时调用</li>
      * </ol>
      *
      * @param barcode   商品条码
      * @param companyId 批发商编号(可空，空值就取当前登录用户)
+     * @param frontCategoryId 前台类目编号
      */
-    public static void findTenantSku(String barcode, Long companyId, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
+    public static void findTenantSku(String barcode, Long companyId, Long frontCategoryId,
+                                     PageInfo pageInfo,
+                                     AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        params.put("barcode", barcode);
+        if (!StringUtils.isEmpty(barcode)){
+            params.put("barcode", barcode);
+        }
         if (companyId != null) {
             params.put("companyId", String.valueOf(companyId));
         }
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (frontCategoryId != null) {
+            params.put("frontCategoryId", String.valueOf(frontCategoryId));
+        }
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_SCCHAINGOODSSKU_FIND_TENANTSKU, params, responseCallback);
@@ -99,8 +107,10 @@ public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
         if (!StringUtils.isEmpty(barcode)){
             params.put("barcode", barcode);
         }
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.getHttp(true).post(URL_FIND_PUBLICCHAINGOODSSKU, params, responseCallback);

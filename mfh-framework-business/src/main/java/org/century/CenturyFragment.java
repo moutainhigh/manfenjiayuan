@@ -3,7 +3,7 @@ package org.century;
 import android.os.AsyncTask;
 
 import com.alibaba.fastjson.JSON;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;

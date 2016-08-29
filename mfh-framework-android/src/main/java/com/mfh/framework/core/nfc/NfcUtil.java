@@ -10,7 +10,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.EditText;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 /**
  * Nfc的服务类，实现对NfcActivity中广播消息的接收，用于获取IC卡的Token

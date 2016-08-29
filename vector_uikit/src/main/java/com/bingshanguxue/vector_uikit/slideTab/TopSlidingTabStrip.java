@@ -29,7 +29,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.bingshanguxue.vector_uikit.R;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.ArrayList;
 import java.util.Iterator;

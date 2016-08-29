@@ -12,8 +12,12 @@ public class ScChainGoodsSkuApi {
 
 
     /**
-     * /scChainGoodsSku/findTenantSku
-     * 查询供应链商品,解决不在采购计划内的商品也能被收货<BR>
+     * /scChainGoodsSku/findTenantSku?nameLike=...&categoryId=...&frontCategoryId=..&barcode=.
+     * <ol>
+     *     <li>需要登录</li>
+     *     <li>查询指定供应链商（若未指定则为当前租户）发布的供货产品sku列表,采购收货时查询会用</li>
+     * </ol>
+     *
      * */
     public final static String URL_SCCHAINGOODSSKU_FIND_TENANTSKU = URL_SCCHAINGOODSSKU + "findTenantSku";
 

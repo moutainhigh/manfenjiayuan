@@ -1,6 +1,6 @@
 package org.century.ksoap2;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import org.ksoap2.SoapEnvelope;
 

@@ -12,7 +12,7 @@
 package com.mfh.framework.database.dao;
 
 
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetProcessor;
 
 import net.tsz.afinal.http.AjaxParams;
 

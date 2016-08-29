@@ -64,4 +64,16 @@
         <attr name="src"/>
     </declare-styleable>
 
+    <declare-styleable name="NumberPickerView">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="increaseDrawable" format="reference"/>
+        <attr name="decreaseDrawable" format="reference"/>
+        <!--当数字为0时，自动隐藏“－”按钮，默认为fasle-->
+        <attr name="decreaseDrawableAutoHide" format="boolean"/>
+        <!--数字为0时是是否拦截处理，默认为fasle-->
+        <attr name="zeroIntercept" format="boolean"/>
+    </declare-styleable>
+
 </resources>
