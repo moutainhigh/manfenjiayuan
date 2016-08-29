@@ -394,40 +394,35 @@ public class CashierAgent {
     /**
      * 保存支付记录并更新支付订单
      *
-     * @param cashierOrderInfo 订单结算信息
+     * @param bizType 业务类型
+     * @param orderBarCode 订单流水号
+     * @param vipMember 会员信息
      * @param paymentInfo      订单支付信息
      *                         适用场景：收银支付金额或者状态发生改变
      */
-    public static boolean updateCashierOrder(CashierOrderInfo cashierOrderInfo,
+    public static boolean updateCashierOrder(Integer bizType, String orderBarCode, Human vipMember,
                                              PaymentInfo paymentInfo) {
 
         //参数检查
-        if (cashierOrderInfo == null || paymentInfo == null) {
+        if (paymentInfo == null) {
             return false;
         }
 
-        //更新日期
-        Date updateDate = new Date();
-        //订单流水号
-        String orderBarCode = cashierOrderInfo.getPosTradeNo();
-        //会员信息
-        Human vipMember = cashierOrderInfo.getVipMember();
-
-
-        PosOrderEntity orderEntity = fetchOrderEntity(cashierOrderInfo.getBizType(), orderBarCode);
+        PosOrderEntity orderEntity = fetchOrderEntity(bizType, orderBarCode);
         if (orderEntity == null) {
             ZLogger.df("订单不存在");
             return false;
         }
 
         //保存支付记录
-        PaymentInfoImpl.saveOrUpdate(paymentInfo, orderEntity, vipMember);
+        PaymentInfoImpl.saveOrUpdate(orderEntity.getId(), paymentInfo, vipMember);
+
+        //更新订单信息
         if (vipMember != null) {
             orderEntity.setHumanId(vipMember.getId());
         }
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
-        orderEntity.setUpdatedDate(updateDate);
-
+        orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
         ZLogger.df(String.format("更新订单：\n%s", JSONObject.toJSONString(orderEntity)));
 

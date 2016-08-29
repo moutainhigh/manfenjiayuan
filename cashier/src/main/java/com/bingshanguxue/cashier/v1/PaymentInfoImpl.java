@@ -1,6 +1,5 @@
 package com.bingshanguxue.cashier.v1;
 
-import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
@@ -47,7 +46,7 @@ public class PaymentInfoImpl{
     /**
      * 拆分并保存支付信息
      * */
-    public static void saveOrUpdate(PaymentInfo paymentInfo, PosOrderEntity orderEntity, Human member){
+    public static void saveOrUpdate(Long orderId, PaymentInfo paymentInfo, Human member){
         //商户交易订单号
         String outTradeNo = paymentInfo.getOutTradeNo();
         Double paidRemain = paymentInfo.getPaidAmount();//实际支付
@@ -62,14 +61,14 @@ public class PaymentInfoImpl{
         }
 
         //保存实际支付金额
-        PosOrderPayService.get().saveOrUpdate(orderEntity.getId(),
+        PosOrderPayService.get().saveOrUpdate(orderId,
                 outTradeNo, paymentInfo.getPayType(),
                 PosOrderPayEntity.AMOUNT_TYPE_IN, paidRemain,
                 status, member);
 
         //保存找零金额
         if (changeRemain > 0.01) {
-            PosOrderPayService.get().saveOrUpdate(orderEntity.getId(),
+            PosOrderPayService.get().saveOrUpdate(orderId,
                     outTradeNo, paymentInfo.getPayType(),
                     PosOrderPayEntity.AMOUNT_TYPE_OUT, changeRemain,
                     status, member);
