@@ -5,8 +5,8 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.crash.AppException;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.owner.utils.Constants;
 import com.mfh.owner.utils.SensoroHelper;
 import com.sensoro.beacon.kit.Beacon;

@@ -40,34 +40,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_profile"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/default_margin_top"
-                app:logoSrc="@drawable/icon_setting_profile"
+                app:src="@drawable/icon_setting_profile"
                 app:text="@string/label_settings_user_profile"
                 app:position="top"/>
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_account"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/icon_settings_account"
+                app:src="@drawable/icon_settings_account"
                 app:text="@string/label_settings_account"
                 app:position="center" />
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_general"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/icon_setting_general"
+                app:src="@drawable/icon_setting_general"
                 app:text="@string/label_settings_user_profile"
                 app:position="bottom" />
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_customer_service"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/space_primary"
-                app:logoSrc="@drawable/icon_settings_customer_service"
+                app:src="@drawable/icon_settings_customer_service"
                 app:text="@string/label_settings_customer_center"
                 app:position="single"/>
 

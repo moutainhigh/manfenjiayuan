@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.mfh.framework.Constants;
 import com.mfh.framework.R;
 import com.mfh.framework.core.camera.CameraSessionUtil;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;

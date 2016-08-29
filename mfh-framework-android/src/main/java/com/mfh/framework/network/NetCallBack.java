@@ -9,7 +9,7 @@
  * 修改日期: 2014-3-10
  * 修改内容: 
  */
-package com.mfh.framework.net;
+package com.mfh.framework.network;
 
 import android.content.Context;
 
@@ -24,7 +24,7 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

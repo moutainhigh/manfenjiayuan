@@ -7,8 +7,8 @@ import com.mfh.enjoycity.database.ReceiveAddressService;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.core.logic.ServiceFactory;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 
 /**
  * Created by kun on 15/8/18.

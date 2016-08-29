@@ -1,4 +1,4 @@
-package com.mfh.framework.net;
+package com.mfh.framework.network;
 
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;

@@ -25,10 +25,10 @@ import android.widget.RelativeLayout;
 
 import com.manfenjiayuan.business.R;
 import com.manfenjiayuan.im.IMClient;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
@@ -164,7 +164,7 @@ public class SignInActivity extends BaseActivity {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(this)) {
+        if (!NetworkUtils.isConnect(this)) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
 //            btnSignIn.setEnabled(true);
             return;

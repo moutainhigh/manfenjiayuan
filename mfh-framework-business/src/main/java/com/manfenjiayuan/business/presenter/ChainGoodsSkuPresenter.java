@@ -27,7 +27,8 @@ public class ChainGoodsSkuPresenter {
      * @param frontCategoryId 类目编号
      * */
     public void loadLaundryGoods(PageInfo pageInfo, Long frontCategoryId, Long netId){
-        iChainGoodsSkuMode.findPublicChainGoodsSku(pageInfo, frontCategoryId, netId, new OnPageModeListener<ChainGoodsSku>() {
+        iChainGoodsSkuMode.findPublicChainGoodsSku(pageInfo, frontCategoryId, netId,
+                new OnPageModeListener<ChainGoodsSku>() {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
@@ -117,8 +118,9 @@ public class ChainGoodsSkuPresenter {
      * 获取批发商商品
      * @param companyId 批发商编号
      * */
-    public void findTenantSku(PageInfo pageInfo, Long companyId, String barcode){
-        iChainGoodsSkuMode.findTenantSku(pageInfo, companyId, barcode, new OnPageModeListener<ChainGoodsSku>() {
+    public void findTenantSku(PageInfo pageInfo, Long companyId, Long frontCategoryId, String barcode){
+        iChainGoodsSkuMode.findTenantSku(pageInfo, companyId, frontCategoryId,
+                barcode, new OnPageModeListener<ChainGoodsSku>() {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {

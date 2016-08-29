@@ -152,7 +152,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:logoSrc="@drawable/icon_pending_payment"
+                    app:src="@drawable/icon_pending_payment"
                     app:text="@string/label_pending_payment"/>
 
                 <com.mfh.framework.uikit.compound.BadgeViewButton
@@ -174,73 +174,73 @@
             </LinearLayout>
 
             <!--订单/购物车-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/icon_orders_normal"
+                app:src="@drawable/icon_orders_normal"
                 app:position="top"
                 app:subText="@string/label_me_orders_description"
                 app:text="@string/label_me_orders"/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height"
-                app:logoSrc="@drawable/icon_cart_normal"
+                app:src="@drawable/icon_cart_normal"
                 app:position="bottom"
                 app:subText="@string/label_me_cart_description"
                 app:text="@string/label_me_cart"/>
 
             <!--钱包/卡包/包裹-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/icon_wallet_normal"
+                app:src="@drawable/icon_wallet_normal"
                 app:position="top"
                 app:subText="@string/label_me_wallet_description"
                 app:text="@string/label_me_wallet"/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/icon_cardpack_normal"
+                app:src="@drawable/icon_cardpack_normal"
                 app:position="center"
                 app:subText="@string/label_me_carkpack_description"
                 app:text="@string/label_me_carkpack"/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height"
-                app:logoSrc="@drawable/icon_parcel_normal"
+                app:src="@drawable/icon_parcel_normal"
                 app:position="bottom"
                 app:subText="@string/label_me_parcel_description"
                 app:text="@string/label_me_parcel"/>
 
             <!--满分小伙伴-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_3_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height"
-                app:logoSrc="@drawable/icon_mfhpartner_normal"
+                app:src="@drawable/icon_mfhpartner_normal"
                 app:position="single"
                 app:subText="@string/label_me_mfhpartner_description"
                 app:text="@string/label_me_mfhpartner"/>
 
             <!--反馈-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_4_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height"
                 android:visibility="gone"
-                app:logoSrc="@drawable/icon_mfhpartner_normal"
+                app:src="@drawable/icon_mfhpartner_normal"
                 app:position="single"
                 app:text="@string/label_me_feedback"/>
 

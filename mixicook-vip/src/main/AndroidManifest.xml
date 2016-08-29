@@ -103,6 +103,11 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".ui.FragmentActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name=".ui.my.UserProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">

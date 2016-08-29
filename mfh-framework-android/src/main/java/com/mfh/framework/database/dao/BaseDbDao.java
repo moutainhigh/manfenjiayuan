@@ -9,7 +9,7 @@ import com.mfh.comn.config.UConfig;
 import com.mfh.comn.logic.SeqInit;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.db.table.TableInfo;
@@ -39,7 +39,7 @@ public abstract class BaseDbDao<T extends IObject, PK> extends ComnDao<T, PK> im
      * @author zhangyz created on 2013-5-11
      */
     public static boolean initDao(Context context, String dbName, String dbPath) {
-        ZLogger.d(String.format("Initialize--init database %s/%s", dbPath, dbName));
+        ZLogger.d(String.format("init database [%s/%s]", dbPath, dbName));
         FinalDb.DaoConfig config = new FinalDb.DaoConfig();
         config.setContext(context);
         config.setDbName(dbName);

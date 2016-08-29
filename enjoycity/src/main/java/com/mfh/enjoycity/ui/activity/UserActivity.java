@@ -23,7 +23,7 @@ import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.api.H5Api;
-import com.mfh.framework.net.URLHelper;
+import com.mfh.framework.network.URLHelper;
 
 import butterknife.Bind;
 

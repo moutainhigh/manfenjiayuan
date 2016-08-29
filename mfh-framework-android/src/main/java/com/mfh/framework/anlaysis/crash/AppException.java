@@ -1,4 +1,4 @@
-package com.mfh.framework.core;
+package com.mfh.framework.anlaysis.crash;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Looper;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.TimeUtil;
 
@@ -166,10 +167,9 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
             //TODO,发送错误信息到后台
 //            ErrorService.getInstance().sendError("", ex);
         } catch (Exception e) {
+            ZLogger.ef(e.toString());
         } finally {
-            if (!success) {
-                return false;
-            } else {
+            if (success) {
 //                final Context context = AppManager.getAppManager()
 //                        .currentActivity();
                 // 显示异常信息&发送报告
@@ -186,7 +186,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
                 }.start();
             }
         }
-        return true;
+        return success;
     }
 
     private boolean saveToSDCard(Throwable ex) throws Exception {

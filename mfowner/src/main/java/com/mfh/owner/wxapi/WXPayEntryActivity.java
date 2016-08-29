@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.owner.R;
 import com.mfh.owner.ui.web.ComnJBH5Activity;
 import com.tencent.mm.sdk.constants.ConstantsAPI;

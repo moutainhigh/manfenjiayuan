@@ -6,8 +6,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
-
 /**
  * 自适应改变文本字体大小
  * */
@@ -48,8 +46,8 @@ public class FontFitTextView extends TextView {
      */
     private void refitText(String text, int textWidth) {
 
-        ZLogger.d(String.format("refitText start:%s,%d(%f,%f)", text, textWidth,
-                minTextSize, maxTextSize));
+//        ZLogger.d(String.format("refitText start:%s,%d(%f,%f)", text, textWidth,
+//                minTextSize, maxTextSize));
         if (textWidth > 0) {
             int availableWidth = textWidth - this.getPaddingLeft() - this.getPaddingRight();
             float trySize = maxTextSize;
@@ -64,13 +62,12 @@ public class FontFitTextView extends TextView {
                 testPaint.setTextSize(trySize);
             }
 
-
             //注意，使用像素大小设置
             setTextSize(TypedValue.COMPLEX_UNIT_PX, trySize);
 //            this.setTextSize(DensityUtil.px2sp(getContext(), trySize));
 
-            ZLogger.d(String.format("refitText end:%s,%f(%f,%f)", text, trySize,
-                    minTextSize, maxTextSize));
+//            ZLogger.d(String.format("refitText end:%s,%f(%f,%f)", text, trySize,
+//                    minTextSize, maxTextSize));
         }
     }
 

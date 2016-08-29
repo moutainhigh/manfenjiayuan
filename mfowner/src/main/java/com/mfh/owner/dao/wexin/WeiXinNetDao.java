@@ -4,7 +4,7 @@ import com.mfh.framework.core.logic.AsyncTaskCallBack;
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.owner.entity.weixin.WeiXinUserInfo;
 
 import net.tsz.afinal.http.AjaxParams;

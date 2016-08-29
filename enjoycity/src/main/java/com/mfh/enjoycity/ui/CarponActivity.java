@@ -11,10 +11,10 @@ import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.api.H5Api;
 
 import java.util.List;

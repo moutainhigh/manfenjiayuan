@@ -15,7 +15,7 @@ import com.manfenjiayuan.loveshopping.eventbus.CommunityEvent;
 import com.manfenjiayuan.loveshopping.mvp.ISubdisListView;
 import com.manfenjiayuan.loveshopping.mvp.SubdisListPresenter;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.compound.CustomSearchView;

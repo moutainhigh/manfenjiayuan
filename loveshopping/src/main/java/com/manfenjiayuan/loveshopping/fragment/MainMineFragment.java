@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import com.manfenjiayuan.loveshopping.R;
 import com.manfenjiayuan.loveshopping.activity.HybridActivity;
 import com.manfenjiayuan.loveshopping.widget.UserProfileView;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.net.URLHelper;
+import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 

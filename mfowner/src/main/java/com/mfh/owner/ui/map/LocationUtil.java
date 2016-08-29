@@ -6,7 +6,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 
 import java.text.SimpleDateFormat;

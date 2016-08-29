@@ -14,7 +14,7 @@ import com.manfenjiayuan.im.IMConstants;
 import com.manfenjiayuan.im.database.entity.IMConversation;
 import com.manfenjiayuan.im.database.service.IMConversationService;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DialogUtil;
 

@@ -185,40 +185,40 @@
             </LinearLayout>
 
             <!--订单/购物车-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height" />
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height" />
 
             <!--钱包/卡包/包裹-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height" />
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height" />
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height" />
 
             <!--满分小伙伴-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_3_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginBottom="@dimen/sectioin_divider_height" />
 
             <!--反馈-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_4_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"

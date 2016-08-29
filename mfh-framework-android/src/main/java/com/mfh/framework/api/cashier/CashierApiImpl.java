@@ -4,8 +4,8 @@ package com.mfh.framework.api.cashier;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;

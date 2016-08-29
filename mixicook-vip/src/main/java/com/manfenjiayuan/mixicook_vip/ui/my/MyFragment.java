@@ -22,19 +22,19 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.H5Api;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.net.URLHelper;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 
@@ -232,7 +232,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
             itemRedPacket.setTopText("");
         }
 
-        if (isAutoReload && NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (isAutoReload && NetworkUtils.isConnect(AppContext.getAppContext())) {
             showProgressDialog(ProgressDialog.STATUS_PROCESSING, "加载中...", true);
             UserApiImpl.getMyProfile(responseCallback);
         }

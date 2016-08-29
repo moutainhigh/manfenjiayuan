@@ -1,6 +1,6 @@
 package com.mfh.framework.core.utils;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

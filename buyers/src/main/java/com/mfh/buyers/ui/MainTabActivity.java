@@ -32,7 +32,7 @@ import com.mfh.buyers.utils.Constants;
 import com.mfh.buyers.utils.MobileURLConf;
 import com.mfh.buyers.utils.UserProfileHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 import com.mfh.framework.login.logic.MfhLoginService;

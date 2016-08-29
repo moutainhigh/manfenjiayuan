@@ -37,21 +37,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin_top" />
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
-                app:logoSrc="@drawable/material_housekeeping"
+                app:src="@drawable/material_housekeeping"
                 app:text="昵称"
                 app:position="top"/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
-                app:logoSrc="@drawable/material_housekeeping"
+                app:src="@drawable/material_housekeeping"
                 app:text="性别"
                 app:position="bottom" />
         </LinearLayout>

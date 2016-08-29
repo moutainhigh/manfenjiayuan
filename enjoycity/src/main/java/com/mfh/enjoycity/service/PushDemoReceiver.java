@@ -10,7 +10,7 @@ import com.igexin.sdk.PushConsts;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.IMClient;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 

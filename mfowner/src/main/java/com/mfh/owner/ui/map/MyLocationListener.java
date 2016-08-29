@@ -5,7 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 
 /**

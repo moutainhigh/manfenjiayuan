@@ -2,7 +2,7 @@ package com.mfh.buyers.utils;
 
 import com.mfh.buyers.wxapi.WXUtil;
 import com.mfh.framework.api.ScApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.net.NetFactory;

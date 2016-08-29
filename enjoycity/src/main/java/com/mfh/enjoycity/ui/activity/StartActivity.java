@@ -13,7 +13,7 @@ import com.mfh.enjoycity.R;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.InitActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.UIHelper;
 
 /**

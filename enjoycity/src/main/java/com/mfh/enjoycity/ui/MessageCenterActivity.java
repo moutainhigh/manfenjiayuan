@@ -9,7 +9,7 @@ import android.view.View;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.ui.web.BrowserFragment;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.PagerSlidingTabStrip;
 import com.mfh.framework.uikit.widget.ViewPageFragmentAdapter;
 

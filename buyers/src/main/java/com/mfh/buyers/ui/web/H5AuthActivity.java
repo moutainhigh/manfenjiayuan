@@ -18,7 +18,7 @@ import com.mfh.buyers.R;
 import com.mfh.buyers.utils.MobileURLConf;
 import com.mfh.buyers.utils.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.hybrid.HtmlManager;

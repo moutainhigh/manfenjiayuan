@@ -3,13 +3,12 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="@dimen/spacing_micro">
+    android:gravity="center">
 
     <ImageButton
         android:id="@+id/btn_decrease"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:src="@drawable/btn_decrease"
         android:background="@null"/>
     <TextView
@@ -26,8 +25,8 @@
 
     <ImageButton
         android:id="@+id/btn_increase"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:src="@drawable/btn_increase"
         android:background="@null"/>
 

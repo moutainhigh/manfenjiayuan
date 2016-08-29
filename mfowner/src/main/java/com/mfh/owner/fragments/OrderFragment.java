@@ -16,8 +16,8 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.net.URLHelper;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.WebViewUtils;

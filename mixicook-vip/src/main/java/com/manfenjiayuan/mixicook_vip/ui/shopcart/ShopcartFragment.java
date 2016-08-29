@@ -16,6 +16,7 @@ import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
+import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -87,16 +88,11 @@ public class ShopcartFragment extends BaseFragment {
 
     @OnClick(R.id.button_confirm)
     public void redirect2OrderFragment() {
-//        Bundle extras = new Bundle();
-//        extras.putInt(SimpleActivity.EXTRA_KEY_FRAGMENT_TYPE, SimpleActivity.FT_CONFIRM_ORDER);
-//        UIHelper.startActivity(getActivity(), SimpleActivity.class, extras);
-
-
         Bundle extras = new Bundle();
         extras.putString(SimpleActivity.EXTRA_TITLE, "确认订单");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_FRAGMENT_TYPE, SimpleActivity.FT_CONFIRM_ORDER);
-        Intent intent = new Intent(getActivity(), SimpleActivity.class);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_CONFIRM_ORDER);
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, 0);
     }

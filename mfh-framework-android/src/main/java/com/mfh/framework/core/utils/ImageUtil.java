@@ -11,7 +11,7 @@ import android.provider.MediaStore;
 
 import com.mfh.comn.utils.FileUtils;
 import com.mfh.comn.utils.IOUtils;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.file.BaseFao;
 
 import java.io.ByteArrayInputStream;

@@ -1,6 +1,6 @@
 package com.mfh.framework.uikit.base;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 /**

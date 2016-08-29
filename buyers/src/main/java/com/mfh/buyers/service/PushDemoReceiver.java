@@ -19,7 +19,7 @@ import com.manfenjiayuan.im.param.ImageParam;
 import com.manfenjiayuan.im.param.WxParam;
 import com.mfh.buyers.utils.Constants;
 import com.mfh.buyers.utils.UIHelper;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;

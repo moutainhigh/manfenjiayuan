@@ -6,6 +6,7 @@
               android:layout_height="72dp"
               android:gravity="center_vertical"
               android:orientation="horizontal"
+              android:background="@color/material_white"
               android:paddingBottom="8dp"
               android:paddingEnd="2dp"
               android:paddingStart="8dp"
@@ -51,12 +52,11 @@
     </RelativeLayout>
 
 
-    <com.manfenjiayuan.business.widget.NumberPickerView
+    <com.bingshanguxue.vector_uikit.NumberPickerView
         android:id="@+id/numberPickerView"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:isInterceptOutside="false"
         app:decreaseDrawableAutoHide="true"/>
 
 </LinearLayout>

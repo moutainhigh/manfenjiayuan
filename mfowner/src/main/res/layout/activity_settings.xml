@@ -29,23 +29,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/default_margin_top" />
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height" />
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_1_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height" />
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"

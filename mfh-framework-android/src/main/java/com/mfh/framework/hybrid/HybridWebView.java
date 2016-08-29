@@ -10,8 +10,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 
 
 /**
@@ -97,7 +97,7 @@ public class HybridWebView extends WebView {
          * LOAD_CACHE_ELSE_NETWORK，优先使用缓存
          * 建议缓存策略为，判断是否有网络，有的话，使用LOAD_DEFAULT,无网络时，使用LOAD_CACHE_ELSE_NETWORK
          * */
-        if(NetWorkUtil.isConnect(getContext())){
+        if(NetworkUtils.isConnect(getContext())){
             localWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         }else{
             localWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);

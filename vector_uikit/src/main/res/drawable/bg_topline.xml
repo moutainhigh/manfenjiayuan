@@ -14,9 +14,9 @@
         </shape>
     </item>
 
-    <item android:left="4dp">
+    <item android:top="0.5dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/material_grey_300" />
+            <solid android:color="@color/material_white" />
         </shape>
     </item>
 
