@@ -8,7 +8,7 @@ import android.content.Intent;
 
 import com.manfenjiayuan.im.IMConstants;
 import com.manfenjiayuan.im.database.entity.IMConversation;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.owner.ui.MainTabActivity;
 import com.mfh.owner.ui.StartActivity;
 

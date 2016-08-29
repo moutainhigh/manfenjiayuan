@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.mfh.enjoycity.wxapi.WXConstants;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.crash.AppException;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;

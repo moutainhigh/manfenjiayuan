@@ -29,19 +29,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/share_to_wx"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/default_margin_top"
-                app:logoSrc="@drawable/share_icon_wechat"
+                app:src="@drawable/share_icon_wechat"
                 app:text="@string/label_user_wechat"
                 app:position="top"/>
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/share_to_wx_frientcircle"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/share_icon_wechatfriends"
+                app:src="@drawable/share_icon_wechatfriends"
                 app:text="@string/label_user_wechat_circle"
                 app:position="bottom" />
 

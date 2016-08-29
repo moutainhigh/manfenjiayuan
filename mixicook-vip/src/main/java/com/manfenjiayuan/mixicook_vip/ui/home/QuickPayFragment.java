@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.login.logic.MfhLoginService;

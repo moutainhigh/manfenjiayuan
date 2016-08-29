@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.mfh.framework.uikit.compound.ToggleSettingItem
+            <com.bingshanguxue.vector_uikit.ToggleSettingItem
                 android:id="@+id/item_1_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
@@ -40,7 +40,7 @@
                 app:text="@string/label_settings_location"
                 app:position="top"/>
 
-            <com.mfh.framework.uikit.compound.ToggleSettingItem
+            <com.bingshanguxue.vector_uikit.ToggleSettingItem
                 android:id="@+id/item_1_1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
@@ -48,13 +48,13 @@
                 app:position="bottom"
                 />
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/default_margin_top"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
-                app:logoSrc="@drawable/material_housekeeping"
+                app:src="@drawable/material_housekeeping"
                 app:text="@string/label_settings_clearcache"
                 app:subText="@string/label_settings_clearcache_description"/>
         </LinearLayout>

@@ -14,7 +14,7 @@ import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.im.database.service.IMConversationService;
 import com.manfenjiayuan.im.param.ImageParam;
 import com.manfenjiayuan.im.param.WxParam;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;

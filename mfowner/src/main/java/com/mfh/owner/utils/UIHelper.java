@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.mfh.framework.core.camera.CameraSessionUtil;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.compound.SettingsItem;

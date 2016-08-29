@@ -1,10 +1,10 @@
 package com.mfh.owner.utils;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.owner.wxapi.WXUtil;
 
 import net.tsz.afinal.FinalHttp;

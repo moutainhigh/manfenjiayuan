@@ -13,7 +13,7 @@ import com.manfenjiayuan.loveshopping.AdvertisementPagerAdapter;
 import com.manfenjiayuan.loveshopping.AutoScrollViewPager;
 import com.manfenjiayuan.loveshopping.R;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;

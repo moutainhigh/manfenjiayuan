@@ -23,15 +23,15 @@ import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.wxapi.WXHelper;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.H5Api;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.net.URLHelper;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.URLHelper;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 
 

@@ -57,6 +57,7 @@
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        app:decreaseDrawableAutoHide="true"/>
+        app:decreaseDrawableAutoHide="true"
+        app:zeroIntercept="true"/>
 
 </LinearLayout>

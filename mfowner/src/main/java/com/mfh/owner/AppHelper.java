@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.MfhLoginService;

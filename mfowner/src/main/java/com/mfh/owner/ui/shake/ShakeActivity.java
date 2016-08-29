@@ -17,7 +17,7 @@ import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.param.TextParam;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.owner.AppContext;
 import com.mfh.owner.R;
 import com.mfh.owner.ui.web.ComnJBH5Activity;

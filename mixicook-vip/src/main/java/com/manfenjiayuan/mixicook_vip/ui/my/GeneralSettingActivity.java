@@ -9,8 +9,8 @@ import android.view.View;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.compound.SettingsItem;
-import com.mfh.framework.uikit.compound.ToggleSettingItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 
 import butterknife.Bind;
 import butterknife.OnClick;

@@ -3,19 +3,14 @@ package com.mfh.enjoycity.service;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.mfh.enjoycity.utils.Constants;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.logic.ServiceFactory;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 
 import java.util.Timer;

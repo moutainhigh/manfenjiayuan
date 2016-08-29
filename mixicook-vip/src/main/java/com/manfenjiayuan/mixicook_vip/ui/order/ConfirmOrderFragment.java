@@ -1,4 +1,4 @@
-package com.manfenjiayuan.mixicook_vip.ui.shopcart;
+package com.manfenjiayuan.mixicook_vip.ui.order;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
+import com.manfenjiayuan.mixicook_vip.ui.shopcart.OrderFormInfo;
+import com.manfenjiayuan.mixicook_vip.ui.shopcart.OrderGoodsAdapter;
 import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
@@ -29,15 +32,15 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.CompanyApi;
-import com.mfh.framework.api.impl.InvSendOrderApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -54,7 +57,8 @@ import butterknife.OnClick;
  */
 public class ConfirmOrderFragment extends BaseFragment {
 
-
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
     @Bind(R.id.tv_net_name)
     TextView tvNetName;
     @Bind(R.id.tv_net_phonenumber)
@@ -91,7 +95,15 @@ public class ConfirmOrderFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
+        toolbar.setTitle("确认订单");
+        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       getActivity().onBackPressed();
+                    }
+                });
         initGoodsRecyclerView();
         remarkItem.setOnClickListener(new View.OnClickListener() {
             @Override

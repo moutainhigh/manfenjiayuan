@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 
 import junit.framework.Assert;

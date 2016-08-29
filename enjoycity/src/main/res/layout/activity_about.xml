@@ -45,20 +45,20 @@
                 android:gravity="center"
                 android:text="@string/app_name"/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_app_description"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/default_margin_top"
-                app:logoSrc="@drawable/icon_setting_profile"
+                app:src="@drawable/icon_setting_profile"
                 app:position="top"
                 app:text="@string/label_app_descriptioin"/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_licience"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/setting_item_height"
-                app:logoSrc="@drawable/icon_settings_account"
+                app:src="@drawable/icon_settings_account"
                 app:position="bottom"
                 app:text="@string/label_user_license"/>
 

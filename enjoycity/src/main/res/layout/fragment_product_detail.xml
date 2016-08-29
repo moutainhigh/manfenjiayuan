@@ -15,7 +15,7 @@
         android:paddingStart="8dp"
         android:background="@drawable/bg_white_shdow_top_gray"
         android:layout_alignParentBottom="true">
-        <com.manfenjiayuan.business.widget.NumberPickerView
+        <com.bingshanguxue.vector_uikit.NumberPickerView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>

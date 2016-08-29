@@ -11,7 +11,7 @@ import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.database.ReceiveAddressEntity;
 import com.mfh.enjoycity.database.ReceiveAddressService;
 import com.mfh.enjoycity.utils.Constants;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.ArrayList;
 import java.util.List;

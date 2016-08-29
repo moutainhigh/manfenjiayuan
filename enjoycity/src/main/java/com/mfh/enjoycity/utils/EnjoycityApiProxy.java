@@ -9,21 +9,17 @@ import com.mfh.enjoycity.AppContext;
 import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.PayApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetFactory;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.api.ScApi;
 
-import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * 网络请求

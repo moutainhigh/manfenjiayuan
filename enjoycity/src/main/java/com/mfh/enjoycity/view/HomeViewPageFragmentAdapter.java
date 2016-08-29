@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mfh.enjoycity.R;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.PagerSlidingTabStrip;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 

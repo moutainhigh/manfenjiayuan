@@ -9,8 +9,8 @@ import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.utils.UIHelper;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.compound.SettingsItem;
-import com.mfh.framework.uikit.compound.ToggleSettingItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 
 import java.util.List;
 

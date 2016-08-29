@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.CategoryInfo;
-import com.manfenjiayuan.business.bean.CategoryOption;
+import com.mfh.framework.api.category.CategoryQueryInfo;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
@@ -24,14 +24,14 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspListBean;
-import com.mfh.framework.api.CateApi;
-import com.mfh.framework.api.impl.CateApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.api.category.CateApi;
+import com.mfh.framework.api.category.CateApiImpl;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -218,7 +218,7 @@ public class ReserveFragment extends BaseProgressFragment
      * 下载私有前台类目
      */
     private void downloadFreshFrontCategory() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             return;
         }
 
@@ -228,9 +228,9 @@ public class ReserveFragment extends BaseProgressFragment
                 1, TENANT_ID_MIXICOOK, customFrontCategoryRespCallback);
     }
 
-    private NetCallBack.NetTaskCallBack customFrontCategoryRespCallback = new NetCallBack.NetTaskCallBack<CategoryInfo,
-            NetProcessor.Processor<CategoryInfo>>(
-            new NetProcessor.Processor<CategoryInfo>() {
+    private NetCallBack.NetTaskCallBack customFrontCategoryRespCallback = new NetCallBack.NetTaskCallBack<CategoryQueryInfo,
+            NetProcessor.Processor<CategoryQueryInfo>>(
+            new NetProcessor.Processor<CategoryQueryInfo>() {
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
@@ -245,24 +245,24 @@ public class ReserveFragment extends BaseProgressFragment
                         return;
                     }
 //                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                    RspBean<CategoryInfo> retValue = (RspBean<CategoryInfo>) rspData;
-                    CategoryInfo categoryInfo = retValue.getValue();
+                    RspBean<CategoryQueryInfo> retValue = (RspBean<CategoryQueryInfo>) rspData;
+                    CategoryQueryInfo categoryQueryInfo = retValue.getValue();
 
-                    downloadCustomFrontCategory2(categoryInfo);
+                    downloadCustomFrontCategory2(categoryQueryInfo);
                 }
             }
-            , CategoryInfo.class
+            , CategoryQueryInfo.class
             , AppContext.getAppContext()) {
     };
 
-    private void downloadCustomFrontCategory2(CategoryInfo categoryInfo) {
-        if (categoryInfo == null) {
+    private void downloadCustomFrontCategory2(CategoryQueryInfo categoryQueryInfo) {
+        if (categoryQueryInfo == null) {
             saveFreshFrontendCategoryInfoCache(null);
             readCategoryInfoCache();
             return;
         }
 
-        List<CategoryOption> options = categoryInfo.getOptions();
+        List<CategoryOption> options = categoryQueryInfo.getOptions();
         if (options == null || options.size() < 1) {
             ZLogger.df("前台自定义（私有）类目为空");
             saveFreshFrontendCategoryInfoCache(null);
@@ -270,7 +270,7 @@ public class ReserveFragment extends BaseProgressFragment
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             return;
         }
 
@@ -332,7 +332,7 @@ public class ReserveFragment extends BaseProgressFragment
      * TODO,加载等待窗口
      */
     private void loadGoodsList() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;
@@ -352,7 +352,7 @@ public class ReserveFragment extends BaseProgressFragment
      * 翻页加载更多数据
      */
     private void loadMore() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;
@@ -375,18 +375,19 @@ public class ReserveFragment extends BaseProgressFragment
         }
     }
 
+
     @Override
-    public void onProcess() {
+    public void onChainGoodsSkuViewProcess() {
         onLoadProcess("正在加载商品数据...");
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onChainGoodsSkuViewError(String errorMsg) {
         onLoadFinished();
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
         mPageInfo = pageInfo;
         //第一页，清空数据
         if (mPageInfo.getPageNo() == 1) {
@@ -405,7 +406,7 @@ public class ReserveFragment extends BaseProgressFragment
     }
 
     @Override
-    public void onQueryChainGoodsSku(ChainGoodsSku chainGoodsSku) {
+    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
 
     }
 }

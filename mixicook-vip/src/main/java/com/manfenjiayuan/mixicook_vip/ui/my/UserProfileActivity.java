@@ -22,15 +22,15 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.MultimediaActivity;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.DialogHelper;
 
@@ -176,7 +176,7 @@ public class UserProfileActivity extends MultimediaActivity {
      * 修改性别
      */
     private void updateSex(final String sex) {
-        if (!NetWorkUtil.isConnect(this)) {
+        if (!NetworkUtils.isConnect(this)) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
         }
@@ -263,7 +263,7 @@ public class UserProfileActivity extends MultimediaActivity {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }

@@ -13,7 +13,7 @@
     <!--灰色蒙板-->
     <color name="mfhtheme_maskPrimary">#F4F5F9</color>
 
-    <color name="mfh_toolbar_background">#34343A</color>
+    <color name="mfh_toolbar_background">@color/material_green_500</color>
     <color name="mfh_splash_startColor">#64ffffff</color>
     <color name="mfh_splash_endColor">#64e5e5e5</color>
 

@@ -2,7 +2,7 @@ package com.mfh.enjoycity.database;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseDbDao;
 
 import java.util.List;

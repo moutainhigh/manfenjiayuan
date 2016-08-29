@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.mfh.buyers.R;
 import com.mfh.buyers.ui.web.ComnJBH5Activity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;

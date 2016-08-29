@@ -15,7 +15,7 @@ import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.buyers.R;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.base.InitActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 /**
  * 欢迎页面

@@ -28,7 +28,7 @@ import com.manfenjiayuan.mixicook_vip.ValidateManager;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
 import com.manfenjiayuan.mixicook_vip.ui.my.MyFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.entity.Office;
 import com.mfh.framework.login.entity.UserMixInfo;
