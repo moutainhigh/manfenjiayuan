@@ -1,6 +1,6 @@
 package com.mfh.litecashier.mode;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.database.entity.PosProductEntity;
 import com.mfh.litecashier.database.logic.PosProductService;

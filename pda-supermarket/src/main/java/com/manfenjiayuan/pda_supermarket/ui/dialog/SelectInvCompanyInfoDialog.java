@@ -20,7 +20,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.SelectPlatformProviderAdapter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

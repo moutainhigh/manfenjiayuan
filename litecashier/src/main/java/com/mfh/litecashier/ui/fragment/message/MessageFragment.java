@@ -21,7 +21,7 @@ import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.im.param.TextParam;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;

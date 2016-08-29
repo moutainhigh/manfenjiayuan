@@ -25,7 +25,7 @@ import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.impl.CashierApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;

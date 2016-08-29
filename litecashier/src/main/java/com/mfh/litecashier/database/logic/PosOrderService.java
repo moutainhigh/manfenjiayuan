@@ -2,7 +2,7 @@ package com.mfh.litecashier.database.logic;
 
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.database.dao.PosOrderDao;
 import com.mfh.litecashier.database.entity.PosOrderEntity;
 import com.mfh.comn.bean.PageInfo;

@@ -26,7 +26,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;

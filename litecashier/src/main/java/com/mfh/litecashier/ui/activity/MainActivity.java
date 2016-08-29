@@ -19,7 +19,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DensityUtil;

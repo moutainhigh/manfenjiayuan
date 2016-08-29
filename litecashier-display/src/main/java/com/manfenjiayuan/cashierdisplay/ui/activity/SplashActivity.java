@@ -7,23 +7,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.alibaba.fastjson.JSONObject;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.cashierdisplay.AppContext;
 import com.manfenjiayuan.cashierdisplay.R;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.api.UserApi;
-import com.mfh.framework.api.impl.MfhApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.core.utils.NetWorkUtil;
-import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
 
@@ -81,7 +76,7 @@ public class SplashActivity extends InitActivity {
     @Override
     public void initPrimary() {
         super.initPrimary();
-        ZLogger.df("Initialize--set database version.");
+        ZLogger.df("set database version.");
         DbVersion.setDomainVersion("CASHIERDISPLAY.CLIENT.DB.UPGRADE", 0);
     }
 
@@ -98,7 +93,7 @@ public class SplashActivity extends InitActivity {
          首次启动(由于应用程序{@link com.mfh.litecashier.CashierApp}可能会被多次执行在不同的进程中，所以这里在启动页调用，)
          */
         if(SharedPreferencesManager.isAppFirstStart()){
-            ZLogger.df(String.format("Initialize--application first running: %s-%s(%s)",
+            ZLogger.df(String.format("application first running: %s-%s(%s)",
                     AppContext.getVersionName(), AppContext.getVersionCode(),
                     AppContext.getProcessName(AppContext.getAppContext(), android.os.Process.myPid())));
 
@@ -109,7 +104,7 @@ public class SplashActivity extends InitActivity {
 
             SharedPreferencesManager.setAppFirstStart(false);
         }else{
-            ZLogger.df(String.format("Initialize--application running: %s-%s(%s)",
+            ZLogger.df(String.format("application running: %s-%s(%s)",
                     AppContext.getVersionName(), AppContext.getVersionCode(),
                     AppContext.getProcessName(AppContext.getAppContext(), android.os.Process.myPid())));
 
@@ -125,8 +120,7 @@ public class SplashActivity extends InitActivity {
         IMClient.getInstance().groupManager().loadAllGroups();
         IMClient.getInstance().chatManager().loadAllConversations();
 
-        //  注册设备
-        registerTerminal();
+        onInitializedCompleted();
     }
 
     @Override
@@ -143,64 +137,21 @@ public class SplashActivity extends InitActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-    /**
-     * 注册设备
-     * */
-    protected void registerTerminal(){
-        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())
-                && NetWorkUtil.isConnect(AppContext.getAppContext())) {
-            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                    NetProcessor.Processor<String>>(
-                    new NetProcessor.Processor<String>() {
-                        @Override
-                        public void processResult(IResponseData rspData) {
-                            if (rspData != null) {
-                                RspValue<String> retValue = (RspValue<String>) rspData;
-                                String retStr = retValue.getValue();
-                                ZLogger.df("Initialize--get terminal id success:" + retStr);
-                                SharedPreferencesManager.setTerminalId(retStr);
-                                onInitializedCompleted();
-                            }
-                        }
-
-                        @Override
-                        protected void processFailure(Throwable t, String errMsg) {
-                            super.processFailure(t, errMsg);
-                            ZLogger.df(String.format("Initialize--get terminal id failed(%s),please set manual", errMsg));
-                            onInitializedCompleted();
-                        }
-                    }
-                    , String.class
-                    , AppContext.getAppContext()) {
-            };
-
-            JSONObject order = new JSONObject();
-            order.put("serialNo", AppContext.getWifiMac15Bit());
-
-            ZLogger.df("Initialize--register terminal id," + order.toJSONString());
-            MfhApiImpl.posRegisterCreate(order.toJSONString(), responseCallback);
-        } else {
-            ZLogger.df("Initialize--terminal id: " + SharedPreferencesManager.getTerminalId());
-            onInitializedCompleted();
-        }
-    }
-
     /**
      *  初始化完成
      */
     private void onInitializedCompleted(){
         //验证登录状态是否有效
         if (MfhLoginService.get().haveLogined()) {
-            if (NetWorkUtil.isConnect(AppContext.getAppContext())) {
-                ZLogger.df("Initialize--login already，validate session");
+            if (NetworkUtils.isConnect(AppContext.getAppContext())) {
+                ZLogger.df("login already，validate session");
                 validSession();
             } else {
-                ZLogger.df("Initialize--login already，redirect to main page");
+                ZLogger.df("login already，redirect to main page");
                 redirectToMain(true);
             }
         } else {
-            ZLogger.df("Initialize--not login，retry login");
+            ZLogger.df("not login，retry login");
             redirectToLogin();
         }
     }
@@ -267,6 +218,6 @@ public class SplashActivity extends InitActivity {
                 , AppContext.getAppContext()) {
         };
 
-        UserApi.validSession(responseCallback);
+        UserApiImpl.validSession(responseCallback);
     }
 }

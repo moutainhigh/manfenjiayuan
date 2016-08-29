@@ -15,7 +15,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.framework.api.UserApi;
 import com.mfh.framework.api.impl.MfhApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;

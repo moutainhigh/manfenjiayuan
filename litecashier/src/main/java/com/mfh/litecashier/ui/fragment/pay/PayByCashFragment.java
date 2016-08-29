@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.widget.FontFitTextView;
 import com.mfh.litecashier.Constants;

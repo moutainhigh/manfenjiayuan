@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.igexin.sdk.PushConsts;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.PayloadHelper;
 
 /**

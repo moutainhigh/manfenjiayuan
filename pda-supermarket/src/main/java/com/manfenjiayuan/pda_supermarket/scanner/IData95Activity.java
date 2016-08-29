@@ -16,7 +16,7 @@ import android.view.WindowManager;
 import com.manfenjiayuan.business.PDAScanManager;
 import com.manfenjiayuan.business.utils.BarcodeFactory;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 

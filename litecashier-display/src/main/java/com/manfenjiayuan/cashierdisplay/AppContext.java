@@ -3,8 +3,8 @@ package com.manfenjiayuan.cashierdisplay;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.crash.AppException;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;

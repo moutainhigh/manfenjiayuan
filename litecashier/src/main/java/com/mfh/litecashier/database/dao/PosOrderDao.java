@@ -1,6 +1,6 @@
 package com.mfh.litecashier.database.dao;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 import com.mfh.litecashier.database.entity.PosOrderEntity;
 import com.mfh.comn.bean.PageInfo;

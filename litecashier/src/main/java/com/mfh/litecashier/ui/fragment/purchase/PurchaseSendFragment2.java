@@ -15,7 +15,7 @@ import com.manfenjiayuan.business.bean.InvSendOrder;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.manfenjiayuan.business.bean.OrderStatus;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.mvp.MvpFragment;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

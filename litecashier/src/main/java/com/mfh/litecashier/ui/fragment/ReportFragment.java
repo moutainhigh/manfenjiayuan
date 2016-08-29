@@ -11,7 +11,7 @@ import android.webkit.CookieManager;
 import android.webkit.WebView;
 
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.WebViewDelegate;

@@ -1,6 +1,6 @@
 package com.mfh.litecashier.utils;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.bean.Human;
 
 import java.util.List;

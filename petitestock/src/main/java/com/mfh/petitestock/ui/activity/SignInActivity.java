@@ -20,7 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;

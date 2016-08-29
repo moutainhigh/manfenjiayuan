@@ -23,7 +23,7 @@ import com.manfenjiayuan.business.presenter.TenantPresenter;
 import com.manfenjiayuan.business.view.ITenantView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.AbilityItem;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.observablescrollview.ObservableScrollViewCallbacks;
 import com.mfh.framework.uikit.observablescrollview.ScrollState;
 import com.mfh.framework.uikit.widget.EmptyLayout;

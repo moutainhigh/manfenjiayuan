@@ -20,7 +20,7 @@ import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;

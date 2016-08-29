@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.android.BarcodeJNI;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.io.UnsupportedEncodingException;
 

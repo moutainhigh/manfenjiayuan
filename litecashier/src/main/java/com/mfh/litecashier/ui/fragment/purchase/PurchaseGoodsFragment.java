@@ -26,7 +26,7 @@ import com.manfenjiayuan.business.bean.GoodsSupplyInfo;
 import com.manfenjiayuan.business.bean.ScGoodsSku;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseActivity;

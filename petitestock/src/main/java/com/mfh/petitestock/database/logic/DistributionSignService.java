@@ -4,7 +4,7 @@ import com.manfenjiayuan.business.bean.InvSendIoOrderItem;
 import com.manfenjiayuan.business.bean.InvSendOrderItem;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;

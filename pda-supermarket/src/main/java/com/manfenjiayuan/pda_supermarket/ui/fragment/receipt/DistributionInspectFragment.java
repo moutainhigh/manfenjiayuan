@@ -22,7 +22,7 @@ import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetWorkUtil;

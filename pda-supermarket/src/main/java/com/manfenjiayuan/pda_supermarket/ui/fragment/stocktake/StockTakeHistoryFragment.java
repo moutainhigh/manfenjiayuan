@@ -14,7 +14,7 @@ import com.manfenjiayuan.pda_supermarket.database.entity.StockTakeEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.StockTakeService;
 import com.manfenjiayuan.pda_supermarket.ui.adapter.StockTakeAdapter;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;

@@ -14,7 +14,7 @@ import com.manfenjiayuan.cashierdisplay.bean.CashierOrderInfo;
 import com.manfenjiayuan.cashierdisplay.ui.adapter.OrderItemsAdapter;
 import com.manfenjiayuan.cashierdisplay.ui.view.LineItemDecoration;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.widget.AvatarView;
 

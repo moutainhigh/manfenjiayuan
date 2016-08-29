@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.CoupBean;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.bean.CouponRule;
 import com.mfh.litecashier.bean.RuleBean;
 

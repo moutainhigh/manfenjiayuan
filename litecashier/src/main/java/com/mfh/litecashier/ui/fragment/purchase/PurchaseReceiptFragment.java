@@ -20,7 +20,7 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;

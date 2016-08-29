@@ -1,6 +1,6 @@
 package com.mfh.petitestock.database.dao;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;

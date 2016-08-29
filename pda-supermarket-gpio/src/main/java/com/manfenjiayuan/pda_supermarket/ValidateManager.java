@@ -11,7 +11,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.api.impl.UserApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;

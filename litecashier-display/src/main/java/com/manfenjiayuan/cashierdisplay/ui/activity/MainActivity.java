@@ -17,10 +17,10 @@ import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.im.param.TextParam;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetProcessor;
 
 import butterknife.Bind;
 import butterknife.OnClick;

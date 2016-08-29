@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.AbilityItem;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

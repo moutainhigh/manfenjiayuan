@@ -15,7 +15,7 @@ import android.widget.EditText;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.utils.DeviceUtils;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.MfhLoginService;

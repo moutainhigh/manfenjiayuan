@@ -18,7 +18,7 @@ import android.view.View;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.UserApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.MfhModule;

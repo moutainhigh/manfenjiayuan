@@ -3,7 +3,7 @@ package com.manfenjiayuan.pda_supermarket.database.dao;
 import com.manfenjiayuan.pda_supermarket.database.entity.InvReturnGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 
 import java.util.List;

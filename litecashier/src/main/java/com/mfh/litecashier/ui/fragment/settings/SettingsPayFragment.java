@@ -13,7 +13,7 @@ import com.chinaums.mis.bean.RequestPojo;
 import com.chinaums.mis.bean.ResponsePojo;
 import com.chinaums.mis.bean.TransCfx;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.pay.umsips.TransType;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;

@@ -3,7 +3,7 @@ package com.mfh.litecashier.database.dao;
 import com.mfh.litecashier.database.entity.PosCategoryEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 
 import java.util.List;

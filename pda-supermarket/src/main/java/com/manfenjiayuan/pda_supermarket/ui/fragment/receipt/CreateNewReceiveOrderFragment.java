@@ -22,7 +22,7 @@ import com.manfenjiayuan.pda_supermarket.ui.adapter.DistributionSignAdapter;
 import com.manfenjiayuan.pda_supermarket.ui.dialog.SelectInvCompanyInfoDialog;
 import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.compound.NaviAddressView;

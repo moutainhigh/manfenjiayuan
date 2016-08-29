@@ -1,7 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.scanner;
 
 import com.manfenjiayuan.business.PDAScanManager;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 

@@ -12,7 +12,7 @@ import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.InitActivity;
 

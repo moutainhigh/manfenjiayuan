@@ -1,7 +1,7 @@
 package com.mfh.litecashier.database.logic;
 
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.bean.ProductSkuBarcode;
 import com.mfh.litecashier.database.dao.PosProductSkuDao;
 import com.mfh.litecashier.database.entity.PosProductSkuEntity;

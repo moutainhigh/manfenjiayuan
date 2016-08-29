@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.CateApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;

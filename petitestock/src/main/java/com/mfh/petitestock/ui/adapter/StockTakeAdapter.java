@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.petitestock.R;
 import com.mfh.petitestock.database.entity.StockTakeEntity;
 import com.mfh.petitestock.database.logic.StockTakeService;

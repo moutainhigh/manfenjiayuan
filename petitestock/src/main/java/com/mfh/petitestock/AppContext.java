@@ -3,7 +3,7 @@ package com.mfh.petitestock;
 
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 
 import java.io.File;

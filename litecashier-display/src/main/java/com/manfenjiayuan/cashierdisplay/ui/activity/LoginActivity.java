@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.manfenjiayuan.cashierdisplay.R;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.entity.UserMixInfo;

@@ -19,7 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mfh.framework.api.impl.CashierApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.net.NetCallBack;

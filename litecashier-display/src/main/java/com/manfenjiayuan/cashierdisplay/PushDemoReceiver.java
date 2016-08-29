@@ -16,7 +16,7 @@ import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.constants.IMTechType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.param.TextParam;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.PayloadHelper;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
