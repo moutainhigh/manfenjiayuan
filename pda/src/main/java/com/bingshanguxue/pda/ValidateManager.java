@@ -12,18 +12,19 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.impl.MfhApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.entity.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 
 import java.util.Date;
 
@@ -145,7 +146,7 @@ public class ValidateManager {
         //已经登录
         if (MfhLoginService.get().haveLogined()) {
             //检查会话是否过期
-            if (NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+            if (NetworkUtils.isConnect(MfhApplication.getAppContext())) {
                 checkSessionExpire();
             } else {
                 nextStep();
@@ -168,7 +169,7 @@ public class ValidateManager {
      * 注册设备
      * */
     private void registerPlat(){
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
                 validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
                         null, "设备注册失败，需要重新注册");
@@ -178,7 +179,7 @@ public class ValidateManager {
             }
         } else {
             JSONObject order = new JSONObject();
-            order.put("serialNo", MfhApplication.getDeviceUuid());
+            order.put("serialNo", SystemUtils.getDeviceUuid(MfhApplication.getAppContext()));
 //        order.put("serialNo", MfhApplication.getWifiMac15Bit());
             order.put("channelId", MfhApi.CHANNEL_ID);
             order.put("channelPointId", IMConfig.getPushClientId());

@@ -21,11 +21,11 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -233,7 +233,7 @@ public class InvCheckListFragment extends BaseFragment {
      */
     @OnClick({R.id.empty_view})
     public synchronized void reloadInvCheckOrder() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载盘点订单列表。");
             DialogUtil.showHint(R.string.toast_network_error);
             onLoadFinished();
@@ -260,7 +260,7 @@ public class InvCheckListFragment extends BaseFragment {
      * 翻页加载更多数据
      */
     public void loadMore() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载盘点订单明细。");
             onLoadFinished();
             return;

@@ -15,11 +15,11 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.impl.StockApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
@@ -72,7 +72,7 @@ public class PackageFragment extends QueryBarcodeFragment {
     public void sendQueryReq(String barcode) {
         super.sendQueryReq(barcode);
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
         }
         else{
@@ -128,7 +128,7 @@ public class PackageFragment extends QueryBarcodeFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             btnSubmit.setEnabled(true);
             return;

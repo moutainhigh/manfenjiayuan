@@ -4,7 +4,7 @@ package com.manfenjiayuan.pda_wholesaler;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 

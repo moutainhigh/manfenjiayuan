@@ -17,12 +17,12 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -161,7 +161,7 @@ public class GoodsInfoFragment extends BaseFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             onSubmitError(getString(R.string.toast_network_error));
             return;
         }

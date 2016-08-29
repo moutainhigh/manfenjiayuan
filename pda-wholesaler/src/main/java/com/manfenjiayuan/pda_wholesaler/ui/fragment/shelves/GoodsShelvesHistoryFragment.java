@@ -15,9 +15,9 @@ import com.manfenjiayuan.pda_wholesaler.database.entity.ShelveEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
 import com.manfenjiayuan.pda_wholesaler.ui.adapter.GoodsShelvesAdapter;
 import com.manfenjiayuan.pda_wholesaler.utils.ShelveSyncManager;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -127,7 +127,7 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
     }
 
     public void sync() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
             return;
         }

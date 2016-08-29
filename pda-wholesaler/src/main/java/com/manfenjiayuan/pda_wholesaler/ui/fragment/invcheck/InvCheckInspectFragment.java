@@ -26,11 +26,11 @@ import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.dialog.SelectShelvesDialog;
 import com.manfenjiayuan.pda_wholesaler.utils.DataSyncService;
 import com.manfenjiayuan.pda_wholesaler.utils.SharedPreferencesHelper;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -224,7 +224,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
      * 同步盘点数据
      */
     public void uploadOrders() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
             return;
         }
@@ -264,7 +264,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             onQueryError(getString(R.string.toast_network_error));
             return;
         }
@@ -308,7 +308,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
         InvCheckGoodsService.get().addNewEntity(curOrderId, curShelfNumber, curGoods,
                 Double.valueOf(quantity));
 
-        if (NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (NetworkUtils.isConnect(AppContext.getAppContext())) {
             DataSyncService.get().sync(DataSyncService.SYNC_STEP_UPLOAD_STOCKTAKE);
         }
 

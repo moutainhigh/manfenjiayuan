@@ -7,8 +7,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.pda_wholesaler.utils.SharedPreferencesHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -29,7 +28,7 @@ public class AppContext extends MfhApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
+//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();
 
@@ -125,7 +124,7 @@ public class AppContext extends MfhApplication {
         /***** 统一初始化Bugly产品，包含Beta *****/
 //        Bugly.init(this, APP_ID, true, strategy);
         //Bugly SDK初始化
-        Bugly.init(getApplicationContext(), "900029413", false);
+        Bugly.init(getApplicationContext(), "900029413", true);
     }
 
 }

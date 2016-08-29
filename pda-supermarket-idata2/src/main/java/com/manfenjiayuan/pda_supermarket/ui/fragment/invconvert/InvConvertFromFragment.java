@@ -21,11 +21,11 @@ import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -141,7 +141,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             refresh(null);
             return;

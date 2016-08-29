@@ -4,10 +4,10 @@ import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetProcessor;
 
 /**
  * Created by bingshanguxue on 5/27/16.

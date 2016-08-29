@@ -20,10 +20,10 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvFindOrderView;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.framework.api.invFindOrder.InvFindOrderItemBrief;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -127,7 +127,7 @@ public class InvFindOrderFragment extends PDAScanFragment implements IInvFindOrd
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }

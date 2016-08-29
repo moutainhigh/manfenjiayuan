@@ -41,13 +41,13 @@ import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -275,7 +275,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         companyInfo.setName(invSendOrder.getSendCompanyName());
         this.mProviderView.setText(companyInfo != null ? companyInfo.getName() : "");
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
@@ -356,7 +356,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                            Long sendTenantId, Integer isPrivate) {
         onReceiveOrderProcess();
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             onReceiveOrderInterrupted(getString(R.string.toast_network_error));
             return;
         }

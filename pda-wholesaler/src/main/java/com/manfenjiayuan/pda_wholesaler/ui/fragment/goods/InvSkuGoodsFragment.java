@@ -18,10 +18,10 @@ import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
@@ -157,7 +157,7 @@ public class InvSkuGoodsFragment extends PDAScanFragment implements IInvSkuGoods
             return;
         }
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
             return;
         }

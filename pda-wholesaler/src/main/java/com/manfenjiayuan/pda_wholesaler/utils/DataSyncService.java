@@ -14,11 +14,11 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -138,7 +138,7 @@ public class DataSyncService {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())){
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())){
             EventBus.getDefault().post(new StockTakeSyncEvent(StockTakeSyncEvent.EVENT_ID_SYNC_FAILED));
             networkError();
             return;
@@ -259,7 +259,7 @@ public class DataSyncService {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())){
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())){
             EventBus.getDefault().post(new StockTakeSyncEvent(StockTakeSyncEvent.EVENT_ID_SYNC_FAILED));
             networkError();
             return;

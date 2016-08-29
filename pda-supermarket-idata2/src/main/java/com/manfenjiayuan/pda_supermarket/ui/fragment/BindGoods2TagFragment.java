@@ -18,11 +18,11 @@ import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.century.GreenTagsApi;
@@ -203,7 +203,7 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnBind.setEnabled(true);
             return;
@@ -222,7 +222,7 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             isAcceptBarcodeEnabled = true;
             refresh(null);

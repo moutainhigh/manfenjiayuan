@@ -18,8 +18,8 @@ import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.companyInfo.CompanyInfoPresenter;
 import com.mfh.framework.api.companyInfo.ICompanyInfoView;
 import com.mfh.framework.api.constant.AbilityItem;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -197,7 +197,7 @@ public class CompanyListFragment extends BaseListFragment<CompanyInfo>
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载订单流水。");
             onLoadFinished();
             return;
@@ -219,7 +219,7 @@ public class CompanyListFragment extends BaseListFragment<CompanyInfo>
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
             onLoadFinished();
             return;

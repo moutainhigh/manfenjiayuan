@@ -11,7 +11,7 @@ import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.Collections;

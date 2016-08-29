@@ -21,11 +21,11 @@ import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.utils.ShelveSyncManager;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -169,7 +169,7 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
      * 同步数据
      */
     public void syncData() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
             return;
         }
@@ -216,7 +216,7 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnBind.setEnabled(true);
             return;
@@ -240,7 +240,7 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             isAcceptBarcodeEnabled = true;
             return;

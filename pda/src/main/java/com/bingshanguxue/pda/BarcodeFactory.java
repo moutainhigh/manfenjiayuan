@@ -1,6 +1,6 @@
 package com.bingshanguxue.pda;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 
 /**

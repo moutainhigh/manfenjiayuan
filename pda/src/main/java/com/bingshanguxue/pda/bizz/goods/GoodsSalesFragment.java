@@ -15,10 +15,10 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.ScApi;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -185,7 +185,7 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
 
         goodsAdapter.setEntityList(null);
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载订单流水。");
             onLoadFinished();
             return;
@@ -206,7 +206,7 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
             onLoadFinished();
             return;

@@ -12,7 +12,7 @@ import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.List;
 

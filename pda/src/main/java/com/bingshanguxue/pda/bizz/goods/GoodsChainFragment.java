@@ -15,9 +15,9 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -197,7 +197,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
 
         goodsAdapter.setEntityList(null);
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载订单流水。");
             onLoadFinished();
             return;
@@ -218,7 +218,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
             onLoadFinished();
             return;
@@ -237,7 +237,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
 
     private void reload(ScGoodsSku goods, PageInfo pageInfo){
         if (goods != null){
-            if (!NetWorkUtil.isConnect(getActivity())) {
+            if (!NetworkUtils.isConnect(getActivity())) {
                 DialogUtil.showHint(R.string.toast_network_error);
                 return;
             }
@@ -257,21 +257,18 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
 
     @Override
     public void onChainGoodsSkuViewError(String errorMsg) {
-
         onLoadFinished();
         goodsAdapter.setEntityList(null);
     }
 
     @Override
     public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-
         onLoadFinished();
         goodsAdapter.setEntityList(dataList);
     }
 
     @Override
     public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
-
         onLoadFinished();
     }
 }

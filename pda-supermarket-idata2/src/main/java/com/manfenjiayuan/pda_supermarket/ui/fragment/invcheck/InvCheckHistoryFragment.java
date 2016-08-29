@@ -17,9 +17,9 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.bingshanguxue.pda.bizz.invcheck.InvCheckHistoryAdapter;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -118,7 +118,7 @@ public class InvCheckHistoryFragment extends BaseFragment {
     }
 
     public void sync() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
             return;
         }

@@ -9,7 +9,7 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import com.android.barcodescandemo.ScannerInerface;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 

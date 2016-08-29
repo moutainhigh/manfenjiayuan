@@ -27,11 +27,11 @@ import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
 import com.manfenjiayuan.pda_supermarket.utils.SharedPreferencesHelper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -225,7 +225,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
      * 同步盘点数据
      */
     public void uploadOrders() {
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.tip_network_error);
             return;
         }
@@ -264,7 +264,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             onQueryError(getString(R.string.toast_network_error));
             return;
         }
@@ -308,7 +308,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
         InvCheckGoodsService.get().addNewEntity(curOrderId, curShelfNumber, curGoods,
                 Double.valueOf(quantity));
 
-        if (NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (NetworkUtils.isConnect(AppContext.getAppContext())) {
             DataSyncService.get().sync(DataSyncService.SYNC_STEP_UPLOAD_STOCKTAKE);
         }
 

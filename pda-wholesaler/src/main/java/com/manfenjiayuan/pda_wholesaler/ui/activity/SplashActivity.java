@@ -11,7 +11,9 @@ import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.AppHelper;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.AnalysisAgent;
+import com.mfh.framework.anlaysis.AppInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.InitActivity;
 
@@ -46,8 +48,11 @@ public class SplashActivity extends InitActivity {
         ZLogger.df("initializing getui sdk...");
         PushManager.getInstance().initialize(AppContext.getAppContext());
 
-        tvVersion.setText(String.format("%s-%d",
-                AppContext.getVersionName(), AppContext.getVersionCode()));
+        AppInfo appInfo = AnalysisAgent.getAppInfo(AppContext.getAppContext());
+        if (appInfo != null) {
+            tvVersion.setText(String.format("%s-%d",
+                    appInfo.getVersionName(), appInfo.getVersionCode()));
+        }
     }
 
     @Override
@@ -66,16 +71,9 @@ public class SplashActivity extends InitActivity {
     protected void initComleted() {
         //首次启动
         if (SharedPreferencesManager.isAppFirstStart()) {
-            //清空旧缓存
-//            AppHelper.clearAppCache();
-            ZLogger.d(String.format("首次启动:%s-%s", AppContext.getVersionName(), AppContext.getVersionCode()));
-
             SharedPreferencesManager.setTerminalId("");
             SharedPreferencesManager.setAppFirstStart(false);
-        } else {
-            ZLogger.d(String.format("非首次启动:%s-%s", AppContext.getVersionName(), AppContext.getVersionCode()));
         }
-
 
         AppHelper.clearOldPosOrder(15);
         ZLogger.deleteOldFiles(15);

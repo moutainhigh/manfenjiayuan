@@ -7,8 +7,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.pda_supermarket.utils.SharedPreferencesHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -30,7 +29,7 @@ public class AppContext extends MfhApplication {
     public void onCreate() {
         super.onCreate();
 
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
+//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();
 

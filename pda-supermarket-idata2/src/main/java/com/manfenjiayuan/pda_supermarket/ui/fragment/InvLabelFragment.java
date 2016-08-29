@@ -20,11 +20,11 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvSkuLabelApi;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
@@ -109,7 +109,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
         }
         else{
@@ -127,7 +127,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             return;
         }
 
-        if (!NetWorkUtil.isConnect(MfhApplication.getAppContext())) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             onSubmitError(getString(R.string.toast_network_error));
             return;
         }

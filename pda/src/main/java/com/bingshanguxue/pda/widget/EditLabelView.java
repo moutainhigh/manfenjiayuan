@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.vector_uikit.EditInputType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 

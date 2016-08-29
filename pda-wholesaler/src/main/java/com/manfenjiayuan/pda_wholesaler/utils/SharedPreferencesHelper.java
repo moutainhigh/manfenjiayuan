@@ -2,7 +2,7 @@ package com.manfenjiayuan.pda_wholesaler.utils;
 
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 
