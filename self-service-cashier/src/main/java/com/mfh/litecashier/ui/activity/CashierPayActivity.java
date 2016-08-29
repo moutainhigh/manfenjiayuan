@@ -100,7 +100,6 @@ public class CashierPayActivity extends BaseActivity {
         //hide soft input
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-
         EventBus.getDefault().register(this);
 
         if (cashierOrderInfo == null) {

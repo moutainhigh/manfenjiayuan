@@ -49,7 +49,6 @@ public abstract class OrderSyncManager {
         order.put("id", orderEntity.getId());
         order.put("barCode", orderEntity.getBarCode());
         order.put("status", orderEntity.getStatus());
-        order.put("humanId", orderEntity.getHumanId());//会员支付
         order.put("remark", orderEntity.getRemark());
         order.put("bcount", orderEntity.getBcount());
         order.put("adjPrice", orderEntity.getRetailAmount() - orderEntity.getFinalAmount()); //调价金额
@@ -58,6 +57,7 @@ public abstract class OrderSyncManager {
         order.put("posId", orderEntity.getPosId());//设备编号
         order.put("sellOffice", orderEntity.getSellOffice());//curoffice id
         order.put("sellerId", orderEntity.getSellerId());//spid
+        order.put("humanId", orderEntity.getHumanId());//会员支付
         //由后台计算折扣
 //        if (orderEntity.getRetailAmount() == 0D) {
 //            order.put("discount", Double.valueOf(String.valueOf(Integer.MAX_VALUE)));
@@ -178,6 +178,7 @@ public abstract class OrderSyncManager {
      * 单条上传POS订单<br>
      * 订单结束时立刻同步
      */
+    @Deprecated
     public void stepUploadPosOrder(final List<PosOrderEntity> orderEntities) {
         if (orderEntities == null || orderEntities.size() <= 0){
             ZLogger.df("订单无效，不需要同步...");

@@ -2,7 +2,6 @@ package com.bingshanguxue.cashier.v1;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
@@ -15,7 +14,6 @@ import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.v2.CashierOrderItemInfo;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
@@ -47,6 +45,24 @@ public class CashierAgent {
         }
         return null;
     }
+
+    public static PosOrderEntity fetchOrderEntity(Integer bizType, int status) {
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
+                MfhLoginService.get().getSpid(), bizType, status);
+        List<PosOrderEntity> entities = PosOrderService.get().queryAllBy(sqlOrder);
+        if (entities != null && entities.size() > 0) {
+            return entities.get(0);
+        }
+
+        return null;
+    }
+
+    public static List<PosOrderEntity> fetchOrderEntities(Integer bizType, int status) {
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
+                MfhLoginService.get().getSpid(), bizType, status);
+        return PosOrderService.get().queryAllBy(sqlOrder);
+    }
+
 
     /**
      * 获取订单明细
@@ -169,7 +185,6 @@ public class CashierAgent {
                 discountRate = finalAmount / retailAmount;
             }
 
-
             cashierOrderInfo.setOrderId(orderEntity.getId());
             cashierOrderInfo.setDiscountInfo(new DiscountInfo(orderEntity.getId()));
             cashierOrderInfo.setbCount(bCount);
@@ -192,6 +207,82 @@ public class CashierAgent {
         return cashierOrderInfo;
     }
 
+
+    /**
+     * 生成结算信息
+     * @param orderEntity
+     * @param vipMember
+     * */
+    public static CashierOrderInfo makeCashierOrderInfo(PosOrderEntity orderEntity,
+                                                        Human vipMember) {
+        if (orderEntity == null){
+            ZLogger.df("生成结算信息失败:订单无效。");
+            return null;
+        }
+
+        CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
+
+        cashierOrderInfo.setBizType(orderEntity.getBizType());
+        cashierOrderInfo.setPosTradeNo(orderEntity.getBarCode());
+        cashierOrderInfo.setVipMember(vipMember);
+        cashierOrderInfo.setSubject(String.format("订单信息：流水号：%s，交易类型：%s",
+                orderEntity.getBarCode(), BizType.name(orderEntity.getBizType())));
+
+        Double bCount = 0D;
+        Double retailAmount = 0D;
+        Double finalAmount = 0D;
+        StringBuilder sbBody = new StringBuilder();
+        JSONArray productsInfo = new JSONArray();
+        List<PosOrderItemEntity> orderItemEntityList = fetchOrderItems(orderEntity);
+        if (orderItemEntityList != null && orderItemEntityList.size() > 0) {
+            for (PosOrderItemEntity itemEntity : orderItemEntityList) {
+                bCount += itemEntity.getBcount();
+                retailAmount += itemEntity.getAmount();
+                finalAmount += itemEntity.getFinalAmount();
+
+                if (sbBody.length() > 0) {
+                    sbBody.append(",");
+                }
+                sbBody.append(itemEntity.getName());
+
+                JSONObject item = new JSONObject();
+                item.put("goodsId", itemEntity.getGoodsId());
+                item.put("skuId", itemEntity.getProSkuId());
+                item.put("bcount", itemEntity.getBcount());
+                item.put("price", itemEntity.getCostPrice());
+                item.put("whereId", MfhLoginService.get().getCurOfficeId());//网点ID,netid,
+                productsInfo.add(item);
+            }
+        }
+
+        Double adjustAmount = retailAmount - finalAmount;
+        Double discountRate;
+        if (retailAmount == 0D) {
+            discountRate = Double.valueOf(String.valueOf(Integer.MAX_VALUE));
+        } else {
+            discountRate = finalAmount / retailAmount;
+        }
+
+        cashierOrderInfo.setOrderId(orderEntity.getId());
+        cashierOrderInfo.setDiscountInfo(new DiscountInfo(orderEntity.getId()));
+        cashierOrderInfo.setbCount(bCount);
+        cashierOrderInfo.setRetailAmount(retailAmount);
+        cashierOrderInfo.setFinalAmount(finalAmount);
+        cashierOrderInfo.setAdjustAmount(adjustAmount);
+        cashierOrderInfo.setDiscountRate(discountRate);
+        cashierOrderInfo.setBody(sbBody.length() > 20 ? sbBody.substring(0, 20) : sbBody.toString());
+        cashierOrderInfo.setProductsInfo(productsInfo);
+
+        //读取支付记录
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+        if (payWrapper != null){
+            cashierOrderInfo.setPayType(payWrapper.getPayType());
+            cashierOrderInfo.setPaidAmount(payWrapper.getPaidAmount());
+            cashierOrderInfo.setChange(payWrapper.getChange());
+        }
+
+        return cashierOrderInfo;
+    }
 
     /**
      * 订单结算信息
@@ -244,28 +335,18 @@ public class CashierAgent {
      * 调单1
      */
     public static List<PosOrderItemEntity> resume(String orderBarCode) {
-        List<PosOrderEntity> orderEntities = CashierFactory
-                .fetchActiveOrderEntities(BizType.POS, orderBarCode);
-        if (orderEntities == null || orderEntities.size() < 1) {
+        PosOrderEntity orderEntity = fetchOrderEntity(BizType.POS, orderBarCode);
+        if (orderEntity == null) {
             return null;
         }
 
-        List<PosOrderItemEntity> itemEntities = new ArrayList<>();
+        //修改订单状态：挂单改为待支付
+        orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
+        PosOrderService.get().saveOrUpdate(orderEntity);
 
-        for (PosOrderEntity orderEntity : orderEntities) {
-            //修改订单状态：挂单改为待支付
-            orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
-            PosOrderService.get().saveOrUpdate(orderEntity);
-
-            //加载订单明细
-            List<PosOrderItemEntity> temp = PosOrderItemService.get()
-                    .queryAllBy(String.format("orderId = '%d'", orderEntity.getId()));
-            if (temp != null) {
-                itemEntities.addAll(temp);
-            }
-        }
-
-        return itemEntities;
+        //加载订单明细
+        return PosOrderItemService.get()
+                .queryAllBy(String.format("orderId = '%d'", orderEntity.getId()));
     }
 
     /**
@@ -289,10 +370,6 @@ public class CashierAgent {
         orderEntity.setFinalAmount(cashierOrderInfo.getFinalAmount());
         orderEntity.setDiscountAmount(cashierOrderInfo.getAdjustAmount());//折扣价
         orderEntity.setBcount(cashierOrderInfo.getbCount());
-//        orderEntity.setBizType(cashierOrderInfo.getBizType());
-//            orderEntity.setCouponsIds(cashierOrderItemInfo.getCouponsIds());
-//        orderEntity.setRuleIds(cashierOrderInfo.getRuleIds());
-//            orderEntity.setPayType(cashierOrderInfo.getPayType());
 
         Human human = cashierOrderInfo.getVipMember();
         if (human != null) {
@@ -303,11 +380,9 @@ public class CashierAgent {
         //支付完成
         orderEntity.setStatus(status);
         if (status == PosOrderEntity.ORDER_STATUS_FINISH) {
-//            ZLogger.d("订单已经支付");
             orderEntity.setPaystatus(PosOrderEntity.PAY_STATUS_YES);
         } else {
             orderEntity.setPaystatus(PosOrderEntity.PAY_STATUS_NO);
-//            ZLogger.d("订单未支付");
         }
 
         PosOrderService.get().saveOrUpdate(orderEntity);
@@ -339,12 +414,7 @@ public class CashierAgent {
         Human vipMember = cashierOrderInfo.getVipMember();
 
 
-        PosOrderEntity orderEntity = null;
-        List<PosOrderEntity> orderEntities = CashierFactory
-                .fetchActiveOrderEntities(cashierOrderInfo.getBizType(), orderBarCode);
-        if (orderEntities != null && orderEntities.size() > 0) {
-            orderEntity = orderEntities.get(0);
-        }
+        PosOrderEntity orderEntity = fetchOrderEntity(cashierOrderInfo.getBizType(), orderBarCode);
         if (orderEntity == null) {
             ZLogger.df("订单不存在");
             return false;
@@ -352,15 +422,6 @@ public class CashierAgent {
 
         //保存支付记录
         PaymentInfoImpl.saveOrUpdate(paymentInfo, orderEntity, vipMember);
-
-        //更新订单信息
-        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-        orderEntity.setPayType(payWrapper.getPayType());
-        orderEntity.setChange(payWrapper.getChange());
-        orderEntity.setPaidAmount(payWrapper.getPaidAmount());
-        orderEntity.setRuleDiscountAmount(payWrapper.getRuleDiscount());
-        orderEntity.setCouponsIds(payWrapper.getCouponsIds());
-        orderEntity.setRuleIds(payWrapper.getRuleIds());
         if (vipMember != null) {
             orderEntity.setHumanId(vipMember.getId());
         }

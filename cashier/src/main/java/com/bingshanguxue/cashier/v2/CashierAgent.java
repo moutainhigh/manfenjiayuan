@@ -3,7 +3,6 @@ package com.bingshanguxue.cashier.v2;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
@@ -13,8 +12,8 @@ import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.vector_user.bean.Human;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 
@@ -43,11 +42,31 @@ public class CashierAgent {
     }
 
     /**
+     * 查找激活状态的订单
+     * @param orderBarCode 订单流水号
+     * */
+    public static List<PosOrderEntity> fetchActiveOrderEntities(Integer bizType,
+                                                                String orderBarCode) {
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' " +
+                        "and barCode = '%s' and isActive = '%d'",
+                MfhLoginService.get().getSpid(), bizType, orderBarCode, PosOrderEntity.ACTIVE);
+        return PosOrderService.get().queryAllBy(sqlOrder);
+    }
+
+    public static List<PosOrderEntity> fetchActiveOrderEntities(Integer bizType, int status) {
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' " +
+                        "and isActive = '%d' and status = '%d'",
+                MfhLoginService.get().getSpid(), bizType, PosOrderEntity.ACTIVE, status);
+        return PosOrderService.get().queryAllBy(sqlOrder);
+    }
+
+
+    /**
      * 查找激活状态的订单明细
      * @param orderBarCode 订单流水号
      * */
     public static List<PosOrderItemEntity> fetchActiveOrderItems(String orderBarCode) {
-        return fetchOrderItems(CashierFactory.fetchActiveOrderEntities(BizType.POS, orderBarCode));
+        return fetchOrderItems(fetchActiveOrderEntities(BizType.POS, orderBarCode));
     }
 
     /**
@@ -105,7 +124,7 @@ public class CashierAgent {
     /**
      * 结算（POS拆分订单）
      *
-     * @param posTradeNo
+     * @param orderBarCode
      * @param shopcartEntities <ol>
      *                         结算
      *                         <li>判断当前收银台购物车的商品是否为空，若不为空，则继续第2步，否则结束；</li>
@@ -206,7 +225,7 @@ public class CashierAgent {
         //加载拆分订单
         List<CashierOrderItemInfo> cashierOrderItemInfos = new ArrayList<>();
         Double paidAmount = 0D;
-        List<PosOrderEntity> orderEntities = CashierFactory.fetchActiveOrderEntities(bizType, orderBarCode);
+        List<PosOrderEntity> orderEntities = fetchActiveOrderEntities(bizType, orderBarCode);
         for (PosOrderEntity orderEntity : orderEntities) {
             cashierOrderItemInfos.add(genCashierorderItemInfo(orderEntity));
 
@@ -294,8 +313,7 @@ public class CashierAgent {
         if (cashierOrderInfo == null) {
             return false;
         }
-        List<PosOrderEntity> orderEntities = CashierFactory
-                .fetchActiveOrderEntities(cashierOrderInfo.getBizType(),
+        List<PosOrderEntity> orderEntities = fetchActiveOrderEntities(cashierOrderInfo.getBizType(),
                         cashierOrderInfo.getPosTradeNo());
         if (orderEntities == null || orderEntities.size() <= 0) {
             return false;
@@ -340,5 +358,85 @@ public class CashierAgent {
                     orderEntity.getId(), JSONObject.toJSONString(orderEntity)));
         }
         return true;
+    }
+
+    /**
+     * 保存支付记录并更新支付订单
+     *
+     * @param cashierOrderInfo 订单结算信息
+     * @param paymentInfo      订单支付信息
+     *                         适用场景：收银支付金额或者状态发生改变
+     */
+    public static boolean updateCashierOrder(CashierOrderInfo cashierOrderInfo,
+                                             PaymentInfo paymentInfo) {
+
+        //参数检查
+        if (cashierOrderInfo == null || paymentInfo == null) {
+            return false;
+        }
+
+        //更新日期
+        Date updateDate = new Date();
+        //订单流水号
+        String orderBarCode = cashierOrderInfo.getPosTradeNo();
+        //会员信息
+        Human vipMember = cashierOrderInfo.getVipMember();
+
+
+        PosOrderEntity orderEntity = null;
+        List<PosOrderEntity> orderEntities = fetchActiveOrderEntities(cashierOrderInfo.getBizType(), orderBarCode);
+        if (orderEntities != null && orderEntities.size() > 0) {
+            orderEntity = orderEntities.get(0);
+        }
+        if (orderEntity == null) {
+            ZLogger.df("订单不存在");
+            return false;
+        }
+
+        //保存支付记录
+        PaymentInfoImpl.saveOrUpdate(paymentInfo, orderEntity, vipMember);
+
+        //更新订单信息
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+        orderEntity.setPayType(payWrapper.getPayType());
+        orderEntity.setChange(payWrapper.getChange());
+        orderEntity.setPaidAmount(payWrapper.getPaidAmount());
+        if (vipMember != null) {
+            orderEntity.setHumanId(vipMember.getId());
+        }
+        orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
+        orderEntity.setUpdatedDate(updateDate);
+
+        PosOrderService.get().saveOrUpdate(orderEntity);
+        ZLogger.df(String.format("更新订单：\n%s", JSONObject.toJSONString(orderEntity)));
+
+        return true;
+    }
+
+    /**
+     * 调单1
+     */
+    public static List<PosOrderItemEntity> resume(String orderBarCode) {
+        List<PosOrderEntity> orderEntities = fetchActiveOrderEntities(BizType.POS, orderBarCode);
+        if (orderEntities == null || orderEntities.size() < 1) {
+            return null;
+        }
+
+        List<PosOrderItemEntity> itemEntities = new ArrayList<>();
+
+        for (PosOrderEntity orderEntity : orderEntities) {
+            //修改订单状态：挂单改为待支付
+            orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
+            PosOrderService.get().saveOrUpdate(orderEntity);
+
+            //加载订单明细
+            List<PosOrderItemEntity> temp = PosOrderItemService.get()
+                    .queryAllBy(String.format("orderId = '%d'", orderEntity.getId()));
+            if (temp != null) {
+                itemEntities.addAll(temp);
+            }
+        }
+
+        return itemEntities;
     }
 }

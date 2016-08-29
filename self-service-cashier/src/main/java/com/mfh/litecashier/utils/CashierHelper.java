@@ -4,13 +4,13 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.TextDrawable;
 import com.manfenjiayuan.im.constants.IMBizType;
@@ -63,7 +63,25 @@ public class CashierHelper {
      * 适用场景：挂单
      */
     public static List<HangupOrder> mergeHangupOrders(Integer bizType) {
-        List<PosOrderEntity> orderEntities = CashierFactory.fetchActiveOrderEntities(bizType,
+        List<HangupOrder> hangupOrders = new ArrayList<>();
+
+        List<PosOrderEntity> orderEntities = CashierAgent.fetchOrderEntities(bizType,
+                PosOrderEntity.ORDER_STATUS_HANGUP);
+        for (PosOrderEntity orderEntity : orderEntities) {
+            HangupOrder hangupOrder = new HangupOrder();
+            hangupOrder.setOrderTradeNo(orderEntity.getBarCode());
+            hangupOrder.setFinalAmount(orderEntity.getFinalAmount());
+            hangupOrder.setUpdateDate(orderEntity.getUpdatedDate());
+
+            hangupOrders.add(hangupOrder);
+        }
+
+        return hangupOrders;
+    }
+
+    @Deprecated
+    public static List<HangupOrder> mergeHangupOrders2(Integer bizType) {
+        List<PosOrderEntity> orderEntities = CashierAgent.fetchOrderEntities(bizType,
                 PosOrderEntity.ORDER_STATUS_HANGUP);
         if (orderEntities == null || orderEntities.size() <= 0){
             return null;
@@ -93,7 +111,6 @@ public class CashierHelper {
         mergeOrderList.addAll(mergeOrderMap.values());
         return mergeOrderList;
     }
-
 
     /**
      * 清除旧的订单数据

@@ -58,8 +58,7 @@ public class PaymentInfoImpl{
     public static boolean splitSaveOrUpdate(PaymentInfo paymentInfo, Integer bizType,
                                             String orderBarCode, Human member){
         //参数检查
-        List<PosOrderEntity> orderEntities = CashierFactory
-                .fetchActiveOrderEntities(bizType, orderBarCode);
+        List<PosOrderEntity> orderEntities = CashierAgent.fetchActiveOrderEntities(bizType, orderBarCode);
         if (orderEntities == null || orderEntities.size() <= 0) {
             ZLogger.df("拆分保存订单支付记录失败，订单不存在");
             return false;

@@ -341,8 +341,10 @@ public class OrderFlowFragment extends BaseFragment {
             return;
         }
 
-        CashierOrderInfo cashierOrderInfo = CashierAgent
-                .makeCashierOrderInfo(orderEntity.getBizType(), orderEntity.getBarCode(), null);
+        CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(orderEntity, null);
+        if (cashierOrderInfo == null){
+            return;
+        }
 
         if (mPosOrderDetailDialog == null) {
             mPosOrderDetailDialog = new PosOrderDetailDialog(getActivity());

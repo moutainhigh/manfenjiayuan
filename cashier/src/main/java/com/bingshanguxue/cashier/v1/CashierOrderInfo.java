@@ -60,8 +60,6 @@ public class CashierOrderInfo implements java.io.Serializable {
     private Double change = 0D;
     //会员
     private Human vipMember;
-    //使用的卡券
-    private String couponsIds = "";
     //==============支付信息结束======================
 
     //卡券&促销规则（根据订单明细由后台计算）
@@ -210,14 +208,6 @@ public class CashierOrderInfo implements java.io.Serializable {
 
     public void setPayType(Integer payType) {
         this.payType = payType;
-    }
-
-    public String getCouponsIds() {
-        return couponsIds;
-    }
-
-    public void setCouponsIds(String couponsIds) {
-        this.couponsIds = couponsIds;
     }
 
     /**

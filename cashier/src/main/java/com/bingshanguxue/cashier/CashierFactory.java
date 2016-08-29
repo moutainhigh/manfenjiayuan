@@ -1,39 +1,12 @@
 package com.bingshanguxue.cashier;
 
-import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.login.logic.MfhLoginService;
-
-import java.util.List;
 
 /**
  * Created by bingshanguxue on 7/7/16.
  */
 public class CashierFactory {
-
-    /**
-     * 查找激活状态的订单
-     * @param orderBarCode 订单流水号
-     * */
-    public static List<PosOrderEntity> fetchActiveOrderEntities(Integer bizType,
-                                                                String orderBarCode) {
-        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' " +
-                        "and barCode = '%s' and isActive = '%d'",
-                MfhLoginService.get().getSpid(), bizType, orderBarCode, PosOrderEntity.ACTIVE);
-        return PosOrderService.get().queryAllBy(sqlOrder);
-    }
-
-    public static List<PosOrderEntity> fetchActiveOrderEntities(Integer bizType, int status) {
-        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' " +
-                        "and isActive = '%d' and status = '%d'",
-                MfhLoginService.get().getSpid(), bizType, PosOrderEntity.ACTIVE, status);
-        return PosOrderService.get().queryAllBy(sqlOrder);
-    }
-
 
     /**
      * 计算拆分子订单实际分配的支付金额,最多两位小数
