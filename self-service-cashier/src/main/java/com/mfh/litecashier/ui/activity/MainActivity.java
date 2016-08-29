@@ -917,6 +917,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
                     CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
                 }
 
+//                GlobalInstance.getInstance().setCashierOrderInfo(cashierOrderInfo);
+
                 subscriber.onNext(cashierOrderInfo);
                 subscriber.onCompleted();
             }

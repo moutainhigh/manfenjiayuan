@@ -2,6 +2,7 @@ package com.mfh.litecashier.utils;
 
 import android.app.Activity;
 
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.ui.dialog.PosRegisterDialog;
 
@@ -15,6 +16,7 @@ public class GlobalInstance {
     private Double netWeight;//净重
     private List<String> comDevicesPath;
     private PosRegisterDialog mPosRegisterDialog = null;
+    private CashierOrderInfo mCashierOrderInfo;
 
     private static GlobalInstance instance;
 
@@ -77,6 +79,14 @@ public class GlobalInstance {
 
     public synchronized void setComDevicesPath(List<String> comDevicesPath) {
         this.comDevicesPath = comDevicesPath;
+    }
+
+    public CashierOrderInfo getCashierOrderInfo() {
+        return mCashierOrderInfo;
+    }
+
+    public void setCashierOrderInfo(CashierOrderInfo cashierOrderInfo) {
+        mCashierOrderInfo = cashierOrderInfo;
     }
 
     /**

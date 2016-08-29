@@ -319,7 +319,7 @@ public class AdministratorActivity extends BaseActivity {
     }
 
     /**
-     * 日结－
+     * 日结
      */
     private void dailySettle(String datetime) {
 //        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));

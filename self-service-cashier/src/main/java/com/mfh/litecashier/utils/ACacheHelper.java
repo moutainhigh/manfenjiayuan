@@ -56,4 +56,10 @@ public class ACacheHelper {
         return ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
                 .remove(key);
     }
+
+    public static void clear(){
+        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
+    }
+
+
 }

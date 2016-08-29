@@ -1,6 +1,10 @@
 package com.mfh.litecashier.utils;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
@@ -18,7 +22,11 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
+import com.mfh.litecashier.ui.activity.SplashActivity;
+
+import org.century.GreenTagsApi;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -119,12 +127,42 @@ public class AppHelper {
 
 
     /**
+     * 重启APP
+     * */
+    public static void restartApp(Context context){
+        if (context == null){
+            return;
+        }
+        Intent mStartActivity = new Intent(context, SplashActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,
+                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        // full restart and initialize the application
+        System.exit(0);
+    }
+    /**
      * 恢复出厂设置
      * */
-    public static void resetFactoryData(){
+    public static void resetFactoryData(Context context){
         clearAppData();
 
-        DataCleanManager.cleanDatabases(CashierApp.getAppContext());
+        //删除数据库
+        DataCleanManager.cleanDatabases(context);
+
+        //删除SharedPreference
+        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP);
+        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP_BORN);
+        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_CONFIG);
+        SharedPreferencesManager.clear(SMScaleSyncManager2.PREF_SMSCALE);
+        SharedPreferencesManager.clear(GreenTagsApi.PREF_GREENTAGS);
+        SharedPreferencesManager.clear(AHScaleAgent.PREF_AHSCALE);
+
+        //删除无效文件
+        clearRedunantData(false);
+
+        restartApp(context);
     }
 
     /**
@@ -147,20 +185,37 @@ public class AppHelper {
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                 "");
 
-        clearRedunantData();
-        clearCacheData();
+        clearRedunantData(false);
 
-        SMScaleSyncManager2.deleteOldFiles(1);
     }
 
     /**
      * 清空过期数据，保留最近7天的数据。
      */
-    public static void clearRedunantData(){
-        AnalysisHelper.deleteOldDailysettle(7);//日结
-        CashierHelper.clearOldPosOrder(7);//收银订单
-        PosTopupService.get().deleteOldData(7);
-        ZLogger.deleteOldFiles(14);
+    public static void clearRedunantData(boolean isFactoryReset){
+        if (isFactoryReset){
+            AnalysisHelper.deleteOldDailysettle(0);//日结
+            CashierHelper.clearOldPosOrder(0);//收银订单
+            PosTopupService.get().deleteOldData(0);
+            ZLogger.deleteOldFiles(0);
+            SMScaleSyncManager2.deleteOldFiles(0);
+
+            //删除缓存
+            ACacheHelper.clear();
+            //清除数据缓存
+            DataCleanManager.clearCache(CashierApp.getAppContext());
+            GlobalInstance.getInstance().reset();
+        }
+        else{
+            AnalysisHelper.deleteOldDailysettle(7);//日结
+            CashierHelper.clearOldPosOrder(7);//收银订单
+            PosTopupService.get().deleteOldData(7);
+            ZLogger.deleteOldFiles(14);
+            SMScaleSyncManager2.deleteOldFiles(1);
+
+            AppHelper.clearCacheData();
+        }
+
     }
 
     /**

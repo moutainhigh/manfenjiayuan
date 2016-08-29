@@ -316,6 +316,9 @@ public class SharedPreferencesHelper {
         SharedPreferencesUtil.set(MfhApplication.getAppContext(), register(), key, value);
     }
 
+    public static void clear(){
+        SharedPreferencesUtil.clear(MfhApplication.getAppContext(), register());
+    }
 
 
 }

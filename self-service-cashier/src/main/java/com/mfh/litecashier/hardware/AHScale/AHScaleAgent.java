@@ -11,7 +11,7 @@ public class AHScaleAgent {
     public static String PORT_ACS_P215 = "/dev/ttyS0";
     public static String BAUDRATE_ACS_P215 = "9600";
 
-    private static final String PREF_NAME = "pref_ah_scale";
+    public static final String PREF_AHSCALE = "pref_ah_scale";
     private static final String PK_PORT_ACS_P215 = "pk_port_acs_p215";
     private static final String PK_BAUDRATE_ACS_P215 = "pk_baudrate_acs_p215";
 
@@ -21,18 +21,18 @@ public class AHScaleAgent {
 
     public static void initialize() {
         PORT_ACS_P215 = SharedPreferencesManager.getText(
-                PREF_NAME, PK_PORT_ACS_P215, "");
+                PREF_AHSCALE, PK_PORT_ACS_P215, "");
         BAUDRATE_ACS_P215 = SharedPreferencesManager.getText(
-                PREF_NAME, PK_BAUDRATE_ACS_P215, "9600");
+                PREF_AHSCALE, PK_BAUDRATE_ACS_P215, "9600");
     }
 
     public static void setAcsP215Port(String port) {
-        SharedPreferencesManager.set(PREF_NAME, PK_PORT_ACS_P215, port);
+        SharedPreferencesManager.set(PREF_AHSCALE, PK_PORT_ACS_P215, port);
     }
 
     public static void setAcsP215Baudrate(String baudrate) {
         SharedPreferencesManager.set(
-                PREF_NAME, PK_BAUDRATE_ACS_P215, baudrate);
+                PREF_AHSCALE, PK_BAUDRATE_ACS_P215, baudrate);
     }
 
 }

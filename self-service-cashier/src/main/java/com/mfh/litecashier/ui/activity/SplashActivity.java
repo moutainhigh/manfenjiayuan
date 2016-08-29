@@ -21,7 +21,6 @@ import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -126,10 +125,7 @@ public class SplashActivity extends InitActivity {
                     PurchaseShopcartHelper.getInstance().clear();//购物车－采购
                 }
 
-                AppHelper.clearRedunantData();
-                AppHelper.clearCacheData();
-
-                SMScaleSyncManager2.deleteOldFiles(1);
+                AppHelper.clearRedunantData(false);
 
                 //加载会话和群组
                 IMClient.getInstance().groupManager().loadAllGroups();
