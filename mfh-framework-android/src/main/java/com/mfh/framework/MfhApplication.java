@@ -7,42 +7,40 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.config.ConfigsParseHelper;
+import com.mfh.framework.anlaysis.AnalysisAgent;
+import com.mfh.framework.anlaysis.AppInfo;
+import com.mfh.framework.anlaysis.DeviceUuidFactory;
 import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.DeviceUuidFactory;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.crash.AppException;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.EncryptUtil;
 import com.mfh.framework.core.utils.FileUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.PhoneUtils;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -83,6 +81,8 @@ public class MfhApplication extends Application {
 
         context = getApplicationContext();
 
+        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
+
         //错误收集
         Thread.setDefaultUncaughtExceptionHandler(AppException.getAppExceptionHandler(this));
 
@@ -90,6 +90,9 @@ public class MfhApplication extends Application {
 
         //初始化统一配置对象
         initConfig();
+
+        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
+
     }
 
     @Override
@@ -151,15 +154,6 @@ public class MfhApplication extends Application {
     }
 
     /**
-     * 获取设备序列号
-     * */
-    public static String getDeviceUuid(){
-        return String.format("%s@%s",
-                getPackageInfo().packageName,
-                new DeviceUuidFactory(getAppContext()).getDeviceUuid());
-    }
-
-    /**
      * 获取UserAgent,登录时填入Header
      */
     public static String getUserAgent() {
@@ -167,8 +161,14 @@ public class MfhApplication extends Application {
                 SharedPreferencesManager.PREF_NAME_APP, SharedPreferencesManager.PREF_KEY_APP_USERAGENT, null);
 
         if (StringUtils.isEmpty(userAgent)) {
-            StringBuilder ua = new StringBuilder("MFH");
-            ua.append('/' + getVersionName() + '_' + getVersionCode());//App版本
+            StringBuilder ua = new StringBuilder();
+
+            AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
+            if (appInfo != null) {
+                ua.append(appInfo.getPackageName());
+                ua.append('/' + appInfo.getVersionName() + '_' + appInfo.getVersionCode());//App版本
+            }
+
             ua.append("/Android");//手机系统平台
             ua.append("/" + android.os.Build.VERSION.RELEASE);//手机系统版本
             ua.append("/" + android.os.Build.MODEL); //手机型号
@@ -181,111 +181,25 @@ public class MfhApplication extends Application {
         return userAgent;
     }
 
-    /**
-     * 获取App安装包信息
-     *
-     * @return
-     */
-    public static PackageInfo getPackageInfo() {
-        PackageInfo info = new PackageInfo();
-        Context context = getAppContext();
-        if (context == null) {
-            return info;
-        }
-
-        PackageManager pm = context.getPackageManager();
-        String packageName = context.getPackageName();
-
-        try {
-            info = pm.getPackageInfo(packageName, 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace(System.err);
-        }
-
-        return info;
-    }
 
     /**
-     * 获取当前程序内部版本号.若没有或失败返回-1.
+     * 生成序列号:包名＋15位 mac address
      */
-    public static int getVersionCode() {
-        try {
-            return getPackageInfo().versionCode;
-        } catch (Exception e) {
-            return -1;
+    public static String genSerialNo() {
+        String packageName = "";
+        PackageInfo packageInfo = SystemUtils.getPackageInfo(context, 0);
+        if (packageInfo != null) {
+            packageName = packageInfo.packageName;
         }
-    }
 
-    /**
-     * 获取程序的版本信息
-     */
-    public static String getVersionName() {
-        try {
-            return getPackageInfo().versionName;
-        } catch (Exception e) {
-            return "未知";
-        }
-    }
-
-    /**
-     * 获取手机的硬件信息
-     *
-     * @return
-     */
-    private String getMobileInfo() {
-        StringBuilder sb = new StringBuilder();
-        //通过反射获取系统的硬件信息
-        try {
-            Field[] fields = Build.class.getDeclaredFields();
-            for (Field field : fields) {
-                //暴力反射 ,获取私有的信息
-                field.setAccessible(true);
-                String name = field.getName();
-                String value = field.get(null).toString();
-                sb.append(name + "=" + value);
-                sb.append("\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-
-    /**
-     * 使用手机Wifi或蓝牙的MAC地址作为设备标识
-     * <ol>
-     * <li>android.permission.ACCESS_WIFI_STATE</li>
-     * <li>格式: 54:e4:bd:ff:b4:7c</li>
-     * <li>硬件限制：并不是所有的设备都有Wifi和蓝牙硬件，硬件不存在自然也就得不到这一信息。</li>
-     * <li>如果Wifi没有打开过，是无法获取其Mac地址的；而蓝牙是只有在打开的时候才能获取到其Mac地址。</li>
-     * </ol>
-     */
-    public static String getWifiMacAddress() {
-        WifiManager wifi = (WifiManager) getAppContext().getSystemService(Context.WIFI_SERVICE);
-
-        WifiInfo info = wifi.getConnectionInfo();
-
-        return info.getMacAddress();
-    }
-
-    public static String getWifiMac15Bit() {
-        String macAddress = getWifiMacAddress();
+        String macAddress = NetworkUtils.getWifiMacAddress(getAppContext());
         if (macAddress == null) {
-            return getPackageInfo().packageName;
+            return packageName;
         }
         macAddress = macAddress.replace(":", "");
         macAddress = "000" + macAddress;  //add 000 for 15dit
         macAddress = macAddress.toUpperCase();
-        return getPackageInfo().packageName + macAddress;
-    }
-
-    public static String getWifiIpAddress() {
-        WifiManager wifi = (WifiManager) getAppContext().getSystemService(Context.WIFI_SERVICE);
-
-        WifiInfo info = wifi.getConnectionInfo();
-
-        return StringUtils.parseIpAddress(info.getIpAddress());
+        return packageName + macAddress;
     }
 
     /**
@@ -346,58 +260,6 @@ public class MfhApplication extends Application {
             ZLogger.e("getLocalIpAddress failed, " + ex.toString());
         }
         return null;
-    }
-
-    /**
-     * 获取手机设备的串号
-     * <ol>
-     * 它会根据不同的手机设备返回IMEI，MEID或者ESN码，但在使用的过程中有以下问题：
-     * <li>非手机设备：最开始搭载Android系统都手机设备，而现在也出现了非手机设备：如平板电脑、电子书、
-     * 电视、音乐播放器等。这些设备没有通话的硬件功能，系统中也就没有TELEPHONY_SERVICE，
-     * 自然也就无法通过上面的方法获得DEVICE_ID。</li>
-     * <li>权限问题：获取DEVICE_ID需要READ_PHONE_STATE权限，如果只是为了获取DEVICE_ID而没有用到
-     * 其他的通话功能，申请这个权限一来大才小用，二来部分用户会怀疑软件的安全性。</li>
-     * <li>厂商定制系统中的Bug：少数手机设备上，由于该实现有漏洞，会返回垃圾，
-     * 如:zeros或者asterisks</li>
-     * </ol>
-     */
-    public static String getDeviceId() {
-        TelephonyManager telephonyManager = (TelephonyManager) getAppContext()
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager != null) {
-            return telephonyManager.getDeviceId();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 装有SIM卡的设备，可以通过下面的方法获取到Sim Serial Number
-     * <ol>
-     * <p/>
-     * <li>注意：对于CDMA设备，返回的是一个空值！</li>
-     * <li>android.permission.READ_PHONE_STATE)</li>
-     * <li>java.lang.SecurityException: getIccSerialNumber: Neither user 10097 nor current process has android.permission.READ_PHONE_STATE.
-     * </li>
-     * </ol>
-     */
-    public static String getSimSerialNumber() {
-        int permissionCheck = ContextCompat.checkSelfPermission(getAppContext(),
-                Manifest.permission.READ_PHONE_STATE);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager telephonyManager = (TelephonyManager) getAppContext()
-                    .getSystemService(Context.TELEPHONY_SERVICE);
-            if (telephonyManager != null) {
-                return telephonyManager.getSimSerialNumber();
-            } else {
-                return null;
-            }
-        } else {
-            ZLogger.df(getAppContext().getString(R.string.permission_not_granted,
-                    Manifest.permission.READ_PHONE_STATE));
-            return null;
-        }
-
     }
 
 
@@ -510,54 +372,28 @@ public class MfhApplication extends Application {
     }
 
     /**
-     * <ol>
-     * 获取APK当前签名文件的SHA1
-     * <li>第一步、打开Android Studio的Terminal工具</li>
-     * <li>第二步、输入命令：keytool -v -list -keystore keystore文件路径</li>
-     * <li>第三步、输入Keystore密码</li>
-     * </ol>
-     */
-    public static String sHA1(Context context) {
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo(
-                    context.getPackageName(), PackageManager.GET_SIGNATURES);
-            if (info == null) {
-                ZLogger.d("SHA1: packageInfo is null");
-                return null;
-            }
-
-            Signature[] signatures = info.signatures;
-            if (signatures == null || signatures.length < 1) {
-                ZLogger.d("SHA1: signatures is null");
-                return null;
-            }
-
-            byte[] cert = signatures[0].toByteArray();
-            MessageDigest md = MessageDigest.getInstance("SHA1");
-            byte[] publicKey = md.digest(cert);
-            StringBuffer hexString = new StringBuffer();
-            for (byte aPublicKey : publicKey) {
-                String appendString = Integer.toHexString(0xFF & aPublicKey)
-                        .toUpperCase(Locale.US);
-                if (appendString.length() == 1) {
-                    hexString.append("0");
-                }
-                hexString.append(appendString);
-            }
-            return hexString.toString();
-        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            ZLogger.e("SHA1:" + e.toString());
-        }
-        return null;
-    }
-
-    /**
      * */
     public static void debugPrint() {
-        ZLogger.d(String.format("process name:\t%s",
-                getProcessName(getAppContext(), android.os.Process.myPid())));
-        ZLogger.d(String.format("apk install path:\t%s", getAppContext().getPackageCodePath()));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("apkInstallPath", getAppContext().getPackageCodePath());
+        jsonObject.put("pid", android.os.Process.myPid());
+        jsonObject.put("processName", getProcessName(getAppContext(), android.os.Process.myPid()));
+        jsonObject.put("isNetworkConnected", NetworkUtils.isConnect(getAppContext()));
+        jsonObject.put("networkState", NetworkUtils.getNetworkState(getAppContext()));
+        jsonObject.put("wifiMacAddress", NetworkUtils.getWifiMacAddress(getAppContext()));
+        jsonObject.put("wifiIpAddress", NetworkUtils.getWifiIpAddress(getAppContext()));
+        jsonObject.put("IMEI", PhoneUtils.getImei(getAppContext()));
+        jsonObject.put("IMSI", PhoneUtils.getImsi(getAppContext()));
+        jsonObject.put("simSerialNumber", PhoneUtils.getSimSerialNumber(getAppContext()));
+        jsonObject.put("SHA1", SystemUtils.getSignature(getAppContext()));
+        jsonObject.put("applicationLabel", SystemUtils.getApplicationLabel(getAppContext()));
+        jsonObject.put("cupInfo", SystemUtils.getCpuInfo());
+        jsonObject.put("mobileInfo", SystemUtils.getMobileInfo());
+        jsonObject.put("sdkVersion", SystemUtils.getSdkVersion());
+        jsonObject.put("userAgent", getUserAgent());
+        jsonObject.put("appInfo", AnalysisAgent.getAppInfo(getAppContext()));
+
+        ZLogger.d(jsonObject.toJSONString());
 
         // 从AndroidManifest.xml的meta-data中读取SDK配置信息
         String packageName = getAppContext().getPackageName();
@@ -599,7 +435,6 @@ public class MfhApplication extends Application {
         ZLogger.d(String.format("1px=%ddip", DensityUtil.px2dip(getAppContext(), 1)));
         ZLogger.d(String.format("1dip=%dpx", DensityUtil.dip2px(getAppContext(), 1)));
 
-
         try {
             //获取NavigationBar的高度
             StringBuilder sb = new StringBuilder();
@@ -612,15 +447,8 @@ public class MfhApplication extends Application {
                     resources.getDisplayMetrics().heightPixels,
                     resources.getDisplayMetrics().density,
                     resources.getDimensionPixelSize(resourceId)));
-
-            sb.append(String.format("SHA1:%s\n", sHA1(getAppContext())));
             sb.append(String.format("AndroidId:%s\n", getAndroidId()));
-            sb.append(String.format("simSerialNumber:%s\n", getSimSerialNumber()));
-            sb.append(String.format("deviceId(IMEI):%s\n", getDeviceId()));
             sb.append(String.format("linuxMac:%s\n", getLinuxMac()));
-            sb.append(String.format("wifiMacAddress:%s\n", getWifiMacAddress()));
-            sb.append(String.format("wifiIpAddress:%s\n", getWifiIpAddress()));
-            sb.append(String.format("wifiMac15Bit:%s\n", getWifiMac15Bit()));
             sb.append(String.format("hostAddress:%s\n", getHostAddress()));
             sb.append(String.format("hostIpAddress:%s\n", getHostIpAddress()));
             sb.append(String.format("deviceUUID:%s\n",
@@ -676,10 +504,9 @@ public class MfhApplication extends Application {
 
 
         Double recharegeAmount = 0.0028D;
-        if (recharegeAmount < 0.01){
+        if (recharegeAmount < 0.01) {
             ZLogger.d(String.format("%f < 0.01", recharegeAmount));
-        }
-        else{
+        } else {
             ZLogger.d(String.format("%f >= 0.01", recharegeAmount));
         }
         String testStr = "12345556665453";

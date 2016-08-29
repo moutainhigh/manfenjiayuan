@@ -11,12 +11,14 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.R;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.AnalysisAgent;
+import com.mfh.framework.anlaysis.AppInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.file.FileNetDao;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetCallBack;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.uikit.dialog.DialogHelper;
 
 import net.tsz.afinal.http.AjaxParams;
@@ -112,11 +114,16 @@ public class MfhUpdateAgent {
     private void processUpdateResponseInner(UpdateResponse updateResponse) {
         Message msg = new Message();
 
+        int versionCode = -1;
+        AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
+        if (appInfo != null){
+            versionCode = appInfo.getVersionCode();
+        }
         //无更新
         if (updateResponse == null) {
             msg.what = MSG_UPDATE_NOUPDATE;
         }
-        else if (updateResponse.getVersionCode() <= MfhApplication.getVersionCode()){
+        else if (updateResponse.getVersionCode() <= versionCode){
             msg.what = MSG_UPDATE_LATEST;
         }
         else{

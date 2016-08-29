@@ -13,7 +13,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.Constants;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.ImageUtil;

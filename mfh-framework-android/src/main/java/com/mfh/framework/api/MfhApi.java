@@ -1,7 +1,7 @@
 package com.mfh.framework.api;
 
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.NetFactory;
 
 /**
  * 满分家园后台接口

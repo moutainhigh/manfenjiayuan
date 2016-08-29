@@ -3,7 +3,7 @@ package com.mfh.framework.api.category;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.net.AfinalFactory;
+import com.mfh.framework.network.AfinalFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;

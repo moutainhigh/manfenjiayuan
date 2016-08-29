@@ -1,7 +1,7 @@
 package com.mfh.framework.helper;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.PushUtil;
 
 /**

@@ -181,4 +181,8 @@ public class SharedPreferencesManager {
         SharedPreferencesUtil.set(MfhApplication.getAppContext(), prefName, key, value);
     }
 
+    public static void clear(String prefName){
+        SharedPreferencesUtil.clear(MfhApplication.getAppContext(), prefName);
+    }
+
 }

@@ -18,7 +18,7 @@ package net.tsz.afinal.http;
 import android.os.SystemClock;
 
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import net.tsz.afinal.FinalHttp;

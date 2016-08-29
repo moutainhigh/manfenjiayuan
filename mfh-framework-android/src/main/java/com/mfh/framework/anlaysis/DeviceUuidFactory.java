@@ -1,11 +1,11 @@
-package com.mfh.framework.core;
+package com.mfh.framework.anlaysis;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
-import android.telephony.TelephonyManager;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.PhoneUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -39,10 +39,7 @@ public class DeviceUuidFactory {
                                 uuid = UUID.nameUUIDFromBytes(androidId
                                         .getBytes("utf8"));
                             } else {
-                                final String deviceId = (
-                                    (TelephonyManager) context
-                                    .getSystemService(Context.TELEPHONY_SERVICE))
-                                    .getDeviceId();
+                                final String deviceId = PhoneUtils.getImei(context);
                                 uuid = deviceId != null ? UUID
                                     .nameUUIDFromBytes(deviceId
                                             .getBytes("utf8")) : UUID

@@ -123,4 +123,8 @@ public class ToggleSettingItem extends RelativeLayout {
     public void setSubTitle(String text) {
         tvSubTitle.setText(text);
     }
+
+    public String getSubTitle(){
+        return tvSubTitle.getText().toString();
+    }
 }

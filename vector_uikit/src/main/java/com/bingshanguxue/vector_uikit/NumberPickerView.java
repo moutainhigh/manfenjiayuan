@@ -1,4 +1,4 @@
-package com.manfenjiayuan.business.widget;
+package com.bingshanguxue.vector_uikit;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.R;
 import com.mfh.framework.core.utils.StringUtils;
 
 
@@ -29,7 +28,7 @@ public class NumberPickerView extends LinearLayout {
     private int number = 0;
 
     private boolean isdecreaseDrawableAutoHide = false;
-    private boolean isInterceptOutside = false;//数字改变时是否拦截处理
+    private boolean zeroIntercept = false;//数字改变时是否拦截处理
 
     public interface onOptionListener {
         void onPreIncrease();
@@ -93,7 +92,7 @@ public class NumberPickerView extends LinearLayout {
                             R.drawable.btn_increase));
             isdecreaseDrawableAutoHide = a.getBoolean(R.styleable.NumberPickerView_decreaseDrawableAutoHide,
                     false);
-            isInterceptOutside = a.getBoolean(R.styleable.NumberPickerView_isInterceptOutside,
+            zeroIntercept = a.getBoolean(R.styleable.NumberPickerView_zeroIntercept,
                     false);
             a.recycle();
         }
@@ -101,7 +100,7 @@ public class NumberPickerView extends LinearLayout {
     }
 
     public void decrease() {
-        if (isInterceptOutside) {
+        if (zeroIntercept) {
             if (optionListener != null) {
                 optionListener.onPreDecrease();
             }
@@ -115,12 +114,12 @@ public class NumberPickerView extends LinearLayout {
     }
 
     public void increase() {
-        if (isInterceptOutside) {
-            if (optionListener != null) {
-                optionListener.onPreIncrease();
-            }
-            return;
-        }
+//        if (zeroIntercept) {
+//            if (optionListener != null) {
+//                optionListener.onPreIncrease();
+//            }
+//            return;
+//        }
 
         setValue(number + 1);
         if (optionListener != null) {
@@ -192,8 +191,8 @@ public class NumberPickerView extends LinearLayout {
         this.MIN = paramInt;
     }
 
-    public void setInterceptOutside(boolean interceptOutside) {
-        isInterceptOutside = interceptOutside;
+    public void setZeroIntercept(boolean zeroIntercept) {
+        this.zeroIntercept = zeroIntercept;
     }
 
     public void setDecreaseButton(int resId) {

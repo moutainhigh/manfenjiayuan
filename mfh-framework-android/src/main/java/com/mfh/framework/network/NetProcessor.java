@@ -9,7 +9,7 @@
  * 修改日期: 2014-3-11
  * 修改内容: 
  */
-package com.mfh.framework.net;
+package com.mfh.framework.network;
 
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.configure.UConfigCache;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.database.dao.BaseDbDao;
 import com.mfh.framework.database.upgrade.SqlliteUpgradeSupport;

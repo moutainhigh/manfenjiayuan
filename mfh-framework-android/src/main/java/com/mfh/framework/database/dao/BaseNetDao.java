@@ -21,9 +21,9 @@ import com.mfh.comn.net.JsonParser;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 
 import net.tsz.afinal.http.AjaxParams;
 

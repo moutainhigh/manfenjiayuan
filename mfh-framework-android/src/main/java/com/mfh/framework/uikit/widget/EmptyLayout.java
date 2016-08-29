@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mfh.framework.R;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 
 
 public class EmptyLayout extends LinearLayout implements
@@ -157,7 +157,7 @@ public class EmptyLayout extends LinearLayout implements
             mLayout.setBackgroundColor(Color.parseColor("#E8E8E7"));
             mErrorState = NETWORK_ERROR;
             // img.setBackgroundDrawable(SkinsUtil.getDrawable(context,"pagefailed_bg"));
-            if (NetWorkUtil.isConnect(getContext())) {
+            if (NetworkUtils.isConnect(getContext())) {
                 tv.setText(R.string.error_view_load_error_click_to_refresh);
                 img.setBackgroundResource(R.drawable.pagefailed_bg);
             } else {

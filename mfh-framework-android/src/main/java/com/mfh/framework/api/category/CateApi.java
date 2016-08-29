@@ -1,7 +1,7 @@
 package com.mfh.framework.api.category;
 
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.NetFactory;
 
 /**
  * 类目API

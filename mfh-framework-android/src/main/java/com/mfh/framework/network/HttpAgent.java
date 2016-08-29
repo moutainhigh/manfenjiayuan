@@ -1,4 +1,4 @@
-package com.mfh.framework.net;
+package com.mfh.framework.network;
 
 /**
  * Created by bingshanguxue on 7/11/16.
