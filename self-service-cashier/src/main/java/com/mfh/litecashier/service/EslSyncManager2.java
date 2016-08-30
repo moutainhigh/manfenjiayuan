@@ -72,11 +72,6 @@ public class EslSyncManager2 extends EslSyncManager{
             return;
         }
 
-        if (GreenTagsApi.FULLSCALE_ENABLED) {
-            ZLogger.d("全量同步");
-            SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
-                    GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
-        }
         batchUploadGoodsInfo();
     }
 
@@ -106,16 +101,6 @@ public class EslSyncManager2 extends EslSyncManager{
 
         //每次休眠一段时间后连接基站都会失败，这里重试一次，确保数据可以同步成功
         if (retrySyncFlag == 1){
-            if (bSyncInProgress) {
-                uploadProcess("正在同步价签商品...");
-                return;
-            }
-
-            if (GreenTagsApi.FULLSCALE_ENABLED) {
-                ZLogger.d("全量同步");
-                SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
-                        GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
-            }
             batchUploadGoodsInfo();
         }
     }
@@ -130,9 +115,7 @@ public class EslSyncManager2 extends EslSyncManager{
             return;
         }
 
-        String lastCursor = SharedPreferencesManager.getText(GreenTagsApi.PREF_GREENTAGS,
-                GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR);
-        ZLogger.df(String.format("最后一次同步商品的更新时间(%s)。", lastCursor));
+        String lastCursor = getEslStartCursor();
 
         ESLPushGoodsExInfoPackAsyncTask asyncTask = new ESLPushGoodsExInfoPackAsyncTask(lastCursor);
         asyncTask.execute();
@@ -173,7 +156,8 @@ public class EslSyncManager2 extends EslSyncManager{
                         pageInfo.getTotalCount(), pageInfo.getPageNo(), pageInfo.getTotalPage(),
                         pageInfo.getPageSize(), startCursor));
                 //上传第一页数据
-                GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult exPackResult = makeEslPushRequest(goodsList, newCursor);
+                GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult exPackResult =
+                        makeEslPushRequest(goodsList, newCursor);
                 if (!exPackResult.isResult()) {
                     retrySyncFlag++;
                     ZLogger.df(String.format("同步价签商品失败：%s",
@@ -200,16 +184,19 @@ public class EslSyncManager2 extends EslSyncManager{
                             makeEslPushRequest(goodsList2, newCursor);
                     if (!exPackResult2.isResult()) {
                         retrySyncFlag++;
+                        ZLogger.df(String.format("同步价签商品失败：%s",
+                                TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                         return false;
                     }
                     newCursor = exPackResult2.getCursor();
-                    ZLogger.df(String.format("同步价签商品成功：%s", TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
+                    ZLogger.df(String.format("同步价签商品成功：%s",
+                            TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                 }
 
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                ZLogger.e(String.format("ESLPushGoodsInfoExPack failed, %s", e.toString()));
+                ZLogger.ef(String.format("ESLPushGoodsInfoExPack failed, %s", e.toString()));
                 retrySyncFlag++;
                 return false;
             }
@@ -226,11 +213,6 @@ public class EslSyncManager2 extends EslSyncManager{
                 String cursor = TimeUtil.format(newCursor, TimeCursor.InnerFormat);
                 SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
                         GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, cursor);
-                if (GreenTagsApi.FULLSCALE_ENABLED){
-                    SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
-                            GreenTagsApi.PK_B_GREENTAGS_FULLSCALE, false);
-                    GreenTagsApi.FULLSCALE_ENABLED = false;
-                }
 
                 ZLogger.df(String.format("ESLPushGoodsInfoExPack 保存价签同步时间：%s", cursor));
                 //继续上传订单
@@ -246,7 +228,6 @@ public class EslSyncManager2 extends EslSyncManager{
 
         @Override
         protected void onProgressUpdate(Void... values) {
-            ZLogger.d("onProgressUpdate");
         }
     }
 

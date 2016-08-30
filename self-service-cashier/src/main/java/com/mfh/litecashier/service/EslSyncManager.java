@@ -3,9 +3,15 @@ package com.mfh.litecashier.service;
 
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
 
+import org.century.GreenTagsApi;
 import org.century.schemas.ArrayOfGoodsInfoEX;
 import org.century.schemas.ArrayOfProperty;
 import org.century.schemas.GoodsInfoEX;
@@ -13,6 +19,7 @@ import org.century.schemas.Property;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -34,8 +41,35 @@ public class EslSyncManager {
     //每次同步最大数量
     public static final int ESL_MAX_SYNC_PAGESIZE = 20;
 
+    /**
+     * 获取价签同步开始游标
+     */
+    public String getEslStartCursor() {
+        String startCursor = SharedPreferencesManager.getText(GreenTagsApi.PREF_GREENTAGS,
+                GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR);
+        ZLogger.df(String.format("最后一次价签同步的更新时间(%s)。", startCursor));
 
-    public GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult makeEslPushRequest(List<PosProductEntity> goodsList, Date newCursor) {
+//        //得到指定模范的时间
+        if (!StringUtils.isEmpty(startCursor)) {
+            try {
+                Date d1 = TimeCursor.InnerFormat.parse(startCursor);
+                Date rightNow = new Date();
+                if (d1.compareTo(rightNow) > 0) {
+                    startCursor = TimeCursor.InnerFormat.format(rightNow);
+                    ZLogger.df(String.format("上次价签同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
+                }
+            } catch (ParseException e) {
+//            e.printStackTrace();
+                ZLogger.ef(String.format("获取价签同步开始游标失败: %s", e.toString()));
+            }
+        }
+
+        return startCursor;
+    }
+
+
+    public GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult makeEslPushRequest(List<PosProductEntity> goodsList,
+                                                                             Date newCursor) {
         if (goodsList == null || goodsList.size() < 1) {
             return new GreenTagsApiImpl2.ESLPushGoodsInfoExPackResult(false);
         }
@@ -45,7 +79,14 @@ public class EslSyncManager {
             //记录最大时间游标
             if (newCursor == null || goods.getUpdatedDate() == null
                     || newCursor.compareTo(goods.getUpdatedDate()) <= 0) {
+                ZLogger.df(String.format("before, updatedDate=%s, newCursor:  %s",
+                        TimeUtil.format(goods.getUpdatedDate(), TimeCursor.InnerFormat),
+                        TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                 newCursor = goods.getUpdatedDate();
+                ZLogger.df(String.format("after, updatedDate=%s, newCursor: %s",
+                        TimeUtil.format(goods.getUpdatedDate(), TimeCursor.InnerFormat),
+                        TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
+
             }
 
             arrayOfGoodsInfoEX.add(createFromPosProductEntity(goods));
