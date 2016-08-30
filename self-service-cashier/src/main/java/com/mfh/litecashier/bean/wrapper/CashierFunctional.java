@@ -24,20 +24,8 @@ public class CashierFunctional implements ILongId, Serializable {
     public static final Long OPTION_ID_MEMBER_CARD      = 44L;//会员卡（开卡）
     public static final Long OPTION_ID_SETTINGS         = 45L;//设置
 
-    //管理者控制台
-    public static final Long ADMIN_MENU_PURCHASE_MANUAL = 54L;//订货
-    public static final Long ADMIN_MENU_INVENTORY= 56L;//库存
-    public static final Long ADMIN_MENU_ORDERFLOW= 57L;//流水
-    public static final Long ADMIN_MENU_RECEIPT= 58L;//单据
-
     public static final Long ADMIN_MENU_ONLINEORDER= 60L;//线上订单
-    public static final Long ADMIN_MENU_ANALYSIS= 62L;//统计
-    public static final Long ADMIN_MENU_DAILYSETTLE= 63L;//日结
-    public static final Long ADMIN_MENU_SETTINGS= 65L;//设置
-    public static final Long ADMIN_MENU_CASHQUOTA= 66L;//现金授权
-    public static final Long CANARY_MENU_GOODS    = 71L;//商品
-    public static final Long CANARY_MENU_ORDERFLOW= 72L;//流水
-    public static final Long CANARY_MENU_CANARY= 74L;//日结
+
 
     private int type = 0;//0:local;1-category
     private Long id;//编号

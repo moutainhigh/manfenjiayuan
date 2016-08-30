@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.model.wrapper.LocalMenu;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -30,7 +31,6 @@ import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
@@ -355,8 +355,8 @@ public class AdministratorActivity extends BaseActivity {
         menuAdapter.setOnAdapterLitener(new AdministratorMenuAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CashierFunctional entity = menuAdapter.getEntity(position);
-                if (entity != null && entity.getType() == 0) {
+                LocalMenu entity = menuAdapter.getEntity(position);
+                if (entity != null) {
                     responseMenu(entity.getId());
                 }
             }
@@ -369,25 +369,23 @@ public class AdministratorActivity extends BaseActivity {
     /**
      * 获取菜单
      */
-    public synchronized List<CashierFunctional> getAdminMenus() {
-        List<CashierFunctional> functionalList = new ArrayList<>();
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL,
+    public synchronized List<LocalMenu> getAdminMenus() {
+        List<LocalMenu> functionalList = new ArrayList<>();
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_PURCHASE_MANUAL,
                 "手动订货", R.mipmap.ic_admin_purchase_manual));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVENTORY,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_INVENTORY,
                 "库存", R.mipmap.ic_admin_menu_inventory));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ORDERFLOW,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_RECEIPT,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_RECEIPT,
                 "单据", R.mipmap.ic_admin_menu_receipt));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ANALYSIS,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_ANALYSIS,
                 "统计", R.mipmap.ic_admin_menu_analysis));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_DAILYSETTLE,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_DAILYSETTLE,
                 "日结", R.mipmap.ic_admin_menu_dailysettle));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_TOPUP,
-//                "充值", R.mipmap.ic_service_recharge));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_CASHQUOTA,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_CASHQUOTA,
                 "授信", R.mipmap.ic_admin_menu_cashquota));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_SETTINGS,
+        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
 
         return functionalList;
@@ -401,21 +399,19 @@ public class AdministratorActivity extends BaseActivity {
             return;
         }
 
-        if (id.compareTo(CashierFunctional.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
+        if (id.compareTo(LocalMenu.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
             manualPurchase();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_INVENTORY) == 0) {
+        } else if (id.compareTo(LocalMenu.ADMIN_MENU_INVENTORY) == 0) {
             redirect2Inventory();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_ORDERFLOW) == 0) {
+        } else if (id.compareTo(LocalMenu.ADMIN_MENU_ORDERFLOW) == 0) {
             redirect2Orderflow();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_RECEIPT) == 0) {
+        } else if (id.compareTo(LocalMenu.ADMIN_MENU_RECEIPT) == 0) {
             redirect2Receipt();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_ONLINEORDER) == 0) {
-            redirect2OnlineOrder();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_DAILYSETTLE) == 0) {
+        } else if (id.compareTo(LocalMenu.ADMIN_MENU_DAILYSETTLE) == 0) {
             dailySettle(null);
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_SETTINGS) == 0) {
+        } else if (id.compareTo(LocalMenu.ADMIN_MENU_SETTINGS) == 0) {
             redirect2Settings();
-        } else if (id.compareTo(CashierFunctional.ADMIN_MENU_CASHQUOTA) == 0) {
+        } else if (id.compareTo(LocalMenu.ADMIN_MENU_CASHQUOTA) == 0) {
             redirect2CashQuota();
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
@@ -463,17 +459,7 @@ public class AdministratorActivity extends BaseActivity {
     }
 
     /**
-     * 线上订单
-     */
-    public void redirect2OnlineOrder() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_ONLINE_ORDER);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 线上订单
+     * 设置
      */
     public void redirect2Settings() {
         Bundle extras = new Bundle();
