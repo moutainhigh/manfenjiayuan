@@ -2,7 +2,6 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +14,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.ProductCatalogEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
+import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -31,7 +31,6 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -148,10 +147,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         //添加分割线
 //        mRecyclerView.addItemDecoration(new LineItemDecoration(
 //                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 0,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
-                ContextCompat.getColor(getActivity(), R.color.green_select), 0.01f,
-                ContextCompat.getColor(getActivity(), R.color.transparent), 0f));
+        mRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
+//        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 0,
+//                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
+//                ContextCompat.getColor(getActivity(), R.color.green_select), 0.01f,
+//                ContextCompat.getColor(getActivity(), R.color.transparent), 0f));
 //        mRecyclerView.addItemDecoration(new GridItemDecoration(5, 1, false));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

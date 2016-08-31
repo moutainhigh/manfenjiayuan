@@ -2,7 +2,6 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,12 +12,12 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.mode.IScProductPriceView;
 import com.bingshanguxue.cashier.mode.ScProductPricePresenter;
+import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.PubSkus;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
-import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -131,10 +130,11 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         mRecyclerView.setEmptyView(emptyView);
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
-        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 0,
-                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
-                ContextCompat.getColor(getActivity(), R.color.transparent), 1f,
-                ContextCompat.getColor(getActivity(), R.color.transparent), 1f));
+        mRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
+//        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 0,
+//                ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
+//                ContextCompat.getColor(getActivity(), R.color.transparent), 1f,
+//                ContextCompat.getColor(getActivity(), R.color.transparent), 1f));
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
