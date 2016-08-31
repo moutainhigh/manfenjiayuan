@@ -73,9 +73,9 @@ public class FragmentActivity extends BaseActivity {
         if (intent != null) {
             int animType = intent.getIntExtra(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
             //setTheme必须放在onCreate之前执行，后面执行是无效的
-            if (animType == ANIM_TYPE_NEW_FLOW) {
-//                this.setTheme(R.style.NewFlow);
-            }
+//            if (animType == ANIM_TYPE_NEW_FLOW) {
+////                this.setTheme(R.style.NewFlow);
+//            }
 
             fragmentType = intent.getIntExtra(EXTRA_KEY_SERVICE_TYPE, -1);
         }

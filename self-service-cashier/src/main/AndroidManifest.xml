@@ -61,15 +61,16 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- <uses-permission android:name="android.hardware.sensor.accelerometer"/> -->
 
-    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.READ_LOGS"/>
     <!-- ibeancon 需要蓝牙权限(Sensoro) -->
     <!-- <uses-permission android:name="android.permission.BLUETOOTH" /> -->
     <!-- <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> -->
 
 
     <!--修改系统时间-->
-    <uses-permission android:name="android.permission.SET_TIME"
-                     tools:ignore="ProtectedPermissions"/>
+    <uses-permission
+        android:name="android.permission.SET_TIME"
+        tools:ignore="ProtectedPermissions"/>
 
     <!-- EXT 桌面快捷方式权限 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
@@ -136,12 +137,16 @@
         </activity>
         <activity
             android:name=".ui.activity.AdministratorActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape"
+            android:theme="@style/DialogActivity"/>
         <activity
             android:name=".ui.activity.CanaryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTop"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape"
+            android:theme="@style/DialogActivity"/>
         <activity
             android:name=".ui.activity.CashierPayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -180,17 +185,10 @@
         </receiver>
         <receiver android:name=".alarm.KeepAlarmLiveReceiver">
             <intent-filter>
+                <!--屏幕解锁-->
                 <action android:name="android.intent.action.USER_PRESENT"/>
             </intent-filter>
         </receiver>
-
-        <!-- 监听用户行为 -->
-        <!-- <receiver android:name=".service.UserBehaviorReceiver"> -->
-        <!-- <intent-filter> -->
-        <!-- &lt;!&ndash;屏幕解锁&ndash;&gt; -->
-        <!-- <action android:name="android.intent.action.USER_PRESENT"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
 
 
         <!-- 友盟SDK配置开始 -->
@@ -275,7 +273,8 @@
             android:exported="true"
             android:process=":pushservice"
             android:taskAffinity="com.igexin.sdk.PushActivityTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
         <service
             android:name="com.igexin.download.DownloadService"
             android:process=":pushservice"/>
@@ -296,7 +295,7 @@
         <!-- Bugly SDK配置开始 -->
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
         <!-- Bugly SDK配置开始 -->
 
     </application>
