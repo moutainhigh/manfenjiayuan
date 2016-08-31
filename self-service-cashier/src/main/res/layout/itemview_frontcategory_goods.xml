@@ -4,39 +4,38 @@
     android:layout_width="match_parent"
     android:layout_height="106dp"
     android:orientation="vertical"
-    android:background="@null"
-    android:gravity="center">
+    android:background="@null">
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="4dp"/>
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="冰珊孤雪"
+        android:layout_below="@+id/tv_price"
         android:textColor="@color/material_black"
         android:textSize="16sp"
         android:lines="2"
         android:padding="8dp"
-        android:gravity="center"
-        android:layout_gravity="center"/>
+        android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/tv_price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/default_amount_unit"
-        android:textColor="@color/material_black"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:layout_below="@+id/tv_name"
-        android:padding="4dp"/>
 
     <ImageButton
         android:id="@+id/ib_ratio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
+        android:scaleType="fitXY"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:src="@mipmap/ic_triangle_right_top"

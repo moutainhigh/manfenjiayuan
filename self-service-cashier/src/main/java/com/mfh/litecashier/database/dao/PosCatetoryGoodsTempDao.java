@@ -19,7 +19,7 @@ public class PosCatetoryGoodsTempDao extends BaseSeqAbleDao<PosCategoryGoodsTemp
 
     @Override
     protected Pair<String, String> initTableChName() {
-        return new Pair<>("POS类目选择商品", TABLE_NAME);
+        return new Pair<>("POS前台类目导入商品", TABLE_NAME);
     }
 
     @Override

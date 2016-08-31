@@ -135,12 +135,12 @@ public class ProductCatalogService extends BaseService<ProductCatalogEntity, Str
             return;
         }
 
-        String sqlWhere = String.format("id = '%d'", goods.getId());
-        ProductCatalogEntity entity = null;
-        List<ProductCatalogEntity> entityList =  getDao().queryAllBy(sqlWhere);
-        if (entityList != null && entityList.size() > 0){
-            entity =  entityList.get(0);
-        }
+        ProductCatalogEntity entity = getDao().getEntityById(String.valueOf(goods.getId()));
+//        String sqlWhere = String.format("id = '%d'", goods.getId());
+//        List<ProductCatalogEntity> entityList =  getDao().queryAllBy(sqlWhere);
+//        if (entityList != null && entityList.size() > 0){
+//            entity =  entityList.get(0);
+//        }
         if (entity == null){
             entity = new ProductCatalogEntity();
             entity.setId(goods.getId());

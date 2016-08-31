@@ -17,7 +17,8 @@ import java.util.List;
  * </p>
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class PosCategoryGodosTempService extends BaseService<PosCategoryGoodsTempEntity, String, PosCatetoryGoodsTempDao> {
+public class PosCategoryGodosTempService extends BaseService<PosCategoryGoodsTempEntity,
+        String, PosCatetoryGoodsTempDao> {
 
     @Override
     protected Class<PosCatetoryGoodsTempDao> getDaoClass() {
@@ -147,6 +148,7 @@ public class PosCategoryGodosTempService extends BaseService<PosCategoryGoodsTem
                 entity = new PosCategoryGoodsTempEntity();
                 entity.setProductId(goods.getProductId());
             }
+            entity.setProSkuId(goods.getId());
             saveOrUpdate(entity);
         }
         else{

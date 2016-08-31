@@ -16,6 +16,7 @@ import com.mfh.framework.core.MfhEntity;
 public class PosCategoryGoodsTempEntity extends MfhEntity<Long> implements ILongId{
 
     private Long productId;//spuId
+    private Long proSkuId;
 
     public Long getProductId() {
         return productId;
@@ -23,5 +24,13 @@ public class PosCategoryGoodsTempEntity extends MfhEntity<Long> implements ILong
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Long getProSkuId() {
+        return proSkuId;
+    }
+
+    public void setProSkuId(Long proSkuId) {
+        this.proSkuId = proSkuId;
     }
 }

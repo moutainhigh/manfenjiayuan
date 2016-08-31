@@ -276,6 +276,14 @@ public class FrontCategoryFragment extends BaseFragment {
             proSkuIds.append(entity.getProSkuId());
         }
 
+        importFromCenterSkus(productIds.toString(), proSkuIds.toString());
+
+    }
+
+    /**
+     * 导入类目
+     * */
+    private void add2Category(String productIds){
         NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {
@@ -291,7 +299,15 @@ public class FrontCategoryFragment extends BaseFragment {
                         //新建类目成功，保存类目信息，并触发同步。
 //                        {"code":"0","msg":"操作成功!","version":"1","data":""}
                         ZLogger.df("导入前台类目商品成功");
-                        importFromCenterSkus(proSkuIds.toString());
+                        hideProgressDialog();
+//                        if (rspData == null) {
+//                            return;
+//                        }
+
+                        DataSyncManager.get().sync();
+
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
                     }
                 }
                 , String.class
@@ -300,48 +316,35 @@ public class FrontCategoryFragment extends BaseFragment {
 
 
         ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
-                productIds.toString(), submitRC);
+                productIds, submitRC);
     }
 
-    private void importFromCenterSkus(String proSkuIds) {
-        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
-    }
+    /**
+     * 建档
+     * */
+    private void importFromCenterSkus(final String productIds, String proSkuIds) {
+        NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("导入商品到本店仓储失败, " + errMsg);
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
+                    }
 
-    NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("导入商品到本店仓储失败, " + errMsg);
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //新建类目成功，保存类目信息，并触发同步。
-                    try {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //新建类目成功，保存类目信息，并触发同步。
                         ZLogger.df("导入商品到本店仓储成功");
-                        hideProgressDialog();
-//                        if (rspData == null) {
-//                            return;
-//                        }
-
-                        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTENDCATEGORY_GOODS);
-
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    } catch (Exception e) {
-                        ZLogger.ef(e.toString());
+                        add2Category(productIds);
                     }
                 }
-            }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
 
-
-
-
+        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
+    }
 
 }
