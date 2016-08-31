@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -138,7 +138,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private ItemTouchHelper itemTouchHelper;
     private CashierSwipAdapter productAdapter;
     @Bind(R.id.fab_settle)
-    FloatingActionButton btnSettle;
+    ImageButton btnSettle;
     @Bind(R.id.float_hangup)
     TextView fabHangup;
 

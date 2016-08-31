@@ -206,6 +206,7 @@
         android:textSize="20sp"
         android:visibility="visible"/>
 
+
     <!--结算-->
     <!--
         app:borderWidth="0dp"
@@ -213,12 +214,22 @@
         app:pressedTranslationZ="0dp"
         app:rippleColor="@color/material_green_800"-->
 
-    <android.support.design.widget.FloatingActionButton
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/fab_settle"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="end|bottom"-->
+    <!--android:layout_marginEnd="@dimen/spacing_double"-->
+    <!--android:src="@mipmap/ic_checkmark_white"/>-->
+    <ImageButton
         android:id="@+id/fab_settle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_gravity="end|bottom"
-        android:layout_marginEnd="@dimen/spacing_double"
-        android:src="@mipmap/ic_checkmark_white"/>
+        android:background="@drawable/bg_float_number"
+        android:layout_margin="@dimen/spacing_double"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_checkmark_white"
+        />
 
 </FrameLayout>
