@@ -2,9 +2,10 @@ package com.mfh.litecashier.service;
 
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
@@ -49,6 +50,10 @@ public class CloudSyncManager {
      * @param cateType     类目
      */
     public void importFromChainSku(Long sendTenantId, String cateType) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            return;
+        }
+
         final String startCursorKey = String.format("%s_%d_%s",
                 SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR, sendTenantId, cateType);
         String startCursorValue = SharedPreferencesHelper.getText(startCursorKey, "");
@@ -84,4 +89,6 @@ public class CloudSyncManager {
         ScGoodsSkuApiImpl.importFromChainSku(sendTenantId, cateType,
                 startCursorValue, responseCallback);
     }
+
+
 }

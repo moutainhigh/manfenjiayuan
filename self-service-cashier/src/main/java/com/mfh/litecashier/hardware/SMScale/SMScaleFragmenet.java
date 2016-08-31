@@ -94,7 +94,7 @@ public class SMScaleFragmenet extends BaseFragment {
 
     @OnClick(R.id.button_bean2csv)
     public void writeBean2CSV() {
-        File file = SMScaleSyncManager2.getCSVFile();
+        File file = SMScaleSyncManager2.getCSVFile2();
         //mapping of columns with their positions
 //        ColumnPositionMappingStrategy<SMGoods> strat = new ColumnPositionMappingStrategy();
 //        //Set mappingStrategy type to SMGoods Type

@@ -77,9 +77,9 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     @Bind(R.id.item_umsips_rs232)
     SettingsItem umsipsRs232SettingsItem;
     @Bind(R.id.item_smscale_ftp)
-    SettingsItem smscaleFtpSettingsItem;
+    ToggleSettingItem toggleSmscaleFtp;
     @Bind(R.id.item_greentags_webservice)
-    SettingsItem greentagsSettingsItem;
+    ToggleSettingItem toggleGreenTags;
 
 
     private SetPortDialog setPortDialog = null;
@@ -132,7 +132,18 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
             }
         });
-
+        toggleSmscaleFtp.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
+            }
+        });
+        toggleGreenTags.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, isChecked);
+            }
+        });
         refresh();
     }
 
@@ -246,20 +257,21 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.initialize("LED客显", SerialManager.getLedPort(), SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
-            @Override
-            public void onSetPort(String port, String baudrate) {
-                tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
-                SerialManager.setLedPort(port);
-                SerialManager.setLedBaudrate(baudrate);
+        setPortDialog.initialize("LED客显", SerialManager.getLedPort(),
+                SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
+                    @Override
+                    public void onSetPort(String port, String baudrate) {
+                        tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
+                        SerialManager.setLedPort(port);
+                        SerialManager.setLedBaudrate(baudrate);
 
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
-                tsiLedDisplay.setChecked(false);
+                        //设置串口
+                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
+                        tsiLedDisplay.setChecked(false);
 
-                refresh();
-            }
-        });
+                        refresh();
+                    }
+                });
         if (!setPortDialog.isShowing()) {
             setPortDialog.show();
         }
@@ -350,7 +362,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     /**
      * 配置银联参数
-     * */
+     */
     @OnClick(R.id.item_umsips_rs232)
     public void configureUmsipsRs232() {
         if (mUmsipsDialog == null) {
@@ -420,7 +432,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             terminalSettingsItem.setSubTitle(terminalId);
 
             AppInfo appInfo = AnalysisAgent.getAppInfo(CashierApp.getAppContext());
-            if (appInfo != null){
+            if (appInfo != null) {
                 versonSettingsItem.setSubTitle(String.format(Locale.US, "%s - %d",
                         appInfo.getVersionName(), appInfo.getVersionCode()));
             }
@@ -436,9 +448,14 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781));
             umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
-            smscaleFtpSettingsItem.setSubTitle(String.format("%s:%d",
+            toggleSmscaleFtp.setSubTitle(String.format("%s:%d",
                     SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
-            greentagsSettingsItem.setSubTitle(GreenTagsApi.URL);
+            toggleSmscaleFtp.setChecked(SharedPreferencesHelper
+                    .getBoolean(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, false));
+            toggleGreenTags.setSubTitle(GreenTagsApi.URL);
+            toggleGreenTags.setChecked(SharedPreferencesHelper
+                    .getBoolean(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, false));
+
             tsiSoftKeyboard.setChecked(SharedPreferencesManager.isSoftKeyboardEnabled());
             ttsToggleItem.setChecked(
                     SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
@@ -476,7 +493,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     @Override
     public void onPlatUpdate() {
-
         refresh();
     }
 

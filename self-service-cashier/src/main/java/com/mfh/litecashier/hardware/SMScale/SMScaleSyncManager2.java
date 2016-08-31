@@ -19,6 +19,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -171,20 +172,6 @@ public class SMScaleSyncManager2 extends FTPManager {
     }
 
     /**
-     * 上传FTP成功,如果是全量更新就不再去检测同步，如果是增量更新，就继续去同步
-     */
-    private void uploadFinished(String msg) {
-        ZLogger.df(msg);
-//        if (FULLSCALE_ENABLED) {
-//            syncFinished("全量更新结束，暂停同步");
-//        }
-//        else{
-        bSyncInProgress = false;
-        sync();
-//        }
-    }
-
-    /**
      * 上传结束
      */
     private void syncFinished(String msg) {
@@ -206,6 +193,12 @@ public class SMScaleSyncManager2 extends FTPManager {
      * 上传POS商品库
      */
     public synchronized void sync() {
+        if (!SharedPreferencesHelper
+                .getBoolean(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, false)){
+            syncFailed("请在设置中打开同步商品库到电子秤同步开关。");
+            return;
+        }
+
         if (bSyncInProgress) {
             syncProcess("正在同步电子秤商品...");
             return;
@@ -230,11 +223,11 @@ public class SMScaleSyncManager2 extends FTPManager {
         public WriteFileAsyncTask(String startCursor) {
             this.startCursor = startCursor;
             this.file = SMScaleSyncManager2.getCSVFile2();
-            //同步生鲜／烘培／水果／水台商品到电子秤
+            //同步生鲜／水果／水台商品到电子秤
             this.sqlWhere = String.format("(cateType = '%d' or cateType = '%d'" +
-                    " or cateType = '%d' or cateType = '%d') " +
+                    " or cateType = '%d') " +
                             "and updatedDate >= '%s'",
-                    CateApi.BACKEND_CATE_BTYPE_FRESH, CateApi.BACKEND_CATE_BTYPE_BAKING,
+                    CateApi.BACKEND_CATE_BTYPE_FRESH,
                     CateApi.BACKEND_CATE_BTYPE_FRUIT, CateApi.BACKEND_CATE_BTYPE_WARTER,
                     startCursor);
         }
@@ -486,8 +479,8 @@ public class SMScaleSyncManager2 extends FTPManager {
     }
 
     public static File getCSVFile2() {
-        long timestamp = System.currentTimeMillis();
         String time = FORMAT_YYYYMMDD.format(new Date());
+        long timestamp = System.currentTimeMillis();
         String fileName = SMSCALE_CSV_FILENAME + time + "-" + timestamp + ".csv";//
         ZLogger.df("csvFile: " + fileName);
 

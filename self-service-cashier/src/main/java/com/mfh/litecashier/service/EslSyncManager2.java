@@ -13,6 +13,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import org.century.GreenTagsApi;
 
@@ -67,6 +68,13 @@ public class EslSyncManager2 extends EslSyncManager{
      */
     public synchronized void sync() {
         retrySyncFlag = 0;
+
+        if (!SharedPreferencesHelper
+                .getBoolean(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, false)){
+            uploadFinished("请在设置中打开同步商品库到电子价签同步开关。");
+            return;
+        }
+
         if (bSyncInProgress) {
             uploadProcess("正在同步价签商品...");
             return;

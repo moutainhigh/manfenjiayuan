@@ -98,6 +98,12 @@ public class SharedPreferencesHelper {
     //PAD客显
     public static final String PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED = "pk_pad_customerdisplay_enabled";
 
+    //是否允许同步商品数据 ViaFTP 2电子秤
+    public static final String PK_B_SYNC_SMSCALE_FTP_ENABLED = "pk_b_SYNC_SMSCALE_FTP_ENABLED";
+    //是否允许同步商品数据 ViaWs 2电子价签
+    public static final String PK_B_SYNC_ESL_ENABLED = "pk_b_SYNC_ESL_ENABLED";
+
+
     public static String prefName = TAG;
 
     public static SharedPreferences getPreferences(String prefName) {
@@ -246,7 +252,6 @@ public class SharedPreferencesHelper {
         return String.format("%s_%d_%d", PREF_NAME_PREFIX, MfhLoginService.get().getSpid(),
                 MfhLoginService.get().getCurOfficeId());
     }
-
 
     public static String getText(String key) {
 //        ZLogger.d(String.format("getPosOrderLastUpdate(%s)", prefName));
