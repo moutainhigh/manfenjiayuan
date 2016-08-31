@@ -228,7 +228,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        invReturnOrderPresenter.loadOrders(mPageInfo, "1,2,3,4", null, null);
+        invReturnOrderPresenter.loadReturnOrders(mPageInfo, "1,2,3,4", null, null);
         mPageInfo.setPageNo(1);
     }
 
