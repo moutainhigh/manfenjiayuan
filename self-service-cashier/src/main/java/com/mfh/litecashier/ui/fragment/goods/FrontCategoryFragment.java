@@ -15,14 +15,15 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
@@ -33,7 +34,6 @@ import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,23 +138,18 @@ public class FrontCategoryFragment extends BaseFragment {
      * 加载数据
      */
     public void reload() {
-        //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
-        String cacheStr = ACacheHelper.getAsString(cacheKey);
-        List<PosCategory> cacheData = JSONArray.parseArray(cacheStr, PosCategory.class);
-        if (cacheData != null && cacheData.size() > 0) {
-            ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目", cacheKey, cacheData.size()));
-            refreshCategoryGoodsTab(cacheData);
-
-            if (SharedPreferencesHelper.isSyncFrontCategorySubEnabled()) {
-                //加载子类目
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
+            //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
+            String cacheStr = ACacheHelper.getAsString(cacheKey);
+            List<PosCategory> cacheData = JSONArray.parseArray(cacheStr, PosCategory.class);
+            if (cacheData != null && cacheData.size() > 0) {
+                ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目", cacheKey, cacheData.size()));
+                refreshCategoryGoodsTab(cacheData);
                 loadSubCategory(categoryId, false);
-            } else {
-                SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
+                return;
             }
-        } else {
-            //加载子类目
-            loadSubCategory(categoryId, true);
         }
+        loadSubCategory(categoryId, true);
     }
 
     /**
@@ -227,8 +222,6 @@ public class FrontCategoryFragment extends BaseFragment {
                         }
                         ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
                                 .put(cacheKey, cacheArrays.toJSONString());
-                        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(false);
-
                         if (isNeedRefresh) {
                             refreshCategoryGoodsTab(items);
                         }
@@ -260,32 +253,67 @@ public class FrontCategoryFragment extends BaseFragment {
         }
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在发送请求...", false);
+
         List<PosCategoryGoodsTempEntity> entities = PosCategoryGodosTempService.getInstance().queryAll();
 
-        if (entities == null || entities.size() < 1){
+        if (entities == null || entities.size() < 1) {
             hideProgressDialog();
             DialogUtil.showHint("请先选择商品");
             return;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder productIds = new StringBuilder();
+        final StringBuilder proSkuIds = new StringBuilder();
         for (PosCategoryGoodsTempEntity entity : entities) {
-            if (sb.length() > 0) {
-                sb.append(",");
+            if (productIds.length() > 0) {
+                productIds.append(",");
             }
-            sb.append(entity.getProductId());
+            productIds.append(entity.getProductId());
+
+            if (proSkuIds.length() > 0) {
+                proSkuIds.append(",");
+            }
+            proSkuIds.append(entity.getProSkuId());
         }
+
+        NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("导入前台类目商品失败, " + errMsg);
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //新建类目成功，保存类目信息，并触发同步。
+//                        {"code":"0","msg":"操作成功!","version":"1","data":""}
+                        ZLogger.df("导入前台类目商品成功");
+                        importFromCenterSkus(proSkuIds.toString());
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+
         ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
-                sb.toString(), submitRC);
+                productIds.toString(), submitRC);
     }
 
-    NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
+    private void importFromCenterSkus(String proSkuIds) {
+        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
+    }
+
+    NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
             NetProcessor.Processor<String>>(
             new NetProcessor.Processor<String>() {
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.df("导入前台类目商品失败, " + errMsg);
+                    ZLogger.df("导入商品到本店仓储失败, " + errMsg);
                     showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
                 }
 
@@ -293,10 +321,11 @@ public class FrontCategoryFragment extends BaseFragment {
                 public void processResult(IResponseData rspData) {
                     //新建类目成功，保存类目信息，并触发同步。
                     try {
+                        ZLogger.df("导入商品到本店仓储成功");
                         hideProgressDialog();
-                        if (rspData == null) {
-                            return;
-                        }
+//                        if (rspData == null) {
+//                            return;
+//                        }
 
                         DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTENDCATEGORY_GOODS);
 
@@ -310,5 +339,9 @@ public class FrontCategoryFragment extends BaseFragment {
             , String.class
             , CashierApp.getAppContext()) {
     };
+
+
+
+
 
 }

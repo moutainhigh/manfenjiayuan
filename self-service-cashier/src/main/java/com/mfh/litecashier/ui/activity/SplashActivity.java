@@ -21,6 +21,7 @@ import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -85,7 +86,7 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 15);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 16);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class SplashActivity extends InitActivity {
 
                 AppHelper.saveAppStartupDatetime();
                 //首次启动(由于应用程序可能会被多次执行在不同的进程中，所以这里在启动页调用)
-                ZLogger.df(String.format("process: %s",
+                ZLogger.df(String.format("应用程序启动：process: %s",
                         CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
 
                 if (SharedPreferencesManager.isAppFirstStart()) {
@@ -123,6 +124,7 @@ public class SplashActivity extends InitActivity {
 //            SharedPreferencesHelper.setSyncCompanyHumanInterval(30 * 60);
                     CashierShopcartService.getInstance().clear();//购物车－收银
                     PurchaseShopcartHelper.getInstance().clear();//购物车－采购
+                    PosCategoryGodosTempService.getInstance().clear();
                 }
 
                 AppHelper.clearRedunantData(false);

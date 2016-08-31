@@ -378,6 +378,10 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
                 sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_FRUIT));
             }
             break;
+            case "水台":{
+                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_WARTER));
+            }
+            break;
             default:{
             }
             break;

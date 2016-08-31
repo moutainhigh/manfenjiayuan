@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
@@ -71,8 +72,10 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
 
         if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_GOODS.ordinal()){
             ((GoodsViewHolder)holder).tvName.setText(entity.getName());
-            ((GoodsViewHolder)holder).tvCostPrice.setText(String.format("%.2f/%s",
-                    entity.getCostPrice(), entity.getUnit()));
+
+            ((GoodsViewHolder)holder).tvCostPrice
+                    .setText(MUtils.formatDouble(null, null,
+                            entity.getCostPrice(), "", "/", entity.getUnit()));
         }
     }
 

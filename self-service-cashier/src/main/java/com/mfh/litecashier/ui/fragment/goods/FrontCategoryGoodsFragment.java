@@ -11,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.bingshanguxue.cashier.mode.IScProductPriceView;
+import com.bingshanguxue.cashier.mode.ScProductPricePresenter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.api.anon.PubSkus;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
@@ -41,7 +41,8 @@ import rx.schedulers.Schedulers;
  * 前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGoods> implements IChainGoodsSkuView {
+public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGoods>
+        implements IScProductPriceView {
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -56,7 +57,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     private Long parentId;
     private Long categoryId;
     private String cacheKey;
-    private ChainGoodsSkuPresenter mChainGoodsSkuPresenter;
+    private ScProductPricePresenter mScProductPricePresenter;
 
 
     @Override
@@ -69,7 +70,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
-        mChainGoodsSkuPresenter = new ChainGoodsSkuPresenter(this);
+        mScProductPricePresenter = new ScProductPricePresenter(this);
 
         MAX_SYNC_PAGESIZE = 72;
 //        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
@@ -268,30 +269,32 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     }
 
     private void load(PageInfo pageInfo) {
-        mChainGoodsSkuPresenter.findTenantSku(pageInfo, null, categoryId, null);
+        mScProductPricePresenter.findProductByFrontCatalog(pageInfo, categoryId);
     }
 
+
     @Override
-    public void onChainGoodsSkuViewProcess() {
+    public void onIScProductPriceViewProcess() {
         onLoadStart();
     }
 
     @Override
-    public void onChainGoodsSkuViewError(String errorMsg) {
+    public void onIScProductPriceViewError(String errorMsg) {
         onLoadFinished();
     }
 
     @Override
-    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+    public void onIScProductPriceViewSuccess(PageInfo pageInfo, List<PubSkus> dataList) {
         saveChainGoodsSku(pageInfo, dataList);
     }
 
     @Override
-    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
+    public void onIScProductPriceViewSuccess(PubSkus data) {
         onLoadFinished();
     }
 
-    private void saveChainGoodsSku(final PageInfo pageInfo, final List<ChainGoodsSku> dataList) {
+
+    private void saveChainGoodsSku(final PageInfo pageInfo, final List<PubSkus> dataList) {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
@@ -308,10 +311,11 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
                         ZLogger.d("缓存第一页前台类目数据");
                         JSONArray cacheArrays = new JSONArray();
                         if (dataList != null && dataList.size() > 0) {
-                            for (ChainGoodsSku goodsSku : dataList) {
+                            for (PubSkus goodsSku : dataList) {
                                 FrontCategoryGoods goods = new FrontCategoryGoods();
-                                goods.setHintPrice(goodsSku.getHintPrice());
-                                goods.setSkuName(goodsSku.getSkuName());
+                                goods.setBarcode(goodsSku.getBarcode());
+                                goods.setName(goodsSku.getName());
+                                goods.setId(goodsSku.getId());
                                 goods.setProductId(goodsSku.getProductId());
                                 entityList.add(goods);
                                 cacheArrays.add(goods);
@@ -324,10 +328,11 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
                         }
 
                         if (dataList != null && dataList.size() > 0) {
-                            for (ChainGoodsSku goodsSku : dataList) {
+                            for (PubSkus goodsSku : dataList) {
                                 FrontCategoryGoods goods = new FrontCategoryGoods();
-                                goods.setHintPrice(goodsSku.getHintPrice());
-                                goods.setSkuName(goodsSku.getSkuName());
+                                goods.setBarcode(goodsSku.getBarcode());
+                                goods.setName(goodsSku.getName());
+                                goods.setId(goodsSku.getId());
                                 goods.setProductId(goodsSku.getProductId());
                                 entityList.add(goods);
                             }

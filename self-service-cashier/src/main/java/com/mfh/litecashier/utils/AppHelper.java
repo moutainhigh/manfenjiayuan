@@ -22,6 +22,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.ui.activity.SplashActivity;
@@ -175,6 +176,7 @@ public class AppHelper {
     public static void clearAppData() {
         CashierShopcartService.getInstance().clear();
         PurchaseShopcartHelper.getInstance().clear();
+        PosCategoryGodosTempService.getInstance().clear();
         //商品库
         PosProductService.get().clear();//商品库
         PosProductSkuService.get().clear();//一品多码
