@@ -232,7 +232,7 @@ public class DataSyncService {
                             }
                         }
                         catch (Exception e){
-                            ZLogger.e(e.toString());
+                            ZLogger.ef(e.toString());
                         }
 
                         //继续盘点

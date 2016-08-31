@@ -187,3 +187,17 @@ public static final int *;
 
 #java.lang.NoSuchMethodError: android.util.Xml.asAttributeSet
 -keep class org.xmlpull.v1.** { *; }
+
+
+#修复Rxjava&RxAndroid代码不执行的问题
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}

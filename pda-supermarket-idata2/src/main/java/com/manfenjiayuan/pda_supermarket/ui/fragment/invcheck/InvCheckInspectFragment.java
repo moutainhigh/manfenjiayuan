@@ -303,7 +303,6 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
             return;
         }
 
-
         //保存商品到待盘点列表,在后台进行盘点。
         InvCheckGoodsService.get().addNewEntity(curOrderId, curShelfNumber, curGoods,
                 Double.valueOf(quantity));
@@ -312,6 +311,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
             DataSyncService.get().sync(DataSyncService.SYNC_STEP_UPLOAD_STOCKTAKE);
         }
 
+        hideProgressDialog();
         DialogUtil.showHint("提交成功");
         refresh(null);
     }
@@ -386,11 +386,9 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
     @Override
     public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
         hideProgressDialog();
-
-        if (data != null) {
-            refresh(data);
-        } else {
+        if (data == null) {
             DialogUtil.showHint("未找到商品");
         }
+        refresh(data);
     }
 }
