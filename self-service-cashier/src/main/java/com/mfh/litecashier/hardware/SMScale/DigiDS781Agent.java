@@ -89,10 +89,6 @@ public class DigiDS781Agent {
     }
 
     private static DS781A parseFormatA(byte[] data) {
-        String rswStr = new String(data);
-//        rswStr.split("")
-        byte statusFlag = data[0];
-        byte weightConditionFlag = data[1];
 
         byte[] netWeightData = new byte[6];
         System.arraycopy(data, 4, netWeightData, 0, 6);
@@ -105,7 +101,6 @@ public class DigiDS781Agent {
 
         byte[] totalPriceData = new byte[7];
         System.arraycopy(data, 28, totalPriceData, 0, 6);
-
 
         return null;
     }

@@ -53,7 +53,6 @@ public class SharedPreferencesHelper {
     //同步商品
     public static final String PK_SKU_UPDATE_UNREADNUMBER = "pk_sku_update_unreadnumber";   //上一次交接班班次
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
-    private static final String PK_SYNC_PRODUCTS_MODE = "pk_sync_products_mode";//同步方式：0全量，1增量。
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
     public static final String PK_SYNC_PRODUCTCATALOG_STARTCURSOR = "pk_sync_PRODUCTCATALOG_STARTCURSOR";
     //同步订单
@@ -76,9 +75,7 @@ public class SharedPreferencesHelper {
     public static final String PK_SYNC_PURCHASESEND_ORDER_ENABLED = "pk_sync_purchasesend_order_enabled";//采购订单
     public static final String PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED = "pk_sync_purchasereceipt_order_enabled";//采购收货订单
     public static final String PK_SYNC_PURCHASERETURN_ORDER_ENABLED = "pk_sync_purchasereturn_order_enabled";//采购退货订单
-    //前台类目子类目
-    private static final String PK_SYNC_FRONTCATEGORY_SUB_ENABLED = "pk_sync_frontcategory_sub_enabled";
-    //交接班
+//交接班
     public static final String PK_LAST_HANDOVER_DATETIME = "pk_last_handover_datetime";  //上一次交接班时间
     public static final String PK_LAST_HANDOVER_SHIFTID = "pk_last_handover_shiftid";   //上一次交接班班次
 
@@ -121,20 +118,6 @@ public class SharedPreferencesHelper {
         if (lastUpdate != null) {
             set(PK_SYNC_PRODUCTS_STARTCURSOR, TimeCursor.InnerFormat.format(lastUpdate));
         }
-    }
-
-    /**
-     * @return 同步方式：0全量, 1增量。
-     */
-    public static int getSyncProductsMode() {
-        return getInt(PK_SYNC_PRODUCTS_MODE, 0);
-    }
-
-    /**
-     * 同步方式：0全量，1增量。
-     */
-    public static void setSyncProductsMode(int mode) {
-        set(PK_SYNC_PRODUCTS_MODE, mode);
     }
 
     public static String getSyncProductSkuCursor() {
@@ -208,14 +191,6 @@ public class SharedPreferencesHelper {
 
     public static void setSyncCompanyHumanEnabled(boolean enabled) {
         set(PK_SYNC_COMPANY_HUMAN_ENABLED, enabled);
-    }
-
-    public static boolean isSyncFrontCategorySubEnabled() {
-        return getBoolean(PK_SYNC_FRONTCATEGORY_SUB_ENABLED, true);
-    }
-
-    public static void setSyncFrontCategorySubEnabled(boolean enabled) {
-        set(PK_SYNC_FRONTCATEGORY_SUB_ENABLED, enabled);
     }
 
     /**

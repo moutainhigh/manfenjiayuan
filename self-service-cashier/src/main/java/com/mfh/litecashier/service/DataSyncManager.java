@@ -387,7 +387,8 @@ public class DataSyncManager {
                             // 比较本地商品数据库总数是否和可以同步的SKU总数一致，
                             // 如果不一致，则重置时间戳，下次触发全量同步，否则继续按照时间戳同步。
                             List<PosProductEntity> entityList = PosProductService.get()
-                                    .queryAllByDesc(String.format("tenantId = '%d'", MfhLoginService.get().getSpid()));
+                                    .queryAllByDesc(String.format("tenantId = '%d'",
+                                            MfhLoginService.get().getSpid()));
                             int posNum = (entityList != null ? entityList.size() : 0);
                             if (posNum != skuNum) {
                                 ZLogger.df(String.format("pos本地商品数目(%d)和后台商品数目(%d)不一致," +
@@ -400,7 +401,8 @@ public class DataSyncManager {
                                 PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
                                         0));
                                 List<PosProductEntity> entityList1 = PosProductService.get()
-                                        .queryAllByDesc(String.format("tenantId = '%d'", MfhLoginService.get().getSpid()));
+                                        .queryAllByDesc(String.format("tenantId = '%d'",
+                                                MfhLoginService.get().getSpid()));
                                 ZLogger.d(String.format("删除无效的数据，本地类目数量:%d",
                                         (entityList1 != null ? entityList1.size() : 0)));
                             } else {

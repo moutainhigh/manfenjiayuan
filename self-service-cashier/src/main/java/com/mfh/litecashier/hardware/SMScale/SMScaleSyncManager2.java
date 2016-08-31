@@ -9,12 +9,12 @@ import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.Encoding;
 import com.mfh.framework.core.utils.FileUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
@@ -134,6 +134,33 @@ public class SMScaleSyncManager2 extends FTPManager {
         initialize();
     }
 
+
+    /**
+     * 获取电子秤同步开始游标
+     */
+    public String getScaleStartCursor() {
+        String startCursor = SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
+                SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR);
+        ZLogger.df(String.format("最后一次电子秤同步的更新时间(%s)。", startCursor));
+
+//        //得到指定模范的时间
+        if (!StringUtils.isEmpty(startCursor)) {
+            try {
+                Date d1 = TimeCursor.InnerFormat.parse(startCursor);
+                Date rightNow = new Date();
+                if (d1.compareTo(rightNow) > 0) {
+                    startCursor = TimeCursor.InnerFormat.format(rightNow);
+                    ZLogger.df(String.format("上次电子秤同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
+                }
+            } catch (ParseException e) {
+//            e.printStackTrace();
+                ZLogger.ef(String.format("获取电子秤同步开始游标失败: %s", e.toString()));
+            }
+        }
+
+        return startCursor;
+    }
+
     /**
      * 正在同步
      */
@@ -176,7 +203,7 @@ public class SMScaleSyncManager2 extends FTPManager {
     }
 
     /**
-     * 上传POS订单
+     * 上传POS商品库
      */
     public synchronized void sync() {
         if (bSyncInProgress) {
@@ -184,9 +211,7 @@ public class SMScaleSyncManager2 extends FTPManager {
             return;
         }
 
-        String lastCursor = SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
-                SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR);
-        ZLogger.df(String.format("最后一次同步商品的更新时间(%s)。", lastCursor));
+        String lastCursor = getScaleStartCursor();
 
         WriteFileAsyncTask asyncTask = new WriteFileAsyncTask(lastCursor);
         asyncTask.execute();
@@ -205,9 +230,12 @@ public class SMScaleSyncManager2 extends FTPManager {
         public WriteFileAsyncTask(String startCursor) {
             this.startCursor = startCursor;
             this.file = SMScaleSyncManager2.getCSVFile2();
-            this.sqlWhere = String.format("(cateType = '%d' or cateType = '%d') " +
+            //同步生鲜／烘培／水果／水台商品到电子秤
+            this.sqlWhere = String.format("(cateType = '%d' or cateType = '%d'" +
+                    " or cateType = '%d' or cateType = '%d') " +
                             "and updatedDate >= '%s'",
-                    CateApi.BACKEND_CATE_BTYPE_FRESH, CateApi.BACKEND_CATE_BTYPE_FRUIT,
+                    CateApi.BACKEND_CATE_BTYPE_FRESH, CateApi.BACKEND_CATE_BTYPE_BAKING,
+                    CateApi.BACKEND_CATE_BTYPE_FRUIT, CateApi.BACKEND_CATE_BTYPE_WARTER,
                     startCursor);
         }
 
@@ -246,8 +274,9 @@ public class SMScaleSyncManager2 extends FTPManager {
                     }
 
                     String plu = goods.getBarcode();
+                    Double costPrice = goods.getCostPrice();
                     //过滤掉无效的商品
-                    if (StringUtils.isEmpty(plu)) {
+                    if (StringUtils.isEmpty(plu) || costPrice == null) {
                         continue;
                     }
                     //商品名称太长无法打印（打印空白）
@@ -255,7 +284,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                         plu = plu.substring(0, 8);
                     }
                     allElements.add(new String[]{plu,
-                            String.format("%.0f", goods.getCostPrice() * 100),
+                            String.format("%.0f", costPrice * 100),
                             plu,
                             FLAG_F12,
                             String.valueOf(goods.getCateType()),
@@ -289,8 +318,9 @@ public class SMScaleSyncManager2 extends FTPManager {
                         }
 
                         String plu = goods.getBarcode();
+                        Double costPrice = goods.getCostPrice();
                         //过滤掉无效的商品
-                        if (StringUtils.isEmpty(plu)) {
+                        if (StringUtils.isEmpty(plu) || costPrice == null) {
                             continue;
                         }
                         //商品名称太长无法打印（打印空白）
@@ -298,7 +328,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                             plu = plu.substring(0, 8);
                         }
                         allElements.add(new String[]{plu,
-                                String.format("%.0f", goods.getCostPrice() * 100),
+                                String.format("%.0f", costPrice * 100),
                                 plu,
                                 FLAG_F12,
                                 String.valueOf(goods.getCateType()),
@@ -540,9 +570,6 @@ public class SMScaleSyncManager2 extends FTPManager {
                         if (date.before(calendar.getTime())) {
                             ZLogger.df(String.format("csv文件已经过期，删除%s", name));
                             child.delete();
-                        } else {
-//                    ZLogger.d(String.format("日志有效，%s", child.getName()));
-//                    child.delete();
                         }
                     } catch (ParseException e) {
                         child.delete();
