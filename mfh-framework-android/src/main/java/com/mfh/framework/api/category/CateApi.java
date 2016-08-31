@@ -47,6 +47,7 @@ public class CateApi {
     public final static Integer BACKEND_CATE_BTYPE_SMOKE = 3;//香烟
     public final static Integer BACKEND_CATE_BTYPE_BAKING = 4;//烘培
     public final static Integer BACKEND_CATE_BTYPE_FRUIT = 5;//水果类
+    public final static Integer BACKEND_CATE_BTYPE_WARTER = 6;//水台类
 
     /**
      * 前台类目
@@ -71,6 +72,8 @@ public class CateApi {
             return "烘培";
         } else if (value.equals(BACKEND_CATE_BTYPE_FRUIT)) {
             return "水果";
+        } else if (value.equals(BACKEND_CATE_BTYPE_WARTER)) {
+            return "水台";
         } else {
             return "Unknow";
         }

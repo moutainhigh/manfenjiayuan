@@ -105,16 +105,6 @@ public class CashierApi {
      */
     public final static String URL_MIMECOUPONS_ABANDONCOUPON_BYID = MfhApi.URL_BASE_SERVER + "/mineCoupons/abandonCouponById";
 
-    /**
-     * 查询子账号
-     * /companyHuman/findCompUserPwdInfo?page=-1&rows=
-     */
-    public final static String URL_COMPANYHUMAN_FIND_COMPUSERPWDINFO = MfhApi.URL_BASE_SERVER + "/companyHuman/findCompUserPwdInfo";
-    /**
-     * 查询部门子账号
-     * /pmc/companyHuman/listWorkerBeanInfoOfCompany?page=-1&rows=
-     */
-    public final static String URL_COMPANYHUMAN_LIST_WORKERBEANINFO_OFCOMPANY = MfhApi.URL_BASE_SERVER + "/companyHuman/listWorkerBeanInfoOfCompany";
 
     /**
      * 查询快递
@@ -131,7 +121,6 @@ public class CashierApi {
      * 检查衣袋编号是否重复
      */
     public final static String URL_MFHORDER_SAVE_LAUNDRYORDER = MfhApi.URL_BASE_SERVER + "/mfhorder/saveLaundryOrder";
-
 
 
     /**

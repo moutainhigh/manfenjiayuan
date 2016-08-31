@@ -12,7 +12,7 @@ import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.constants.IMTechType;
 import com.manfenjiayuan.im.param.RegisterParam;
 import com.manfenjiayuan.im.param.TextParam;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.Date;
 
