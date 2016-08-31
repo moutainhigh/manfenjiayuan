@@ -135,7 +135,7 @@ public class PrintManagerImpl extends PrintManager {
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
                 assert nameTemp != null;
                 nameTemp = nameTemp.substring(sub2.length(),
-                        nameTemp != null ? nameTemp.length() : 0).trim();
+                        nameTemp.length()).trim();
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
 //            line.append(formatLong(sub2, 8));
 

@@ -17,11 +17,14 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -115,6 +118,16 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
             reload();
+//            int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
+//            ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
+//            if (viewPageInfo != null) {
+//                Long categoryId = viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
+//                PosLocalCategoryEntity categoryEntity = PosLocalCategoryService.get().getEntityById(String.valueOf(categoryId));
+//                if (categoryEntity == null){
+//                    reload();
+//                }
+//                mCategoryGoodsViewPager.setCurrentItem(oldIndex);
+//            }
         } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
             notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
         }
@@ -148,7 +161,6 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         categoryGoodsPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(),
                 mCategoryGoodsTabStrip, mCategoryGoodsViewPager, R.layout.tabitem_text_80);
     }
-
 
     private void reload() {
         curCategoryList = PosLocalCategoryService.get().queryAll(null, null);
@@ -205,42 +217,49 @@ public class LocalFrontCategoryFragment extends BaseFragment {
      * 创建前台类目
      */
     private void createCategoryInfo(final String nameCn) {
-        NetCallBack.NetTaskCallBack createRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("创建前台类目失败, " + errMsg);
-                    }
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(getString(R.string.toast_network_error));
+            return;
+        }
 
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
-                        try {
-                            if (rspData == null) {
-                                return;
-                            }
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+        ScCategoryInfoApi.create(CateApi.DOMAIN_TYPE_PROD,
+                CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
+                nameCn, createRC);
+    }
 
+    private NetCallBack.NetTaskCallBack createRC = new NetCallBack.NetTaskCallBack<String,
+            NetProcessor.Processor<String>>(
+            new NetProcessor.Processor<String>() {
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    ZLogger.df("创建前台类目失败, " + errMsg);
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void processResult(IResponseData rspData) {
+                    //新建类目成功，保存类目信息，并触发同步。
+                    try {
+                        if (rspData != null) {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             String result = retValue.getValue();
                             Long code = Long.valueOf(result);
                             ZLogger.df("新建前台类目成功:" + code);
 
                             DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
-                        } catch (Exception e) {
-                            ZLogger.ef(e.toString());
                         }
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
 
-        ScCategoryInfoApi.create(CateApi.DOMAIN_TYPE_PROD,
-                CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
-                nameCn, createRC);
-    }
+                    } catch (Exception e) {
+                        ZLogger.ef(e.toString());
+                    }
+                    hideProgressDialog();
+                }
+            }
+            , String.class
+            , CashierApp.getAppContext()) {
+    };
 
     /**
      * 修改类目名称

@@ -131,7 +131,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         mRecyclerView.setEmptyView(emptyView);
 //        mRecyclerView.setWrapperView(mSwipeRefreshLayout);
         //添加分割线
-        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
+        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 0,
                 ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
                 ContextCompat.getColor(getActivity(), R.color.transparent), 1f,
                 ContextCompat.getColor(getActivity(), R.color.transparent), 1f));

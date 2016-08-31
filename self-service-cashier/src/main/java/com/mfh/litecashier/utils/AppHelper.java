@@ -14,7 +14,10 @@ import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.comn.config.UConfig;
+import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.core.utils.StringUtils;
@@ -26,6 +29,8 @@ import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.ui.activity.SplashActivity;
+
+import net.tsz.afinal.FinalDb;
 
 import org.century.GreenTagsApi;
 
@@ -126,6 +131,26 @@ public class AppHelper {
 //                new WxPayEvent(errCode, errStr));
 //    }
 
+    /**
+     * 关闭App
+     * */
+    public static void closeApp(){
+        ZLogger.d("准备关闭App...");
+        String dbName;
+        if (BizConfig.RELEASE) {
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
+        } else {
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
+        }
+        ZLogger.d("关闭数据库:" + dbName);
+        FinalDb db = FinalDb.getDb(dbName);
+        if (db != null) {
+            db.close();
+        }
+        System.exit(0);
+    }
 
     /**
      * 重启APP
@@ -149,9 +174,6 @@ public class AppHelper {
     public static void resetFactoryData(Context context){
         clearAppData();
 
-        //删除数据库
-        DataCleanManager.cleanDatabases(context);
-
         //删除SharedPreference
         SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP);
         SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP_BORN);
@@ -163,6 +185,9 @@ public class AppHelper {
         //删除无效文件
         clearRedunantData(false);
 
+        //删除数据库
+        DataCleanManager.cleanApplicationData(context);
+        
         restartApp(context);
     }
 

@@ -777,7 +777,6 @@ public class DataSyncManager {
                 new NetProcessor.QueryRsProcessor<CategoryInfo>(pageInfo) {
                     @Override
                     public void processQueryResult(RspQueryResult<CategoryInfo> rs) {
-//                        new FrontendCategoryAsyncTask(pageInfo).execute(rs);
                         saveFrontendCategory(pageInfo, rs);
                     }
 
@@ -796,7 +795,8 @@ public class DataSyncManager {
     /**
      * 保存前台类目
      * */
-    private void saveFrontendCategory(final PageInfo pageInfo, final RspQueryResult<CategoryInfo> rspQueryResult){
+    private void saveFrontendCategory(final PageInfo pageInfo,
+                                      final RspQueryResult<CategoryInfo> rspQueryResult){
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {

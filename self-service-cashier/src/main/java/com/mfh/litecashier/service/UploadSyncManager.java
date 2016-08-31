@@ -11,11 +11,11 @@ import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -25,6 +25,7 @@ import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import java.util.Date;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -119,26 +120,50 @@ public class UploadSyncManager extends OrderSyncManager {
             }
             break;
             default: {
-                ZLogger.df("上传POS数据结束");
-                bSyncInProgress = false;
-//                EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
+                onCompleted();
             }
             break;
         }
     }
 
 
-    private void onError(String message) {
-        ZLogger.df(message);
-        bSyncInProgress = false;
-//        EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
-    }
-
     private void onNext(String message) {
         ZLogger.df(message);
         nextStep();
     }
 
+    private void onError(String message) {
+        ZLogger.df(message);
+        bSyncInProgress = false;
+        EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR));
+    }
+
+    private void onCompleted() {
+        ZLogger.df("上传POS数据结束");
+        bSyncInProgress = false;
+        EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED));
+    }
+
+    public static class UploadSyncManagerEvent {
+        public static final int EVENT_ID_SYNC_DATA_PROGRESS = 0X11;//同步进度
+        public static final int EVENT_ID_SYNC_DATA_ERROR = 0X12;//同步失败
+        public static final int EVENT_ID_SYNC_DATA_FINISHED = 0X13;//同步结束
+
+        private int eventId;
+
+        public UploadSyncManagerEvent(int eventId) {
+            this.eventId = eventId;
+        }
+
+        public int getEventId() {
+            return eventId;
+        }
+    }
+
+
+    /**
+     * 提交清分充值记录
+     * */
     private void uploadIncomeDistribution() {
         incomeDistributionPageInfo = new PageInfo(1, 1);//翻页
 
@@ -287,13 +312,12 @@ public class UploadSyncManager extends OrderSyncManager {
         AnalysisApiImpl.commintCash(topupEntity.getOutTradeNo(), responseRC);
     }
 
-
     /**
      * 上传POS订单
      */
     public synchronized void uploadPosOrders() {
         mOrderPageInfo = new PageInfo(1, MAX_SYNC_ORDER_PAGESIZE);
-        orderStartCursor = SharedPreferencesHelper.getUploadOrderLastUpdate();
+        orderStartCursor = getPosOrderStartCursor();
         //上传未同步并且已完成的订单
         orderSqlWhere = String.format("updatedDate >= '%s' and sellerId = '%d' " +
                         "and status = '%d' and isActive = '%d' and syncStatus = '%d'",
@@ -313,7 +337,6 @@ public class UploadSyncManager extends OrderSyncManager {
             batchUploadPosOrder();
         }
     }
-
 
     /**
      * 批量上传POS订单<br>

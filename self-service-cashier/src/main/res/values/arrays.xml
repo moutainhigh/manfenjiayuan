@@ -15,6 +15,7 @@
         <item>香烟</item>
         <item>烘培</item>
         <item>水果</item>
+        <item>水台</item>
     </string-array>
 
     <string-array name="order_paytype">

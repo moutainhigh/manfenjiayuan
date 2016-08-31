@@ -122,6 +122,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize|touchscreen"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
+            android:theme="@style/AppBaseTheme_Light.Transparent"
             android:windowSoftInputMode="adjustResize">
 
             <!-- <intent-filter> -->

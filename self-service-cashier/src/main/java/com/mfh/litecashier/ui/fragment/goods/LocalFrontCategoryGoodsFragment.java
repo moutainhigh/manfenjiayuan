@@ -30,6 +30,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseListFragment;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -147,7 +148,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         //添加分割线
 //        mRecyclerView.addItemDecoration(new LineItemDecoration(
 //                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
+        mRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 0,
                 ContextCompat.getColor(getActivity(), R.color.mf_dividerColorPrimary), 1f,
                 ContextCompat.getColor(getActivity(), R.color.green_select), 0.01f,
                 ContextCompat.getColor(getActivity(), R.color.transparent), 0f));
@@ -278,7 +279,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                     ZLogger.d(String.format("共找到%d条类目商品关系(%d/%d-%d)", entities.size(),
                             pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
-
                     for (ProductCatalogEntity entity : entities) {
                         String sqlWhere2 = String.format("productId = '%d'", entity.getCataItemId());
 
@@ -340,13 +340,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
                         onLoadFinished();
                     }
-
-
                 });
-
-
-
-
     }
 
 
@@ -473,6 +467,9 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             return;
         }
 
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
         //回调
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
@@ -484,22 +481,22 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //                                RspValue<String> retValue = (RspValue<String>) rspData;
 //                                String retStr = retValue.getValue();
 //                                ZLogger.d("修改售价成功:" + retStr);
-
                         DialogUtil.showHint("修改成功");
                         goods.setCostPrice(costPrice);
                         adapter.notifyDataSetChanged();
+                        hideProgressDialog();
                     }
 
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.d("修改失败：" + errMsg);
+                        hideProgressDialog();
                     }
                 }
                 , String.class
                 , CashierApp.getAppContext()) {
         };
-
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", goods.getId());
@@ -512,23 +509,29 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
      * 删除商品
      */
     private void deleteGoods(final LocalFrontCategoryGoods goods) {
+        if (goods == null){
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+        //查询商品所属前台类目
         ProductCatalogEntity catalogEntity = null;
         String sqlWhere = String.format("cataItemId = '%d'", goods.getProductId());
         List<ProductCatalogEntity> catalogs = ProductCatalogService.getInstance().queryAllBy(sqlWhere);
         if (catalogs != null && catalogs.size() > 0) {
             catalogEntity = catalogs.get(0);
         }
-
         if (catalogEntity == null) {
-            ZLogger.d("没有找到商品对应的类目关系");
+            ZLogger.d("删除商品失败，没有找到商品对应的类目关系");
             return;
         }
 
-        //回调
+        //删除该前台类目下的商品
         final ProductCatalogEntity finalCatalogEntity = catalogEntity;
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+                    new NetProcessor.Processor<String>() {
                     @Override
                     public void processResult(IResponseData rspData) {
                         //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
@@ -537,21 +540,25 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         String retStr = retValue.getValue();
                         ZLogger.d("删除商品成功:" + retStr);
 
+                        //删除关系，假删除，如果后面调用后台接口失败了，商品会在下次同步后
                         ProductCatalogService.getInstance()
                                 .deleteById(String.valueOf(finalCatalogEntity.getId()));
                         reload();
+
+                        hideProgressDialog();
                     }
 
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.d("删除商品失败：" + errMsg);
+                        ZLogger.df("删除商品失败：" + errMsg);
+//                        数据回滚
+                        hideProgressDialog();
                     }
                 }
                 , String.class
                 , CashierApp.getAppContext()) {
         };
-
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));

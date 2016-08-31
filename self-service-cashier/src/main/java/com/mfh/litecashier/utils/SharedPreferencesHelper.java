@@ -56,7 +56,7 @@ public class SharedPreferencesHelper {
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
     public static final String PK_SYNC_PRODUCTCATALOG_STARTCURSOR = "pk_sync_PRODUCTCATALOG_STARTCURSOR";
     //同步订单
-    private static final String PK_POS_ORDER_LAST_UPDATE = "pos_order_lastUpdate";//最后一次更新时间
+    public static final String PK_S_POSORDER_SYNC_STARTCURSOR = "pos_order_lastUpdate";//最后一次更新时间
     private static final String PK_SYNC_ORDER_INTERVAL = "pk_sync_order_interval";//同步间隔（单位，秒）
     //同步账号
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
@@ -141,42 +141,19 @@ public class SharedPreferencesHelper {
     }
 
     public static String getPosOrderLastUpdate() {
-        return getText(PK_POS_ORDER_LAST_UPDATE, "");
+        return getText(PK_S_POSORDER_SYNC_STARTCURSOR, "");
     }
 
-    public static String getUploadOrderLastUpdate() {
-        String lastCursor = getText(PK_POS_ORDER_LAST_UPDATE);
-        ZLogger.d(String.format("上次订单更新时间(%s)。", lastCursor));
-
-        //与当前时间相比，取最小当时间
-        if (!StringUtils.isEmpty(lastCursor)) {
-            //得到指定模范的时间
-            try {
-                Date d1 = TimeCursor.InnerFormat.parse(lastCursor);
-                Date d2 = new Date();
-                if (d1.compareTo(d2) > 0) {
-                    lastCursor = TimeCursor.InnerFormat.format(d2);
-//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
-                    ZLogger.d(String.format("上次订单更新时间大于当前时间，使用当前时间(%s)。", lastCursor));
-                }
-            } catch (ParseException e) {
-//            e.printStackTrace();
-                ZLogger.e(e.toString());
-            }
-        }
-
-        return lastCursor;
-    }
 
     public static void setPosOrderLastUpdate(String lastUpdate) {
-        set(PK_POS_ORDER_LAST_UPDATE, lastUpdate);
+        set(PK_S_POSORDER_SYNC_STARTCURSOR, lastUpdate);
     }
 
     public static void setPosOrderLastUpdate(Date lastUpdate) {
         if (lastUpdate != null) {
-            set(PK_POS_ORDER_LAST_UPDATE, TimeCursor.InnerFormat.format(lastUpdate));
+            set(PK_S_POSORDER_SYNC_STARTCURSOR, TimeCursor.InnerFormat.format(lastUpdate));
         } else {
-            set(PK_POS_ORDER_LAST_UPDATE, "");
+            set(PK_S_POSORDER_SYNC_STARTCURSOR, "");
         }
     }
 

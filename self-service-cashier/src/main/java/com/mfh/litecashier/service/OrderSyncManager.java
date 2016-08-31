@@ -14,12 +14,15 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +42,34 @@ public abstract class OrderSyncManager {
     protected String orderStartCursor;
     protected String orderSqlWhere;
 
+
+    /**
+     * 获取订单同步时间游标
+     * */
+    public static String getPosOrderStartCursor() {
+        String startCursor = SharedPreferencesHelper
+                .getText(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR);
+        ZLogger.d(String.format("上次订单同步时间游标(%s)。", startCursor));
+
+        //与当前时间相比，取最小当时间
+        if (!StringUtils.isEmpty(startCursor)) {
+            //得到指定模范的时间
+            try {
+                Date d1 = TimeCursor.InnerFormat.parse(startCursor);
+                Date rightNow = new Date();
+                if (d1.compareTo(rightNow) > 0) {
+                    startCursor = TimeCursor.InnerFormat.format(rightNow);
+//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
+                    ZLogger.d(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", startCursor));
+                }
+            } catch (ParseException e) {
+//            e.printStackTrace();
+                ZLogger.e(e.toString());
+            }
+        }
+
+        return startCursor;
+    }
 
     /**
      * 生成订单同步数据结构

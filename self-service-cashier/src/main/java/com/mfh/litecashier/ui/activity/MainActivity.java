@@ -32,7 +32,6 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.config.UConfig;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -40,7 +39,6 @@ import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -96,8 +94,6 @@ import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.tencent.bugly.beta.Beta;
-
-import net.tsz.afinal.FinalDb;
 
 import java.util.List;
 
@@ -264,20 +260,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     @Override
     public void onBackPressed() {
-        String dbName;
-        if (BizConfig.RELEASE) {
-            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
-                    UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
-        } else {
-            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
-                    "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
-        }
-        ZLogger.d("关闭数据库:" + dbName);
-        FinalDb db = FinalDb.getDb(dbName);
-        if (db != null) {
-            db.close();
-        }
-        System.exit(0);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
+        UploadSyncManager.getInstance().sync();
+        isWaitForExit = true;
     }
 
 //    @Override
@@ -791,6 +776,27 @@ public class MainActivity extends CashierActivity implements ICashierView {
             CloudSyncManager.get().importFromChainSku();
             EslSyncManager2.getInstance().sync();
             SMScaleSyncManager2.getInstance().sync();
+        }
+    }
+
+    boolean isWaitForExit = false;
+
+    /**
+     * 上传数据到云端
+     */
+    public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
+        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
+            if (isWaitForExit){
+                isWaitForExit = false;
+                AppHelper.closeApp();
+            }
+        }
+        else if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED){
+            if (isWaitForExit){
+                isWaitForExit = false;
+                AppHelper.closeApp();
+            }
         }
     }
 
