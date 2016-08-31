@@ -146,7 +146,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
         }
 
         //标准价金额
-        shopcartEntity.setAmount(shopcartEntity.getBcount() * goods.getCostPrice());
+        shopcartEntity.setAmount(shopcartEntity.getBcount() * shopcartEntity.getCostPrice());
         //成交金额
         shopcartEntity.setFinalAmount(shopcartEntity.getBcount() * shopcartEntity.getFinalPrice());
 

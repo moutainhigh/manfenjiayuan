@@ -295,6 +295,7 @@ public class DoubleInputDialog extends CommonDialog {
             dismiss();
         } catch (Exception e) {
 //                        java.lang.NumberFormatException: Invalid double: "88.0.08"
+            e.printStackTrace();
             ZLogger.e(e.toString());
         }
 

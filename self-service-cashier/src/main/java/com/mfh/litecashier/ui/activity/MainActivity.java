@@ -33,17 +33,21 @@ import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.config.UConfig;
+import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -142,6 +146,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
     @Bind(R.id.float_hangup)
     TextView fabHangup;
 
+
+    private DoubleInputDialog commitPriceDialog = null;//价格为空，补填价格
     private DoubleInputDialog changePriceDialog = null;
     private DoubleInputDialog changeDiscountDialog = null;
     private DoubleInputDialog changeQuantityDialog = null;
@@ -606,8 +612,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
     public void syncData() {
         btnSync.startSync();
 
-        //设置需要更新前台类目
-        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
@@ -675,7 +679,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 UIHelper.startActivity(MainActivity.this, AdministratorActivity.class);
             }
         });
-        mAdministratorSigninDialog.show();
+        if (!mAdministratorSigninDialog.isShowing()){
+            mAdministratorSigninDialog.show();
+        }
     }
 
     /**
@@ -706,8 +712,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
             UploadSyncManager.getInstance().sync();
 
-            //设置需要更新前台类目
-            SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
             //设置需要更新商品中心,商品后台类目
             SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
             SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
@@ -1273,7 +1277,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         }
                     }
                 });
-        changePriceDialog.show();
+        if (!changePriceDialog.isShowing()){
+            changePriceDialog.show();
+        }
     }
 
 
@@ -1671,6 +1677,93 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 添加商品到收银台
      */
     private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount) {
+        if (goods == null){
+            return;
+        }
+
+        Double costPrice = goods.getCostPrice();
+        if (costPrice == null){
+            ZLogger.df("商品零售价为空，补填后才可以收银");
+            commitGoodsCostprice1(orderBarCode, goods, bCount);
+        }
+        else{
+            saveGoods2Cashier(orderBarCode, goods, bCount);
+        }
+    }
+
+    /**
+     * 补填商品零售价信息
+     * */
+    private void commitGoodsCostprice1(final String orderBarCode, final PosProductEntity goods,
+                                       final Double bCount){
+        if (commitPriceDialog == null) {
+            commitPriceDialog = new DoubleInputDialog(this);
+            commitPriceDialog.setCancelable(true);
+            commitPriceDialog.setCanceledOnTouchOutside(true);
+        }
+        commitPriceDialog.initialzie("零售价", 2, 0D, "元",
+                new DoubleInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onQuantityChanged(Double quantity) {
+                        goods.setCostPrice(quantity);
+                        commitGoodsCostprice2(orderBarCode, goods, bCount);
+                    }
+                });
+        commitPriceDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!commitPriceDialog.isShowing()){
+            commitPriceDialog.show();
+        }
+
+    }
+
+    private void commitGoodsCostprice2(final String orderBarCode, final PosProductEntity goods,
+                                       final Double bCount){
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(getString(R.string.toast_network_error));
+            return;
+        }
+
+        //回调
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
+                        //{"code":"0","msg":"更新成功!","version":"1","data":""}
+//                                RspValue<String> retValue = (RspValue<String>) rspData;
+//                                String retStr = retValue.getValue();
+//                                ZLogger.d("修改售价成功:" + retStr);
+
+//                        DialogUtil.showHint("修改零售价成功");
+                        PosProductService.get().saveOrUpdate(goods);
+
+                        saveGoods2Cashier(orderBarCode, goods, bCount);
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("修改失败：" + errMsg);
+                        DialogUtil.showHint(errMsg);
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", goods.getId());
+        jsonObject.put("costPrice", goods.getCostPrice());
+        jsonObject.put("tenantId", MfhLoginService.get().getSpid());
+        InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
+    }
+
+
+    /**
+     * 保存商品到收银台*/
+    private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount){
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {

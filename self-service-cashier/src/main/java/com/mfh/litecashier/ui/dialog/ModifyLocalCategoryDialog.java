@@ -303,7 +303,6 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
 //                            String result = retValue.getValue();
 //                            Long code = Long.valueOf(result);
 
-
                             PosLocalCategoryService.get().deleteById(String.valueOf(mCategoryEntity.getId()));
                             DialogUtil.showHint("删除成功");
                             dismiss();
