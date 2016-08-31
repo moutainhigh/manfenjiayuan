@@ -26,7 +26,7 @@ public class ChainGoodsSkuPresenter {
      * 查询洗衣类目商品商品
      * @param frontCategoryId 类目编号
      * */
-    public void loadLaundryGoods(PageInfo pageInfo, Long frontCategoryId, Long netId){
+    public void findPublicChainGoodsSku(PageInfo pageInfo, Long frontCategoryId, Long netId){
         iChainGoodsSkuMode.findPublicChainGoodsSku(pageInfo, frontCategoryId, netId,
                 new OnPageModeListener<ChainGoodsSku>() {
             @Override

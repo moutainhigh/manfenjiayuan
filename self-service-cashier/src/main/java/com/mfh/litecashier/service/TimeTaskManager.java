@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -43,7 +43,7 @@ public class TimeTaskManager {
     /**
      * 同步订单
      * */
-    private final Timer syncPosOrderTimer = new Timer();
+    private static Timer syncPosOrderTimer = new Timer();
     private TimerTask syncPosOrderTask = new TimerTask() {
         @Override
         public void run() {
@@ -56,7 +56,7 @@ public class TimeTaskManager {
     /**
      * 同步商品
      * */
-    private final Timer syncGoodsTimer = new Timer();
+    private static Timer syncGoodsTimer = new Timer();
     private TimerTask syncGoodsTask = new TimerTask() {
         @Override
         public void run() {
@@ -90,6 +90,14 @@ public class TimeTaskManager {
     /**定时同步POS订单*/
     public void start(){
         ZLogger.d("定时任务开启...");
+        cancel();
+        if (syncPosOrderTimer == null){
+            syncPosOrderTimer = new Timer();
+        }
+        if (syncGoodsTimer == null){
+            syncGoodsTimer = new Timer();
+        }
+
         if (BizConfig.RELEASE){
             syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * MINUTE);
             syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 6 * HOUR);
@@ -98,10 +106,18 @@ public class TimeTaskManager {
             syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * SECOND);
             syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 1 * MINUTE);
         }
+
     }
 
     public void cancel(){
         ZLogger.d("取消定时任务...");
-        syncPosOrderTimer.cancel();
+        if (syncPosOrderTimer != null){
+            syncPosOrderTimer.cancel();
+        }
+        syncPosOrderTimer = null;
+        if (syncGoodsTimer != null){
+            syncGoodsTimer.cancel();
+        }
+        syncGoodsTimer = null;
     }
 }

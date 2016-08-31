@@ -90,25 +90,24 @@
             app:text="银联"/>
 
         <!--寺冈电子秤-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_smscale_ftp"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="@dimen/spacing_double"
-            app:position="top"
-            app:subText=""
             app:src="@mipmap/ic_ftp"
-            app:text="FileZilla (寺冈电子秤)"/>
+            app:text="FileZilla (寺冈电子秤)"
+            app:position="top"/>
 
         <!--绿泰电子价签-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_greentags_webservice"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_tag"
-            app:position="center"
-            app:subText=""
-            app:text="绿泰电子价签"/>
+            app:text="绿泰电子价签"
+            app:position="top"/>
 
 
         <!--系统键盘-->

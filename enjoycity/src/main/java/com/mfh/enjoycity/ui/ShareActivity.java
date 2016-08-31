@@ -10,7 +10,7 @@ import android.view.View;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.wxapi.WXHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 
 import java.util.List;

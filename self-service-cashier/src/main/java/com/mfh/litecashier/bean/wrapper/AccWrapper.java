@@ -14,12 +14,12 @@ import java.util.List;
  */
 public class AccWrapper implements java.io.Serializable{
 
-    private AccItem cashItem;
-    private AccItem alipayItem;
-    private AccItem wxItem;
-    private AccItem accountItem;
-    private AccItem bankItem;
-    private AccItem ruleItem;
+    private AccItem cashItem = new AccItem();
+    private AccItem alipayItem = new AccItem();
+    private AccItem wxItem = new AccItem();
+    private AccItem accountItem = new AccItem();
+    private AccItem bankItem = new AccItem();
+    private AccItem ruleItem = new AccItem();
 
     public AccItem getCashItem() {
         return cashItem;
@@ -71,8 +71,8 @@ public class AccWrapper implements java.io.Serializable{
 
     private void reset(){
         cashItem = AnalysisHelper.constructorAccItem(WayType.CASH, "现金");
-        alipayItem = AnalysisHelper.constructorAccItem(WayType.CASH, "支付宝");
-        wxItem = AnalysisHelper.constructorAccItem(WayType.CASH, "微信");
+        alipayItem = AnalysisHelper.constructorAccItem(WayType.CASH, "支付宝扫码付");
+        wxItem = AnalysisHelper.constructorAccItem(WayType.CASH, "微信扫码付");
         accountItem = AnalysisHelper.constructorAccItem(WayType.CASH, "平台账户");
         bankItem = AnalysisHelper.constructorAccItem(WayType.CASH, "银行卡");
         ruleItem = AnalysisHelper.constructorAccItem(WayType.CASH, "卡券");

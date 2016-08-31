@@ -16,9 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

@@ -55,13 +55,12 @@ public class FrontCategoryGoodsAdapter
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
         final FrontCategoryGoods entity = entityList.get(position);
 
-        holder.tvName.setText(entity.getSkuName());
-        holder.tvPrice.setText(String.format("¥ %.2f", entity.getCostPrice()));
+        holder.tvName.setText(entity.getName());
+        holder.tvPrice.setText(entity.getBarcode());
 
         String sqlWhere = String.format("productId = '%d'", entity.getProductId());
-
-
-        List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance().queryAllBy(sqlWhere);
+        List<PosCategoryGoodsTempEntity>  goodsTempEntities = PosCategoryGodosTempService.getInstance()
+                .queryAllBy(sqlWhere);
         if (goodsTempEntities != null && goodsTempEntities.size() > 0){
             holder.ibRatio.setVisibility(View.VISIBLE);
             entity.setSelected(true);

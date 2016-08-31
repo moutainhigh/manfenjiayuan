@@ -16,14 +16,14 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetFactory;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -324,7 +324,7 @@ public class InventoryIOFragment extends BaseFragment {
 
         onLoadStart();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载库存批次。");
             onLoadFinished();
             return;
@@ -346,7 +346,7 @@ public class InventoryIOFragment extends BaseFragment {
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载库存批次。");
             onLoadFinished();
             return;

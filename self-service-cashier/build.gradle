@@ -57,10 +57,10 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 292
+        versionCode 296
 
         // Defines a user-friendly version name for your app.
-        versionName "1.21.5"
+        versionName "1.21.6"
 
         multiDexEnabled true
 
@@ -123,9 +123,13 @@ android {
                 def fileName
                 if (variant.buildType.name == "release") {
                     // 输出apk名称为mfh_cashier_v1.0.1_101915_wandoujia.apk
-                    fileName = "mfh_litecashier_${variant.productFlavors[0].name}_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}.apk"
+                    fileName = "mfh_litecashier" +
+                            "_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}" +
+                            "_${variant.productFlavors[0].name}.apk"
                 } else {
-                    fileName = "mfh_litecashier_${variant.productFlavors[0].name}_v${defaultConfig.versionName}_${releaseTime()}_beta.apk"
+                    fileName = "mfh_litecashier" +
+                            "_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}_beta" +
+                            "_${variant.productFlavors[0].name}.apk"
                 }
 
                 output.outputFile = new File(outputFile.parent, fileName)

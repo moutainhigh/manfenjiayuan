@@ -17,13 +17,13 @@ import com.bingshanguxue.vector_user.CommonUserAccountApi;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.gridpasswordview.GridPasswordView;
 import com.mfh.litecashier.R;
@@ -239,7 +239,7 @@ public class AdministratorSigninDialog extends CommonDialog {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(getContext())) {
+        if (!NetworkUtils.isConnect(getContext())) {
             progressBar.setVisibility(View.INVISIBLE);
             btnSubmit.setEnabled(true);
             DialogUtil.showHint(R.string.toast_network_error);

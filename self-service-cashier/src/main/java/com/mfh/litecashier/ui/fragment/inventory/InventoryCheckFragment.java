@@ -18,15 +18,15 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.net.AfinalFactory;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetFactory;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
@@ -134,7 +134,7 @@ public class InventoryCheckFragment extends BaseFragment {
         if (invCheckOrder == null){
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
@@ -342,7 +342,7 @@ public class InventoryCheckFragment extends BaseFragment {
      * */
     @OnClick(R.id.order_empty_view)
     public synchronized void reloadInvCheckOrder() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载盘点订单列表。");
             onLoadFinished();
             return;
@@ -502,7 +502,7 @@ public class InventoryCheckFragment extends BaseFragment {
 
         onLoadStart();
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载库存盘点列表。");
             onLoadFinished();
             return;
@@ -531,7 +531,7 @@ public class InventoryCheckFragment extends BaseFragment {
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载盘点订单明细。");
             onLoadFinished();
             return;

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.ui.fragments.CategoryFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import java.util.ArrayList;

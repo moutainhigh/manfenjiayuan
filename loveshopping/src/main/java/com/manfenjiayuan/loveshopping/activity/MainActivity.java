@@ -15,7 +15,7 @@ import com.manfenjiayuan.loveshopping.MainTab;
 import com.manfenjiayuan.loveshopping.MyFragmentTabHost;
 import com.manfenjiayuan.loveshopping.R;
 import com.manfenjiayuan.loveshopping.fragment.H5HomeFragment;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 

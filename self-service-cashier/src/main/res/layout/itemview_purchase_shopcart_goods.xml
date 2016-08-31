@@ -78,7 +78,7 @@
         android:text="配销价" />
 
 
-    <com.manfenjiayuan.business.widget.NumberPickerView
+    <com.bingshanguxue.vector_uikit.NumberPickerView
         android:id="@+id/numberPickerView"
         android:layout_width="0dp"
         android:layout_height="match_parent"

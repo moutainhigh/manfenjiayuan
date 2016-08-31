@@ -1,10 +1,10 @@
 package com.mfh.litecashier.utils;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetFactory;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.comn.config.UConfig;
 
 import java.io.UnsupportedEncodingException;

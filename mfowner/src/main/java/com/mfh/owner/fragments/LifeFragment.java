@@ -26,16 +26,16 @@ import android.widget.TextView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.compound.LoadingTextView;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 import com.mfh.framework.uikit.widget.PagerSlidingTabStrip;
@@ -428,7 +428,7 @@ public class LifeFragment extends BaseFragment implements
      * 搜索微店
      */
     private void searchStore() {
-        if (!NetWorkUtil.isConnect(getContext())) {
+        if (!NetworkUtils.isConnect(getContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
         }

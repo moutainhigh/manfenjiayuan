@@ -2,47 +2,38 @@ package com.manfenjiayuan.mixicook_vip.ui.my;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.AvatarSettingItem;
 import com.bingshanguxue.vector_user.UserApiImpl;
-import com.bingshanguxue.vector_user.bean.MyProfile;
-import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.camera.CameraSessionUtil;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.ImageUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.DialogHelper;
-import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 
 import java.io.File;
@@ -287,7 +278,7 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
 
         if (protraitBitmap != null){
             try{
-                if(!NetWorkUtil.isConnect(AppContext.getAppContext())){
+                if(!NetworkUtils.isConnect(AppContext.getAppContext())){
                     DialogUtil.showHint(getString(R.string.toast_network_error));
                     return;
                 }

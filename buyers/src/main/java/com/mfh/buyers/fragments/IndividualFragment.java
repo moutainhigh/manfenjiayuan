@@ -27,7 +27,7 @@ import com.mfh.buyers.view.BadgeViewButton;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.compound.SettingsItem;

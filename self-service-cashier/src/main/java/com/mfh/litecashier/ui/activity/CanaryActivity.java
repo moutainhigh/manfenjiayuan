@@ -11,12 +11,12 @@ import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.bingshanguxue.cashier.model.wrapper.LocalMenu;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 
 import java.util.ArrayList;
@@ -154,8 +154,8 @@ public class CanaryActivity extends BaseActivity {
         menuAdapter.setOnAdapterLitener(new AdministratorMenuAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CashierFunctional entity = menuAdapter.getEntity(position);
-                if (entity != null && entity.getType() == 0) {
+                LocalMenu entity = menuAdapter.getEntity(position);
+                if (entity != null) {
                     responseMenu(entity.getId());
                 }
             }
@@ -164,42 +164,14 @@ public class CanaryActivity extends BaseActivity {
         menuAdapter.setEntityList(getAdminMenus());
     }
 
-    public synchronized List<CashierFunctional> getAdminMenus() {
-        List<CashierFunctional> functionalList = new ArrayList<>();
-        functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_GOODS,
+    public synchronized List<LocalMenu> getAdminMenus() {
+        List<LocalMenu> functionalList = new ArrayList<>();
+        functionalList.add(new LocalMenu(LocalMenu.CANARY_MENU_GOODS,
                 "库存", R.mipmap.ic_admin_menu_inventory));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_ORDERFLOW,
+        functionalList.add(new LocalMenu(LocalMenu.CANARY_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_DAILYSETTLE,
-                "日结", R.mipmap.ic_admin_menu_dailysettle));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.CANARY_MENU_CANARY,
+        functionalList.add(new LocalMenu(LocalMenu.CANARY_MENU_CANARY,
                 "设置", R.mipmap.ic_admin_menu_settings));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_FRUIT,
-//                "水果", R.mipmap.ic_admin_menu_fruit));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_STANDARD_GOODS,
-//                "普货", R.mipmap.ic_admin_menu_standard_goods));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INTELLIGENT_PURCHASE,
-//                "智能订货", R.mipmap.ic_admin_menu_intellegent_purchase));
-////        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRECVORDER,
-////                "收货", R.mipmap.ic_admin_menu_invrecvorder));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_RECEIPT,
-//                "单据", R.mipmap.ic_admin_menu_receipt));
-
-
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVRETURNORDER,
-//                "退货", R.mipmap.ic_admin_menu_invreturnorder));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ONLINEORDER,
-//                "线上订单", R.mipmap.ic_admin_menu_onlineorder));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_INVLOSSORDER,
-//                "报损", R.mipmap.ic_admin_menu_invlossorder));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_ANALYSIS,
-//                "统计", R.mipmap.ic_admin_menu_analysis));
-////        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_TOPUP,
-////                "充值", R.mipmap.ic_service_recharge));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_SETTINGS,
-//                "设置", R.mipmap.ic_admin_menu_settings));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.ADMIN_MENU_EXCEPTION_ORDERS,
-//                "异常订单", R.mipmap.ic_admin_menu_settings));
 
         return functionalList;
     }
@@ -211,16 +183,13 @@ public class CanaryActivity extends BaseActivity {
         if (id == null) {
             return;
         }
-        if (id.compareTo(CashierFunctional.CANARY_MENU_GOODS) == 0) {
+        if (id.compareTo(LocalMenu.CANARY_MENU_GOODS) == 0) {
             redirect2Goods();
         }
-        else if (id.compareTo(CashierFunctional.CANARY_MENU_ORDERFLOW) == 0) {
+        else if (id.compareTo(LocalMenu.CANARY_MENU_ORDERFLOW) == 0) {
             redirect2Orderflow();
         }
-        else if (id.compareTo(CashierFunctional.CANARY_MENU_DAILYSETTLE) == 0) {
-            redirect2Dailysettle();
-        }
-        else if (id.compareTo(CashierFunctional.CANARY_MENU_CANARY) == 0) {
+        else if (id.compareTo(LocalMenu.CANARY_MENU_CANARY) == 0) {
             redirect2Canary();
         }  else {
             DialogUtil.showHint("@开发君 失踪了...");
@@ -246,17 +215,6 @@ public class CanaryActivity extends BaseActivity {
                 SimpleActivity.FT_CANARY_ORDERFLOW);
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
-
-    /**
-     * 日结
-     */
-    public void redirect2Dailysettle() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_CANARY_DAILYSETTLE);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
 
     /**
      * 异常订单

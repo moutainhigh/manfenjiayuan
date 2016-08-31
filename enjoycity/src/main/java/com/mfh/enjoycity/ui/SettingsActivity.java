@@ -20,7 +20,7 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 import java.util.List;

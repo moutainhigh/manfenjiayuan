@@ -10,6 +10,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+
+        <!--恢复出厂设置-->
+        <com.bingshanguxue.vector_uikit.SettingsItem
+            android:id="@+id/item_factoryreset"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:src="@mipmap/ic_goods_warehouse"
+            app:position="top"
+            app:subText="清除设备所有数据"
+            app:text="恢复出厂设置"/>
+
         <!--开发测试/正式发布-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_release"
@@ -34,6 +45,14 @@
             app:text="混合支付"
             app:position="center"/>
 
+        <!--个推-->
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
+            android:id="@+id/toggleItem_getui"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:text="个推"
+            app:position="center"/>
+
         <!--显示-->
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,34 +70,6 @@
                 android:text="显示"
                 android:textColor="@color/material_black"
                 android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/tv_getui"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:padding="8dp"
-                android:text="个推"
-                android:textColor="@color/material_black"
-                android:textSize="16sp" />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/switchCompat_push"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="8dp" />
 
         </LinearLayout>
 

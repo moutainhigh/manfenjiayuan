@@ -1,0 +1,1 @@
+ALTER TABLE tb_category_goods_temp_v1 ADD COLUMN proSkuId INTEGER;

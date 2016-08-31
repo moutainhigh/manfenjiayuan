@@ -17,8 +17,8 @@ import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.invCompany.InvCompanyPresenter;
 import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -224,7 +224,7 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;
@@ -252,7 +252,7 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载批发商。");
             onLoadFinished();
             return;

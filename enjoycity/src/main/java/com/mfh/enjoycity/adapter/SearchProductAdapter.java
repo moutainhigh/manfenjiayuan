@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.database.HistorySearchEntity;
 import com.mfh.enjoycity.database.HistorySearchService;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.widget.ChildGridView;
 import com.mfh.framework.uikit.widget.FlowLayout;

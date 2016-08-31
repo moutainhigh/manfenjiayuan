@@ -21,7 +21,7 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.impl.CashierApiImpl;
 import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.core.DeviceUuidFactory;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;

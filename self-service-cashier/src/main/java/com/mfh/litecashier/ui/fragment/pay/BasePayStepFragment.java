@@ -7,13 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.com.SerialManager;
@@ -55,7 +55,8 @@ public abstract class BasePayStepFragment extends BaseFragment {
         //保存订单支付记录
         // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
         // 下一次保存支付记录的时候，数据会不准确
-        CashierAgent.updateCashierOrder(cashierOrderInfo, paymentInfo);
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
     }
 
     /**
@@ -72,7 +73,8 @@ public abstract class BasePayStepFragment extends BaseFragment {
         //保存订单支付记录并更新订单
         // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
         // 下一次保存支付记录的时候，数据会不准确
-        CashierAgent.updateCashierOrder(cashierOrderInfo, paymentInfo);
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
 
         //有现金支付时才打开钱箱
         if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
@@ -125,7 +127,8 @@ public abstract class BasePayStepFragment extends BaseFragment {
         //保存订单支付记录并更新订单
         // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
         // 下一次保存支付记录的时候，数据会不准确
-        CashierAgent.updateCashierOrder(cashierOrderInfo, paymentInfo);
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
     }
 
     /**

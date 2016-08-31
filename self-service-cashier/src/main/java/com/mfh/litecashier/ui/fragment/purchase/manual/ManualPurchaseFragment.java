@@ -23,16 +23,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.category.CateApi;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.compound.OptionalLabel;
@@ -48,6 +49,7 @@ import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.PurchasePresenter;
+import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
@@ -72,7 +74,7 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
- * 手动订货
+ * 手动订货&智能订货
  * Created by bingshanguxue on 17/07/20.
  */
 public class ManualPurchaseFragment extends BaseProgressFragment
@@ -790,7 +792,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
      * TODO,加载等待窗口
      */
     private void loadGoodsList() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;
@@ -809,7 +811,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
      * 翻页加载更多数据
      */
     private void loadMore() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;
@@ -925,7 +927,19 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         } else {
             selectPlatformProvider();
         }
+    }
 
+    /**
+     * 智能订货
+     * */
+    @OnClick(R.id.fab_importFromChainSku)
+    public void importFromChainSku(){
+        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+        if (companyInfo != null) {
+//            CloudSyncManager.get().importFromChainSku(companyInfo.getTenantId(),
+//                    String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRUIT));
+            CloudSyncManager.get().importFromChainSku();
+        }
     }
 
     @Override

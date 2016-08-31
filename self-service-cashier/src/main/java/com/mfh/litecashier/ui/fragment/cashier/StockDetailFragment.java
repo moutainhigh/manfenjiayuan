@@ -3,6 +3,7 @@ package com.mfh.litecashier.ui.fragment.cashier;
 
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -23,14 +24,14 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.impl.StockApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -51,6 +52,9 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class StockDetailFragment extends BaseFragment {
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.et_query_content)
     EditText etQueryContent;
     @Bind(R.id.button_query)
@@ -87,7 +91,15 @@ public class StockDetailFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
+        mToolbar.setTitle("包裹明细");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
         etQueryContent.setInputType(InputType.TYPE_CLASS_TEXT);
         etQueryContent.setHint("手机号/面单号/楼幢号/取货码");
         etQueryContent.addTextChangedListener(new TextWatcher() {
@@ -189,7 +201,7 @@ public class StockDetailFragment extends BaseFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())){
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())){
             DialogUtil.showHint(R.string.toast_network_error);
             animProgress.setVisibility(View.GONE);
             btnStockOut.setEnabled(true);

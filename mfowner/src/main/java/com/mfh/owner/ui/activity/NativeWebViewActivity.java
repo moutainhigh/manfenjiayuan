@@ -18,7 +18,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.WebViewUtils;

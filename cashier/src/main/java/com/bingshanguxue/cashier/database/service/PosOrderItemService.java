@@ -5,7 +5,7 @@ import com.bingshanguxue.cashier.database.dao.PosOrderItemDao;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 
@@ -144,7 +144,7 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
         entity.setUpdatedDate(new Date());
 
         saveOrUpdate(entity);
-        ZLogger.df(JSON.toJSONString(entity));
+        ZLogger.d(String.format("保存or更新订单明细:%s\n%s", goods.getBarcode(), JSON.toJSONString(entity)));
     }
 
 

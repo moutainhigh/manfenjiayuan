@@ -6,7 +6,7 @@ import android.os.Handler;
 import com.manfenjiayuan.loveshopping.R;
 import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.framework.uikit.base.InitActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.UIHelper;
 
 public class SplashActivity extends InitActivity {

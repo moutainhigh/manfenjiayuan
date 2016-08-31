@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,10 @@ public abstract class BaseListFragment<T> extends Fragment {
     protected static final int MAX_PAGE = 20;
     protected PageInfo mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, MAX_SYNC_PAGESIZE);
     protected List<T> entityList = new ArrayList<>();
+
+    //进度对话框
+    private ProgressDialog mProgressDialog = null;
+
 
     protected int getLayoutResId(){return 0;}
 
@@ -132,6 +137,30 @@ public abstract class BaseListFragment<T> extends Fragment {
      */
     public void loadMore(){
 
+    }
+
+    /**
+     * 显示同步数据对话框
+     */
+    public void showProgressDialog(int status, String processText, boolean isAutoHideEnabled) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getContext());
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setCanceledOnTouchOutside(false);
+        }
+        mProgressDialog.setProgress(status, processText, isAutoHideEnabled);
+        if (!mProgressDialog.isShowing()) {
+            mProgressDialog.show();
+        }
+    }
+
+    /**
+     * 隐藏进度对话框
+     */
+    public void hideProgressDialog(){
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
     }
 
 }

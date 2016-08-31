@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.widget.NumberPickerView;
+import com.bingshanguxue.vector_uikit.NumberPickerView;
 import com.manfenjiayuan.mixicook_vip.MainEvent;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -49,7 +49,8 @@ public class ShopcartGoodsAdapter
 
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CategoryViewHolder(mLayoutInflater.inflate(R.layout.itemview_reserve_goods, parent, false));
+        return new CategoryViewHolder(mLayoutInflater.inflate(R.layout.itemview_shopcart_goods,
+                parent, false));
     }
 
     @Override
@@ -158,15 +159,15 @@ public class ShopcartGoodsAdapter
 
                 @Override
                 public void onPreDecrease() {
-
+                    if (adapterListener != null) {
+                        adapterListener.onDeleteConfirm(getAdapterPosition());
+                    }
                 }
 
                 @Override
                 public void onValueChanged(int value) {
                     if (value <= 0){
-                        if (adapterListener != null) {
-                            adapterListener.onDeleteConfirm(getAdapterPosition());
-                        }
+                        removeEntity(getAdapterPosition());
                     }
                     else{
                         onItemValueChanged(getAdapterPosition(), value);

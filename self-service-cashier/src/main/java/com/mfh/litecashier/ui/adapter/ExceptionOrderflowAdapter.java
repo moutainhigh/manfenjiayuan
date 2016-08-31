@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
@@ -102,7 +103,7 @@ public class ExceptionOrderflowAdapter
                         .build();
         BadgeDrawable drawableWaytype =
                 new BadgeDrawable.Builder()
-                        .type(BadgeDrawable.TYPE_ONLY_ONE_TEXT)
+                        .type(BadgeDrawable.TYPE_WITH_TWO_TEXT)
 //                        .badgeColor(0xFF5722)
                         .badgeColor(ContextCompat.getColor(mContext, R.color.material_purple_500))
                         .text1("")
@@ -170,8 +171,9 @@ public class ExceptionOrderflowAdapter
             drawableActive.setText1(String.format("关闭(%d)", entity.getIsActive()));
         }
 
-        drawableWaytype.setText1(String.format("%s(%d)",
-                WayType.name(entity.getPayType()), entity.getPayType()));
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(entity.getId());
+        drawableWaytype.setText1(WayType.name(payWrapper.getPayType()));
+        drawableWaytype.setText2(String.valueOf(payWrapper.getPayType()));
 
         SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawableActive.toSpannable(),
                 " ", drawableBizType.toSpannable(),

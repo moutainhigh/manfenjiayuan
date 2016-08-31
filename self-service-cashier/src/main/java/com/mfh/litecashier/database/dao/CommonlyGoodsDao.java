@@ -4,7 +4,7 @@ import com.mfh.framework.database.dao.BaseDbDao;
 import com.mfh.litecashier.database.entity.CommonlyGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.List;
 

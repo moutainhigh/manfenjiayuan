@@ -49,8 +49,15 @@ public class DataCleanManager {
 	 * @param context
 	 */
 	public static void cleanDatabases(Context context) {
-		String path = context.getFilesDir().getPath()
-				+ context.getPackageName() + File.separator + "databases";
+//		String path = context.getFilesDir().getPath()
+//				+ context.getPackageName() + File.separator + "databases";
+//		String path = "/data/data/"
+//				+ context.getPackageName() + File.separator + "databases";
+		File dbFile = context.getDatabasePath("cashier");
+		ZLogger.d(String.format("path=%s, absolutePath=%s, parent=%s",
+				dbFile.getPath(), dbFile.getAbsolutePath(), dbFile.getParent()));
+		String path = dbFile.getParent();
+
 		ZLogger.d("cleanDatabases:" + path);
 		deleteFilesByDirectory(new File(path));
 	}

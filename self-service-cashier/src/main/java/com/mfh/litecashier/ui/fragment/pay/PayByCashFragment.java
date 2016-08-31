@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.mfh.litecashier.Constants;

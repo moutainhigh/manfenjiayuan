@@ -3,23 +3,26 @@ package com.mfh.litecashier.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.CashierApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +44,34 @@ public abstract class OrderSyncManager {
 
 
     /**
+     * 获取订单同步时间游标
+     * */
+    public static String getPosOrderStartCursor() {
+        String startCursor = SharedPreferencesHelper
+                .getText(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR);
+        ZLogger.d(String.format("上次订单同步时间游标(%s)。", startCursor));
+
+        //与当前时间相比，取最小当时间
+        if (!StringUtils.isEmpty(startCursor)) {
+            //得到指定模范的时间
+            try {
+                Date d1 = TimeCursor.InnerFormat.parse(startCursor);
+                Date rightNow = new Date();
+                if (d1.compareTo(rightNow) > 0) {
+                    startCursor = TimeCursor.InnerFormat.format(rightNow);
+//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
+                    ZLogger.d(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", startCursor));
+                }
+            } catch (ParseException e) {
+//            e.printStackTrace();
+                ZLogger.e(e.toString());
+            }
+        }
+
+        return startCursor;
+    }
+
+    /**
      * 生成订单同步数据结构
      */
     public JSONObject generateOrderJson(PosOrderEntity orderEntity) {
@@ -49,7 +80,6 @@ public abstract class OrderSyncManager {
         order.put("id", orderEntity.getId());
         order.put("barCode", orderEntity.getBarCode());
         order.put("status", orderEntity.getStatus());
-        order.put("humanId", orderEntity.getHumanId());//会员支付
         order.put("remark", orderEntity.getRemark());
         order.put("bcount", orderEntity.getBcount());
         order.put("adjPrice", orderEntity.getRetailAmount() - orderEntity.getFinalAmount()); //调价金额
@@ -58,6 +88,7 @@ public abstract class OrderSyncManager {
         order.put("posId", orderEntity.getPosId());//设备编号
         order.put("sellOffice", orderEntity.getSellOffice());//curoffice id
         order.put("sellerId", orderEntity.getSellerId());//spid
+        order.put("humanId", orderEntity.getHumanId());//会员支付
         //由后台计算折扣
 //        if (orderEntity.getRetailAmount() == 0D) {
 //            order.put("discount", Double.valueOf(String.valueOf(Integer.MAX_VALUE)));
@@ -76,7 +107,7 @@ public abstract class OrderSyncManager {
         order.put("createdDate", TimeUtil.format(createdDate, TimeCursor.FORMAT_YYYYMMDDHHMMSS));
 
         //读取订单商品明细
-        List<PosOrderItemEntity> orderItemEntities = CashierFactory.fetchOrderItems(orderEntity);
+        List<PosOrderItemEntity> orderItemEntities = CashierAgent.fetchOrderItems(orderEntity);
         JSONArray items = new JSONArray();
         for (PosOrderItemEntity entity : orderItemEntities) {
             JSONObject item = new JSONObject();
@@ -137,7 +168,7 @@ public abstract class OrderSyncManager {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.df("网络未连接，暂停同步POS订单数据。");
             return;
         }
@@ -178,6 +209,7 @@ public abstract class OrderSyncManager {
      * 单条上传POS订单<br>
      * 订单结束时立刻同步
      */
+    @Deprecated
     public void stepUploadPosOrder(final List<PosOrderEntity> orderEntities) {
         if (orderEntities == null || orderEntities.size() <= 0){
             ZLogger.df("订单无效，不需要同步...");
@@ -189,7 +221,7 @@ public abstract class OrderSyncManager {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.df("网络未连接，暂停同步POS订单数据。");
             return;
         }

@@ -1,7 +1,7 @@
 package com.mfh.litecashier.database.dao;
 
 
-import com.mfh.litecashier.bean.ProductSkuBarcode;
+import com.bingshanguxue.cashier.model.ProductSkuBarcode;
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
 

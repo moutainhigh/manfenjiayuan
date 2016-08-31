@@ -2,7 +2,7 @@ package com.bingshanguxue.cashier.database.dao;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 

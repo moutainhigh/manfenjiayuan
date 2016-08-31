@@ -8,7 +8,7 @@ import android.view.View;
 import com.mfh.enjoycity.R;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.compound.SettingsItem;
+import com.bingshanguxue.vector_uikit.SettingsItem;
 
 import java.util.List;
 

@@ -114,7 +114,7 @@
                 android:layout_marginTop="32dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
-                android:text="同步策略"
+                android:text="绿泰电子价签"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_normal"/>
 
@@ -128,18 +128,29 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="全量更新"
+                    android:text="同步时间戳"
                     android:textColor="@color/black_70"
+                    android:textSize="@dimen/textsize_normal"/>
+
+                <TextView
+                    android:id="@+id/tv_esl_cursor"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@color/material_black"
                     android:textSize="@dimen/textsize_normal"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/switchCompat_sync_mode"
-                    android:layout_width="match_parent"
+                    android:layout_width="120dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:checked="false"
                     android:gravity="center"
                     android:padding="8dp"
-                    android:layout_marginStart="16dp"
                     android:textColor="@color/material_grey_500"
                     android:textOff="增量更新"
                     android:textOn="全量更新"

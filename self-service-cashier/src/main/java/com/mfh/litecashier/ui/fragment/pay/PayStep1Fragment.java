@@ -9,12 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfoImpl;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderItemInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.compound.MultiLayerLabel;
@@ -23,11 +24,8 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
@@ -192,7 +190,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             public void onChanged(int page) {
                 notifyPayInfoChanged(page);
 //                if (page == 1 || page == 2 || page == 4 || page == 5) {
-//                    if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+//                    if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
 //                        DialogUtil.showHint("网络异常,请选择其他支付方式");
 ////                        paySlidingTabStrip.setSelected();
 //                    }
@@ -205,24 +203,16 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         Bundle parArgs = new Bundle();
-        List<CashierOrderItemInfo> cashierOrderItemInfoList = cashierOrderInfo.getCashierOrderItemInfos();
-        if (cashierOrderItemInfoList != null && cashierOrderItemInfoList.size() > 0) {
-            parArgs.putLong(BasePayFragment.EXTRA_KEY_ORDER_ID,
-                    cashierOrderItemInfoList.get(0).getOrderId());
-            parArgs.putString(BasePayFragment.EXTRA_KEY_BODY,
-                    cashierOrderItemInfoList.get(0).getBrief());
-        }
+        parArgs.putLong(BasePayFragment.EXTRA_KEY_ORDER_ID,
+                cashierOrderInfo.getOrderId());
+        parArgs.putString(BasePayFragment.EXTRA_KEY_BODY,
+                cashierOrderInfo.getBody());
         parArgs.putString(BasePayFragment.EXTRA_KEY_ORDER_BARCODE,
                 cashierOrderInfo.getPosTradeNo());
         parArgs.putString(BasePayFragment.EXTRA_KEY_SUBJECT,
                 cashierOrderInfo.getSubject());
-
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
-
-//        cashArags.putString(BasePayFragment.EXTRA_KEY_SUBJECT, cashierOrderInfo.getSubject());
-//        cashArags.putString(BasePayFragment.EXTRA_KEY_BODY, cashierOrderInfo.getBody());
-//        cashArags.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE, String.valueOf(cashierOrderInfo.getBizType()));
 
         mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));
@@ -234,8 +224,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
                 parArgs));
         mTabs.add(new ViewPageInfo("银行卡", "银行卡", PayByBandcardFragment.class,
                 parArgs));
-//        mTabs.add(new ViewPageInfo("赊账", "赊账", PayByCreditFragment.class,
-//                parArgs));
 
         viewPagerAdapter.addAllTab(mTabs);
 

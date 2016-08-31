@@ -5,7 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 

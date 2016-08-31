@@ -43,7 +43,7 @@ import com.mfh.buyers.wxapi.WXHelper;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.camera.CameraSessionUtil;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ImageUtil;

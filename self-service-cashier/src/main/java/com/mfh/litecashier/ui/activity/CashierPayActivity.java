@@ -10,9 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_user.bean.Human;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -100,10 +101,10 @@ public class CashierPayActivity extends BaseActivity {
         //hide soft input
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-
         EventBus.getDefault().register(this);
 
         if (cashierOrderInfo == null) {
+            DialogUtil.showHint("订单结算信息无效");
             setResult(Activity.RESULT_CANCELED);
             finish();
             return;
@@ -143,6 +144,8 @@ public class CashierPayActivity extends BaseActivity {
 
             cashierOrderInfo = (CashierOrderInfo) intent.getSerializableExtra(EXTRA_KEY_CASHIER_ORDERINFO);
         }
+
+//        cashierOrderInfo = GlobalInstance.getInstance().getCashierOrderInfo();
     }
     /**
      * 显示

@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.BitmapUtils;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;

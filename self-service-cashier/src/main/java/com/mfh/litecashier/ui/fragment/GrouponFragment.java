@@ -4,6 +4,7 @@ package com.mfh.litecashier.ui.fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.WebViewDelegate;
@@ -34,6 +35,8 @@ import butterknife.OnClick;
 public class GrouponFragment extends BaseFragment {
     public static final String EXTRA_KEY_ROOT_URL = "extra_key_root_url";
 
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.webview)
     HybridWebView mWebView;
     @Bind(R.id.error_view)
@@ -86,6 +89,17 @@ public class GrouponFragment extends BaseFragment {
         if (args != null) {
             mRootUrl = args.getString(EXTRA_KEY_ROOT_URL, "");
         }
+
+        mToolbar.setTitle("团购");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+
 
         initWebView();
 

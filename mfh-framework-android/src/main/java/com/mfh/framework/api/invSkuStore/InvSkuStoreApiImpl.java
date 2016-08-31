@@ -1,5 +1,6 @@
 package com.mfh.framework.api.invSkuStore;
 
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetFactory;
@@ -68,5 +69,21 @@ public class InvSkuStoreApiImpl extends InvSkuStoreApi{
         params.put("receiveItem", receiveItem);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_INVSKUSTORE_CHANGESKUSTORE, params, responseCallback);
+    }
+
+    /**
+     * 当前登录人员，把平台商品导入到本店仓储中
+     * <ol>
+     * 适用场景
+     * <li>需要登录</li>
+     * </ol>
+     */
+    public static void importFromCenterSkus(String proSkuIds,  AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (!StringUtils.isEmpty(proSkuIds)){
+            params.put("proSkuIds", proSkuIds);
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_IMPORT_FROMCENTERSKUS, params, responseCallback);
     }
 }

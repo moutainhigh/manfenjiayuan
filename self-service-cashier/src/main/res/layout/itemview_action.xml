@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="106dp"
-              android:background="@null"
+              android:background="#f4f5f9"
               android:gravity="center"
               android:orientation="horizontal">
 
@@ -13,6 +13,6 @@
         android:background="@null"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_add_black"/>
+        android:src="@mipmap/ic_add_grey_large"/>
 
 </LinearLayout>

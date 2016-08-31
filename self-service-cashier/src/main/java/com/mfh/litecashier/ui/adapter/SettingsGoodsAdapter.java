@@ -16,7 +16,7 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
@@ -85,16 +85,16 @@ public class SettingsGoodsAdapter
                         .type(BadgeDrawable.TYPE_WITH_TWO_TEXT)
 //                        .badgeColor(0xFF5722)
                         .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
-                        .text1(String.valueOf(entity.getProdLineId()))
-                        .text2("产品线")
+                        .text2(String.valueOf(entity.getProdLineId()))
+                        .text1("产品线")
                         .build();
         BadgeDrawable drawableCateType =
                 new BadgeDrawable.Builder()
                         .type(BadgeDrawable.TYPE_WITH_TWO_TEXT)
 //                        .badgeColor(0xFF5722)
                         .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
-                        .text1(String.valueOf(entity.getCateType()))
-                        .text2(CateApi.backendCatetypeName(entity.getCateType()))
+                        .text2(String.valueOf(entity.getCateType()))
+                        .text1(CateApi.backendCatetypeName(entity.getCateType()))
                         .build();
 
         BadgeDrawable drawableStatus =

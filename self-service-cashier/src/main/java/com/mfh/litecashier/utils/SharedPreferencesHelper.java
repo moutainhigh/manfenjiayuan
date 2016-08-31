@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
@@ -53,11 +53,10 @@ public class SharedPreferencesHelper {
     //同步商品
     public static final String PK_SKU_UPDATE_UNREADNUMBER = "pk_sku_update_unreadnumber";   //上一次交接班班次
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
-    private static final String PK_SYNC_PRODUCTS_MODE = "pk_sync_products_mode";//同步方式：0全量，1增量。
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
     public static final String PK_SYNC_PRODUCTCATALOG_STARTCURSOR = "pk_sync_PRODUCTCATALOG_STARTCURSOR";
     //同步订单
-    private static final String PK_POS_ORDER_LAST_UPDATE = "pos_order_lastUpdate";//最后一次更新时间
+    public static final String PK_S_POSORDER_SYNC_STARTCURSOR = "pos_order_lastUpdate";//最后一次更新时间
     private static final String PK_SYNC_ORDER_INTERVAL = "pk_sync_order_interval";//同步间隔（单位，秒）
     //同步账号
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
@@ -76,9 +75,7 @@ public class SharedPreferencesHelper {
     public static final String PK_SYNC_PURCHASESEND_ORDER_ENABLED = "pk_sync_purchasesend_order_enabled";//采购订单
     public static final String PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED = "pk_sync_purchasereceipt_order_enabled";//采购收货订单
     public static final String PK_SYNC_PURCHASERETURN_ORDER_ENABLED = "pk_sync_purchasereturn_order_enabled";//采购退货订单
-    //前台类目子类目
-    private static final String PK_SYNC_FRONTCATEGORY_SUB_ENABLED = "pk_sync_frontcategory_sub_enabled";
-    //交接班
+//交接班
     public static final String PK_LAST_HANDOVER_DATETIME = "pk_last_handover_datetime";  //上一次交接班时间
     public static final String PK_LAST_HANDOVER_SHIFTID = "pk_last_handover_shiftid";   //上一次交接班班次
 
@@ -100,6 +97,12 @@ public class SharedPreferencesHelper {
     public static final String PREF_KEY_COM_CUSTOMERDISPLAY_ENABLED = "pk_com_customerdisplay_enabled";
     //PAD客显
     public static final String PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED = "pk_pad_customerdisplay_enabled";
+
+    //是否允许同步商品数据 ViaFTP 2电子秤
+    public static final String PK_B_SYNC_SMSCALE_FTP_ENABLED = "pk_b_SYNC_SMSCALE_FTP_ENABLED";
+    //是否允许同步商品数据 ViaWs 2电子价签
+    public static final String PK_B_SYNC_ESL_ENABLED = "pk_b_SYNC_ESL_ENABLED";
+
 
     public static String prefName = TAG;
 
@@ -123,20 +126,6 @@ public class SharedPreferencesHelper {
         }
     }
 
-    /**
-     * @return 同步方式：0全量, 1增量。
-     */
-    public static int getSyncProductsMode() {
-        return getInt(PK_SYNC_PRODUCTS_MODE, 0);
-    }
-
-    /**
-     * 同步方式：0全量，1增量。
-     */
-    public static void setSyncProductsMode(int mode) {
-        set(PK_SYNC_PRODUCTS_MODE, mode);
-    }
-
     public static String getSyncProductSkuCursor() {
         return getText(PK_SYNC_PRODUCTSKU_STARTCURSOR, "");
     }
@@ -152,42 +141,19 @@ public class SharedPreferencesHelper {
     }
 
     public static String getPosOrderLastUpdate() {
-        return getText(PK_POS_ORDER_LAST_UPDATE, "");
+        return getText(PK_S_POSORDER_SYNC_STARTCURSOR, "");
     }
 
-    public static String getUploadOrderLastUpdate() {
-        String lastCursor = getText(PK_POS_ORDER_LAST_UPDATE);
-        ZLogger.d(String.format("上次订单更新时间(%s)。", lastCursor));
-
-        //与当前时间相比，取最小当时间
-        if (!StringUtils.isEmpty(lastCursor)) {
-            //得到指定模范的时间
-            try {
-                Date d1 = TimeCursor.InnerFormat.parse(lastCursor);
-                Date d2 = new Date();
-                if (d1.compareTo(d2) > 0) {
-                    lastCursor = TimeCursor.InnerFormat.format(d2);
-//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
-                    ZLogger.d(String.format("上次订单更新时间大于当前时间，使用当前时间(%s)。", lastCursor));
-                }
-            } catch (ParseException e) {
-//            e.printStackTrace();
-                ZLogger.e(e.toString());
-            }
-        }
-
-        return lastCursor;
-    }
 
     public static void setPosOrderLastUpdate(String lastUpdate) {
-        set(PK_POS_ORDER_LAST_UPDATE, lastUpdate);
+        set(PK_S_POSORDER_SYNC_STARTCURSOR, lastUpdate);
     }
 
     public static void setPosOrderLastUpdate(Date lastUpdate) {
         if (lastUpdate != null) {
-            set(PK_POS_ORDER_LAST_UPDATE, TimeCursor.InnerFormat.format(lastUpdate));
+            set(PK_S_POSORDER_SYNC_STARTCURSOR, TimeCursor.InnerFormat.format(lastUpdate));
         } else {
-            set(PK_POS_ORDER_LAST_UPDATE, "");
+            set(PK_S_POSORDER_SYNC_STARTCURSOR, "");
         }
     }
 
@@ -208,14 +174,6 @@ public class SharedPreferencesHelper {
 
     public static void setSyncCompanyHumanEnabled(boolean enabled) {
         set(PK_SYNC_COMPANY_HUMAN_ENABLED, enabled);
-    }
-
-    public static boolean isSyncFrontCategorySubEnabled() {
-        return getBoolean(PK_SYNC_FRONTCATEGORY_SUB_ENABLED, true);
-    }
-
-    public static void setSyncFrontCategorySubEnabled(boolean enabled) {
-        set(PK_SYNC_FRONTCATEGORY_SUB_ENABLED, enabled);
     }
 
     /**
@@ -272,7 +230,6 @@ public class SharedPreferencesHelper {
                 MfhLoginService.get().getCurOfficeId());
     }
 
-
     public static String getText(String key) {
 //        ZLogger.d(String.format("getPosOrderLastUpdate(%s)", prefName));
         return SharedPreferencesUtil.get(MfhApplication.getAppContext(),
@@ -316,6 +273,9 @@ public class SharedPreferencesHelper {
         SharedPreferencesUtil.set(MfhApplication.getAppContext(), register(), key, value);
     }
 
+    public static void clear(){
+        SharedPreferencesUtil.clear(MfhApplication.getAppContext(), register());
+    }
 
 
 }

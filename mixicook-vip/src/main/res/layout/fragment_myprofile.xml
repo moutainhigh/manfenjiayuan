@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_margin_top" />
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_nickname"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
@@ -32,7 +32,7 @@
                 app:text="昵称"
                 app:subText=""/>
 
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_sex"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"

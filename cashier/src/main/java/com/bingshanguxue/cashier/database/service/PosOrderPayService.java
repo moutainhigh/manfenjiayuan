@@ -6,7 +6,7 @@ import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.bingshanguxue.vector_user.bean.Human;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;

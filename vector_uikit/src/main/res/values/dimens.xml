@@ -2,4 +2,5 @@
 <resources>
 
     <dimen name="textsize_default">16sp</dimen>
+
 </resources>

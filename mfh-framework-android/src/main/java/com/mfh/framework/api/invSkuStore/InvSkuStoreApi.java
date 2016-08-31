@@ -45,4 +45,11 @@ public class InvSkuStoreApi {
      */
     public final static String URL_INVSKUSTORE_CHANGESKUSTORE = URL_INVSKUSTORE + "changeSkuStore";
 
+
+    /**
+     * 当前登录人员，把平台商品导入到本店仓储中
+     * /invSkuStore/importFromCenterSkus?proSkuIds=111,222
+     */
+    public final static String URL_IMPORT_FROMCENTERSKUS = URL_INVSKUSTORE + "importFromCenterSkus";
+
 }

@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -44,6 +45,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
     private EditText etIp, etPort;
     private Spinner mSoapSpinner;
     private ArrayAdapter<String> soapSpinnerAdapter;
+    private TextView tvEslCursor;
     private SwitchCompat mSwitchSyncMode;
 
     private Button btnSubmit;
@@ -70,6 +72,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
         etIp = (EditText) rootView.findViewById(R.id.et_ip);
         etPort = (EditText) rootView.findViewById(R.id.et_port);
         mSoapSpinner = (Spinner) rootView.findViewById(R.id.spinner_soap_version);
+        tvEslCursor = (TextView) rootView.findViewById(R.id.tv_esl_cursor);
         mSwitchSyncMode = (SwitchCompat) rootView.findViewById(R.id.switchCompat_sync_mode);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
@@ -170,14 +173,18 @@ public class GreenTagsSettingsDialog extends CommonDialog {
                 return true;
             }
         });
-//        mSwitchSyncMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (listener != null) {
-//                    listener.onToggleChanged(isChecked);
-//                }
-//            }
-//        });
+        mSwitchSyncMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    tvEslCursor.setText("");
+                }
+                else{
+                    tvEslCursor.setText(SharedPreferencesManager.getText(GreenTagsApi.PREF_GREENTAGS,
+                            GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, ""));
+                }
+            }
+        });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,7 +233,6 @@ public class GreenTagsSettingsDialog extends CommonDialog {
 //        DeviceUtils.hideSoftInput(getOwnerActivity());
     }
 
-
     public void init(DialogViewClickListener mDialogViewClickListener){
         this.mDialogViewClickListener = mDialogViewClickListener;
 
@@ -253,7 +259,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
                 mSoapSpinner.setSelection(0);
                 break;
         }
-        mSwitchSyncMode.setChecked(GreenTagsApi.FULLSCALE_ENABLED);
+        mSwitchSyncMode.setChecked(false);
     }
 
     private void submit() {
@@ -300,10 +306,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
                 break;
         }
 
-        // TODO: 7/18/16 不保存同步方式，后面考虑一次性修改。
-        SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
-                GreenTagsApi.PK_B_GREENTAGS_FULLSCALE, mSwitchSyncMode.isChecked());
-        if (GreenTagsApi.FULLSCALE_ENABLED || mSwitchSyncMode.isChecked()) {
+        if (mSwitchSyncMode.isChecked()) {
             SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
                     GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
         }

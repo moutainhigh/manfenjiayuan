@@ -4,18 +4,16 @@
 
     <RelativeLayout
         android:id="@+id/ll_pay_info"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="visible">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_pay"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_double"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:src="@mipmap/ic_scan_card" />
     </RelativeLayout>
 

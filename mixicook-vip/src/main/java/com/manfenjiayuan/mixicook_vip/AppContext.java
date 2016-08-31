@@ -7,14 +7,11 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.mixicook_vip.utils.SharedPreferencesHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.AppException;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
-
-import java.io.File;
 
 
 /**
@@ -30,11 +27,9 @@ public class AppContext extends MfhApplication {
 
     @Override
     public void onCreate() {
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
+//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();
-
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
 
         configBugly();
 

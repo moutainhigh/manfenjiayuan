@@ -9,7 +9,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSON;
@@ -17,22 +16,21 @@ import com.bingshanguxue.vector_user.UserApiImpl;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -42,8 +40,6 @@ import de.greenrobot.event.EventBus;
 public class PayByVipFragment extends BasePayFragment {
     @Bind(R.id.et_barcode)
     EditText etBarCode;
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
 
     @Override
     protected int getLayoutResId() {
@@ -177,7 +173,6 @@ public class PayByVipFragment extends BasePayFragment {
         });
     }
 
-    @OnClick(R.id.button_submit)
     @Override
     protected void submitOrder() {
 //        if (bPayProcessing) {
@@ -186,7 +181,6 @@ public class PayByVipFragment extends BasePayFragment {
 //        }
 
         onDeactiveMode();
-        btnSubmit.setEnabled(false);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询用户信息", true);
         String codeA = etBarCode.getText().toString();
         if (StringUtils.isEmpty(codeA)) {
@@ -195,7 +189,7 @@ public class PayByVipFragment extends BasePayFragment {
         }
         ZLogger.d("codeA=" + codeA);
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             validateFailed(getString(R.string.toast_network_error));
             return;
         }
@@ -227,7 +221,6 @@ public class PayByVipFragment extends BasePayFragment {
         }
 
         onActiveMode();
-        btnSubmit.setEnabled(true);
     }
 
     /**
@@ -247,7 +240,6 @@ public class PayByVipFragment extends BasePayFragment {
         EventBus.getDefault().post(new PayActionEvent(PayActionEvent.PAY_ACTION_VIP_DETECTED, args));
 
         etBarCode.getText().clear();
-        btnSubmit.setEnabled(true);
     }
 
     /**

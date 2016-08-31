@@ -4,9 +4,8 @@
       tools:context="com.mfh.litecashier.ui.activity.SettingsActivity">
 
     <item
-        android:id="@+id/action_close"
+        android:id="@+id/action_canary"
         android:orderInCategory="100"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_toolbar_close"
-        android:title="退出"/>
+        app:showAsAction="always|withText"
+        android:title="Canary"/>
 </menu>

@@ -1,6 +1,6 @@
 package com.bingshanguxue.cashier.database.dao;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.mfh.comn.bean.PageInfo;

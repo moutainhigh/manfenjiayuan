@@ -15,7 +15,6 @@ import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.home.QuickPayFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangeNicknameFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.MyProfileFragment;
-import com.manfenjiayuan.mixicook_vip.ui.shopcart.ConfirmOrderFragment;
 import com.mfh.framework.uikit.base.BaseActivity;
 
 import butterknife.Bind;
@@ -27,7 +26,6 @@ import butterknife.Bind;
 public class SimpleActivity extends BaseActivity {
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
-    public static final int FT_CONFIRM_ORDER = 0x1;//确认订单
     public static final int FT_INPUT_TEXT = 0x02;
     public static final int FT_QUICK_PAY = 0x03;
     public static final int FT_MYPROFILE = 0x04;
@@ -152,14 +150,7 @@ public class SimpleActivity extends BaseActivity {
         toolbar.setTitle(title);
 
         switch (fragmentType) {
-            case FT_CONFIRM_ORDER: {
-                ConfirmOrderFragment fragment = new ConfirmOrderFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
+
             case FT_INPUT_TEXT: {
                 InputTextFragment fragment = new InputTextFragment();
                 getSupportFragmentManager().beginTransaction()

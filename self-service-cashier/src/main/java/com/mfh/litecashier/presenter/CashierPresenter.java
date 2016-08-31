@@ -1,12 +1,12 @@
 package com.mfh.litecashier.presenter;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
-import com.mfh.litecashier.database.logic.PosProductSkuService;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.mode.CashierMode;
 import com.mfh.litecashier.ui.view.ICashierView;
 
@@ -84,6 +84,7 @@ public class CashierPresenter {
 
         try{
             String plu = barcode.substring(1, 7);
+            //有小数点，单位克转换成千克。
             String weightStr = String.format("%s.%s", barcode.substring(7, 9), barcode.substring(9, 12));
             Double weight = Double.valueOf(weightStr);
             ZLogger.df(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",

@@ -9,9 +9,9 @@ import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.MfhEntity;
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
-import com.mfh.framework.net.AfinalFactory;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.AfinalFactory;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 
 import net.tsz.afinal.http.AjaxParams;
 

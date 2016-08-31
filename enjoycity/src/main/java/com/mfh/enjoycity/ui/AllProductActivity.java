@@ -40,11 +40,11 @@ import com.mfh.enjoycity.view.CategorySlidingTabStrip;
 import com.mfh.enjoycity.view.FloatShopcartView;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 

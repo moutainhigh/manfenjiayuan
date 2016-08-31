@@ -15,13 +15,11 @@ public class GreenTagsApi {
     public static final String PK_S_GREENTAGS_IP = "pk_greentags_ip";       //主机IP
     public static final String PK_I_GREENTAGS_PORT = "pk_greentags_port";   //主机端口号
     public static final String PK_I_GREENTAGS_SOAPVERSION = "pk_greentags_soapversion";//SOAP版本号
-    public static final String PK_B_GREENTAGS_FULLSCALE = "pk_greentags_fullscale";//全量更新
     public static final String PK_S_GREENTAGS_LASTCURSOR = "pk_greentags_lastcursor";//更新游标
 
     public static String LOCAL_SERVER_IP = "192.168.16.90";//"192.168.1.18";////"112.74.83.158";//"192.168.3.29";//
     public static int LOCAL_PORT = 3128;
     public static int SOAP_VERSION = SoapEnvelope.VER11;
-    public static boolean FULLSCALE_ENABLED = true;
     public static String SERVICE_NAME = "EslCoreService";
 
 
@@ -242,9 +240,6 @@ public class GreenTagsApi {
                 .getInt(PREF_GREENTAGS, PK_I_GREENTAGS_PORT, 3128);
         SOAP_VERSION = SharedPreferencesManager
                 .getInt(PREF_GREENTAGS, PK_I_GREENTAGS_SOAPVERSION, SoapEnvelope.VER11);
-        FULLSCALE_ENABLED = SharedPreferencesManager
-                .getBoolean(PREF_GREENTAGS, PK_B_GREENTAGS_FULLSCALE, true);
-
         URL = String.format("http://%s:%d/EslCoreService", LOCAL_SERVER_IP, LOCAL_PORT);
     }
 

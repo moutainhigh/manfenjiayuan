@@ -14,8 +14,8 @@ public class QuickPayInfo implements Serializable{
     private String subject;//主题
     private String body;//内容
     private Integer payType = WayType.NA;
-    private Double amount;//支付金额
-    private Double minAmount;
+    private Double amount = 0D;//支付金额
+    private Double minAmount = 0D;
 
     public Integer getBizType() {
         return bizType;

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -94,7 +94,7 @@ public class SMScaleFragmenet extends BaseFragment {
 
     @OnClick(R.id.button_bean2csv)
     public void writeBean2CSV() {
-        File file = SMScaleSyncManager2.getCSVFile();
+        File file = SMScaleSyncManager2.getCSVFile2();
         //mapping of columns with their positions
 //        ColumnPositionMappingStrategy<SMGoods> strat = new ColumnPositionMappingStrategy();
 //        //Set mappingStrategy type to SMGoods Type

@@ -15,7 +15,7 @@ import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -39,16 +39,6 @@ import java.util.List;
  * Created by Nat.ZZN(bingshanguxue) on 15/9/9.
  */
 public class AnalysisHelper {
-
-    /**
-     * 检查交接班信息
-     * */
-    public static void validateHandoverInfo(){
-        //上一次交接班时间
-        String lastHandoverDate = SharedPreferencesHelper.getLastHandoverDateTimeStr();
-        int lastHandoverShiftId = SharedPreferencesHelper.getLastHandoverShiftId();
-        ZLogger.d(String.format("lastHandover：shiftId %d, datetime %s", lastHandoverShiftId, lastHandoverDate));
-    }
     /**
      * 创建交接班订单<br>
      * 使用上一次交接班时间作为本次交接班统计的开始时间<br>
@@ -57,7 +47,7 @@ public class AnalysisHelper {
         //上一次交接班时间
         Date lastHandoverDate = SharedPreferencesHelper.getLastHandoverDateTime();
         int lastHandoverShiftId = SharedPreferencesHelper.getLastHandoverShiftId();
-        ZLogger.d(String.format("Create daily settle--last shiftId：%d, datetime：%s",
+        ZLogger.d(String.format("创建交接班订单--last shiftId：%d, datetime：%s",
                 lastHandoverShiftId, TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(lastHandoverDate)));
 
         //当前交接班时间
@@ -84,36 +74,6 @@ public class AnalysisHelper {
         return handOverBill;
     }
 
-    /**
-     * 判断是否已经（确认）日结
-     * @param dailySettleDatetime 日结日期
-     * */
-    public static boolean validateHaveDateEnd(String dailySettleDatetime){
-        DailysettleEntity dailysettleEntity = createDailysettle(dailySettleDatetime);
-        if (dailysettleEntity == null){
-            ZLogger.d(String.format("创建日结单失败：%s", dailySettleDatetime));
-            return false;
-        }
-        if (dailysettleEntity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_YES){
-            ZLogger.d(String.format("日结单已经确认：%s", dailySettleDatetime));
-            return true;
-        }
-        return false;
-    }
-    public static boolean validateHaveDateEnd(Date dailySettleDate){
-        DailysettleEntity dailysettleEntity = createDailysettle(dailySettleDate);
-        if (dailysettleEntity == null){
-            ZLogger.df(String.format("创建日结单失败：%s",
-                    TimeCursor.FORMAT_YYYYMMDD.format(dailySettleDate)));
-            return false;
-        }
-        if (dailysettleEntity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_YES){
-            ZLogger.df(String.format("日结单已经确认：%s",
-                    TimeCursor.FORMAT_YYYYMMDD.format(dailySettleDate)));
-            return true;
-        }
-        return false;
-    }
 
     /**
      * 创建日结单
@@ -330,7 +290,8 @@ public class AnalysisHelper {
     }
     public static List<AnalysisItemWrapper> getAccAnalysisList(AccWrapper accWrapper){
         if (accWrapper == null){
-            return null;
+            accWrapper = new AccWrapper();
+            accWrapper.initWithDailysettleAccItems(null);
         }
 
         List<AnalysisItemWrapper> items = new ArrayList<>();

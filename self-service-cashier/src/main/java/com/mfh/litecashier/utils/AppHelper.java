@@ -1,10 +1,23 @@
 package com.mfh.litecashier.utils;
 
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 
+import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
+import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.bingshanguxue.cashier.database.service.PosTopupService;
+import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.comn.config.UConfig;
+import com.mfh.framework.BizConfig;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.core.utils.StringUtils;
@@ -12,6 +25,14 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
+import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
+import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
+import com.mfh.litecashier.ui.activity.SplashActivity;
+
+import net.tsz.afinal.FinalDb;
+
+import org.century.GreenTagsApi;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -49,7 +70,7 @@ public class AppHelper {
                 SharedPreferencesManager.setAppDayFirstStartupDateTime(TimeCursor.InnerFormat.format(currentDate));
             }
         }
-        ZLogger.d(String.format("Initialize--application startup datetime: %s application day first startup datetime: %s",
+        ZLogger.d(String.format("application startup datetime: %s application day first startup datetime: %s",
                 SharedPreferencesManager.getAppStartupDateTime(), SharedPreferencesManager.getAppDayFirstStartupDateTime()));
 
     }
@@ -110,9 +131,134 @@ public class AppHelper {
 //                new WxPayEvent(errCode, errStr));
 //    }
 
-    public static void clearCache() {
-        ZLogger.d("清空缓存");
-        DataCleanManager.cleanDatabases(CashierApp.getAppContext());
+    /**
+     * 关闭App
+     * */
+    public static void closeApp(){
+        ZLogger.d("准备关闭App...");
+        String dbName;
+        if (BizConfig.RELEASE) {
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_release.db");
+        } else {
+            dbName = UConfigCache.getInstance().getDomainString(UConfig.CONFIG_COMMON,
+                    "dev." + UConfig.CONFIG_PARAM_DB_NAME, "mfh_cashier_dev.db");
+        }
+        ZLogger.d("关闭数据库:" + dbName);
+        FinalDb db = FinalDb.getDb(dbName);
+        if (db != null) {
+            db.close();
+        }
+        System.exit(0);
+    }
+
+    /**
+     * 重启APP
+     * */
+    public static void restartApp(Context context){
+        if (context == null){
+            return;
+        }
+        Intent mStartActivity = new Intent(context, SplashActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,
+                mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        // full restart and initialize the application
+        System.exit(0);
+    }
+    /**
+     * 恢复出厂设置
+     * */
+    public static void resetFactoryData(Context context){
+        clearAppData();
+
+        //删除SharedPreference
+        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP);
+        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP_BORN);
+        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_CONFIG);
+        SharedPreferencesManager.clear(SMScaleSyncManager2.PREF_SMSCALE);
+        SharedPreferencesManager.clear(GreenTagsApi.PREF_GREENTAGS);
+        SharedPreferencesManager.clear(AHScaleAgent.PREF_AHSCALE);
+
+        //删除无效文件
+        clearRedunantData(false);
+
+        //删除数据库
+        DataCleanManager.cleanApplicationData(context);
+        
+        restartApp(context);
+    }
+
+    /**
+     * 清除数据（文件，设置，账户，数据库等）
+     * <ol>
+     * <li>应用首次启动</li>
+     * <li>切换账号</li>
+     * </ol>
+     */
+    public static void clearAppData() {
+        CashierShopcartService.getInstance().clear();
+        PurchaseShopcartHelper.getInstance().clear();
+        PosCategoryGodosTempService.getInstance().clear();
+        //商品库
+        PosProductService.get().clear();//商品库
+        PosProductSkuService.get().clear();//一品多码
+        PosLocalCategoryService.get().clear();//前台类目关联商品
+        ProductCatalogService.getInstance().clear();//前台类目
+        SharedPreferencesHelper.setSyncProductsCursor("");
+        SharedPreferencesHelper.setPosSkuLastUpdate("");
+        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+                "");
+
+        clearRedunantData(false);
+
+    }
+
+    /**
+     * 清空过期数据，保留最近7天的数据。
+     */
+    public static void clearRedunantData(boolean isFactoryReset){
+        if (isFactoryReset){
+            AnalysisHelper.deleteOldDailysettle(0);//日结
+            CashierHelper.clearOldPosOrder(0);//收银订单
+            PosTopupService.get().deleteOldData(0);
+            ZLogger.deleteOldFiles(0);
+            SMScaleSyncManager2.deleteOldFiles(0);
+
+            //删除缓存
+            ACacheHelper.clear();
+            //清除数据缓存
+            DataCleanManager.clearCache(CashierApp.getAppContext());
+            GlobalInstance.getInstance().reset();
+        }
+        else{
+            AnalysisHelper.deleteOldDailysettle(7);//日结
+            CashierHelper.clearOldPosOrder(7);//收银订单
+            PosTopupService.get().deleteOldData(7);
+            ZLogger.deleteOldFiles(14);
+            SMScaleSyncManager2.deleteOldFiles(1);
+
+            AppHelper.clearCacheData();
+        }
+
+    }
+
+    /**
+     * 清空缓存数据
+     */
+    public static void clearCacheData() {
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_ORDER_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_SUPPLY_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_GOODS_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERETURN_ORDER_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERETURN_SUPPLY_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
+        ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_TENANT_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_GOODS_DATA);
+        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
+
         //清除数据缓存
         DataCleanManager.clearCache(CashierApp.getAppContext());
 
@@ -123,22 +269,7 @@ public class AppHelper {
         //清除图片缓存
 //        Glide.get(CashierApp.getAppContext()).clearMemory();
 
-        DataCacheHelper.getInstance().reset();
-    }
-
-    /**
-     * 清空缓存数据
-     */
-    public static void clearTempData() {
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_ORDER_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_SUPPLY_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_GOODS_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERETURN_ORDER_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERETURN_SUPPLY_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
-        ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_TENANT_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_INVENTORY_CREATEALLOCATION_GOODS_DATA);
-        ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_SEARCH_PARAMS);
+        GlobalInstance.getInstance().reset();
     }
 //
 //    /**
@@ -219,14 +350,15 @@ public class AppHelper {
 
     /**
      * 获取正确状态的文字颜色
-     * */
-    public static int getOkTextColor(){
+     */
+    public static int getOkTextColor() {
         return Color.parseColor("#FF009B4E");
     }
+
     /**
      * 获取错误状态的文字颜色
-     * */
-    public static int getErrorTextColor(){
+     */
+    public static int getErrorTextColor() {
         return Color.parseColor("#FE5000");
     }
 

@@ -5,7 +5,7 @@ import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.gprinter.command.EscCommand;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
@@ -135,7 +135,7 @@ public class PrintManagerImpl extends PrintManager {
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
                 assert nameTemp != null;
                 nameTemp = nameTemp.substring(sub2.length(),
-                        nameTemp != null ? nameTemp.length() : 0).trim();
+                        nameTemp.length()).trim();
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
 //            line.append(formatLong(sub2, 8));
 

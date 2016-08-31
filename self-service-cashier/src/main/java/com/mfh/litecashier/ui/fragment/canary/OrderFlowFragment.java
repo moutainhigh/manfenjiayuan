@@ -16,12 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -341,8 +341,10 @@ public class OrderFlowFragment extends BaseFragment {
             return;
         }
 
-        CashierOrderInfo cashierOrderInfo = CashierAgent
-                .makeCashierOrderInfo(orderEntity.getBizType(), orderEntity.getBarCode(), null);
+        CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(orderEntity, null);
+        if (cashierOrderInfo == null){
+            return;
+        }
 
         if (mPosOrderDetailDialog == null) {
             mPosOrderDetailDialog = new PosOrderDetailDialog(getActivity());

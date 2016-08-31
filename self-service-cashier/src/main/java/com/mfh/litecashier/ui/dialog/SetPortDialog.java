@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 
 
 /**
@@ -112,7 +112,7 @@ public class SetPortDialog extends CommonDialog {
 //        });
 
         aspnDevices = new ArrayAdapter<>(context,
-                R.layout.mfh_spinner_item_text, DataCacheHelper.getInstance().getComDevicesPath());
+                R.layout.mfh_spinner_item_text, GlobalInstance.getInstance().getComDevicesPath());
         aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPortSpinner.setAdapter(aspnDevices);
         mPortSpinner.setSelection(0);

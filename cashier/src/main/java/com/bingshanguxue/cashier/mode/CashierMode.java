@@ -1,6 +1,6 @@
 package com.bingshanguxue.cashier.mode;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;

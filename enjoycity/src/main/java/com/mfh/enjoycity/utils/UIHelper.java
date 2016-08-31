@@ -16,7 +16,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.net.URLHelper;
+import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 /**

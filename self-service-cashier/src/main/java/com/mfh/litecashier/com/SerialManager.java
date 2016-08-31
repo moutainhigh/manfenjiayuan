@@ -3,7 +3,7 @@ package com.mfh.litecashier.com;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.TscCommand;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.event.SerialPortEvent;
@@ -183,7 +183,8 @@ public class SerialManager {
      * 打开钱箱
      * */
     public static void openMoneyBox(){
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_STX_M));
+        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
+                CommandConstants.CMD_HEX_STX_M));
 
         EscCommand esc = new EscCommand();
         esc.addGeneratePluseAtRealtime(TscCommand.FOOT.F2, (byte)20);

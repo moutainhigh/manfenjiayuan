@@ -119,61 +119,61 @@
 
 
             <!--订单-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_order"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:logoSrc="@mipmap/icon_orders_normal"
+                app:src="@mipmap/icon_orders_normal"
                 app:position="top"
                 app:subText=""
                 app:text="订单"/>
             <!--充值-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_topup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:logoSrc="@mipmap/ic_topup_normal"
+                app:src="@mipmap/ic_topup_normal"
                 app:position="center"
                 app:subText=""
                 app:text="充值"/>
             <!--会员卡-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_card"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:logoSrc="@mipmap/ic_card_normal"
+                app:src="@mipmap/ic_card_normal"
                 app:position="bottom"
                 app:subText=""
                 app:text="会员卡"/>
 
             <!--门店-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_store"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_normal"
-                app:logoSrc="@mipmap/ic_store_normal"
+                app:src="@mipmap/ic_store_normal"
                 app:position="top"
                 app:subText=""
                 app:text="门店"/>
             <!--反馈-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:logoSrc="@mipmap/ic_feedback_normal"
+                app:src="@mipmap/ic_feedback_normal"
                 app:position="bottom"
                 app:subText="吐槽"
                 app:text="反馈"/>
 
 
             <!--米西合伙人-->
-            <com.mfh.framework.uikit.compound.SettingsItem
+            <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_parters"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_normal"
-                app:logoSrc="@mipmap/icon_mfhpartner_normal"
+                app:src="@mipmap/icon_mfhpartner_normal"
                 app:position="single"
                 app:subText="马上加入"
                 app:text="米西合伙人"/>

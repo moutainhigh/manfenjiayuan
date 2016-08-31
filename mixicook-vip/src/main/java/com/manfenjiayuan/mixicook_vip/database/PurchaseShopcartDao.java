@@ -2,7 +2,7 @@ package com.manfenjiayuan.mixicook_vip.database;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.Pair;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.database.dao.BaseSeqAbleDao;
 
 import java.util.List;

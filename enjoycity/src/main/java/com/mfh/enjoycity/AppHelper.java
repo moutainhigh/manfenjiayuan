@@ -20,7 +20,7 @@ import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.ShopcartHelper;
 import com.mfh.enjoycity.utils.UserProfileHelper;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;

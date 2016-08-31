@@ -12,9 +12,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -216,7 +216,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载订单流水。");
             onLoadFinished();
             return;
@@ -316,7 +316,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
             onLoadFinished();
             return;

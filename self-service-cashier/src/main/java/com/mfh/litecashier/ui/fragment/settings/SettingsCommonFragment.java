@@ -10,8 +10,10 @@ import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.mfh.framework.anlaysis.AnalysisAgent;
+import com.mfh.framework.anlaysis.AppInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -26,10 +28,10 @@ import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
-import com.mfh.litecashier.service.DialogManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 import com.tencent.bugly.beta.Beta;
 
@@ -75,9 +77,9 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     @Bind(R.id.item_umsips_rs232)
     SettingsItem umsipsRs232SettingsItem;
     @Bind(R.id.item_smscale_ftp)
-    SettingsItem smscaleFtpSettingsItem;
+    ToggleSettingItem toggleSmscaleFtp;
     @Bind(R.id.item_greentags_webservice)
-    SettingsItem greentagsSettingsItem;
+    ToggleSettingItem toggleGreenTags;
 
 
     private SetPortDialog setPortDialog = null;
@@ -130,7 +132,18 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
             }
         });
-
+        toggleSmscaleFtp.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
+            }
+        });
+        toggleGreenTags.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, isChecked);
+            }
+        });
         refresh();
     }
 
@@ -153,7 +166,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                        AppHelper.clearCache();
+                        AppHelper.clearCacheData();
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -177,8 +190,14 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         dialog.dismiss();
 
                         showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
+
+                        // 强制同步
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 99);
+                        SharedPreferencesHelper.setSyncProductsCursor("");
+                        SharedPreferencesHelper.setPosSkuLastUpdate("");
+
                         EventBus.getDefault().post(
-                                new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_INITIALIZE));
+                                new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -223,7 +242,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
      */
     @OnClick(R.id.item_terminal)
     public void registerPlat() {
-        DialogManager.getInstance().registerPos(getActivity());
+        GlobalInstance.getInstance().registerPos(getActivity());
     }
 
     @OnClick(R.id.item_version)
@@ -238,20 +257,21 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.initialize("LED客显", SerialManager.getLedPort(), SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
-            @Override
-            public void onSetPort(String port, String baudrate) {
-                tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
-                SerialManager.setLedPort(port);
-                SerialManager.setLedBaudrate(baudrate);
+        setPortDialog.initialize("LED客显", SerialManager.getLedPort(),
+                SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
+                    @Override
+                    public void onSetPort(String port, String baudrate) {
+                        tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
+                        SerialManager.setLedPort(port);
+                        SerialManager.setLedBaudrate(baudrate);
 
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
-                tsiLedDisplay.setChecked(false);
+                        //设置串口
+                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
+                        tsiLedDisplay.setChecked(false);
 
-                refresh();
-            }
-        });
+                        refresh();
+                    }
+                });
         if (!setPortDialog.isShowing()) {
             setPortDialog.show();
         }
@@ -342,7 +362,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     /**
      * 配置银联参数
-     * */
+     */
     @OnClick(R.id.item_umsips_rs232)
     public void configureUmsipsRs232() {
         if (mUmsipsDialog == null) {
@@ -411,8 +431,11 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             String terminalId = SharedPreferencesManager.getTerminalId();
             terminalSettingsItem.setSubTitle(terminalId);
 
-            versonSettingsItem.setSubTitle(String.format(Locale.US, "%s - %d",
-                    CashierApp.getVersionName(), CashierApp.getVersionCode()));
+            AppInfo appInfo = AnalysisAgent.getAppInfo(CashierApp.getAppContext());
+            if (appInfo != null) {
+                versonSettingsItem.setSubTitle(String.format(Locale.US, "%s - %d",
+                        appInfo.getVersionName(), appInfo.getVersionCode()));
+            }
             tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getLedPort(), SerialManager.getLedBaudrate()));
             tsiLedDisplay.setChecked(false);
@@ -425,9 +448,14 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781));
             umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
-            smscaleFtpSettingsItem.setSubTitle(String.format("%s:%d",
+            toggleSmscaleFtp.setSubTitle(String.format("%s:%d",
                     SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
-            greentagsSettingsItem.setSubTitle(GreenTagsApi.URL);
+            toggleSmscaleFtp.setChecked(SharedPreferencesHelper
+                    .getBoolean(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, false));
+            toggleGreenTags.setSubTitle(GreenTagsApi.URL);
+            toggleGreenTags.setChecked(SharedPreferencesHelper
+                    .getBoolean(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, false));
+
             tsiSoftKeyboard.setChecked(SharedPreferencesManager.isSoftKeyboardEnabled());
             ttsToggleItem.setChecked(
                     SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
@@ -465,7 +493,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     @Override
     public void onPlatUpdate() {
-
         refresh();
     }
 

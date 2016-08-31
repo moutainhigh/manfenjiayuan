@@ -11,15 +11,19 @@ import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.constants.IMBizType;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.PayloadHelper;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 
@@ -90,17 +94,22 @@ public class PushDemoReceiver extends BroadcastReceiver {
      * 处理透传（payload）数据
      * */
     private static void parsePushPayload(Context context, String data){
-        Integer bizType = PayloadHelper.getJsonMsgType(data);//获取推送的数据类型
-        ZLogger.df(String.format("payload=(%s)%s", bizType, data));
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        JSONObject msgObj = jsonObject.getJSONObject("msg");
+        JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
+
+        if (msgBeanObj == null){
+            return;
+        }
+
+        JSONObject bodyObj = msgBeanObj.getJSONObject("body");
+        Integer bizType = msgBeanObj.getIntValue("bizType");//获取推送的数据类型
+        String time = msgBeanObj.getString("time");
+        ZLogger.df(String.format("%s--%s", bizType, data));
 
         //小伙伴
         if (IMBizType.ORDER_TRANS_NOTIFY == bizType){
             Bundle extras = new Bundle();
-
-            JSONObject jsonObject = JSONObject.parseObject(data);
-            JSONObject msgObj = jsonObject.getJSONObject("msg");
-            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
-            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
             JSONObject metaObj = msgObj.getJSONObject("meta");
             if (metaObj != null){
                 extras.putString("orderId", metaObj.getString("tagOne"));
@@ -121,6 +130,30 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //SKU更新
         else if (IMBizType.TENANT_SKU_UPDATE == bizType){
+            Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+
+            //保留最近一个小时的消息
+            if (createTime == null){
+                ZLogger.df("消息无效: time＝null");
+                return;
+            }
+
+            Calendar msgTrigger = Calendar.getInstance();
+            msgTrigger.setTime(createTime);
+
+            Calendar minTrigger = Calendar.getInstance();
+            minTrigger.add(Calendar.HOUR_OF_DAY, -1);
+            if (minTrigger.after(msgTrigger)) {
+                ZLogger.df(String.format("消息过期--当前时间:%s,消息创建时间:%s",
+                        TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                        TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
+                return;
+            }
+
+            ZLogger.df(String.format("SKU更新--当前时间:%s,消息创建时间:%s",
+                    TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                    TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
+
             int count = SharedPreferencesHelper
                     .getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
             SharedPreferencesHelper
@@ -139,31 +172,37 @@ public class PushDemoReceiver extends BroadcastReceiver {
         }
         //现金超过授权额度，要求锁定pos机
         else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
-            AlarmManagerHelper.triggleNextDailysettle(1);
-//            JSONObject jsonObject = JSONObject.parseObject(data);
-//            JSONObject msgObj = jsonObject.getJSONObject("msg");
-//            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
-//            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
-//            String content = bodyObj.getString("content");
-//
-//            Double cashLimitAmount = Double.valueOf(content);
-//            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
-//            Bundle args = new Bundle();
-//            args.putDouble("amount", cashLimitAmount);
-//
-//            //同步数据
-//            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_LOCK_POS_CLIENT, args));
+            Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
 
-            ValidateManager.get().batchValidate();
+            //保留最近一个小时的消息
+            if (createTime == null){
+                ZLogger.df("消息无效: time＝null");
+                return;
+            }
+
+            Calendar msgTrigger = Calendar.getInstance();
+            msgTrigger.setTime(createTime);
+
+            Calendar minTrigger = Calendar.getInstance();
+            minTrigger.add(Calendar.HOUR_OF_DAY, -1);
+            if (minTrigger.after(msgTrigger)) {
+                ZLogger.df(String.format("消息过期--当前时间:%s,消息创建时间:%s",
+                        TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                        TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
+                return;
+            }
+
+            ZLogger.df(String.format("现金超过授权额度--当前时间:%s,消息创建时间:%s",
+                    TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                    TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
+
+            AlarmManagerHelper.triggleNextDailysettle(1);
+            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
         }
         //现金授权额度将要用完，即将锁定pos机
         else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
             AlarmManagerHelper.triggleNextDailysettle(1);
 
-            JSONObject jsonObject = JSONObject.parseObject(data);
-            JSONObject msgObj = jsonObject.getJSONObject("msg");
-            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
-            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
             String content = bodyObj.getString("content");
 
             Double cashLimitAmount = Double.valueOf(content);

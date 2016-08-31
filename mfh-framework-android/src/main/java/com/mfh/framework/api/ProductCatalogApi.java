@@ -10,6 +10,7 @@ import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
 /**
+ * 商品类目
  * Created by bingshanguxue on 8/16/16.
  */
 public class ProductCatalogApi {
@@ -25,14 +26,20 @@ public class ProductCatalogApi {
      * */
     public final static String URL_DOWNLOAD_PRODUCTCATALOG = URL_PRODUCT_CATALOG + "downLoadProductCatalog";
 
+
+    /**
+     * 计算有多少可同步的商品类目关系
+     * 同步完downLoadProductCatalog，校验pos和云端数据一致.不一致，下次同步会自动全量同步
+     * /anon/sc/productCatalog/countProductCatalogSyncAbleNum
+     * */
+    public final static String URL_COUNTPRODUCTCATALOG_SYNCABLENUM = URL_PRODUCT_CATALOG + "countProductCatalogSyncAbleNum";
+
     /**
      * 把几个商品添加到指定前台类目中：  /anon/sc/productCatalog/addToCatalog?groupIds=3397&productIds=20551&catalogType=1
      其中groupIds为建好的前台类目，productIds为商品的spuId（不是skuId）
      spuId就是productId
      */
     public final static String URL_ADD2CATEGORY = URL_PRODUCT_CATALOG + "addToCatalog";
-
-
 
 
     /**
@@ -53,8 +60,8 @@ public class ProductCatalogApi {
     public static void downLoadProductCatalog(String startCursor, PageInfo pageInfo,
                                               AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (StringUtils.isEmpty(startCursor)){
-            params.put("groupIds", startCursor);
+        if (!StringUtils.isEmpty(startCursor)){
+            params.put("startCursor", startCursor);
         }
 
         if (pageInfo != null) {
@@ -65,6 +72,17 @@ public class ProductCatalogApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.getHttp(true).post(URL_DOWNLOAD_PRODUCTCATALOG, params, responseCallback);
+    }
+
+    /**
+     * 计算有多少可同步的商品类目关系
+     * */
+    public static void countProductCatalogSyncAbleNum(AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_COUNTPRODUCTCATALOG_SYNCABLENUM, params, responseCallback);
     }
 
     /**

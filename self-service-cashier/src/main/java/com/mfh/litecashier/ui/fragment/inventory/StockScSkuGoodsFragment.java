@@ -25,14 +25,14 @@ import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -261,7 +261,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment  implements IS
             DialogUtil.showHint("商品条码不能为空");
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
             return;
@@ -367,7 +367,7 @@ public class StockScSkuGoodsFragment extends BaseProgressFragment  implements IS
 //            btnSubmit.setEnabled(true);
 //            return;
 //        }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
             btnSubmit.setEnabled(true);

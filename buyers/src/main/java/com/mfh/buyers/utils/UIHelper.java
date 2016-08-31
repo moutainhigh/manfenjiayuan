@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.mfh.buyers.R;
 import com.mfh.buyers.ui.web.ComnJBH5Activity;
 import com.mfh.framework.core.camera.CameraSessionUtil;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.compound.SettingsItem;

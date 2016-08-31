@@ -21,7 +21,7 @@ import com.chinaums.mis.bank.ICallBack;
 import com.chinaums.mis.bean.RequestPojo;
 import com.chinaums.mis.bean.ResponsePojo;
 import com.chinaums.mis.bean.TransCfx;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -30,7 +30,7 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 
@@ -120,7 +120,7 @@ public class UmsipsDialog extends CommonDialog {
 //        });
 
         aspnDevices = new ArrayAdapter<>(context,
-                R.layout.mfh_spinner_item_text, DataCacheHelper.getInstance().getComDevicesPath());
+                R.layout.mfh_spinner_item_text, GlobalInstance.getInstance().getComDevicesPath());
         aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPortSpinner.setAdapter(aspnDevices);
         mPortSpinner.setSelection(0);

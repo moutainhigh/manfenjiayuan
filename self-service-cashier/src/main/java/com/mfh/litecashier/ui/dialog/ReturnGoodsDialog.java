@@ -17,20 +17,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierAgent;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfo;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -43,9 +42,7 @@ import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
-import com.mfh.litecashier.utils.DataCacheHelper;
-
-import java.util.List;
+import com.mfh.litecashier.utils.GlobalInstance;
 
 
 /**
@@ -222,7 +219,8 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
                 cashierOrderInfo.getFinalAmount(), 0D,
                 null);
         ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
-        CashierAgent.updateCashierOrder(cashierOrderInfo, paymentInfo);
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
 
         cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
                 cashierOrderInfo.getPosTradeNo(),cashierOrderInfo.getVipMember());
@@ -233,12 +231,12 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         //更新订单信息，同时打开钱箱，退钱给顾客
         SerialManager.openMoneyBox();
 
-        List<PosOrderEntity> orderEntities = CashierFactory.fetchActiveOrderEntities(BizType.POS,
+        PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                 cashierOrderInfo.getPosTradeNo());
         //同步订单信息
 //        UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
         //打印订单
-        PrintManager.printPosOrder(orderEntities, true);
+        PrintManager.printPosOrder(orderEntity, true);
         CashierShopcartService.getInstance()
                 .deleteBy(String.format("posTradeNo = '%s'", curOrderTradeNo));
 
@@ -268,7 +266,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
-            final Double weightVal = DataCacheHelper.getInstance().getNetWeight();
+            final Double weightVal = GlobalInstance.getInstance().getNetWeight();
             if (weightVal > 0){
                 productAdapter.append(curOrderTradeNo, goods, 0 - weightVal);
             }

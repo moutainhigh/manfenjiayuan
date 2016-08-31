@@ -47,7 +47,7 @@
             android:layout_marginTop="8dp"/>
 
         <!--修改商品数目-->
-        <com.manfenjiayuan.business.widget.NumberPickerView
+        <com.bingshanguxue.vector_uikit.NumberPickerView
             android:id="@+id/view_numberpicker"
             android:layout_width="120dp"
             android:layout_height="wrap_content"

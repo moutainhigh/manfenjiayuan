@@ -14,7 +14,7 @@ import com.mfh.enjoycity.bean.CategoryProductBean;
 import com.mfh.enjoycity.ui.AllProductActivity;
 import com.mfh.enjoycity.ui.CategoryTabActivity;
 import com.mfh.enjoycity.ui.HotSalesActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.compound.BadgeViewButton;
 import com.mfh.framework.uikit.widget.ChildGridView;
 

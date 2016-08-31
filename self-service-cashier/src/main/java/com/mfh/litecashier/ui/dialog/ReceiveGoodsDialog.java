@@ -15,26 +15,25 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
-import com.bingshanguxue.cashier.model.wrapper.CashierOrderInfo;
+import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.database.logic.PosProductSkuService;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.util.List;
 
@@ -239,7 +238,7 @@ public class ReceiveGoodsDialog extends CommonDialog {
 
         //添加商品
         if (productEntity.getPriceType().equals(PriceType.WEIGHT)) {
-            productAdapter.append(orderBarcode, productEntity, 0 - DataCacheHelper.getInstance().getNetWeight());
+            productAdapter.append(orderBarcode, productEntity, 0 - GlobalInstance.getInstance().getNetWeight());
         } else {
             if (packFlag == 1) {
                 productAdapter.append(orderBarcode, productEntity, 0 - productEntity.getPackageNum());
@@ -253,16 +252,13 @@ public class ReceiveGoodsDialog extends CommonDialog {
      * 提交订单,新建订单并保存订单明细，标记为挂单状态，然后设置调单。
      * */
     private void submitOrder(){
-        CashierAgent.simpleSettle(orderBarcode, productAdapter.getEntityList());
-        CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(BizType.POS,
-                orderBarcode, null);
+        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(orderBarcode,
+                PosOrderEntity.ORDER_STATUS_HANGUP, productAdapter.getEntityList());
         if (cashierOrderInfo == null) {
             DialogUtil.showHint("创建订单失败");
             return;
         }
 
-        //更新订单状态：挂单
-        CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_HANGUP);
 
         dismiss();
         //加载订单

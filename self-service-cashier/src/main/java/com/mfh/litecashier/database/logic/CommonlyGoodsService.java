@@ -2,7 +2,7 @@ package com.mfh.litecashier.database.logic;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
@@ -27,12 +27,6 @@ public class CommonlyGoodsService extends BaseService<CommonlyGoodsEntity, Strin
      * @return
      */
     public static CommonlyGoodsService get() {
-//        String lsName = CommonlyGoodsService.class.getName();
-//        if (ServiceFactory.checkService(lsName))
-//            instance = ServiceFactory.getService(lsName);
-//        else {
-//            instance = new CommonlyGoodsService();//初始化登录服务
-//        }
         if (instance == null) {
             synchronized (CommonlyGoodsService.class) {
                 if (instance == null) {

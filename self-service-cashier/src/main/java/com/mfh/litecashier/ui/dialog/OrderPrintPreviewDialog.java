@@ -16,13 +16,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -30,7 +31,6 @@ import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.service.UploadSyncManager;
 
@@ -202,8 +202,8 @@ public class OrderPrintPreviewDialog extends CommonDialog {
 
                     //明细：商品信息
                     sbHtml.append("<p>--------------------------------</p>\n");
-                    List<PosOrderItemEntity> posOrderItemEntityList = CashierFactory
-                            .fetchActiveOrderItems(mPosOrderEntity.getBarCode());
+                    List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent
+                            .fetchOrderItems(mPosOrderEntity);
                     if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
                         sbHtml.append("<table border=\"0\">\n");
                         sbHtml.append("<tr>\n" +
@@ -234,24 +234,6 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                         payableAmount = 0D;
                     }
 
-                    sbHtml.append(String.format("<p>" +
-                                    "--------------------------------\n" +
-                                    "<div><font color=#000000>合计：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>会员/卡券/促销优惠：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>应收：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>付款：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>找零：%.2f</font></div>\n" +
-                                    "<div><font color=#000000>谢谢惠顾</font></div>\n" +
-                                    "<div><font color=#000000>欢迎下次光临</font></div>\n" +
-                                    "</p>",
-                            mPosOrderEntity.getFinalAmount(),
-                            payWrapper.getRuleDiscount(),
-                            payableAmount,
-                            mPosOrderEntity.getPaidAmount()
-                                    - payWrapper.getRuleDiscount()
-                                    + payWrapper.getChange(),
-                            payWrapper.getChange()));
-
                     sbHtml.append("--------------------------------\n");
                     sbHtml.append(String.format(
                                     "<div><font color=#000000>合计：%.2f</font></div>\n",
@@ -273,8 +255,8 @@ public class OrderPrintPreviewDialog extends CommonDialog {
 //                                    + payWrapper.getChange()));
                     sbHtml.append(String.format("<div><font color=#000000>找零：%.2f</font></div>\n",
                             payWrapper.getChange()));
-                    sbHtml.append("<div><font color=#000000>谢谢惠顾</font></div>\n" +
-                                    "<div><font color=#000000>欢迎下次光临</font></div>\n" +
+                    sbHtml.append("\n\n<div align=\"center\"><font color=#000000>谢谢惠顾</font></div>\n" +
+                                    "<div align=\"center\"><font color=#000000>欢迎下次光临</font></div>\n" +
                                     "</p>");
                 }
 

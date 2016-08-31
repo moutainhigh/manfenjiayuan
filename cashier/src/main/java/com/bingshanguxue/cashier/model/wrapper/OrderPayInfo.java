@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class OrderPayInfo implements Serializable {
     private Integer payType = WayType.NA;
-    private Double paidAmount = 0D;//已支付金额
 //    private JSONArray payWays = new JSONArray();//具体支付明细
     private List<PayWay> payWays = new ArrayList<>();
+    private Double paidAmount = 0D;//已支付金额(订单实际金额)
     private Double change = 0D;//找零
     private Double ruleDiscount = 0D;//促销优惠
     private String couponsIds = "";

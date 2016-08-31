@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -295,6 +295,7 @@ public class DoubleInputDialog extends CommonDialog {
             dismiss();
         } catch (Exception e) {
 //                        java.lang.NumberFormatException: Invalid double: "88.0.08"
+            e.printStackTrace();
             ZLogger.e(e.toString());
         }
 

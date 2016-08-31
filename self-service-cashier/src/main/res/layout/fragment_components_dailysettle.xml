@@ -1,9 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/material_white"
-              android:baselineAligned="false"
-              android:orientation="vertical">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
 
 
     <include
@@ -13,7 +14,7 @@
     <LinearLayout
         android:id="@+id/ll_brief_1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:layout_below="@+id/frame_top"
         android:layout_marginEnd="@dimen/spacing_double"
         android:layout_marginStart="@dimen/spacing_double"
@@ -40,25 +41,40 @@
             android:gravity="center_vertical"
             android:text="结算人："/>
 
-
-        <!--交班时间-->
-        <TextView
-            android:id="@+id/tv_date"
-            style="@style/mfh_textview_text"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="日结时间："/>
+            android:layout_weight="1">
+            <!--交班时间-->
+            <TextView
+                android:id="@+id/tv_date"
+                style="@style/mfh_textview_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="日结时间："/>
+            <!--交班时间-->
+            <com.mfh.framework.uikit.compound.OptionalLabel
+                android:id="@+id/label_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/tv_date"
+                app:mLabelView_inputHint=""
+                app:mLabelView_inputTextColor="@color/black"
+                app:mLabelView_inputTextColorHint="@color/black_35"
+                app:mLabelView_inputTextSize="12sp"
+                app:mLabelView_rightImageButtonEnabled="false"/>
+        </RelativeLayout>
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_brief_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_brief_1"
         android:layout_marginEnd="@dimen/spacing_double"
         android:layout_marginStart="@dimen/spacing_double"
-        android:layout_below="@+id/ll_brief_1"
         android:orientation="horizontal"
         android:padding="8dp">
         <!--营业额合计-->
@@ -94,14 +110,14 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
-        android:layout_below="@+id/ll_brief_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="@dimen/spacing_double"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/ll_brief_2"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="@dimen/spacing_double"
         android:scrollbars="vertical">
 
         <LinearLayout
@@ -173,11 +189,11 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_print"
-        android:src="@mipmap/ic_print_white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_double"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_print_white"/>
 
 </RelativeLayout>

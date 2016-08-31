@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.mfh.framework.ZIntent;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;

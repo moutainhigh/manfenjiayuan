@@ -1,7 +1,7 @@
 package com.mfh.litecashier.hardware.GreenTags;
 
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 
@@ -34,11 +34,6 @@ import java.util.Date;
  * Created by bingshanguxue on 5/3/16.
  */
 public class GreenTagsApiImpl2 extends GreenTagsApi {
-
-    public interface GreenTagsSyncListener{
-        void syncSucceed(Date startCursor);
-        void syncFailed(String msg);
-    }
 
     public static class ESLPushGoodsInfoExPackResult{
         private boolean result = false;
@@ -73,7 +68,8 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
     public static ESLPushGoodsInfoExPackResult ESLPushGoodsInfoExPack2(ArrayOfGoodsInfoEX arrayOfGoodsInfoEX,
                                                  Date startCursor)
             throws XmlPullParserException, IOException {
-        ZLogger.df(String.format("准备推送%d个商品到ESL", arrayOfGoodsInfoEX.size()));
+        ZLogger.df(String.format("准备推送%d个商品到ESL %s", arrayOfGoodsInfoEX.size(),
+                TimeUtil.format(startCursor, TimeCursor.InnerFormat)));
         GreenTagsApi.printDefault();
 
         //Step 1: Create request
@@ -122,7 +118,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
             ZLogger.df(String.format("response2: %s",
                     response2 != null ? response2.toString() : "[NULL]"));
 
-            if (response2 != null) {
+//            if (response2 != null) {
 //                java.lang.RuntimeException: illegal property: ESLPushGoodsInfoExPackResult
 //                SoapObject result = (SoapObject) response2.getProperty(GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK + "Result");
 //                ZLogger.d(String.format("%sResult: %s", GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK,
@@ -131,7 +127,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
 //                SoapObject result2 = (SoapObject) response2.getProperty(GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK + "Response");
 //                ZLogger.d(String.format("%sResponse: %s", GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK,
 //                        result2 != null ? result2.toString() : "NULL"));
-            }
+//            }
 
             return new ESLPushGoodsInfoExPackResult(true, startCursor);
         } catch (Exception e) {
@@ -198,7 +194,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
             ZLogger.df(String.format("response2: %s",
                     response2 != null ? response2.toString() : "[NULL]"));
 
-            if (response2 != null) {
+//            if (response2 != null) {
 //                java.lang.RuntimeException: illegal property: ESLPushGoodsInfoExPackResult
 //                SoapObject result = (SoapObject) response2.getProperty(GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK + "Result");
 //                ZLogger.d(String.format("%sResult: %s", GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK,
@@ -207,7 +203,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
 //                SoapObject result2 = (SoapObject) response2.getProperty(GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK + "Response");
 //                ZLogger.d(String.format("%sResponse: %s", GreenTagsApi.ESL_PUSHGOODSINFOEX_PACK,
 //                        result2 != null ? result2.toString() : "NULL"));
-            }
+//            }
 
             // 保存批量上传订单时间
             String cursor = TimeUtil.format(startCursor, TimeCursor.InnerFormat);

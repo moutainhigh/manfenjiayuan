@@ -12,7 +12,7 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -23,7 +23,7 @@ import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.SerialPortEvent;
 import com.mfh.litecashier.hardware.SMScale.DS781A;
 import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
-import com.mfh.litecashier.utils.DataCacheHelper;
+import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -199,7 +199,7 @@ public abstract class CashierActivity extends BaseActivity {
 
             DS781A ds781A = DigiDS781Agent.parseData(comBean.bRec);
             if (ds781A != null) {
-                DataCacheHelper.getInstance().setNetWeight(ds781A.getNetWeight());
+                GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
             }
         } else {
             String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
@@ -306,7 +306,7 @@ public abstract class CashierActivity extends BaseActivity {
             Collections.addAll(allDevices, entryValues);
         }
         ZLogger.d("devicePath:" + allDevices.toString());
-        DataCacheHelper.getInstance().setComDevicesPath(allDevices);//保存devices
+        GlobalInstance.getInstance().setComDevicesPath(allDevices);//保存devices
 
         if (!BizConfig.RELEASE) {
             String[] entryValues2 = mSerialPortFinder.getAllDevices();
@@ -367,7 +367,7 @@ public abstract class CashierActivity extends BaseActivity {
                 OpenComPort(comScale);
                 ZLogger.d("打开电子秤串口完成");
                 //清空数据
-                DataCacheHelper.getInstance().setNetWeight(0D);
+                GlobalInstance.getInstance().setNetWeight(0D);
             } catch (Exception e) {
                 ZLogger.ef(e.toString());
             }
@@ -375,14 +375,14 @@ public abstract class CashierActivity extends BaseActivity {
             OpenComPort(comScale);
 
             //清空数据
-            DataCacheHelper.getInstance().setNetWeight(0D);
+            GlobalInstance.getInstance().setNetWeight(0D);
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE_CLOSE) {
             CloseComPort(comScale);
             //清空数据
-            DataCacheHelper.getInstance().setNetWeight(0D);
+            GlobalInstance.getInstance().setNetWeight(0D);
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_SCALE) {
             OpenComPort(comScale);
-            DataCacheHelper.getInstance().setNetWeight(0D);
+            GlobalInstance.getInstance().setNetWeight(0D);
             sendPortData(comScale, event.getCmd(), false);
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_INIT) {
             CloseComPort(comDisplay);

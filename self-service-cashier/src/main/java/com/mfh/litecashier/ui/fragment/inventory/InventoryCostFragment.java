@@ -35,12 +35,12 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -619,7 +619,7 @@ public class InventoryCostFragment extends BaseProgressFragment
      */
     @OnClick(R.id.empty_view)
     public void loadGoodsList() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载商品列表。");
             onLoadFinished();
             return;
@@ -661,7 +661,7 @@ public class InventoryCostFragment extends BaseProgressFragment
 //            onLoadFinished();
             return;
         }
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             ZLogger.d("网络未连接，暂停加载库存商品。");
             onLoadFinished();
             return;
@@ -731,7 +731,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                     ZLogger.d("售价不变");
                     return;
                 }
-                if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+                if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
                     DialogUtil.showHint(getString(R.string.toast_network_error));
                     return;
                 }
@@ -792,7 +792,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                     ZLogger.d("排面库存不变");
                     return;
                 }
-                if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+                if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
                     DialogUtil.showHint(getString(R.string.toast_network_error));
                     return;
                 }

@@ -6,7 +6,7 @@ import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
@@ -146,7 +146,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
         }
 
         //标准价金额
-        shopcartEntity.setAmount(shopcartEntity.getBcount() * goods.getCostPrice());
+        shopcartEntity.setAmount(shopcartEntity.getBcount() * shopcartEntity.getCostPrice());
         //成交金额
         shopcartEntity.setFinalAmount(shopcartEntity.getBcount() * shopcartEntity.getFinalPrice());
 

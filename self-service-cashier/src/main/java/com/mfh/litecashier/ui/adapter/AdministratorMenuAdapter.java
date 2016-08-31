@@ -6,10 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.bingshanguxue.cashier.model.wrapper.LocalMenu;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 
 import java.util.List;
 
@@ -21,9 +20,9 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class AdministratorMenuAdapter
-        extends RegularAdapter<CashierFunctional, AdministratorMenuAdapter.MenuOptioinViewHolder> {
+        extends RegularAdapter<LocalMenu, AdministratorMenuAdapter.MenuOptioinViewHolder> {
 
-    public AdministratorMenuAdapter(Context context, List<CashierFunctional> entityList) {
+    public AdministratorMenuAdapter(Context context, List<LocalMenu> entityList) {
         super(context, entityList);
     }
 
@@ -44,16 +43,9 @@ public class AdministratorMenuAdapter
 
     @Override
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
-        final CashierFunctional entity = entityList.get(position);
+        final LocalMenu entity = entityList.get(position);
 
-        if (entity.getType() == 0) {
-//            Glide.with(mContext).load(entity.getResId())
-//                    .error(R.mipmap.ic_image_error).into(holder.ivHeader);
-            holder.ivHeader.setImageResource(entity.getResId());
-        } else {
-            Glide.with(mContext).load(entity.getImageUrl())
-                    .error(R.mipmap.ic_image_error).into(holder.ivHeader);
-        }
+        holder.ivHeader.setImageResource(entity.getResId());
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {

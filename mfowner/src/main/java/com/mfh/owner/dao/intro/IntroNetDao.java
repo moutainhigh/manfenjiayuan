@@ -3,7 +3,7 @@ package com.mfh.owner.dao.intro;
 
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetProcessor;
 
 /**
  * Created by yxm on 2014/11/26.

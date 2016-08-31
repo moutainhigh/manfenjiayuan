@@ -1,6 +1,6 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.Comparator;
 

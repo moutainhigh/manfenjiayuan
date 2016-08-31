@@ -19,14 +19,13 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.core.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.adapter.SettingsGoodsAdapter;
 import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
 import com.mfh.litecashier.ui.widget.InputSearchView;
@@ -262,14 +261,6 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
     };
 
     /**
-     * 同步商品
-     * */
-    @OnClick(R.id.fab_sync)
-    public void syncGoods() {
-        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
-    }
-
-    /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(SettingsFragment.SettingsGoodsEvent event) {
@@ -385,6 +376,10 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
             break;
             case "水果":{
                 sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_FRUIT));
+            }
+            break;
+            case "水台":{
+                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_WARTER));
             }
             break;
             default:{

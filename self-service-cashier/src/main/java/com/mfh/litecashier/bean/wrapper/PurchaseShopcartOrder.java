@@ -1,6 +1,6 @@
 package com.mfh.litecashier.bean.wrapper;
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.utils.ObjectsCompact;
 

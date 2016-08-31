@@ -1,7 +1,7 @@
 package com.mfh.litecashier.hardware.SMScale;
 
 
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.Encoding;
 
 import java.io.File;
@@ -28,7 +28,6 @@ public class FTPManager {
 
     /*********  FTP PASSWORD ***********/
     public static String FTP_PASS  ="123456";
-
 
     public static String ENCODING_CHARSET  = Encoding.CHARSET_GBK;
 
@@ -60,8 +59,9 @@ public class FTPManager {
             try {
                 ftpClient.disconnect(true);
             } catch (Exception e2){
-                e2.printStackTrace();
-                ZLogger.e(e2.toString());
+//                java.lang.IllegalStateException: Client not connected
+//                e2.printStackTrace();
+                ZLogger.ef(e2.toString());
             }
         }
     }

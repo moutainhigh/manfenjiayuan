@@ -3,7 +3,6 @@ package com.bingshanguxue.cashier.database.entity;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.constant.BizSubType;
-import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.MfhEntity;
 
 /**
@@ -12,13 +11,17 @@ import com.mfh.framework.core.MfhEntity;
  */
 @Table(name = "tb_pos_order_v3")
 public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
-    /**POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo*/
+    /**
+     * POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo
+     */
     private String barCode;
 
     public static final Integer DEACTIVE = 0;
     public static final Integer ACTIVE = 1;
-    /**是否激活状态，0 已关闭；1 已激活（默认值）
-     * 订单关闭后，对应的订单明细*/
+    /**
+     * 是否激活状态，0 已关闭；1 已激活（默认值）
+     * 订单关闭后，对应的订单明细
+     */
     private Integer isActive = ACTIVE;
 
     private Integer bizType;//业务类型
@@ -46,8 +49,6 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
     private Long humanId; //订单请求人，业主ID
 
-
-
     /**
      * 同步状态
      * 0-初始
@@ -74,8 +75,8 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     private Double finalAmount = 0D;
     //折扣价1(价格调整)
     private Double discountAmount = 0D;
-
-    private Double bcount = 0D; //总件数
+    //商品总数量
+    private Double bcount = 0D;
 
     //deprecated废弃
     private Long companyId; //超市商家
@@ -83,22 +84,26 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     private Long sellerId;//订单所属租户编号(销售网点的公司);//spid，ternatid
 
 
-
-    /**
-     * 支付方式<br>
-     * {@link WayType#CASH 1 现金}<br>
-     */
-    private Integer payType;
+    //=========== @Deprecated start ==================
+    @Deprecated
+    private Integer payType;//支付方式
+    @Deprecated
     private String couponsIds = ""; //优惠券号列表
+    @Deprecated
     private String ruleIds = "";//促销规则
-    //折扣价2(促销规则&卡券优惠)
-    private Double ruleDiscountAmount = 0D;
+    @Deprecated
+    private Double score = 0D; //订单总积分
+    @Deprecated
+    private Double ruleDiscountAmount = 0D;//折扣价2(促销规则&卡券优惠)
+    @Deprecated
     //已支付金额＝实际收取金额＋折扣价2 >＝ 商品成交金额＝折扣价1＋商品零售金额
     private Double paidAmount = 0D;
+    @Deprecated
     //找零金额，与paidAmount一样，订单支付记录表中对应AMOUNT_TYPE_OUT的金额总和
     //注意：只记录当前订单找零金额，不纳入统计
     private Double change = 0D;
-    private Double score = 0D; //订单总积分
+    //=========== @Deprecated end ==================
+
 
     public String getBarCode() {
         return barCode;
@@ -174,22 +179,37 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
         this.discountAmount = discountAmount;
     }
 
-
+    @Deprecated
     public String getCouponsIds() {
         return couponsIds;
     }
 
+    @Deprecated
     public void setCouponsIds(String couponsIds) {
         this.couponsIds = couponsIds;
     }
 
+    @Deprecated
     public String getRuleIds() {
         return ruleIds;
     }
 
+    @Deprecated
     public void setRuleIds(String ruleIds) {
         this.ruleIds = ruleIds;
     }
+
+    @Deprecated
+    public Double getScore() {
+        return score;
+    }
+
+    @Deprecated
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
+    @Deprecated
     public Double getRuleDiscountAmount() {
         if (ruleDiscountAmount == null) {
             return 0D;
@@ -197,10 +217,12 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
         return ruleDiscountAmount;
     }
 
+    @Deprecated
     public void setRuleDiscountAmount(Double ruleDiscountAmount) {
         this.ruleDiscountAmount = ruleDiscountAmount;
     }
 
+    @Deprecated
     public Double getPaidAmount() {
         if (paidAmount == null) {
             return 0D;
@@ -208,18 +230,12 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
         return paidAmount;
     }
 
+    @Deprecated
     public void setPaidAmount(Double paidAmount) {
         this.paidAmount = paidAmount;
     }
 
-    public Integer getPayType() {
-        return payType;
-    }
-
-    public void setPayType(Integer payType) {
-        this.payType = payType;
-    }
-
+    @Deprecated
     public Double getChange() {
         if (change == null) {
             return 0D;
@@ -227,16 +243,19 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
         return change;
     }
 
+    @Deprecated
     public void setChange(Double change) {
         this.change = change;
     }
 
-    public Double getScore() {
-        return score;
+    @Deprecated
+    public Integer getPayType() {
+        return payType;
     }
 
-    public void setScore(Double score) {
-        this.score = score;
+    @Deprecated
+    public void setPayType(Integer payType) {
+        this.payType = payType;
     }
 
     public Double getBcount() {
@@ -304,7 +323,7 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Integer getSubType() {
-        if (subType == null){
+        if (subType == null) {
             return BizSubType.POS_STANDARD;
         }
         return subType;

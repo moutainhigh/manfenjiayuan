@@ -16,7 +16,7 @@ import android.webkit.WebViewClient;
 
 import com.mfh.enjoycity.R;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.hybrid.HybridWebView;

@@ -57,14 +57,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/mixicook/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/mixicook/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/mixicook/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/assets" type="java-test-resource" />
@@ -73,6 +65,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTestMixicook/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/testMixicook/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/release/assets" type="java-resource" />
@@ -118,10 +118,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/bundles" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.amulyakhare/com.amulyakhare.textdrawable/1.0.1/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.3.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.squareup.leakcanary/leakcanary-android-no-op/1.3/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/io.reactivex/rxandroid/1.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
@@ -138,32 +136,29 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 24 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="leakcanary-watcher-1.3" level="project" />
     <orderEntry type="library" exported="" name="pinyin4j-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="umsips" level="project" />
     <orderEntry type="library" exported="" name="butterknife-7.0.1" level="project" />
-    <orderEntry type="library" exported="" name="Msc" level="project" />
+    <orderEntry type="library" exported="" name="bugly_crash_upgrade_v1.1.3" level="project" />
     <orderEntry type="library" exported="" name="eventbus-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="rxjava-1.1.6" level="project" />
     <orderEntry type="library" exported="" name="gprinter-2.1.2" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
-    <orderEntry type="library" exported="" name="bugly_crash_upgrade_1.0.2" level="project" />
     <orderEntry type="library" exported="" name="ftp4j-1.7.2" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="rxandroid-1.2.1" level="project" />
+    <orderEntry type="library" exported="" name="cardview-v7-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="opencsv-3.7" level="project" />
-    <orderEntry type="library" exported="" name="cardview-v7-23.3.0" level="project" />
-    <orderEntry type="library" exported="" name="com.amulyakhare.textdrawable-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="GetuiSDK2.9.0.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-24.2.0" level="project" />
     <orderEntry type="library" exported="" name="leakcanary-android-no-op-1.3" level="project" />
     <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
     <orderEntry type="module" module-name="im" exported="" />
     <orderEntry type="module" module-name="mfh-framework-all" exported="" />
-    <orderEntry type="module" module-name="vector_uikit" exported="" />
     <orderEntry type="module" module-name="cashier" exported="" />
-    <orderEntry type="module" module-name="mfh-framework-android" exported="" />
-    <orderEntry type="module" module-name="vector_user" exported="" />
     <orderEntry type="module" module-name="mfh-framework-business" exported="" />
-    <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
+    <orderEntry type="library" exported="" name="org.apache.http.legacy-android-24" level="project" />
   </component>
 </module>

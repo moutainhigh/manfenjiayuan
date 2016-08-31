@@ -20,22 +20,22 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.PayApi;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.cashier.CashierApiImpl;
-import com.mfh.framework.core.logger.ZLogger;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.net.NetCallBack;
-import com.mfh.framework.net.NetProcessor;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
@@ -161,7 +161,7 @@ public class PayByAlipayFragment extends BasePayFragment {
      * */
     @OnClick(R.id.button_query_orderstatus)
     public void queryAliBarpayStatus() {
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
@@ -175,7 +175,7 @@ public class PayByAlipayFragment extends BasePayFragment {
     @OnClick(R.id.button_cancel_order)
     public void cancelAliBarPay() {
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
@@ -266,7 +266,7 @@ public class PayByAlipayFragment extends BasePayFragment {
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
         orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
         orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
-//        Human member = DataCacheHelper.getInstance().getMfMemberInfo();
+//        Human member = GlobalInstance.getInstance().getMfMemberInfo();
 //        if (member != null) {
 //            orderInfo.put("seller_id", member.getGuid());
 //        }
@@ -295,7 +295,7 @@ public class PayByAlipayFragment extends BasePayFragment {
             return;
         }
 
-        if (!NetWorkUtil.isConnect(CashierApp.getAppContext())) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             bPayProcessing = false;
             return;
