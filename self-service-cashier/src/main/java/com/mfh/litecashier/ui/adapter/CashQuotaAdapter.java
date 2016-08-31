@@ -2,12 +2,12 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
@@ -54,12 +54,13 @@ public class CashQuotaAdapter
         holder.tvDate.setText(TimeUtil.format(entity.getCreatedDate(),
                 TimeCursor.FORMAT_YYYYMMDDHHMM));
         holder.tvAmount.setText(String.format("%.2f", entity.getAmount()));
+
         if (entity.getBizType() == 0){
-            holder.tvAmount.setText(Html.fromHtml(String.format("<font color=#FE5000>－ </font><font color=#000000>%.2f</font>",
+            holder.tvAmount.setText(StringUtils.toSpanned(String.format("<font color=#FE5000>－ </font><font color=#000000>%.2f</font>",
                     entity.getAmount())));
         }
         else{
-            holder.tvAmount.setText(Html.fromHtml(String.format("<font color=#4CAF50>＋ </font><font color=#000000>%.2f</font>",
+            holder.tvAmount.setText(StringUtils.toSpanned(String.format("<font color=#4CAF50>＋ </font><font color=#000000>%.2f</font>",
                     entity.getAmount())));
         }
 

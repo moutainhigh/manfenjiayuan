@@ -677,8 +677,8 @@ public class AlipayDialog extends CommonDialog {
                                 if (mQuickPayInfo != null){
                                     mQuickPayInfo.setMinAmount(amount);
                                     mQuickPayInfo.setAmount(amount);
+                                    tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
                                 }
-                                tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
                                 enterStandardMode();
                             } else {
                                 dismiss();
@@ -739,8 +739,8 @@ public class AlipayDialog extends CommonDialog {
                                     if (mQuickPayInfo != null){
                                         mQuickPayInfo.setMinAmount(amount);
                                         mQuickPayInfo.setAmount(amount);
+                                        tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
                                     }
-                                    tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
                                     enterStandardMode();
                                 } else {
                                    dismiss();

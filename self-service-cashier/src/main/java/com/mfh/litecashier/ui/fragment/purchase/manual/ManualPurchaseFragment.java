@@ -26,7 +26,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.GoodsSupplyInfo;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;

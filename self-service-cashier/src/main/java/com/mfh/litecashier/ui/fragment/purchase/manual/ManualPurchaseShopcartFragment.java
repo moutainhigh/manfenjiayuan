@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -16,13 +15,14 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfoApi;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -324,7 +324,7 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
             }
             tvOrderQuantity.setText(String.format("订单数: %d", orderCount));
             tvGoodsQunatity.setText(String.format("商品数: %d", itemCount));
-            tvTotalAmount.setText(Html.fromHtml(String.format("<font color=#000000>商品金额:</font>" +
+            tvTotalAmount.setText(StringUtils.toSpanned(String.format("<font color=#000000>商品金额:</font>" +
                     "<font color=#FF009B4E>%.2f</font>",amount)));
 
             if (orderCount> 0) {

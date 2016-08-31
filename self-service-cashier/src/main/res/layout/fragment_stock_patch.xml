@@ -1,12 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:divider="@drawable/divider_vertical_line_primary"
-    android:showDividers="middle"
-    android:background="@color/material_white"
-    android:baselineAligned="false">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:baselineAligned="false"
+              android:divider="@drawable/divider_vertical_line_primary"
+              android:orientation="horizontal"
+              android:showDividers="middle">
 
     <!--商品列表-->
     <RelativeLayout
@@ -21,24 +21,24 @@
             layout="@layout/itemview_stock_batch_header"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"/>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_procuct_header"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp">
             <!--空视图-->
             <TextView
                 android:id="@+id/empty_view"
+                style="@style/mfh_textview_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                style="@style/mfh_textview_text"
-                android:text="暂无数据"
                 android:layout_margin="16dp"
                 android:gravity="center"
+                android:text="暂无数据"
                 android:visibility="gone"/>
 
             <!--订单列表-->
@@ -49,49 +49,49 @@
 
             <ProgressBar
                 android:id="@+id/animProgress"
+                style="@style/loading"
                 android:layout_width="30dip"
                 android:layout_height="30dip"
-                style="@style/loading"
-                android:visibility="gone"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:visibility="gone"/>
         </FrameLayout>
 
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/mf_dividerColorPrimary"
-            android:layout_above="@+id/frame_bottom"/>
+            android:layout_above="@+id/frame_bottom"
+            android:background="@color/mf_dividerColorPrimary"/>
 
         <!--底部快捷菜单-->
         <LinearLayout
             android:id="@+id/frame_bottom"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:layout_alignParentBottom="true"
             android:background="@color/mfhtheme_maskPrimary"
-            android:layout_alignParentBottom="true">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
             <!--商品数-->
             <TextView
                 android:id="@+id/tv_goods_quantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="8dp"
                 android:text="商品数：0.00"
-                android:textSize="16sp"
                 android:textColor="@color/material_black"
-                android:padding="8dp"/>
+                android:textSize="16sp"/>
             <!--商品金额-->
             <TextView
                 android:id="@+id/tv_total_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:padding="8dp"
                 android:text="商品金额：0.00"
-                android:textSize="16sp"
                 android:textColor="@color/material_black"
-                android:padding="8dp"/>
+                android:textSize="16sp"/>
         </LinearLayout>
     </RelativeLayout>
 
@@ -100,8 +100,8 @@
         android:id="@+id/right_frame"
         android:layout_width="@dimen/common_right_panel_width"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:divider="@drawable/divider_horizontal_line_primary"
+        android:orientation="vertical"
         android:showDividers="middle">
 
         <!--导航-->
@@ -124,11 +124,11 @@
             android:id="@+id/button_create_bill"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="新建单据"
+            android:background="@drawable/btn_rectange_gray"
             android:gravity="center"
+            android:text="新建单据"
             android:textColor="@color/material_black"
-            android:textSize="20sp"
-            android:background="@drawable/btn_rectange_gray"/>
+            android:textSize="20sp"/>
 
     </LinearLayout>
 

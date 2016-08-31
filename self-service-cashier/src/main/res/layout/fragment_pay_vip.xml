@@ -7,7 +7,6 @@
         android:layout_width="400dp"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_above="@+id/button_submit"
         android:gravity="center"
         android:orientation="vertical">
 

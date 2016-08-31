@@ -1,12 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:baselineAligned="false"
-    android:background="@color/material_white">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
 
-    <include layout="@layout/contentview_dialog_header"
-        android:id="@+id/frame_top"/>
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/contentview_dialog_header"/>
 
     <include
         android:id="@+id/ll_procuct_header"
@@ -14,8 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@+id/frame_top"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"/>
 
     <!-- google 官方下拉刷新 -->
     <android.support.v4.widget.SwipeRefreshLayout
@@ -23,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_procuct_header"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp">
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
@@ -37,12 +38,12 @@
     <!--空视图-->
     <TextView
         android:id="@+id/empty_view"
+        style="@style/mfh_textview_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/mfh_textview_text"
-        android:text="@string/label_nodata_reload"
-        android:gravity="center"
-        android:clickable="true"
         android:layout_below="@+id/ll_procuct_header"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="@string/label_nodata_reload"
         android:visibility="gone"/>
 </RelativeLayout>

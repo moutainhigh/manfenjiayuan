@@ -261,8 +261,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
     @Override
     public void onBackPressed() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
-        UploadSyncManager.getInstance().sync();
         isWaitForExit = true;
+        UploadSyncManager.getInstance().sync();
     }
 
 //    @Override
@@ -785,7 +785,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 上传数据到云端
      */
     public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
-        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
         if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
             if (isWaitForExit){
                 isWaitForExit = false;

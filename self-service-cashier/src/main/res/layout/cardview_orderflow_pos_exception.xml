@@ -85,6 +85,7 @@
                 android:layout_height="32dp"
                 android:layout_margin="@dimen/spacing_normal"
                 android:background="@null"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_cardview_process"/>
 
             <ImageButton
@@ -94,6 +95,7 @@
                 android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:background="@null"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_cardview_print_preview"/>
 
 
@@ -103,6 +105,7 @@
                 android:layout_height="32dp"
                 android:layout_margin="@dimen/spacing_normal"
                 android:background="@null"
+                android:contentDescription="@null"
                 android:src="@mipmap/ic_cardview_payhistory"/>
         </LinearLayout>
 

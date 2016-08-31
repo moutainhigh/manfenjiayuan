@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#FFFFFF">
@@ -41,7 +42,7 @@
 
                 <LinearLayout
                     android:id="@+id/notification_right_left"
-                    android:layout_width="fill_parent"
+                    android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -66,6 +67,7 @@
                             android:id="@+id/notification_version"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:paddingEnd="0dp"
                             android:paddingStart="10dp"
                             android:singleLine="true"
                             android:textColor="#000000"
@@ -92,7 +94,8 @@
                             android:id="@+id/notification_diffsize"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="10dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="10dp"
                             android:singleLine="true"
                             android:textColor="#008000"
                             android:textSize="13sp"
@@ -131,23 +134,25 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="3dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="3dp"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="5dip"
+                    android:layout_marginEnd="5dip"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/status_img"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@null"/>
 
                     <TextView
                         android:id="@+id/status_txt"
@@ -160,7 +165,7 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/status"
+                    android:layout_toStartOf="@id/status"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -170,7 +175,7 @@
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="horizontal">
@@ -187,7 +192,8 @@
                                 android:id="@+id/download_app_version"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingLeft="10dp"
+                                android:paddingEnd="0dp"
+                                android:paddingStart="10dp"
                                 android:textColor="#000000"
                                 android:textSize="16sp"
                                 android:textStyle="bold"/>
@@ -213,7 +219,8 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingStart="0dp"
                         android:paddingTop="10dp">
 
                         <!--
@@ -245,7 +252,7 @@
                 android:visibility="gone">
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:gravity="center"
@@ -269,7 +276,8 @@
                             android:id="@+id/setup_app_version"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="10dp"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="10dp"
                             android:singleLine="true"
                             android:textColor="#000000"
                             android:textSize="16sp"
@@ -295,14 +303,15 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_marginRight="5dip"
+                    android:layout_marginEnd="5dip"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/setup_icon"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@null"/>
 
                     <TextView
                         android:id="@+id/setup_text"

@@ -1,11 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:divider="@drawable/divider_vertical_line_primary"
-    android:showDividers="middle"
-    android:background="@color/material_white">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:divider="@drawable/divider_vertical_line_primary"
+              android:orientation="horizontal"
+              android:showDividers="middle">
 
     <!--导航-->
     <com.mfh.framework.uikit.widget.SideSlidingTabStrip
@@ -21,6 +20,7 @@
         android:id="@+id/settings_viewpager"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="@color/material_white"/>
 
 </LinearLayout>

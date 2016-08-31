@@ -100,7 +100,6 @@
     </RelativeLayout>
 
     <!--订单列表-->
-
     <include
         layout="@layout/fragment_inv_sendorder"
         android:layout_width="@dimen/common_right_panel_width"

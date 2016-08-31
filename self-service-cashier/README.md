@@ -30,15 +30,16 @@
 
 
 ##Version
-##[v1.21.06_0823294](https://beta.bugly.qq.com/bz1s)
+##[v1.21.06_0823297](https://beta.bugly.qq.com/bz1s)
 
 版本描述：
 
 1. 修复 恢复出厂设置后数据库没有删除的问题。
 2. 修复 查询采购退货单单据不正确的问题。
+3. 新增 退出应用前提交订单流水数据到云端。
 
 
-##[v1.21.06_0823294](https://beta.bugly.qq.com/bz1s)
+##[v1.21.06_0823296](https://beta.bugly.qq.com/bz1s)
 
 版本描述：
 

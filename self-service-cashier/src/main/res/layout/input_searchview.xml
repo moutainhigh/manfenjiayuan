@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_input_rectange"
-    android:gravity="center"
-    android:orientation="horizontal">
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/bg_input_rectange"
+              android:gravity="center"
+              android:orientation="horizontal">
 
     <EditText
         android:id="@+id/et_label_input"
@@ -18,25 +18,25 @@
         android:focusableInTouchMode="true"
         android:gravity="center_vertical"
         android:hint="@string/hint_product_barcode"
-        android:inputType="number" />
+        android:inputType="number"/>
 
     <ImageButton
         android:id="@+id/ib_del"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_normal"
         android:background="@null"
         android:contentDescription="@null"
+        android:padding="@dimen/spacing_normal"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_cancel_black_24dp"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 
     <!--分割线-->
     <View
         android:id="@+id/vertial_line"
         android:layout_width="1px"
         android:layout_height="match_parent"
-        android:background="@color/mf_dividerColorPrimary" />
+        android:background="@color/mf_dividerColorPrimary"/>
 
     <ImageButton
         android:id="@+id/ib_search"
@@ -45,6 +45,6 @@
         android:background="@null"
         android:contentDescription="@null"
         android:scaleType="center"
-        android:src="@mipmap/ic_edit_search_normal" />
+        android:src="@mipmap/ic_edit_search_normal"/>
 
 </LinearLayout>

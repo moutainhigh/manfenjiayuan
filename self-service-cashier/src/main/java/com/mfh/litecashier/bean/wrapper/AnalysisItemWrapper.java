@@ -24,6 +24,9 @@ public class AnalysisItemWrapper implements java.io.Serializable{
     }
 
     public Double getOrderNum() {
+        if (orderNum == null){
+            return 0D;
+        }
         return orderNum;
     }
 
@@ -32,6 +35,9 @@ public class AnalysisItemWrapper implements java.io.Serializable{
     }
 
     public Double getTurnover() {
+        if (turnover == null){
+            return 0D;
+        }
         return turnover;
     }
 

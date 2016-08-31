@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -15,10 +14,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.api.impl.StockApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
@@ -374,18 +374,24 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
         frameBottom.setVisibility(View.VISIBLE);
 
         tvQuantity.setText(String.format("数量:%d", curOrder.getBatchCount()));
-        tvSoftFee.setText(Html.fromHtml(String.format("<font color=#000000>软件费: </font><font color=#FF009B4E>-%.2f</font>", curOrder.getBatchCount() * 0.1)));
-        tvSmsFee.setText(Html.fromHtml(String.format("<font color=#000000>短信费: </font><font color=#FF009B4E>-%.2f</font>", curOrder.getSmsCount() * 0.1)));
+        tvSoftFee.setText(StringUtils.toSpanned(String.format("<font color=#000000>软件费: </font>" +
+                "<font color=#FF009B4E>-%.2f</font>", curOrder.getBatchCount() * 0.1)));
+        tvSmsFee.setText(StringUtils.toSpanned(String.format("<font color=#000000>短信费: </font>" +
+                "<font color=#FF009B4E>-%.2f</font>", curOrder.getSmsCount() * 0.1)));
         if (curOrder.getTotalCost() < 0) {
-            tvStorageFee.setText(Html.fromHtml(String.format("<font color=#000000>保管费: </font><font color=#FF009B4E>%.2f</font>", curOrder.getTotalCost())));
+            tvStorageFee.setText(StringUtils.toSpanned(String.format("<font color=#000000>保管费: </font>" +
+                    "<font color=#FF009B4E>%.2f</font>", curOrder.getTotalCost())));
         } else {
-            tvStorageFee.setText(Html.fromHtml(String.format("<font color=#000000>保管费: </font><font color=#FF009B4E>＋%.2f</font>", curOrder.getTotalCost())));
+            tvStorageFee.setText(StringUtils.toSpanned(String.format("<font color=#000000>保管费: </font>" +
+                    "<font color=#FF009B4E>＋%.2f</font>", curOrder.getTotalCost())));
         }
 
         if (curOrder.getIncome() < 0) {
-            tvBatchIncome.setText(Html.fromHtml(String.format("<font color=#000000>批次收益: </font><font color=#FF009B4E>%.2f</font>", curOrder.getIncome())));
+            tvBatchIncome.setText(StringUtils.toSpanned(String.format("<font color=#000000>批次收益: </font>" +
+                    "<font color=#FF009B4E>%.2f</font>", curOrder.getIncome())));
         } else {
-            tvBatchIncome.setText(Html.fromHtml(String.format("<font color=#000000>批次收益: </font><font color=#FF009B4E>＋%.2f</font>", curOrder.getIncome())));
+            tvBatchIncome.setText(StringUtils.toSpanned(String.format("<font color=#000000>批次收益: </font>" +
+                    "<font color=#FF009B4E>＋%.2f</font>", curOrder.getIncome())));
         }
 
         //TODO,加载批次明细

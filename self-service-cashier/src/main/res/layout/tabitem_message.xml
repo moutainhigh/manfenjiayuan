@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    android:layout_width="70dp"
-    android:layout_height="70dp"
-    android:background="@color/transparent"
-    android:orientation="vertical"
-    android:gravity="center">
+              android:id="@+id/rootview"
+              android:layout_width="70dp"
+              android:layout_height="70dp"
+              android:background="@color/transparent"
+              android:gravity="center"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_badge"
@@ -16,30 +16,30 @@
             android:id="@+id/iv_buttonImage"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            android:scaleType="centerInside"
-            android:src="@mipmap/ic_launcher"
             android:layout_marginTop="5dp"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_launcher"/>
 
         <TextView
-            style="@style/HighlightNumberStyle"
             android:id="@+id/tab_mes"
-            android:layout_toStartOf="@+id/iv_buttonImage"
-            android:layout_marginStart="-10dp"
+            style="@style/HighlightNumberStyle"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="-10dp"
+            android:layout_toStartOf="@+id/iv_buttonImage"
             android:text="99+"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_buttonText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
         android:text="冰珊孤雪"
         android:textColor="@color/textcolor_white"
         android:textSize="14sp"
-        android:layout_margin="5dp"
-        android:gravity="center"
         android:visibility="gone"/>
 
 </LinearLayout>
