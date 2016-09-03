@@ -361,7 +361,9 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         return;
                     }
 
-                    reload();
+//                    reload();
+
+                    setRefreshing(false);
                 }
             });
         }

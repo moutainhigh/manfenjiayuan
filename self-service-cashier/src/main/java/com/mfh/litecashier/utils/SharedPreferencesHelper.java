@@ -89,8 +89,6 @@ public class SharedPreferencesHelper {
     public static final String PK_UMSIPS_TERMID = "pk_umsips_termid";   //终端设备号
     public static final String PK_UMSIPS_AUTHSN = "pk_umsips_authsn";   //SN密文
 
-    //寺冈电子秤
-
     //混合支付
     public static final String PREF_KEY_HYBRID_PAYMENT_ENABLED = "pk_hybrid_payment_enabled";
     //串口客显
@@ -98,9 +96,9 @@ public class SharedPreferencesHelper {
     //PAD客显
     public static final String PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED = "pk_pad_customerdisplay_enabled";
 
-    //是否允许同步商品数据 ViaFTP 2电子秤
+    //是否允许同步商品数据 ViaFTP 2寺冈电子秤
     public static final String PK_B_SYNC_SMSCALE_FTP_ENABLED = "pk_b_SYNC_SMSCALE_FTP_ENABLED";
-    //是否允许同步商品数据 ViaWs 2电子价签
+    //是否允许同步商品数据 ViaWs 2绿泰电子价签
     public static final String PK_B_SYNC_ESL_ENABLED = "pk_b_SYNC_ESL_ENABLED";
 
 
