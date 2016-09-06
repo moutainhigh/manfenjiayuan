@@ -38,9 +38,10 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
     private Long procateId; //商品类目
 
-    //2016-08-01，改用产品线编号统计商品，cateType将被废弃掉。
-    private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
-    private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
+    //商品类目的类型，按商品类目同步到电子秤
+    private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //
+    //2016-08-01，新增产品线编号清分,产品线的商品默认都归到0，相当于原来的标超
+    private Integer prodLineId = 0;
 
 
     /**是否和云端同步:默认1同步，0不同步*/

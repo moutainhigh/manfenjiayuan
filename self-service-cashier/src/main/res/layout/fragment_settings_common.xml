@@ -106,8 +106,7 @@
             android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_tag"
             app:text="绿泰电子价签"
-            app:position="top"/>
-
+            app:position="center"/>
 
         <!--系统键盘-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem

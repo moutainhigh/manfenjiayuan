@@ -11,7 +11,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.CashQuotOrderInfo;
+import com.bingshanguxue.cashier.model.OrderPayWay;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class CashQuotaAdapter
-        extends RegularAdapter<CashQuotOrderInfo, CashQuotaAdapter.ProductViewHolder> {
+        extends RegularAdapter<OrderPayWay, CashQuotaAdapter.ProductViewHolder> {
 
     public interface OnAdapterListener {
 
@@ -37,7 +37,7 @@ public class CashQuotaAdapter
     }
 
 
-    public CashQuotaAdapter(Context context, List<CashQuotOrderInfo> entityList) {
+    public CashQuotaAdapter(Context context, List<OrderPayWay> entityList) {
         super(context, entityList);
     }
 
@@ -49,7 +49,7 @@ public class CashQuotaAdapter
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
-        CashQuotOrderInfo entity = entityList.get(position);
+        OrderPayWay entity = entityList.get(position);
 
         holder.tvDate.setText(TimeUtil.format(entity.getCreatedDate(),
                 TimeCursor.FORMAT_YYYYMMDDHHMM));
@@ -83,7 +83,7 @@ public class CashQuotaAdapter
     }
 
     @Override
-    public void setEntityList(List<CashQuotOrderInfo> entityList) {
+    public void setEntityList(List<OrderPayWay> entityList) {
         super.setEntityList(entityList);
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();

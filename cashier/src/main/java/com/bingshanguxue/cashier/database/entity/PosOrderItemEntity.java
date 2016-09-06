@@ -45,7 +45,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     // 2016-05-19 新增商品类目类型字段，支持按类目进行账务清分
     @Deprecated
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;
-    //2016-08-01，改用产品线编号统计商品，cateType将被废弃掉。
+    //2016-08-01，新增产品线编号清分
     private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
 
     public String getOrderBarCode() {

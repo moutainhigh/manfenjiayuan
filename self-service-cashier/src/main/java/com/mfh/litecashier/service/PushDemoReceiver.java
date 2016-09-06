@@ -37,6 +37,8 @@ public class PushDemoReceiver extends BroadcastReceiver {
     private static final String KEY_PAYLOAD     = "payload";
     private static final String KEY_APPID       = "appid";
 
+    private long offlineTime = 0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -81,9 +83,14 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 ZLogger.df("sdk is online");
                 break;
             case PushConsts.GET_SDKSERVICEPID:
-                // 重新初始化sdk
-//                ZLogger.d("initializing getui sdk...");
-                PushManager.getInstance().initialize(CashierApp.getAppContext());
+//                超过5分钟会自动重启
+                if ((System.currentTimeMillis() - offlineTime) > 1000 * 60 * 5) {
+                    offlineTime = System.currentTimeMillis();
+                } else {
+                    ZLogger.df("重新初始化 个推sdk...");
+                    PushManager.getInstance().initialize(CashierApp.getAppContext());
+                }
+
                 break;
             default:
                 break;

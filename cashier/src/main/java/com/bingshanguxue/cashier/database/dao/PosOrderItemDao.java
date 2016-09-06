@@ -42,7 +42,8 @@ public class PosOrderItemDao extends BaseSeqAbleDao<PosOrderItemEntity, String> 
     }
 
     public List<PosOrderItemEntity> queryAll(String strWhere, PageInfo pageInfo) {
-        return getFinalDb().findAllByWhere(PosOrderItemEntity.class, strWhere, "createdDate desc", pageInfo);//"id desc"/asc
+        return getFinalDb().findAllByWhere(PosOrderItemEntity.class,
+                strWhere, "createdDate desc", pageInfo);//"id desc"/asc
     }
     public List<PosOrderItemEntity> queryAll() {
         return queryAllBy(null);

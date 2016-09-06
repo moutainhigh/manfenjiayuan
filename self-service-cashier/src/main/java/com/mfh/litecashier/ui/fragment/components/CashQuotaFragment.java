@@ -40,7 +40,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
-import com.mfh.litecashier.bean.wrapper.CashQuotOrderInfo;
+import com.bingshanguxue.cashier.model.OrderPayWay;
 import com.mfh.litecashier.bean.wrapper.CashQuotaInfo;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.service.UploadSyncManager;
@@ -54,7 +54,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 /**
- * <h1>日结</h1>
+ * <h1>现金授权</h1>
  * <p>首先判断是否已经日结过:<br>
  * 1.如果已经日结过,则不需要启动日结统计，可以直接查询统计数据。最后也不需要进行日结确认。<br>
  * 2.如果未日结，则需要启动日结统计，然后再查询统计数据，最后需要确认日结操作。</p>
@@ -369,9 +369,9 @@ public class CashQuotaFragment extends BaseProgressFragment {
                 pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getPageSize()));
 
         NetCallBack.QueryRsCallBack responseRC = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<CashQuotOrderInfo>(pageInfo) {
+                new NetProcessor.QueryRsProcessor<OrderPayWay>(pageInfo) {
                     @Override
-                    public void processQueryResult(RspQueryResult<CashQuotOrderInfo> rs) {
+                    public void processQueryResult(RspQueryResult<OrderPayWay> rs) {
                         //保存日结数据
                         mPageInfo = pageInfo;
                         saveOrderPayWay(rs);
@@ -382,7 +382,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
                         super.processFailure(t, errMsg);
                         onLoadError("查询查询现金订单失败：" + errMsg);
                     }
-                }, CashQuotOrderInfo.class, CashierApp.getAppContext());
+                }, OrderPayWay.class, CashierApp.getAppContext());
 
         CashierApiImpl.listOrderPayWay(WayType.CASH, pageInfo, responseRC);
     }
@@ -419,9 +419,9 @@ public class CashQuotaFragment extends BaseProgressFragment {
     /**
      * 保存经营分析数据
      */
-    private void saveOrderPayWay(RspQueryResult<CashQuotOrderInfo> rs) {
+    private void saveOrderPayWay(RspQueryResult<OrderPayWay> rs) {
         try {
-            List<CashQuotOrderInfo> temp = mCashQuotaInfo.getOrderPayWays();
+            List<OrderPayWay> temp = mCashQuotaInfo.getOrderPayWays();
             if (temp == null) {
                 temp = new ArrayList<>();
             }
@@ -430,8 +430,8 @@ public class CashQuotaFragment extends BaseProgressFragment {
             }
 
             if (rs != null && rs.getReturnNum() > 0) {
-                for (EntityWrapper<CashQuotOrderInfo> wrapper : rs.getRowDatas()) {
-                    CashQuotOrderInfo aggItem = wrapper.getBean();
+                for (EntityWrapper<OrderPayWay> wrapper : rs.getRowDatas()) {
+                    OrderPayWay aggItem = wrapper.getBean();
 //                    aggItem.setBizTypeCaption(wrapper.getPropCaption("bizType"));
 //                    aggItem.setSubTypeCaption(wrapper.getPropCaption("subType"));
                     aggItem.setBizType(0);
@@ -457,7 +457,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
      */
     private void saveAccData(RspQueryResult<PayOrder> rs) {
         try {
-            List<CashQuotOrderInfo> temp = mCashQuotaInfo.getPosOrders();
+            List<OrderPayWay> temp = mCashQuotaInfo.getPosOrders();
             if (temp == null) {
                 temp = new ArrayList<>();
             }
@@ -468,7 +468,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
             if (rs != null && rs.getReturnNum() > 0) {
                 for (EntityWrapper<PayOrder> wrapper : rs.getRowDatas()) {
                     PayOrder posOrder = wrapper.getBean();
-                    CashQuotOrderInfo cashQuotaOrderInfo = new CashQuotOrderInfo();
+                    OrderPayWay cashQuotaOrderInfo = new OrderPayWay();
                     //单位是分，转换成元。
                     cashQuotaOrderInfo.setAmount(posOrder.getTotalFee() / 100);
                     cashQuotaOrderInfo.setCreatedDate(posOrder.getUpdatedDate());

@@ -1,5 +1,7 @@
 package com.mfh.litecashier.bean.wrapper;
 
+import com.bingshanguxue.cashier.model.OrderPayWay;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,8 +11,8 @@ import java.util.List;
 public class CashQuotaInfo implements Serializable {
     private Double limit = 0D;
     private Double unpaid = 0D;
-    private List<CashQuotOrderInfo> mOrderPayWays;
-    private List<CashQuotOrderInfo> mPosOrders;
+    private List<OrderPayWay> mOrderPayWays;
+    private List<OrderPayWay> mPosOrders;
 
 
     public Double getLimit() {
@@ -35,19 +37,19 @@ public class CashQuotaInfo implements Serializable {
         this.unpaid = unpaid;
     }
 
-    public List<CashQuotOrderInfo> getOrderPayWays() {
+    public List<OrderPayWay> getOrderPayWays() {
         return mOrderPayWays;
     }
 
-    public void setOrderPayWays(List<CashQuotOrderInfo> orderPayWays) {
+    public void setOrderPayWays(List<OrderPayWay> orderPayWays) {
         mOrderPayWays = orderPayWays;
     }
 
-    public List<CashQuotOrderInfo> getPosOrders() {
+    public List<OrderPayWay> getPosOrders() {
         return mPosOrders;
     }
 
-    public void setPosOrders(List<CashQuotOrderInfo> posOrders) {
+    public void setPosOrders(List<OrderPayWay> posOrders) {
         mPosOrders = posOrders;
     }
 }
