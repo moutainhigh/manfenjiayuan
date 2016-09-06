@@ -241,22 +241,28 @@ public class DoubleInputDialog extends CommonDialog {
         this.hintValue = hintValue;
         this.unit = unit;
         this.mListener = callback;
-        DECIMAL_DIGITS = decimalDigits;
+        this.DECIMAL_DIGITS = decimalDigits;
 
-        tvTitle.setText(title);
+        this.tvTitle.setText(title);
 //        etValue.setText(hintValue.toString());
-        etValue.getText().clear();
-        etValue.setHint(String.format("%.2f", hintValue));
-        etValue.setSelection(etValue.length());
-        etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
-        etValue.requestFocus();
-
-        if (StringUtils.isEmpty(unit)){
-            tvUnit.setVisibility(View.GONE);
+        this.etValue.getText().clear();
+        if (decimalDigits == 0){
+            this.etValue.setHint(String.format("%.0f", hintValue));
         }
         else{
-            tvUnit.setText(unit);
-            tvUnit.setVisibility(View.VISIBLE);
+            this.etValue.setHint(String.format("%.2f", hintValue));
+        }
+
+        this.etValue.setSelection(etValue.length());
+        this.etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
+        this.etValue.requestFocus();
+
+        if (StringUtils.isEmpty(unit)){
+            this.tvUnit.setVisibility(View.GONE);
+        }
+        else{
+            this.tvUnit.setText(unit);
+            this.tvUnit.setVisibility(View.VISIBLE);
         }
     }
 
