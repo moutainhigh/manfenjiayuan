@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -69,6 +73,8 @@ public class PayStep2Fragment extends BasePayStepFragment {
     public static final String EXTRA_KEY_PAY_SUBTYPE = "paySubType";//0:会员卡，1:付款码，2:手机号
     public static final String EXTRA_KEY_VIP_CARID = "vipCardId";
 
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
     @Bind(R.id.iv_vip_header)
     AvatarView ivMemberHeader;
     @Bind(R.id.tv_vip_brief)
@@ -129,6 +135,23 @@ public class PayStep2Fragment extends BasePayStepFragment {
             vipCardId = args.getString(EXTRA_KEY_VIP_CARID);
         }
 
+        toolbar.setTitle("收银");
+//        setSupportActionBar(toolbar);
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_close) {
+                    cancelSettle();
+                }
+                return true;
+            }
+        });
+
+        // Inflate a menu to be displayed in the toolbar
+        toolbar.inflateMenu(R.menu.menu_normal);
         ivMemberHeader.setBorderWidth(3);
         ivMemberHeader.setBorderColor(Color.parseColor("#e8e8e8"));
 
@@ -179,6 +202,15 @@ public class PayStep2Fragment extends BasePayStepFragment {
             }
         });
         couponRecyclerView.setAdapter(couponAdapter);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_normal, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

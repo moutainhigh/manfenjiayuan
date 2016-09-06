@@ -26,11 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * 上传数据，确保POS机数据能正确的上传到云端
@@ -343,99 +338,75 @@ public class UploadSyncManager extends OrderSyncManager {
      * 根据上一次同步游标同步订单数据
      */
     private void batchUploadPosOrder() {
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                if (!MfhLoginService.get().haveLogined()) {
-                    onError("会话已失效，暂停同步收银订单数据。");
-                    return;
-                }
+        if (!MfhLoginService.get().haveLogined()) {
+            onError("会话已失效，暂停同步收银订单数据。");
+            return;
+        }
 
-                if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-                    onError("网络未连接，暂停同步收银订单数据。");
-                    return;
-                }
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            onError("网络未连接，暂停同步收银订单数据。");
+            return;
+        }
 
-                List<PosOrderEntity> orderEntityList = PosOrderService.get()
-                        .queryAllAsc(orderSqlWhere, mOrderPageInfo);
-                if (orderEntityList == null || orderEntityList.size() < 1) {
-                    onNext(String.format("没有收银订单需要上传(%s)。", orderStartCursor));
-                    return;
-                }
+        List<PosOrderEntity> orderEntityList = PosOrderService.get()
+                .queryAllAsc(orderSqlWhere, mOrderPageInfo);
+        if (orderEntityList == null || orderEntityList.size() < 1) {
+            onNext(String.format("没有收银订单需要上传(%s)。", orderStartCursor));
+            return;
+        }
 
-                ZLogger.df(String.format("查询到 %d 个收银订单需要同步，" +
-                                "当前页数 %d/%d,每页最多 %d 个订单(%s)",
-                        mOrderPageInfo.getTotalCount(), mOrderPageInfo.getPageNo(),
-                        mOrderPageInfo.getTotalPage(), mOrderPageInfo.getPageSize(), orderStartCursor));
+        ZLogger.df(String.format("查询到 %d 个收银订单需要同步，" +
+                        "当前页数 %d/%d,每页最多 %d 个订单(%s)",
+                mOrderPageInfo.getTotalCount(), mOrderPageInfo.getPageNo(),
+                mOrderPageInfo.getTotalPage(), mOrderPageInfo.getPageSize(), orderStartCursor));
 
-                Date newCursor = null;
-                JSONArray orders = new JSONArray();
-                for (PosOrderEntity orderEntity : orderEntityList) {
-                    //保存最大时间游标
-                    if (newCursor == null || orderEntity.getUpdatedDate() == null
-                            || newCursor.compareTo(orderEntity.getUpdatedDate()) <= 0) {
-                        newCursor = orderEntity.getUpdatedDate();
-                    }
-
-                    orders.add(generateOrderJson(orderEntity));
-                }
-
-                final Date finalNewCursor = newCursor;
-                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                        NetProcessor.Processor<String>>(
-                        new NetProcessor.Processor<String>() {
-                            @Override
-                            public void processResult(IResponseData rspData) {
-                                // 保存批量上传订单时间
-                                SharedPreferencesHelper.setPosOrderLastUpdate(finalNewCursor);
-
-                                //继续上传订单
-                                if (mOrderPageInfo.hasNextPage()){
-                                    mOrderPageInfo.moveToNext();
-                                    ZLogger.df("上传收银订单成功");
-                                    batchUploadPosOrder();
-                                }
-                                else{
-                                    onNext(String.format("上传收银订单数据完成。%s",
-                                            SharedPreferencesHelper.getPosOrderLastUpdate()
-                                    ));
-                                }
-                            }
-
-                            @Override
-                            protected void processFailure(Throwable t, String errMsg) {
-                                super.processFailure(t, errMsg);
-                                onNext(String.format("上传收银订单失败: %s", errMsg));
-                            }
-                        }
-                        , String.class
-                        , CashierApp.getAppContext()) {
-                };
-
-                CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
-
-                subscriber.onNext(null);
-                subscriber.onCompleted();
+        Date newCursor = null;
+        JSONArray orders = new JSONArray();
+        for (PosOrderEntity orderEntity : orderEntityList) {
+            //保存最大时间游标
+            if (newCursor == null || orderEntity.getUpdatedDate() == null
+                    || newCursor.compareTo(orderEntity.getUpdatedDate()) <= 0) {
+                newCursor = orderEntity.getUpdatedDate();
             }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
 
+            orders.add(generateOrderJson(orderEntity));
+        }
+
+        final Date finalNewCursor = newCursor;
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        // 保存批量上传订单时间
+                        SharedPreferencesHelper.setPosOrderLastUpdate(finalNewCursor);
+
+                        //继续上传订单
+                        if (mOrderPageInfo.hasNextPage()){
+                            mOrderPageInfo.moveToNext();
+                            ZLogger.df("上传收银订单成功");
+                            batchUploadPosOrder();
+                        }
+                        else{
+                            //按时间游标同步之后再同步一次未同步订单，避免按时间戳同步遗漏订单。
+                            uploadMissingOrders();
+//                            onNext(String.format("上传收银订单数据完成。%s",
+//                                    SharedPreferencesHelper.getPosOrderLastUpdate()
+//                            ));
+                        }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        onNext(String.format("上传收银订单失败: %s", errMsg));
                     }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
 
-                    @Override
-                    public void onNext(String s) {
-
-                    }
-                });
+        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
     }
 
     /**
@@ -471,6 +442,7 @@ public class UploadSyncManager extends OrderSyncManager {
                     public void processResult(IResponseData rspData) {
                         //修改订单同步状态
                         orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_SYNCED);
+//                        orderEntity.setUpdatedDate(new Date());
                         PosOrderService.get().saveOrUpdate(orderEntity);
 
                         onNext(String.format("上传收银订单数据完成。%s",
@@ -491,6 +463,28 @@ public class UploadSyncManager extends OrderSyncManager {
         JSONArray orders = new JSONArray();
         orders.add(generateOrderJson(orderEntity));
         CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+    }
+
+    /**
+     * 提交遗漏的订单
+     * */
+    private void uploadMissingOrders(){
+        String sqlWhere = String.format("sellerId = '%d' " +
+                        "and status = '%d' and isActive = '%d' and syncStatus = '%d'",
+                MfhLoginService.get().getSpid(),
+                PosOrderEntity.ORDER_STATUS_FINISH, PosOrderEntity.ACTIVE,
+                PosOrderEntity.SYNC_STATUS_NONE);
+        List<PosOrderEntity> orderEntities = PosOrderService.get()
+                .queryAllAsc(sqlWhere, null);
+        if (orderEntities != null && orderEntities.size() > 0){
+            PosOrderEntity orderEntity = orderEntities.get(0);
+            stepUploadPosOrder(orderEntity);
+        }
+        else{
+            onNext(String.format("上传收银订单数据完成。%s",
+                    SharedPreferencesHelper.getPosOrderLastUpdate()
+            ));
+        }
     }
 
 }

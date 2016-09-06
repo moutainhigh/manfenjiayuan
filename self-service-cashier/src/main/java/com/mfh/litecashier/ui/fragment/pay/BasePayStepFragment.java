@@ -1,6 +1,7 @@
 package com.mfh.litecashier.ui.fragment.pay;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.com.SerialManager;
 
 /**
@@ -28,6 +30,10 @@ public abstract class BasePayStepFragment extends BaseFragment {
 
     protected CashierOrderInfo cashierOrderInfo = null;
     protected Integer curPayType = WayType.NA;
+
+
+    private CommonDialog cancelPayDialog = null;
+
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
@@ -173,5 +179,44 @@ public abstract class BasePayStepFragment extends BaseFragment {
         getActivity().setResult(Activity.RESULT_CANCELED, data);
         getActivity().finish();
     }
+
+    /**
+     * 取消支付
+     * */
+    public void cancelSettle() {
+        // TODO: 7/21/16 这里要做判断，当前是不是正在支付订单，正在支付订单的时候不能关闭窗口
+//        setResult(Activity.RESULT_CANCELED);
+//        finish();
+        if (cancelPayDialog == null) {
+            cancelPayDialog = new CommonDialog(getActivity());
+            cancelPayDialog.setCancelable(true);
+            cancelPayDialog.setCanceledOnTouchOutside(true);
+            cancelPayDialog.setMessage("确定要取消支付吗？");
+        }
+        cancelPayDialog.setPositiveButton("订单异常", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                onPayException();
+
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                getActivity().finish();
+            }
+        });
+        cancelPayDialog.setNegativeButton("取消支付", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                onPayCancel();
+
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                getActivity().finish();
+            }
+        });
+        cancelPayDialog.show();
+    }
+
 
 }

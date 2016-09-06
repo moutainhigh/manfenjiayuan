@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -43,14 +47,16 @@ public class PayStep1Fragment extends BasePayStepFragment {
     private static final int TAB_BANK = 4;
 //    private static final int TAB_CREDIT     = 6;
 
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     @Bind(R.id.tv_handle_amount)
     TextView tvHandleAmount;
     @Bind(R.id.labelTotalAmount)
     MultiLayerLabel tvTotalAmount;
     @Bind(R.id.labelAdjustAmount)
     MultiLayerLabel tvAdjustAmount;
-    @Bind(R.id.labelPaidAmount)
-    MultiLayerLabel tvPaidAmount;
     @Bind(R.id.tabstrip_pay)
     TopSlidingTabStrip paySlidingTabStrip;
     @Bind(R.id.tab_viewpager)
@@ -80,6 +86,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
         EventBus.getDefault().register(this);
     }
 
+
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
@@ -88,6 +95,24 @@ public class PayStep1Fragment extends BasePayStepFragment {
         if (args != null) {
             cashierOrderInfo = (CashierOrderInfo) args.getSerializable(EXTRA_KEY_CASHIER_ORDERINFO);
         }
+
+        toolbar.setTitle("收银");
+//        setSupportActionBar(toolbar);
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_close) {
+                    cancelSettle();
+                }
+                return true;
+            }
+        });
+
+        // Inflate a menu to be displayed in the toolbar
+        toolbar.inflateMenu(R.menu.menu_normal);
 
         initTabs();
 
@@ -109,6 +134,14 @@ public class PayStep1Fragment extends BasePayStepFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_normal, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     protected void refresh() {
         if (cashierOrderInfo != null) {
             //显示应付款
@@ -123,12 +156,10 @@ public class PayStep1Fragment extends BasePayStepFragment {
             tvHandleAmount.setText(String.format("%.2f", handleAmount));
             tvTotalAmount.setTopText(String.format("%.2f", cashierOrderInfo.getRetailAmount()));
             tvAdjustAmount.setTopText(String.format("%.2f", cashierOrderInfo.getAdjustAmount()));
-            tvPaidAmount.setTopText(String.format("%.2f", cashierOrderInfo.getPaidAmount()));
         } else {
             tvHandleAmount.setText(String.format("%.2f", 0D));
             tvTotalAmount.setTopText(String.format("%.2f", 0D));
             tvAdjustAmount.setTopText(String.format("%.2f", 0D));
-            tvPaidAmount.setTopText(String.format("%.2f", 0D));
         }
 
         notifyPayInfoChanged(paySlidingTabStrip.getCurrentPosition());

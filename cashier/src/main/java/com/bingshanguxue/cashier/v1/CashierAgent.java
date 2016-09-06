@@ -172,6 +172,7 @@ public class CashierAgent {
                     item.put("skuId", itemEntity.getProSkuId());
                     item.put("bcount", itemEntity.getBcount());
                     item.put("price", itemEntity.getCostPrice());
+                    item.put("factAmount", itemEntity.getFinalAmount());
                     item.put("whereId", MfhLoginService.get().getCurOfficeId());//网点ID,netid,
                     productsInfo.add(item);
                 }
@@ -250,6 +251,7 @@ public class CashierAgent {
                 item.put("skuId", itemEntity.getProSkuId());
                 item.put("bcount", itemEntity.getBcount());
                 item.put("price", itemEntity.getCostPrice());
+                item.put("factAmount", itemEntity.getFinalAmount());
                 item.put("whereId", MfhLoginService.get().getCurOfficeId());//网点ID,netid,
                 productsInfo.add(item);
             }
@@ -342,6 +344,7 @@ public class CashierAgent {
 
         //修改订单状态：挂单改为待支付
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
+        orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
 
         //加载订单明细
@@ -385,6 +388,7 @@ public class CashierAgent {
             orderEntity.setPaystatus(PosOrderEntity.PAY_STATUS_NO);
         }
 
+        orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
         ZLogger.df(String.format("更新订单 %s_%d:\n%s", orderEntity.getBarCode(),
                 orderEntity.getId(), JSONObject.toJSONString(orderEntity)));

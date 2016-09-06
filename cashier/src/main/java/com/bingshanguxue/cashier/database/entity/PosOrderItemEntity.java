@@ -22,14 +22,24 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
      * */
     private Long orderId;
 
+    private Long goodsId;   //商品主键
+    private Long productId; //产品编号
+    private Long proSkuId; //商品sku编号
+    private Long providerId;//商品供应商编号
+
     private String barcode; //商品条形码,最小商品库存单元的条形码
     private String name; // 商品名称
     private String unit; // 单位，如箱、瓶
     private int priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double bcount = 0D; //商品数量,quantity
-    private Double costPrice = 0D; //商品零售价格
-    private Double amount = 0D; //总价.按零售价计算得出
-    private Double finalPrice = 0D;//成交价
+    /**档案价格(商品零售价格)。*/
+    private Double costPrice = 0D;
+    private Double amount = 0D; //档案价格总价.按零售价计算得出
+    /**订单价（店收银默认取商品的档案价格，可以手动修改，只影响当前订单）*/
+//    private Double adjustPrice = 0D;
+//    private Double adjustAmount = 0D; //按订单价计算的总金额
+    /**成交价（根据订单商品，匹配后台营销策略，获取商品的最终成交价格）*/
+    private Double finalPrice = 0D;
     private Double finalAmount = 0D; //总价.按成交价计算得出
 
     // 2016-05-19 新增商品类目类型字段，支持按类目进行账务清分
@@ -37,13 +47,6 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;
     //2016-08-01，改用产品线编号统计商品，cateType将被废弃掉。
     private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
-
-
-    private Long goodsId;   //商品主键
-    private Long productId; //产品编号
-    private Long proSkuId; //商品sku编号
-    private Long providerId;//商品供应商编号
-
 
     public String getOrderBarCode() {
         return orderBarCode;
@@ -153,6 +156,22 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     public void setProviderId(Long providerId) {
         this.providerId = providerId;
     }
+
+//    public Double getAdjustPrice() {
+//        return adjustPrice;
+//    }
+//
+//    public void setAdjustPrice(Double adjustPrice) {
+//        this.adjustPrice = adjustPrice;
+//    }
+//
+//    public Double getAdjustAmount() {
+//        return adjustAmount;
+//    }
+//
+//    public void setAdjustAmount(Double adjustAmount) {
+//        this.adjustAmount = adjustAmount;
+//    }
 
     public Double getFinalPrice() {
         if (finalPrice == null){

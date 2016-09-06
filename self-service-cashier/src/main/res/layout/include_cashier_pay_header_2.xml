@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:drawableStart="@mipmap/ic_marker_money_small"
-        android:text="@string/label_handle_amount"
+        android:text="订单金额"
         android:textColor="@color/mfh_colorPrimary"
         android:textSize="@dimen/textsize_normal"/>
 

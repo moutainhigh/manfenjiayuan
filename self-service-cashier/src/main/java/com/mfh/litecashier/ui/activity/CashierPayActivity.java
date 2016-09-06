@@ -2,12 +2,8 @@ package com.mfh.litecashier.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
@@ -16,13 +12,11 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.pay.PayActionEvent;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep2Fragment;
 
-import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
 
@@ -35,14 +29,10 @@ public class CashierPayActivity extends BaseActivity {
     public static final String EXTRA_KEY_CASHIER_ORDERINFO = "cashierOrderInfo";
     public static final String EXTRA_KEY_IS_CLEAR_ORDER = "isClearOrder";
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
     private PayStep1Fragment mPayStep1Fragment;//
     private PayStep2Fragment mPayStep2Fragment;//
 
     private CashierOrderInfo cashierOrderInfo = null;
-
-    private CommonDialog cancelPayDialog = null;
 
     private int curStep = 0;
 
@@ -70,29 +60,6 @@ public class CashierPayActivity extends BaseActivity {
     }
 
     @Override
-    protected void initToolBar() {
-        super.initToolBar();
-
-        toolbar.setTitle("收银");
-        setSupportActionBar(toolbar);
-        // Set an OnMenuItemClickListener to handle menu item clicks
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_close) {
-                    cancelSettle();
-                }
-                return true;
-            }
-        });
-
-        // Inflate a menu to be displayed in the toolbar
-        toolbar.inflateMenu(R.menu.menu_normal);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         handleIntent();
 
@@ -116,14 +83,6 @@ public class CashierPayActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_normal, menu);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -199,68 +158,68 @@ public class CashierPayActivity extends BaseActivity {
     /**
      * 取消支付
      * */
-    public void cancelSettle() {
-        // TODO: 7/21/16 这里要做判断，当前是不是正在支付订单，正在支付订单的时候不能关闭窗口 
-//        setResult(Activity.RESULT_CANCELED);
-//        finish();
-        if (cancelPayDialog == null) {
-            cancelPayDialog = new CommonDialog(this);
-            cancelPayDialog.setCancelable(true);
-            cancelPayDialog.setCanceledOnTouchOutside(true);
-            cancelPayDialog.setMessage("确定要取消支付吗？");
-        }
-        cancelPayDialog.setPositiveButton("订单异常", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (curStep == 0){
-                    if (mPayStep1Fragment != null){
-                        mPayStep1Fragment.onPayException();
-                    }
-                    else {
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }
-                }
-                else{
-                    if (mPayStep2Fragment != null){
-                        mPayStep2Fragment.onPayException();
-                    }
-                    else {
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }
-                }
-            }
-        });
-        cancelPayDialog.setNegativeButton("取消支付", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-                if (curStep == 0){
-                    if (mPayStep1Fragment != null){
-                        mPayStep1Fragment.onPayCancel();
-                    }
-                    else {
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }
-                }
-                else{
-                    if (mPayStep2Fragment != null){
-                        mPayStep2Fragment.onPayCancel();
-                    }
-                    else {
-                        setResult(Activity.RESULT_CANCELED);
-                        finish();
-                    }
-                }
-            }
-        });
-        cancelPayDialog.show();
-    }
+//    public void cancelSettle() {
+//        // TODO: 7/21/16 这里要做判断，当前是不是正在支付订单，正在支付订单的时候不能关闭窗口
+////        setResult(Activity.RESULT_CANCELED);
+////        finish();
+//        if (cancelPayDialog == null) {
+//            cancelPayDialog = new CommonDialog(this);
+//            cancelPayDialog.setCancelable(true);
+//            cancelPayDialog.setCanceledOnTouchOutside(true);
+//            cancelPayDialog.setMessage("确定要取消支付吗？");
+//        }
+//        cancelPayDialog.setPositiveButton("订单异常", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                if (curStep == 0){
+//                    if (mPayStep1Fragment != null){
+//                        mPayStep1Fragment.onPayException();
+//                    }
+//                    else {
+//                        setResult(Activity.RESULT_CANCELED);
+//                        finish();
+//                    }
+//                }
+//                else{
+//                    if (mPayStep2Fragment != null){
+//                        mPayStep2Fragment.onPayException();
+//                    }
+//                    else {
+//                        setResult(Activity.RESULT_CANCELED);
+//                        finish();
+//                    }
+//                }
+//            }
+//        });
+//        cancelPayDialog.setNegativeButton("取消支付", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//
+//                if (curStep == 0){
+//                    if (mPayStep1Fragment != null){
+//                        mPayStep1Fragment.onPayCancel();
+//                    }
+//                    else {
+//                        setResult(Activity.RESULT_CANCELED);
+//                        finish();
+//                    }
+//                }
+//                else{
+//                    if (mPayStep2Fragment != null){
+//                        mPayStep2Fragment.onPayCancel();
+//                    }
+//                    else {
+//                        setResult(Activity.RESULT_CANCELED);
+//                        finish();
+//                    }
+//                }
+//            }
+//        });
+//        cancelPayDialog.show();
+//    }
 
     public void onEventMainThread(PayActionEvent event) {
         Bundle args = event.getArgs();

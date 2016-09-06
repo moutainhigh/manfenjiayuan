@@ -7,6 +7,8 @@
               android:gravity="center_horizontal"
               android:orientation="vertical">
 
+    <include layout="@layout/appbar"/>
+
     <!--应收金额-->
     <include
         android:id="@+id/view_pay_brief"
@@ -32,43 +34,30 @@
         android:dividerPadding="12dp"
         android:padding="12dp"
         android:showDividers="middle">
-        <!--商品金额-->
+        <!--商品原价／档案价格汇总-->
         <com.mfh.framework.uikit.compound.MultiLayerLabel
             android:id="@+id/labelTotalAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:bottomText="商品金额"
+            app:bottomText="商品原价"
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"
             app:topTextColor="@color/material_black"
             app:topTextSize="30sp"/>
 
-        <!--价格调整-->
+        <!--调整金额-->
         <com.mfh.framework.uikit.compound.MultiLayerLabel
             android:id="@+id/labelAdjustAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:bottomText="价格调整"
+            app:bottomText="调整金额"
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"
             app:topTextColor="@color/mfh_colorPrimary"
-            app:topTextSize="30sp"/>
-
-        <!--已付金额-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
-            android:id="@+id/labelPaidAmount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:bottomText="已付金额"
-            app:bottomTextColor="@color/black_70"
-            app:bottomTextSize="16sp"
-            app:topText="0.00"
-            app:topTextColor="#FE5000"
             app:topTextSize="30sp"/>
 
     </LinearLayout>

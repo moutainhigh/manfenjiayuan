@@ -6,6 +6,8 @@
               android:gravity="center_horizontal"
               android:orientation="vertical">
 
+    <include layout="@layout/appbar"/>
+
     <!--会员信息-->
     <include
         android:id="@+id/view_vip_brief"
@@ -30,13 +32,13 @@
         android:gravity="center"
         android:padding="12dp"
         android:showDividers="middle">
-        <!--应付金额-->
+        <!--订单金额-->
         <com.mfh.framework.uikit.compound.MultiLayerLabel
             android:id="@+id/labelHandleAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:bottomText="应付金额"
+            app:bottomText="订单金额"
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"
@@ -80,13 +82,13 @@
             app:topTextColor="@color/mfh_colorPrimary"
             app:topTextSize="30sp"/>
 
-        <!--实付金额-->
+        <!--应付金额-->
         <com.mfh.framework.uikit.compound.MultiLayerLabel
             android:id="@+id/labelDealPayAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:bottomText="实付金额"
+            app:bottomText="应付金额"
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"

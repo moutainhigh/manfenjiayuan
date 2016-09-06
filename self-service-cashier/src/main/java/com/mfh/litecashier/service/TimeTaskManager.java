@@ -103,8 +103,8 @@ public class TimeTaskManager {
             syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 6 * HOUR);
         }
         else{
-            syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * SECOND);
-            syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 1 * MINUTE);
+            syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * MINUTE);
+            syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 10 * MINUTE);
         }
 
     }
