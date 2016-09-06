@@ -1,27 +1,31 @@
 package com.mfh.litecashier.com;
 
+import com.bingshanguxue.cashier.hardware.printer.GPrinter;
+import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.TscCommand;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.event.SerialPortEvent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import de.greenrobot.event.EventBus;
 
 /**
+ * 串口
  * Created by ZZN.NAT(bingshanguxue) on 15/11/17.
  */
 public class SerialManager {
 
-    //打印机（GPrinter）
-    public static final String PORT_PRINTER = "/dev/ttymxc1";//"/dev/ttyS0";
-    public static final String BAUDRATE_PRINTER = "9600";
     //屏显（POSLAB）
     public static final String PORT_SCREEN = "/dev/ttymxc4";
     public static final String BAUDRATE_SCREEN = "19200";
@@ -33,34 +37,122 @@ public class SerialManager {
     public static final String PORT_UMSIPS      = "/dev/ttymxc0";
     public static final String BAUDRATE_UMSIPS  = "9600";
 
+    private List<String> comDevicesPath;//串口信息
 
-    private static final String PREF_NAME_SERIAL = "PREF_NAME_SERIAL";
-    private static final String PREF_KEY_PRINTER_PORT = "PREF_KEY_PRINTER_PORT";
-    private static final String PREF_KEY_PRINTER_BAUDRATE = "PREF_KEY_PRINTER_BAUDRATE";
-    private static final String PREF_KEY_LED_PORT = "PREF_KEY_LED_PORT";
-    private static final String PREF_KEY_LED_BAUDRATE = "PREF_KEY_LED_BAUDRATE";
-    private static final String PK_UMSIPS_PORT = "prefkey_umsips_port";
-    private static final String PK_UMSIPS_BAUDRATE = "prefkey_umsips_baudrate";
+    public static final String PREF_NAME_SERIAL = "PREF_NAME_SERIAL";
+    public static final String PREF_KEY_PRINTER_PORT = "PREF_KEY_PRINTER_PORT";
+    public static final String PREF_KEY_PRINTER_BAUDRATE = "PREF_KEY_PRINTER_BAUDRATE";
+    public static final String PREF_KEY_LED_PORT = "PREF_KEY_LED_PORT";
+    public static final String PREF_KEY_LED_BAUDRATE = "PREF_KEY_LED_BAUDRATE";
+    public static final String PK_UMSIPS_PORT = "prefkey_umsips_port";
+    public static final String PK_UMSIPS_BAUDRATE = "prefkey_umsips_baudrate";
 
+
+
+    private static SerialManager instance;
+
+    public static SerialManager getInstance() {
+        if (instance == null) {
+            synchronized (SerialManager.class) {
+                if (instance == null) {
+                    instance = new SerialManager();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public SerialManager() {
+        comDevicesPath = new ArrayList<>();
+    }
+
+//    /**
+//     * 初始化
+//     * */
+//    public void initialize(){
+//        Map<String, String> tem = new HashMap<>();
+//        if (AHScaleAgent.isEnabled(PREF_NAME_SERIAL)){
+//            String port = AHScaleAgent.getPort(PREF_NAME_SERIAL);
+//            if (!StringUtils.isEmpty(port) && !tem.containsKey(port)){
+//                tem.put(port, "爱华电子秤");
+//            }
+//            else{
+//                AHScaleAgent.setPort(PREF_NAME_SERIAL);
+//            }
+//        }
+//
+//        occupies = tem;
+//    }
+//
+
+    public List<String> getComDevicesPath() {
+        return comDevicesPath;
+    }
+
+    public void setComDevicesPath(List<String> comDevicesPath) {
+        this.comDevicesPath = comDevicesPath;
+    }
+
+    public List<String> getAvailablePath(String port) {
+        List<String> occupies = new ArrayList<>();
+        if (comDevicesPath != null){
+            occupies.addAll(comDevicesPath);
+        }
+
+        if (AHScaleAgent.isEnabled()){
+            String ahPort = AHScaleAgent.getPort();
+            if (!StringUtils.isEmpty(ahPort)){
+                occupies.remove(ahPort);
+            }
+        }
+
+        if (SMScaleAgent.isEnabled()){
+            String smPort = SMScaleAgent.getPort();
+            if (!StringUtils.isEmpty(smPort)){
+                occupies.remove(smPort);
+            }
+        }
+
+        String gprinterPort = getPrinterPort();
+        if (!StringUtils.isEmpty(gprinterPort)){
+            occupies.remove(gprinterPort);
+        }
+
+        String ledPort = getLedPort();
+        if (!StringUtils.isEmpty(ledPort)){
+            occupies.remove(ledPort);
+        }
+
+        String umsipsPort = getUmsipsPort();
+        if (!StringUtils.isEmpty(umsipsPort)){
+            occupies.remove(umsipsPort);
+        }
+
+
+        if (!StringUtils.isEmpty(port) && !occupies.contains(port)){
+            occupies.add(port);
+        }
+
+        ZLogger.d("occupies devicePath:" + occupies.toString());
+        return occupies;
+    }
 
 
     public static String getPrinterPort() {
         return SharedPreferencesManager.getText(
-                PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, PORT_PRINTER);
+                PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, GPrinter.PORT_DEF);
     }
 
     public static void setPrinterPort(String port){
-        ZLogger.df(String.format("setPrinterPort(%s):%s", PREF_NAME_SERIAL, port));
         SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, port);
     }
 
     public static String getPrinterBaudrate() {
         return SharedPreferencesManager.getText(
-                PREF_NAME_SERIAL, PREF_KEY_PRINTER_BAUDRATE, BAUDRATE_PRINTER);
+                PREF_NAME_SERIAL, PREF_KEY_PRINTER_BAUDRATE, GPrinter.BAUDRATE_DEF);
     }
 
     public static void setPrinterBaudrate(String baudrate){
-        ZLogger.df(String.format("setPrinterBaudrate(%s):%s", PREF_NAME_SERIAL, baudrate));
         SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_BAUDRATE, baudrate);
     }
 
@@ -100,85 +192,13 @@ public class SerialManager {
     }
 
     public static void setUmsipsBaudrate(String baudrate){
-        ZLogger.df(String.format("setUMSIPSBaudrate(%s):%s", PREF_NAME_SERIAL, baudrate));
         SharedPreferencesManager.set(
                 PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, baudrate);
     }
 
-    /**
-     * 打印发货清单
-     * */
-//    public static void printShipList(PosOrder order){
-//        List<PosOrderItem> orderItems = order.getItems();
-//
-//        EscCommand esc = new EscCommand();
-//        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
-//        //设置打印居中
-//        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
-//        //设置为倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
-//        /**打印 标题*/
-//        esc.addText("发货清单\n");
-//        //取消倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-//
-//
-//        esc.addPrintAndLineFeed();//进纸一行
-//        //设置打印左对齐
-//        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
-//        /**打印 订购日期*/
-//        esc.addText(String.format("日期:%s \n", TimeCursor.InnerFormat.format(new Date())));
-//        esc.addPrintAndLineFeed();
-//
-//        /**打印 商品明细
-//         *    8       8       4     6      6
-//         *01234567 89012345 6789 012345 678901 (32)
-//         * 商品ID    品名   数量   单价   金额
-//         * */
-////        esc.addText("收货人                    手机号\n");
-//        esc.addText("--------------------------------\n");//32个
-//        esc.addText(String.format("收件人: %s\n", order.getReceiveName()));
-//        esc.addText(String.format("手机号: %s\n", order.getReceivePhone()));
-//        esc.addText(String.format("地址: %s\n", order.getAddress()));
-//        esc.addText(String.format("发货时间: %s\n", TimeCursor.InnerFormat.format(new Date())));
-//        esc.addText(String.format("金额: %.2f[%s]\n", order.getAmount(), order.getPaystatus().equals(1) ? "已支付" : "未支付"));
-//
-//
-////        makeTemp(esc, "商品ID", "品名", "数量", "单价", "金额");
-//        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-//        //设置为倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-//        if (orderItems != null && orderItems.size() > 0){
-//            esc.addText("商品: \n");
-//            for (PosOrderItem item : orderItems){
-////                /**打印 商品明细*/
-////                makeTemp(esc, entity.getProductName(), String.format("%.2f", entity.getAmount()));
-//
-//                makeShipTemp(esc, item.getProductName(), item.getBcount());
-//            }
-//
-//            esc.addText("--------------------------------\n");//32个
-//            esc.addSelectJustification(EscCommand.JUSTIFICATION.RIGHT);//设置打印左对齐
-//        }
-//
-//        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
-//        /**打印 结束语*/
-////        esc.addText("本单据一式两份，取货发货方各执一份\n");
-////        esc.addText("业务电话：400 886 6671\n");
-////        esc.addPrintAndLineFeed();
-//        esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
-//
-//        //获得打印命令
-//        Vector<Byte> datas = esc.getCommand();
-//        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-//        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-////        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-//        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
-//    }
-//
+
+
+
     /**
      * 打开钱箱
      * */

@@ -6,15 +6,12 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.ui.dialog.PosRegisterDialog;
 
-import java.util.List;
-
 /**
  * Created by bingshanguxue on 15/9/9.
  */
 public class GlobalInstance {
 
-    private Double netWeight;//净重
-    private List<String> comDevicesPath;
+    private Double netWeight;//净重(单位kg)
     private PosRegisterDialog mPosRegisterDialog = null;
     private CashierOrderInfo mCashierOrderInfo;
 
@@ -54,6 +51,7 @@ public class GlobalInstance {
     public synchronized void setNetWeight(byte[] data) {
         try {
             if (data == null || data.length < 5) {
+                netWeight = 0D;
                 return;
             }
 
@@ -65,21 +63,20 @@ public class GlobalInstance {
                 }
             }
 
-            String dest = sb.toString();
-            int val = Integer.valueOf(dest);
-            netWeight = 0.001 * val;
+            if (sb.length() > 0){
+                String dest = sb.toString();
+                int val = Integer.valueOf(dest);
+                netWeight = 0.001 * val;
+            }
+            else{
+                netWeight = 0D;
+            }
+
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
     }
 
-    public List<String> getComDevicesPath() {
-        return comDevicesPath;
-    }
-
-    public synchronized void setComDevicesPath(List<String> comDevicesPath) {
-        this.comDevicesPath = comDevicesPath;
-    }
 
     public CashierOrderInfo getCashierOrderInfo() {
         return mCashierOrderInfo;

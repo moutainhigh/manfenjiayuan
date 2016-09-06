@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.utils.GlobalInstance;
+import com.mfh.litecashier.com.SerialManager;
 
 
 /**
@@ -112,7 +112,7 @@ public class SetPortDialog extends CommonDialog {
 //        });
 
         aspnDevices = new ArrayAdapter<>(context,
-                R.layout.mfh_spinner_item_text, GlobalInstance.getInstance().getComDevicesPath());
+                R.layout.mfh_spinner_item_text, SerialManager.getInstance().getAvailablePath(null));
         aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPortSpinner.setAdapter(aspnDevices);
         mPortSpinner.setSelection(0);
@@ -158,6 +158,11 @@ public class SetPortDialog extends CommonDialog {
             tvTitle.setText("配置串口");
         }
 
+        aspnDevices = new ArrayAdapter<>(getContext(),
+                R.layout.mfh_spinner_item_text, SerialManager.getInstance().getAvailablePath(port));
+        aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPortSpinner.setAdapter(aspnDevices);
+
         if (StringUtils.isEmpty(port)) {
             mPortSpinner.setSelection(0);
         }
@@ -170,18 +175,38 @@ public class SetPortDialog extends CommonDialog {
         else{
             mBaudrateSpinner.setSelection(adapter.getPosition(baudrate));
         }
+        mBaudrateSpinner.setVisibility(View.VISIBLE);
         this.mListener = listener;
     }
-    public void init(String port, String baudrate, onDialogClickListener listener){
-        initialize(null, port, baudrate, listener);
+    public void initialize(String title, String port, onDialogClickListener listener){
+        if (!StringUtils.isEmpty(title)){
+            tvTitle.setText(title);
+        }
+        else{
+            tvTitle.setText("配置串口");
+        }
+
+        aspnDevices = new ArrayAdapter<>(getContext(),
+                R.layout.mfh_spinner_item_text, SerialManager.getInstance().getAvailablePath(port));
+        aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPortSpinner.setAdapter(aspnDevices);
+
+        if (StringUtils.isEmpty(port)) {
+            mPortSpinner.setSelection(0);
+        }
+        else{
+            mPortSpinner.setSelection(aspnDevices.getPosition(port));
+        }
+        mBaudrateSpinner.setVisibility(View.GONE);
+        this.mListener = listener;
     }
 
     private void submit(){
-
         dismiss();
 
         if (mListener != null) {
-            mListener.onSetPort(mPortSpinner.getSelectedItem().toString(), mBaudrateSpinner.getSelectedItem().toString());
+            mListener.onSetPort(mPortSpinner.getSelectedItem().toString(),
+                    mBaudrateSpinner.getSelectedItem().toString());
         }
     }
 }

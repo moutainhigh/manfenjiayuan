@@ -30,7 +30,6 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 
@@ -120,7 +119,7 @@ public class UmsipsDialog extends CommonDialog {
 //        });
 
         aspnDevices = new ArrayAdapter<>(context,
-                R.layout.mfh_spinner_item_text, GlobalInstance.getInstance().getComDevicesPath());
+                R.layout.mfh_spinner_item_text, SerialManager.getInstance().getAvailablePath(null));
         aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPortSpinner.setAdapter(aspnDevices);
         mPortSpinner.setSelection(0);
@@ -228,6 +227,7 @@ public class UmsipsDialog extends CommonDialog {
 
     public void init(onDialogClickListener listener) {
         this.mListener = listener;
+
         refresh();
     }
 
@@ -240,7 +240,13 @@ public class UmsipsDialog extends CommonDialog {
         etMchtId.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID, "898320554115217"));
         etTermId.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID));
 
-        mPortSpinner.setSelection(aspnDevices.getPosition(SerialManager.getUmsipsPort()));
+        String umsipsPort = SerialManager.getUmsipsPort();
+        aspnDevices = new ArrayAdapter<>(getContext(),
+                R.layout.mfh_spinner_item_text, SerialManager.getInstance().getAvailablePath(umsipsPort));
+        aspnDevices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mPortSpinner.setAdapter(aspnDevices);
+
+        mPortSpinner.setSelection(aspnDevices.getPosition(umsipsPort));
         mBaudrateSpinner.setSelection(adapter.getPosition(SerialManager.getUmsipsBaudrate()));
     }
 

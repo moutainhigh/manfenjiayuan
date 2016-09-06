@@ -60,25 +60,24 @@
             app:position="center"/>
 
         <!--爱华电子秤-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_ahscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:position="center"
-            app:subText=""
-            android:visibility="gone"
+            android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_rs232"
-            app:text="爱华电子秤"/>
+            app:text="爱华电子秤 (ACS-P215)"
+            app:position="center"/>
 
         <!--寺冈电子秤-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_smscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:position="center"
-            app:subText=""
+            android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_rs232"
-            app:text="寺冈电子秤"/>
+            app:text="寺冈电子秤 (DS781)"
+            app:position="center"/>
         <!--银联-->
         <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_umsips_rs232"

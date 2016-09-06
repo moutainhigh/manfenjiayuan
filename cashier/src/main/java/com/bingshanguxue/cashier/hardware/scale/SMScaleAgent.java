@@ -1,4 +1,4 @@
-package com.mfh.litecashier.hardware.SMScale;
+package com.bingshanguxue.cashier.hardware.scale;
 
 import com.alibaba.fastjson.JSON;
 import com.mfh.framework.BizConfig;
@@ -7,44 +7,42 @@ import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 
 /**
+ * 寺冈电子秤（DIGI-DS781）
  * Created by bingshanguxue on 5/18/16.
  */
-public class DigiDS781Agent {
-    public static String PORT_SCALE_DS781 = "/dev/ttymxc1";
-    public static String BAUDRATE_SCALE_DS781 = "9600";
+public class SMScaleAgent {
+    public static String PORT_SCALE_DS781_DEF = "";
+    public static String BAUDRATE_SCALE_DS781_DEF = "9600";
+    public static final boolean ENABLED_DEF = false;
 
     private static final String PREF_NAME = "pref_scale_ds781";
     private static final String PK_SCALE_PORT = "pref_scale_port";
-    private static final String PK_SCALE_BAUDRATE = "pref_scale_baudrate";
+    public static final String PK_SMSCALE_ENABLED = "pk_SMSCALE_ENABLED";
 
 
-    private static final int DATAFORMAT_A_TOTAL_LENGTH = 37;
-    public static final String HEX_TERMINATION_CR = "0D";//CR The end of data 0x0d
-    public static final String HEX_TERMINATION_LF = "0A";//LF The end of Text 0x0a
-    public static final String HEX_HEADER_0 = "30";//‘0’ Net Price 0x30
-    public static final String HEX_HEADER_4 = "34";//‘4’ Tare Price 0x34
-    public static final String HEX_HEADER_U = "55";//‘U’ Unit Price 0x55
-    public static final String HEX_HEADER_T = "54";//‘T’ Total Price 0x54
-
-    static {
-        initialize();
-    }
-
-    public static void initialize() {
-        PORT_SCALE_DS781 = SharedPreferencesManager.getText(
-                PREF_NAME, PK_SCALE_PORT, "");
-        BAUDRATE_SCALE_DS781 = SharedPreferencesManager.getText(
-                PREF_NAME, PK_SCALE_BAUDRATE, "9600");
+    public static String getPort() {
+        return SharedPreferencesManager.getText(
+                PREF_NAME, PK_SCALE_PORT, PORT_SCALE_DS781_DEF);
     }
 
     public static void setPort(String port) {
         SharedPreferencesManager.set(PREF_NAME, PK_SCALE_PORT, port);
     }
 
-    public static void setBaudrate(String baudrate) {
-        SharedPreferencesManager.set(
-                PREF_NAME, PK_SCALE_BAUDRATE, baudrate);
+    public static String getBaudrate(){
+        return BAUDRATE_SCALE_DS781_DEF;
     }
+
+    public static boolean isEnabled(){
+        return SharedPreferencesManager.getBoolean(PREF_NAME,
+                PK_SMSCALE_ENABLED, ENABLED_DEF);
+    }
+
+    public static void setEnabled(boolean enabled){
+        SharedPreferencesManager.set(PREF_NAME,
+                PK_SMSCALE_ENABLED, enabled);
+    }
+
 
     /**
      * DataFormat

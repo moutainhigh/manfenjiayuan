@@ -114,6 +114,7 @@ public class SettingsTestFragment extends BaseFragment {
                 }
             }
         });
+
         refresh();
     }
 
