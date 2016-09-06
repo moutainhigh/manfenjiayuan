@@ -5,6 +5,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 
+import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
@@ -22,7 +24,7 @@ import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
-import com.mfh.litecashier.event.SerialPortEvent;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.io.IOException;
@@ -221,8 +223,8 @@ public abstract class CashierActivity extends BaseActivity {
      * 初始化串口
      */
     private void initCOM() {
-        comDisplay = new SerialControl(SerialManager.getLedPort(), SerialManager.getLedBaudrate());
-        comPrint = new SerialControl(SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate());
+        comDisplay = new SerialControl(PoslabAgent.getPort(), PoslabAgent.getBaudrate());
+        comPrint = new SerialControl(SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate());
         comScale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
         comAhScale = new SerialControl(AHScaleAgent.getPort(), AHScaleAgent.getBaudrate());
 
@@ -330,7 +332,7 @@ public abstract class CashierActivity extends BaseActivity {
         if (devicesPath.contains(SerialManager.getPrinterPort())) {
             OpenComPort(comPrint);
         }
-        if (devicesPath.contains(SerialManager.getLedPort())) {
+        if (devicesPath.contains(PoslabAgent.getPort()) && PoslabAgent.isEnabled()) {
             OpenComPort(comDisplay);
         }
         if (devicesPath.contains(SMScaleAgent.getPort()) && SMScaleAgent.isEnabled()) {
@@ -348,17 +350,22 @@ public abstract class CashierActivity extends BaseActivity {
         ZLogger.d(String.format("SerialPortEvent(%d)", event.getType()));
         //客显
         if (event.getType() == SerialPortEvent.SERIAL_TYPE_DISPLAY) {
-            //打开
-            OpenComPort(comDisplay);
-            sendPortData(comDisplay, event.getCmd(), true);
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_PRINTER) {
-            OpenComPort(comPrint);
-            sendPortData(comPrint, event.getCmdBytes());
-        } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_PRINTER_INIT) {
+            if (comDisplay != null){
+                OpenComPort(comDisplay);
+                sendPortData(comDisplay, event.getCmd(), true);
+            }
+        } else if (event.getType() == SerialPortEvent.GPRINTER_SEND_DATA) {
+            if (comPrint != null){
+                OpenComPort(comPrint);
+                sendPortData(comPrint, event.getCmdBytes());
+            }
+        } else if (event.getType() == SerialPortEvent.UPDATE_PORT_GPRINTER) {
             CloseComPort(comPrint);
 
-            comPrint = new SerialControl(SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate());
-            OpenComPort(comPrint);
+            if (GPrinterAgent.isEnabled()){
+                comPrint = new SerialControl(SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate());
+                OpenComPort(comPrint);
+            }
         } else if (event.getType() == SerialPortEvent.UPDATE_PORT_SMSCALE) {
             try {
                 //清空数据
@@ -388,12 +395,12 @@ public abstract class CashierActivity extends BaseActivity {
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_INIT) {
             CloseComPort(comDisplay);
 
-            comDisplay = new SerialControl(SerialManager.getLedPort(), SerialManager.getLedBaudrate());
+            comDisplay = new SerialControl(PoslabAgent.getPort(), PoslabAgent.getBaudrate());
             OpenComPort(comDisplay);
-            sendPortData(comDisplay, SerialManager.VFD("12.306"));
+            sendPortData(comDisplay, GPrinterAgent.VFD("12.306"));
         }else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD) {
             OpenComPort(comDisplay);
-            sendPortData(comDisplay, SerialManager.VFD(event.getCmd()));
+            sendPortData(comDisplay, GPrinterAgent.VFD(event.getCmd()));
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_BYTE) {
             OpenComPort(comDisplay);
             sendPortData(comDisplay, event.getCmdBytes());

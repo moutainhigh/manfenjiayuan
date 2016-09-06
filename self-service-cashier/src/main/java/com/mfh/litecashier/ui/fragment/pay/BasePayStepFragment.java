@@ -8,17 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
-import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.litecashier.com.SerialManager;
 
 /**
  * Created by bingshanguxue on 7/5/16.
@@ -85,7 +85,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
         //有现金支付时才打开钱箱
         if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
                 && paymentInfo.getPaidAmount() > 0) {
-            SerialManager.openMoneyBox();
+            GPrinterAgent.openMoneyBox();
             ZLogger.df(String.format(">>开钱箱：收银：%.2f,找零:%.2f",
                     paymentInfo.getPaidAmount(), paymentInfo.getChange()));
         }

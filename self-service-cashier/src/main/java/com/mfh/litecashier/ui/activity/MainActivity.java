@@ -25,6 +25,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.v1.CashierAgent;
@@ -60,7 +61,6 @@ import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.com.PrintManager;
-import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
@@ -355,7 +355,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             returnGoods();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_FEEDPAPER) == 0) {
             //走纸
-            SerialManager.feedPaper();
+            GPrinterAgent.feedPaper();
         } else if (id.compareTo(CashierFunctional.OPTION_ID_MONEYBOX) == 0) {
             openMoneyBox();
         }else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
@@ -1062,7 +1062,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
                     //显示找零
 //        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
-                    SerialManager.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
+                    GPrinterAgent.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
 
                     if (changeAmount >= 0.01) {
                         cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
@@ -1163,10 +1163,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 if (productAdapter.getItemCount() > 0) {
                     btnSettle.setEnabled(true);
                 } else {
-                    //清除屏幕上的字符
-                    SerialManager.clear();
-                    //TODO,清除客显屏幕
-
+                    GPrinterAgent.clear();
                     btnSettle.setEnabled(false);
                 }
                 if (needScroll) {
@@ -1190,7 +1187,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 开钱箱
      */
     public void openMoneyBox() {
-        SerialManager.openMoneyBox();
+        GPrinterAgent.openMoneyBox();
     }
 
     /**
@@ -1304,7 +1301,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             changeDiscountDialog.setCanceledOnTouchOutside(true);
         }
         changeDiscountDialog.initialzie("折扣", 0,
-                CashierAgent.calculatePriceDiscount(entity.getCostPrice(), entity.getFinalPrice()),
+                100 * CashierAgent.calculatePriceDiscount(entity.getCostPrice(), entity.getFinalPrice()),
                 "%", new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double value) {
@@ -1397,8 +1394,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     public void hangUpOrder() {
         inlvBarcode.clear();
-        //清除屏幕上的字符
-        SerialManager.clear();
+        GPrinterAgent.clear();
         //Step 1:
         if (productAdapter.getItemCount() > 0) {
             ZLogger.d(String.format("挂单：%s", curPosTradeNo));
@@ -1423,8 +1419,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     private void resumeOrder(String posTradeNo) {
         inlvBarcode.clear();
-        //清除屏幕上的字符
-        SerialManager.clear();
+        GPrinterAgent.clear();
 
         if (productAdapter.getItemCount() > 0) {
             //挂起当前订单

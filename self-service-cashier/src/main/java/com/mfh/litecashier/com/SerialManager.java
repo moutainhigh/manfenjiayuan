@@ -1,16 +1,15 @@
 package com.mfh.litecashier.com;
 
-import com.bingshanguxue.cashier.hardware.printer.GPrinter;
+import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.gprinter.command.EscCommand;
-import com.gprinter.command.TscCommand;
-import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.litecashier.event.SerialPortEvent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -25,10 +24,6 @@ import de.greenrobot.event.EventBus;
  * Created by ZZN.NAT(bingshanguxue) on 15/11/17.
  */
 public class SerialManager {
-
-    //屏显（POSLAB）
-    public static final String PORT_SCREEN = "/dev/ttymxc4";
-    public static final String BAUDRATE_SCREEN = "19200";
     //屏显（JOOYTEC）
 //    public static final String PORT_SCREEN = "/dev/ttyS1";
 //    public static final String BAUDRATE_SCREEN = "2400";
@@ -41,13 +36,8 @@ public class SerialManager {
 
     public static final String PREF_NAME_SERIAL = "PREF_NAME_SERIAL";
     public static final String PREF_KEY_PRINTER_PORT = "PREF_KEY_PRINTER_PORT";
-    public static final String PREF_KEY_PRINTER_BAUDRATE = "PREF_KEY_PRINTER_BAUDRATE";
-    public static final String PREF_KEY_LED_PORT = "PREF_KEY_LED_PORT";
-    public static final String PREF_KEY_LED_BAUDRATE = "PREF_KEY_LED_BAUDRATE";
     public static final String PK_UMSIPS_PORT = "prefkey_umsips_port";
     public static final String PK_UMSIPS_BAUDRATE = "prefkey_umsips_baudrate";
-
-
 
     private static SerialManager instance;
 
@@ -118,9 +108,11 @@ public class SerialManager {
             occupies.remove(gprinterPort);
         }
 
-        String ledPort = getLedPort();
-        if (!StringUtils.isEmpty(ledPort)){
-            occupies.remove(ledPort);
+        if (PoslabAgent.isEnabled()){
+            String ledPort = PoslabAgent.getPort();
+            if (!StringUtils.isEmpty(ledPort)){
+                occupies.remove(ledPort);
+            }
         }
 
         String umsipsPort = getUmsipsPort();
@@ -140,40 +132,11 @@ public class SerialManager {
 
     public static String getPrinterPort() {
         return SharedPreferencesManager.getText(
-                PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, GPrinter.PORT_DEF);
+                PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, GPrinterAgent.PORT_DEF);
     }
 
     public static void setPrinterPort(String port){
         SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, port);
-    }
-
-    public static String getPrinterBaudrate() {
-        return SharedPreferencesManager.getText(
-                PREF_NAME_SERIAL, PREF_KEY_PRINTER_BAUDRATE, GPrinter.BAUDRATE_DEF);
-    }
-
-    public static void setPrinterBaudrate(String baudrate){
-        SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_BAUDRATE, baudrate);
-    }
-
-    public static String getLedPort() {
-        return SharedPreferencesManager.getText(
-                PREF_NAME_SERIAL, PREF_KEY_LED_PORT, PORT_SCREEN);
-    }
-
-    public static void setLedPort(String port){
-        ZLogger.df(String.format("setLedPort(%s):%s", PREF_NAME_SERIAL, port));
-        SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_LED_PORT, port);
-    }
-
-    public static String getLedBaudrate() {
-        return SharedPreferencesManager.getText(
-                PREF_NAME_SERIAL, PREF_KEY_LED_BAUDRATE, BAUDRATE_SCREEN);
-    }
-
-    public static void setLedBaudrate(String baudrate){
-        ZLogger.df(String.format("setLedBaudrate(%s):%s", PREF_NAME_SERIAL, baudrate));
-        SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_LED_BAUDRATE, baudrate);
     }
 
     public static String getUmsipsPort() {
@@ -194,40 +157,6 @@ public class SerialManager {
     public static void setUmsipsBaudrate(String baudrate){
         SharedPreferencesManager.set(
                 PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, baudrate);
-    }
-
-
-
-
-    /**
-     * 打开钱箱
-     * */
-    public static void openMoneyBox(){
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                CommandConstants.CMD_HEX_STX_M));
-
-        EscCommand esc = new EscCommand();
-        esc.addGeneratePluseAtRealtime(TscCommand.FOOT.F2, (byte)20);
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
-    }
-
-    /**
-     * 走纸
-     * */
-    public static void feedPaper(){
-        EscCommand esc = new EscCommand();
-//                    esc.addPrintAndLineFeed();
-        //打印并且走纸多少行
-        esc.addPrintAndFeedLines((byte) 5);
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
     }
 
 //    public EscCommand addCODE128(EscCommand rawEsc, String content) {
@@ -264,11 +193,12 @@ public class SerialManager {
         Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
         byte[] bytes = ArrayUtils.toPrimitive(Bytes);
 
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
     }
 
     public static void printBarcode(){
         EscCommand esc = new EscCommand();
+
 //                    esc.addPrintAndLineFeed();
         /**打印 订单号条形码code128图片*/
 //        try {
@@ -322,7 +252,7 @@ public class SerialManager {
         Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
         byte[] bytes = ArrayUtils.toPrimitive(Bytes);
 //
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
 
 //        EventBus.getDefault().post(new SerialPortEvent(2, DataConvertUtil.HexToByteArr("1D6B49" + Integer.toHexString(content1.length()) + "7B43" + DataConvertUtil.Chr2Hex(content1))));
 //        EventBus.getDefault().post(new SerialPortEvent(3, "1D6B490A7B424E6F7B4330313233343536"));
@@ -471,124 +401,12 @@ public class SerialManager {
 //        return esc;
 //    }
 
-    /**
-     * 显示 标签 ＋ 金额
-     * */
-    public static void vfdShow(String text){
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_BYTE,
-                SerialManager.VFD_CH(text)));
-//        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD, text));
-    }
+
 
 
 //    Rockchip
-    public static void show(int sn, Double amount){
-        if (sn == 1){
-        //更新显示屏,显示'单价'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                    CommandConstants.CMD_HEX_ESC_S_1));
-        }
-        else if (sn == 2){
-            //更新显示屏,显示'总计'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                    CommandConstants.CMD_HEX_ESC_S_2));
-        }
-        else if (sn == 3){
-            //更新显示屏,显示'收款'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                    CommandConstants.CMD_HEX_ESC_S_3));
-        }
-        else if (sn == 4){
-            //更新显示屏,显示'找零'字符
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                    CommandConstants.CMD_HEX_ESC_S_4));
-        }
-//        //更新显示屏,显示'单价''总计'字符
-//        EventBus.getDefault().post(new SerialPortEvent(0, CommandConstants.CMD_HEX_STX_L
-//                + CommandConstants.HEX_0 + CommandConstants.HEX_1
-//                + CommandConstants.HEX_1 + CommandConstants.HEX_0));
 
-        //更新显示屏,显示商品价格
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                CommandConstants.CMD_HEX_ESC_Q_A
-                + showNumber(amount) + CommandConstants.HEX_CR));
-    }
 
-    public static void clear(){
-        //清除屏幕上的字符
-//        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY, CommandConstants.CMD_HEX_CLR));
-//        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD, ""));
-        SerialManager.vfdShow("WELCOME");
-    }
 
-    public static String showNumber(Double number){
-        if (number == null){
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        if (number > 0){
-            String numberStr = String.format("%.2f", number);
-            char[] numberCharArr = numberStr.toCharArray();
-            int len = numberCharArr.length;
-            for (char c : numberCharArr){
-//                sb.append(String.valueOf(numberCharArr[i]));
-                sb.append(Integer.toHexString((int)c));
-            }
-        }else{
-            String numberStr = MUtils.formatDouble(number, "");
-            char[] numberCharArr = numberStr.toCharArray();
-            int len = numberCharArr.length;
-            for (char c : numberCharArr){
-//                sb.append(String.valueOf(numberCharArr[i]));
-                sb.append(Integer.toHexString((int)c));
-            }
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * 将字符串转换成VFD格式显示
-     *
-     * 0x1b0x40 -- Max add : Initialize device(清空)
-     */
-    public static byte[] VFD(String displayText){
-        EscCommand esc = new EscCommand();
-
-//        String cmdStr4 = "1B40" + String.format("%02X", (byte) (displayText.length())) + DataConvertUtil.ByteArrToHex(displayText.getBytes(), "");
-        String cmdStr4 = "1B40" + DataConvertUtil.ByteArrToHex(displayText.getBytes(), "");
-//        ZLogger.d(String.format("VFD: %s, %s", displayText, cmdStr4));
-        esc.addUserCommand(DataConvertUtil.HexToByteArr(cmdStr4));
-
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        return ArrayUtils.toPrimitive(Bytes);
-    }
-
-    /**
-     * */
-    public static byte[] VFD_CH(String displayText){
-        EscCommand esc = new EscCommand();
-
-        String cmdStr4  = "1B40" + DataConvertUtil.ByteArrToHex(displayText.getBytes(), "");
-//        String cmdStr4;
-//        try {
-//            cmdStr4 = "1B40" + DataConvertUtil.ByteArrToHex(displayText.getBytes("GB2312"), "");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//            cmdStr4 = "1B40";
-//        }
-//        ZLogger.d(String.format("VFD: %s, %s", displayText, cmdStr4));
-        esc.addUserCommand(DataConvertUtil.HexToByteArr(cmdStr4));
-//        esc.addUserCommand(new byte[]{'\r'});
-//        esc.addUserCommand(new byte[]{'\n'});
-//        esc.addUserCommand(DataConvertUtil.HexToByteArr("111"));
-
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        return ArrayUtils.toPrimitive(Bytes);
-    }
 
 }

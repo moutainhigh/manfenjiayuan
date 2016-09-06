@@ -21,10 +21,11 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
@@ -37,7 +38,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.PrintManager;
-import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
@@ -229,7 +229,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
 
         //更新订单信息，同时打开钱箱，退钱给顾客
-        SerialManager.openMoneyBox();
+        GPrinterAgent.openMoneyBox();
 
         PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                 cashierOrderInfo.getPosTradeNo());

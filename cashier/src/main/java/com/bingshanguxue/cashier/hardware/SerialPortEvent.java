@@ -1,4 +1,4 @@
-package com.mfh.litecashier.event;
+package com.bingshanguxue.cashier.hardware;
 
 /**
  * Created by kun on 15/9/7.
@@ -6,9 +6,8 @@ package com.mfh.litecashier.event;
 public class SerialPortEvent {
     public static final int SERIAL_TYPE_DISPLAY = 0;//屏显（JOOYTEC）
     ////打印机(Gprinter)
-    public static final int SERIAL_TYPE_PRINTER = 1;
-    public static final int SERIAL_TYPE_PRINTER_INIT = 2;
-    ////秤(ACS-P215计价秤)
+    public static final int GPRINTER_SEND_DATA = 1;
+    public static final int UPDATE_PORT_GPRINTER = 2;
     public static final int UPDATE_PORT_SMSCALE= 3;
     public static final int UPDATE_PORT_AHSCALE= 4;
 

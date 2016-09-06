@@ -19,7 +19,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.bean.wrapper.FreshScheduleGoods;
-import com.mfh.litecashier.event.SerialPortEvent;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -71,7 +71,7 @@ public class PrintManager {
             Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
             byte[] bytes = ArrayUtils.toPrimitive(Bytes);
 //        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER, bytes));
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
         }
     }
 

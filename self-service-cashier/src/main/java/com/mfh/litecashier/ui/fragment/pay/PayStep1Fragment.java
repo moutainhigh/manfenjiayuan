@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
@@ -27,7 +28,6 @@ import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.SerialManager;
 
 import java.util.ArrayList;
 
@@ -151,7 +151,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
                     JSONObject.toJSONString(cashierOrderInfo)));
 
 //        SerialManager.show(2, cashierOrderInfo.getHandleAmount());
-            SerialManager.vfdShow(String.format("Total:%.2f", handleAmount));
+            GPrinterAgent.vfdShow(String.format("Total:%.2f", handleAmount));
 
             tvHandleAmount.setText(String.format("%.2f", handleAmount));
             tvTotalAmount.setTopText(String.format("%.2f", cashierOrderInfo.getRetailAmount()));

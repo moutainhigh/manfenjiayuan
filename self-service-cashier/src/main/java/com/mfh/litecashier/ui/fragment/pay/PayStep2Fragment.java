@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
 import com.bingshanguxue.cashier.model.PayAmount;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
@@ -52,7 +53,6 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.ui.adapter.PayCouponAdapter;
 import com.mfh.litecashier.ui.dialog.EnterPasswordDialog;
 
@@ -243,7 +243,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
             //显示应付款
 //        SerialManager.show(2, cashierOrderInfo.getHandleAmount());
-            SerialManager.vfdShow(String.format("Total:%.2f", handleAmount));
+            GPrinterAgent.vfdShow(String.format("Total:%.2f", handleAmount));
             ZLogger.df(String.format("会员支付(%d)-应收金额:%f",
                     paySubType, handleAmount));
         }

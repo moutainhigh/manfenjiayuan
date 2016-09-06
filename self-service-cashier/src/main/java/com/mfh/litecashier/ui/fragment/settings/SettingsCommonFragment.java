@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.bingshanguxue.vector_uikit.SettingsItem;
@@ -24,7 +26,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.event.SerialPortEvent;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
@@ -64,7 +66,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     @Bind(R.id.toggleItem_leddisplay)
     ToggleSettingItem tsiLedDisplay;
     @Bind(R.id.toggleItem_printer)
-    ToggleSettingItem printerToggleItem;
+    ToggleSettingItem togglePrinter;
     @Bind(R.id.toggleItem_softkeyboard)
     ToggleSettingItem tsiSoftKeyboard;
     @Bind(R.id.toggleItem_tts)
@@ -108,40 +110,28 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         tsiLedDisplay.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
+                if (GPrinterAgent.isEnabled() != isChecked) {
+                    GPrinterAgent.setEnabled(isChecked);
+
+                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
+                }
             }
         });
-        printerToggleItem.init(new ToggleSettingItem.OnViewListener() {
+        togglePrinter.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER_INIT, ""));
-            }
-        });
-        tsiSoftKeyboard.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesManager.setSoftKeyboardEnabled(isChecked);
-            }
-        });
-        ttsToggleItem.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_CONFIG,
-                        SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
-            }
-        });
-        toggleSmscaleFtp.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
-            }
-        });
-        toggleGreenTags.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, isChecked);
+                if (GPrinterAgent.isEnabled() != isChecked) {
+                    GPrinterAgent.setEnabled(isChecked);
+                    if (!isChecked){
+                        GPrinterAgent.setPort("");
+                        SerialManager.setPrinterPort("");
+
+                        togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                                SerialManager.getPrinterPort(),
+                                GPrinterAgent.getBaudrate()));
+                    }
+                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
+                }
             }
         });
         toggleAhscale.init(new ToggleSettingItem.OnViewListener() {
@@ -179,6 +169,32 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
             }
         });
+        tsiSoftKeyboard.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesManager.setSoftKeyboardEnabled(isChecked);
+            }
+        });
+        ttsToggleItem.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_CONFIG,
+                        SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
+            }
+        });
+        toggleSmscaleFtp.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
+            }
+        });
+        toggleGreenTags.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, isChecked);
+            }
+        });
+
         refresh();
     }
 
@@ -285,32 +301,31 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         Beta.checkUpgrade();
     }
 
-    @OnClick(R.id.toggleItem_leddisplay)
-    public void setLedPort() {
-        if (setPortDialog == null) {
-            setPortDialog = new SetPortDialog(getActivity());
-            setPortDialog.setCancelable(false);
-            setPortDialog.setCanceledOnTouchOutside(false);
-        }
-        setPortDialog.initialize("LED客显", SerialManager.getLedPort(),
-                SerialManager.getLedBaudrate(), new SetPortDialog.onDialogClickListener() {
-                    @Override
-                    public void onSetPort(String port, String baudrate) {
-                        tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
-                        SerialManager.setLedPort(port);
-                        SerialManager.setLedBaudrate(baudrate);
-
-                        //设置串口
-                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
-                        tsiLedDisplay.setChecked(false);
-
-                        refresh();
-                    }
-                });
-        if (!setPortDialog.isShowing()) {
-            setPortDialog.show();
-        }
-    }
+//    @OnClick(R.id.toggleItem_leddisplay)
+//    public void setLedPort() {
+//        if (setPortDialog == null) {
+//            setPortDialog = new SetPortDialog(getActivity());
+//            setPortDialog.setCancelable(false);
+//            setPortDialog.setCanceledOnTouchOutside(false);
+//        }
+//        setPortDialog.initialize("LED客显", PoslabAgent.getPort(),
+//                PoslabAgent.getBaudrate(), new SetPortDialog.onDialogClickListener() {
+//                    @Override
+//                    public void onSetPort(String port, String baudrate) {
+//                        tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
+//                        PoslabAgent.set(port);
+//                        PoslabAgent.setLedBaudrate(baudrate);
+//
+//                        //设置串口
+//                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
+//
+//                        refresh();
+//                    }
+//                });
+//        if (!setPortDialog.isShowing()) {
+//            setPortDialog.show();
+//        }
+//    }
 
     @OnClick(R.id.toggleItem_printer)
     public void setPrinterPort() {
@@ -319,17 +334,13 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.initialize("打印机", SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate(), new SetPortDialog.onDialogClickListener() {
+        setPortDialog.initialize("打印机(GPrinter)", SerialManager.getPrinterPort(),
+                new SetPortDialog.onDialogClickListener() {
             @Override
             public void onSetPort(String port, String baudrate) {
-                printerToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
                 SerialManager.setPrinterPort(port);
-                SerialManager.setPrinterBaudrate(baudrate);
-
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_PRINTER_INIT, ""));
-                printerToggleItem.setChecked(false);
-
+                GPrinterAgent.setPort(port);
+                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
                 refresh();
             }
         });
@@ -350,12 +361,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                 new SetPortDialog.onDialogClickListener() {
                     @Override
                     public void onSetPort(String port, String baudrate) {
-
                         AHScaleAgent.setPort(port);
-
-                        //设置串口
                         EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
-
                         refresh();
                     }
                 });
@@ -376,10 +383,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     @Override
                     public void onSetPort(String port, String baudrate) {
                         SMScaleAgent.setPort(port);
-
-                        //设置串口
                         EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SMSCALE, ""));
-
                         refresh();
                     }
                 });
@@ -465,11 +469,12 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         appInfo.getVersionName(), appInfo.getVersionCode()));
             }
             tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    SerialManager.getLedPort(), SerialManager.getLedBaudrate()));
-            tsiLedDisplay.setChecked(false);
-            printerToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate()));
-            printerToggleItem.setChecked(false);
+                    PoslabAgent.getPort(), PoslabAgent.getBaudrate()));
+            tsiLedDisplay.setChecked(PoslabAgent.isEnabled());
+
+            togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                    SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate()));
+            togglePrinter.setChecked(GPrinterAgent.isEnabled());
 
             toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     AHScaleAgent.getPort(),
@@ -479,6 +484,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SMScaleAgent.getPort(), SMScaleAgent.getBaudrate()));
             toggleSmscale.setChecked(SMScaleAgent.isEnabled());
+
             umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
             toggleSmscaleFtp.setSubTitle(String.format("%s:%d",

@@ -1,4 +1,4 @@
-package com.mfh.litecashier.com;
+package com.bingshanguxue.cashier.hardware.printer;
 
 /**
  * Created by kun on 15/9/9.
