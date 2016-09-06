@@ -474,12 +474,12 @@ public class PrintManagerImpl extends PrintManager {
             accWrapper = new AccWrapper();
         }
         int accIndex = 1;
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getCashItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAlipayItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getWxItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAccountItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getBankItem());
-        printDailySettleAccItem(esc, accIndex, accWrapper.getRuleItem());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getCash());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAlipay());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getWx());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAccount());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getBank());
+        printDailySettleAccItem(esc, accIndex, accWrapper.getRule());
 
         /**
          * 打印合计信息
@@ -669,12 +669,12 @@ public class PrintManagerImpl extends PrintManager {
             accWrapper = new AccWrapper();
         }
         int accIndex = 1;
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getCashItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAlipayItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getWxItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAccountItem());
-        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getBankItem());
-        printDailySettleAccItem(esc, accIndex, accWrapper.getRuleItem());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getCash());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAlipay());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getWx());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getAccount());
+        accIndex = printDailySettleAccItem(esc, accIndex, accWrapper.getBank());
+        printDailySettleAccItem(esc, accIndex, accWrapper.getRule());
 
         /**
          * 打印合计信息

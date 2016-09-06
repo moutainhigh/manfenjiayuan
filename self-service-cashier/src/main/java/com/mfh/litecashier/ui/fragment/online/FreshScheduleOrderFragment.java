@@ -55,7 +55,7 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
     SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    private PurchaseSendOrderAdapter orderListAdapter;
+    private FreshScheduleOrderAdapter orderListAdapter;
     private LinearLayoutManager linearLayoutManager;
     @Bind(R.id.empty_view)
     TextView emptyView;
@@ -201,8 +201,8 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
             }
         });
 
-        orderListAdapter = new PurchaseSendOrderAdapter(CashierApp.getAppContext(), null);
-        orderListAdapter.setOnAdapterListener(new PurchaseSendOrderAdapter.OnAdapterListener() {
+        orderListAdapter = new FreshScheduleOrderAdapter(CashierApp.getAppContext(), null);
+        orderListAdapter.setOnAdapterListener(new FreshScheduleOrderAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Bundle args = new Bundle();

@@ -102,26 +102,22 @@ public class SplashActivity extends InitActivity {
             public void call(Subscriber<? super Boolean> subscriber) {
 
                 AppHelper.saveAppStartupDatetime();
+                AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
+
                 //首次启动(由于应用程序可能会被多次执行在不同的进程中，所以这里在启动页调用)
-                ZLogger.df(String.format("应用程序启动：process: %s",
-                        CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid())));
+                ZLogger.df(String.format("应用程序启动(%s-%d)：process: %s",
+                        appInfo.getVersionName(), appInfo.getVersionCode(),
+                        CashierApp.getProcessName(CashierApp.getAppContext(),
+                                android.os.Process.myPid())));
 
                 if (SharedPreferencesManager.isAppFirstStart()) {
                     SharedPreferencesHelper.setSyncProductsCursor("");
                     SharedPreferencesHelper.setPosOrderLastUpdate("");
                     SharedPreferencesManager.setTerminalId("");
                     SharedPreferencesManager.setSoftKeyboardEnabled(false);
-//            SharedPreferencesHelper.setPosOrderSyncInterval(15 * 60);//15分钟同步一次
-//            SharedPreferencesHelper.setSyncIntervalCompanyHuman(30 * 60);//30分钟同步一次
 
                     SharedPreferencesManager.setAppFirstStart(false);
                 } else {
-                    //清空旧缓存
-//            AppHelper.clearAppCache();
-                    //清除数据缓存
-//            DataCleanManager.cleanInternalCache(getApplicationContext());
-//            SharedPreferencesHelper.setPosOrderSyncInterval(25 * 60);
-//            SharedPreferencesHelper.setSyncCompanyHumanInterval(30 * 60);
                     CashierShopcartService.getInstance().clear();//购物车－收银
                     PurchaseShopcartHelper.getInstance().clear();//购物车－采购
                     PosCategoryGodosTempService.getInstance().clear();
@@ -137,6 +133,7 @@ public class SplashActivity extends InitActivity {
                 if (MfhLoginService.get().haveLogined()) {
                     subscriber.onNext(true);
                 } else {
+                    MfhLoginService.get().clear();
                     subscriber.onNext(false);
                 }
                 subscriber.onCompleted();
@@ -184,7 +181,6 @@ public class SplashActivity extends InitActivity {
      */
     private void redirectToLogin() {
         ZLogger.df("准备跳转到登录页");
-        MfhLoginService.get().clear();
 
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);

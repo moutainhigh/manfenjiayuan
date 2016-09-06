@@ -288,20 +288,21 @@ public class AnalysisHelper {
         item.setIsShowIndex(true);
         return item;
     }
+
     public static List<AnalysisItemWrapper> getAccAnalysisList(AccWrapper accWrapper){
         if (accWrapper == null){
             accWrapper = new AccWrapper();
-            accWrapper.initWithDailysettleAccItems(null);
+            accWrapper.initialize(null);
         }
 
         List<AnalysisItemWrapper> items = new ArrayList<>();
 
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getCashItem()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getAlipayItem()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getWxItem()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getAccountItem()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getBankItem()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getRuleItem()));
+        items.add(accItem2AnalysisItemWrapper(accWrapper.getCash()));
+        items.add(accItem2AnalysisItemWrapper(accWrapper.getAlipay()));
+        items.add(accItem2AnalysisItemWrapper(accWrapper.getWx()));
+        items.add(accItem2AnalysisItemWrapper(accWrapper.getAccount()));
+        items.add(accItem2AnalysisItemWrapper(accWrapper.getBank()));
+        items.add(accItem2AnalysisItemWrapper(accWrapper.getRule()));
         return items;
     }
 
@@ -319,7 +320,7 @@ public class AnalysisHelper {
         return getAccAnalysisList(accWrapper);
     }
 
-    public static AccItem constructorAccItem(Integer payType, String payTypeCaption) {
+    public static AccItem generateAccItem(Integer payType, String payTypeCaption) {
         AccItem accItem = new AccItem();
         accItem.setPayType(payType);
         accItem.setPayTypeCaption(payTypeCaption);

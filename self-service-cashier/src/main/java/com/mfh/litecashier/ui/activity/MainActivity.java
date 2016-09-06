@@ -1682,13 +1682,15 @@ public class MainActivity extends CashierActivity implements ICashierView {
     /**
      * 添加商品到收银台
      */
-    private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount) {
+    private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
+                                  final Double bCount) {
         if (goods == null){
             return;
         }
 
         Double costPrice = goods.getCostPrice();
         if (costPrice == null){
+            // TODO: 9/4/16
             ZLogger.df("商品零售价为空，补填后才可以收银");
             commitGoodsCostprice1(orderBarCode, goods, bCount);
         }
@@ -1769,7 +1771,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 保存商品到收银台*/
-    private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods, final Double bCount){
+    private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
+                                   final Double bCount){
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {

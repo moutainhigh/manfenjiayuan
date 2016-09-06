@@ -445,9 +445,9 @@ public class DailySettleFragment extends BaseProgressFragment {
                 }
             }
             AccWrapper accWrapper = new AccWrapper();
-            accWrapper.initWithDailysettleAccItems(entityList);
+            accWrapper.initialize(entityList);
 
-            AccItem accitem = accWrapper.getCashItem();
+            AccItem accitem = accWrapper.getCash();
             this.dailysettleEntity.setCash(accitem != null ? accitem.getAmount() : 0D);
             this.dailysettleEntity.setAccData(JSON.toJSONString(accWrapper));
 //            this.dailysettleEntity.setUpdatedDate(new Date());

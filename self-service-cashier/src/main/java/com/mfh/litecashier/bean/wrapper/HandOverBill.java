@@ -142,8 +142,8 @@ public class HandOverBill implements java.io.Serializable{
         if (this.accWrapper == null){
             this.accWrapper = new AccWrapper();
         }
-        this.accWrapper.initWithDailysettleAccItems(accItems);
-        AccItem cashItem = this.accWrapper.getCashItem();
+        this.accWrapper.initialize(accItems);
+        AccItem cashItem = this.accWrapper.getCash();
         this.cash = cashItem != null ? cashItem.getAmount() : 0D;
         this.income = this.amount - this.cash;
     }

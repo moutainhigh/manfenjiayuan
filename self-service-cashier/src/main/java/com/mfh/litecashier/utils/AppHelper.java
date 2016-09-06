@@ -13,6 +13,8 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
+import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
@@ -25,8 +27,8 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
-import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.ui.activity.SplashActivity;
 
@@ -178,9 +180,11 @@ public class AppHelper {
         SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP);
         SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP_BORN);
         SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_CONFIG);
+        SharedPreferencesManager.clear(SerialManager.PREF_NAME_SERIAL);
         SharedPreferencesManager.clear(SMScaleSyncManager2.PREF_SMSCALE);
         SharedPreferencesManager.clear(GreenTagsApi.PREF_GREENTAGS);
-        SharedPreferencesManager.clear(AHScaleAgent.PREF_AHSCALE);
+        SharedPreferencesManager.clear(AHScaleAgent.PREF_NAME);
+        SharedPreferencesManager.clear(SMScaleAgent.PREF_NAME);
 
         //删除无效文件
         clearRedunantData(false);
@@ -237,7 +241,7 @@ public class AppHelper {
             AnalysisHelper.deleteOldDailysettle(7);//日结
             CashierHelper.clearOldPosOrder(7);//收银订单
             PosTopupService.get().deleteOldData(7);
-            ZLogger.deleteOldFiles(14);
+            ZLogger.deleteOldFiles(7);
             SMScaleSyncManager2.deleteOldFiles(1);
 
             AppHelper.clearCacheData();
