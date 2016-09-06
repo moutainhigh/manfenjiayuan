@@ -15,7 +15,7 @@ public class SMScaleAgent {
     public static String BAUDRATE_SCALE_DS781_DEF = "9600";
     public static final boolean ENABLED_DEF = false;
 
-    private static final String PREF_NAME = "pref_scale_ds781";
+    public static final String PREF_NAME = "pref_scale_ds781";
     private static final String PK_SCALE_PORT = "pref_scale_port";
     public static final String PK_SMSCALE_ENABLED = "pk_SMSCALE_ENABLED";
 

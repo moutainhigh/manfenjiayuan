@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
@@ -23,8 +25,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.event.SerialPortEvent;
-import com.mfh.litecashier.hardware.AHScale.AHScaleAgent;
-import com.mfh.litecashier.hardware.SMScale.DigiDS781Agent;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
@@ -71,9 +71,9 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     ToggleSettingItem ttsToggleItem;
 
     @Bind(R.id.item_ahscale_rs232)
-    SettingsItem ahscaleToggleItem;
+    ToggleSettingItem toggleAhscale;
     @Bind(R.id.item_smscale_rs232)
-    SettingsItem smscaleRs232SettingsItem;
+    ToggleSettingItem toggleSmscale;
     @Bind(R.id.item_umsips_rs232)
     SettingsItem umsipsRs232SettingsItem;
     @Bind(R.id.item_smscale_ftp)
@@ -142,6 +142,41 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             @Override
             public void onToggleChanged(boolean isChecked) {
                 SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, isChecked);
+            }
+        });
+        toggleAhscale.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+
+                if (AHScaleAgent.isEnabled() != isChecked) {
+                    AHScaleAgent.setEnabled(isChecked);
+                    if (!isChecked){
+                        AHScaleAgent.setPort("");
+
+                        toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                                AHScaleAgent.getPort(),
+                                AHScaleAgent.getBaudrate()));
+                    }
+                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
+                }
+
+            }
+        });
+        toggleSmscale.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+
+                if (SMScaleAgent.isEnabled() != isChecked) {
+                    SMScaleAgent.setEnabled(isChecked);
+                    if (isChecked){
+                        SMScaleAgent.setEnabled(isChecked);
+                        toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                                SMScaleAgent.getPort(),
+                                SMScaleAgent.getBaudrate()));
+                    }
+                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SMSCALE, ""));
+                }
+
             }
         });
         refresh();
@@ -311,20 +346,19 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.initialize("爱华电子秤", AHScaleAgent.PORT_ACS_P215, AHScaleAgent.BAUDRATE_ACS_P215, new SetPortDialog.onDialogClickListener() {
-            @Override
-            public void onSetPort(String port, String baudrate) {
-                ahscaleToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]", port, baudrate));
-                AHScaleAgent.setAcsP215Port(port);
-                AHScaleAgent.setAcsP215Baudrate(baudrate);
-                AHScaleAgent.initialize();
+        setPortDialog.initialize("爱华电子秤(ACS-P215)", AHScaleAgent.getPort(),
+                new SetPortDialog.onDialogClickListener() {
+                    @Override
+                    public void onSetPort(String port, String baudrate) {
 
-                //设置串口
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_SCALE_INIT, ""));
+                        AHScaleAgent.setPort(port);
 
-                refresh();
-            }
-        });
+                        //设置串口
+                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
+
+                        refresh();
+                    }
+                });
         if (!setPortDialog.isShowing()) {
             setPortDialog.show();
         }
@@ -337,20 +371,14 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             setPortDialog.setCancelable(false);
             setPortDialog.setCanceledOnTouchOutside(false);
         }
-        setPortDialog.initialize("寺冈电子秤", DigiDS781Agent.PORT_SCALE_DS781,
-                DigiDS781Agent.BAUDRATE_SCALE_DS781,
+        setPortDialog.initialize("寺冈电子秤(DS781)", SMScaleAgent.getPort(),
                 new SetPortDialog.onDialogClickListener() {
                     @Override
                     public void onSetPort(String port, String baudrate) {
-                        smscaleRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                                port, baudrate));
-                        DigiDS781Agent.setPort(port);
-                        DigiDS781Agent.setBaudrate(baudrate);
-                        DigiDS781Agent.initialize();
+                        SMScaleAgent.setPort(port);
 
                         //设置串口
-                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_SCALE_INIT, ""));
-//                scalePortSwitchCompat.setChecked(false);
+                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SMSCALE, ""));
 
                         refresh();
                     }
@@ -442,10 +470,15 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             printerToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate()));
             printerToggleItem.setChecked(false);
-            ahscaleToggleItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    AHScaleAgent.PORT_ACS_P215, AHScaleAgent.BAUDRATE_ACS_P215));
-            smscaleRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    DigiDS781Agent.PORT_SCALE_DS781, DigiDS781Agent.BAUDRATE_SCALE_DS781));
+
+            toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                    AHScaleAgent.getPort(),
+                    AHScaleAgent.getBaudrate()));
+            toggleAhscale.setChecked(AHScaleAgent.isEnabled());
+
+            toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                    SMScaleAgent.getPort(), SMScaleAgent.getBaudrate()));
+            toggleSmscale.setChecked(SMScaleAgent.isEnabled());
             umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
                     SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
             toggleSmscaleFtp.setSubTitle(String.format("%s:%d",

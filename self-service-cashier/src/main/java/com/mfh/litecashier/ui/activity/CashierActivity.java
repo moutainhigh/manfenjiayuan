@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.DS781A;
+import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
@@ -14,7 +16,6 @@ import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
@@ -22,8 +23,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.event.SerialPortEvent;
-import com.bingshanguxue.cashier.hardware.scale.DS781A;
-import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.io.IOException;
@@ -197,17 +196,20 @@ public abstract class CashierActivity extends BaseActivity {
             return;
         }
 
-        if (!BizConfig.RELEASE){
-            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
-                    comBean.sRecTime, port,
-                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
-            ZLogger.d("COM RECV:" + sMsg);
-        }
+//        if (!BizConfig.RELEASE){
+//            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
+//                    comBean.sRecTime, port,
+//                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
+//            ZLogger.d("COM RECV:" + sMsg);
+//        }
 
         if (port.equals(AHScaleAgent.getPort()) && AHScaleAgent.isEnabled()) {
-            GlobalInstance.getInstance().setNetWeight(AHScaleAgent.parseACSP215(comBean.bRec));
+            Double netWeight = AHScaleAgent.parseACSP215(comBean.bRec);
+            if (netWeight != null){
+                GlobalInstance.getInstance().setNetWeight(netWeight);
+            }
         }
-        else if (port.equals(SMScaleAgent.PORT_SCALE_DS781) && SMScaleAgent.isEnabled()) {
+        else if (port.equals(SMScaleAgent.getPort()) && SMScaleAgent.isEnabled()) {
             DS781A ds781A = SMScaleAgent.parseData(comBean.bRec);
             if (ds781A != null) {
                 GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
@@ -221,9 +223,8 @@ public abstract class CashierActivity extends BaseActivity {
     private void initCOM() {
         comDisplay = new SerialControl(SerialManager.getLedPort(), SerialManager.getLedBaudrate());
         comPrint = new SerialControl(SerialManager.getPrinterPort(), SerialManager.getPrinterBaudrate());
-        comScale = new SerialControl(SMScaleAgent.PORT_SCALE_DS781, SMScaleAgent.getBaudrate());
-        comAhScale = new SerialControl(AHScaleAgent.getPort(),
-                AHScaleAgent.getBaudrate());
+        comScale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
+        comAhScale = new SerialControl(AHScaleAgent.getPort(), AHScaleAgent.getBaudrate());
 
         DispQueue = new DispQueueThread();
         DispQueue.start();
@@ -246,15 +247,13 @@ public abstract class CashierActivity extends BaseActivity {
                 }
 
                 serialHelper.open();
+                ZLogger.df("打开串口成功:" + serialHelper.getPort());
             } catch (SecurityException e) {
-                ZLogger.e("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
-//            DialogUtil.showHint("打开串口失败:没有串口读/写权限!" + ComPort.getPort());
+                ZLogger.ef("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
             } catch (IOException e) {
-                ZLogger.e("打开串口失败:未知错误!" + serialHelper.getPort());
-//            DialogUtil.showHint("打开串口失败:未知错误!" + ComPort.getPort());
+                ZLogger.ef("打开串口失败:未知错误!" + serialHelper.getPort());
             } catch (InvalidParameterException e) {
-                ZLogger.e("打开串口失败:参数错误!");
-//            DialogUtil.showHint("打开串口失败:参数错误!" + ComPort.getPort());
+                ZLogger.ef("打开串口失败:参数错误!" + serialHelper.getPort());
             }
         }
     }
@@ -263,6 +262,9 @@ public abstract class CashierActivity extends BaseActivity {
      * 打开串口
      */
     public void OpenComPort(SerialHelper serialHelper) {
+        if (serialHelper == null){
+            return;
+        }
         //使用线程，避免界面卡顿
         new Thread(new OpenPortRunnable(serialHelper)).start();
     }
@@ -308,32 +310,33 @@ public abstract class CashierActivity extends BaseActivity {
         mSerialPortFinder = new SerialPortFinder();
 
         String[] entryValues = mSerialPortFinder.getAllDevicesPath();
-        List<String> allDevices = new ArrayList<>();
+        List<String> devicesPath = new ArrayList<>();
         if (entryValues != null) {
-            Collections.addAll(allDevices, entryValues);
+            Collections.addAll(devicesPath, entryValues);
         }
-        ZLogger.d("devicePath:" + allDevices.toString());
-        SerialManager.getInstance().setComDevicesPath(allDevices);//保存devices
+        ZLogger.d("devicePath:" + devicesPath.toString());
+        SerialManager.getInstance().setComDevicesPath(devicesPath);//保存devices
 
-        if (!BizConfig.RELEASE) {
-            String[] entryValues2 = mSerialPortFinder.getAllDevices();
+        if (BizConfig.RELEASE) {
+
+            String[] devices = mSerialPortFinder.getAllDevices();
             List<String> allDevices2 = new ArrayList<>();
-            if (entryValues2 != null) {
-                Collections.addAll(allDevices2, entryValues2);
+            if (devices != null) {
+                Collections.addAll(allDevices2, devices);
             }
             ZLogger.d("devices:" + allDevices2.toString());
         }
 
-        if (allDevices.contains(SerialManager.getPrinterPort())) {
+        if (devicesPath.contains(SerialManager.getPrinterPort())) {
             OpenComPort(comPrint);
         }
-        if (allDevices.contains(SerialManager.getLedPort())) {
+        if (devicesPath.contains(SerialManager.getLedPort())) {
             OpenComPort(comDisplay);
         }
-        if (allDevices.contains(SMScaleAgent.getBaudrate()) && SMScaleAgent.isEnabled()) {
+        if (devicesPath.contains(SMScaleAgent.getPort()) && SMScaleAgent.isEnabled()) {
             OpenComPort(comScale);
         }
-        if (allDevices.contains(AHScaleAgent.getBaudrate()) && AHScaleAgent.isEnabled()){
+        if (devicesPath.contains(AHScaleAgent.getPort()) && AHScaleAgent.isEnabled()){
             OpenComPort(comAhScale);
         }
     }
@@ -363,7 +366,7 @@ public abstract class CashierActivity extends BaseActivity {
                 CloseComPort(comScale);
 
                 if (SMScaleAgent.isEnabled()){
-                    comScale = new SerialControl(SMScaleAgent.PORT_SCALE_DS781, SMScaleAgent.getBaudrate());
+                    comScale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
                     OpenComPort(comScale);
                 }
             } catch (Exception e) {
@@ -376,8 +379,7 @@ public abstract class CashierActivity extends BaseActivity {
                 CloseComPort(comAhScale);
 
                 if (AHScaleAgent.isEnabled()){
-                    comAhScale = new SerialControl(AHScaleAgent.getPort(),
-                            AHScaleAgent.getBaudrate());
+                    comAhScale = new SerialControl(AHScaleAgent.getPort(), AHScaleAgent.getBaudrate());
                     OpenComPort(comAhScale);
                 }
             } catch (Exception e) {

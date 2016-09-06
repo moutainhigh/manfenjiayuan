@@ -45,8 +45,14 @@ public class SerialPortFinder {
 					File[] files = dev.listFiles();
 					if (files != null && files.length > 0){
 						for (File file : files){
-							if (file.getAbsolutePath().startsWith(mDeviceRoot)) {
-								ZLogger.df("Found new device: " + file);
+//							fileName=ttyGS2,filePath=/dev/ttyGS2, absolutePath=/dev/ttyGS2
+							String absolutePath = file.getAbsolutePath();
+//							ZLogger.d(String.format("fileName=%s,filePath=%s, absolutePath=%s,mDeviceRoot=%s",
+//									file.getName(), file.getPath(), absolutePath, mDeviceRoot));
+							///dev/rfcomm,/dev/ttyUSB,/dev/ttyGS,/dev/ttymxc
+							if (absolutePath.startsWith(mDeviceRoot)) {
+								//ignore /dev/ttyGS3,/dev/ttyGS2,/dev/ttyGS1,/dev/ttyGS0
+								ZLogger.df("add new device: " + file);
 								mDevices.add(file);
 							}
 						}

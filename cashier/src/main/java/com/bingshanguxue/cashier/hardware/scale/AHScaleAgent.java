@@ -24,7 +24,7 @@ public class AHScaleAgent {
     public static final String PORT_ACS_P215_DEF = "";
     public static final String BAUDRATE_ACS_P215_DEF = "9600";
 
-    private static final String PREF_NAME = "pref_ahscale";
+    public static final String PREF_NAME = "pref_ahscale";
     public static final String PK_ACS_P215_ENABLED = "pk_ACS_P215_ENABLED";
     public static final String PK_ACS_P215_PORT = "pk_ACS_P215_PORT";
 
