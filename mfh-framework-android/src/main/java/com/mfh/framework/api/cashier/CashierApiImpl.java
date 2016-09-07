@@ -15,6 +15,9 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by NAT.ZZN(bingshanguxue) on 2015/9/14.
  */
 public class CashierApiImpl extends CashierApi {
+    /**
+     * 提交收银订单
+     * */
     public static void batchInOrders(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
@@ -217,7 +220,6 @@ public class CashierApiImpl extends CashierApi {
     }
 
 
-
     /**
      * 查询批次流水：出库/入库单
      * @param orderType orderType=0|1|2  0-入库 1-出库 2-直接设置
@@ -400,7 +402,8 @@ public class CashierApiImpl extends CashierApi {
      * 查pos订单的现金流水：
      * /orderPayWay/list?payType=1&officeId=136076&orderby=CREATED_DATE&orderbydesc=true
      * */
-    public static void listOrderPayWay(Integer payType, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
+    public static void listOrderPayWay(Integer payType, PageInfo pageInfo,
+                                       AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("payType", String.valueOf(payType));
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
@@ -412,8 +415,5 @@ public class CashierApiImpl extends CashierApi {
 
         AfinalFactory.getHttp(true).post(URL_ORDERPAYWAY_LIST, params, responseCallback);
     }
-
-
-
 
 }

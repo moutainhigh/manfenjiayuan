@@ -1,6 +1,9 @@
 package com.mfh.framework.core.utils;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
@@ -307,4 +310,19 @@ public class StringUtils {
         }
         return sb.toString();
     }
+
+    /**
+     * */
+    public static Spanned toSpanned(String source){
+        Spanned result;
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            result = Html.fromHtml(source,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(source);
+        }
+
+        return result;
+    }
+
 }
