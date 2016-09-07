@@ -285,8 +285,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             items.add(item);
         }
 
-        InvIoOrderApi.createIoOrder(orderType, storeType,
-                items, responseCallback);
+        InvIoOrderApi.createIoOrder(orderType, storeType, items, responseCallback);
     }
 
     private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,

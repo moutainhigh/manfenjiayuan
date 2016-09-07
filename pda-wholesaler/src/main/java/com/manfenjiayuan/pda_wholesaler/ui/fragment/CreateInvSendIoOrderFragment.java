@@ -66,7 +66,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvSendIoGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
     @Bind(R.id.empty_view)
@@ -137,11 +137,6 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         initRecyclerView();
 
         selectEntryMode();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -266,15 +261,15 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new InvSendIoGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvSendIoGoodsAdapter.OnAdapterListener() {
@@ -323,11 +318,11 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
 
         ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
 

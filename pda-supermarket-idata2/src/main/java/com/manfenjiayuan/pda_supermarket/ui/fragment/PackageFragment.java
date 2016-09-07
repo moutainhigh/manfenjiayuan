@@ -109,11 +109,6 @@ public class PackageFragment extends QueryBarcodeFragment {
     }
 
     @Override
-    public void onQuerySuccess() {
-        super.onQuerySuccess();
-    }
-
-    @Override
     public void onQueryError(String errorMsg) {
         super.onQueryError(errorMsg);
 

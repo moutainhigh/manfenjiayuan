@@ -9,7 +9,6 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.Bugly;
-import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
 
 import java.io.File;
@@ -115,7 +114,7 @@ public class AppContext extends MfhApplication {
 //        Beta.canShowUpgradeActs.add(MainActivity.class);
 
         /***** Bugly高级设置 *****/
-        BuglyStrategy strategy = new BuglyStrategy();
+//        BuglyStrategy strategy = new BuglyStrategy();
         /**
          * 设置app渠道号
          */

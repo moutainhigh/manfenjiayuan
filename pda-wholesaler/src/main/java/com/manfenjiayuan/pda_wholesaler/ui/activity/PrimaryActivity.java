@@ -77,12 +77,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-//        hideSystemUI();
-    }
-
-    @Override
     public void onBackPressed() {
 //        super.onBackPressed();
 

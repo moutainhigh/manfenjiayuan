@@ -56,7 +56,7 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvReturnOrderGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
 
@@ -131,11 +131,6 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
         if (companyInfo == null) {
             selectInvCompProvider();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -284,15 +279,15 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new InvReturnOrderGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvReturnOrderGoodsAdapter.OnAdapterListener() {
@@ -309,11 +304,11 @@ public class CreateInvReturnOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
 
         ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
     @OnClick(R.id.fab_add)

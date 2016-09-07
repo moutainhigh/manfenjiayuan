@@ -56,11 +56,6 @@ public class SplashActivity extends InitActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void initPrimary() {
         super.initPrimary();
 

@@ -3,7 +3,6 @@ package com.manfenjiayuan.pda_wholesaler.ui.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -59,6 +58,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -73,7 +77,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvRecvGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
     @Bind(R.id.empty_view)
@@ -151,12 +155,6 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         initRecyclerView();
 
         selectEntryMode();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
     }
 
     @Override
@@ -325,8 +323,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                         //由于商品明细可以修改，所以这里不直接对订单做收货，而是新建一个收货单
 //                        doSignWork(itemsArray, finalAmount, invSendOrder.getId(),
 //                                invSendOrder.getSendTenantId(), invSendOrder.getIsPrivate());
-                        doSignWork(itemsArray, finalAmount, null,
-                                companyInfo.getId(), IsPrivate.PLATFORM);
+                        doSignWork(itemsArray, null, companyInfo.getId());
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -337,8 +334,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 });
     }
 
-    public void doSignWork(JSONArray itemsArray, Double amount, Long otherOrderId,
-                           Long sendTenantId, Integer isPrivate) {
+    public void doSignWork(JSONArray itemsArray, Long otherOrderId, Long sendTenantId) {
         onReceiveOrderProcess();
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
@@ -350,13 +346,12 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
             jsonStrObject.put("sendTenantId", sendTenantId);
         }
         jsonStrObject.put("sendStoreType", StoreType.WHOLESALER);
-        jsonStrObject.put("isPrivate", isPrivate);
+        jsonStrObject.put("isPrivate", IsPrivate.PLATFORM);
         jsonStrObject.put("receiveNetId", MfhLoginService.get().getCurOfficeId());
         jsonStrObject.put("tenantId", MfhLoginService.get().getSpid());
         jsonStrObject.put("remark", "");
         jsonStrObject.put("items", itemsArray);
 
-//        ZLogger.d("jsonStr:\n " + JSON.toJSONString(jsonStrObject));
         InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
                 jsonStrObject.toJSONString(), signResponseCallback);
     }
@@ -380,7 +375,9 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                      * 新增采购单成功，更新采购单列表
                      * */
                     RspValue<String> retValue = (RspValue<String>) rspData;
-                    onReceiveOrderSucceed(retValue.getValue());
+                    ZLogger.df(String.format("新建收货单成功:%s", retValue.getValue()));
+
+                    onReceiveOrderSucceed();
                 }
             }
             , String.class
@@ -404,7 +401,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     /**
      * 支付成功
      */
-    public void onReceiveOrderSucceed(String orderId) {
+    public void onReceiveOrderSucceed() {
         showProgressDialog(ProgressDialog.STATUS_DONE, "收货成功", false);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -477,15 +474,15 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new InvRecvGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvRecvGoodsAdapter.OnAdapterListener() {
@@ -533,11 +530,11 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
 
         ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
     /**
@@ -574,27 +571,36 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     }
 
     @Override
-    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> items) {
-        new SendOrderAsyncTask().execute(items);
-    }
+    public void onIInvSendOrderViewItemsSuccess(final List<InvSendOrderItem> items) {
 
-    private class SendOrderAsyncTask extends AsyncTask<List<InvSendOrderItem>, Integer,
-            List<InvRecvGoodsEntity>> {
+        Observable.create(new Observable.OnSubscribe<List<InvRecvGoodsEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<InvRecvGoodsEntity>> subscriber) {
+                InvRecvGoodsService.get().saveSendOrderItems(items);
+                List<InvRecvGoodsEntity> invRecvGoodsEntities = InvRecvGoodsService.get().queryAll();
+                subscriber.onNext(invRecvGoodsEntities);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<InvRecvGoodsEntity>>() {
+                    @Override
+                    public void onCompleted() {
 
-        @Override
-        protected List<InvRecvGoodsEntity> doInBackground(List<InvSendOrderItem>... params) {
-            InvRecvGoodsService.get().saveSendOrderItems(params[0]);
+                    }
 
-            return InvRecvGoodsService.get().queryAll();
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-        @Override
-        protected void onPostExecute(List<InvRecvGoodsEntity> distributionSignEntities) {
-            super.onPostExecute(distributionSignEntities);
-            goodsAdapter.setEntityList(distributionSignEntities);
-
-            hideProgressDialog();
-        }
+                    @Override
+                    public void onNext(List<InvRecvGoodsEntity> invRecvGoodsEntities) {
+                        goodsAdapter.setEntityList(invRecvGoodsEntities);
+//            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
+                        hideProgressDialog();
+                    }
+                });
     }
 
 

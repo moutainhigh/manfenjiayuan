@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.dialog;
+package com.bingshanguxue.pda.bizz.invcheck;
 
 
 import android.annotation.SuppressLint;
@@ -10,12 +10,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
-import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.bean.Shelfnumber;
-import com.manfenjiayuan.pda_supermarket.ui.adapter.ShelfnumberAdapter;
+import com.bingshanguxue.pda.R;
+import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.recyclerview.GridItemDecoration2;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
@@ -126,12 +124,14 @@ public class SelectShelvesDialog extends CommonDialog  {
 //        shelfnumberRecyclerView.addItemDecoration(new LineItemDecoration(
 //                getActivity(), LineItemDecoration.HORIZONTAL_LIST));
         //添加分割线
-        mRecyclerView.addItemDecoration(new GridItemDecoration2(getContext(), 1,
-                getContext().getResources().getColor(R.color.mf_dividerColorPrimary), 0.0f,
-                getContext().getResources().getColor(R.color.mf_dividerColorPrimary), 0.05f,
-                getContext().getResources().getColor(R.color.mf_dividerColorPrimary), 0.0f));
+//        mRecyclerView.addItemDecoration(new GridItemDecoration2(getContext(), 1,
+//                ContextCompat.getColor(getContext(), R.color.mf_dividerColorPrimary), 0.0f,
+//                ContextCompat.getColor(getContext(),R.color.mf_dividerColorPrimary), 0.05f,
+//                ContextCompat.getColor(getContext(),R.color.mf_dividerColorPrimary), 0.0f));
+        mRecyclerView.addItemDecoration(new DividerGridItemDecoration(getContext()));
 
-        shelfnumberAdapter = new ShelfnumberAdapter(AppContext.getAppContext(), null);
+
+        shelfnumberAdapter = new ShelfnumberAdapter(MfhApplication.getAppContext(), null);
         shelfnumberAdapter.setOnAdapterLitener(new ShelfnumberAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -145,7 +145,6 @@ public class SelectShelvesDialog extends CommonDialog  {
                 if (listener != null) {
                     listener.onItemSelected(entity);
                 }
-
             }
         });
 

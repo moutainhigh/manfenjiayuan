@@ -131,11 +131,6 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public boolean onBackPressed() {
 //        DialogUtil.showHint("onBackPressed");
         if (goodsAdapter.getItemCount() > 0) {

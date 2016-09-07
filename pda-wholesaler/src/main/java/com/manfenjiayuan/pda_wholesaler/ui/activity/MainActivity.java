@@ -22,7 +22,7 @@ import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
+import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
@@ -42,7 +42,6 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.tencent.bugly.beta.Beta;
 
 import java.util.ArrayList;
@@ -65,7 +64,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private HomeAdapter menuAdapter;
-    private PosRegisterPresenter mPosRegisterPresenter;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -78,17 +76,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     protected int getLayoutResId() {
         return R.layout.activity_main;
-    }
-
-    @Override
-    protected void setupThirdParty() {
-        super.setupThirdParty();
-
-//        EventBus.getDefault().register(this);
-//        MobclickAgent.onProfileSignIn(MfhLoginService.get().getCurrentGuId());
-//
-//        //初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
-//        PushManager.getInstance().initialize(getApplicationContext());
     }
 
     MenuItem menuLogin = null;
@@ -140,8 +127,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         EventBus.getDefault().register(this);
-
-        mPosRegisterPresenter = new PosRegisterPresenter(this);
 
         if (!BizConfig.RELEASE) {
             DialogUtil.showHint("您正在使用的是测试版本，如需切换到正式版本请联系服务商。");
@@ -300,7 +285,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                getResources().getColor(R.color.gray), 1f,
 //                getResources().getColor(R.color.gray), 1f,
 //                getResources().getColor(R.color.gray), 1f));
-        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
+//        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
+        menuRecyclerView.addItemDecoration(new DividerGridItemDecoration(this));
 
         menuAdapter = new HomeAdapter(this, null);
         menuAdapter.setOnAdapterLitener(new HomeAdapter.AdapterListener() {

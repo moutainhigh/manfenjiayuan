@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.bean;
+package com.bingshanguxue.pda.bizz.invcheck;
 
 import java.io.Serializable;
 
