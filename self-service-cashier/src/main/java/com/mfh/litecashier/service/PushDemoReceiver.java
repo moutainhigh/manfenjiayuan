@@ -84,11 +84,13 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 break;
             case PushConsts.GET_SDKSERVICEPID:
 //                超过5分钟会自动重启
-                if ((System.currentTimeMillis() - offlineTime) > 1000 * 60 * 5) {
-                    offlineTime = System.currentTimeMillis();
-                } else {
-                    ZLogger.df("重新初始化 个推sdk...");
+                Long interval = System.currentTimeMillis() - offlineTime;
+                if (interval > 1000) {
+                    ZLogger.df("个推服务断开超过 1秒,准备初始化...");
                     PushManager.getInstance().initialize(CashierApp.getAppContext());
+                } else {
+                    ZLogger.df("个推服务未启动，...");
+                    offlineTime = System.currentTimeMillis();
                 }
 
                 break;
