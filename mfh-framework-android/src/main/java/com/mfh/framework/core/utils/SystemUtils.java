@@ -187,6 +187,7 @@ public class SystemUtils {
         return null;
     }
 
+
     /**
      * <ol>
      * 获取APK当前签名文件的SHA1
