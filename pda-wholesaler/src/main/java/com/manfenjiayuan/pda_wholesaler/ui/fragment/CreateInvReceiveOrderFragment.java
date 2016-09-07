@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvGoodsAdapter;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
@@ -34,6 +33,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
@@ -41,13 +41,13 @@ import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -65,19 +65,17 @@ import butterknife.OnClick;
  * 新建采购收货单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvReceiveOrderFragment extends PDAScanFragment
+public class CreateInvReceiveOrderFragment extends BaseFragment
         implements IInvSendOrderView {
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private InvRecvGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
-
     @Bind(R.id.empty_view)
     View emptyView;
 
@@ -108,16 +106,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         return R.layout.fragment_create_inv_receiveorder;
     }
 
-    @Override
-    protected void onScanCode(String code) {
-        if (!isAcceptBarcodeEnabled) {
-            return;
-        }
-        isAcceptBarcodeEnabled = false;
-        if (entryMode == SendIoEntryMode.MANUAL){
-            inspect(code);
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,15 +157,12 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     public void onResume() {
         super.onResume();
 
-
-        isAcceptBarcodeEnabled = true;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                isAcceptBarcodeEnabled = true;
                 goodsAdapter.setEntityList(InvRecvGoodsService.get().queryAll());
             }
             break;

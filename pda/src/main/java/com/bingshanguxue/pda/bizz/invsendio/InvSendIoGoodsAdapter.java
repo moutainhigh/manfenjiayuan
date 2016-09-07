@@ -10,7 +10,7 @@ import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.uikit.recyclerview.RegularAdapter;
+import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +20,7 @@ import java.util.List;
  * 发货拣货商品
  * Created by bingshanguxue on 15/8/5.
  */
-public class InvSendIoGoodsAdapter extends RegularAdapter<InvSendIoGoodsEntity,
+public class InvSendIoGoodsAdapter extends SwipAdapter<InvSendIoGoodsEntity,
         InvSendIoGoodsAdapter.ProductViewHolder> {
 
     public InvSendIoGoodsAdapter(Context context, List<InvSendIoGoodsEntity> entityList) {

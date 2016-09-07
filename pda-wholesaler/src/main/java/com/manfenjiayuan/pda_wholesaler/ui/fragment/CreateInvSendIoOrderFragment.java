@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
@@ -65,8 +67,8 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
-    private InvSendIoGoodsAdapter officeAdapter;
-
+    private InvSendIoGoodsAdapter goodsAdapter;
+    private ItemTouchHelper itemTouchHelper;
     @Bind(R.id.empty_view)
     View emptyView;
 
@@ -145,7 +147,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     @Override
     public boolean onBackPressed() {
 //        DialogUtil.showHint("onBackPressed");
-        if (officeAdapter.getItemCount() > 0) {
+        if (goodsAdapter.getItemCount() > 0) {
             showConfirmDialog("退出后商品列表将会清空，确定要退出吗？",
                     "退出", new DialogInterface.OnClickListener() {
 
@@ -176,7 +178,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Constants.ARC_DISTRIBUTION_INSPECT: {
-                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
             }
             break;
             case Constants.ARC_COMPANY_LIST: {
@@ -274,17 +276,17 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         //设置列表为空时显示的视图
         addressRecyclerView.setEmptyView(emptyView);
 
-        officeAdapter = new InvSendIoGoodsAdapter(getActivity(), null);
-        officeAdapter.setOnAdapterListener(new InvSendIoGoodsAdapter.OnAdapterListener() {
+        goodsAdapter = new InvSendIoGoodsAdapter(getActivity(), null);
+        goodsAdapter.setOnAdapterListener(new InvSendIoGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                InvSendIoGoodsEntity entity = officeAdapter.getEntityList().get(position);
+                InvSendIoGoodsEntity entity = goodsAdapter.getEntityList().get(position);
                 inspect(entity.getBarcode());
             }
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                final InvSendIoGoodsEntity entity = officeAdapter.getEntity(position);
+                final InvSendIoGoodsEntity entity = goodsAdapter.getEntity(position);
                 if (operateDialog == null) {
                     operateDialog = new CommonDialog(getActivity());
                     operateDialog.setCancelable(true);
@@ -299,7 +301,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                                 dialog.dismiss();
                                 InvSendIoGoodsService.get().reject(entity);
 
-                                officeAdapter.notifyItemChanged(position);
+                                goodsAdapter.notifyItemChanged(position);
                             }
                         });
                 operateDialog.setNegativeButton("删除", new DialogInterface.OnClickListener() {
@@ -307,7 +309,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        officeAdapter.removeEntity(position);
+                        goodsAdapter.removeEntity(position);
                     }
                 });
                 if (!operateDialog.isShowing()) {
@@ -321,7 +323,11 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(officeAdapter);
+        addressRecyclerView.setAdapter(goodsAdapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
     }
 
 
@@ -336,7 +342,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
             return;
         }
 
-        if (officeAdapter.getItemCount() < 1) {
+        if (goodsAdapter.getItemCount() < 1) {
             DialogUtil.showHint("商品不能为空");
             return;
         }
@@ -375,7 +381,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         jsonStrObject.put("orderType", InvOrderApi.ORDERTYPE_RECEIPT);
 
         JSONArray itemsArray = new JSONArray();
-        for (InvSendIoGoodsEntity goods : officeAdapter.getEntityList()) {
+        for (InvSendIoGoodsEntity goods : goodsAdapter.getEntityList()) {
             JSONObject item = new JSONObject();
             item.put("chainSkuId", goods.getChainSkuId());//查询供应链
             item.put("providerId", goods.getProviderId());
@@ -413,7 +419,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                     ZLogger.d("新建发货单成功: ");
 //                    changeSendCompany(null);
 //                    InvSendIoGoodsService.get().clear();
-//                    officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+//                    goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
 //                    showProgressDialog(ProgressDialog.STATUS_DONE, "发货成功", true);
                     hideProgressDialog();
                     DialogUtil.showHint("发货成功");
@@ -488,7 +494,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
 
                 //刷新商品价格
                 InvSendIoGoodsService.get().infusePriceList(scGoodsSkus);
-                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
                 hideProgressDialog();
             }
 
@@ -497,7 +503,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                 super.processFailure(t, errMsg);
 
                 ZLogger.d("获取拣货单商品价格失败：" + errMsg);
-                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
                 hideProgressDialog();
             }
         }, ScGoodsSku.class, MfhApplication.getAppContext());
