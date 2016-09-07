@@ -19,7 +19,7 @@ public class AppContext extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
         //TODO,支持配置开发服务器&正式服务器，需要重新启动
-        return false;
+        return true;
     }
 
     @Override
