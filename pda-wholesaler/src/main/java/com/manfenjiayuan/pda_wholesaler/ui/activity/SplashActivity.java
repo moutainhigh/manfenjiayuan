@@ -39,7 +39,7 @@ public class SplashActivity extends InitActivity {
 //        requestPermissions(new String[]{Manifest.permission.READ_CONTACTS,
 //                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                Constants.REQUEST_CODE_PERMISSIONS);
+//                ARCode.REQUEST_CODE_PERMISSIONS);
         super.onCreate(savedInstanceState);
 
         ZLogger.d("adb 00003");
@@ -95,7 +95,7 @@ public class SplashActivity extends InitActivity {
 //    public void onRequestPermissionsResult(int requestCode,
 //                                           String permissions[], int[] grantResults) {
 //        switch (requestCode) {
-//            case Constants.REQUEST_CODE_PERMISSIONS: {
+//            case ARCode.REQUEST_CODE_PERMISSIONS: {
 //                // If request is cancelled, the result arrays are empty.
 //                if (grantResults.length > 0
 //                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -1,5 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.bizz.ARCode;
+import com.bingshanguxue.pda.bizz.invcheck.Shelfnumber;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.bingshanguxue.pda.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.ScanBar;
@@ -20,18 +24,17 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.bingshanguxue.pda.bizz.invcheck.Shelfnumber;
+import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.bingshanguxue.pda.bizz.invcheck.SelectShelvesDialog;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
 import com.manfenjiayuan.pda_supermarket.utils.SharedPreferencesHelper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -65,11 +68,8 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
-
-    private SelectShelvesDialog mSelectShelvesDialog = null;
-
     private Long curOrderId;//当前盘点批次编号
-    private Long curShelfNumber = 0L;//当前盘点货架
+    private Shelfnumber curShelfNumber = null;//当前盘点区域
     private ScGoodsSku curGoods = null;//当前盘点商品
     private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
 
@@ -179,8 +179,16 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
         //保存当前盘点编号
         SharedPreferencesHelper.setLastStocktakeOrderId(curOrderId);
 
-        shelvesNumberView.setText(String.format("区域号: %d", curShelfNumber));
         mScanBar.reset();
+
+        if (curShelfNumber == null){
+            shelvesNumberView.setText("请选择盘点区域");
+            toggleShelfnumber();
+        }
+        else{
+            shelvesNumberView.setText(String.format("区域号: %d", curShelfNumber.getNumber()));
+        }
+
     }
 
     @Override
@@ -189,6 +197,29 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
 
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ARCode.ARC_SHELVES_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    curShelfNumber = (Shelfnumber) data.getSerializableExtra("shelfNumber");
+                }
+                if (curShelfNumber != null){
+                    shelvesNumberView.setText(String.format("区域号：%d", curShelfNumber.getNumber()));
+                }
+                else{
+//                        shelvesNumberView.setText("请选择盘点区域");
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
+            }
+            break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     @Override
     protected void onScanCode(String code) {
@@ -203,22 +234,12 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
 
     @OnClick(R.id.shelvesNumberView)
     public void toggleShelfnumber() {
-        if (mSelectShelvesDialog == null) {
-            mSelectShelvesDialog = new SelectShelvesDialog(getActivity());
-            mSelectShelvesDialog.setCancelable(true);
-            mSelectShelvesDialog.setCanceledOnTouchOutside(true);
-        }
-        mSelectShelvesDialog.init(26, new SelectShelvesDialog.OnDialogListener() {
-            @Override
-            public void onItemSelected(Shelfnumber entity) {
-                curShelfNumber = entity.getNumber();
-                shelvesNumberView.setText(String.format("区域号：%d", curShelfNumber));
-            }
-
-        });
-        if (!mSelectShelvesDialog.isShowing()) {
-            mSelectShelvesDialog.show();
-        }
+        Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_SHELVES_LIST);
+        Intent intent = new Intent(getActivity(), PrimaryActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_SHELVES_LIST);
     }
 
     /**
@@ -243,7 +264,7 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
     }
 
     public void onEventMainThread(DataSyncService.StockTakeSyncEvent event) {
-        ZLogger.d(String.format("StocTakeFragment: StockTakeSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("StockTakeSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncService.StockTakeSyncEvent.EVENT_ID_SYNC_FINISHED) {
 //            showProgressDialog(ProgressDialog.STATUS_DONE, "同步成功", true);
             hideProgressDialog();
@@ -303,8 +324,13 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
             return;
         }
 
+        if (curShelfNumber == null){
+            toggleShelfnumber();
+            return;
+        }
+
         //保存商品到待盘点列表,在后台进行盘点。
-        InvCheckGoodsService.get().addNewEntity(curOrderId, curShelfNumber, curGoods,
+        InvCheckGoodsService.get().addNewEntity(curOrderId, curShelfNumber.getNumber(), curGoods,
                 Double.valueOf(quantity));
 
         if (NetworkUtils.isConnect(AppContext.getAppContext())) {

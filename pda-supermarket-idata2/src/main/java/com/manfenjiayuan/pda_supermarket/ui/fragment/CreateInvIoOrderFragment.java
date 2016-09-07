@@ -19,7 +19,7 @@ import com.bingshanguxue.pda.bizz.invio.InvIoOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
-import com.manfenjiayuan.pda_supermarket.Constants;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
@@ -419,13 +419,13 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvIoGoodsService.get().queryAll());
             }
             break;

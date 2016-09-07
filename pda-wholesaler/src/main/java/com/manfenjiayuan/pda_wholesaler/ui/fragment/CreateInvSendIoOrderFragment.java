@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invsendio.InvSendIoGoodsAdapter;
@@ -21,7 +22,6 @@ import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
-import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.EntityWrapper;
@@ -29,13 +29,13 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -172,11 +172,11 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
             }
             break;
-            case Constants.ARC_COMPANY_LIST: {
+            case ARCode.ARC_COMPANY_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
                     if (companyInfo != null) {
@@ -190,7 +190,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                 }
             }
             break;
-            case Constants.ARC_INVFINDORDER_INSPECT: {
+            case ARCode.ARC_INVFINDORDER_INSPECT: {
                 if (resultCode == Activity.RESULT_OK) {
                     NetInfoWrapper netInfoWrapper = (NetInfoWrapper) data.getSerializableExtra("netInfoWrapper");
                     importInvFindOrder(netInfoWrapper);
@@ -437,7 +437,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_INVFINDORDER_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_INVFINDORDER_INSPECT);
     }
 
     /**
@@ -526,7 +526,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     /**
@@ -541,7 +541,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_COMPANY_LIST);
+        startActivityForResult(intent, ARCode.ARC_COMPANY_LIST);
     }
 
 }

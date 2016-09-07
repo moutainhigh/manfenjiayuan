@@ -33,8 +33,6 @@ public class OfficeAdapter extends RegularAdapter<Office, OfficeAdapter.AddressV
         this.adapterListener = adapterListener;
     }
 
-
-
     @Override
     public AddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new AddressViewHolder(mLayoutInflater.inflate(R.layout.itemview_content_office,

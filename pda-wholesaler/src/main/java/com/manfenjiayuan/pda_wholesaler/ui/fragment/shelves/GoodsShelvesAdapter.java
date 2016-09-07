@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.adapter;
+package com.manfenjiayuan.pda_wholesaler.ui.fragment.shelves;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

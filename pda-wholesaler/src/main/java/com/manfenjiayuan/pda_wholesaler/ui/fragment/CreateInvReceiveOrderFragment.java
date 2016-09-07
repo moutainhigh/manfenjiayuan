@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvGoodsAdapter;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
@@ -25,7 +26,6 @@ import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
-import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.PageInfo;
@@ -160,11 +160,11 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvRecvGoodsService.get().queryAll());
             }
             break;
-            case Constants.ARC_SENDORDER_LIST: {
+            case ARCode.ARC_SENDORDER_LIST: {
                 // TODO: 8/2/16  
                 if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
@@ -174,7 +174,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 }
             }
             break;
-            case Constants.ARC_INV_COMPROVIDER_LIST: {
+            case ARCode.ARC_INV_COMPROVIDER_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     MyProvider myProvider = (MyProvider) data.getSerializableExtra("myProvider");
                     if (myProvider != null){
@@ -243,7 +243,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                         InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED));
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_SENDORDER_LIST);
+        startActivityForResult(intent, ARCode.ARC_SENDORDER_LIST);
     }
 
 
@@ -312,7 +312,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
             amount += goods.getReceiveAmount();
         }
 
-        final Double finalAmount = amount;
+//        final Double finalAmount = amount;
         showConfirmDialog(String.format("总金额：%.2f \n请确认已经查验过所有商品。", amount),
                 "签收", new DialogInterface.OnClickListener() {
 
@@ -428,7 +428,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     /**
@@ -549,7 +549,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPROVIDER_LIST);
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_INV_COMPROVIDER_LIST);
+        startActivityForResult(intent, ARCode.ARC_INV_COMPROVIDER_LIST);
 
     }
 

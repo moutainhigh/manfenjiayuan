@@ -11,8 +11,6 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
-import java.io.File;
-
 /**
  * Created by NAT.ZZN(bingshanguxue) on 2015/7/10.
  */
@@ -21,17 +19,12 @@ public class AppContext extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
         //TODO,支持配置开发服务器&正式服务器，需要重新启动
-        return true;
+        return false;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
-        super.onCreate();
-
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
 
         configBugly();
 
@@ -39,15 +32,11 @@ public class AppContext extends MfhApplication {
 //            ZLogger.d("正式版本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
-//            Constants.CACHE_NAME = "ACache_Release";
-//            DebugHelper.debug();
         }
         else{
 //            ZLogger.d("测试版本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
-//            ACacheHelper.CACHE_NAME = "ACache_Dev";
-//          DebugHelper.debug();
         }
 
         int pid = android.os.Process.myPid();

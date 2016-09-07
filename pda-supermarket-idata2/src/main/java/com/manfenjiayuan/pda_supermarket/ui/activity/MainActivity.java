@@ -17,6 +17,7 @@ import android.view.View;
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.ValidateManager;
 import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
@@ -26,7 +27,6 @@ import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
-import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
@@ -191,7 +191,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_NATIVE_LOGIN: {
+            case ARCode.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     loadOffices();
@@ -206,7 +206,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 }
             }
             break;
-            case Constants.ARC_OFFICE_LIST: {
+            case ARCode.ARC_OFFICE_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     Office office = (Office) data.getSerializableExtra("office");
                     DataCacheHelper.getInstance().setCurrentOffice(office);
@@ -447,14 +447,13 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      * 选择网点
      */
     private void selectOffice() {
-
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_OFFICE_LIST);
         extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
         Intent intent = new Intent(this, PrimaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_OFFICE_LIST);
+        startActivityForResult(intent, ARCode.ARC_OFFICE_LIST);
     }
 
 
@@ -470,7 +469,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, ARCode.ARC_NATIVE_LOGIN);
 
 //        LoginActivity.actionStart(MainActivity.this, null);
 //        finish();

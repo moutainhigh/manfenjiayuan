@@ -26,7 +26,7 @@ import com.bingshanguxue.pda.dialog.InvSendIoOrderPayDialog;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.Constants;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.PageInfo;
@@ -167,11 +167,11 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvRecvGoodsService.get().queryAll());
             }
             break;
-            case Constants.ARC_SENDORDER_LIST: {
+            case ARCode.ARC_SENDORDER_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
                 } else {
@@ -180,7 +180,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 }
             }
             break;
-            case Constants.ARC_SENDIOORDER_INSPECT: {
+            case ARCode.ARC_SENDIOORDER_INSPECT: {
                 if (resultCode == Activity.RESULT_OK) {
                     InvSendIoOrderItemBrief orderBrief = (InvSendIoOrderItemBrief) data.getSerializableExtra("orderBrief");
                     importInvSendIoOrder(orderBrief);
@@ -190,7 +190,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 }
             }
             break;
-            case Constants.ARC_INVCOMPANY_LIST: {
+            case ARCode.ARC_INVCOMPANY_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
                     if (companyInfo != null) {
@@ -256,7 +256,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_SENDIOORDER_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_SENDIOORDER_INSPECT);
     }
 
 
@@ -322,7 +322,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                         InvOrderApi.ORDER_STATUS_SENDED));
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_SENDORDER_LIST);
+        startActivityForResult(intent, ARCode.ARC_SENDORDER_LIST);
     }
 
 
@@ -574,7 +574,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     /**
@@ -693,7 +693,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPANYLIST);
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_INVCOMPANY_LIST);
+        startActivityForResult(intent, ARCode.ARC_INVCOMPANY_LIST);
     }
 
 

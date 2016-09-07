@@ -100,6 +100,12 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
         labelSignQuantity = (EditLabelView) rootView.findViewById(R.id.label_sign_quantity);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submit();
+            }
+        });
     }
 
     @Override

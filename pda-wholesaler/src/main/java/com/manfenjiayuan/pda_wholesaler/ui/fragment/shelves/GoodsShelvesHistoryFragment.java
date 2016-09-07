@@ -13,7 +13,6 @@ import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.ShelveEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.GoodsShelvesAdapter;
 import com.manfenjiayuan.pda_wholesaler.utils.ShelveSyncManager;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
