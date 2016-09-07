@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
@@ -57,7 +59,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private InvLossOrderGoodsAdapter goodsAdapter;
-    private LinearLayoutManager linearLayoutManager;
+    private ItemTouchHelper itemTouchHelper;
 
     @Bind(R.id.empty_view)
     View emptyView;
@@ -282,7 +284,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         addressRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
@@ -311,6 +313,10 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         });
 
         addressRecyclerView.setAdapter(goodsAdapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
     }
 
     /**

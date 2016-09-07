@@ -1,11 +1,11 @@
 package com.bingshanguxue.pda.database.service;
 
-import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.bingshanguxue.pda.database.dao.InvRecvGoodsDao;
+import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
@@ -249,18 +249,7 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
             return;
         }
 
-        if (!entityExistById(String.valueOf(entity.getId()))) {
-            return;
-        }
-
-        if (amount == null) {
-            amount = 0D;
-        }
         entity.setReceiveAmount(amount);
-
-        if (quantity == null) {
-            quantity = 0D;
-        }
         entity.setReceiveQuantity(quantity);
 
         if (entity.getReceiveQuantity() == 0) {

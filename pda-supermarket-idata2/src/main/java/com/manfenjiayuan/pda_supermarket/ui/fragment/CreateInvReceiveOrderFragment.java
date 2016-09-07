@@ -73,7 +73,6 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)

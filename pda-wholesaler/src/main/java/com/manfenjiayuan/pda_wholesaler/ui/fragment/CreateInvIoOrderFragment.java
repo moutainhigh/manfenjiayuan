@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
@@ -53,9 +55,9 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvIoOrderGoodsAdapter goodsAdapter;
-    private LinearLayoutManager linearLayoutManager;
+    private ItemTouchHelper itemTouchHelper;
 
     @Bind(R.id.empty_view)
     View emptyView;
@@ -130,7 +132,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_io);
 
-
         initRecyclerView();
     }
 
@@ -163,17 +164,17 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new InvIoOrderGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvIoOrderGoodsAdapter.OnAdapterListener() {
@@ -219,7 +220,11 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
 
@@ -227,7 +232,6 @@ public class CreateInvIoOrderFragment extends BaseFragment {
      * 签收
      */
     public void submit() {
-
         showConfirmDialog("确定要提交单据吗？",
                 "确定", new DialogInterface.OnClickListener() {
 

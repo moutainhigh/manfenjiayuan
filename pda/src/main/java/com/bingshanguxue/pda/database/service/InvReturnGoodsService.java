@@ -234,10 +234,6 @@ public class InvReturnGoodsService extends BaseService<InvReturnGoodsEntity, Str
             return;
         }
 
-        if (!entityExistById(String.valueOf(entity.getId()))) {
-            return;
-        }
-
         if (price != null){
             entity.setPrice(price);
         }

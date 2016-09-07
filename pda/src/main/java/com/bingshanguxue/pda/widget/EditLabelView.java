@@ -26,8 +26,6 @@ import com.mfh.framework.core.utils.DeviceUtils;
  * 支持自定义属性，可以直接在xml文件中配置。
  */
 public class EditLabelView extends LinearLayout {
-    public static final int INPUT_TYPE_NUMBER = 0;
-    public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;
 
     private TextView tvStartText;
     private EditText etInput;
@@ -73,9 +71,9 @@ public class EditLabelView extends LinearLayout {
             //px
             int startTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextWidth, 80);//px
 
-            ZLogger.d(String.format("textSize=%dpx =%dsp\nstartTextWidth=%d",
-                    textSizeInPx, textSizeInSp,
-                    startTextWidth));
+//            ZLogger.d(String.format("textSize=%dpx =%dsp\nstartTextWidth=%d",
+//                    textSizeInPx, textSizeInSp,
+//                    startTextWidth));
             tvStartText.setTextSize(textSizeInSp);
 //        tvStartText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
             tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0));
@@ -173,7 +171,6 @@ public class EditLabelView extends LinearLayout {
             }
         });
     }
-
 
 
     /**

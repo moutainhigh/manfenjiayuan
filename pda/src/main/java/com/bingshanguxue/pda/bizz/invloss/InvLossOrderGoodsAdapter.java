@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
-import com.mfh.framework.uikit.recyclerview.RegularAdapter;
+import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +18,7 @@ import java.util.List;
  * 报损商品
  * Created by bingshanguxue on 15/8/5.
  */
-public class InvLossOrderGoodsAdapter extends RegularAdapter<InvLossGoodsEntity,
+public class InvLossOrderGoodsAdapter extends SwipAdapter<InvLossGoodsEntity,
         InvLossOrderGoodsAdapter.ProductViewHolder> {
 
     public InvLossOrderGoodsAdapter(Context context, List<InvLossGoodsEntity> entityList) {

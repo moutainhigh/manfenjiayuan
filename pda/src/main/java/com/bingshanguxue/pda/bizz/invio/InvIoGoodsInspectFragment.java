@@ -2,7 +2,6 @@ package com.bingshanguxue.pda.bizz.invio;
 
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,18 +21,24 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.Date;
 import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -195,7 +200,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     /**
      * 查询商品
      */
-    public void queryByBarcode(String barcode) {
+    public void queryByBarcode(final String barcode) {
         isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
             mScanBar.reset();
@@ -203,8 +208,47 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             return;
         }
         onQueryProcess();
-        QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
-        queryGoodsAsyncTask.execute();
+        Observable.create(new Observable.OnSubscribe<InvIoGoodsEntity>() {
+            @Override
+            public void call(Subscriber<? super InvIoGoodsEntity> subscriber) {
+                InvIoGoodsEntity goodsEntity = InvIoGoodsService.get().queryEntityBy(barcode);
+                subscriber.onNext(goodsEntity);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<InvIoGoodsEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(InvIoGoodsEntity invIoGoodsEntity) {
+                        if (invIoGoodsEntity != null) {
+                            onQuerySuccess();
+                            refreshPackage(invIoGoodsEntity);
+                        } else {
+                            queryNetGoods(barcode);
+                        }
+                    }
+
+                });
+    }
+
+
+    private void queryNetGoods(String barcode) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
+            onQueryError(getString(R.string.toast_network_error));
+            return;
+        }
+
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
 
 
@@ -360,56 +404,6 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     }
 
 
-    class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
-        private String barcode;
-        private InvIoGoodsEntity goodsEntity;
-
-        public QueryGoodsAsyncTask(String barcode) {
-            this.barcode = barcode;
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                goodsEntity = InvIoGoodsService.get().queryEntityBy(barcode);
-                if (goodsEntity != null) {
-                    return true;
-                }
-            } catch (Exception e) {
-                ZLogger.d("查询本地收货商品失败, " + e.toString());
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (aBoolean) {
-                refreshPackage(goodsEntity);
-            } else {
-                queryNetGoods(barcode);
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            onQueryProcess();
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
-
-    private void queryNetGoods(String barcode) {
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            onQueryError(getString(R.string.toast_network_error));
-            return;
-        }
-
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
-    }
 
 
     /**
@@ -441,7 +435,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             entity.setUpdatedDate(new Date());
             entity.setPosId(SharedPreferencesManager.getTerminalId());
 
-            InvIoGoodsService.get().saveOrUpdate(entity);
+//            InvIoGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
@@ -452,7 +446,8 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
                                             final Double price, final Double quantity) {
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
-            quantityCheckConfirmDialog.setCancelable(true);
+            quantityCheckConfirmDialog.setCancelable(false);
+            quantityCheckConfirmDialog.setCanceledOnTouchOutside(false);
         }
         quantityCheckConfirmDialog.setMessage(String.format("已经选择%.2f件，请选择[覆盖]还是[累加]",
                 entity.getQuantityCheck()));

@@ -8,9 +8,9 @@ import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.uikit.recyclerview.RegularAdapter;
+import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +20,7 @@ import java.util.List;
  * 采购退货
  * Created by bingshanguxue on 15/8/5.
  */
-public class InvReturnOrderGoodsAdapter extends RegularAdapter<InvReturnGoodsEntity,
+public class InvReturnOrderGoodsAdapter extends SwipAdapter<InvReturnGoodsEntity,
         InvReturnOrderGoodsAdapter.ProductViewHolder> {
 
     public InvReturnOrderGoodsAdapter(Context context, List<InvReturnGoodsEntity> entityList) {
@@ -118,6 +118,23 @@ public class InvReturnOrderGoodsAdapter extends RegularAdapter<InvReturnGoodsEnt
         }
     }
 
+    @Override
+    public void removeEntity(int position) {
+        InvReturnGoodsEntity entity = getEntity(position);
+        if (entity == null){
+            return;
+        }
+
+        InvReturnGoodsService.get().deleteById(String.valueOf(entity.getId()));
+
+        //刷新列表
+        entityList.remove(position);
+        notifyItemRemoved(position);
+        if (adapterListener != null) {
+            adapterListener.onDataSetChanged();
+        }
+    }
+
     /**
      * 按时间排序
      */
@@ -134,58 +151,4 @@ public class InvReturnOrderGoodsAdapter extends RegularAdapter<InvReturnGoodsEnt
         });
     }
 
-
-//    /**
-//     * 添加批发商商品
-//     * */
-//    public boolean appendSupplyGoods(ChainGoodsSku goods, Double quantityCheck){
-//        if (goods == null) {
-//            ZLogger.d("参数无效");
-//            return false;
-//        }
-//
-//        if (entityList == null){
-//            entityList = new ArrayList<>();
-//        }
-//
-//        InvReturnGoodsEntity entity = query(goods.getBarcode());
-//        if (entity != null) {
-//            entity.setQuantityCheck(quantityCheck);
-//            if (entity.getPrice() == null){
-//                entity.setAmount(0D);
-//            }
-//            else{
-//                entity.setAmount(entity.getQuantityCheck() * entity.getPrice());
-//            }
-//            entity.setUpdatedDate(new Date());
-//        } else {
-//            entity = InvReturnGoodsEntity.fromSupplyGoods(goods, quantityCheck);
-//
-//            this.entityList.add(entity);
-//        }
-//
-//        sortByUpdateDate();
-//        notifyDataSetChanged();
-//        if (adapterListener != null) {
-//            adapterListener.onDataSetChanged();
-//        }
-//
-//        return true;
-//    }
-
-    private InvReturnGoodsEntity query(String barcode) {
-        if (StringUtils.isEmpty(barcode)) {
-            return null;
-        }
-
-        if (entityList != null && entityList.size() > 0) {
-            for (InvReturnGoodsEntity entity : entityList) {
-                if (entity.getBarcode().equals(barcode)) {
-                    return entity;
-                }
-            }
-        }
-
-        return null;
-    }
 }

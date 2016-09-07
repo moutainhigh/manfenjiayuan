@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 
 /**
@@ -164,6 +165,7 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
         queryGoodsAsyncTask.execute();
     }
 
+    @OnClick(R.id.fab_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
         isAcceptBarcodeEnabled = false;
@@ -216,8 +218,8 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
      * 提交成功
      */
     public void onSubmitSuccess() {
-        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
-//        hideProgressDialog();
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
         refreshPackage(null);
     }
 
