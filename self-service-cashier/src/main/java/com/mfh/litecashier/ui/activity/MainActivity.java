@@ -1012,6 +1012,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     reload(true);
+
+                    ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
                 }
             }
             break;

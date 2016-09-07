@@ -42,7 +42,7 @@ public class TimeTaskManager {
 
     /**
      * 同步订单
-     * */
+     */
     private static Timer syncPosOrderTimer = new Timer();
     private TimerTask syncPosOrderTask = new TimerTask() {
         @Override
@@ -55,7 +55,7 @@ public class TimeTaskManager {
 
     /**
      * 同步商品
-     * */
+     */
     private static Timer syncGoodsTimer = new Timer();
     private TimerTask syncGoodsTask = new TimerTask() {
         @Override
@@ -71,12 +71,14 @@ public class TimeTaskManager {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
-            switch (msg.what){
-                case MSG_WHAT_SYNC_POSORDER:{
+            switch (msg.what) {
+                case MSG_WHAT_SYNC_POSORDER: {
+                    ZLogger.df("定时任务激活：上传收银订单");
                     UploadSyncManager.getInstance().sync(UploadSyncManager.SyncStep.CASHIER_ORDER);
                 }
                 break;
-                case MSG_WHAT_SYNC_POSGOODS:{
+                case MSG_WHAT_SYNC_POSGOODS: {
+                    ZLogger.df("定时任务激活：同步商品库");
                     DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
                 }
                 break;
@@ -87,35 +89,36 @@ public class TimeTaskManager {
         }
     };
 
-    /**定时同步POS订单*/
-    public void start(){
+    /**
+     * 定时同步POS订单
+     */
+    public void start() {
         ZLogger.d("定时任务开启...");
         cancel();
-        if (syncPosOrderTimer == null){
+        if (syncPosOrderTimer == null) {
             syncPosOrderTimer = new Timer();
         }
-        if (syncGoodsTimer == null){
+        if (syncGoodsTimer == null) {
             syncGoodsTimer = new Timer();
         }
 
-        if (BizConfig.RELEASE){
+        if (BizConfig.RELEASE) {
             syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * MINUTE);
             syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 6 * HOUR);
-        }
-        else{
+        } else {
             syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * MINUTE);
             syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 10 * MINUTE);
         }
 
     }
 
-    public void cancel(){
+    public void cancel() {
         ZLogger.d("取消定时任务...");
-        if (syncPosOrderTimer != null){
+        if (syncPosOrderTimer != null) {
             syncPosOrderTimer.cancel();
         }
         syncPosOrderTimer = null;
-        if (syncGoodsTimer != null){
+        if (syncGoodsTimer != null) {
             syncGoodsTimer.cancel();
         }
         syncGoodsTimer = null;

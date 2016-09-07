@@ -43,7 +43,6 @@ public class CashierApp extends MfhApplication {
 
         super.onCreate();
 
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
         SMScaleSyncManager2.FOLDER_PATH_SMSCALE = getPackageName() + File.separator + "smscale";
 
         mRefWatcher = LeakCanary.install(this);
