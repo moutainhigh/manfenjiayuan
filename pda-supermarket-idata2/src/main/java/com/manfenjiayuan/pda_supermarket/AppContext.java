@@ -52,8 +52,6 @@ public class AppContext extends MfhApplication {
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);
-//
-
     }
 
     private void configBugly(){
