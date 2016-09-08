@@ -7,34 +7,36 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invloss.InvLossOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.manfenjiayuan.business.bean.InvLossOrder;
-import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
@@ -56,9 +58,9 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvLossOrderGoodsAdapter goodsAdapter;
-    private LinearLayoutManager linearLayoutManager;
+    private ItemTouchHelper itemTouchHelper;
 
     @Bind(R.id.empty_view)
     View emptyView;
@@ -127,11 +129,6 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 //        }
 
         loadLossOrder();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -284,17 +281,17 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 
 
     private void initRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new InvLossOrderGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvLossOrderGoodsAdapter.OnAdapterListener() {
@@ -312,7 +309,11 @@ public class CreateInvLossOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
     /**
@@ -331,13 +332,13 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvLossGoodsService.get().queryAll());
             }
             break;

@@ -3,7 +3,6 @@ package com.manfenjiayuan.pda_wholesaler.ui.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvGoodsAdapter;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
@@ -27,13 +26,13 @@ import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
-import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
@@ -41,13 +40,13 @@ import com.mfh.framework.api.invCompProvider.MyProvider;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -59,25 +58,28 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
  * 新建采购收货单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvReceiveOrderFragment extends PDAScanFragment
+public class CreateInvReceiveOrderFragment extends BaseFragment
         implements IInvSendOrderView {
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
+    RecyclerViewEmptySupport goodsRecyclerView;
     private InvRecvGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
-
     @Bind(R.id.empty_view)
     View emptyView;
 
@@ -108,16 +110,6 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         return R.layout.fragment_create_inv_receiveorder;
     }
 
-    @Override
-    protected void onScanCode(String code) {
-        if (!isAcceptBarcodeEnabled) {
-            return;
-        }
-        isAcceptBarcodeEnabled = false;
-        if (entryMode == SendIoEntryMode.MANUAL){
-            inspect(code);
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -166,22 +158,13 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-
-        isAcceptBarcodeEnabled = true;
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
-                isAcceptBarcodeEnabled = true;
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvRecvGoodsService.get().queryAll());
             }
             break;
-            case Constants.ARC_SENDORDER_LIST: {
+            case ARCode.ARC_SENDORDER_LIST: {
                 // TODO: 8/2/16  
                 if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
@@ -191,7 +174,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                 }
             }
             break;
-            case Constants.ARC_INV_COMPROVIDER_LIST: {
+            case ARCode.ARC_INV_COMPROVIDER_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     MyProvider myProvider = (MyProvider) data.getSerializableExtra("myProvider");
                     if (myProvider != null){
@@ -260,7 +243,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                         InvOrderApi.ORDER_STATUS_CONFIRM, InvOrderApi.ORDER_STATUS_SENDED));
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_SENDORDER_LIST);
+        startActivityForResult(intent, ARCode.ARC_SENDORDER_LIST);
     }
 
 
@@ -329,7 +312,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             amount += goods.getReceiveAmount();
         }
 
-        final Double finalAmount = amount;
+//        final Double finalAmount = amount;
         showConfirmDialog(String.format("总金额：%.2f \n请确认已经查验过所有商品。", amount),
                 "签收", new DialogInterface.OnClickListener() {
 
@@ -340,8 +323,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                         //由于商品明细可以修改，所以这里不直接对订单做收货，而是新建一个收货单
 //                        doSignWork(itemsArray, finalAmount, invSendOrder.getId(),
 //                                invSendOrder.getSendTenantId(), invSendOrder.getIsPrivate());
-                        doSignWork(itemsArray, finalAmount, null,
-                                companyInfo.getId(), IsPrivate.PLATFORM);
+                        doSignWork(itemsArray, null, companyInfo.getId());
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -352,8 +334,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                 });
     }
 
-    public void doSignWork(JSONArray itemsArray, Double amount, Long otherOrderId,
-                           Long sendTenantId, Integer isPrivate) {
+    public void doSignWork(JSONArray itemsArray, Long otherOrderId, Long sendTenantId) {
         onReceiveOrderProcess();
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
@@ -365,13 +346,12 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             jsonStrObject.put("sendTenantId", sendTenantId);
         }
         jsonStrObject.put("sendStoreType", StoreType.WHOLESALER);
-        jsonStrObject.put("isPrivate", isPrivate);
+        jsonStrObject.put("isPrivate", IsPrivate.PLATFORM);
         jsonStrObject.put("receiveNetId", MfhLoginService.get().getCurOfficeId());
         jsonStrObject.put("tenantId", MfhLoginService.get().getSpid());
         jsonStrObject.put("remark", "");
         jsonStrObject.put("items", itemsArray);
 
-//        ZLogger.d("jsonStr:\n " + JSON.toJSONString(jsonStrObject));
         InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
                 jsonStrObject.toJSONString(), signResponseCallback);
     }
@@ -395,7 +375,9 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
                      * 新增采购单成功，更新采购单列表
                      * */
                     RspValue<String> retValue = (RspValue<String>) rspData;
-                    onReceiveOrderSucceed(retValue.getValue());
+                    ZLogger.df(String.format("新建收货单成功:%s", retValue.getValue()));
+
+                    onReceiveOrderSucceed();
                 }
             }
             , String.class
@@ -419,7 +401,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     /**
      * 支付成功
      */
-    public void onReceiveOrderSucceed(String orderId) {
+    public void onReceiveOrderSucceed() {
         showProgressDialog(ProgressDialog.STATUS_DONE, "收货成功", false);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -446,7 +428,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     /**
@@ -492,15 +474,15 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
         goodsAdapter = new InvRecvGoodsAdapter(getActivity(), null);
         goodsAdapter.setOnAdapterListener(new InvRecvGoodsAdapter.OnAdapterListener() {
@@ -548,11 +530,11 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
             }
         });
 
-        addressRecyclerView.setAdapter(goodsAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
 
         ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
     /**
@@ -567,7 +549,7 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPROVIDER_LIST);
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_INV_COMPROVIDER_LIST);
+        startActivityForResult(intent, ARCode.ARC_INV_COMPROVIDER_LIST);
 
     }
 
@@ -589,27 +571,36 @@ public class CreateInvReceiveOrderFragment extends PDAScanFragment
     }
 
     @Override
-    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> items) {
-        new SendOrderAsyncTask().execute(items);
-    }
+    public void onIInvSendOrderViewItemsSuccess(final List<InvSendOrderItem> items) {
 
-    private class SendOrderAsyncTask extends AsyncTask<List<InvSendOrderItem>, Integer,
-            List<InvRecvGoodsEntity>> {
+        Observable.create(new Observable.OnSubscribe<List<InvRecvGoodsEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<InvRecvGoodsEntity>> subscriber) {
+                InvRecvGoodsService.get().saveSendOrderItems(items);
+                List<InvRecvGoodsEntity> invRecvGoodsEntities = InvRecvGoodsService.get().queryAll();
+                subscriber.onNext(invRecvGoodsEntities);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<InvRecvGoodsEntity>>() {
+                    @Override
+                    public void onCompleted() {
 
-        @Override
-        protected List<InvRecvGoodsEntity> doInBackground(List<InvSendOrderItem>... params) {
-            InvRecvGoodsService.get().saveSendOrderItems(params[0]);
+                    }
 
-            return InvRecvGoodsService.get().queryAll();
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-        @Override
-        protected void onPostExecute(List<InvRecvGoodsEntity> distributionSignEntities) {
-            super.onPostExecute(distributionSignEntities);
-            goodsAdapter.setEntityList(distributionSignEntities);
-
-            hideProgressDialog();
-        }
+                    @Override
+                    public void onNext(List<InvRecvGoodsEntity> invRecvGoodsEntities) {
+                        goodsAdapter.setEntityList(invRecvGoodsEntities);
+//            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
+                        hideProgressDialog();
+                    }
+                });
     }
 
 

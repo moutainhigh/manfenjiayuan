@@ -5,8 +5,6 @@ import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.pda_supermarket.database.logic.ShelveService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.logic.ServiceFactory;
-import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.util.Calendar;
 
@@ -15,22 +13,6 @@ import java.util.Calendar;
  * Created by Nat on 2015/5/11.
  */
 public class AppHelper {
-
-    public static boolean IMAGE_LOAD_MOD_UINIVERSAL = true;
-
-    /**
-     * 清空注册用户账户数据
-     * */
-    public static void resetMemberAccountData(){
-        try{
-            MfhLoginService.get().clear();
-            ServiceFactory.cleanService();
-//            UserProfileHelper.cleanUserProfile();//清空个人信息
-        }
-        catch(Exception e){
-            ZLogger.e(e.toString());
-        }
-    }
 
 //    /**
 //     * 清空匿名用户账户数据

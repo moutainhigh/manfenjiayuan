@@ -3,7 +3,6 @@ package com.manfenjiayuan.pda_supermarket.ui.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,28 +23,27 @@ import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.bingshanguxue.pda.dialog.InvSendIoOrderPayDialog;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.Constants;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -62,6 +60,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -73,7 +76,6 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
@@ -165,11 +167,11 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvRecvGoodsService.get().queryAll());
             }
             break;
-            case Constants.ARC_SENDORDER_LIST: {
+            case ARCode.ARC_SENDORDER_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     importInvSendOrder((InvSendOrder) data.getSerializableExtra("sendOrder"));
                 } else {
@@ -178,7 +180,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 }
             }
             break;
-            case Constants.ARC_SENDIOORDER_INSPECT: {
+            case ARCode.ARC_SENDIOORDER_INSPECT: {
                 if (resultCode == Activity.RESULT_OK) {
                     InvSendIoOrderItemBrief orderBrief = (InvSendIoOrderItemBrief) data.getSerializableExtra("orderBrief");
                     importInvSendIoOrder(orderBrief);
@@ -188,7 +190,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 }
             }
             break;
-            case Constants.ARC_INVCOMPANY_LIST: {
+            case ARCode.ARC_INVCOMPANY_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
                     if (companyInfo != null) {
@@ -254,11 +256,11 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_SENDIOORDER_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_SENDIOORDER_INSPECT);
     }
 
 
-    private void importInvSendIoOrder(InvSendIoOrderItemBrief orderBrief) {
+    private void importInvSendIoOrder(final InvSendIoOrderItemBrief orderBrief) {
         if (orderBrief == null) {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
@@ -273,29 +275,39 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         changeSendCompany(companyInfo);
 
         //保存订单明细
-        List<InvSendIoOrderItem> sendIoOrderItems = orderBrief.getItems();
-        new SendIoOrderAsyncTask().execute(sendIoOrderItems);
-    }
+        Observable.create(new Observable.OnSubscribe<List<InvRecvGoodsEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<InvRecvGoodsEntity>> subscriber) {
+                InvRecvGoodsService.get().saveSendIoOrderItems(orderBrief.getItems());
 
-    private class SendIoOrderAsyncTask extends AsyncTask<List<InvSendIoOrderItem>, Integer,
-            List<InvRecvGoodsEntity>> {
+                List<InvRecvGoodsEntity> invRecvGoodsEntities = InvRecvGoodsService.get().queryAll();
 
-        @Override
-        protected List<InvRecvGoodsEntity> doInBackground(List<InvSendIoOrderItem>... params) {
-            InvRecvGoodsService.get().saveSendIoOrderItems(params[0]);
+                subscriber.onNext(invRecvGoodsEntities);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<InvRecvGoodsEntity>>() {
+                    @Override
+                    public void onCompleted() {
 
-            return InvRecvGoodsService.get().queryAll();
-        }
+                    }
 
-        @Override
-        protected void onPostExecute(List<InvRecvGoodsEntity> distributionSignEntities) {
-            super.onPostExecute(distributionSignEntities);
-            goodsAdapter.setEntityList(distributionSignEntities);
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(List<InvRecvGoodsEntity> invRecvGoodsEntities) {
+                        goodsAdapter.setEntityList(invRecvGoodsEntities);
 //            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
-            hideProgressDialog();
-        }
-    }
+                        hideProgressDialog();
+                    }
 
+
+                });
+    }
 
     /**
      * 导入采购单
@@ -310,7 +322,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                         InvOrderApi.ORDER_STATUS_SENDED));
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_SENDORDER_LIST);
+        startActivityForResult(intent, ARCode.ARC_SENDORDER_LIST);
     }
 
 
@@ -391,7 +403,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 //                        doSignWork(itemsArray, finalAmount, invSendOrder.getId(),
 //                                invSendOrder.getSendTenantId(), invSendOrder.getIsPrivate());
                         doSignWork(itemsArray, finalAmount, null,
-                                companyInfo.getTenantId(), IsPrivate.PLATFORM);
+                                companyInfo.getTenantId());
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -404,7 +416,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
 
     public void doSignWork(JSONArray itemsArray, Double amount, Long otherOrderId,
-                           Long sendTenantId, Integer isPrivate) {
+                           Long sendTenantId) {
         onReceiveOrderProcess();
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
@@ -416,14 +428,13 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
             jsonStrObject.put("sendTenantId", sendTenantId);
         }
         jsonStrObject.put("sendStoreType", StoreType.WHOLESALER);
-        jsonStrObject.put("isPrivate", isPrivate);
+        jsonStrObject.put("isPrivate", IsPrivate.PLATFORM);
         jsonStrObject.put("receiveNetId", MfhLoginService.get().getCurOfficeId());
         jsonStrObject.put("tenantId", MfhLoginService.get().getSpid());
         jsonStrObject.put("remark", "");
         jsonStrObject.put("items", itemsArray);
         totalAmount = amount;
 
-//        ZLogger.d("jsonStr:\n " + JSON.toJSONString(jsonStrObject));
         InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
                 jsonStrObject.toJSONString(), signResponseCallback);
     }
@@ -563,7 +574,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     /**
@@ -682,7 +693,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPANYLIST);
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_INVCOMPANY_LIST);
+        startActivityForResult(intent, ARCode.ARC_INVCOMPANY_LIST);
     }
 
 
@@ -703,28 +714,35 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     }
 
     @Override
-    public void onIInvSendOrderViewItemsSuccess(List<InvSendOrderItem> items) {
-        new SendOrderAsyncTask().execute(items);
-    }
+    public void onIInvSendOrderViewItemsSuccess(final List<InvSendOrderItem> items) {
+        Observable.create(new Observable.OnSubscribe<List<InvRecvGoodsEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<InvRecvGoodsEntity>> subscriber) {
+                InvRecvGoodsService.get().saveSendOrderItems(items);
+                List<InvRecvGoodsEntity> invRecvGoodsEntities = InvRecvGoodsService.get().queryAll();
+                subscriber.onNext(invRecvGoodsEntities);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<InvRecvGoodsEntity>>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
 
-    private class SendOrderAsyncTask extends AsyncTask<List<InvSendOrderItem>, Integer,
-            List<InvRecvGoodsEntity>> {
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-        @Override
-        protected List<InvRecvGoodsEntity> doInBackground(List<InvSendOrderItem>... params) {
-            InvRecvGoodsService.get().saveSendOrderItems(params[0]);
-
-            return InvRecvGoodsService.get().queryAll();
-        }
-
-        @Override
-        protected void onPostExecute(List<InvRecvGoodsEntity> distributionSignEntities) {
-            super.onPostExecute(distributionSignEntities);
-            goodsAdapter.setEntityList(distributionSignEntities);
-
-            hideProgressDialog();
-        }
+                    @Override
+                    public void onNext(List<InvRecvGoodsEntity> invRecvGoodsEntities) {
+                        goodsAdapter.setEntityList(invRecvGoodsEntities);
+//            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
+                        hideProgressDialog();
+                    }
+                });
     }
 
 

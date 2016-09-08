@@ -170,6 +170,7 @@ public class AppHelper {
         // full restart and initialize the application
         System.exit(0);
     }
+
     /**
      * 恢复出厂设置
      * */
@@ -187,12 +188,17 @@ public class AppHelper {
         SharedPreferencesManager.clear(SMScaleAgent.PREF_NAME);
 
         //删除无效文件
-        clearRedunantData(false);
+        clearRedunantData(true);
 
         //删除数据库
         DataCleanManager.cleanApplicationData(context);
-        
+
+
+        //删除用户账号数据
+        MfhLoginService.get().clear();
+
         restartApp(context);
+
     }
 
     /**
@@ -217,7 +223,6 @@ public class AppHelper {
                 "");
 
         clearRedunantData(false);
-
     }
 
     /**

@@ -2,7 +2,6 @@ package com.bingshanguxue.pda.bizz.invreturn;
 
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,18 +21,24 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.Date;
 import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -44,23 +49,18 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
 
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
 
-//    @Bind(R.id.toolbar)
+    //    @Bind(R.id.toolbar)
     public Toolbar mToolbar;
-//    @Bind(R.id.scanBar)
+    //    @Bind(R.id.scanBar)
     public ScanBar mScanBar;
-//    private final static int LABELVIEW_INDEX_BARCODE = 0;
-//    private final static int LABELVIEW_INDEX_NAME = 1;
-//    private final static int LABELVIEW_INDEX_TOTALCOUNT = 2;
-//    @Bind({R.id.label_barcode, R.id.label_productName, R.id.label_totalcount })
-//    List<TextLabelView> labelViews;
-TextLabelView labelBarcode;
+    TextLabelView labelBarcode;
     TextLabelView labelName;
     TextLabelView labelTotalcount;
-//    @Bind(R.id.label_price)
+    //    @Bind(R.id.label_price)
     EditLabelView labelPrice;
-//    @Bind(R.id.label_sign_quantity)
+    //    @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
-//    @Bind(R.id.fab_submit)
+    //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
     private InvReturnGoodsEntity curGoods = null;
@@ -70,7 +70,7 @@ TextLabelView labelBarcode;
     public static InvReturnGoodsInspectFragment newInstance(Bundle args) {
         InvReturnGoodsInspectFragment fragment = new InvReturnGoodsInspectFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -100,6 +100,12 @@ TextLabelView labelBarcode;
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
         labelSignQuantity = (EditLabelView) rootView.findViewById(R.id.label_sign_quantity);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                submit();
+            }
+        });
     }
 
     @Override
@@ -168,11 +174,12 @@ TextLabelView labelBarcode;
         if (args != null) {
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
-            if (!StringUtils.isEmpty(barcode)){
+            if (!StringUtils.isEmpty(barcode)) {
                 queryByBarcode(barcode);
             }
         }
     }
+
     @Override
     protected void onScanCode(String code) {
         if (!isAcceptBarcodeEnabled) {
@@ -185,8 +192,8 @@ TextLabelView labelBarcode;
 
     /**
      * 查询商品
-     * */
-    public void queryByBarcode(String barcode) {
+     */
+    public void queryByBarcode(final String barcode) {
         isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
             mScanBar.reset();
@@ -194,8 +201,48 @@ TextLabelView labelBarcode;
             return;
         }
 
-        QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
-        queryGoodsAsyncTask.execute();
+        onQueryProcess();
+        Observable.create(new Observable.OnSubscribe<InvReturnGoodsEntity>() {
+            @Override
+            public void call(Subscriber<? super InvReturnGoodsEntity> subscriber) {
+                InvReturnGoodsEntity goodsEntity = InvReturnGoodsService.get().queryEntityBy(barcode);
+                subscriber.onNext(goodsEntity);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<InvReturnGoodsEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(InvReturnGoodsEntity invReturnGoodsEntity) {
+                        if (invReturnGoodsEntity != null) {
+                            onQuerySuccess();
+                            refreshPackage(invReturnGoodsEntity);
+                        } else {
+                            queryNetGoods(barcode);
+                        }
+                    }
+
+                });
+    }
+
+
+    private void queryNetGoods(String barcode) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
+            onQueryError(getString(R.string.toast_network_error));
+            return;
+        }
+
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
     }
 
     public void submit() {
@@ -205,22 +252,21 @@ TextLabelView labelBarcode;
         onSubmitProcess();
 
         String price = labelPrice.getInput();
-        if (StringUtils.isEmpty(price)){
+        if (StringUtils.isEmpty(price)) {
             onSubmitError("请输入发货价格");
             return;
         }
 
         String quantityStr = labelSignQuantity.getInput();
-        if (StringUtils.isEmpty(quantityStr)){
+        if (StringUtils.isEmpty(quantityStr)) {
             onSubmitError("请输入签收数量");
             return;
         }
         Double quantityCheck = Double.valueOf(quantityStr);
 
-        if (curGoods != null && curGoods.getQuantityCheck() > 0){
+        if (curGoods != null && curGoods.getQuantityCheck() > 0) {
             quantityCheckConfirmDialog(curGoods, Double.valueOf(price), quantityCheck);
-        }
-        else{
+        } else {
             InvReturnGoodsService.get().inspect(curGoods, Double.valueOf(price), quantityCheck);
             onSubmitSuccess();
 
@@ -252,22 +298,22 @@ TextLabelView labelBarcode;
      * 提交成功
      */
     public void onSubmitSuccess() {
-        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
         refreshPackage(null);
 //        hideProgressDialog();
     }
 
     /**
      * 刷新信息
-     * */
-    private void refreshPackage(InvReturnGoodsEntity goods){
-
+     */
+    private void refreshPackage(InvReturnGoodsEntity goods) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
 
         curGoods = goods;
-        if (curGoods == null){
+        if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelName.setTvSubTitle("");
             labelTotalcount.setTvSubTitle("");
@@ -275,8 +321,7 @@ TextLabelView labelBarcode;
             labelSignQuantity.setInput("");
 
             btnSubmit.setEnabled(false);
-        }
-        else {
+        } else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelName.setTvSubTitle(curGoods.getProductName());
             labelTotalcount.setTvSubTitle(MUtils.formatDouble(curGoods.getTotalCount(), ""));
@@ -352,108 +397,10 @@ TextLabelView labelBarcode;
     }
 
 
-    class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
-        private String barcode;
-        private InvReturnGoodsEntity goodsEntity;
-
-        public QueryGoodsAsyncTask( String barcode) {
-            this.barcode = barcode;
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try{
-                goodsEntity = InvReturnGoodsService.get().queryEntityBy(barcode);
-                if (goodsEntity != null){
-                    return true;
-                }
-            }
-            catch (Exception e){
-                ZLogger.d("查询本地收货商品失败, " + e.toString());
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (aBoolean){
-                onQuerySuccess();
-                saveInvReturnGoodsEntity(goodsEntity);
-            }
-            else{
-                queryNetGoods(barcode);
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            ZLogger.d("onPreExecute");
-            onQueryProcess();
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            ZLogger.d("onProgressUpdate");
-        }
-    }
-
-    private void queryNetGoods(String barcode){
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            onQueryError(getString(R.string.toast_network_error));
-            return;
-        }
-
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
-    }
-
-
-    public void saveInvReturnGoodsEntity(InvReturnGoodsEntity goods){
-        if (goods == null) {
-            DialogUtil.showHint("商品无效");
-            return;
-        }
-
-        InvReturnGoodsEntity entity = InvReturnGoodsService.get().queryEntityBy(goods.getBarcode());
-        if (entity == null){
-            entity = new InvReturnGoodsEntity();
-            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
-
-//        entity.setOrderId(productEntity.getOrderId());
-            entity.setProductId(goods.getProductId());
-            entity.setProSkuId(goods.getProSkuId());
-            entity.setChainSkuId(goods.getChainSkuId());
-            entity.setProductName(goods.getProductName());
-            entity.setPrice(goods.getPrice());
-            entity.setUnitSpec(goods.getUnitSpec());
-            entity.setBarcode(goods.getBarcode());
-            entity.setProviderId(goods.getProviderId());
-            entity.setIsPrivate(goods.getIsPrivate());
-
-            entity.setTotalCount(1D);
-            entity.setQuantityCheck(entity.getTotalCount());
-            entity.setInspectStatus(InvReturnGoodsEntity.INSPECT_STATUS_NONE);
-
-            //设置金额
-            if (entity.getQuantityCheck() == null || entity.getPrice() == null) {
-                entity.setAmount(0D);
-            } else {
-                entity.setAmount(entity.getQuantityCheck() * entity.getPrice());
-            }
-            entity.setUpdatedDate(new Date());
-
-            InvReturnGoodsService.get().saveOrUpdate(entity);
-
-        }
-        refreshPackage(entity);
-    }
-
-
     /**
      * 保存搜索商品
-     * */
-    private void saveChainGoodsSku(ChainGoodsSku goods){
+     */
+    private void saveChainGoodsSku(ChainGoodsSku goods) {
         if (goods == null) {
             DialogUtil.showHint("商品无效");
             return;
@@ -466,7 +413,7 @@ TextLabelView labelBarcode;
 //        }
 
         InvReturnGoodsEntity entity = InvReturnGoodsService.get().queryEntityBy(goods.getBarcode());
-        if (entity == null){
+        if (entity == null) {
             entity = new InvReturnGoodsEntity();
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
@@ -493,17 +440,19 @@ TextLabelView labelBarcode;
             }
             entity.setUpdatedDate(new Date());
 
-            InvReturnGoodsService.get().saveOrUpdate(entity);
+//            InvReturnGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;
+
     private void quantityCheckConfirmDialog(final InvReturnGoodsEntity entity,
-                                            final Double price, final Double quantity){
+                                            final Double price, final Double quantity) {
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
-            quantityCheckConfirmDialog.setCancelable(true);
+            quantityCheckConfirmDialog.setCancelable(false);
+            quantityCheckConfirmDialog.setCanceledOnTouchOutside(false);
         }
         quantityCheckConfirmDialog.setMessage(String.format("已经签收%.2f件，请选择[覆盖]还是[累加]",
                 entity.getQuantityCheck()));

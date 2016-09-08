@@ -10,7 +10,7 @@ import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.uikit.recyclerview.RegularAdapter;
+import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +20,7 @@ import java.util.List;
  * 出入库
  * Created by bingshanguxue on 15/8/5.
  */
-public class InvIoOrderGoodsAdapter extends RegularAdapter<InvIoGoodsEntity,
+public class InvIoOrderGoodsAdapter extends SwipAdapter<InvIoGoodsEntity,
         InvIoOrderGoodsAdapter.ProductViewHolder> {
 
     public InvIoOrderGoodsAdapter(Context context, List<InvIoGoodsEntity> entityList) {

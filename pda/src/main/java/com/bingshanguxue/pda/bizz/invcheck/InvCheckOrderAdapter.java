@@ -1,6 +1,7 @@
 package com.bingshanguxue.pda.bizz.invcheck;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,10 @@ public class InvCheckOrderAdapter extends RegularAdapter<InvCheckOrder, InvCheck
 //        }
 
         holder.tvOrderName.setText(entity.getOrderName());
-        holder.tvCreateDate.setText(String.format("盘点时间：%s", TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        holder.tvCreateDate.setText(String.format("盘点时间：%s",
+                TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
         if (entity.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_PROCESSING)) {
-            holder.tvOrderStatus.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+            holder.tvOrderStatus.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
         holder.tvNet.setText(String.format("网点: %s", entity.getNetCaption()));
         holder.tvOrderStatus.setText(String.format("状态: %s", entity.getStatusCaption()));

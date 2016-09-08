@@ -9,10 +9,7 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.Bugly;
-import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
-
-import java.io.File;
 
 /**
  * Created by NAT.ZZN(bingshanguxue) on 2015/7/10.
@@ -29,27 +26,17 @@ public class AppContext extends MfhApplication {
     public void onCreate() {
         super.onCreate();
 
-//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
-        super.onCreate();
-
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
-
         configBugly();
 
         if (BizConfig.RELEASE){
 //            ZLogger.d("正式版本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
-//            Constants.CACHE_NAME = "ACache_Release";
-//            DebugHelper.debug();
         }
         else{
 //            ZLogger.d("测试版本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
-//            ACacheHelper.CACHE_NAME = "ACache_Dev";
-//          DebugHelper.debug();
         }
 
         int pid = android.os.Process.myPid();
@@ -65,8 +52,6 @@ public class AppContext extends MfhApplication {
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);
-//
-
     }
 
     private void configBugly(){
@@ -117,7 +102,7 @@ public class AppContext extends MfhApplication {
 //        Beta.canShowUpgradeActs.add(MainActivity.class);
 
         /***** Bugly高级设置 *****/
-        BuglyStrategy strategy = new BuglyStrategy();
+//        BuglyStrategy strategy = new BuglyStrategy();
         /**
          * 设置app渠道号
          */

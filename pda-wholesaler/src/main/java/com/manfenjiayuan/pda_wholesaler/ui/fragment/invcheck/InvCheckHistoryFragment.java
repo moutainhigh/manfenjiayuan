@@ -41,7 +41,6 @@ public class InvCheckHistoryFragment extends BaseFragment {
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private InvCheckHistoryAdapter orderListAdapter;
-    private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view) View emptyView;
 
@@ -128,7 +127,7 @@ public class InvCheckHistoryFragment extends BaseFragment {
     }
 
     private void initGoodsRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         orderRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for

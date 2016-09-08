@@ -179,17 +179,7 @@ public class InvSendIoGoodsService extends BaseService<InvSendIoGoodsEntity, Str
             return;
         }
 
-        if (!entityExistById(String.valueOf(entity.getId()))) {
-            return;
-        }
-
-        if (price != null){
-            entity.setPrice(price);
-        }
-
-        if (quantity == null) {
-            quantity = 0D;
-        }
+        entity.setPrice(price);
         entity.setQuantityCheck(quantity);
 
         if (entity.getQuantityCheck() == null || entity.getPrice() == null) {

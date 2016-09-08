@@ -32,6 +32,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.Date;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 
 /**
@@ -162,6 +163,7 @@ public class InvLossInspectFragment extends PDAScanFragment implements IInvSkuGo
         queryGoodsAsyncTask.execute();
     }
 
+    @OnClick(R.id.fab_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
         isAcceptBarcodeEnabled = false;
@@ -180,12 +182,12 @@ public class InvLossInspectFragment extends PDAScanFragment implements IInvSkuGo
         Double quantityCheck = Double.valueOf(quantityStr);
 
         if (curGoods.getQuantityCheck() > 0){
+            hideProgressDialog();
             quantityCheckConfirmDialog(curGoods, quantityCheck);
         }
         else{
             InvLossGoodsService.get().inspect(curGoods, quantityCheck);
             onSubmitSuccess();
-
         }
     }
 
@@ -214,8 +216,8 @@ public class InvLossInspectFragment extends PDAScanFragment implements IInvSkuGo
      * 提交成功
      */
     public void onSubmitSuccess() {
-        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
-//        hideProgressDialog();
+//        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+        hideProgressDialog();
         refreshPackage(null);
     }
 
@@ -389,7 +391,8 @@ public class InvLossInspectFragment extends PDAScanFragment implements IInvSkuGo
     private void quantityCheckConfirmDialog(final InvLossGoodsEntity entity, final Double quantity){
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
-            quantityCheckConfirmDialog.setCancelable(true);
+            quantityCheckConfirmDialog.setCancelable(false);
+            quantityCheckConfirmDialog.setCanceledOnTouchOutside(false);
         }
         quantityCheckConfirmDialog.setMessage(String.format("已经签收 %.2f 件，请选择 [覆盖] or [累加]",
                 entity.getQuantityCheck()));
@@ -400,7 +403,7 @@ public class InvLossInspectFragment extends PDAScanFragment implements IInvSkuGo
                 dialog.dismiss();
                 InvLossGoodsService.get().inspect(entity, quantity);
 
-                onSubmitSuccess();
+                refreshPackage(null);
             }
         });
         quantityCheckConfirmDialog.setNegativeButton("累加", new DialogInterface.OnClickListener() {
@@ -409,7 +412,8 @@ public class InvLossInspectFragment extends PDAScanFragment implements IInvSkuGo
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 InvLossGoodsService.get().inspect(entity, entity.getQuantityCheck() + quantity);
-                onSubmitSuccess();
+
+                refreshPackage(null);
             }
         });
         if (!quantityCheckConfirmDialog.isShowing()) {

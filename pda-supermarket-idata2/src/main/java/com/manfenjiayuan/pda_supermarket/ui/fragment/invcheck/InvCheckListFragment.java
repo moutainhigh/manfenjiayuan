@@ -313,7 +313,35 @@ public class InvCheckListFragment extends BaseFragment {
 
         @Override
         protected Long doInBackground(RspQueryResult<InvCheckOrder>... params) {
-            saveQueryResult(params[0], pageInfo);
+            try {
+                mPageInfo = pageInfo;
+
+                //第一页，缓存数据
+                if (mPageInfo.getPageNo() == 1) {
+                    if (orderList == null) {
+                        orderList = new ArrayList<>();
+                    } else {
+                        orderList.clear();
+                    }
+                }
+
+                RspQueryResult<InvCheckOrder> rs = params[0];
+                if (rs != null) {
+                    for (EntityWrapper<InvCheckOrder> wrapper : rs.getRowDatas()) {
+                        InvCheckOrder invCheckOrder = wrapper.getBean();
+                        Map<String, String> caption = wrapper.getCaption();
+                        if (caption != null) {
+                            invCheckOrder.setStatusCaption(caption.get("status"));
+                            invCheckOrder.setStoreTypeCaption(caption.get("storeType"));
+                            invCheckOrder.setNetCaption(caption.get("netId"));
+                        }
+                        orderList.add(wrapper.getBean());
+                    }
+                }
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.e(String.format("保存盘点订单列表列表失败: %s", ex.toString()));
+            }
             return -1L;
 //        return null;
         }
@@ -327,45 +355,6 @@ public class InvCheckListFragment extends BaseFragment {
                 orderListAdapter.setEntityList(orderList);
             }
             onLoadFinished();
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<InvCheckOrder> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
-                mPageInfo = pageInfo;
-
-                if (rs == null) {
-                    return;
-                }
-
-                //第一页，缓存数据
-                if (mPageInfo.getPageNo() == 1) {
-                    if (orderList == null) {
-                        orderList = new ArrayList<>();
-                    } else {
-                        orderList.clear();
-                    }
-                }
-
-                for (EntityWrapper<InvCheckOrder> wrapper : rs.getRowDatas()) {
-                    InvCheckOrder invCheckOrder = wrapper.getBean();
-                    Map<String, String> caption = wrapper.getCaption();
-                    if (caption != null) {
-                        invCheckOrder.setStatusCaption(caption.get("status"));
-                        invCheckOrder.setStoreTypeCaption(caption.get("storeType"));
-                        invCheckOrder.setNetCaption(caption.get("netId"));
-                    }
-                    orderList.add(wrapper.getBean());
-                }
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("保存盘点订单列表列表失败: %s", ex.toString()));
-            }
         }
     }
 

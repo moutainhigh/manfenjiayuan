@@ -19,8 +19,8 @@ android {
         applicationId "com.manfenjiayuan.pda_wholesaler"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 22
-        versionName "0.1.1"
+        versionCode 23
+        versionName "0.1.2"
         multiDexEnabled true
 
         ndk {
@@ -68,9 +68,15 @@ android {
                 def fileName
                 if (variant.buildType.name == "release") {
                     // 输出apk名称为mfh_cashier_v1.0.1_101915_wandoujia.apk
-                    fileName = "mfh_pda_wholesaler_${variant.productFlavors[0].name}_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}.apk"
+                    fileName = "mfh_pda_wholesaler" +
+                            "_${variant.productFlavors[0].name}" +
+                            "_v${defaultConfig.versionName}" +
+                            "_${releaseTime()}${defaultConfig.versionCode}.apk"
                 } else {
-                    fileName = "mfh_pda_wholesaler_${variant.productFlavors[0].name}_v${defaultConfig.versionName}_${releaseTime()}_beta.apk"
+                    fileName = "mfh_pda_wholesaler" +
+                            "_${variant.productFlavors[0].name}" +
+                            "_v${defaultConfig.versionName}" +
+                            "_${releaseTime()}_beta.apk"
                 }
 
                 output.outputFile = new File(outputFile.parent, fileName)

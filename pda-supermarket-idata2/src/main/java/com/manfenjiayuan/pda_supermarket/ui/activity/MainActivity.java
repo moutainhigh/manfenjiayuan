@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,16 +17,16 @@ import android.view.View;
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.ValidateManager;
 import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
+import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
-import com.manfenjiayuan.pda_supermarket.AppHelper;
-import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
@@ -42,7 +41,6 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.tencent.bugly.beta.Beta;
 
 import java.util.ArrayList;
@@ -85,11 +83,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     protected int getLayoutResId() {
         return R.layout.activity_main;
-    }
-
-    @Override
-    protected void setupThirdParty() {
-        super.setupThirdParty();
     }
 
     MenuItem menuLogin = null;
@@ -168,21 +161,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
-
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -209,7 +191,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_NATIVE_LOGIN: {
+            case ARCode.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     loadOffices();
@@ -224,7 +206,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 }
             }
             break;
-            case Constants.ARC_OFFICE_LIST: {
+            case ARCode.ARC_OFFICE_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     Office office = (Office) data.getSerializableExtra("office");
                     DataCacheHelper.getInstance().setCurrentOffice(office);
@@ -298,7 +280,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                getResources().getColor(R.color.gray), 1f,
 //                getResources().getColor(R.color.gray), 1f,
 //                getResources().getColor(R.color.gray), 1f));
-        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
+
+        menuRecyclerView.addItemDecoration(new DividerGridItemDecoration(this));
+//        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
 
         menuAdapter = new HomeAdapter(this, null);
         menuAdapter.setOnAdapterLitener(new HomeAdapter.AdapterListener() {
@@ -463,14 +447,13 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      * 选择网点
      */
     private void selectOffice() {
-
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_OFFICE_LIST);
         extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
         Intent intent = new Intent(this, PrimaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_OFFICE_LIST);
+        startActivityForResult(intent, ARCode.ARC_OFFICE_LIST);
     }
 
 
@@ -479,14 +462,14 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      */
     private void redirectToLogin() {
         refreshToolbar();
-        AppHelper.resetMemberAccountData();
+        MfhLoginService.get().clear();
 
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, ARCode.ARC_NATIVE_LOGIN);
 
 //        LoginActivity.actionStart(MainActivity.this, null);
 //        finish();

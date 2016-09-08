@@ -2,7 +2,6 @@ package com.bingshanguxue.pda.bizz.invrecv;
 
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
@@ -24,18 +24,24 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.Date;
 import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -285,20 +291,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         }
     }
 
-    /**
-     * 搜索条码
-     */
-    public void queryByBarcode(String barcode) {
-        isAcceptBarcodeEnabled = false;
-        if (StringUtils.isEmpty(barcode)) {
-            onQueryError("请先扫描商品条码");
-            return;
-        }
-
-        QueryGoodsAsyncTask queryGoodsAsyncTask = new QueryGoodsAsyncTask(barcode);
-        queryGoodsAsyncTask.execute();
-    }
-
     public void onQueryError(String errorMsg) {
         if (!StringUtils.isEmpty(errorMsg)){
             ZLogger.df(errorMsg);
@@ -394,6 +386,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
             btnSubmit.setEnabled(false);
 
         } else {
+            ZLogger.d(JSONObject.toJSONString(curGoods));
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getProductName());
             labelSendQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getSendQuantity(), ""));
@@ -417,7 +410,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
     public void onChainGoodsSkuViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
     }
-
     @Override
     public void onChainGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
@@ -442,11 +434,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         hideProgressDialog();
         isAcceptBarcodeEnabled = true;
 
-        if (data != null) {
-            saveChainGoodsSku(data);
-        } else {
-            DialogUtil.showHint("未找到商品");
-        }
+        saveChainGoodsSku(data);
     }
 
     @Override
@@ -459,48 +447,48 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         queryByBarcode(code);
     }
 
-    class QueryGoodsAsyncTask extends AsyncTask<String, Void, Boolean> {
-        private String barcode;
-        private InvRecvGoodsEntity goodsEntity = null;
-
-        public QueryGoodsAsyncTask(String barcode) {
-            this.barcode = barcode;
+    /**
+     * 搜索条码
+     */
+    public void queryByBarcode(final String barcode) {
+        isAcceptBarcodeEnabled = false;
+        if (StringUtils.isEmpty(barcode)) {
+            onQueryError("请先扫描商品条码");
+            return;
         }
 
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                goodsEntity = InvRecvGoodsService.get().queryEntityByBarcode(barcode);
-                if (goodsEntity != null) {
-                    return true;
-                }
-            } catch (Exception e) {
-                ZLogger.d("查询本地收货商品失败, " + e.toString());
+        onQueryProcess();
+
+        Observable.create(new Observable.OnSubscribe<InvRecvGoodsEntity>() {
+            @Override
+            public void call(Subscriber<? super InvRecvGoodsEntity> subscriber) {
+                InvRecvGoodsEntity goodsEntity = InvRecvGoodsService.get().queryEntityByBarcode(barcode);
+                subscriber.onNext(goodsEntity);
+                subscriber.onCompleted();
             }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<InvRecvGoodsEntity>() {
+                    @Override
+                    public void onCompleted() {
 
-            return false;
-        }
+                    }
 
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (aBoolean && goodsEntity != null) {
-                saveDistributionSignEntity(goodsEntity);
-            } else {
-                queryNetGoods(barcode);
-            }
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-        @Override
-        protected void onPreExecute() {
-            ZLogger.d("onPreExecute");
-            onQueryProcess();
-        }
+                    @Override
+                    public void onNext(InvRecvGoodsEntity invRecvGoodsEntity) {
+                        if (invRecvGoodsEntity != null) {
+                            saveDistributionSignEntity(invRecvGoodsEntity);
+                        } else {
+                            queryNetGoods(barcode);
+                        }
+                    }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            ZLogger.d("onProgressUpdate");
-        }
+                });
     }
 
     private void queryNetGoods(String barcode) {
@@ -540,7 +528,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
      */
     private void saveChainGoodsSku(ChainGoodsSku goods) {
         if (goods == null) {
-            DialogUtil.showHint("商品无效");
+            DialogUtil.showHint("未找到商品");
             return;
         }
 
@@ -570,7 +558,8 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
             entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
             entity.setUpdatedDate(new Date());
 
-            InvRecvGoodsService.get().saveOrUpdate(entity);
+
+//            InvRecvGoodsService.get().saveOrUpdate(entity);
         }
         refreshPackage(entity);
     }
@@ -581,7 +570,8 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
                                             final Double amount, final Double quantity) {
         if (quantityCheckConfirmDialog == null) {
             quantityCheckConfirmDialog = new CommonDialog(getActivity());
-            quantityCheckConfirmDialog.setCancelable(true);
+            quantityCheckConfirmDialog.setCancelable(false);
+            quantityCheckConfirmDialog.setCanceledOnTouchOutside(false);
         }
         quantityCheckConfirmDialog.setMessage(String.format("已经签收%.2f件，请选择[覆盖]还是[累加]",
                 entity.getReceiveQuantity()));

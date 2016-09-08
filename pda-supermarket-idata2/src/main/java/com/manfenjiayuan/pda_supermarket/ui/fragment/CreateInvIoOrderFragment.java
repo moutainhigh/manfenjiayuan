@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,7 @@ import com.bingshanguxue.pda.bizz.invio.InvIoOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
-import com.manfenjiayuan.pda_supermarket.Constants;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
@@ -34,6 +35,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
@@ -57,7 +59,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     @Bind(R.id.office_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private InvIoOrderGoodsAdapter goodsAdapter;
-    private LinearLayoutManager linearLayoutManager;
+    private ItemTouchHelper itemTouchHelper;
 
     @Bind(R.id.empty_view)
     View emptyView;
@@ -209,7 +211,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             }
         });
 
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
@@ -222,6 +224,10 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         goodsRecyclerView.setEmptyView(emptyView);
 
         goodsRecyclerView.setAdapter(goodsAdapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
 
@@ -279,8 +285,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             items.add(item);
         }
 
-        InvIoOrderApi.createIoOrder(orderType, storeType,
-                items, responseCallback);
+        InvIoOrderApi.createIoOrder(orderType, storeType, items, responseCallback);
     }
 
     private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -414,13 +419,13 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
                 goodsAdapter.setEntityList(InvIoGoodsService.get().queryAll());
             }
             break;

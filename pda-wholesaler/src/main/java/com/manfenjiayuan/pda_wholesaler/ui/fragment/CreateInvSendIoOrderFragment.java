@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invsendio.InvSendIoGoodsAdapter;
@@ -20,7 +22,6 @@ import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
-import com.manfenjiayuan.pda_wholesaler.Constants;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.EntityWrapper;
@@ -28,13 +29,13 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -44,6 +45,7 @@ import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
@@ -64,9 +66,9 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     @Bind(R.id.providerView)
     NaviAddressView mProviderView;
     @Bind(R.id.office_list)
-    RecyclerViewEmptySupport addressRecyclerView;
-    private InvSendIoGoodsAdapter officeAdapter;
-
+    RecyclerViewEmptySupport goodsRecyclerView;
+    private InvSendIoGoodsAdapter goodsAdapter;
+    private ItemTouchHelper itemTouchHelper;
     @Bind(R.id.empty_view)
     View emptyView;
 
@@ -138,14 +140,9 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public boolean onBackPressed() {
 //        DialogUtil.showHint("onBackPressed");
-        if (officeAdapter.getItemCount() > 0) {
+        if (goodsAdapter.getItemCount() > 0) {
             showConfirmDialog("退出后商品列表将会清空，确定要退出吗？",
                     "退出", new DialogInterface.OnClickListener() {
 
@@ -175,11 +172,11 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_DISTRIBUTION_INSPECT: {
-                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+            case ARCode.ARC_DISTRIBUTION_INSPECT: {
+                goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
             }
             break;
-            case Constants.ARC_COMPANY_LIST: {
+            case ARCode.ARC_COMPANY_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
                     if (companyInfo != null) {
@@ -193,7 +190,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                 }
             }
             break;
-            case Constants.ARC_INVFINDORDER_INSPECT: {
+            case ARCode.ARC_INVFINDORDER_INSPECT: {
                 if (resultCode == Activity.RESULT_OK) {
                     NetInfoWrapper netInfoWrapper = (NetInfoWrapper) data.getSerializableExtra("netInfoWrapper");
                     importInvFindOrder(netInfoWrapper);
@@ -264,27 +261,27 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        addressRecyclerView.setLayoutManager(linearLayoutManager);
+        goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        addressRecyclerView.setHasFixedSize(true);
+        goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        addressRecyclerView.setEmptyView(emptyView);
+        goodsRecyclerView.setEmptyView(emptyView);
 
-        officeAdapter = new InvSendIoGoodsAdapter(getActivity(), null);
-        officeAdapter.setOnAdapterListener(new InvSendIoGoodsAdapter.OnAdapterListener() {
+        goodsAdapter = new InvSendIoGoodsAdapter(getActivity(), null);
+        goodsAdapter.setOnAdapterListener(new InvSendIoGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                InvSendIoGoodsEntity entity = officeAdapter.getEntityList().get(position);
+                InvSendIoGoodsEntity entity = goodsAdapter.getEntityList().get(position);
                 inspect(entity.getBarcode());
             }
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                final InvSendIoGoodsEntity entity = officeAdapter.getEntity(position);
+                final InvSendIoGoodsEntity entity = goodsAdapter.getEntity(position);
                 if (operateDialog == null) {
                     operateDialog = new CommonDialog(getActivity());
                     operateDialog.setCancelable(true);
@@ -299,7 +296,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                                 dialog.dismiss();
                                 InvSendIoGoodsService.get().reject(entity);
 
-                                officeAdapter.notifyItemChanged(position);
+                                goodsAdapter.notifyItemChanged(position);
                             }
                         });
                 operateDialog.setNegativeButton("删除", new DialogInterface.OnClickListener() {
@@ -307,7 +304,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        officeAdapter.removeEntity(position);
+                        goodsAdapter.removeEntity(position);
                     }
                 });
                 if (!operateDialog.isShowing()) {
@@ -321,7 +318,11 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
             }
         });
 
-        addressRecyclerView.setAdapter(officeAdapter);
+        goodsRecyclerView.setAdapter(goodsAdapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
+        itemTouchHelper = new ItemTouchHelper(callback);
+        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
     }
 
 
@@ -336,7 +337,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
             return;
         }
 
-        if (officeAdapter.getItemCount() < 1) {
+        if (goodsAdapter.getItemCount() < 1) {
             DialogUtil.showHint("商品不能为空");
             return;
         }
@@ -375,7 +376,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         jsonStrObject.put("orderType", InvOrderApi.ORDERTYPE_RECEIPT);
 
         JSONArray itemsArray = new JSONArray();
-        for (InvSendIoGoodsEntity goods : officeAdapter.getEntityList()) {
+        for (InvSendIoGoodsEntity goods : goodsAdapter.getEntityList()) {
             JSONObject item = new JSONObject();
             item.put("chainSkuId", goods.getChainSkuId());//查询供应链
             item.put("providerId", goods.getProviderId());
@@ -413,7 +414,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                     ZLogger.d("新建发货单成功: ");
 //                    changeSendCompany(null);
 //                    InvSendIoGoodsService.get().clear();
-//                    officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+//                    goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
 //                    showProgressDialog(ProgressDialog.STATUS_DONE, "发货成功", true);
                     hideProgressDialog();
                     DialogUtil.showHint("发货成功");
@@ -436,7 +437,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_INVFINDORDER_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_INVFINDORDER_INSPECT);
     }
 
     /**
@@ -488,7 +489,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
 
                 //刷新商品价格
                 InvSendIoGoodsService.get().infusePriceList(scGoodsSkus);
-                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
                 hideProgressDialog();
             }
 
@@ -497,7 +498,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
                 super.processFailure(t, errMsg);
 
                 ZLogger.d("获取拣货单商品价格失败：" + errMsg);
-                officeAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
+                goodsAdapter.setEntityList(InvSendIoGoodsService.get().queryAll());
                 hideProgressDialog();
             }
         }, ScGoodsSku.class, MfhApplication.getAppContext());
@@ -525,7 +526,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_DISTRIBUTION_INSPECT);
+        startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);
     }
 
     /**
@@ -540,7 +541,7 @@ public class CreateInvSendIoOrderFragment extends BaseFragment {
         extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_COMPANY_LIST);
+        startActivityForResult(intent, ARCode.ARC_COMPANY_LIST);
     }
 
 }

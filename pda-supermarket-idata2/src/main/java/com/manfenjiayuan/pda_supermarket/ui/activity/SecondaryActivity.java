@@ -74,14 +74,6 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
         initFragments();
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        hideSystemUI();
-
-    }
-
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();

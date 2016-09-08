@@ -13,7 +13,6 @@ import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.database.entity.ShelveEntity;
 import com.manfenjiayuan.pda_wholesaler.database.logic.ShelveService;
-import com.manfenjiayuan.pda_wholesaler.ui.adapter.GoodsShelvesAdapter;
 import com.manfenjiayuan.pda_wholesaler.utils.ShelveSyncManager;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -39,7 +38,6 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private GoodsShelvesAdapter orderListAdapter;
-    private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view)
     View emptyView;
@@ -101,16 +99,6 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -137,7 +125,7 @@ public class GoodsShelvesHistoryFragment extends BaseFragment {
     }
 
     private void initGoodsRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         orderRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for

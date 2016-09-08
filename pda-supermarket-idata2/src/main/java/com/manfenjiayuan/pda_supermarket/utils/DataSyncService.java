@@ -44,10 +44,9 @@ public class DataSyncService {
     private static DataSyncService instance = null;
     /**
      * 返回 DataSyncService 实例
-     * @return
+     * @return instance of DataSyncService
      */
     public static DataSyncService get() {
-
         if (instance == null) {
             synchronized (DataSyncService.class) {
                 if (instance == null) {

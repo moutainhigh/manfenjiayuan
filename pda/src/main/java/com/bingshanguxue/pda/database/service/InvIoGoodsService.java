@@ -143,10 +143,6 @@ public class InvIoGoodsService extends BaseService<InvIoGoodsEntity, String, Inv
             return;
         }
 
-        if (!entityExistById(String.valueOf(entity.getId()))) {
-            return;
-        }
-
         if (price != null){
             entity.setPrice(price);
         }

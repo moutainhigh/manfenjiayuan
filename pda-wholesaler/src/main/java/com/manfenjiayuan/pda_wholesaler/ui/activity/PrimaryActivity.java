@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.invcheck.ShelvesFragment;
 import com.bingshanguxue.pda.bizz.office.OfficeListFragment;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.fragment.CreateInvIoOrderFragment;
@@ -37,7 +38,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_INVIO_IN         = 0x21;//入库
     public static final int FT_INVIO_OUT         = 0x22;//出库
     public static final int FT_OFFICE_LIST = 0x24;//网店租户列表
-
+    public static final int FT_SHELVES_LIST = 0x25;//盘点区域
 
 
     /**
@@ -75,12 +76,6 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
         initFragments();
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        hideSystemUI();
-    }
 
     @Override
     public void onBackPressed() {
@@ -232,6 +227,19 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = OfficeListFragment.newInstance(intent.getExtras());
             }else{
                 fragment = OfficeListFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
+                    .commit();
+        }
+        else if(fragmentType == FT_SHELVES_LIST){
+            ShelvesFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = ShelvesFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = ShelvesFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

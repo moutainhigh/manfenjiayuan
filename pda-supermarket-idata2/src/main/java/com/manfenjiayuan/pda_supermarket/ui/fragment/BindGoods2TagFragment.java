@@ -314,7 +314,7 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
                 return GreenTagsApiImpl.ESLBindTag2Goods(tagInfoEX, googsInfoEX, readerInfoEX, null, null);
             } catch (IOException | XmlPullParserException e) {
                 e.printStackTrace();
-                ZLogger.e(e.toString());
+                ZLogger.ef(e.toString());
             } catch (Exception e) {
                 e.printStackTrace();
                 ZLogger.e(e.toString());
