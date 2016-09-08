@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -125,7 +126,7 @@ public class CategoryTabActivity extends BaseActivity {
         else{
             toolbar.setTitle("");
         }
-        toolbar.setBackgroundColor(this.getResources().getColor(R.color.transparent));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
         setSupportActionBar(toolbar);
 //        if(getSupportActionBar() != null){
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);

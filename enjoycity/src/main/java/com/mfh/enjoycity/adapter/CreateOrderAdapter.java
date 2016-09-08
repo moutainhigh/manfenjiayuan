@@ -2,6 +2,7 @@ package com.mfh.enjoycity.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -192,8 +193,10 @@ public class CreateOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((SettleViewHolder) holder).slbDiscountCoupon.setTvDetailForPrice(0, R.color.green_normal, R.color.red);
             ((SettleViewHolder) holder).slbMemberDiscont.setTvDetailForPrice(0, R.color.green_normal, R.color.red);
 
-            TextViewUtil.showPrice(((SettleViewHolder) holder).tvTotalAmount, OrderHelper.getInstance().getOrderTotalAmount(),
-                    mContext.getResources().getColor(R.color.green_normal), mContext.getResources().getColor(R.color.red));
+            TextViewUtil.showPrice(((SettleViewHolder) holder).tvTotalAmount,
+                    OrderHelper.getInstance().getOrderTotalAmount(),
+                    ContextCompat.getColor(mContext, R.color.green_normal),
+                    ContextCompat.getColor(mContext, R.color.red));
 //            TextViewUtil.showPrice(((SettleViewHolder)holder).tvTotalAmount, OrderHelper.getInstance().getpTotalPrice(), R.color.green_normal , R.color.red);
         }
     }

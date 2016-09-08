@@ -3,6 +3,7 @@ package com.mfh.enjoycity.ui.settings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -59,7 +60,7 @@ public class SettingFragmentActivity extends BaseActivity {
             toolbar.setTitle("");
         }
         toolbar.setTitleTextAppearance(this, R.style.toolbar_title);
-        toolbar.setBackgroundColor(this.getResources().getColor(R.color.transparent));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         toolbar.setNavigationOnClickListener(

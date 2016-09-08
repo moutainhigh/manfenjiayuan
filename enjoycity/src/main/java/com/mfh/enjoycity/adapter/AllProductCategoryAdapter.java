@@ -2,6 +2,7 @@ package com.mfh.enjoycity.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +88,7 @@ public class AllProductCategoryAdapter extends RecyclerView.Adapter<RecyclerView
                 if (items.size() > 1){
                     CategoryItem item = new CategoryItem(mContext);
 //                    item.setViewBackground(mContext.getResources().getColor(R.color.black_40));
-                    item.setTvName("全部商品", mContext.getResources().getColor(R.color.black_80));
+                    item.setTvName("全部商品", ContextCompat.getColor(mContext, R.color.black_80));
                     item.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -102,7 +103,7 @@ public class AllProductCategoryAdapter extends RecyclerView.Adapter<RecyclerView
                 for (final CategoryOptionBean option : items){
                     CategoryItem item = new CategoryItem(mContext);
 //                    item.setViewBackground(mContext.getResources().getColor(R.color.black_40));
-                    item.setTvName(option.getValue(), mContext.getResources().getColor(R.color.black_80));
+                    item.setTvName(option.getValue(), ContextCompat.getColor(mContext, R.color.black_80));
                     item.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

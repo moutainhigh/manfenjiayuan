@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -94,7 +95,7 @@ public class HotSalesActivity extends BaseActivity {
     @Override
     protected void initToolBar() {
         toolbar.setTitle(R.string.toolbar_title_hotsales);
-        toolbar.setBackgroundColor(this.getResources().getColor(R.color.transparent));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
         setSupportActionBar(toolbar);
 //        if(getSupportActionBar() != null){
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);

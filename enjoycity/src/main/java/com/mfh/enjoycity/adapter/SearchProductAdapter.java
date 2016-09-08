@@ -1,6 +1,7 @@
 package com.mfh.enjoycity.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -91,9 +92,9 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerView.View
                 tv.setHeight(DensityUtil.dip2px(mContext, 32));
                 tv.setTextSize(14);
                 tv.setGravity(Gravity.CENTER);
-                tv.setTextColor(mContext.getResources().getColorStateList(R.color.material_black));
+                tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.material_black));
 //                tv.setBackgroundResource(R.drawable.btn_recharge_alipay_bg);
-                tv.setBackgroundColor(mContext.getResources().getColor(R.color.orangered));
+                tv.setBackgroundColor(ContextCompat.getColor(mContext, R.color.orangered));
                 tv.setText(text);
                 tv.setPadding(5, 5, 5, 5);
                 tv.setOnClickListener(new View.OnClickListener() {
