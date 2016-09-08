@@ -1,6 +1,7 @@
 package com.mfh.owner.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -81,7 +82,7 @@ public class CategoryListViewAdapter extends BaseAdapter {
         if (curSelectedId == i){
             viewHolder.markerLeft.setVisibility(View.VISIBLE);
             viewHolder.markerRight.setVisibility(View.INVISIBLE);
-            view.setBackgroundColor(context.getResources().getColor(R.color.category_listitem_background_selected));
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.category_listitem_background_selected));
 //            viewHolder.tvTitle.setTextColor(Color.parseColor("#ffff0000"));
 //            viewHolder.tvTitle.setTextColor(context.getResources().getColor(R.color.category_selected));
 //            view.setSelected(true);
@@ -89,7 +90,7 @@ public class CategoryListViewAdapter extends BaseAdapter {
         }else{
             viewHolder.markerLeft.setVisibility(View.INVISIBLE);
             viewHolder.markerRight.setVisibility(View.VISIBLE);
-            view.setBackgroundColor(context.getResources().getColor(R.color.category_listitem_background_normal));
+            view.setBackgroundColor(ContextCompat.getColor(context, R.color.category_listitem_background_normal));
 //            viewHolder.tvTitle.setTextColor(Color.parseColor("#ffffffff"));
 //            viewHolder.tvTitle.setTextColor(context.getResources().getColor(R.color.category_normal));
 //            view.setSelected(false);

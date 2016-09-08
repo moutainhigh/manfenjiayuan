@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -122,11 +123,11 @@ public final class ViewfinderView extends View {
 
         paint = new Paint();
         Resources resources = getResources();
-        maskColor = resources.getColor(R.color.viewfinder_mask);
-        resultColor = resources.getColor(R.color.result_view);
+        maskColor = ContextCompat.getColor(getContext(), R.color.viewfinder_mask);
+        resultColor = ContextCompat.getColor(getContext(), R.color.result_view);
 
-        resultPointColor = resources.getColor(R.color.possible_result_points);
-        possibleResultPoints = new HashSet<ResultPoint>(5);
+        resultPointColor = ContextCompat.getColor(getContext(), R.color.possible_result_points);
+        possibleResultPoints = new HashSet<>(5);
     }
 
     @Override
