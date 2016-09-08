@@ -206,19 +206,19 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                             .fetchOrderItems(mPosOrderEntity);
                     if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
                         sbHtml.append("<table border=\"0\">\n");
-                        sbHtml.append("<tr>\n" +
-                                "  <th align=\"left\">货号/品名</th>\n" +
-                                "  <th>单价</th>\n" +
-                                "  <th>数量</th>\n" +
-                                "  <th>小计</th>\n" +
+                        sbHtml.append("<tr>" +
+                                "  <th align=\"left\">货号/品名</th>" +
+                                "  <th>单价</th>" +
+                                "  <th>数量</th>" +
+                                "  <th>小计</th>" +
                                 "</tr>\n");
 
                         for (PosOrderItemEntity entity : posOrderItemEntityList) {
-                            sbHtml.append(String.format("<tr>\n" +
-                                            "  <td>%s\n%s</td>\n" +
-                                            "  <td>%.2f</td>\n" +
-                                            "  <td>%.2f</td>\n" +
-                                            "  <td>%.2f</td>\n" +
+                            sbHtml.append(String.format("<tr>" +
+                                            "  <td>%s/%s</td>" +
+                                            "  <td>%.2f</td>" +
+                                            "  <td>%.2f</td>" +
+                                            "  <td>%.2f</td>" +
                                             "</tr>\n", entity.getBarcode(), entity.getName(),
                                     entity.getFinalPrice(), entity.getBcount(), entity.getFinalAmount()));
                         }
@@ -229,33 +229,33 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                     OrderPayInfo payWrapper = OrderPayInfo.deSerialize(mPosOrderEntity.getId());
 
                     //尾部:订单支付信息
-                    Double payableAmount = mPosOrderEntity.getFinalAmount() - payWrapper.getRuleDiscount();
-                    if (payableAmount < 0.01) {
-                        payableAmount = 0D;
-                    }
-
                     sbHtml.append("--------------------------------\n");
                     sbHtml.append(String.format(
                                     "<div><font color=#000000>合计：%.2f</font></div>\n",
                             mPosOrderEntity.getFinalAmount()));
-                    sbHtml.append(String.format("<div><font color=#000000>会员/卡券/促销优惠：%.2f</font></div>\n",
-                            payWrapper.getRuleDiscount()));
-                    sbHtml.append(String.format("<div><font color=#000000>应收：%.2f</font></div>\n",
-                            payableAmount));
+//                    sbHtml.append(String.format("<div><font color=#000000>会员/卡券/促销优惠：%.2f</font></div>\n",
+//                            payWrapper.getRuleDiscount()));
+//                    Double payableAmount = mPosOrderEntity.getFinalAmount() - payWrapper.getRuleDiscount();
+//                    if (payableAmount < 0.01) {
+//                        payableAmount = 0D;
+//                    }
+//                    sbHtml.append(String.format("<div><font color=#000000>应收：%.2f</font></div>\n",
+//                            payableAmount));
                     List<PayWay> payWays = payWrapper.getPayWays();
                     if (payWays != null && payWays.size() > 0){
                         for (PayWay payWay : payWays){
                             sbHtml.append(String.format("<div><font color=#000000>%s：%.2f</font></div>\n" ,
                                     WayType.name(payWay.getPayType()), payWay.getAmount()));
                         }
-                    }
+
 //                    sbHtml.append(String.format("<div><font color=#000000>付款：%.2f</font></div>\n" ,
 //                            mPosOrderEntity.getPaidAmount()
 //                                    - payWrapper.getRuleDiscount()
 //                                    + payWrapper.getChange()));
-                    sbHtml.append(String.format("<div><font color=#000000>找零：%.2f</font></div>\n",
-                            payWrapper.getChange()));
-                    sbHtml.append("\n\n<div align=\"center\"><font color=#000000>谢谢惠顾</font></div>\n" +
+                        sbHtml.append(String.format("<div><font color=#000000>找零：%.2f</font></div>\n",
+                                payWrapper.getChange()));
+                    }
+                    sbHtml.append("\n\n\n<div align=\"center\"><font color=#000000>谢谢惠顾</font></div>\n" +
                                     "<div align=\"center\"><font color=#000000>欢迎下次光临</font></div>\n" +
                                     "</p>");
                 }

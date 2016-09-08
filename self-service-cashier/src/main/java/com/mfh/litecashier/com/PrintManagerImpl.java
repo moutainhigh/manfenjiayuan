@@ -2,12 +2,15 @@ package com.mfh.litecashier.com;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.gprinter.command.EscCommand;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.bean.AccItem;
@@ -33,6 +36,9 @@ import rx.schedulers.Schedulers;
  */
 public class PrintManagerImpl extends PrintManager {
 
+    /**
+     * 打印线上订单
+     */
     private static EscCommand makeEsc(PosOrder curOrder) {
         if (curOrder == null) {
             return null;
@@ -46,7 +52,7 @@ public class PrintManagerImpl extends PrintManager {
         esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
         /**打印 标题*/
-        esc.addText("购物清单\n");
+        esc.addText(curOrder.getOfficeName());
         //取消倍高倍宽
         esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
@@ -71,20 +77,18 @@ public class PrintManagerImpl extends PrintManager {
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
         /**打印 订单条码*/
-        esc.addText(String.format("订单号:%s \n", curOrder.getBarcode()));
+        esc.addText(String.format("订单号:%d \n", curOrder.getId()));
         /**打印 应付款*/
 //        esc.addText(String.format("应付款:%.2f \n", orderEntity.getAmount()));
         /**打印 订购日期*/
-        esc.addText(String.format("日期:%s \n", TimeCursor.InnerFormat.format(curOrder.getCreatedDate())));
+        esc.addText(String.format("日期:%s \n",
+                TimeUtil.format(curOrder.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+        esc.addText(String.format("订单金额:%.2f\n", curOrder.getAmount()));
+        esc.addText(String.format("支付方式:%s\n", WayType.name(curOrder.getPayType())));
         esc.addPrintAndLineFeed();
 
-        /**打印 商品明细
-         *    8       8       4     6      6
-         *01234567 89012345 6789 012345 678901 (32)
-         * 商品ID    品名   数量   单价   金额
-         * */
-        esc.addText("商品名                  金额\n");
         esc.addText("--------------------------------\n");//32个
+        esc.addText("货号/品名           数量   小计\n");
 //        makeTemp(esc, "商品ID", "品名", "数量", "单价", "金额");
 //        Double totalQuantity = 0D, totalAmount = 0D;
         esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
@@ -96,11 +100,12 @@ public class PrintManagerImpl extends PrintManager {
         List<PosOrderItem> oderItems = curOrder.getItems();
         if (oderItems != null && oderItems.size() > 0) {
             for (PosOrderItem entity : oderItems) {
-                makePosOrderTemp(esc, entity.getProductName(), String.format("%.2f", entity.getAmount()));
-//                makeEnjoycityTemp(esc, entity.getProductName(), String.format("%.2f", entity.getAmount()));
+                makePosOrderTemp(esc,
+                        String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
+                        String.format("%.2f", entity.getBcount()),
+                        String.format("%.2f", entity.getAmount()));
             }
         }
-        esc.addText(String.format("商品小计:%.2f\n", curOrder.getAmount()));
 
         esc.addPrintAndLineFeed();
         esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
@@ -113,43 +118,48 @@ public class PrintManagerImpl extends PrintManager {
         return esc;
     }
 
-    private static EscCommand makePosOrderTemp(EscCommand rawEsc, String name, String amount) {
+    /**
+     * 打印线上订单明细
+     */
+    private static EscCommand makePosOrderTemp(EscCommand rawEsc, String name, String bcount, String amount) {
         EscCommand esc = rawEsc;
         if (esc == null) {
             esc = new EscCommand();
         }
+
         try {
 //计算行数
-            int maxLine = Math.max(1, (name == null ? 0 : (getLength(name) - 1) / PRINT_PRODUCT_NAME_MAX_LEN + 1));
+            int maxLine = Math.max(1, (name == null ? 0 : (getLength(name) - 1) / 20 + 1));
 //        ZLogger.d(String.format("maxLine=%d", maxLine));
 
             String nameTemp = name;
-
             int mid = maxLine / 2;
             for (int i = 0; i < maxLine; i++) {
-                StringBuilder line = new StringBuilder();
-
 //            ZLogger.d(String.format("nameTemp: %d(%d)", getLength(nameTemp), nameTemp.toCharArray().length));
-                String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, getLength(nameTemp)));
+                String nameLine = DataConvertUtil.subString(nameTemp,
+                        Math.min(20, getLength(nameTemp)));
 //            String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, nameTemp.toCharArray().length));
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
-                assert nameTemp != null;
-                nameTemp = nameTemp.substring(sub2.length(),
-                        nameTemp.length()).trim();
-//            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
-//            line.append(formatLong(sub2, 8));
-
+                StringBuilder line = new StringBuilder();
                 //插入名称，不足补空格
-                line.append(sub2).append(genBlankspace(Math.max(PRINT_PRODUCT_NAME_MAX_LEN - getLength(sub2), 0)));
-
-                //中间一行插入金额
+                //中间一行插入数量&金额
                 if (i == mid) {
-                    line.append(formatShort(amount, PRINT_PRODUCT_NAME_MAX_LEN, BLANK_GRAVITY.NONE));
+                    line.append(formatShort(nameLine, 20, BLANK_GRAVITY.RIGHT));
+                    line.append(formatShort(bcount, 6, BLANK_GRAVITY.RIGHT));
+                    line.append(formatShort(amount, 6, BLANK_GRAVITY.LEFT));
+                } else {
+                    line.append(formatShort(nameLine, 20, BLANK_GRAVITY.RIGHT));
                 }
-
                 line.append("\n");
 //            ZLogger.d(String.format("print line(%d/%d):%s" , i, mid, line.toString()));
                 esc.addText(line.toString());
+
+//                assert nameTemp != null;
+                if (!StringUtils.isEmpty(nameTemp)){
+                    nameTemp = nameTemp.substring(nameLine.length(), nameTemp.length()).trim();
+                }
+//            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
+//            line.append(formatLong(sub2, 8));
             }
 //        esc.addText("--------------------------------\n");//32个
 
@@ -160,7 +170,6 @@ public class PrintManagerImpl extends PrintManager {
         } catch (Exception e) {
             ZLogger.ef(e.toString());
         }
-
 
         return esc;
     }
@@ -191,7 +200,7 @@ public class PrintManagerImpl extends PrintManager {
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        print(escCommand);
+                        GPrinterAgent.print(escCommand);
                     }
                 });
     }
@@ -409,7 +418,7 @@ public class PrintManagerImpl extends PrintManager {
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        print(escCommand);
+                        GPrinterAgent.print(escCommand);
                     }
                 });
     }
@@ -600,7 +609,7 @@ public class PrintManagerImpl extends PrintManager {
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        print(escCommand);
+                        GPrinterAgent.print(escCommand);
                     }
                 });
     }
@@ -728,7 +737,7 @@ public class PrintManagerImpl extends PrintManager {
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        print(escCommand);
+                        GPrinterAgent.print(escCommand);
                     }
                 });
     }
@@ -827,7 +836,7 @@ public class PrintManagerImpl extends PrintManager {
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        print(escCommand);
+                        GPrinterAgent.print(escCommand);
                     }
                 });
     }

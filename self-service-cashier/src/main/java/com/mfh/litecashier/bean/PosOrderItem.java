@@ -80,6 +80,9 @@ public class PosOrderItem implements Serializable {
     }
 
     public Double getBcount() {
+        if (bcount == null){
+            return 0D;
+        }
         return bcount;
     }
 
