@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.cashier;
+package com.mfh.litecashier.ui.fragment.components;
 
 
 import android.os.Bundle;
