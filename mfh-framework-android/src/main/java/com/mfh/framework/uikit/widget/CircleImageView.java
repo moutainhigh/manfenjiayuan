@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -144,7 +145,7 @@ public class CircleImageView extends ImageView {
 	}
 
 	public void setBorderColorResource(int borderColorRes) {
-		setBorderColor(getContext().getResources().getColor(borderColorRes));
+		setBorderColor(ContextCompat.getColor(getContext(), borderColorRes));
 	}
 
 	public int getBorderWidth() {

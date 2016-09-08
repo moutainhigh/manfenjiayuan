@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -220,8 +221,7 @@ public class CommonDialog extends Dialog {
                 contentPadding);
         tvMessage.setLineSpacing(0.0F, 1.3F);
         tvMessage.setText(spanned);
-        tvMessage.setTextColor(getContext().getResources().getColor(
-                R.color.material_black));
+        tvMessage.setTextColor(ContextCompat.getColor(getContext(), R.color.material_black));
 
         ScrollView.LayoutParams lp = new ScrollView.LayoutParams(
                 ScrollView.LayoutParams.MATCH_PARENT,
