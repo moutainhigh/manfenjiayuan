@@ -59,13 +59,17 @@ public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
      *
      * @param barcode   商品条码
      * @param tenantId 批发商编号(可空，空值就取当前登录用户)
+     * @param needLike 默认是false，代表按精确查询，true则支持模糊查询(后六位匹配)
      */
-    public static void getTenantSkuMust(String barcode, Long tenantId, AjaxCallBack<? extends Object> responseCallback) {
+    public static void getTenantSkuMust(String barcode, Long tenantId, boolean needLike,
+                                        AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("barcode", barcode);
         if (tenantId != null) {
             params.put("tenantId", String.valueOf(tenantId));
         }
+        params.put("needLike", String.valueOf(needLike));
+
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_SCCHAINGOODSSKU_GETTENANTSKUMUST, params, responseCallback);

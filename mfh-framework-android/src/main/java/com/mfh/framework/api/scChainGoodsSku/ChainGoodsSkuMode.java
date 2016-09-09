@@ -189,7 +189,7 @@ public class ChainGoodsSkuMode {
                 pageInfo, queryRsCallBack);
     }
 
-    public void getTenantSkuMust(Long tenantId, String barcode,
+    public void getTenantSkuMust(Long tenantId, String barcode, boolean needLike,
                                  final OnModeListener<ChainGoodsSku> listener) {
         if (listener != null) {
             listener.onProcess();
@@ -236,6 +236,6 @@ public class ChainGoodsSkuMode {
                 , MfhApplication.getAppContext()) {
         };
 
-        ScChainGoodsSkuApiImpl.getTenantSkuMust(barcode, tenantId, responseCallback);
+        ScChainGoodsSkuApiImpl.getTenantSkuMust(barcode, tenantId, needLike, responseCallback);
     }
 }

@@ -147,8 +147,9 @@ public class ChainGoodsSkuPresenter {
     /**
      * 适用场景：门店/批发商 收货查询商品
      * */
-    public void getTenantSkuMust(Long tenantId, String barcode){
-        iChainGoodsSkuMode.getTenantSkuMust(tenantId, barcode, new OnModeListener<ChainGoodsSku>() {
+    public void getTenantSkuMust(Long tenantId, String barcode, boolean needLike){
+        iChainGoodsSkuMode.getTenantSkuMust(tenantId, barcode, needLike,
+        new OnModeListener<ChainGoodsSku>() {
             @Override
             public void onProcess() {
                 if (iChainGoodsSkuView != null) {
