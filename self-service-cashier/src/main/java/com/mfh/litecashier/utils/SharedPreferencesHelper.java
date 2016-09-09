@@ -62,7 +62,7 @@ public class SharedPreferencesHelper {
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
     private static final String PK_SYNC_COMPANY_HUMAN_ENABLED = "pk_sync_company_human_enabled";
    // 后台商品类目
-    public static final String PK_SYNC_BACKEND_CATEGORYINFO_ENABLED = "pk_sync_bakend_categoryinfo_enabled";
+
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_bakend_categoryinfo_fresh_enabled";
       //库存
     public static final String PK_SYNC_STOCKCHECK_ORDER_ENABLED = "pk_sync_stockcheck_order_enabled";//库存盘点订单
@@ -75,7 +75,7 @@ public class SharedPreferencesHelper {
     public static final String PK_SYNC_PURCHASESEND_ORDER_ENABLED = "pk_sync_purchasesend_order_enabled";//采购订单
     public static final String PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED = "pk_sync_purchasereceipt_order_enabled";//采购收货订单
     public static final String PK_SYNC_PURCHASERETURN_ORDER_ENABLED = "pk_sync_purchasereturn_order_enabled";//采购退货订单
-//交接班
+    //交接班
     public static final String PK_LAST_HANDOVER_DATETIME = "pk_last_handover_datetime";  //上一次交接班时间
     public static final String PK_LAST_HANDOVER_SHIFTID = "pk_last_handover_shiftid";   //上一次交接班班次
 

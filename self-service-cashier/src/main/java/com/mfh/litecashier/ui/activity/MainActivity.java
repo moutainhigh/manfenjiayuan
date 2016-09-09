@@ -598,7 +598,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
         btnSync.startSync();
 
         //设置需要更新商品中心,商品后台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
@@ -698,7 +697,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
             UploadSyncManager.getInstance().sync();
 
             //设置需要更新商品中心,商品后台类目
-            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
             SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
             //清除缓存数据
@@ -755,6 +753,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
             reload(true);
+            ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
         } else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
             LocalFrontCategoryGoods goods = (LocalFrontCategoryGoods) bundle.getSerializable("goods");
             cashierGoods(goods);
@@ -1012,7 +1011,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     reload(true);
-
                     ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
                 }
             }
