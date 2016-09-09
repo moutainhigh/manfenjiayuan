@@ -339,8 +339,15 @@ public class PrintManager {
         List<PayWay> payWays = payWrapper.getPayWays();
         if (payWays != null && payWays.size() > 0){
             for (PayWay payWay : payWays){
-                esc.addText(String.format("%s:%.2f\n",
-                        WayType.name(payWay.getPayType()) , payWay.getAmount()));
+                //现金支付（订单支付金额＋找零金额）
+                if (WayType.CASH.equals(payWay.getPayType())){
+                    esc.addText(String.format("%s:%.2f\n", WayType.name(payWay.getPayType()),
+                            payWay.getAmount() + payWrapper.getChange()));
+                }
+                else{
+                    esc.addText(String.format("%s:%.2f\n",
+                            WayType.name(payWay.getPayType()) , payWay.getAmount()));
+                }
             }
         }
 
