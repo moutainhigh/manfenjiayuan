@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -52,28 +53,29 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 
     public static final String EXTRA_KEY_BARCODE = "barcode";
 
-//    @BindView(R2.id.toolbar)
-     Toolbar mToolbar;
-//    @BindView(R2.id.scanBar)
-     ScanBar mScanBar;
+    //    @BindView(R2.id.toolbar)
+    Toolbar mToolbar;
+    //    @BindView(R2.id.scanBar)
+    ScanBar mScanBar;
+    private AppCompatCheckBox queryCheckbox;
 
-//    @BindView(R2.id.label_barcode)
+    //    @BindView(R2.id.label_barcode)
     TextLabelView labelBarcode;
-//    @BindView(R2.id.label_productName)
+    //    @BindView(R2.id.label_productName)
     TextLabelView labelProductName;
-//    @BindView(R2.id.label_send_price)
+    //    @BindView(R2.id.label_send_price)
     TextLabelView labelSendPrice;
-//    @BindView(R2.id.label_send_quantity)
+    //    @BindView(R2.id.label_send_quantity)
     TextLabelView labelSendQuantity;
-//    @BindView(R2.id.label_receive_quantity)
+    //    @BindView(R2.id.label_receive_quantity)
     EditLabelView labelReceiveQuantity;
-//    @BindView(R2.id.label_receive_amount)
+    //    @BindView(R2.id.label_receive_amount)
     EditLabelView labelReceiveAmount;
-//    @BindView(R2.id.label_receive_price)
+    //    @BindView(R2.id.label_receive_price)
     TextLabelView labelReceivePrice;
 
 
-//    @BindView(R2.id.fab_submit)
+    //    @BindView(R2.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
     private InvRecvGoodsEntity curGoods = null;
@@ -112,6 +114,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelSendPrice = (TextLabelView) rootView.findViewById(R.id.label_send_price);
@@ -119,7 +122,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         labelReceiveQuantity = (EditLabelView) rootView.findViewById(R.id.label_receive_quantity);
         labelReceiveAmount = (EditLabelView) rootView.findViewById(R.id.label_receive_amount);
         labelReceivePrice = (TextLabelView) rootView.findViewById(R.id.label_receive_price);
-         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,7 +233,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         if (args != null) {
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
 
-            if (!StringUtils.isEmpty(barcode)){
+            if (!StringUtils.isEmpty(barcode)) {
                 queryByBarcode(barcode);
             }
         }
@@ -292,11 +295,10 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
     }
 
     public void onQueryError(String errorMsg) {
-        if (!StringUtils.isEmpty(errorMsg)){
+        if (!StringUtils.isEmpty(errorMsg)) {
             ZLogger.df(errorMsg);
             showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
-        }
-        else{
+        } else {
             hideProgressDialog();
         }
         isAcceptBarcodeEnabled = true;
@@ -304,7 +306,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         refreshPackage(null);
     }
 
-//    @OnClick(R2.id.fab_submit)
+    //    @OnClick(R2.id.fab_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
         isAcceptBarcodeEnabled = false;
@@ -410,6 +412,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
     public void onChainGoodsSkuViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
     }
+
     @Override
     public void onChainGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
@@ -497,7 +500,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, queryCheckbox.isChecked());
     }
 
     /**

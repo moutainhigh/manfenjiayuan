@@ -242,7 +242,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, false);
     }
 
     public void submit() {

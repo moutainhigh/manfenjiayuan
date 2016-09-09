@@ -250,7 +250,7 @@ public class InvSendIoInspectFragment extends PDAScanFragment
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode);
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, false);
     }
 
 
