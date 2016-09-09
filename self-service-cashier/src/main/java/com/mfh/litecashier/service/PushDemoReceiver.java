@@ -63,7 +63,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
                 if(clientId != null){
-                    ZLogger.df(String.format("clientId=%s", clientId));
+                    ZLogger.df(String.format("个推clientId=%s", clientId));
                     IMConfig.savePushClientId(clientId);
                 }
 

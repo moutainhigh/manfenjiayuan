@@ -93,8 +93,8 @@ public class TimeTaskManager {
      * 定时同步POS订单
      */
     public void start() {
-        ZLogger.d("定时任务开启...");
         cancel();
+        ZLogger.d("定时任务开启...");
         if (syncPosOrderTimer == null) {
             syncPosOrderTimer = new Timer();
         }

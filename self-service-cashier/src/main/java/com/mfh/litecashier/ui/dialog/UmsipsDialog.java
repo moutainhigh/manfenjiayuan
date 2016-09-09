@@ -416,7 +416,6 @@ public class UmsipsDialog extends CommonDialog {
     }
 
 
-
     /**
      * 打印参数
      */
