@@ -63,7 +63,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
                 if(clientId != null){
-                    ZLogger.df(String.format("clientId=%s", clientId));
+                    ZLogger.df(String.format("个推clientId=%s", clientId));
                     IMConfig.savePushClientId(clientId);
                 }
 
@@ -84,11 +84,13 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 break;
             case PushConsts.GET_SDKSERVICEPID:
 //                超过5分钟会自动重启
-                if ((System.currentTimeMillis() - offlineTime) > 1000 * 60 * 5) {
-                    offlineTime = System.currentTimeMillis();
-                } else {
-                    ZLogger.df("重新初始化 个推sdk...");
+                Long interval = System.currentTimeMillis() - offlineTime;
+                if (interval > 1000) {
+                    ZLogger.df("个推服务断开超过 1秒,准备初始化...");
                     PushManager.getInstance().initialize(CashierApp.getAppContext());
+                } else {
+                    ZLogger.df("个推服务未启动，...");
+                    offlineTime = System.currentTimeMillis();
                 }
 
                 break;

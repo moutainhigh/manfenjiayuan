@@ -13,15 +13,14 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,9 +184,6 @@ public class BackendCategoryFragment extends BaseFragment {
 
             return true;
         }
-
-        //设置需要更新商品中心,商品后台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
 
         return false;
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -135,7 +136,7 @@ public class SearchCommunityActivity extends BaseActivity {
      * */
     private void initSearchViewEX(){
         searchView.setHint(R.string.search_bar_hint_conversation);
-        searchView.setTextColor(this.getResources().getColor(R.color.material_black));
+        searchView.setTextColor(ContextCompat.getColor(this, R.color.material_black));
         searchView.setListener(new CustomSearchView.CustomSearchViewListener() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

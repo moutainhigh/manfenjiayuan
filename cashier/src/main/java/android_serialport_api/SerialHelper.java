@@ -109,7 +109,7 @@ public abstract class SerialHelper {
                         Thread.sleep(50);//延时50ms
                     } catch (InterruptedException e) {
 //						e.printStackTrace();
-                        ZLogger.e(e.toString());
+                        ZLogger.ef(e.toString());
                     }
                 } catch (Throwable e) {
 //					e.printStackTrace();

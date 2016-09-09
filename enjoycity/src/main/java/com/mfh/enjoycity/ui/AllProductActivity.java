@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -115,7 +116,7 @@ public class AllProductActivity extends BaseActivity {
         else{
             toolbar.setTitle("");
         }
-        toolbar.setBackgroundColor(this.getResources().getColor(R.color.transparent));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
         setSupportActionBar(toolbar);
 //        if(getSupportActionBar() != null){
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);

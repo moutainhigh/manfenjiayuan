@@ -880,8 +880,6 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             return true;
         }
 
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
-
         return false;
     }
 

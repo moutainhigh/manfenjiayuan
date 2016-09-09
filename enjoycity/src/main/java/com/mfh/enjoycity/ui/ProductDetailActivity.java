@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -94,7 +95,7 @@ public class ProductDetailActivity extends BaseActivity {
     @Override
     protected void initToolBar() {
         toolbar.setTitle("");
-        toolbar.setBackgroundColor(this.getResources().getColor(R.color.transparent));
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
         setSupportActionBar(toolbar);
 //        if(getSupportActionBar() != null){
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);

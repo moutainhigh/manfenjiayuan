@@ -2,10 +2,10 @@ package com.mfh.enjoycity.view;
 
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mfh.enjoycity.R;
@@ -62,7 +62,8 @@ public class SimpleLabel extends LinearLayout {
 	public void setTvDetailForPrice(double price, int positiveColor, int negativeColor){
 		this.tvDetail.setText(getContext().getString(R.string.mf_format_price_1, price));
 		this.tvDetail.setTextColor((price > 0 ? positiveColor : negativeColor));
-		this.tvDetail.setTextColor((price > 0 ? getContext().getResources().getColor(positiveColor) : getContext().getResources().getColor(negativeColor)));
+		this.tvDetail.setTextColor((price > 0 ? ContextCompat.getColor(getContext(), positiveColor)
+				: ContextCompat.getColor(getContext(), negativeColor)));
 	}
 
 

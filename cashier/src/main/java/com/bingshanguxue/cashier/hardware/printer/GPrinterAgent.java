@@ -63,6 +63,20 @@ public class GPrinterAgent {
     }
 
     /**
+     * 打印
+     * */
+    public static void print(EscCommand escCommand){
+        if (escCommand != null) {
+            //获得打印命令
+            Vector<Byte> datas = escCommand.getCommand();
+            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
+//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
+        }
+    }
+
+    /**
      * 走纸
      * */
     public static void feedPaper(){

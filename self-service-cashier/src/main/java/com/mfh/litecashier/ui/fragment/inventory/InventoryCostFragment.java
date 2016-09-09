@@ -27,17 +27,18 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.category.CategoryOption;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -57,7 +58,6 @@ import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.ui.widget.MOrderLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,9 +145,14 @@ public class InventoryCostFragment extends BaseProgressFragment
                 if (searchParams == null) {
                     searchParams = new SearchParamsWrapper();
                 }
-                searchParams.setPriceType(spinnerPriceType.getSelectedItem().toString());
+                String selectedPriceType = spinnerPriceType.getSelectedItem().toString();
+                if (!ObjectsCompact.equals(searchParams.getPriceType(), selectedPriceType)){
+                    searchParams.setPriceType(selectedPriceType);
 
-                loadGoodsList();
+                    ZLogger.d("计价类型发生改变");
+                    loadGoodsList();
+                }
+
             }
 
             @Override
@@ -293,6 +298,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     //条码枪扫描结束后会自动触发回车键
                     if (event.getAction() == MotionEvent.ACTION_UP) {
+                        ZLogger.d("条码发生改变");
                         loadGoodsList();
                     }
 
@@ -325,7 +331,7 @@ public class InventoryCostFragment extends BaseProgressFragment
 //        });
         inlvBarcode.setOnViewListener(new InputSearchView.OnViewListener() {
             @Override
-            public void onSubmit(String text) {
+            public void onSubmit(String text) {ZLogger.d("条码发生改变2");
                 loadGoodsList();
             }
         });
@@ -472,7 +478,7 @@ public class InventoryCostFragment extends BaseProgressFragment
 //                    loadSubCategory(option.getCode());
                     optionsMap.put(++currentLevel, option);
                     refreshCategoryList();
-                } else {
+                } else {ZLogger.d("选中类目");
                     loadGoodsList();
                 }
             }
@@ -481,6 +487,7 @@ public class InventoryCostFragment extends BaseProgressFragment
             public void onDataSetChanged() {
 //                isLoadingMore = false;
 //                animProgress.setVisibility(View.GONE);
+                ZLogger.d("类目发生变化");
                 loadGoodsList();
             }
         });
@@ -491,7 +498,7 @@ public class InventoryCostFragment extends BaseProgressFragment
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(CommodityStockEvent event) {
-        ZLogger.d(String.format("InventoryCostFragment: CommodityStockEvent(%d)", event.getAffairId()));
+        ZLogger.d(String.format("CommodityStockEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == CommodityStockEvent.EVENT_ID_RELOAD_DATA) {
             inlvBarcode.requestFocus();
             loadData();
@@ -499,7 +506,7 @@ public class InventoryCostFragment extends BaseProgressFragment
     }
 
     public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
-        ZLogger.d(String.format("InventoryCostFragment: DataSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
             //刷新供应商
             readCategoryInfoCache();
@@ -529,9 +536,6 @@ public class InventoryCostFragment extends BaseProgressFragment
 
             return true;
         }
-
-        //设置需要更新商品中心,商品后台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
 
         return false;
     }

@@ -117,7 +117,7 @@ public class DataSyncManager {
             if (rollback > MAX_ROLLBACK) {
                 bSyncInProgress = false;
             }
-            if (nextStep > SYNC_STEP_FRONTEND_CATEGORY) {
+            if (nextStep >= SYNC_STEP_NA){
                 nextStep = SYNC_STEP_FRONTEND_CATEGORY;
             }
             return;
@@ -872,12 +872,6 @@ public class DataSyncManager {
      * 下载后台类目树
      */
     private void downloadBackendCategoryInfo() {
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, true)) {
-            ZLogger.df("使用后台类目缓存数据，暂不加载新数据");
-            nextStep();
-            return;
-        }
-
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             networkError();
             return;
@@ -902,14 +896,13 @@ public class DataSyncManager {
 
                 @Override
                 public void processResult(IResponseData rspData) {
-                    if (rspData == null) {
-                        saveBackendCategoryInfoCache(null);
-                        nextStep();
-                        return;
-                    }
 //                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                    RspBean<CategoryQueryInfo> retValue = (RspBean<CategoryQueryInfo>) rspData;
-                    CategoryQueryInfo categoryQueryInfo = retValue.getValue();
+                    CategoryQueryInfo categoryQueryInfo = null;
+
+                    if (rspData != null){
+                        RspBean<CategoryQueryInfo> retValue = (RspBean<CategoryQueryInfo>) rspData;
+                        categoryQueryInfo = retValue.getValue();
+                    }
 
                     if (categoryQueryInfo != null) {
                         //缓存数据
@@ -917,11 +910,6 @@ public class DataSyncManager {
                     } else {
                         saveBackendCategoryInfoCache(null);
                     }
-
-                    //通知刷新数据
-                    EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO));
-
-                    nextStep();
                 }
             }
             , CategoryQueryInfo.class
@@ -929,7 +917,7 @@ public class DataSyncManager {
     };
 
     /**
-     * 缓存后台类目树
+     * 保存后台类目树
      */
     private void saveBackendCategoryInfoCache(List<CategoryOption> options) {
         ZLogger.df(String.format("保存POS %d个后台类目",
@@ -940,11 +928,14 @@ public class DataSyncManager {
             for (CategoryOption option : options) {
                 cacheArrays.add(option);
             }
-
-            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_ENABLED, false);
         }
         ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
                 .put(ACacheHelper.CK_STOCKGOODS_CATEGORY, cacheArrays.toJSONString());
+
+        //通知刷新数据
+        EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO));
+
+        nextStep();
     }
 
 

@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mfh.comn.bean.TimeCursor;
-import com.mfh.litecashier.R;
-import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.uikit.recyclerview.RegularAdapter;
+import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosOrder;
 import com.mfh.litecashier.bean.PosOrderItem;
 
@@ -58,23 +58,10 @@ public class StoreOrderflowOrderAdapter
         } else {
             holder.rootView.setSelected(false);
         }
-        List<PosOrderItem> items = entity.getItems();
-        if (items != null && items.size() > 0){
-            holder.tvBarcode.setText(String.format("订单编号：%s", items.get(0).getOrderId()));
-        }
-        else{
-            holder.tvBarcode.setText("订单编号:");
-        }
-
-        if (entity.getPayType() == null){
-            holder.tvPayType.setText("支付方式：");
-        }
-        else{
-            holder.tvPayType.setText(String.format("支付方式：%s", WayType.name(entity.getPayType())));
-        }
-
+        holder.tvBarcode.setText(String.format("订单编号：%d", entity.getId()));
+        holder.tvPayType.setText(String.format("支付方式：%s", WayType.name(entity.getPayType())));
         holder.tvCreateDate.setText(String.format("下单时间：%s",
-                (entity.getCreatedDate() != null ? TimeCursor.InnerFormat.format(entity.getCreatedDate()) : "")));
+                TimeUtil.format(entity.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
         holder.tvAmount.setText(String.format("商品总价：%.2f", entity.getAmount()));
     }
 
