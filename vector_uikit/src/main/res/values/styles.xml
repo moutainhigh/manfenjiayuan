@@ -65,6 +65,15 @@
         <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
     </style>
 
+
+    <style name="dropDownSpinnerStyle" parent="Widget.AppCompat.Spinner">
+        <!--<item name="android:background">@drawable/abc_spinner_mtrl_am_alpha</item>-->
+        <!--<item name="android:popupBackground">@drawable/abc_popup_background_mtrl_mult</item>-->
+        <!--<item name="android:dropDownSelector">?attr/listChoiceBackgroundIndicator</item>-->
+        <item name="android:background">@drawable/mfhtheme_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">@drawable/mfhtheme_list_selector_holo_light</item>
+    </style>
+
     <!-- 加载滚动条样式 -->
     <style name="syncbutton_progressbar">
         <item name="android:indeterminate">true</item>
