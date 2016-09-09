@@ -568,10 +568,10 @@ public class ACache {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    int size = 0;
-                    int count = 0;
                     File[] cachedFiles = cacheDir.listFiles();
                     if (cachedFiles != null) {
+                        int size = 0;
+                        int count = 0;
                         for (File cachedFile : cachedFiles) {
                             size += calculateSize(cachedFile);
                             count += 1;

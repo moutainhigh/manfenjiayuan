@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
+
 /**
  * @author zhy
  */
@@ -21,17 +23,22 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 
     public DividerGridItemDecoration(Context context) {
+        if (context == null){
+            ZLogger.d("context is null");
+        }
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
+
+        if (mDivider == null){
+            ZLogger.d("mDivider is null");
+        }
     }
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, State state) {
-
         drawHorizontal(c, parent);
         drawVertical(c, parent);
-
     }
 
     private int getSpanCount(RecyclerView parent) {
@@ -139,11 +146,12 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView parent) {
         int spanCount = getSpanCount(parent);
         int childCount = parent.getAdapter().getItemCount();
-        if (isLastRaw(parent, itemPosition, spanCount, childCount))// 如果是最后一行，则不需要绘制底部
-        {
+        // 如果是最后一行，则不需要绘制底部
+        if (isLastRaw(parent, itemPosition, spanCount, childCount)) {
             outRect.set(0, 0, mDivider.getIntrinsicWidth(), 0);
-        } else if (isLastColum(parent, itemPosition, spanCount, childCount))// 如果是最后一列，则不需要绘制右边
-        {
+        }
+        // 如果是最后一列，则不需要绘制右边
+        else if (isLastColum(parent, itemPosition, spanCount, childCount)) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {
             outRect.set(0, 0, mDivider.getIntrinsicWidth(),
