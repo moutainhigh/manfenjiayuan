@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.igexin.sdk.PushConsts;
+import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
+import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.PayloadHelper;
 
@@ -20,6 +22,9 @@ public class PushDemoReceiver extends BroadcastReceiver {
     private static final String KEY_CLIENT_ID   = "clientid";
     private static final String KEY_PAYLOAD     = "payload";
     private static final String KEY_APPID       = "appid";
+
+    private long offlineTime = System.currentTimeMillis();
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -41,7 +46,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
                 if(clientId != null){
-                    ZLogger.df(String.format("cashier.clientId=%s", clientId));
+                    ZLogger.df(String.format("个推 clientId=%s", clientId));
                     IMConfig.savePushClientId(clientId);
                 }
 
@@ -61,9 +66,16 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 ZLogger.d("sdk.online");
                 break;
             case PushConsts.GET_SDKSERVICEPID:
-                // 重新初始化sdk
-//                ZLogger.d("initializing getui sdk...");
-//                PushManager.getInstance().initialize(CashierApp.getAppContext());
+//                超过5分钟会自动重启
+                Long interval = System.currentTimeMillis() - offlineTime;
+                if (interval > 1000) {
+                    ZLogger.df("个推服务断开超过 1秒,准备初始化...");
+                    PushManager.getInstance().initialize(AppContext.getAppContext());
+                } else {
+                    ZLogger.df("个推服务未启动，...");
+                    offlineTime = System.currentTimeMillis();
+                }
+
                 break;
             default:
                 break;
