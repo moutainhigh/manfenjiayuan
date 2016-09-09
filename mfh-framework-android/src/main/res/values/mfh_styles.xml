@@ -52,54 +52,7 @@
 
     <!-- Base application theme. -->
 
-    <style name="MfhNoActionBarAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="windowActionBar">false</item>-->
-        <!--<item name="windowNoTitle">true</item>-->
 
-        <!-- Customize your theme here. -->
-        <!--   your app branding color for the app bar -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!--   theme UI controls like checkboxes and text fields e.g. FloatActionButton -->
-        <item name="colorAccent">@color/colorAccent</item>
-        <!-- Title Text Color -->
-        <item name="android:textColorPrimary">@color/material_white</item>
-        <!-- color of the menu overflow icon (three vertical dots) -->
-        <item name="android:textColorSecondary">@color/material_white</item>
-
-        <item name="android:editTextBackground">@drawable/mfhtheme_edit_text_holo_light</item>
-        <item name="android:textSelectHandleLeft">@drawable/mfhtheme_text_select_handle_left</item>
-        <item name="android:textSelectHandleRight">@drawable/mfhtheme_text_select_handle_right
-        </item>
-        <item name="android:textSelectHandle">@drawable/mfhtheme_text_select_handle_middle</item>
-        <item name="android:dropDownSpinnerStyle">@style/dropDownSpinnerStyle</item>
-
-        <item name="android:listChoiceBackgroundIndicator">
-            @drawable/mfhtheme_list_selector_holo_light
-        </item>
-
-        <item name="android:fastScrollThumbDrawable">@drawable/mfhtheme_fastscroll_thumb_holo</item>
-
-        <item name="android:textSize">16sp</item>
-        <item name="android:actionBarSize">48dp</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarStyle.Tab</item>
-        <item name="android:actionBarTabBarStyle">@style/ActionBarStyle.TabBar</item>
-        <item name="android:actionBarTabTextStyle">@style/ActionBarStyle.TabText</item>
-        <item name="android:buttonStyle">@style/ButtonStyle</item>
-
-        <!--窗口进入和退出动画-->
-        <item name="android:windowAnimationStyle">@style/activity_right_fade_in_out</item>
-
-        <!--RecyclerView分割线-->
-        <item name="itemdecoration_line">@drawable/listdivider_horizontal</item>
-
-
-
-        <!--<item name="android:colorControlNormal">@color/mf_colorPrimary</item>-->
-        <!--<item name="android:colorControlActivated">@color/mf_colorPrimary</item>-->
-        <!--<item name="android:colorControlHighlight">@color/mf_colorPrimary</item>-->
-    </style>
 
     <style name="dropDownSpinnerStyle" parent="Widget.AppCompat.Spinner">
         <!--<item name="android:background">@drawable/abc_spinner_mtrl_am_alpha</item>-->
