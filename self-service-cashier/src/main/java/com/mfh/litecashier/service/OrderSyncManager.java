@@ -144,7 +144,7 @@ public abstract class OrderSyncManager {
         if (createdDate == null) {
             createdDate = new Date();
         }
-        order.put("createdDate", TimeUtil.format(createdDate, TimeCursor.FORMAT_YYYYMMDDHHMMSS));
+        order.put("createdDate", TimeUtil.format(createdDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
 
         //读取订单商品明细
         List<PosOrderItemEntity> orderItemEntities = CashierAgent.fetchOrderItems(orderEntity);

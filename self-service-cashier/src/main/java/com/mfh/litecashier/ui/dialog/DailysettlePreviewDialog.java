@@ -231,6 +231,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
 
 
 
+                //流水分析
                 Map<Integer, List<PosOrderEntity>> subTypeMap = new HashMap<>();
                 OrderPayInfo orderPayInfo = new OrderPayInfo();
                 for (PosOrderEntity entity : orderEntities) {
@@ -264,7 +265,6 @@ public class DailysettlePreviewDialog extends CommonDialog {
 
                     ZLogger.d(JSONObject.toJSONString(orderPayInfo));
                 }
-                //流水分析
                 sbHtml.append("<table border=\"0\">\n");
                 sbHtml.append("<tr>\n" +
                         "  <th align=\"left\">业务类型</th>\n" +
@@ -287,7 +287,6 @@ public class DailysettlePreviewDialog extends CommonDialog {
                 }
                 sbHtml.append("</table>");
 
-                sbHtml.append("<p>--------------------------------</p>\n");
 
                 //经营分析
                 Double cash = 0D, ali = 0D, wx = 0D, account = 0D, bank = 0D, coupon = 0D;
@@ -316,7 +315,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
                         }
                     }
                 }
-
+                sbHtml.append("<p>--------------------------------</p>\n");
                 sbHtml.append("<table border=\"0\">\n");
                 sbHtml.append("<tr>\n" +
                         "  <th align=\"left\">支付类型</th>\n" +

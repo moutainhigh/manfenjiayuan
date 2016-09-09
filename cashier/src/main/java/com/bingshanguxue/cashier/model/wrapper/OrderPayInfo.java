@@ -39,6 +39,9 @@ public class OrderPayInfo implements Serializable {
     }
 
     public Double getChange() {
+        if (change == null){
+            return 0D;
+        }
         return change;
     }
 

@@ -179,6 +179,83 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
         this.discountAmount = discountAmount;
     }
 
+
+    public Double getBcount() {
+        return bcount;
+    }
+
+    public void setBcount(Double bcount) {
+        this.bcount = bcount;
+    }
+
+    public int getPaystatus() {
+        return paystatus;
+    }
+
+    public void setPaystatus(int paystatus) {
+        this.paystatus = paystatus;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getPosId() {
+        return posId;
+    }
+
+    public void setPosId(String posId) {
+        this.posId = posId;
+    }
+
+    public Long getSellOffice() {
+        return sellOffice;
+    }
+
+    public void setSellOffice(Long sellOffice) {
+        this.sellOffice = sellOffice;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public int getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(int syncStatus) {
+        this.syncStatus = syncStatus;
+    }
+
+    public Integer getBizType() {
+        return bizType;
+    }
+
+    public void setBizType(Integer bizType) {
+        this.bizType = bizType;
+    }
+
+    public Integer getSubType() {
+        if (subType == null) {
+            return BizSubType.POS_STANDARD;
+        }
+        return subType;
+    }
+
+    public void setSubType(Integer subType) {
+        this.subType = subType;
+    }
+
+
     @Deprecated
     public String getCouponsIds() {
         return couponsIds;
@@ -256,81 +333,6 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     @Deprecated
     public void setPayType(Integer payType) {
         this.payType = payType;
-    }
-
-    public Double getBcount() {
-        return bcount;
-    }
-
-    public void setBcount(Double bcount) {
-        this.bcount = bcount;
-    }
-
-    public int getPaystatus() {
-        return paystatus;
-    }
-
-    public void setPaystatus(int paystatus) {
-        this.paystatus = paystatus;
-    }
-
-    public Long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getPosId() {
-        return posId;
-    }
-
-    public void setPosId(String posId) {
-        this.posId = posId;
-    }
-
-    public Long getSellOffice() {
-        return sellOffice;
-    }
-
-    public void setSellOffice(Long sellOffice) {
-        this.sellOffice = sellOffice;
-    }
-
-    public Long getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
-    }
-
-    public int getSyncStatus() {
-        return syncStatus;
-    }
-
-    public void setSyncStatus(int syncStatus) {
-        this.syncStatus = syncStatus;
-    }
-
-    public Integer getBizType() {
-        return bizType;
-    }
-
-    public void setBizType(Integer bizType) {
-        this.bizType = bizType;
-    }
-
-    public Integer getSubType() {
-        if (subType == null) {
-            return BizSubType.POS_STANDARD;
-        }
-        return subType;
-    }
-
-    public void setSubType(Integer subType) {
-        this.subType = subType;
     }
 
 }

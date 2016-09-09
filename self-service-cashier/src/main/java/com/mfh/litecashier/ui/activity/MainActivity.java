@@ -1695,7 +1695,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     }
 
     /**
-     * 补填商品零售价信息
+     * 补填商品零售价信息:输入商品价格
      * */
     private void commitGoodsCostprice1(final String orderBarCode, final PosProductEntity goods,
                                        final Double bCount){
@@ -1719,6 +1719,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     }
 
+    /**
+     * 补填商品零售价信息：提交修改信息
+     * */
     private void commitGoodsCostprice2(final String orderBarCode, final PosProductEntity goods,
                                        final Double bCount){
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
@@ -1763,9 +1766,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
         InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
     }
 
-
     /**
-     * 保存商品到收银台*/
+     * 保存商品到收银台
+     * */
     private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
                                    final Double bCount){
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {

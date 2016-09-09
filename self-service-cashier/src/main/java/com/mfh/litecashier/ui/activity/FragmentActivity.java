@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
-import com.mfh.litecashier.ui.fragment.cashier.StockDetailFragment;
+import com.mfh.litecashier.ui.fragment.components.StockDetailFragment;
 import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
 
 /**

@@ -20,6 +20,9 @@ public class PayWay implements Serializable{
     }
 
     public Double getAmount() {
+        if (amount == null){
+            return 0D;
+        }
         return amount;
     }
 

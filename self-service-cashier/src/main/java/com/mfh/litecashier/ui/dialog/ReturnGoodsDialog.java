@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
@@ -43,6 +44,14 @@ import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.GlobalInstance;
+
+import java.util.List;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -268,7 +277,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
             final Double weightVal = GlobalInstance.getInstance().getNetWeight();
             if (weightVal > 0){
-                productAdapter.append(curOrderTradeNo, goods, 0 - weightVal);
+                saveGoods2Cashier(curOrderTradeNo, goods, 0 - weightVal);
             }
             else{
                 if (changeQuantityDialog == null) {
@@ -280,16 +289,16 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
                     @Override
                     public void onQuantityChanged(Double quantity) {
 
-                        productAdapter.append(curOrderTradeNo, goods, 0 - quantity);
+                        saveGoods2Cashier(curOrderTradeNo, goods, 0 - quantity);
                     }
                 });
                 changeQuantityDialog.show();
             }
         } else {
             if (packFlag == 1) {
-                productAdapter.append(curOrderTradeNo, goods, 0 - goods.getPackageNum());
+                saveGoods2Cashier(curOrderTradeNo, goods, 0 - goods.getPackageNum());
             } else {
-                productAdapter.append(curOrderTradeNo, goods, -1D);
+                saveGoods2Cashier(curOrderTradeNo, goods, -1D);
             }
         }
 
@@ -316,15 +325,55 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
             //计重商品直接读取条码中的重量信息
-            productAdapter.append(curOrderTradeNo, goods, 0 - weight);
+            saveGoods2Cashier(curOrderTradeNo, goods, 0 - weight);
         } else {
             //计件商品默认商品数量加1
-            productAdapter.append(curOrderTradeNo, goods, -1D);
+            saveGoods2Cashier(curOrderTradeNo, goods, -1D);
         }
     }
 
     @Override
     public void onFindGoodsEmpty(String barcode) {
         DialogUtil.showHint("未找到商品");
+    }
+
+    /**
+     * 保存商品到收银台
+     * */
+    private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
+                                   final Double bCount){
+        Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
+                //添加商品
+                CashierShopcartService.getInstance().append(orderBarCode, goods, bCount);
+
+                //刷新订单列表
+                List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
+                        .queryAllByDesc(String.format("posTradeNo = '%s'", orderBarCode));
+
+                subscriber.onNext(shopcartEntities);
+                subscriber.onCompleted();
+
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<CashierShopcartEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CashierShopcartEntity> cashierShopcartEntities) {
+                        productAdapter.setEntityList(cashierShopcartEntities);
+                    }
+                });
     }
 }

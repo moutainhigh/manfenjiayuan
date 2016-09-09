@@ -24,7 +24,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.PurchaseShopcartHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import butterknife.Bind;
 import rx.Observable;
@@ -96,7 +95,6 @@ public class SplashActivity extends InitActivity {
 
     @Override
     protected void initComleted() {
-
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -111,17 +109,17 @@ public class SplashActivity extends InitActivity {
                                 android.os.Process.myPid())));
 
                 if (SharedPreferencesManager.isAppFirstStart()) {
-                    SharedPreferencesHelper.setSyncProductsCursor("");
-                    SharedPreferencesHelper.setPosOrderLastUpdate("");
-                    SharedPreferencesManager.setTerminalId("");
-                    SharedPreferencesManager.setSoftKeyboardEnabled(false);
+//                    SharedPreferencesHelper.setSyncProductsCursor("");
+//                    SharedPreferencesHelper.setPosOrderLastUpdate("");
+//                    SharedPreferencesManager.setTerminalId("");
+//                    SharedPreferencesManager.setSoftKeyboardEnabled(false);
 
                     SharedPreferencesManager.setAppFirstStart(false);
-                } else {
-                    CashierShopcartService.getInstance().clear();//购物车－收银
-                    PurchaseShopcartHelper.getInstance().clear();//购物车－采购
-                    PosCategoryGodosTempService.getInstance().clear();
                 }
+
+                CashierShopcartService.getInstance().clear();//购物车－收银
+                PurchaseShopcartHelper.getInstance().clear();//购物车－采购
+                PosCategoryGodosTempService.getInstance().clear();
 
                 AppHelper.clearRedunantData(false);
 

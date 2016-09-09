@@ -6,12 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
-import com.mfh.framework.api.constant.PriceType;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 
@@ -252,19 +251,6 @@ public class CashierSwipAdapter
 //        if (adapterListener != null) {
 //            adapterListener.onDataSetChanged();
 //        }
-    }
-
-    /**
-     * 添加商品
-     * */
-    public void append(String orderBarCode, PosProductEntity goods, Double bCount){
-        //添加商品
-        CashierShopcartService.getInstance().append(orderBarCode, goods, bCount);
-
-        //刷新订单列表
-        List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
-                .queryAllBy(String.format("posTradeNo = '%s'", orderBarCode));
-        setEntityList(shopcartEntities);
     }
 
     public void notifyDataSetChanged(int position, boolean needScroll){
