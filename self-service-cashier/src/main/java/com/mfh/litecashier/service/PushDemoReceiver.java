@@ -37,7 +37,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
     private static final String KEY_PAYLOAD     = "payload";
     private static final String KEY_APPID       = "appid";
 
-    private long offlineTime = 0;
+    private long offlineTime = System.currentTimeMillis();
 
     @Override
     public void onReceive(Context context, Intent intent) {

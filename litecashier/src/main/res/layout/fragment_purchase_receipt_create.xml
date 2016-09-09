@@ -121,7 +121,7 @@
         android:padding="8dp">
 
         <!--发货方，批发商（必选条件）-->
-        <com.mfh.framework.uikit.compound.OptionalLabel
+        <com.bingshanguxue.vector_uikit.OptionalLabel
             android:id="@+id/label_invcomp_provider"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -132,7 +132,7 @@
             app:mLabelView_inputTextSize="16sp" />
 
         <!--采购订单（可选条件）-->
-        <com.mfh.framework.uikit.compound.OptionalLabel
+        <com.bingshanguxue.vector_uikit.OptionalLabel
             android:id="@+id/label_sendorder"
             android:layout_width="match_parent"
             android:layout_height="48dp"

@@ -76,4 +76,15 @@
         <attr name="zeroIntercept" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="OptionalLabel">
+        <attr name="mLabelView_inputTextColor" format="color"/>
+        <attr name="mLabelView_inputTextSize" format="dimension"/>
+        <attr name="mLabelView_inputTextColorHint" format="color"/>
+        <attr name="mLabelView_inputHint" format="string"/>
+
+        <attr name="mLabelView_rightImageButtonEnabled" format="boolean"/>
+        <attr name="mLabelView_rightButtonWidth" format="dimension"/>
+        <attr name="mLabelView_rightImageButtonSrc" format="reference"/>
+    </declare-styleable>
+
 </resources>

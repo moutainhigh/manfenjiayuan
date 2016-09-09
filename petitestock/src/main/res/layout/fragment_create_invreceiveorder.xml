@@ -5,7 +5,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!--采购订单（可选条件）-->
-    <com.mfh.framework.uikit.compound.OptionalLabel
+    <com.bingshanguxue.vector_uikit.OptionalLabel
         android:id="@+id/label_provider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/minimum_touch_height"

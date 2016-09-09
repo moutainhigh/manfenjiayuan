@@ -35,7 +35,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
-import com.mfh.framework.uikit.compound.OptionalLabel;
+import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -63,7 +63,6 @@ import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;

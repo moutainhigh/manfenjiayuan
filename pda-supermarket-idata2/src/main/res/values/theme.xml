@@ -1,16 +1,13 @@
 <resources>
 
-    <!-- 日间模式 -->
-    <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
-        <!-- Customize your theme here. -->
-
-    </style>
-
     <style name="AppBaseTheme_Light.FullScreen">
         <!--<item name="windowActionBar">false</item>-->
         <item name="windowNoTitle">true</item>
         <!--<item name="android:displayOptions">homeAsUp|showTitle|showHome</item>-->
         <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!-- Customize your theme here. -->
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
+
     </style>
 
     <!-- 夜间模式 -->

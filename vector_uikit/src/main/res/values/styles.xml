@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="MfhNoActionBarAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->
@@ -21,14 +22,13 @@
         <item name="android:textSelectHandleRight">@drawable/mfhtheme_text_select_handle_right
         </item>
         <item name="android:textSelectHandle">@drawable/mfhtheme_text_select_handle_middle</item>
-        <item name="android:dropDownSpinnerStyle">@style/dropDownSpinnerStyle</item>
-
         <item name="android:listChoiceBackgroundIndicator">
             @drawable/mfhtheme_list_selector_holo_light
         </item>
-
         <item name="android:fastScrollThumbDrawable">@drawable/mfhtheme_fastscroll_thumb_holo</item>
-        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_light</item>
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_light
+        </item>
+
 
         <item name="android:textSize">16sp</item>
         <item name="android:actionBarSize">48dp</item>
@@ -36,6 +36,8 @@
         <item name="android:actionBarTabBarStyle">@style/ActionBarStyle.TabBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarStyle.TabText</item>
         <item name="android:buttonStyle">@style/ButtonStyle</item>
+        <item name="android:dropDownSpinnerStyle">@style/dropDownSpinnerStyle</item>
+
 
         <!--窗口进入和退出动画-->
         <item name="android:windowAnimationStyle">@style/activity_right_fade_in_out</item>
@@ -74,7 +76,9 @@
     <style name="M_Widget_ProgressBar_Horizontal">
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/mfh_progress_horizontal</item>
-        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:indeterminateDrawable">
+            @android:drawable/progress_indeterminate_horizontal
+        </item>
         <item name="android:minHeight">20dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>

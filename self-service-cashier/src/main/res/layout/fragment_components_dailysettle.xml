@@ -54,7 +54,7 @@
                 android:gravity="center_vertical"
                 android:text="日结时间："/>
             <!--交班时间-->
-            <com.mfh.framework.uikit.compound.OptionalLabel
+            <com.bingshanguxue.vector_uikit.OptionalLabel
                 android:id="@+id/label_date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

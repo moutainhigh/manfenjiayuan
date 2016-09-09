@@ -1,59 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="MfhAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!--<item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>-->
-        <!--<item name="actionBarWidgetTheme">@null</item>-->
-        <!--<item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>-->
-
-        <!--&lt;!&ndash; Panel attributes &ndash;&gt;-->
-        <!--<item name="listChoiceBackgroundIndicator">@drawable/abc_list_selector_holo_dark</item>-->
-
-        <!-- Customize your theme here. -->
-        <!--   your app branding color for the app bar -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!--   theme UI controls like checkboxes and text fields e.g. FloatActionButton -->
-        <item name="colorAccent">@color/colorAccent</item>
-        <!-- Title Text Color -->
-        <item name="android:textColorPrimary">@color/material_white</item>
-        <!-- color of the menu overflow icon (three vertical dots) -->
-        <item name="android:textColorSecondary">@color/material_white</item>
-
-        <item name="android:editTextBackground">@drawable/mfhtheme_edit_text_holo_light</item>
-        <item name="android:textSelectHandleLeft">@drawable/mfhtheme_text_select_handle_left</item>
-        <item name="android:textSelectHandleRight">@drawable/mfhtheme_text_select_handle_right</item>
-        <item name="android:textSelectHandle">@drawable/mfhtheme_text_select_handle_middle</item>
-        <item name="android:textCursorDrawable">@drawable/mfhtheme_text_cursor_drawable</item>
-        <item name="android:dropDownSpinnerStyle">@style/dropDownSpinnerStyle</item>
-
-        <item name="android:listChoiceBackgroundIndicator">
-            @drawable/mfhtheme_list_selector_holo_light
-        </item>
-
-        <item name="android:fastScrollThumbDrawable">@drawable/mfhtheme_fastscroll_thumb_holo</item>
-
-        <item name="android:textSize">16sp</item>
-        <item name="android:actionBarSize">48dp</item>
-        <item name="android:actionBarTabStyle">@style/ActionBarStyle.Tab</item>
-        <item name="android:actionBarTabBarStyle">@style/ActionBarStyle.TabBar</item>
-        <item name="android:actionBarTabTextStyle">@style/ActionBarStyle.TabText</item>
-        <item name="android:buttonStyle">@style/ButtonStyle</item>
-
-        <!--RecyclerView分割线-->
-        <item name="itemdecoration_line">@drawable/listdivider_horizontal</item>
-
-        <!--<item name="android:colorControlNormal">@color/mf_colorPrimary</item>-->
-        <!--<item name="android:colorControlActivated">@color/mf_colorPrimary</item>-->
-        <!--<item name="android:colorControlHighlight">@color/mf_colorPrimary</item>-->
-    </style>
-
-    <!-- Base application theme. -->
-
-
-
     <style name="dropDownSpinnerStyle" parent="Widget.AppCompat.Spinner">
         <!--<item name="android:background">@drawable/abc_spinner_mtrl_am_alpha</item>-->
         <!--<item name="android:popupBackground">@drawable/abc_popup_background_mtrl_mult</item>-->

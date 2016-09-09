@@ -27,7 +27,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
-import com.mfh.framework.uikit.compound.OptionalLabel;
+import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.framework.api.constant.PriceType;

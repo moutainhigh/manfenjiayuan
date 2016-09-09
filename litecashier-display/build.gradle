@@ -117,7 +117,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile rootProject.ext.dependencies["eventbus"]
-    compile rootProject.ext.dependencies["bugly"]
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile project(':mfh-framework-all')
     compile project(':mfh-framework-android')

@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.compound;
+package com.bingshanguxue.vector_uikit;
 
 
 import android.content.Context;
@@ -11,13 +11,12 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mfh.framework.R;
 
 
 /**
  * 复合控件－－（输入框 + 按键）
  * 支持自定义属性，可以直接在xml文件中配置。
- * * <declare-styleable name="EditQueryView">
+ * * <declare-styleable name="OptionalLabel">
  *     <attr name="editQueryView_inputText" format="string" />
  *     <attr name="editQueryView_inputTextColor" format="color" />
  *     <attr name="editQueryView_inputTextSize" format="dimension" />

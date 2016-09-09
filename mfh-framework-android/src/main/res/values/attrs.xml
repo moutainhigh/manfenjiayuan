@@ -49,19 +49,7 @@
         <attr name="bottomTextColor" format="reference|color"/>
         <attr name="bottomTextSize" format="dimension"/>
     </declare-styleable>
-    <declare-styleable name="OptionalLabel">
-        <attr name="mLabelView_title" format="string"/>
-        <attr name="mLabelView_titleWidth" format="dimension"/>
 
-        <attr name="mLabelView_inputTextColor" format="color"/>
-        <attr name="mLabelView_inputTextSize" format="dimension"/>
-        <attr name="mLabelView_inputTextColorHint" format="color"/>
-        <attr name="mLabelView_inputHint" format="string"/>
-
-        <attr name="mLabelView_rightImageButtonEnabled" format="boolean"/>
-        <attr name="mLabelView_rightButtonWidth" format="dimension"/>
-        <attr name="mLabelView_rightImageButtonSrc" format="reference"/>
-    </declare-styleable>
     <declare-styleable name="NaviAddressView">
         <attr name="text"/>
         <attr name="textColor"/>

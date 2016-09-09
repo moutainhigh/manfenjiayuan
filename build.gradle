@@ -18,7 +18,7 @@ buildscript {
      * JCenter as the repository Gradle should use to look for its dependencies.
      */
     repositories {
-//        mavenCentral()
+        mavenCentral()
 //        maven {
 //            url "https://plugins.gradle.org/m2/"
 //        }

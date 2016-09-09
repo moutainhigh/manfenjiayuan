@@ -29,7 +29,7 @@
             android:gravity="center"
             android:padding="@dimen/spacing_micro">
             <!--批发商-->
-            <com.mfh.framework.uikit.compound.OptionalLabel
+            <com.bingshanguxue.vector_uikit.OptionalLabel
                 android:id="@+id/label_company"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
