@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
@@ -18,13 +19,13 @@ import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
-import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.io.IOException;
@@ -34,6 +35,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
@@ -48,7 +51,9 @@ import de.greenrobot.event.EventBus;
 public abstract class CashierActivity extends BaseActivity {
     DispQueueThread DispQueue;//刷新显示线程
     private SerialPortFinder mSerialPortFinder;//串口设备搜索
-    protected SerialControl comDisplay, comPrint, comScale, comAhScale;//串口
+    protected SerialControl comDisplay, comPrint, comSmscale, comAhScale;//串口
+    private long lastAhscaleTriggle = System.currentTimeMillis();
+    private long lastSmscaleTriggle = System.currentTimeMillis();
 
     // 语音合成对象
     private SpeechSynthesizer mTts;
@@ -62,7 +67,6 @@ public abstract class CashierActivity extends BaseActivity {
     private int mPercentForPlaying = 0;
     // 引擎类型
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +83,8 @@ public abstract class CashierActivity extends BaseActivity {
         mCloudVoicersValue = getResources().getStringArray(R.array.voicer_cloud_values);
 
         mEngineType = SpeechConstant.TYPE_CLOUD;
+
+        startTimer();
     }
 
     @Override
@@ -116,12 +122,14 @@ public abstract class CashierActivity extends BaseActivity {
         //关闭串口
         CloseComPort(comDisplay);
         CloseComPort(comPrint);
-        CloseComPort(comScale);
+        CloseComPort(comSmscale);
         CloseComPort(comAhScale);
 
         mTts.stopSpeaking();
         // 退出时释放连接
         mTts.destroy();
+
+        cancelTimer();
     }
 
     @Override
@@ -130,7 +138,7 @@ public abstract class CashierActivity extends BaseActivity {
 //        ZLogger.d("onConfigurationChanged" + newConfig.toString());
         CloseComPort(comDisplay);
         CloseComPort(comPrint);
-        CloseComPort(comScale);
+        CloseComPort(comSmscale);
         CloseComPort(comAhScale);
 
         setControls();
@@ -198,25 +206,58 @@ public abstract class CashierActivity extends BaseActivity {
             return;
         }
 
-//        if (!BizConfig.RELEASE){
-//            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
-//                    comBean.sRecTime, port,
-//                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
-//            ZLogger.d("COM RECV:" + sMsg);
-//        }
+        if (!BizConfig.RELEASE){
+            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
+                    comBean.sRecTime, port,
+                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
+            ZLogger.d("COM RECV:" + sMsg);
+        }
 
-        if (port.equals(AHScaleAgent.getPort()) && AHScaleAgent.isEnabled()) {
-            Double netWeight = AHScaleAgent.parseACSP215(comBean.bRec);
-            if (netWeight != null){
-                GlobalInstance.getInstance().setNetWeight(netWeight);
+        Long rightNow = System.currentTimeMillis();
+
+        if (AHScaleAgent.isEnabled()){
+            if (port.equals(AHScaleAgent.getPort())) {
+                Double netWeight = AHScaleAgent.parseACSP215(comBean.bRec);
+                if (netWeight != null){
+                    GlobalInstance.getInstance().setNetWeight(netWeight);
+                }
+                lastAhscaleTriggle = rightNow;
+                return;
+            }
+
+            Long interval = rightNow - lastAhscaleTriggle;
+            ZLogger.d(String.format("interval＝%d, rightNow=%d, lastAhscaleTriggle=%d",
+                    interval, rightNow, lastAhscaleTriggle));
+            if (interval > 2 * MINUTE){
+                ZLogger.df(String.format("(%s)超过1分钟没有收到串口消息，自动重新打开串口",
+                        AHScaleAgent.getPort()));
+                CloseComPort(comAhScale);
+                comAhScale = new SerialControl(AHScaleAgent.getPort(), AHScaleAgent.getBaudrate());
+                OpenComPort(comAhScale);
+                lastAhscaleTriggle = rightNow;
             }
         }
-        else if (port.equals(SMScaleAgent.getPort()) && SMScaleAgent.isEnabled()) {
-            DS781A ds781A = SMScaleAgent.parseData(comBean.bRec);
-            if (ds781A != null) {
-                GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
+
+        if (SMScaleAgent.isEnabled()){
+            if (port.equals(SMScaleAgent.getPort())) {
+                DS781A ds781A = SMScaleAgent.parseData(comBean.bRec);
+                if (ds781A != null) {
+                    GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
+                }
+                lastSmscaleTriggle = rightNow;
+                return;
+            }
+
+            Long interval = rightNow - lastSmscaleTriggle;
+            if (interval > 2 * MINUTE){
+                ZLogger.df(String.format("(%s)超过1分钟没有收到串口消息，自动重新打开串口", SMScaleAgent.getPort()));
+                CloseComPort(comSmscale);
+                comSmscale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
+                OpenComPort(comSmscale);
+                lastSmscaleTriggle = rightNow;
             }
         }
+
     }
 
     /**
@@ -225,7 +266,7 @@ public abstract class CashierActivity extends BaseActivity {
     private void initCOM() {
         comDisplay = new SerialControl(PoslabAgent.getPort(), PoslabAgent.getBaudrate());
         comPrint = new SerialControl(SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate());
-        comScale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
+        comSmscale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
         comAhScale = new SerialControl(AHScaleAgent.getPort(), AHScaleAgent.getBaudrate());
 
         DispQueue = new DispQueueThread();
@@ -248,6 +289,7 @@ public abstract class CashierActivity extends BaseActivity {
                     return;
                 }
 
+                ZLogger.df("准备打开串口:" + serialHelper.getPort());
                 serialHelper.open();
                 ZLogger.df("打开串口成功:" + serialHelper.getPort());
             } catch (SecurityException e) {
@@ -336,7 +378,7 @@ public abstract class CashierActivity extends BaseActivity {
             OpenComPort(comDisplay);
         }
         if (devicesPath.contains(SMScaleAgent.getPort()) && SMScaleAgent.isEnabled()) {
-            OpenComPort(comScale);
+            OpenComPort(comSmscale);
         }
         if (devicesPath.contains(AHScaleAgent.getPort()) && AHScaleAgent.isEnabled()){
             OpenComPort(comAhScale);
@@ -370,11 +412,11 @@ public abstract class CashierActivity extends BaseActivity {
             try {
                 //清空数据
                 GlobalInstance.getInstance().setNetWeight(0D);
-                CloseComPort(comScale);
+                CloseComPort(comSmscale);
 
                 if (SMScaleAgent.isEnabled()){
-                    comScale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
-                    OpenComPort(comScale);
+                    comSmscale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
+                    OpenComPort(comSmscale);
                 }
             } catch (Exception e) {
                 ZLogger.ef(e.toString());
@@ -608,5 +650,64 @@ public abstract class CashierActivity extends BaseActivity {
 //                            }
 //                        }).show();
 //    }
+
+
+    private static final int SECOND = 1000;
+    private static final int MINUTE = 60 * 1000;
+    private static final int HOUR = 60 * 60 * 1000;
+    private static Timer comMonitorTimer = new Timer();
+    private TimerTask comMonitorTimerTask = new TimerTask() {
+        @Override
+        public void run() {
+            Long rightNow = System.currentTimeMillis();
+            if (AHScaleAgent.isEnabled()){
+                Long interval1 = rightNow - lastAhscaleTriggle;
+                if (interval1 > 1000 * 60){
+                    ZLogger.df(String.format("(%s)超过1分钟没有收到串口消息，自动重新打开串口", AHScaleAgent.getPort()));
+                    CloseComPort(comAhScale);
+                    comAhScale = new SerialControl(AHScaleAgent.getPort(), AHScaleAgent.getBaudrate());
+                    OpenComPort(comAhScale);
+                    lastAhscaleTriggle = rightNow;
+                }
+            }
+
+            if (SMScaleAgent.isEnabled()){
+                Long interval = rightNow - lastSmscaleTriggle;
+                if (interval > 1000 * 60){
+                    ZLogger.df(String.format("(%s)超过1分钟没有收到串口消息，自动重新打开串口", SMScaleAgent.getPort()));
+                    CloseComPort(comSmscale);
+                    comSmscale = new SerialControl(SMScaleAgent.getPort(), SMScaleAgent.getBaudrate());
+                    OpenComPort(comSmscale);
+                    lastSmscaleTriggle = rightNow;
+                }
+            }
+        }
+    };
+
+    /**
+     * 关闭定时器
+     * */
+    private void startTimer(){
+        cancelTimer();
+        if (comMonitorTimer == null) {
+            comMonitorTimer = new Timer();
+        }
+
+        if (BizConfig.RELEASE) {
+            comMonitorTimer.schedule(comMonitorTimerTask, 10 * SECOND, 5 * MINUTE);
+        } else {
+            comMonitorTimer.schedule(comMonitorTimerTask, 10 * SECOND, 60 * SECOND);
+        }
+    }
+
+    /**
+     * 取消定时器
+     * */
+    private void cancelTimer(){
+        if (comMonitorTimer != null) {
+            comMonitorTimer.cancel();
+        }
+        comMonitorTimer = null;
+    }
 
 }

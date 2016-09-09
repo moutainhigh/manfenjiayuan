@@ -215,7 +215,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         ValidateManager.get().batchValidate();
 
         //打开秤的串口
-        OpenComPort(comScale);
+//        OpenComPort(comSmscale);
 
         cloudSpeak("欢迎使用米西厨房智能收银系统");
 
