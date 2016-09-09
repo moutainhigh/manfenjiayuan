@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class InvSendIoInspectFragment extends PDAScanFragment
     public Toolbar mToolbar;
     //    @Bind(R.id.scanBar)
     public ScanBar mScanBar;
+    private AppCompatCheckBox queryCheckbox;
     //    @Bind(R.id.label_barcode)
     TextLabelView labelBarcode;
     //    @Bind(R.id.label_productName)
@@ -97,7 +99,7 @@ public class InvSendIoInspectFragment extends PDAScanFragment
         super.initViews(rootView);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
@@ -250,7 +252,7 @@ public class InvSendIoInspectFragment extends PDAScanFragment
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, false);
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, queryCheckbox.isChecked());
     }
 
 

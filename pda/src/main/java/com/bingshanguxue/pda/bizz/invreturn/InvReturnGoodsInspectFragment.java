@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
     public Toolbar mToolbar;
     //    @Bind(R.id.scanBar)
     public ScanBar mScanBar;
+    private AppCompatCheckBox queryCheckbox;
     TextLabelView labelBarcode;
     TextLabelView labelName;
     TextLabelView labelTotalcount;
@@ -93,7 +95,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
         super.initViews(rootView);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelTotalcount = (TextLabelView) rootView.findViewById(R.id.label_totalcount);
@@ -242,7 +244,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, false);
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, queryCheckbox.isChecked());
     }
 
     public void submit() {

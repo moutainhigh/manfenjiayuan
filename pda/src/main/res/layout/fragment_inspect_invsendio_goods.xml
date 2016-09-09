@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/appbar"
-        layout="@layout/appbar_scan_barcode"/>
+        layout="@layout/appbar_scan_barcode2"/>
 
 
     <android.support.v4.widget.NestedScrollView
