@@ -53,4 +53,42 @@ public class ScProductPriceMode {
 
         ScProductPriceApi.findProductByFrontCatalog(frontCataLogId, pageInfo, queryRsCallBack);
     }
+
+    /**
+     * 查询平台商品档案
+     * */
+    public void findProductSku(String barcode, PageInfo pageInfo,
+                               final OnPageModeListener<ProductSku> listener) {
+        if (listener != null) {
+            listener.onProcess();
+        }
+
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<ProductSku>(pageInfo) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<ProductSku> rs) {
+                        //此处在主线程中执行。
+                        List<ProductSku> entityList = new ArrayList<>();
+                        if (rs != null) {
+                            for (EntityWrapper<ProductSku> wrapper : rs.getRowDatas()) {
+                                entityList.add(wrapper.getBean());
+                            }
+                        }
+                        if (listener != null) {
+                            listener.onSuccess(pageInfo, entityList);
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.d("加载前台类目商品失败:" + errMsg);
+                        if (listener != null) {
+                            listener.onError(errMsg);
+                        }
+                    }
+                }, ProductSku.class, MfhApplication.getAppContext());
+
+        ScProductPriceApi.findProductSku(barcode, queryRsCallBack);
+    }
 }

@@ -21,6 +21,12 @@ public class ScProductPriceApi {
      * */
     public final static String URL_FINDPUBSKUS_BYFRONTCATALOG= URL_ANON_SC_PRODUCTPRICE + "findPubSkusByFrontCatalog";
 
+    /**
+     * /anon/sc/productPrice/findProductSku?barcode
+     * 根据条码查询平台商品档案
+     * */
+    public final static String URL_FIND_PRODUCTSKU= URL_ANON_SC_PRODUCTPRICE + "findProductSku";
+
 
     /**
      * 根据前台类目查找有效的商品列表
@@ -47,6 +53,19 @@ public class ScProductPriceApi {
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_FINDPUBSKUS_BYFRONTCATALOG, params, responseCallback);
+    }
+
+    /**
+     * 根据条码查询平台商品档案
+     * @param barcode 商品条码
+     * @param priceMask 从信息模型上，一个productId其实可能对应多个proSkuId，
+     *                  但在你pos这边应该不存在这种情况，你可以固定写死priceMask=0
+     */
+    public static void findProductSku(String barcode, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("barcode", barcode);
+//        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.getHttp(true).post(URL_FIND_PRODUCTSKU, params, responseCallback);
     }
 
 }

@@ -55,6 +55,7 @@ public class ScGoodsSkuApi {
 
     /**
      * 店家商品建档入库
+     * /scGoodsSku/storeIn?
      */
     public final static String URL_SCGOODSSKU_STOREIN = URL_SCGOODSSKU + "storeIn";
 

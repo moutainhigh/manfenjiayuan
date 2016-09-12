@@ -24,9 +24,10 @@ public class ScChainGoodsSkuApi {
     /**
      *  /scChainGoodsSku/getTenantSkuMust?barcode=&tenantId=134651
      * 根据条码查找商品档案，没有则从产品中心查找<BR>
-     * {@link #URL_SCCHAINGOODSSKU_GETTENANTSKUMUST}
+     * 需要登录
+     * {@link #URL_GET_TENANTSKUMUST}
      * */
-    public final static String URL_SCCHAINGOODSSKU_GETTENANTSKUMUST = URL_SCCHAINGOODSSKU + "getTenantSkuMust";
+    public final static String URL_GET_TENANTSKUMUST = URL_SCCHAINGOODSSKU + "getTenantSkuMust";
 
 
     /**

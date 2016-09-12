@@ -72,7 +72,7 @@ public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
 
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCCHAINGOODSSKU_GETTENANTSKUMUST, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_GET_TENANTSKUMUST, params, responseCallback);
     }
 
     /**

@@ -113,7 +113,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
      *                skuInfo为店家商品sku信息(costPrice为售价，buyPrice为采购价，quantity为入库数量,lowerLimit为最低安全库存);
      *                mfhSupply为是否需要满分配货(0-不需要，1-需要)，mfhPrice为满分价。
      */
-    public static void scGoodsSkuStockIn(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
+    public static void storeIn(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonStr);
 //        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
