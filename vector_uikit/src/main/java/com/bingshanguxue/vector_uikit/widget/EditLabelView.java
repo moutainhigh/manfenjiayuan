@@ -1,4 +1,4 @@
-package com.bingshanguxue.pda.widget;
+package com.bingshanguxue.vector_uikit.widget;
 
 
 import android.content.Context;
@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bingshanguxue.pda.R;
 import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -53,7 +53,7 @@ public class EditLabelView extends LinearLayout {
     public EditLabelView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        View rootView = View.inflate(getContext(), R.layout.itemview_edit, this);
+        View rootView = View.inflate(getContext(), R.layout.widget_editlabelview, this);
         tvStartText = (TextView) rootView.findViewById(R.id.tv_lefttext);
         etInput = (EditText) rootView.findViewById(R.id.et_content);
         tvEndText = (TextView) rootView.findViewById(R.id.tv_endText);
@@ -62,11 +62,11 @@ public class EditLabelView extends LinearLayout {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditLabelView);
             tvStartText.setText(ta.getString(R.styleable.EditLabelView_startText));
             //像素
-            int textSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextSize, 12);
+            int textSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextSize, 16);
             int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
-            int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 12);
+            int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 16);
             int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);
-            int endTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextSize, 12);
+            int endTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextSize, 16);
             int endTextSizeInSp = DensityUtil.px2sp(getContext(), endTextSizeInPx);
             //px
             int startTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextWidth, 80);//px
@@ -76,7 +76,7 @@ public class EditLabelView extends LinearLayout {
 //                    startTextWidth));
             tvStartText.setTextSize(textSizeInSp);
 //        tvStartText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
-            tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0));
+            tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0x59000000));
 
             ViewGroup.LayoutParams stLayoutParams = tvStartText.getLayoutParams();
             stLayoutParams.width = startTextWidth;
@@ -84,9 +84,9 @@ public class EditLabelView extends LinearLayout {
 
             etInput.setHint(ta.getString(R.styleable.EditLabelView_editTextHint));
             etInput.setTextSize(editTextSizeInSp);
-            etInput.setTextColor(ta.getColor(R.styleable.EditLabelView_editTextColor, 0));
-            etInput.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editTextColorHint, 0));
-            int inputType = ta.getInteger(R.styleable.EditLabelView_editInputType, 0);
+            etInput.setTextColor(ta.getColor(R.styleable.EditLabelView_editTextColor, 0xFF000000));
+            etInput.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editTextColorHint, 0x26000000));
+            int inputType = ta.getInteger(R.styleable.EditLabelView_editInputType, EditInputType.TEXT);
             if (inputType == EditInputType.BARCODE) {
                 etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
             }
@@ -106,7 +106,7 @@ public class EditLabelView extends LinearLayout {
             }
             tvEndText.setText(ta.getString(R.styleable.EditLabelView_endText));
             tvEndText.setTextSize(endTextSizeInSp);
-            tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0));
+            tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0xFF000000));
 
             ta.recycle();
         } catch (Exception e) {
@@ -149,6 +149,8 @@ public class EditLabelView extends LinearLayout {
                 if (keyCode == KeyEvent.KEYCODE_ENTER
                         || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
+                        DeviceUtils.hideSoftInput(getContext(), v);
+
                         if (onViewListener != null) {
                             onViewListener.onKeycodeEnterClick(etInput.getText().toString());
                         }

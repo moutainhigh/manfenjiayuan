@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:padding="4dp">
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              android:padding="4dp">
 
     <TextView
         android:id="@+id/tv_lefttext"
-        style="@style/mfh_textview_text"
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:gravity="end|center_vertical"
         android:singleLine="true"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/black_35"
+        android:textSize="16sp"/>
 
     <EditText
         android:id="@+id/et_content"
-        style="@style/mf_edittext_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/spacing_double"
         android:layout_weight="1"
-        android:layout_marginStart="16dp"
+        android:background="?android:editTextBackground"
         android:gravity="center_vertical"
         android:hint=""
         android:paddingEnd="@dimen/spacing_normal"
         android:paddingStart="@dimen/spacing_normal"
         android:singleLine="true"
-        android:textSize="16sp" />
+        android:textColor="@color/material_black"
+        android:textColorHint="@color/material_black_hint"
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/tv_endText"
-        style="@style/mfh_textview_text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="start|center_vertical"
         android:maxWidth="100dp"
         android:singleLine="true"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/material_black"
+        android:textSize="16sp"/>
 
 </LinearLayout>
