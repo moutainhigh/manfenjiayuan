@@ -31,7 +31,7 @@ public class EditLabelView extends LinearLayout {
     private EditText etInput;
     private TextView tvEndText;
 
-    private boolean softKeyboardEnabled;//是否支持软键盘
+    private boolean softKeyboardEnabled = false;//是否支持软键盘,默认不支持软键盘
     private int[] interceptKeyCodes;
 
     public interface OnViewListener {
@@ -99,6 +99,7 @@ public class EditLabelView extends LinearLayout {
             }
 //            ZLogger.d(String.format("inputType=%d", etInput.getInputType()));
 
+            softKeyboardEnabled = ta.getBoolean(R.styleable.EditLabelView_softKeyboardEnabled, false);
             if (ta.getBoolean(R.styleable.EditLabelView_endTextVisible, false)) {
                 tvEndText.setVisibility(VISIBLE);
             } else {
@@ -192,6 +193,10 @@ public class EditLabelView extends LinearLayout {
         this.etInput.setEnabled(enabled);
     }
 
+    public void setStartText(String text) {
+        tvStartText.setText(text);
+    }
+
     public void setInput(String text) {
         this.etInput.setText(text);
     }
@@ -201,7 +206,7 @@ public class EditLabelView extends LinearLayout {
     }
 
     public void setEndText(String text) {
-        tvEndText.setText(text);
+        this.tvEndText.setText(text);
     }
 
     public boolean isSoftKeyboardEnabled() {
