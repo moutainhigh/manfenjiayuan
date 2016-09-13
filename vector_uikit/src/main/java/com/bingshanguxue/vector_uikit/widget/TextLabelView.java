@@ -68,7 +68,7 @@ public class TextLabelView extends LinearLayout {
 	}
 
 	public String getEndText(){
-		return this.tvEndText.toString();
+		return this.tvEndText.getText().toString();
 	}
 
 	public void setTvSubTitle(String text) {
