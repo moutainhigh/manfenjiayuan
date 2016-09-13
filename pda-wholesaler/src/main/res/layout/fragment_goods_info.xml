@@ -18,7 +18,7 @@
 
             <!--内容区-->
             <!--商品名称-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_productName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 app:startText="商品名称:"
                 app:startTextWidth="130dp"/>
             <!--条码-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_barcodee"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 app:startText="条码:"
                 app:startTextWidth="130dp"/>
             <!--零售价（可编辑）-->
-            <com.bingshanguxue.pda.widget.EditLabelView
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_costPrice"
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                 app:startText="批发价:"
                 app:startTextWidth="130dp"/>
             <!--库存-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_quantity"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                 app:startText="库存:"
                 app:startTextWidth="130dp"/>
             <!--排面库存（可编辑）-->
-            <com.bingshanguxue.pda.widget.EditLabelView
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_rackno"
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"

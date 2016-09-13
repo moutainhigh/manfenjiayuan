@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.bizz.goods.ScGoodsSkuEvent;
-import com.bingshanguxue.pda.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.TextLabelView;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_wholesaler.R;

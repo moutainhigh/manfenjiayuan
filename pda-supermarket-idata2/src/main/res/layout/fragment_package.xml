@@ -20,14 +20,14 @@
             android:orientation="vertical">
 
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_receiveName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="收件人:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_receivePhone"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 app:startText="手机号:"/>
 
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_itemTypeName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -43,21 +43,21 @@
                 app:startText="包裹类型:"/>
 
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_createdDate"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="入库时间:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_transportName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="物流公司:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_transHumanInfo"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"

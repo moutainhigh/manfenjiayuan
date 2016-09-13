@@ -23,35 +23,35 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.bingshanguxue.pda.widget.TextLabelView
+                <com.bingshanguxue.vector_uikit.widget.TextLabelView
                     android:id="@+id/label_barcodee"
                     style="@style/mfh_textlabelview"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     app:startText="商品条码:"/>
 
-                <com.bingshanguxue.pda.widget.TextLabelView
+                <com.bingshanguxue.vector_uikit.widget.TextLabelView
                     android:id="@+id/label_productName"
                     style="@style/mfh_textlabelview"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     app:startText="商品名称:"/>
 
-                <com.bingshanguxue.pda.widget.TextLabelView
+                <com.bingshanguxue.vector_uikit.widget.TextLabelView
                     android:id="@+id/label_costPrice"
                     style="@style/mfh_textlabelview"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     app:startText="零售价:"/>
 
-                <com.bingshanguxue.pda.widget.TextLabelView
+                <com.bingshanguxue.vector_uikit.widget.TextLabelView
                     android:id="@+id/label_quantity"
                     style="@style/mfh_textlabelview"
                     android:layout_width="match_parent"
                     android:layout_height="44dp"
                     app:startText="库存:"/>
 
-                <com.bingshanguxue.pda.widget.EditLabelView
+                <com.bingshanguxue.vector_uikit.widget.EditLabelView
                     android:id="@+id/label_tagno"
                     style="@style/mfh_editlabelview"
                     android:layout_width="match_parent"

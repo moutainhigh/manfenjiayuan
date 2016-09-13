@@ -21,35 +21,47 @@
             android:orientation="vertical">
 
             <!--内容区-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_barcode"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="商品条码:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_productName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="商品名称:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_send_price"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="发货价格:"/>
+                app:startText="单据价格:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_send_quantity"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="单据数量:"/>
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
+                android:id="@+id/label_singleCostPrice"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:startText="批发价:"/>
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
+                android:id="@+id/label_hintPrice"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:startText="建议零售价:"/>
 
-            <com.bingshanguxue.pda.widget.EditLabelView
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_receive_quantity"
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
@@ -59,7 +71,7 @@
                 app:editInputType="numberDecimal"
                 app:startText="签收数量:"/>
 
-            <com.bingshanguxue.pda.widget.EditLabelView
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_receive_amount"
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
@@ -69,7 +81,7 @@
                 app:endTextVisible="true"
                 app:startText="收货金额:"/>
 
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_receive_price"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"

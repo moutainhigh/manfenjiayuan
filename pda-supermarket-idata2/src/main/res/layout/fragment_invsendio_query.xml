@@ -20,7 +20,7 @@
 
             <!--内容区-->
             <!--单据编号-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_barcode"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 app:startText="单据编号:"
                 app:startTextWidth="130dp"/>
             <!--单据名称-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_orderName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 app:startText="单据编号:"
                 app:startTextWidth="130dp"/>
             <!--订单金额-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_totalFee"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 app:startText="订单金额:"
                 app:startTextWidth="130dp"/>
             <!--商品总数-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_totalCount"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                 app:startText="商品总数:"
                 app:startTextWidth="130dp"/>
             <!--发货方-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_sendCompanyName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 app:startText="发货方:"
                 app:startTextWidth="130dp"/>
             <!--发货方-->
-            <com.bingshanguxue.pda.widget.TextLabelView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_status"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
