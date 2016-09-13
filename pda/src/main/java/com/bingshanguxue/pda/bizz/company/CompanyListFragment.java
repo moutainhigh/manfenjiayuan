@@ -69,7 +69,7 @@ public class CompanyListFragment extends BaseListFragment<CompanyInfo>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        MAX_SYNC_PAGESIZE = 30;
         mInvCompanyPresenter = new CompanyInfoPresenter(this);
     }
 

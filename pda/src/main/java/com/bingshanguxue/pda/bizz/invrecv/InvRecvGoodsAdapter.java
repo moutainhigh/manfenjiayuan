@@ -59,11 +59,11 @@ public class InvRecvGoodsAdapter extends SwipAdapter<InvRecvGoodsEntity,
             holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
             holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
             holder.tvQuantity.setText(MUtils.formatDouble("签收数量:", "",
-                    entity.getReceiveQuantity(), "无", "/", entity.getUnitSpec()));
+                    entity.getReceiveQuantity(), "无", "/", entity.getUnit()));
             holder.tvAmount.setText(MUtils.formatDouble("实付金额:", "",
                     entity.getReceiveAmount(), "无", null, null));
             holder.tvPrice.setText(MUtils.formatDouble("收货价格:", "",
-                    entity.getReceivePrice(), "无", "/", entity.getUnitSpec()));
+                    entity.getReceivePrice(), "无", "/", entity.getUnit()));
 
             if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_OK) {
                 holder.tvQuantity.setTextColor(Color.parseColor("#2E7D32"));

@@ -148,33 +148,24 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
             entity.setBarcode(goods.getBarcode());
         }
-
         entity.setUpdatedDate(new Date());
-        entity.setProSkuId(goods.getProSkuId());
-        entity.setChainSkuId(goods.getChainSkuId());
         entity.setProductName(goods.getProductName());
-        entity.setUnitSpec(goods.getUnit());
+        entity.setUnit(goods.getUnit());
 
-        entity.setSendPrice(goods.getPrice());
+        entity.setReceiptPrice(goods.getPrice());
+        // 判断如果采购单位&采购计价类型 和销售单位&销售计价类型不一致，则需要重新输入商品数量
         if (ObjectsCompact.equals(goods.getUnit(), goods.getBuyUnit()) &&
                 ObjectsCompact.equals(goods.getPriceType(), goods.getBuyPriceType())) {
-            entity.setSendQuantity(goods.getAskTotalCount());
+            entity.setReceiptQuantity(goods.getAskTotalCount());
         } else {
-            entity.setSendQuantity(0D);
+            entity.setReceiptQuantity(null);
         }
-        if (entity.getSendQuantity() == null || entity.getSendPrice() == null) {
-            entity.setSendAmount(0D);
-        } else {
-            entity.setSendAmount(entity.getSendPrice() * entity.getSendQuantity());
-        }
-        entity.setReceiveQuantity(entity.getSendQuantity());
-        entity.setReceiveAmount(entity.getSendAmount());
-        if (entity.getReceiveQuantity() == 0) {
-            entity.setReceivePrice(0D);
-        } else {
-            entity.setReceivePrice(entity.getReceiveAmount() / entity.getReceiveQuantity());
-        }
+        entity.setReceiveQuantity(entity.getReceiptQuantity());
+        entity.setReceivePrice(entity.getReceiptPrice());//默认价格为发货价格
+        entity.setReceiveAmount(entity.getReceiveQuantity() * entity.getReceivePrice());
 
+        entity.setProSkuId(goods.getProSkuId());
+        entity.setChainSkuId(goods.getChainSkuId());
         entity.setProviderId(goods.getProviderId());
         entity.setIsPrivate(goods.getIsPrivate());
 
@@ -210,20 +201,15 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
         entity.setProSkuId(goods.getProSkuId());
         entity.setChainSkuId(goods.getChainSkuId());
         entity.setProductName(goods.getProductName());
-        entity.setUnitSpec(goods.getUnitSpec());
+        entity.setUnit(goods.getUnitSpec());
         entity.setProviderId(goods.getProviderId());
         entity.setIsPrivate(goods.getIsPrivate());
 
-        entity.setSendQuantity(goods.getQuantityCheck());
-        entity.setSendAmount(goods.getAmount());
-        entity.setSendPrice(goods.getPrice());
-        entity.setReceiveQuantity(entity.getSendQuantity());
-        entity.setReceiveAmount(entity.getSendAmount());
-        if (entity.getReceiveQuantity() == 0) {
-            entity.setReceivePrice(0D);
-        } else {
-            entity.setReceivePrice(entity.getReceiveAmount() / entity.getReceiveQuantity());
-        }
+        entity.setReceiptQuantity(goods.getQuantityCheck());
+        entity.setReceiptPrice(goods.getPrice());
+        entity.setReceiveQuantity(entity.getReceiptQuantity());
+        entity.setReceivePrice(entity.getReceiptPrice());
+        entity.setReceiveAmount(entity.getReceiveQuantity() * entity.getReceivePrice());
         entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
 
         saveOrUpdate(entity);
@@ -258,7 +244,7 @@ public class InvRecvGoodsService extends BaseService<InvRecvGoodsEntity, String,
             entity.setReceivePrice(entity.getReceiveAmount() / entity.getReceiveQuantity());
         }
 
-        if (ObjectsCompact.equals(entity.getSendQuantity(), quantity)) {
+        if (ObjectsCompact.equals(entity.getReceiptQuantity(), quantity)) {
             entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_OK);
         } else {
             if (quantity == 0) {

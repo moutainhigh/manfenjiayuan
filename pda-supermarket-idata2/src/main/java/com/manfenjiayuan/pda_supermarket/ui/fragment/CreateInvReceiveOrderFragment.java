@@ -304,8 +304,6 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 //            showProgressDialog(ProgressDialog.STATUS_DONE, "加载发货单明细成功", true);
                         hideProgressDialog();
                     }
-
-
                 });
     }
 
@@ -371,8 +369,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                 continue;
             }
             JSONObject item = new JSONObject();
-            item.put("chainSkuId", goods.getChainSkuId());//查询供应链
-            item.put("proSkuId", goods.getProSkuId());
+            item.put("barcode", goods.getBarcode());
             String productName = goods.getProductName();
             // TODO: 6/10/16  商品名字太长，后台不允许提交,这里增加一层过滤
             if (!StringUtils.isEmpty(productName) && productName.length() > 10) {
@@ -383,16 +380,17 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
             item.put("quantityCheck", goods.getReceiveQuantity());
             item.put("price", goods.getReceivePrice());
             item.put("amount", goods.getReceiveAmount());
-            item.put("barcode", goods.getBarcode());
+            item.put("chainSkuId", goods.getChainSkuId());//查询供应链
+            item.put("proSkuId", goods.getProSkuId());
             item.put("providerId", goods.getProviderId());
-            item.put("isPrivate", goods.getIsPrivate());//（0：不是 1：是）
+            item.put("isPrivate", goods.getIsPrivate());
 
             itemsArray.add(item);
             amount += goods.getReceiveAmount();
         }
 
         final Double finalAmount = amount;
-        showConfirmDialog(String.format("总金额：%.2f \n请确认已经查验过所有商品。", amount),
+        showConfirmDialog(String.format("总金额：%.2f, \n请确认已经查验过所有商品。", amount),
                 "签收", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -571,6 +569,9 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_DISTRIBUTION_INSPECT);
         extras.putString(InvRecvInspectFragment.EXTRA_KEY_BARCODE, barcode);
+        if (companyInfo != null){
+            extras.putLong(InvRecvInspectFragment.EXTRA_KEY_TENANTID, companyInfo.getTenantId());
+        }
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);

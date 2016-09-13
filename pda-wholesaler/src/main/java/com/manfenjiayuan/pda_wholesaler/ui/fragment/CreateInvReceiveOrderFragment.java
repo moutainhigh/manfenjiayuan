@@ -313,7 +313,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         }
 
 //        final Double finalAmount = amount;
-        showConfirmDialog(String.format("总金额：%.2f \n请确认已经查验过所有商品。", amount),
+        showConfirmDialog(String.format("总金额：%.2f, \n请确认已经查验过所有商品。", amount),
                 "签收", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -425,7 +425,9 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FRAGMENT_TYPE_DISTRIBUTION_INSPECT);
         extras.putString(InvRecvInspectFragment.EXTRA_KEY_BARCODE, barcode);
-
+        if (companyInfo != null){
+            extras.putLong(InvRecvInspectFragment.EXTRA_KEY_TENANTID, companyInfo.getId());
+        }
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, ARCode.ARC_DISTRIBUTION_INSPECT);

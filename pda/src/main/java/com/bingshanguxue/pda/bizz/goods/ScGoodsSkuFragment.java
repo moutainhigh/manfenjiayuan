@@ -190,7 +190,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
             mActionDialog.setCancelable(false);
             mActionDialog.setCanceledOnTouchOutside(false);
         }
-        mActionDialog.init("无结果", String.format("%s 商品档案未在当前网点登记", barcode),
+        mActionDialog.init(barcode, "无结果，商品档案未在当前网点登记",
                 new ActionDialog.DialogClickListener() {
                     @Override
                     public void onAction1Click() {
@@ -239,8 +239,13 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     }
 
     public void onQueryError(String errorMsg) {
-        ZLogger.df(errorMsg);
-        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+        if (!StringUtils.isEmpty(errorMsg)){
+            ZLogger.df(errorMsg);
+            showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+        }
+        else{
+            hideProgressDialog();
+        }
         isAcceptBarcodeEnabled = true;
 
         refresh(null, false);

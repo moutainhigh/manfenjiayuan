@@ -17,15 +17,18 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
-import com.bingshanguxue.pda.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.pda.widget.ScanBar;
-import com.bingshanguxue.pda.widget.TextLabelView;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.presenter.ScProductPricePresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.view.IScProcuctPriceView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.anon.ProductSku;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -49,9 +52,11 @@ import rx.schedulers.Schedulers;
  * 商品配送－－验货
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoodsSkuView {
+public class InvRecvInspectFragment extends PDAScanFragment
+        implements IScProcuctPriceView, IChainGoodsSkuView {
 
     public static final String EXTRA_KEY_BARCODE = "barcode";
+    public static final String EXTRA_KEY_TENANTID = "tenantId";
 
     //    @BindView(R2.id.toolbar)
     Toolbar mToolbar;
@@ -67,6 +72,8 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
     TextLabelView labelSendPrice;
     //    @BindView(R2.id.label_send_quantity)
     TextLabelView labelSendQuantity;
+    TextLabelView labelSingleCostPrice;
+    TextLabelView labelHintPrice;
     //    @BindView(R2.id.label_receive_quantity)
     EditLabelView labelReceiveQuantity;
     //    @BindView(R2.id.label_receive_amount)
@@ -74,11 +81,13 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
     //    @BindView(R2.id.label_receive_price)
     TextLabelView labelReceivePrice;
 
-
     //    @BindView(R2.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
+
+    public Long tenantId;
     private InvRecvGoodsEntity curGoods = null;
+    private ScProductPricePresenter mScProductPricePresenter;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
 
 
@@ -91,10 +100,10 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         return fragment;
     }
 
-    @Override
-    protected boolean isResponseBackPressed() {
-        return true;
-    }
+//    @Override
+//    protected boolean isResponseBackPressed() {
+//        return true;
+//    }
 
     @Override
     protected int getLayoutResId() {
@@ -105,6 +114,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mScProductPricePresenter = new ScProductPricePresenter(this);
         chainGoodsSkuPresenter = new ChainGoodsSkuPresenter(this);
     }
 
@@ -119,6 +129,8 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelSendPrice = (TextLabelView) rootView.findViewById(R.id.label_send_price);
         labelSendQuantity = (TextLabelView) rootView.findViewById(R.id.label_send_quantity);
+        labelSingleCostPrice = (TextLabelView) rootView.findViewById(R.id.label_singleCostPrice);
+        labelHintPrice = (TextLabelView) rootView.findViewById(R.id.label_hintPrice);
         labelReceiveQuantity = (EditLabelView) rootView.findViewById(R.id.label_receive_quantity);
         labelReceiveAmount = (EditLabelView) rootView.findViewById(R.id.label_receive_amount);
         labelReceivePrice = (TextLabelView) rootView.findViewById(R.id.label_receive_price);
@@ -134,37 +146,29 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        if (mToolbar != null) {
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
-            mToolbar.setNavigationOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            getActivity().onBackPressed();
-                        }
-                    });
-        } else {
-            ZLogger.d("mToolbar is null");
-        }
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
 
-        if (mScanBar != null) {
-            mScanBar.setSoftKeyboardEnabled(true);
-            mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    mScanBar.reset();
-                    queryByBarcode(text);
-                }
+        mScanBar.setSoftKeyboardEnabled(true);
+        mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                mScanBar.reset();
+                queryByBarcode(text);
+            }
 
-                @Override
-                public void onAction1Click(String text) {
-                    mScanBar.reset();
-                    queryByBarcode(text);
-                }
-            });
-        } else {
-            ZLogger.d("mScanBar is null");
-        }
+            @Override
+            public void onAction1Click(String text) {
+                mScanBar.reset();
+                queryByBarcode(text);
+            }
+        });
 
 //        labelSignQuantity.setSoftKeyboardEnabled(false);
         labelReceiveQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
@@ -175,7 +179,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 
             @Override
             public void onScan() {
-                refreshPackage(null);
+                refresh(null);
 //                eqvBarcode.clear();
 //                eqvBarcode.requestFocus();
             }
@@ -206,7 +210,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 
             @Override
             public void onScan() {
-                refreshPackage(null);
+                refresh(null);
 //                eqvBarcode.clear();
 //                eqvBarcode.requestFocus();
             }
@@ -232,6 +236,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         Bundle args = getArguments();
         if (args != null) {
             String barcode = args.getString(EXTRA_KEY_BARCODE, null);
+            tenantId = args.getLong(EXTRA_KEY_TENANTID);
 
             if (!StringUtils.isEmpty(barcode)) {
                 queryByBarcode(barcode);
@@ -239,40 +244,10 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         }
     }
 
-    @Override
-    public boolean onBackPressed() {
-//        if (curGoods != null){
-//            // TODO: 6/10/16 删除当前商品信息
-//        }
-//
-//        showConfirmDialog("退出后商品列表将会清空，确定要退出吗？",
-//                "退出", new DialogInterface.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//
-//                        getActivity().setResult(Activity.RESULT_CANCELED);
-//                        getActivity().finish();
-//                    }
-//                }, "点错了", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//
-////        DialogUtil.showHint("onBackPressed");
-//        if (officeAdapter.getItemCount() > 0) {
-//
-//        } else {
-//            getActivity().setResult(Activity.RESULT_CANCELED);
-//            getActivity().finish();
-//        }
-
-        return false;
-    }
-
+//    @Override
+//    public boolean onBackPressed() {
+//        return super.onBackPressed();
+//    }
 
     private Double calculateReceivePrice() {
         String quantityStr = labelReceiveQuantity.getInput();
@@ -303,7 +278,7 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         }
         isAcceptBarcodeEnabled = true;
 
-        refreshPackage(null);
+        refresh(null);
     }
 
     //    @OnClick(R2.id.fab_submit)
@@ -363,42 +338,45 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
 //        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
         hideProgressDialog();
 
-        refreshPackage(null);
+        refresh(null);
     }
 
 
     /**
      * 刷新信息
      */
-    private void refreshPackage(InvRecvGoodsEntity goods) {
+    private void refresh(InvRecvGoodsEntity goods) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
 
         curGoods = goods;
         if (curGoods == null) {
-            labelBarcode.setTvSubTitle("");
-            labelProductName.setTvSubTitle("");
-            labelSendQuantity.setTvSubTitle("");
-            labelSendPrice.setTvSubTitle("");
+            labelBarcode.setEndText("");
+            labelProductName.setEndText("");
+            labelSendQuantity.setEndText("");
+            labelSendPrice.setEndText("");
+            labelHintPrice.setEndText("");
+            labelSingleCostPrice.setEndText("");
             labelReceiveQuantity.setInputAndEnd("", "");
             labelReceiveAmount.setInput("");
-            labelReceivePrice.setTvSubTitle("");
+            labelReceivePrice.setEndText("");
 
             btnSubmit.setEnabled(false);
-
         } else {
             ZLogger.d(JSONObject.toJSONString(curGoods));
-            labelBarcode.setTvSubTitle(curGoods.getBarcode());
-            labelProductName.setTvSubTitle(curGoods.getProductName());
-            labelSendQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getSendQuantity(), ""));
+            labelBarcode.setEndText(curGoods.getBarcode());
+            labelProductName.setEndText(curGoods.getProductName());
+            labelSendPrice.setEndText(MUtils.formatDouble(curGoods.getReceiptPrice(), ""));
+            labelSendQuantity.setEndText(MUtils.formatDouble(curGoods.getReceiptQuantity(), ""));
+            labelHintPrice.setEndText(MUtils.formatDouble(curGoods.getHintPrice(), ""));
+            labelSingleCostPrice.setEndText(MUtils.formatDouble(curGoods.getSingleCostPrice(), ""));
 //            labelSignQuantity.setEtContent(String.format("%.2f", curGoods.getSignQuantity()));
-            labelSendPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getSendPrice(), ""));
             //默认签收数量为空，根据实际情况填写
-            labelReceiveQuantity.setInputAndEnd("", curGoods.getUnitSpec());
+            labelReceiveQuantity.setInputAndEnd("", curGoods.getUnit());
 //            labelReceiveAmount.setEndText(curGoods.getUnitSpec());
             labelReceiveAmount.setInput("");
-            labelReceivePrice.setTvSubTitle(MUtils.formatDouble(calculateReceivePrice(), ""));
+            labelReceivePrice.setEndText(MUtils.formatDouble(calculateReceivePrice(), ""));
 
             btnSubmit.setEnabled(true);
 
@@ -406,38 +384,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         }
 
 //        DeviceUtils.hideSoftInput(getActivity(), labelReceiveQuantity);
-    }
-
-    @Override
-    public void onChainGoodsSkuViewProcess() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
-    }
-
-    @Override
-    public void onChainGoodsSkuViewError(String errorMsg) {
-        hideProgressDialog();
-        refreshPackage(null);
-        isAcceptBarcodeEnabled = true;
-    }
-
-    @Override
-    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-        hideProgressDialog();
-        isAcceptBarcodeEnabled = true;
-
-        if (dataList != null && dataList.size() > 0) {
-            saveChainGoodsSku(dataList.get(0));
-        } else {
-            DialogUtil.showHint("未找到商品");
-        }
-    }
-
-    @Override
-    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
-        hideProgressDialog();
-        isAcceptBarcodeEnabled = true;
-
-        saveChainGoodsSku(data);
     }
 
     @Override
@@ -485,23 +431,125 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
                     @Override
                     public void onNext(InvRecvGoodsEntity invRecvGoodsEntity) {
                         if (invRecvGoodsEntity != null) {
-                            saveDistributionSignEntity(invRecvGoodsEntity);
+                            hideProgressDialog();
+                            refresh(invRecvGoodsEntity);
+                            getTenantSkuMust(barcode);
                         } else {
-                            queryNetGoods(barcode);
+                            findProductSku(barcode);
                         }
                     }
 
                 });
     }
 
-    private void queryNetGoods(String barcode) {
+    /**
+     * 查询平台商品档案
+     */
+    private void findProductSku(String barcode) {
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, queryCheckbox.isChecked());
+        mScProductPricePresenter.findProductSku(barcode, null);
     }
+
+    @Override
+    public void onScProcuctPriceViewProcess() {
+        onQueryProcess();
+    }
+
+    @Override
+    public void onScProcuctPriceViewError(String errorMsg) {
+        hideProgressDialog();
+        refresh(null);
+    }
+
+    @Override
+    public void onScProcuctPriceViewSuccess(PageInfo pageInfo, List<ProductSku> dataList) {
+        if (dataList != null && dataList.size() > 0) {
+            saveProductSku(dataList.get(0));
+        } else {
+            hideProgressDialog();
+            isAcceptBarcodeEnabled = true;
+            saveProductSku(null);
+        }
+    }
+
+    /**
+     * 保存平台商品档案
+     */
+    private void saveProductSku(ProductSku goods) {
+        if (goods == null) {
+            DialogUtil.showHint("未找到商品");
+            refresh(null);
+            return;
+        }
+
+        InvRecvGoodsEntity entity = InvRecvGoodsService.get().queryEntityByBarcode(goods.getBarcode());
+        if (entity == null) {
+            entity = new InvRecvGoodsEntity();
+            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+            entity.setProductName(goods.getName());
+            entity.setUnit(goods.getUnit());
+            entity.setBarcode(goods.getBarcode());
+
+//            entity.setProSkuId(goods.getProSkuId());
+//            entity.setChainSkuId(goods.getId());
+//            entity.setProviderId(goods.getTenantId());
+//            entity.setIsPrivate(IsPrivate.PLATFORM);
+            entity.setUpdatedDate(new Date());
+        }
+        refresh(entity);
+
+        //查询供应商的商品信息
+        getTenantSkuMust(goods.getBarcode());
+    }
+
+
+    /**
+     * 查询供应商下的商品信息
+     */
+    private void getTenantSkuMust(String barcode) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
+            onQueryError(getString(R.string.toast_network_error));
+            return;
+        }
+
+        chainGoodsSkuPresenter.getTenantSkuMust(tenantId, barcode, queryCheckbox.isChecked());
+    }
+
+    @Override
+    public void onChainGoodsSkuViewProcess() {
+        onQueryProcess();
+    }
+
+    @Override
+    public void onChainGoodsSkuViewError(String errorMsg) {
+        hideProgressDialog();
+        refresh(null);
+    }
+
+    @Override
+    public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+        hideProgressDialog();
+        isAcceptBarcodeEnabled = true;
+
+        if (dataList != null && dataList.size() > 0) {
+            saveChainGoodsSku(dataList.get(0));
+        } else {
+            saveChainGoodsSku(null);
+        }
+    }
+
+    @Override
+    public void onChainGoodsSkuViewSuccess(ChainGoodsSku data) {
+        hideProgressDialog();
+        isAcceptBarcodeEnabled = true;
+
+        saveChainGoodsSku(data);
+    }
+
 
     /**
      * 查询处理中
@@ -520,51 +568,27 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
         isAcceptBarcodeEnabled = true;
     }
 
-    public void saveDistributionSignEntity(InvRecvGoodsEntity goods) {
-        hideProgressDialog();
-        refreshPackage(goods);
-    }
-
-
     /**
-     * 保存搜索商品
+     * 保存供应商商品
      */
     private void saveChainGoodsSku(ChainGoodsSku goods) {
         if (goods == null) {
-            DialogUtil.showHint("未找到商品");
             return;
         }
 
-//        if (goods.getSingleCostPrice() == null) {
-//            //“如果singleCostPrice值为null，说明缺少箱规数，信息不完整，这种情况你不允许进行采购或收货
-//            DialogUtil.showHint("商品未设置单件批发价，无法采购货收货");
-//            return;
-//        }
-
-        InvRecvGoodsEntity entity = InvRecvGoodsService.get().queryEntityByBarcode(goods.getBarcode());
-        if (entity == null) {
-            entity = new InvRecvGoodsEntity();
-            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
-
-            entity.setProSkuId(goods.getProSkuId());
-            entity.setChainSkuId(goods.getId());
-            entity.setProductName(goods.getSkuName());
-            entity.setUnitSpec(goods.getUnit());
-            entity.setBarcode(goods.getBarcode());
-            entity.setProviderId(goods.getTenantId());
-            entity.setIsPrivate(IsPrivate.PLATFORM);
-
-            entity.setSendPrice(goods.getSingleCostPrice());
-            entity.setSendAmount(0D);
-            entity.setReceiveQuantity(0D);
-            entity.setReceiveAmount(0D);
-            entity.setInspectStatus(InvRecvGoodsEntity.INSPECT_STATUS_NONE);
-            entity.setUpdatedDate(new Date());
-
-
-//            InvRecvGoodsService.get().saveOrUpdate(entity);
+        if (curGoods != null) {
+            curGoods.setProSkuId(goods.getProSkuId());
+            curGoods.setChainSkuId(goods.getId());
+            //使用当前选择的供应商代替商品的供应商属性，有的商品无供应商信息
+            curGoods.setProviderId(tenantId);
+//            curGoods.setProviderId(goods.getTenantId());
+            curGoods.setIsPrivate(IsPrivate.PLATFORM);
+            curGoods.setSingleCostPrice(goods.getSingleCostPrice());
+            curGoods.setHintPrice(goods.getHintPrice());
+            curGoods.setUpdatedDate(new Date());
         }
-        refreshPackage(entity);
+        refresh(curGoods);
+
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;
@@ -604,4 +628,6 @@ public class InvRecvInspectFragment extends PDAScanFragment implements IChainGoo
             quantityCheckConfirmDialog.show();
         }
     }
+
+
 }
