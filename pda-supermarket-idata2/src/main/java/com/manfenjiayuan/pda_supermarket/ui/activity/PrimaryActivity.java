@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
+import com.bingshanguxue.pda.bizz.goods.ScSkuGoodsStoreInFragment;
 import com.bingshanguxue.pda.bizz.invcheck.ShelvesFragment;
 import com.bingshanguxue.pda.bizz.office.OfficeListFragment;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -45,6 +46,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_PRINT_PRICETAGS         = 0x23;//价签
     public static final int FT_OFFICE_LIST = 0x24;//网店租户列表
     public static final int FT_SHELVES_LIST = 0x25;//盘点区域
+    public static final int FT_STORE_IN = 0x26;//商品建档
 
 
     /**
@@ -278,6 +280,19 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = ShelvesFragment.newInstance(intent.getExtras());
             }else{
                 fragment = ShelvesFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
+                    .commit();
+        }
+        else if(fragmentType == FT_STORE_IN){
+            ScSkuGoodsStoreInFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = ScSkuGoodsStoreInFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = ScSkuGoodsStoreInFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

@@ -22,6 +22,7 @@ public class HomeMenu implements Serializable {
     public static final Long OPTION_ID_CREATE_INV_LOSSORDER = 22L;//报损
     public static final Long OPTION_ID_INV_CONVERT = 23L;//库存转换
     public static final Long OPTION_ID_PRINT_TAGS = 24L;//价签打印
+    public static final Long OPTION_ID_STORE_IN = 25L;//商品建档
 
     public static final Long OPTION_ID_ALPHA = 31L;//
 

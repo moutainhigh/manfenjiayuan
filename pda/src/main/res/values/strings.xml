@@ -11,4 +11,27 @@
     <string name="label_select_office">请选择网点</string>
     <string name="label_no_data">暂无数据</string>
     <string name="label_no_stocktake">暂无盘点</string>
+
+    <!--计件单位-->
+    <string-array name="unit_name_0">
+        <item>个</item>
+        <item>盒</item>
+        <item>包</item>
+        <item>瓶</item>
+        <item>袋</item>
+        <item>听</item>
+        <item>条</item>
+        <item>只</item>
+        <item>份</item>
+        <item>对</item>
+    </string-array>
+    <!--计重单位-->
+    <string-array name="unit_name_1">
+        <item>Kg</item>
+    </string-array>
+    <!--销售单位-->
+    <string-array name="pricetype_caption">
+        <item>计件</item>
+        <item>计重</item>
+    </string-array>
 </resources>

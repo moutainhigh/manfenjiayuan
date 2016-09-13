@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:orientation="vertical">
+
+    <include layout="@layout/appbar_scan_barcode"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
+                android:id="@+id/label_barcode"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:startText="商品条码:"
+                app:startTextWidth="108dp"/>
+
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_name"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="text"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入商品名称"
+                app:endTextVisible="true"
+                app:startText="商品名称:"
+                app:startTextWidth="108dp"/>
+
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_spec"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="text"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="如：500ml"
+                app:endTextVisible="true"
+                app:softKeyboardEnabled="true"
+                app:startText="规格:"
+                app:startTextWidth="108dp"/>
+
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_carton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="text"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="整箱数量"
+                app:endTextVisible="true"
+                app:softKeyboardEnabled="true"
+                app:startText="箱规:"
+                app:startTextWidth="108dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="108dp"
+                    android:layout_height="match_parent"
+                    android:gravity="end|center_vertical"
+                    android:text="销售方式:"
+                    android:textColor="@color/black_35"
+                    android:textSize="16sp"/>
+
+                <!--style="@style/SpinnerMfhTheme"-->
+                <Spinner
+                    android:id="@+id/spinner_price_type"
+                    style="@style/dropDownSpinnerStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/spacing_double"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="108dp"
+                    android:layout_height="match_parent"
+                    android:gravity="end|center_vertical"
+                    android:text="单位:"
+                    android:textColor="@color/black_35"
+                    android:textSize="16sp"/>
+
+                <!--style="@style/SpinnerMfhTheme"-->
+                <Spinner
+                    android:id="@+id/spinner_unit"
+                    style="@style/dropDownSpinnerStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/spacing_double"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown"/>
+            </LinearLayout>
+
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_origin"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="text"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入产地"
+                app:endTextVisible="true"
+                app:startText="产地:"
+                app:softKeyboardEnabled="true"
+                app:startTextWidth="108dp"/>
+
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_grade"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="numberDecimal"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入等级"
+                app:endTextVisible="true"
+                app:startText="等级:"
+                app:startTextWidth="108dp"/>
+
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_quality"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="numberDecimal"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入保质期"
+                app:endTextVisible="true"
+                app:startText="保质期:"
+                app:startTextWidth="108dp"/>
+            <!--初始库存，根节点下的quantity-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="numberDecimal"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入初始库存"
+                app:endTextVisible="true"
+                app:startText="初始库存:"
+                app:startTextWidth="108dp"/>
+            <!--初始成本价是tenantSku节点下的buyPrice-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_buyprice"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="price"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入初始成本价"
+                app:endTextVisible="true"
+                app:startText="初始成本价:"
+                app:startTextWidth="108dp"/>
+
+            <!--售价（对于批发商就是批发价，对于零售商就是零售价）是tenantSku节点下的costPrice-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_costPrice"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="price"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入零售价"
+                app:endTextVisible="true"
+                app:startText="零售价:"
+                app:startTextWidth="108dp"/>
+
+            <!--建议零售价是tenantSku节点下的hintPrice（仅批发商才有）-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_hintPrice"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                app:editInputType="price"
+                app:editTextColor="@color/material_black"
+                app:editTextHint="请输入建议零售价"
+                app:endTextVisible="true"
+                app:startText="建议零售价:"
+                app:startTextWidth="108dp"/>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_fab_confirm"
+        android:visibility="gone"
+        app:backgroundTint="@color/mfh_positive_default"
+        app:borderWidth="0dp"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@color/material_green_800"/>
+
+</android.support.design.widget.CoordinatorLayout>

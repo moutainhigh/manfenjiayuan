@@ -20,6 +20,7 @@ import com.bingshanguxue.pda.ValidateManager;
 import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
+import com.bingshanguxue.pda.bizz.goods.ScSkuGoodsStoreInFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
@@ -33,6 +34,7 @@ import com.manfenjiayuan.pda_wholesaler.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.AbilityItem;
+import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
@@ -316,6 +318,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         List<HomeMenu> menus = new ArrayList<>();
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_GOODS,
                 "商品", R.mipmap.ic_goods));
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_STORE_IN,
+                "商品建档", R.mipmap.ic_goods_storein));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_TAKE,
                 "盘点", R.mipmap.ic_stocktake));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_WHOLESALER_GOODS_SHELVES,
@@ -351,6 +355,12 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODS);
             PrimaryActivity.actionStart(MainActivity.this, extras);
+        }  else if (id.compareTo(HomeMenu.OPTION_ID_STORE_IN) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_STORE_IN);
+            extras.putInt(ScSkuGoodsStoreInFragment.EXTRA_STORE_TYPE, StoreType.WHOLESALER);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_WHOLESALER_GOODS_SHELVES) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -359,7 +369,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
             Office office = DataCacheHelper.getInstance().getCurrentOffice();
             if (office == null) {
-                //TODO,请先选择网点。。。
                 DialogUtil.showHint("请先选择网点");
                 return;
             }
