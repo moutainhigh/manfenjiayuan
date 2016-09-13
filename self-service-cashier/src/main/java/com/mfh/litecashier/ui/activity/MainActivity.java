@@ -85,7 +85,7 @@ import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
 import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
-import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
+import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -1632,7 +1632,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 SimpleDialogActivity.FRAGMENT_TYPE_CREATE_PURCHASE_GOODS);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
                 SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-        extras.putString(StockScSkuGoodsFragment.EXTRY_KEY_BARCODE, barcode);
+        extras.putString(ScSkuGoodsStoreInFragment.EXTRY_KEY_BARCODE, barcode);
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_CREATE_PURCHASE_GOODS);
     }

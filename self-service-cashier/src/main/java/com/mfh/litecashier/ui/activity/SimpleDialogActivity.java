@@ -15,7 +15,7 @@ import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.components.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
-import com.mfh.litecashier.ui.fragment.inventory.StockScSkuGoodsFragment;
+import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvSendOrderFragment;
@@ -136,12 +136,12 @@ public class SimpleDialogActivity extends BaseActivity {
      */
     private void initFragments() {
         if (serviceType == FRAGMENT_TYPE_CREATE_PURCHASE_GOODS) {
-            StockScSkuGoodsFragment fragment;
+            ScSkuGoodsStoreInFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = StockScSkuGoodsFragment.newInstance(intent.getExtras());
+                fragment = ScSkuGoodsStoreInFragment.newInstance(intent.getExtras());
             } else {
-                fragment = StockScSkuGoodsFragment.newInstance(null);
+                fragment = ScSkuGoodsStoreInFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
