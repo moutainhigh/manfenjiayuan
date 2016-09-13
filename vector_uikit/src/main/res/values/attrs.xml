@@ -18,6 +18,11 @@
     <attr name="editTextHint" format="string|reference"/>
     <attr name="editTextColorHint" format="reference|color" />
 
+
+    <!--是否支持软键盘-->
+    <attr name="softKeyboardEnabled" format="boolean" />
+
+
     <!--图片-->
     <attr name="src" format="reference"/>
 
@@ -111,11 +116,12 @@
         <attr name="editTextHint"/>
         <attr name="editTextColorHint"/>
         <attr name="editInputType"/>
+        <attr name="softKeyboardEnabled"/>
 
         <attr name="endText"/>
         <attr name="endTextColor"/>
         <attr name="endTextSize"/>
-        <attr name="endTextVisible" />
+        <attr name="endTextVisible"/>
     </declare-styleable>
 
 </resources>
