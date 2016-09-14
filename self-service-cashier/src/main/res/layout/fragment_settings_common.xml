@@ -151,7 +151,6 @@
             app:subText=""
             app:text="应用版本"/>
 
-
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

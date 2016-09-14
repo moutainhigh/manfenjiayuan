@@ -51,7 +51,6 @@ public class SharedPreferencesHelper {
     public static final String PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR = "pk_import_from_startcursor";//时间戳
 
     //同步商品
-    public static final String PK_SKU_UPDATE_UNREADNUMBER = "pk_sku_update_unreadnumber";   //上一次交接班班次
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
     public static final String PK_SYNC_PRODUCTCATALOG_STARTCURSOR = "pk_sync_PRODUCTCATALOG_STARTCURSOR";
@@ -80,8 +79,6 @@ public class SharedPreferencesHelper {
     public static final String PK_LAST_HANDOVER_SHIFTID = "pk_last_handover_shiftid";   //上一次交接班班次
 
     //订单
-    public static final String PK_ONLINE_FRESHORDER_UNREADNUMBER = "pk_online_freshorder_unreadnumber";   //上一次交接班班次
-
     //银联
     public static final String PK_UMSIPS_IP = "pk_umsips_ip";       //主机IP
     public static final String PK_UMSIPS_PORT = "pk_umsips_port";     //主机端口号

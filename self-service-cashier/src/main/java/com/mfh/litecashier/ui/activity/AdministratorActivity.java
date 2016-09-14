@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.model.wrapper.LocalMenu;
+import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -355,7 +355,7 @@ public class AdministratorActivity extends BaseActivity {
         menuAdapter.setOnAdapterLitener(new AdministratorMenuAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                LocalMenu entity = menuAdapter.getEntity(position);
+                ResMenu entity = menuAdapter.getEntity(position);
                 if (entity != null) {
                     responseMenu(entity.getId());
                 }
@@ -369,23 +369,23 @@ public class AdministratorActivity extends BaseActivity {
     /**
      * 获取菜单
      */
-    public synchronized List<LocalMenu> getAdminMenus() {
-        List<LocalMenu> functionalList = new ArrayList<>();
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_PURCHASE_MANUAL,
+    public synchronized List<ResMenu> getAdminMenus() {
+        List<ResMenu> functionalList = new ArrayList<>();
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_PURCHASE_MANUAL,
                 "手动订货", R.mipmap.ic_admin_purchase_manual));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_INVENTORY,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_INVENTORY,
                 "库存", R.mipmap.ic_admin_menu_inventory));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_ORDERFLOW,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_RECEIPT,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_RECEIPT,
                 "单据", R.mipmap.ic_admin_menu_receipt));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_ANALYSIS,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_ANALYSIS,
                 "统计", R.mipmap.ic_admin_menu_analysis));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_DAILYSETTLE,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_DAILYSETTLE,
                 "日结", R.mipmap.ic_admin_menu_dailysettle));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_CASHQUOTA,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_CASHQUOTA,
                 "授信", R.mipmap.ic_admin_menu_cashquota));
-        functionalList.add(new LocalMenu(LocalMenu.ADMIN_MENU_SETTINGS,
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
 
         return functionalList;
@@ -399,19 +399,19 @@ public class AdministratorActivity extends BaseActivity {
             return;
         }
 
-        if (id.compareTo(LocalMenu.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
+        if (id.compareTo(ResMenu.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
             manualPurchase();
-        } else if (id.compareTo(LocalMenu.ADMIN_MENU_INVENTORY) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_INVENTORY) == 0) {
             redirect2Inventory();
-        } else if (id.compareTo(LocalMenu.ADMIN_MENU_ORDERFLOW) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_ORDERFLOW) == 0) {
             redirect2Orderflow();
-        } else if (id.compareTo(LocalMenu.ADMIN_MENU_RECEIPT) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_RECEIPT) == 0) {
             redirect2Receipt();
-        } else if (id.compareTo(LocalMenu.ADMIN_MENU_DAILYSETTLE) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_DAILYSETTLE) == 0) {
             dailySettle(null);
-        } else if (id.compareTo(LocalMenu.ADMIN_MENU_SETTINGS) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_SETTINGS) == 0) {
             redirect2Settings();
-        } else if (id.compareTo(LocalMenu.ADMIN_MENU_CASHQUOTA) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_CASHQUOTA) == 0) {
             redirect2CashQuota();
         } else {
             DialogUtil.showHint("@开发君 失踪了...");

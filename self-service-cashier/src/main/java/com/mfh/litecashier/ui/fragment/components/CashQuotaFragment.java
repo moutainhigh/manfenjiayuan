@@ -68,6 +68,10 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
     @Bind(R.id.tv_header_title)
     TextView tvHeaderTitle;
+    @Bind(R.id.button_header_reload)
+    ImageButton btnReload;
+    @Bind(R.id.button_header_close)
+    ImageButton btnClose;
 
 
     @Bind(R.id.label_quota)
@@ -86,8 +90,6 @@ public class CashQuotaFragment extends BaseProgressFragment {
     @Bind(R.id.empty_view)
     TextView emptyView;
 
-    @Bind(R.id.button_header_close)
-    ImageButton btnClose;
     @Bind(R.id.fab_print)
     FloatingActionButton fabPrint;
 
@@ -153,7 +155,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
         if (cancelable) {
             btnClose.setVisibility(View.VISIBLE);
         } else {
-            btnClose.setVisibility(View.INVISIBLE);
+            btnClose.setVisibility(View.GONE);
         }
 
 
@@ -169,7 +171,6 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
 //        EventBus.getDefault().unregister(this);
     }
-
 
     @OnClick(R.id.button_header_close)
     public void finishActivity() {
@@ -264,7 +265,8 @@ public class CashQuotaFragment extends BaseProgressFragment {
     /**
      * 查询
      */
-    private void queryLimitInfo() {
+    @OnClick(R.id.button_header_reload)
+    public void queryLimitInfo() {
         onLoadProcess("正在查询授权金额信息");
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {

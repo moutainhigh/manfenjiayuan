@@ -7,9 +7,47 @@
                 android:orientation="vertical">
 
 
-    <include
+    <LinearLayout
         android:id="@+id/frame_top"
-        layout="@layout/contentview_dialog_header"/>
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/mfh_toolbar_background"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/spacing_double"
+        android:paddingEnd="@dimen/spacing_double"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_header_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:padding="4dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/material_white"
+            android:textSize="20sp"/>
+
+        <ImageButton
+            android:id="@+id/button_header_reload"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_syncdata_white"/>
+
+        <ImageButton
+            android:id="@+id/button_header_close"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_toolbar_close"/>
+
+    </LinearLayout>
 
     <!--商品金额-->
     <LinearLayout

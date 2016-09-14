@@ -10,6 +10,9 @@ import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.login.logic.MfhLoginService;
 
+import net.tsz.afinal.db.table.KeyValue;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -181,11 +184,17 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
     }
 
     public void deactiveAll(){
-        List<PosProductEntity> entities = PosProductService.get().queryAll();
-        for (PosProductEntity entity : entities){
-            entity.setIsCloudActive(0);
-            saveOrUpdate(entity);
-        }
+//        List<PosProductEntity> entities = PosProductService.get().queryAll();
+//        for (PosProductEntity entity : entities){
+//            entity.setIsCloudActive(0);
+//            saveOrUpdate(entity);
+//        }
+
+        List<KeyValue> keyValues = new ArrayList<>();
+        keyValues.add(new KeyValue("isCloudActive", 0));
+        getDao().update(PosProductEntity.class, keyValues,
+                String.format("isCloudActive = %d", 1));
+
     }
 
 }

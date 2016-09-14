@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -10,16 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.framework.uikit.widget.BadgeDrawable;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.mfh.litecashier.ui.dialog.PayHistoryDialog;
+import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
+import com.mfh.litecashier.ui.fragment.pay.PayHistoryFragment;
 import com.mfh.litecashier.utils.CashierHelper;
 
 import java.util.ArrayList;
@@ -38,7 +41,6 @@ public class ExceptionOrderflowAdapter
 
     private PosOrderEntity curPosOrder = null;
     private CommonDialog confirmDialog = null;
-    private PayHistoryDialog payHistoryDialog = null;
 
     public ExceptionOrderflowAdapter(Context context, List<PosOrderEntity> entityList) {
         super(context, entityList);
@@ -118,7 +120,9 @@ public class ExceptionOrderflowAdapter
         holder.tvId.setText(String.format("订单编号：%d", entity.getId()));
         holder.tvBarcode.setText(String.format("流水编号：%s", entity.getBarCode()));
         holder.tvCreateDate.setText(String.format("下单时间：%s",
-                (entity.getCreatedDate() != null ? TimeCursor.InnerFormat.format(entity.getCreatedDate()) : "")));
+                TimeUtil.format(entity.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+        holder.tvUpdateDate.setText(String.format("下单时间：%s",
+                TimeUtil.format(entity.getUpdatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
         switch (entity.getStatus()) {
             case PosOrderEntity.ORDER_STATUS_INIT: {
                 drawableOrderStatus.setText1(String.format("待确认(%d)", entity.getStatus()));
@@ -196,6 +200,8 @@ public class ExceptionOrderflowAdapter
         TextView tvBarcode;
         @Bind(R.id.tv_createDate)
         TextView tvCreateDate;
+        @Bind(R.id.tv_updatedate)
+        TextView tvUpdateDate;
         @Bind(R.id.tv_office)
         TextView tvOffice;
         @Bind(R.id.tv_tenant)
@@ -253,12 +259,16 @@ public class ExceptionOrderflowAdapter
                 return;
             }
 
-            if (payHistoryDialog == null) {
-                payHistoryDialog = new PayHistoryDialog(mContext);
+//            ZLogger.d(JSONObject.toJSONString(entity));
+            Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_PAY_HISTORY);
+            extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+            extras.putLong(PayHistoryFragment.EXTRA_KEY_ORDER_ID, entity.getId());
+            if (entity.getPaystatus() == PosOrderEntity.ORDER_STATUS_EXCEPTION){
+                extras.putBoolean(PayHistoryFragment.EXTRA_KEY_EDITABLE, true);
             }
-
-            payHistoryDialog.init(entity.getId());
-            payHistoryDialog.show();
+            UIHelper.startActivity(mContext, SimpleDialogActivity.class, extras);
         }
 
         @OnClick(R.id.ib_process)

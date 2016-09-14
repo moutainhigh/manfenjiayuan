@@ -104,10 +104,18 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
     /**
      * 店家商品建档入库
      *
+     * <ol>
+     *     备注
+     *     <li>网店商品档案有，只可以修改零售价，其他无效。</li>
+     *     <li>网店商品档案没有,平台档案和租户商品档案有，可以修改零售价,初始库存，初始成本价，其他无效。</li>
+     *     <li>网店商品档案，平台档案和租户商品档案都没有，所有信息都可以修改。</li>
+     * </ol>
+     *
      * @param jsonStr 其中product为产品本身信息；proSku为产品sku信息；
      *                skuInfo为店家商品sku信息(costPrice为售价，buyPrice为采购价，quantity为入库数量,lowerLimit为最低安全库存);
      *                mfhSupply为是否需要满分配货(0-不需要，1-需要)，mfhPrice为满分价。
      * @param storeType 默认不传为0代表零售商，如果是批发商建档则storeType=1
+     *
      */
     public static void storeIn(String jsonStr, Integer storeType,
                                AjaxCallBack<? extends Object> responseCallback) {

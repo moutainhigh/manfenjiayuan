@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Cashier</string>
+
+    <!--计件单位-->
+    <string-array name="unit_name_0">
+        <item>个</item>
+        <item>盒</item>
+        <item>包</item>
+        <item>瓶</item>
+        <item>袋</item>
+        <item>听</item>
+        <item>条</item>
+        <item>只</item>
+        <item>份</item>
+        <item>对</item>
+    </string-array>
+    <!--计重单位-->
+    <string-array name="unit_name_1">
+        <item>Kg</item>
+    </string-array>
 </resources>

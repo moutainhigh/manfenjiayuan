@@ -1,13 +1,16 @@
 package com.bingshanguxue.cashier.database.service;
 
+import com.bingshanguxue.cashier.database.dao.ProductCatalogDao;
+import com.bingshanguxue.cashier.database.entity.ProductCatalogEntity;
 import com.bingshanguxue.cashier.model.ProductCatalog;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.bingshanguxue.cashier.database.dao.ProductCatalogDao;
-import com.bingshanguxue.cashier.database.entity.ProductCatalogEntity;
 
+import net.tsz.afinal.db.table.KeyValue;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -151,13 +154,18 @@ public class ProductCatalogService extends BaseService<ProductCatalogEntity, Str
      * 下线所有类目
      * */
     public void deactiveAll(){
-        List<ProductCatalogEntity> entities = queryAll(null, null);
-        if (entities != null && entities.size() > 0){
-            for (ProductCatalogEntity entity : entities){
-                entity.setIsCloudActive(0);
-                saveOrUpdate(entity);
-            }
-        }
+//        List<ProductCatalogEntity> entities = queryAll(null, null);
+//        if (entities != null && entities.size() > 0){
+//            for (ProductCatalogEntity entity : entities){
+//                entity.setIsCloudActive(0);
+//                saveOrUpdate(entity);
+//            }
+//        }
+
+        List<KeyValue> keyValues = new ArrayList<>();
+        keyValues.add(new KeyValue("isCloudActive", 0));
+        getDao().update(ProductCatalogEntity.class, keyValues,
+                String.format("isCloudActive = %d", 1));
     }
 
     public int getCount(){

@@ -1,45 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/mf_simple_dialog_width"
-    android:layout_height="match_parent"
-    android:divider="@drawable/divider_horizontal_line_primary"
-    android:orientation="vertical"
-    android:showDividers="middle">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
-    <include layout="@layout/contentview_dialog_header"/>
+    <include layout="@layout/appbar"/>
 
+    <!--列表-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--商品列表-->
-        <LinearLayout
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_payhistory_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/product_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_below="@+id/ll_procuct_header"
+            android:layout_marginTop="4dp"/>
 
-            <include
-                android:id="@+id/ll_procuct_header"
-                layout="@layout/itemview_payhistory_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/product_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="4dp"/>
-
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/animProgress"
-            style="@style/loading"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_gravity="center"
-            android:visibility="gone" />
     </RelativeLayout>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

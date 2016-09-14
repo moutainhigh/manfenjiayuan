@@ -11,8 +11,8 @@
         <item>计重</item>
     </string-array>
     <string-array name="biztype_cashquota">
-        <item>现金订单</item>
         <item>授信充值</item>
+        <item>现金订单</item>
     </string-array>
 
 </resources>

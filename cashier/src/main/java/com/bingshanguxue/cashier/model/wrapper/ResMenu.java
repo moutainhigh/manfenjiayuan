@@ -3,10 +3,10 @@ package com.bingshanguxue.cashier.model.wrapper;
 import java.io.Serializable;
 
 /**
- * 本地菜单
+ * 本地资源菜单
  * Created by bingshanguxue on 8/29/16.
  */
-public class LocalMenu implements Serializable{
+public class ResMenu implements Serializable{
     //管理者控制台
     public static final Long ADMIN_MENU_PURCHASE_MANUAL = 54L;//订货
     public static final Long ADMIN_MENU_INVENTORY= 56L;//库存
@@ -21,7 +21,8 @@ public class LocalMenu implements Serializable{
     //金丝雀
     public static final Long CANARY_MENU_GOODS    = 71L;//商品
     public static final Long CANARY_MENU_ORDERFLOW= 72L;//流水
-    public static final Long CANARY_MENU_CANARY= 74L;//日结
+    public static final Long CANARY_MENU_CANARY= 74L;//金丝雀
+    public static final Long CANARY_MENU_MESSAGE_MGR= 75L;//消息管理器
 
     private Long id;//编号
     private String nameCn;//名称
@@ -51,7 +52,7 @@ public class LocalMenu implements Serializable{
         this.resId = resId;
     }
 
-    public LocalMenu(Long id, String nameCn, int resId) {
+    public ResMenu(Long id, String nameCn, int resId) {
         this.id = id;
         this.nameCn = nameCn;
         this.resId = resId;

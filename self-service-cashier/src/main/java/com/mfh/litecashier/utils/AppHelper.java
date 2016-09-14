@@ -210,9 +210,7 @@ public class AppHelper {
      */
     public static void clearAppData() {
         CashierShopcartService.getInstance().clear();
-        PurchaseShopcartHelper.getInstance().clear();
         PosCategoryGodosTempService.getInstance().clear();
-        //商品库
         PosProductService.get().clear();//商品库
         PosProductSkuService.get().clear();//一品多码
         PosLocalCategoryService.get().clear();//前台类目关联商品

@@ -24,6 +24,19 @@ import butterknife.ButterKnife;
 public class PayHistoryAdapter
         extends RegularAdapter<PosOrderPayEntity, PayHistoryAdapter.ProductViewHolder> {
 
+    public interface OnAdapterListener {
+        void onItemClick(View view, int position);
+
+        void onItemLongClick(View view, int position);
+
+        void onDataSetChanged();
+    }
+
+    private OnAdapterListener adapterListener;
+
+    public void setOnAdapterListener(OnAdapterListener adapterListener) {
+        this.adapterListener = adapterListener;
+    }
 
     public PayHistoryAdapter(Context context, List<PosOrderPayEntity> entityList) {
         super(context, entityList);
@@ -70,14 +83,35 @@ public class PayHistoryAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (adapterListener != null){
-//                        adapterListener.onItemClick(itemView, getPosition());
-//                    }
-//                }
-//            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (entityList == null || position < 0 || position >= entityList.size()) {
+//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                        return;
+                    }
+                    if (adapterListener != null){
+                        adapterListener.onItemClick(itemView, position);
+                    }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    int position = getAdapterPosition();
+                    if (entityList == null || position < 0 || position >= entityList.size()) {
+//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                        return false;
+                    }
+
+                    if (adapterListener != null) {
+                        adapterListener.onItemLongClick(itemView, position);
+                    }
+                    return false;
+                }
+            });
         }
     }
 }

@@ -5,12 +5,13 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class OnlineFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         initTabs();
 
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
+        EmbMsgService.getInstance().setAllRead(IMBizType.NEW_PURCHASE_ORDER);
     }
 
     private void initTabs() {
