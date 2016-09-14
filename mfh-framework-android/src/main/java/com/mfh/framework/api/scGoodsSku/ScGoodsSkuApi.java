@@ -55,9 +55,9 @@ public class ScGoodsSkuApi {
 
     /**
      * 店家商品建档入库
-     * /scGoodsSku/storeIn?
+     * /scGoodsSku/storeIn?jsonStr=&storeType=0|1，增加一个storeType参数，默认不传为0代表零售商，如果是批发商建档则storeType=1
      */
-    public final static String URL_SCGOODSSKU_STOREIN = URL_SCGOODSSKU + "storeIn";
+    public final static String URL_STOREIN = URL_SCGOODSSKU + "storeIn";
 
 
     /**
