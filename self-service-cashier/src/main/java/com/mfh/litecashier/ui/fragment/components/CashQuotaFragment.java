@@ -172,7 +172,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
 //        EventBus.getDefault().unregister(this);
     }
 
-
+    @OnClick(R.id.button_header_close)
     public void finishActivity() {
         if (!cancelable) {
             DialogUtil.showHint("请先确认当前日结");
