@@ -11,6 +11,8 @@ import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.cashier.model.PosGoods;
 import com.bingshanguxue.cashier.model.ProductCatalog;
 import com.bingshanguxue.cashier.model.ProductSkuBarcode;
+import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
@@ -83,7 +85,7 @@ public class DataSyncManager {
 
     private boolean bSyncInProgress = false;//是否正在同步
     private int rollback = -1;
-    private static final int MAX_ROLLBACK = 20;
+    private static final int MAX_ROLLBACK = 10;
     //当前同步进度
     private int nextStep = SYNC_STEP_NA;
 
@@ -212,6 +214,8 @@ public class DataSyncManager {
      */
     private void startSyncProducts() {
         ZLogger.d("准备同步POS商品档案...");
+        EventBus.getDefault().post(new DataSyncEvent(DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
@@ -223,7 +227,6 @@ public class DataSyncManager {
                 String startCursor = DataSyncManagerHelper.getPosLastUpdateCursor();
                 if (StringUtils.isEmpty(startCursor)){
                     ZLogger.df("同步商品库：全量更新，重置游标，删除旧数据");
-                    //删除旧数据
                     PosProductService.get().deactiveAll();
                 }
 
@@ -442,8 +445,7 @@ public class DataSyncManager {
             return;
         }
 
-        //清空同步标识
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+        EmbMsgService.getInstance().setAllRead(IMBizType.NEW_PURCHASE_ORDER);
 
         mPosSkuPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 

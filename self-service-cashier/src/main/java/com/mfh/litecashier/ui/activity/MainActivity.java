@@ -33,6 +33,8 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -242,7 +244,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             inlvBarcode.requestFocus();
         }
 
-        int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
+        int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
         if (menuAdapter != null) {
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
@@ -600,8 +602,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //设置需要更新商品中心,商品后台类目
         SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
-
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSync.stopSync();
@@ -714,19 +714,20 @@ public class MainActivity extends CashierActivity implements ICashierView {
         Bundle bundle = event.getArgs();
         ZLogger.d(String.format("AffairEvent(%d)", eventId));
         if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
-            int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
+            ZLogger.d("SKU更新未读消息个数为：" + count);
             if (count > 1) {
-                ZLogger.d("SKU更新，准备同步数据...");
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
+                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
                 btnSync.startSync();
                 DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
             } else {
                 btnSync.setBadgeEnabled(true);
             }
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
-            int count = SharedPreferencesHelper.getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
             menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
                     count);
+            ZLogger.d("生鲜预定订单未读消息个数为：" + count);
             if (count > 0) {
                 cloudSpeak("您有新订单,请注意查收");
             }
@@ -766,7 +767,10 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
+            btnSync.startSync();
+        }
+        else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
             btnSync.stopSync();
             //同步数据结束后开始同步订单

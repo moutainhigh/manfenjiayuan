@@ -17,12 +17,9 @@ import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -106,45 +103,29 @@ public class PushDemoReceiver extends BroadcastReceiver {
      * */
     private static void parsePushPayload(Context context, String data){
         EmbMsg embMsg = EmbMsg.parseOjbect(data);
-        if (embMsg != null){
-            EmbMsgService.getInstance().saveOrUpdate(embMsg);
+        if (embMsg == null){
+            return;
         }
-        JSONObject jsonObject = JSONObject.parseObject(data);
-        JSONObject msgObj = jsonObject.getJSONObject("msg");
-        JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
 
+        //已经保存过的消息不再重复保存，客户端可能会收到多条重复的消息，只需要处理一条即可。
+        EmbMsgService.getInstance().saveOrUpdate(embMsg, false);
+
+//        JSONObject jsonObject = JSONObject.parseObject(data);
+//        JSONObject msgObj = jsonObject.getJSONObject("msg");
+//        JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
+        JSONObject msgBeanObj = JSONObject.parseObject(embMsg.getMsgBean());
         if (msgBeanObj == null){
             return;
         }
 
         JSONObject bodyObj = msgBeanObj.getJSONObject("body");
+        String content = bodyObj.getString("content");
         Integer bizType = msgBeanObj.getIntValue("bizType");//获取推送的数据类型
         String time = msgBeanObj.getString("time");
-        ZLogger.df(String.format("%s--%s", bizType, data));
+        ZLogger.df(String.format("%s--%s\ncontent=%s", bizType, data, content));
 
-        //小伙伴
-        if (IMBizType.ORDER_TRANS_NOTIFY == bizType){
-            Bundle extras = new Bundle();
-            JSONObject metaObj = msgObj.getJSONObject("meta");
-            if (metaObj != null){
-                extras.putString("orderId", metaObj.getString("tagOne"));
-            }
-            if (bodyObj != null){
-                extras.putString("content", bodyObj.getString("content"));
-
-                EventBus.getDefault().post(
-                        new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_ORDER));
-
-                //程序退到后台，显示通知
-                if(MfhLoginService.get().haveLogined() && SharedPreferencesManager.getNotificationAcceptEnabled()){// && !PushUtil.isForeground(context)){
-//                    UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_NOTIFY_TAKE_ORDER, extras);
-//                    Notification notification = PushUtil.generateNotification(context, "接单通知", bodyObj.getString("content"));
-//                    PushUtil.showNotification(context, 0, notification);
-                }
-            }
-        }
         //SKU更新
-        else if (IMBizType.TENANT_SKU_UPDATE == bizType){
+        if (IMBizType.TENANT_SKU_UPDATE == bizType){
             Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
 
             //保留最近一个小时的消息
@@ -169,20 +150,10 @@ public class PushDemoReceiver extends BroadcastReceiver {
                     TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
                     TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
 
-            int count = SharedPreferencesHelper
-                    .getInt(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 0);
-            SharedPreferencesHelper
-                    .set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, count+1);
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
         }
         //新的采购订单
         else if (IMBizType.NEW_PURCHASE_ORDER == bizType){
-            int count = SharedPreferencesHelper
-                    .getInt(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, 0);
-            SharedPreferencesHelper
-                    .set(SharedPreferencesHelper.PK_ONLINE_FRESHORDER_UNREADNUMBER, count+1);
-
-            //同步数据
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER));
         }
         //现金超过授权额度，要求锁定pos机
@@ -217,8 +188,6 @@ public class PushDemoReceiver extends BroadcastReceiver {
         //现金授权额度将要用完，即将锁定pos机
         else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
             AlarmManagerHelper.triggleNextDailysettle(1);
-
-            String content = bodyObj.getString("content");
 
             Double cashLimitAmount = Double.valueOf(content);
             ZLogger.d("cashQuotaAmount=" + cashLimitAmount);

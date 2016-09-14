@@ -49,8 +49,6 @@ import rx.schedulers.Schedulers;
  */
 public class ValidateManager {
 
-    private static final String TAG = "ValidateManager";
-
     public static final int STEP_VALIDATE_NA = -1;
     public static final int STEP_VALIDATE_SESSION = 0;// 检查是否已经登录/会话是否有效
     /**

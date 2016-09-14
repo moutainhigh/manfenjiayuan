@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
@@ -25,11 +26,10 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
-import com.mfh.litecashier.event.AffairEvent;
-import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.CloudSyncManager;
+import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
@@ -243,12 +243,10 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
 
                         // 强制同步
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SKU_UPDATE_UNREADNUMBER, 99);
                         SharedPreferencesHelper.setSyncProductsCursor("");
                         SharedPreferencesHelper.setPosSkuLastUpdate("");
 
-                        EventBus.getDefault().post(
-                                new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
+                        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
