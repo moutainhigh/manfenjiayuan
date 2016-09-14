@@ -102,24 +102,24 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
     }
 
     /**
-     * 店家商品建档入库 /scGoodsSku/storeIn?jsonStr=[
-     * {"product":{"id":11, "name":"测试商品","unit":"条"},
-     * "proSku": {"id":111, "barcode":"1234567", "skuMask":1},
-     * "skuInfo": {"costPrice":80,"buyPrice":81,"costScore":100,quantity:1.0,lowerLimit:10,upperLimit:100},
-     * "mfhSupply":1, "mfhPrice":1.1}
-     * ]
+     * 店家商品建档入库
      *
      * @param jsonStr 其中product为产品本身信息；proSku为产品sku信息；
      *                skuInfo为店家商品sku信息(costPrice为售价，buyPrice为采购价，quantity为入库数量,lowerLimit为最低安全库存);
      *                mfhSupply为是否需要满分配货(0-不需要，1-需要)，mfhPrice为满分价。
+     * @param storeType 默认不传为0代表零售商，如果是批发商建档则storeType=1
      */
-    public static void storeIn(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
+    public static void storeIn(String jsonStr, Integer storeType,
+                               AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonStr);
+        if (storeType != null){
+            params.put("storeType", String.valueOf(storeType));
+        }
 //        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_SCGOODSSKU_STOREIN, params, responseCallback);
+        AfinalFactory.getHttp(true).post(URL_STOREIN, params, responseCallback);
     }
 
 

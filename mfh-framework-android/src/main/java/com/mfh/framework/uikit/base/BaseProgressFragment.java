@@ -1,6 +1,7 @@
 package com.mfh.framework.uikit.base;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 /**
@@ -27,10 +28,13 @@ public abstract class BaseProgressFragment extends BaseFragment {
     public void onLoadError(String errMessage){
         bSyncInProgress = false;
         isLoadingMore = false;
-        ZLogger.d(errMessage);
-        showProgressDialog(ProgressDialog.STATUS_ERROR, errMessage, true);
-//        hideProgressDialog();
-//        DialogUtil.showHint(errMessage);
+        if (!StringUtils.isEmpty(errMessage)){
+            ZLogger.df(errMessage);
+            showProgressDialog(ProgressDialog.STATUS_ERROR, errMessage, true);
+        }
+        else{
+            hideProgressDialog();
+        }
     }
     /**
      * 加载完成

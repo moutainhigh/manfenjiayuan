@@ -36,8 +36,6 @@ public class ScProductPriceApi {
      * <li>门店导入前台类目商品查询时调用</li>
      * </ol>
      * @param frontCataLogId 前台类目编号
-     * @param priceMask 从信息模型上，一个productId其实可能对应多个proSkuId，
-     *                  但在你pos这边应该不存在这种情况，你可以固定写死priceMask=0
      */
     public static void findProductByFrontCatalog(Long frontCataLogId, PageInfo pageInfo,
                                                  AjaxCallBack<? extends Object> responseCallback) {
@@ -58,8 +56,6 @@ public class ScProductPriceApi {
     /**
      * 根据条码查询平台商品档案
      * @param barcode 商品条码
-     * @param priceMask 从信息模型上，一个productId其实可能对应多个proSkuId，
-     *                  但在你pos这边应该不存在这种情况，你可以固定写死priceMask=0
      */
     public static void findProductSku(String barcode, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
