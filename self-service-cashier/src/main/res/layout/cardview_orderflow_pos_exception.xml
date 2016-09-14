@@ -50,6 +50,14 @@
             android:layout_below="@+id/tv_barcode"
             android:singleLine="true"
             android:text="下单时间"/>
+        <TextView
+            android:id="@+id/tv_updatedate"
+            style="@style/mfh_form_content_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_createDate"
+            android:singleLine="true"
+            android:text="更新时间"/>
 
         <!-- 网点-->
         <TextView
@@ -57,7 +65,7 @@
             style="@style/mfh_form_content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_createDate"
+            android:layout_below="@+id/tv_updatedate"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="网点"/>
