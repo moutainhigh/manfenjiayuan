@@ -472,7 +472,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
-        //回调
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {

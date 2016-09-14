@@ -23,7 +23,6 @@ import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.PurchaseShopcartHelper;
 
 import butterknife.Bind;
 import rx.Observable;
@@ -118,7 +117,6 @@ public class SplashActivity extends InitActivity {
                 }
 
                 CashierShopcartService.getInstance().clear();//购物车－收银
-                PurchaseShopcartHelper.getInstance().clear();//购物车－采购
                 PosCategoryGodosTempService.getInstance().clear();
 
                 AppHelper.clearRedunantData(false);
