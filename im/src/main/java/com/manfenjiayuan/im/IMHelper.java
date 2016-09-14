@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
- * Created by Administrator on 14-5-8.
+ * Created by bingshanguxue on 14-5-8.
  */
 public class IMHelper {
     /**
@@ -155,7 +155,7 @@ public class IMHelper {
      * @return
      */
     public static boolean isMySelf(EmbMsg msg) {
-        Long guid = msg.getFromguid();
+        Long guid = msg.getFromGuid();
         Long myId = MfhLoginService.get().getCurrentGuId();
         if(guid == null || myId == null){
             return false;

@@ -273,7 +273,7 @@ public class SqlBuilder {
 			throw new DbException("this entity["+entity.getClass()+"]'s id value is null");
 		}
 		
-		List<KeyValue> keyValueList = new ArrayList<KeyValue>();
+		List<KeyValue> keyValueList = new ArrayList<>();
 		//添加属性
 		Collection<Property> propertys = table.propertyMap.values();
 		for(Property property : propertys){
@@ -289,7 +289,7 @@ public class SqlBuilder {
 			if(kv!=null) keyValueList.add(kv);
 		}
 		
-		if(keyValueList == null || keyValueList.size()==0) return null ;
+		if(keyValueList.size() == 0) return null ;
 		
 		SqlInfo sqlInfo = new SqlInfo();
 		StringBuilder strSQL=new StringBuilder("UPDATE ");
@@ -345,7 +345,32 @@ public class SqlBuilder {
 		sqlInfo.setSql(strSQL.toString());	
 		return sqlInfo;
 	}
-	
+
+	public static SqlInfo getUpdateSqlAsSqlInfo(Class<?> clazz, List<KeyValue> keyValues, String strWhere){
+		SqlInfo sqlInfo = new SqlInfo();
+
+
+		if(keyValues == null || keyValues.size()==0) {
+			return sqlInfo;
+		}
+
+		TableInfo table=TableInfo.get(clazz);
+
+		StringBuilder strSQL=new StringBuilder("UPDATE ");
+		strSQL.append(table.getTableName());
+		strSQL.append(" SET ");
+		for(KeyValue kv : keyValues){
+			strSQL.append(kv.getKey()).append("=?,");
+			sqlInfo.addValue(kv.getValue());
+		}
+		strSQL.deleteCharAt(strSQL.length() - 1);
+		if(!TextUtils.isEmpty(strWhere)){
+			strSQL.append(" WHERE ").append(strWhere);
+		}
+		sqlInfo.setSql(strSQL.toString());
+		return sqlInfo;
+	}
+
 	public static String getCreatTableSQL(Class<?> clazz){
 		TableInfo table=TableInfo.get(clazz);
 		

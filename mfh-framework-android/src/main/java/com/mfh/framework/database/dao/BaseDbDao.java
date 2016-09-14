@@ -12,6 +12,8 @@ import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import net.tsz.afinal.FinalDb;
+import net.tsz.afinal.db.sqlite.SqlBuilder;
+import net.tsz.afinal.db.table.KeyValue;
 import net.tsz.afinal.db.table.TableInfo;
 
 import java.io.File;
@@ -231,6 +233,10 @@ public abstract class BaseDbDao<T extends IObject, PK> extends ComnDao<T, PK> im
         getFinalDb().update(bean);
     }
 
+    public void update(Class<?> clazz, List<KeyValue> keyValues, String strWhere){
+        getFinalDb().update(clazz, keyValues, strWhere);
+    }
+
     /**
      * 新增或修改一个对象
      *
@@ -245,6 +251,20 @@ public abstract class BaseDbDao<T extends IObject, PK> extends ComnDao<T, PK> im
             update(bean);
         else
             save(bean);
+    }
+
+    public void saveOrUpdate(T bean, boolean isOverride) {
+        if (bean == null) {
+            return;
+        }
+        if (entityExistById((PK) bean.getId())){
+            if (isOverride){
+                update(bean);
+            }
+        }
+        else {
+            save(bean);
+        }
     }
 
     /**

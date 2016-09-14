@@ -54,7 +54,7 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
         NetCallBack.SaveCallBackJson call = new NetCallBack.SaveCallBackJson<EmbMsg> (processor, EmbMsg.class){
             @Override
             protected EmbMsg changeJsonToBean(JSONObject json) {
-                return EmbMsg.fromSendMessage(json, picUrl);
+                return EmbMsg.parseOjbect(json);
             }
         };
         //使用post，因为消息有中文
