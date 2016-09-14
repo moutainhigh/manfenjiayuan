@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bingshanguxue.cashier.model.wrapper.LocalMenu;
+import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 
@@ -20,9 +20,9 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class AdministratorMenuAdapter
-        extends RegularAdapter<LocalMenu, AdministratorMenuAdapter.MenuOptioinViewHolder> {
+        extends RegularAdapter<ResMenu, AdministratorMenuAdapter.MenuOptioinViewHolder> {
 
-    public AdministratorMenuAdapter(Context context, List<LocalMenu> entityList) {
+    public AdministratorMenuAdapter(Context context, List<ResMenu> entityList) {
         super(context, entityList);
     }
 
@@ -43,7 +43,7 @@ public class AdministratorMenuAdapter
 
     @Override
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
-        final LocalMenu entity = entityList.get(position);
+        final ResMenu entity = entityList.get(position);
 
         holder.ivHeader.setImageResource(entity.getResId());
     }

@@ -1,0 +1,114 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+    <include layout="@layout/appbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        android:baselineAligned="false"
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--订单列表-->
+        <RelativeLayout
+            android:id="@+id/frame_order"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <!-- google 官方下拉刷新 -->
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swiperefreshlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/order_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <!--空视图-->
+            <TextView
+                android:id="@+id/empty_view"
+                style="@style/mfh_textview_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/label_nodata_reload"/>
+
+        </RelativeLayout>
+
+        <!--订单小票-->
+        <RelativeLayout
+            android:id="@+id/frame_receipt"
+            android:layout_width="@dimen/common_right_panel_width"
+            android:layout_height="match_parent"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_normal">
+
+            <!--租户:当前租户/所有租户-->
+            <Spinner
+                android:id="@+id/spinner_tenant"
+                style="@style/dropDownSpinnerStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:spinnerMode="dropdown"/>
+
+            <!--类目类型-->
+            <Spinner
+                android:id="@+id/spinner_catetype"
+                style="@style/dropDownSpinnerStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_below="@+id/spinner_tenant"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:spinnerMode="dropdown"/>
+
+
+            <!--订单状态-->
+            <Spinner
+                android:id="@+id/spinner_status"
+                style="@style/dropDownSpinnerStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_below="@+id/spinner_catetype"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:id="@+id/tv_brief"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinner_status"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/minimum_touch_height"
+                android:text="商品数"
+                android:textColor="@color/material_black"/>
+
+            <!--订单编号-->
+            <com.mfh.litecashier.ui.widget.InputSearchView
+                android:id="@+id/insv_order_barcode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_below="@+id/tv_brief"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:background="@color/mfhtheme_maskPrimary"
+                android:orientation="horizontal"
+                app:inputNumberLabelView_inputHint="商品条码"
+                app:inputNumberLabelView_inputTextColor="@color/black"
+                app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

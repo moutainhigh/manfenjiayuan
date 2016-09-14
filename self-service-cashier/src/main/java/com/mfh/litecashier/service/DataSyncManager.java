@@ -445,7 +445,7 @@ public class DataSyncManager {
             return;
         }
 
-        EmbMsgService.getInstance().setAllRead(IMBizType.NEW_PURCHASE_ORDER);
+        EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
 
         mPosSkuPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 

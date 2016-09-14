@@ -717,7 +717,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
             ZLogger.d("SKU更新未读消息个数为：" + count);
             if (count > 1) {
-                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
+//                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
                 btnSync.startSync();
                 DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
             } else {
