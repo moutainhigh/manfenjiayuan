@@ -17,12 +17,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -41,13 +42,16 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 /**
- * 自采商品--商品建档并入库
- * <ol>
- * <li>适用场景：门店收银扫描新条码，建档</li>
+ * 商品建档并入库
+ * <ul>
+ * 适用场景：
+ * <li>门店收银扫描新条码，建档</li>
  * <li>
  * 采购数量默认为0，需要采购请创建收货单
  * </li>
- * </ol>
+ * 修改历史：
+ * <li>2016-09-13,新增规格/箱规/产地/等级/保质期/初始库存/初始成本价字段</li>
+ * </ul>
  * Created by Nat.ZZN(bingshanguxue) on 15/09/24.
  */
 public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements IScGoodsSkuView {
@@ -63,10 +67,20 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
     TextLabelView labelBarcode;
     @Bind(R.id.label_name)
     EditLabelView labelName;
+    @Bind(R.id.label_shortName)
+    EditLabelView labelShortName;
+    @Bind(R.id.label_packageNum)
+    EditLabelView labelPackageNum;
     @Bind(R.id.spinner_price_type)
     Spinner spinnerPriceType;
     @Bind(R.id.spinner_unit)
     Spinner spinnerUnit;
+    @Bind(R.id.label_prodArea)
+    EditLabelView labelProdArea;
+    @Bind(R.id.label_prodLevel)
+    EditLabelView labelProdLevel;
+    @Bind(R.id.label_guaPeriod)
+    EditLabelView labelGuaPeriod;
     @Bind(R.id.label_quantity)
     EditLabelView labelQuantity;
     @Bind(R.id.label_buyprice)
@@ -77,6 +91,8 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
     private String barcode;
     private ScGoodsSku purchaseGoods;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
+    private ArrayAdapter<CharSequence> unitAdapter0;
+    private ArrayAdapter<CharSequence> unitAdapter1;
 
     public static ScSkuGoodsStoreInFragment newInstance(Bundle args) {
         ScSkuGoodsStoreInFragment fragment = new ScSkuGoodsStoreInFragment();
@@ -105,27 +121,27 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         }
         tvTitle.setText("商品建档");
         labelBarcode.setEndText(barcode);
-        labelName.setSoftKeyboardEnabled(true);
 
         ArrayAdapter<CharSequence> priceTypeAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.pricetype_name, R.layout.mfh_spinner_item_text);
         priceTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unitAdapter0 = ArrayAdapter.createFromResource(getActivity(),
+                R.array.unit_name_0, R.layout.mfh_spinner_item_text);
+        unitAdapter0.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unitAdapter1 = ArrayAdapter.createFromResource(getActivity(),
+                R.array.unit_name_1, R.layout.mfh_spinner_item_text);
+        unitAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinnerPriceType.setAdapter(priceTypeAdapter);
         spinnerPriceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (spinnerPriceType.getSelectedItem().toString().equals("计重")) {
-                    ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(getActivity(),
-                            R.array.unit_name_1, R.layout.mfh_spinner_item_text);
-                    unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerUnit.setAdapter(unitAdapter);
+                    spinnerUnit.setAdapter(unitAdapter1);
                     spinnerUnit.setSelection(0);
                     spinnerUnit.setEnabled(false);
                 } else {
-                    ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(getActivity(),
-                            R.array.unit_name_0, R.layout.mfh_spinner_item_text);
-                    unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerUnit.setAdapter(unitAdapter);
+                    spinnerUnit.setAdapter(unitAdapter0);
                     spinnerUnit.setSelection(0);
                     spinnerUnit.setEnabled(true);
                 }
@@ -145,6 +161,71 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         spinnerUnit.setSelection(0);
 
         labelName.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelShortName.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+//                refreshPackage(null);
+//                eqvBarcode.clear();
+//                eqvBarcode.requestFocus();
+            }
+        });
+        labelShortName.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelPackageNum.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+//                refreshPackage(null);
+//                eqvBarcode.clear();
+//                eqvBarcode.requestFocus();
+            }
+        });
+        labelPackageNum.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelProdArea.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+//                refreshPackage(null);
+//                eqvBarcode.clear();
+//                eqvBarcode.requestFocus();
+            }
+        });
+        labelProdArea.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelProdLevel.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+//                refreshPackage(null);
+//                eqvBarcode.clear();
+//                eqvBarcode.requestFocus();
+            }
+        });
+        labelProdLevel.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelGuaPeriod.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+//                refreshPackage(null);
+//                eqvBarcode.clear();
+//                eqvBarcode.requestFocus();
+            }
+        });
+        labelGuaPeriod.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
                 labelQuantity.requestFocusEnd();
@@ -219,6 +300,7 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
+            btnSubmit.setEnabled(false);
             return;
         }
 
@@ -234,7 +316,9 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
 
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
-        refresh(null);
+//        refresh(null);
+        DialogUtil.showHint("加载商品信息失败");
+        btnSubmit.setEnabled(false);
     }
 
     @Override
@@ -253,20 +337,34 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         purchaseGoods = stockGoods;
 
         if (stockGoods == null) {
-            labelName.requestFocusEnd();
+            labelName.setInput("");
             labelName.setEnabled(true);
-            labelQuantity.setEnabled(true);
-            labelBuyprice.setEnabled(true);
-            labelCostprice.setEnabled(true);
+
+            labelShortName.setInput("");
+            labelPackageNum.setInput("");
+            spinnerPriceType.setSelection(0);
             spinnerPriceType.setEnabled(true);
             spinnerUnit.setEnabled(true);
+            labelProdArea.setInput("");
+            labelProdLevel.setInput("");
+            labelGuaPeriod.setInput("");
+            labelQuantity.setInput("");
+            labelBuyprice.setInput("");
+            labelCostprice.setInput("");
+
+            labelName.requestFocusEnd();
         } else {
             labelName.setInput(stockGoods.getSkuName());
             labelName.setEnabled(false);
-            labelQuantity.setInput(String.format("%.2f", stockGoods.getQuantity()));
-            labelQuantity.requestFocusEnd();
-            labelBuyprice.setInput(String.format("%.2f", stockGoods.getBuyPrice()));
-            labelCostprice.setInput(String.format("%.2f", stockGoods.getCostPrice()));
+
+            labelShortName.setInput(stockGoods.getShortName());
+            labelPackageNum.setInput(MUtils.formatDouble(stockGoods.getPackageNum(), ""));
+            labelProdArea.setInput(stockGoods.getProdArea());
+            labelProdLevel.setInput(stockGoods.getProdLevel());
+            labelGuaPeriod.setInput("");
+            labelQuantity.setInput(MUtils.formatDouble(stockGoods.getQuantity(), ""));
+            labelBuyprice.setInput(MUtils.formatDouble(stockGoods.getBuyPrice(), ""));
+            labelCostprice.setInput(MUtils.formatDouble(stockGoods.getCostPrice(), ""));
 
             if (stockGoods.getPriceType().equals(PriceType.WEIGHT)) {
                 spinnerPriceType.setSelection(1);
@@ -275,21 +373,17 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
             }
             spinnerPriceType.setEnabled(false);
 
-            if (spinnerPriceType.getSelectedItem().toString().equals("计重")) {
-                ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(getActivity(),
-                        R.array.unit_name_1, R.layout.mfh_spinner_item_text);
-                unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerUnit.setAdapter(unitAdapter);
-                spinnerUnit.setSelection(0);
-                spinnerUnit.setEnabled(false);
-            } else {
-                ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(getActivity(),
-                        R.array.unit_name_0, R.layout.mfh_spinner_item_text);
-                unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerUnit.setAdapter(unitAdapter);
-                spinnerUnit.setSelection(0);
-                spinnerUnit.setEnabled(true);
-            }
+//            if (spinnerPriceType.getSelectedItem().toString().equals("计重")) {
+//                spinnerUnit.setAdapter(unitAdapter1);
+//                spinnerUnit.setSelection(0);
+//                spinnerUnit.setEnabled(false);
+//            } else {
+//                spinnerUnit.setAdapter(unitAdapter0);
+//                spinnerUnit.setSelection(0);
+//                spinnerUnit.setEnabled(true);
+//            }
+
+            labelQuantity.requestFocusEnd();
         }
         btnSubmit.setEnabled(true);
     }
@@ -312,38 +406,55 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
             return;
         }
 
-//        if (curInvCompProvider == null) {
-//            DialogUtil.showHint("请选择供应商");
+        String shortName = labelShortName.getInput();
+//        if (StringUtils.isEmpty(shortName)) {
+//            DialogUtil.showHint("规格不能为空");
 //            btnSubmit.setEnabled(true);
 //            return;
 //        }
-
+        String packageNum = labelPackageNum.getInput();
+//        if (StringUtils.isEmpty(packageNum)) {
+//            DialogUtil.showHint("箱规不能为空");
+//            btnSubmit.setEnabled(true);
+//            return;
+//        }
+        String prodArea = labelProdArea.getInput();
+//        if (StringUtils.isEmpty(prodArea)) {
+//            DialogUtil.showHint("产地不能为空");
+//            btnSubmit.setEnabled(true);
+//            return;
+//        }
+        String prodLevel = labelProdLevel.getInput();
+//        if (StringUtils.isEmpty(prodLevel)) {
+//            DialogUtil.showHint("等级不能为空");
+//            btnSubmit.setEnabled(true);
+//            return;
+//        }
+        String guaPeriod = labelGuaPeriod.getInput();
+//        if (StringUtils.isEmpty(guaPeriod)) {
+//            DialogUtil.showHint("保质期不能为空");
+//            btnSubmit.setEnabled(true);
+//            return;
+//        }
         String buyprice = labelBuyprice.getInput();
         if (StringUtils.isEmpty(buyprice)) {
             DialogUtil.showHint("采购价不能为空");
             btnSubmit.setEnabled(true);
             return;
         }
-
         String costprice = labelCostprice.getInput();
         if (StringUtils.isEmpty(costprice)) {
             DialogUtil.showHint("零售价不能为空");
             btnSubmit.setEnabled(true);
             return;
         }
-
         String quantity = labelQuantity.getInput();
         if (StringUtils.isEmpty(quantity)) {
             DialogUtil.showHint("初始库存不能为空");
             btnSubmit.setEnabled(true);
             return;
         }
-//        Double quantityVal = Double.valueOf(quantity);
-//        if (quantityVal <= 0){
-//            DialogUtil.showHint("采购数量不能为零");
-//            btnSubmit.setEnabled(true);
-//            return;
-//        }
+
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
 //            animProgress.setVisibility(View.GONE);
@@ -377,9 +488,14 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         product.put("name", productName);
         product.put("unit", unit);
         product.put("priceType", priceType);
+        product.put("shortName", shortName);
+        product.put("prodArea", prodArea);
+        product.put("prodLevel", prodLevel);
+        product.put("guaPeriod", guaPeriod);
         product.put("domain", CateApi.DOMAIN_TYPE_PROD);//商品业务域
 //        product.put("shortName", shortName);
         defaultSku.put("barcode", barcode);
+        defaultSku.put("packageNum", packageNum);
         tenantSku.put("buyPrice", buyprice);
         //Column 'cost_price' cannot be null
         tenantSku.put("costPrice", costprice);//默认零售价等于采购价。
@@ -393,7 +509,7 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         item.put("tenantSku", tenantSku);
         jsonArray.add(item);
 
-        ScGoodsSkuApiImpl.storeIn(jsonArray.toJSONString(), responseCallback);
+        ScGoodsSkuApiImpl.storeIn(jsonArray.toJSONString(), StoreType.SUPERMARKET, responseCallback);
     }
 
     private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -402,7 +518,6 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.d("processFailure: " + errMsg);
                     //查询失败
 //                        animProgress.setVisibility(View.GONE);
 //                    DialogUtil.showHint("新增商品失败");
