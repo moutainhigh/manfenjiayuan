@@ -11,12 +11,14 @@ import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.bingshanguxue.cashier.model.wrapper.LocalMenu;
+import com.bingshanguxue.cashier.model.wrapper.ResMenu;
+import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 
 import java.util.ArrayList;
@@ -115,23 +117,6 @@ public class CanaryActivity extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-//        EventBus.getDefault().unregister(this);
-    }
 
     private void initMenuRecyclerView() {
         mRLayoutManager = new GridLayoutManager(this, 8);
@@ -149,12 +134,13 @@ public class CanaryActivity extends BaseActivity {
 //                getResources().getColor(R.color.mf_dividerColorPrimary), 0.1f));
 //        menuRecyclerView.addItemDecoration(new GridItemDecoration(
 //                4, 2, false));
+        menuRecyclerView.addItemDecoration(new DividerGridItemDecoration(this));
 
         menuAdapter = new AdministratorMenuAdapter(CashierApp.getAppContext(), null);
         menuAdapter.setOnAdapterLitener(new AdministratorMenuAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                LocalMenu entity = menuAdapter.getEntity(position);
+                ResMenu entity = menuAdapter.getEntity(position);
                 if (entity != null) {
                     responseMenu(entity.getId());
                 }
@@ -164,13 +150,15 @@ public class CanaryActivity extends BaseActivity {
         menuAdapter.setEntityList(getAdminMenus());
     }
 
-    public synchronized List<LocalMenu> getAdminMenus() {
-        List<LocalMenu> functionalList = new ArrayList<>();
-        functionalList.add(new LocalMenu(LocalMenu.CANARY_MENU_GOODS,
+    public synchronized List<ResMenu> getAdminMenus() {
+        List<ResMenu> functionalList = new ArrayList<>();
+        functionalList.add(new ResMenu(ResMenu.CANARY_MENU_GOODS,
                 "库存", R.mipmap.ic_admin_menu_inventory));
-        functionalList.add(new LocalMenu(LocalMenu.CANARY_MENU_ORDERFLOW,
+        functionalList.add(new ResMenu(ResMenu.CANARY_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
-        functionalList.add(new LocalMenu(LocalMenu.CANARY_MENU_CANARY,
+        functionalList.add(new ResMenu(ResMenu.CANARY_MENU_MESSAGE_MGR,
+                "消息管理器", R.mipmap.ic_admin_menu_settings));
+        functionalList.add(new ResMenu(ResMenu.CANARY_MENU_CANARY,
                 "设置", R.mipmap.ic_admin_menu_settings));
 
         return functionalList;
@@ -183,15 +171,15 @@ public class CanaryActivity extends BaseActivity {
         if (id == null) {
             return;
         }
-        if (id.compareTo(LocalMenu.CANARY_MENU_GOODS) == 0) {
+        if (id.compareTo(ResMenu.CANARY_MENU_GOODS) == 0) {
             redirect2Goods();
-        }
-        else if (id.compareTo(LocalMenu.CANARY_MENU_ORDERFLOW) == 0) {
+        } else if (id.compareTo(ResMenu.CANARY_MENU_ORDERFLOW) == 0) {
             redirect2Orderflow();
-        }
-        else if (id.compareTo(LocalMenu.CANARY_MENU_CANARY) == 0) {
+        } else if (id.compareTo(ResMenu.CANARY_MENU_MESSAGE_MGR) == 0) {
+            ActivityRoute.redirect2MsgMgr(this);
+        } else if (id.compareTo(ResMenu.CANARY_MENU_CANARY) == 0) {
             redirect2Canary();
-        }  else {
+        } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }
     }
@@ -207,7 +195,7 @@ public class CanaryActivity extends BaseActivity {
     }
 
     /**
-     * 流水
+     * 订单流水
      */
     public void redirect2Orderflow() {
         Bundle extras = new Bundle();
@@ -216,8 +204,10 @@ public class CanaryActivity extends BaseActivity {
         UIHelper.startActivity(this, SimpleActivity.class, extras);
     }
 
+
+
     /**
-     * 异常订单
+     * 设置
      */
     public void redirect2Canary() {
         Bundle extras = new Bundle();

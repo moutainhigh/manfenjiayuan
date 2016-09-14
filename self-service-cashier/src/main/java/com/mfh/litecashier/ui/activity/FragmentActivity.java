@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
+import com.mfh.litecashier.ui.fragment.canary.MessageMgrFragment;
 import com.mfh.litecashier.ui.fragment.components.StockDetailFragment;
 import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
 
@@ -22,6 +23,9 @@ public class FragmentActivity extends BaseActivity {
     public static final int FT_ADDMORE_LOCALFRONTGOODS = 0x01;//添加更多前台类目商品
     public static final int FT_STOCK_DETAIL = 0x32;
     public static final int FT_GROUPON_DETAIL = 0x33;  //团购详情页
+
+    public static final int FT_CANARY_MESSAGE_MGR = 0x50;//消息管理器
+
 
     private int fragmentType = 0;
 
@@ -110,6 +114,19 @@ public class FragmentActivity extends BaseActivity {
                     fragment = GrouponFragment.newInstance(intent.getExtras());
                 } else {
                     fragment = GrouponFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, fragment).show(fragment)
+                        .commit();
+            }
+            //消息管理器
+            case FT_CANARY_MESSAGE_MGR: {
+                MessageMgrFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = MessageMgrFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = MessageMgrFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, fragment).show(fragment)

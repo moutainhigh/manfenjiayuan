@@ -23,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * 采购－－采购订单
+ * 对话
  * Created by Nat.ZZN on 15/8/5.
  */
 public class ChatMessageAdapter
@@ -64,7 +64,7 @@ public class ChatMessageAdapter
 
 
         holder.tvFormatCreateTime.setText(entity.getFormatCreateTime());
-        MsgBean msgBean = JSONObject.parseObject(entity.getParam(), MsgBean.class);
+        MsgBean msgBean = JSONObject.parseObject(entity.getMsgBean(), MsgBean.class);
         String body = JSON.toJSONString(msgBean.getBody());
         if (IMTechType.TEXT.equals(msgBean.getType())){
             TextParam textParam = TextParam.fromJson(body);
