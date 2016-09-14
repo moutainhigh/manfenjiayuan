@@ -120,7 +120,9 @@ public abstract class BaseFragment extends Fragment {
         confirmDialog.setMessage(message);
         confirmDialog.setPositiveButton(positive, positiveListener);
         confirmDialog.setNegativeButton(negative, negativelistener);
-        confirmDialog.show();
+        if (!confirmDialog.isShowing()){
+            confirmDialog.show();
+        }
     }
 
     /**
@@ -137,7 +139,18 @@ public abstract class BaseFragment extends Fragment {
         confirmDialog.setMessage(message);
         confirmDialog.setPositiveButton(positive, positiveListener);
         confirmDialog.setNegativeButton(negative, negativelistener);
-        confirmDialog.show();
+        if (!confirmDialog.isShowing()){
+            confirmDialog.show();
+        }
+    }
+
+    /**
+     * 隐藏确认对话框
+     */
+    public void hideConfirmDialog(){
+        if (confirmDialog != null) {
+            confirmDialog.dismiss();
+        }
     }
 
     public void initProgressDialog(String processText, String doneText, String errorText) {
