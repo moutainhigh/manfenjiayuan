@@ -195,15 +195,6 @@ public class ChainGoodsSkuMode {
             listener.onProcess();
         }
 
-        //检查参数：
-//        if (companyId == null) {
-//            if (listener != null) {
-//                listener.onError("缺少必要参数companyId");
-//            }
-//            return;
-//        }
-
-
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<ChainGoodsSku,
                 NetProcessor.Processor<ChainGoodsSku>>(
                 new NetProcessor.Processor<ChainGoodsSku>() {

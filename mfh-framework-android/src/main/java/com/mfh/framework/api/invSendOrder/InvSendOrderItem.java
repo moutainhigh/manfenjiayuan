@@ -64,9 +64,6 @@ public class InvSendOrderItem implements Serializable {
     }
 
     public Double getPrice() {
-        if (price == null){
-            return 0D;
-        }
         return price;
     }
 

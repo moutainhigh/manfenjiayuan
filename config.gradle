@@ -7,8 +7,10 @@ ext {
                targetSdkVersion : 24,
                minSdkVersion    : 17]
 
+
+    //supportLibrary
+    supportLibraryVersion = '24.2.1'
     // App dependencies
-    supportLibraryVersion = '24.2.0'
     dependencies = ["appcompat-v7"        : "com.android.support:appcompat-v7:$supportLibraryVersion",
                     "support-v4"          : "com.android.support:support-v4:$supportLibraryVersion",
                     "design"              : "com.android.support:design:$supportLibraryVersion",

@@ -22,8 +22,8 @@ public class ScProductPricePresenter {
     }
 
     /**
-     * 查询洗衣类目商品商品
-     * @param frontCategoryId 类目编号
+     * 查询平台商品档案
+     * @param barcode 商品条码
      * */
     public void findProductSku(String barcode, PageInfo pageInfo){
         mScProductPriceMode.findProductSku(barcode, pageInfo,
