@@ -23,7 +23,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
     private static final String KEY_PAYLOAD     = "payload";
     private static final String KEY_APPID       = "appid";
 
-    private long offlineTime = System.currentTimeMillis();
+    private long offlineTime = 0;
 
 
     @Override
@@ -71,9 +71,9 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 if (interval > 1000) {
                     ZLogger.df("个推服务断开超过 1秒,准备初始化...");
                     PushManager.getInstance().initialize(AppContext.getAppContext());
+                    offlineTime = System.currentTimeMillis();
                 } else {
                     ZLogger.df("个推服务未启动，...");
-                    offlineTime = System.currentTimeMillis();
                 }
                 break;
             default:
