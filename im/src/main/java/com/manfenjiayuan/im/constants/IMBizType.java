@@ -67,6 +67,10 @@ public class IMBizType {
                 return "现金授权额度将要用完";
             case EVALUATE_ORDER:
                 return "用户评价订单";
+            case TENANT_SKU_UPDATE:
+                return "网点sku信息更新";
+            case NEW_PURCHASE_ORDER:
+                return "新的生鲜预订单";
             default:
                 return "Unkown";
         }

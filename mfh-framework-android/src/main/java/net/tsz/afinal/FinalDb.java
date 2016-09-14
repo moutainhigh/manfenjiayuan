@@ -237,7 +237,8 @@ public class FinalDb {
 		checkTableExist(entity.getClass());
 		exeSqlInfo(SqlBuilder.getUpdateSqlAsSqlInfo(entity));
 	}
-	
+
+
 	/**
 	 * 根据条件更新数据
 	 * @param entity
@@ -247,7 +248,18 @@ public class FinalDb {
 		checkTableExist(entity.getClass());
 		exeSqlInfo(SqlBuilder.getUpdateSqlAsSqlInfo(entity, strWhere));
 	}
-	
+
+	/**
+	 * 根据条件更新数据
+	 * @param clazz
+	 * @param keyValues
+	 * @param strWhere 条件为空的时候，将会更新所有的数据
+	 */
+	public void update(Class<?> clazz, List<KeyValue> keyValues, String strWhere){
+		checkTableExist(clazz);
+		exeSqlInfo(SqlBuilder.getUpdateSqlAsSqlInfo(clazz, keyValues, strWhere));
+	}
+
 	/**
 	 * 删除数据
 	 * @param entity  entity的主键不能为空

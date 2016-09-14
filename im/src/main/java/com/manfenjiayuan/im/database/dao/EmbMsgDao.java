@@ -21,7 +21,7 @@ import java.util.List;
  * Created by Administrator on 14-5-6.
  */
 public class EmbMsgDao extends BaseDbDao<EmbMsg, String> {
-    private static final String TABLE_NAME = "emb_msg";
+    private static final String TABLE_NAME = "emb_msg_t0";
     private static final String TABLE_NAME_CH = "消息表";
 
     //CRUD
@@ -30,7 +30,6 @@ public class EmbMsgDao extends BaseDbDao<EmbMsg, String> {
     private static final String SQL_QUERY_ALL = "select * from " + TABLE_NAME;
 
     private static final SimpleDateFormat SDF_INNER_DATAFORMAT = new SimpleDateFormat(DateUtil.INNER_DATAFORMAT);
-
 
     @Override
     protected Pair<String, String> initTableChName() {
@@ -98,6 +97,20 @@ public class EmbMsgDao extends BaseDbDao<EmbMsg, String> {
                     + "' or humanName like '" + searchToken + "')";
         }
         return sql;
+    }
+
+    /**
+     * 查询指定session下的消息类比，按照逆序
+     *
+     * @param pageInfo
+     * @return
+     */
+    public List<EmbMsg> queryAll(PageInfo pageInfo) {
+        return queryAll(null, pageInfo);
+    }
+
+    public List<EmbMsg> queryAll(String strWhere, PageInfo pageInfo) {
+        return getFinalDb().findAllByWhere(EmbMsg.class, strWhere, "createdDate desc", pageInfo);//"id desc"/asc
     }
 
     /**

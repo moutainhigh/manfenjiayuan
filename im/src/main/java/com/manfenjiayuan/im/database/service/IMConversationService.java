@@ -542,7 +542,6 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
             tSession.setUnreadcount(tSession.getUnreadcount() + 1);//每一次个推，未读数量+1
             tSession.setOwnerId(MfhLoginService.get().getLoginName());
             getDao().update(tSession);
-            //
             IMConfig.saveLastUpdate(session.getLastupdate());
 
             //TODO
@@ -647,7 +646,7 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
             session.setLastupdate((long) (createdDate.getTime() * 0.001));
         }
 
-        session.setParam(embMsg.getParam());
+        session.setParam(embMsg.getMsgBean());
         getDao().saveOrUpdate(session);
     }
 

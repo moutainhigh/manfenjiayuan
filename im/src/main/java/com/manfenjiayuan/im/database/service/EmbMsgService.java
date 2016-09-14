@@ -9,6 +9,7 @@ import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.IMConstants;
 import com.manfenjiayuan.im.bean.MsgParameter;
+import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.utils.IMFactory;
 import com.manfenjiayuan.im.IMHelper;
 import com.manfenjiayuan.im.bean.BizMsgParamWithSession;
@@ -27,8 +28,10 @@ import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.network.NetProcessor;
 
+import net.tsz.afinal.db.table.KeyValue;
 import net.tsz.afinal.http.AjaxParams;
 
+import java.security.Key;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -126,42 +129,6 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 //        return msgId;
 //    }
 
-    private EmbMsg parseOjbect(String jsonString) {
-        EmbMsg msg = new EmbMsg();
-
-        JSONObject object = JSONObject.parseObject(jsonString);
-        JSONObject msgObj = object.getJSONObject("msg");
-        if(msgObj != null){
-            msg.setCreatedBy(msgObj.getString("spokesman"));//发送者姓名
-            msg.setLocalheadimageurl(msgObj.getString("headimageurl"));//发送者头像
-            msg.setFormatCreateTime(msgObj.getString("formatCreateTime"));//格式化后的消息发送时间，客户端直接拿来显示
-
-            JSONObject msgBean = msgObj.getJSONObject("msgBean");
-            JSONObject msgFrom = msgObj.getJSONObject("from");
-            JSONObject msgTo = msgObj.getJSONObject("to");
-
-            if(msgBean != null){
-                msg.setTechType(msgBean.getString("type"));
-                msg.setId(msgBean.getString("id"));
-                msg.setParam(JSONObject.toJSONString(msgBean));
-
-                try {
-                    msg.setCreatedDate(format.parse(msgBean.getString("time")));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-//                JSONObject msgBody = msgBean.getJSONObject("body");
-            }
-
-            msg.setFromguid(msgFrom.getLong("guid"));
-            ZLogger.d(String.format("sessionId= %s", String.valueOf(msgTo.getLong("sid"))));
-            msg.setSessionid(msgTo.getLong("sid"));
-        }
-
-
-        return msg;
-    }
 
     /**
      * 发送图片
@@ -209,7 +176,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
      * @param jsonString
      */
     public String saveNewMsg(String jsonString) {
-        EmbMsg msg = parseOjbect(jsonString);
+        EmbMsg msg = EmbMsg.parseOjbect(jsonString);
 
         String msgId = null;
 
@@ -249,8 +216,19 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
             }
             //msgSet.saveLastUpdate((long) (msg.getCreatedDate().getTime() * 0.001));
         }
-
     }
+
+    public void saveOrUpdate(EmbMsg msg){
+        getDao().saveOrUpdate(msg);
+    }
+
+    /**
+     * 保存or更新
+     * @param isOverride 是否覆盖之前的记录*/
+    public void saveOrUpdate(EmbMsg msg, boolean isOverride){
+        getDao().saveOrUpdate(msg, isOverride);
+    }
+
     /**
      * 清理当前用户的所有消息
      * @param ownerId
@@ -282,7 +260,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 
     /**
      * 向后台发送消息
-     * @param sessionId
+     * @param fromGuid
      * @param wxParam
      */
     public void sendMessageToPeople(Long fromGuid, Long toGuid, WxParam wxParam,
@@ -459,7 +437,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 
             boolean needShow = false;
             boolean needRefresh = false;
-            StringBuilder ids = null;
+            StringBuilder ids = new StringBuilder();
             //MsgTimer msgTimer = ServiceFactory.getService(MsgTimer.class.getName());
 //            if (msgFragment != null) {
 //                needShow = true;
@@ -479,15 +457,15 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
                 MsgParameterWrapper messageBean = rsBizMsgParamWithSession.getMsg();
                 if (messageBean != null){
                     bean.setCreatedBy(messageBean.getSpokesman());
-                    bean.setLocalheadimageurl(messageBean.getHeadimageurl());
+//                    bean.setLocalheadimageurl(messageBean.getHeadimageurl());
                     bean.setFormatCreateTime(messageBean.getFormatCreateTime());
                     bean.setSessionid(messageBean.getSid());
+                    bean.setFromGuid(messageBean.getFromGuid());
                     MsgBean msgBean = messageBean.getMsgBean();
                     if (msgBean != null){
                         bean.setTechType(msgBean.getType());
                         bean.setId(msgBean.getId());
-                        bean.setParam(JSONObject.toJSONString(msgBean));
-                        bean.setFromguid(messageBean.getFromGuid());
+                        bean.setMsgBean(JSONObject.toJSONString(msgBean));
                         Date createDae = msgBean.getTime();
                         bean.setCreatedDate(createDae);
                         try {
@@ -533,7 +511,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
             }
             IMConfig.saveMaxCreateTime(sessionId, theLastCreateTime);
             this.getContext().sendBroadcast(new Intent(IMConstants.ACTION_DIALOG_MISS));
-            if (ids != null && ids.length() > 0 && needRefresh) {
+            if (ids.length() > 0 && needRefresh) {
                 Intent intent = new Intent(IMConstants.ACTION_RECEIVE_MSG);
                 intent.putExtra("ids", ids.toString());
                 this.getContext().sendBroadcast(intent);
@@ -648,4 +626,45 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
     public void saveMsgFromGeTui(String json) {
 
     }
+
+    /**
+     * 查询指定session下的消息类比，按照逆序
+     *
+     * @param pageInfo
+     * @return
+     */
+    public List<EmbMsg> queryAll(PageInfo pageInfo) {
+        return getDao().queryAll(pageInfo);
+    }
+
+    /**
+     * 将未读消息标记为已读
+     * @param bizType {@link IMBizType}
+     * */
+    public void setAllRead(Integer bizType){
+        List<KeyValue> keyValues = new ArrayList<>();
+        keyValues.add(new KeyValue("isRead", EmbMsg.READ));
+        getDao().update(EmbMsg.class, keyValues,
+                String.format("bizType = %d and isRead = %d", bizType, EmbMsg.UNREAD));
+    }
+
+    /**
+     * 将未读消息标记为已读
+     * */
+    public void setAllUnRead(Integer bizType){
+        List<KeyValue> keyValues = new ArrayList<>();
+        keyValues.add(new KeyValue("isRead", EmbMsg.UNREAD));
+        getDao().update(EmbMsg.class, keyValues,
+                String.format("bizType = %d and isRead = %d", bizType, EmbMsg.READ));
+    }
+
+    /**
+     * 获取未读消息个数
+     * */
+    public int getUnreadCount(Integer bizType){
+        String sqlWhere = String.format("bizType = %d and isRead = %d", bizType, EmbMsg.UNREAD);
+        List<EmbMsg> msgs = getDao().queryAll(sqlWhere, null);
+        return msgs != null ? msgs.size() : 0;
+    }
+
 }
