@@ -11,6 +11,8 @@ import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.database.entity.EmbMsg;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
@@ -37,7 +39,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
     private static final String KEY_PAYLOAD     = "payload";
     private static final String KEY_APPID       = "appid";
 
-    private long offlineTime = System.currentTimeMillis();
+    private long offlineTime = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -80,17 +82,17 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 break;
 
             case PushConsts.GET_SDKONLINESTATE:
-                ZLogger.df("sdk is online");
+                ZLogger.d("sdk is online" + IMConfig.getPushClientId());
                 break;
             case PushConsts.GET_SDKSERVICEPID:
 //                超过5分钟会自动重启
                 Long interval = System.currentTimeMillis() - offlineTime;
                 if (interval > 1000) {
-                    ZLogger.df("个推服务断开超过 1秒,准备初始化...");
+                    ZLogger.df("个推服务断开超过 1秒,准备初始化..." + interval);
                     PushManager.getInstance().initialize(CashierApp.getAppContext());
-                } else {
-                    ZLogger.df("个推服务未启动，...");
                     offlineTime = System.currentTimeMillis();
+                } else {
+                    ZLogger.df("个推服务未启动，..." + interval);
                 }
 
                 break;
@@ -103,6 +105,10 @@ public class PushDemoReceiver extends BroadcastReceiver {
      * 处理透传（payload）数据
      * */
     private static void parsePushPayload(Context context, String data){
+        EmbMsg embMsg = EmbMsg.parseOjbect(data);
+        if (embMsg != null){
+            EmbMsgService.getInstance().saveOrUpdate(embMsg);
+        }
         JSONObject jsonObject = JSONObject.parseObject(data);
         JSONObject msgObj = jsonObject.getJSONObject("msg");
         JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
