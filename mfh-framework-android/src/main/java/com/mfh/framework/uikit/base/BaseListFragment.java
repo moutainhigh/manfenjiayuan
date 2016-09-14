@@ -1,6 +1,7 @@
 package com.mfh.framework.uikit.base;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.ArrayList;
@@ -39,6 +41,9 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     //进度对话框
     private ProgressDialog mProgressDialog = null;
+
+    //确认对话框
+    private CommonDialog confirmDialog = null;
 
 
     protected int getLayoutResId(){return 0;}
@@ -160,6 +165,34 @@ public abstract class BaseListFragment<T> extends Fragment {
     public void hideProgressDialog(){
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
+        }
+    }
+
+    /**
+     * 显示确认对话框
+     * */
+    public void showConfirmDialog(String message, String positive,
+                                  DialogInterface.OnClickListener positiveListener,
+                                  String negative,
+                                  DialogInterface.OnClickListener negativelistener){
+        if (confirmDialog == null){
+            confirmDialog = new CommonDialog(getActivity());
+        }
+
+        confirmDialog.setMessage(message);
+        confirmDialog.setPositiveButton(positive, positiveListener);
+        confirmDialog.setNegativeButton(negative, negativelistener);
+        if (!confirmDialog.isShowing()){
+            confirmDialog.show();
+        }
+    }
+
+    /**
+     * 隐藏确认对话框
+     */
+    public void hideConfirmDialog(){
+        if (confirmDialog != null) {
+            confirmDialog.dismiss();
         }
     }
 
