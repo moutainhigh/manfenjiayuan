@@ -41,7 +41,7 @@
                 app:startTextWidth="108dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
-                android:id="@+id/label_spec"
+                android:id="@+id/label_shortName"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="12dp"
@@ -54,7 +54,7 @@
                 app:startTextWidth="108dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
-                android:id="@+id/label_carton"
+                android:id="@+id/label_packageNum"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="12dp"
@@ -118,7 +118,7 @@
             </LinearLayout>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
-                android:id="@+id/label_origin"
+                android:id="@+id/label_prodArea"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="12dp"
@@ -131,7 +131,7 @@
                 app:startTextWidth="108dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
-                android:id="@+id/label_grade"
+                android:id="@+id/label_prodLevel"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="12dp"
@@ -143,7 +143,7 @@
                 app:startTextWidth="108dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
-                android:id="@+id/label_quality"
+                android:id="@+id/labell_guaPeriod"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="12dp"
