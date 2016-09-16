@@ -250,7 +250,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             return;
         }
 
-        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, queryCheckbox.isChecked());
+        chainGoodsSkuPresenter.getTenantSkuMust(null, barcode, false);
     }
 
 
