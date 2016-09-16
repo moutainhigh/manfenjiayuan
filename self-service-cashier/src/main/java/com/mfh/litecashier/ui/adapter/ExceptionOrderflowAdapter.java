@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -259,13 +261,13 @@ public class ExceptionOrderflowAdapter
                 return;
             }
 
-//            ZLogger.d(JSONObject.toJSONString(entity));
+            ZLogger.d(JSONObject.toJSONString(entity));
             Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_PAY_HISTORY);
             extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
             extras.putLong(PayHistoryFragment.EXTRA_KEY_ORDER_ID, entity.getId());
-            if (entity.getPaystatus() == PosOrderEntity.ORDER_STATUS_EXCEPTION){
+            if (entity.getStatus() == PosOrderEntity.ORDER_STATUS_EXCEPTION){
                 extras.putBoolean(PayHistoryFragment.EXTRA_KEY_EDITABLE, true);
             }
             UIHelper.startActivity(mContext, SimpleDialogActivity.class, extras);
