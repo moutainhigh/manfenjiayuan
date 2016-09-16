@@ -100,7 +100,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         }
 
         if (mScanBar != null) {
-            mScanBar.setSoftKeyboardEnabled(true);
+//            mScanBar.setSoftKeyboardEnabled(true);
             mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
                 @Override
                 public void onKeycodeEnterClick(String text) {

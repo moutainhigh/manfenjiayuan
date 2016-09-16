@@ -109,7 +109,6 @@ public class CompanyListFragment extends BaseListFragment<CompanyInfo>
 
         initRecyclerView();
 
-
         reload();
     }
 

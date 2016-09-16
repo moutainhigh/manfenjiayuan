@@ -97,7 +97,7 @@ public class InvFindOrderFragment extends PDAScanFragment implements IInvFindOrd
         }
 
         if (mScanBar != null) {
-            mScanBar.setSoftKeyboardEnabled(true);
+//            mScanBar.setSoftKeyboardEnabled(true);
             mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
                 @Override
                 public void onKeycodeEnterClick(String text) {

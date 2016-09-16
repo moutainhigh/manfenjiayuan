@@ -55,7 +55,6 @@ public class ShelvesFragment extends BaseListFragment<Office> {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -93,8 +92,6 @@ public class ShelvesFragment extends BaseListFragment<Office> {
                 });
 
         initRecyclerView();
-
-
         reload();
     }
 

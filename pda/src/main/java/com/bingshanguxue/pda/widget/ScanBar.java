@@ -31,7 +31,7 @@ public class ScanBar extends LinearLayout {
     private ImageView ivDel;
     private ImageView ivAction1;
 
-    private boolean softKeyboardEnabled;//是否支持软键盘
+    private boolean softKeyboardEnabled = false;//是否支持软键盘,默认不支持软键盘
     private int[] interceptKeyCodes;
 
     public interface OnScanBarListener {
@@ -74,6 +74,7 @@ public class ScanBar extends LinearLayout {
         else{
             etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
+        softKeyboardEnabled = ta.getBoolean(R.styleable.ScanBar_softKeyboardEnabled, false);
 
         boolean isAction1Enabled = ta.getBoolean(R.styleable.ScanBar_action1Enabled, false);
         if (isAction1Enabled){
