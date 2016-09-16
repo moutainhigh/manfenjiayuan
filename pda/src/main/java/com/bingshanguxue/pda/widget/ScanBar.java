@@ -20,6 +20,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 
 
 /**
@@ -110,7 +111,7 @@ public class ScanBar extends LinearLayout {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (softKeyboardEnabled) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled() || softKeyboardEnabled) {
                         DeviceUtils.showSoftInput(getContext(), etInput);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etInput);
