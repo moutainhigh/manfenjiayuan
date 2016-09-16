@@ -31,6 +31,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,6 +193,12 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     @OnClick(R.id.ib_add)
     public void addCategory() {
         ZLogger.d("新增类目");
+        final Long parentId = SharedPreferencesHelper.getLong(SharedPreferencesHelper.PK_L_CATETYPE_POS_ID, 0L);
+        if (parentId.equals(0L)){
+            DialogUtil.showHint("请先创建根目录");
+            return;
+        }
+
         if (mTextInputDialog == null) {
             mTextInputDialog = new TextInputDialog(getActivity());
             mTextInputDialog.setCancelable(false);
@@ -205,7 +212,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
                     @Override
                     public void onConfirm(String text) {
-                        createCategoryInfo(text);
+                        createCategoryInfo(parentId, text);
                     }
                 });
         if (!mTextInputDialog.isShowing()) {
@@ -216,16 +223,16 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     /**
      * 创建前台类目
      */
-    private void createCategoryInfo(final String nameCn) {
+    private void createCategoryInfo(Long parentId, final String nameCn) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
         }
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-        ScCategoryInfoApi.create(CateApi.DOMAIN_TYPE_PROD,
+        ScCategoryInfoApi.create(parentId, CateApi.DOMAIN_TYPE_PROD,
                 CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
-                nameCn, createRC);
+                nameCn, null, createRC);
     }
 
     private NetCallBack.NetTaskCallBack createRC = new NetCallBack.NetTaskCallBack<String,
