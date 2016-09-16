@@ -23,7 +23,7 @@ public class CateApiImpl extends CateApi{
 //        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
         params.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
 
-        AfinalFactory.postDefault(URL_CATEGORYINFO_COMNQUERY, params, responseCallback);
+        AfinalFactory.postDefault(ScCategoryInfoApi.URL_COMNQUERY, params, responseCallback);
     }
     /**
      * 查询商品后台类目
@@ -39,7 +39,7 @@ public class CateApiImpl extends CateApi{
 //        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
         params.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
 
-        AfinalFactory.postDefault(URL_CATEGORYINFO_COMNQUERY, params, responseCallback);
+        AfinalFactory.postDefault(ScCategoryInfoApi.URL_COMNQUERY, params, responseCallback);
     }
 
     /**
@@ -57,7 +57,7 @@ public class CateApiImpl extends CateApi{
             params.put("tenantId", String.valueOf(tenantId));
         }
 
-        AfinalFactory.postDefault(URL_CATEGORYINFO_COMNQUERY, params, responseCallback);
+        AfinalFactory.postDefault(ScCategoryInfoApi.URL_COMNQUERY, params, responseCallback);
     }
 
 
@@ -71,22 +71,10 @@ public class CateApiImpl extends CateApi{
         params.put("kind", "code");
         params.put("codeId", codeId);
 
-        AfinalFactory.postDefault(URL_CATEGORYINFO_COMNQUERY, params, responseCallback);
+        AfinalFactory.postDefault(ScCategoryInfoApi.URL_COMNQUERY, params, responseCallback);
     }
 
-    /**
-     * 返回一级公共子目录
-     * /scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
-     * */
-    public static void listPublicCategory(Long parentId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("parentId", String.valueOf(parentId));
-//        params.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
-//        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-//        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
 
-        AfinalFactory.postDefault(URL_CATEGORYINFO_GETCODEVALUE, params, responseCallback);
-    }
 
 
 }
