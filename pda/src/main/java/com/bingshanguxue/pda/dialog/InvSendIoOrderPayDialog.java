@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -23,15 +22,15 @@ import com.bingshanguxue.pda.R;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 /**
@@ -154,7 +153,7 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
         this.handleAmount = handleAmount;
         this.mListener = callback;
 
-        this.tvHandleAmount.setText(Html.fromHtml(String.format("本次需支付" +
+        this.tvHandleAmount.setText(StringUtils.toSpanned(String.format("本次需支付" +
                 "<font color=#FE5000>%.2f</font>元货款", handleAmount)));
         this.bPayProcessing = false;
     }

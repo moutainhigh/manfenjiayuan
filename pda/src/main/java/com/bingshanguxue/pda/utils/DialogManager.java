@@ -13,7 +13,7 @@ public class DialogManager {
     /**
      * 返回 DialogManager 实例
      *
-     * @return
+     * @return DialogManager
      */
     public static DialogManager getInstance() {
         if (instance == null) {

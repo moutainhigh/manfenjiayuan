@@ -66,7 +66,7 @@ public class InspectProductSkuFragment extends BaseListFragment<ChainGoodsSku> {
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
         emptyView = rootView.findViewById(R.id.empty_view);
 
-        mToolbar.setTitle("选择平台商品档案");
+        mToolbar.setTitle("平台商品档案");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {

@@ -6,7 +6,8 @@
               android:background="@color/material_white"
               android:padding="16dp"
               android:orientation="horizontal"
-              android:gravity="center_vertical">
+              android:gravity="center_vertical"
+              android:baselineAligned="false">
 
     <LinearLayout
         android:id="@+id/ll_name_barcode"

@@ -489,7 +489,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      */
     public void onEventMainThread(ValidateManager.ValidateManagerEvent event) {
         int eventId = event.getEventId();
-        Bundle args = event.getArgs();
+//        Bundle args = event.getArgs();
 
         ZLogger.d(String.format("ValidateManagerEvent(%d)", eventId));
         switch (eventId) {

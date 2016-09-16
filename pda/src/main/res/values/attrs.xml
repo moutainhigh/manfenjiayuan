@@ -1,45 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!---->
-    <declare-styleable name="TextLabelView">
-        <attr name="startText"/>
-        <attr name="startTextColor"/>
-        <attr name="startTextSize"/>
-        <attr name="startTextWidth"/>
 
-        <attr name="endText"/>
-        <attr name="endTextColor"/>
-        <attr name="endTextSize"/>
-        <attr name="endTextSingleLine"/>
-    </declare-styleable>
-
-    <declare-styleable name="EditLabelView">
-        <attr name="startText"/>
-        <attr name="startTextColor"/>
-        <attr name="startTextSize"/>
-        <attr name="startTextWidth"/>
-
-        <attr name="editTextColor"/>
-        <attr name="editTextSize"/>
-        <attr name="editTextHint"/>
-        <attr name="editTextColorHint"/>
-        <attr name="editInputType"/>
-
-        <attr name="endText"/>
-        <attr name="endTextColor"/>
-        <attr name="endTextSize"/>
-        <attr name="endTextVisible" />
-    </declare-styleable>
 
     <declare-styleable name="EditQueryView">
-        <attr name="editQueryView_inputText" format="string" />
-        <attr name="editQueryView_inputTextColor" format="color" />
-        <attr name="editQueryView_inputTextSize" format="dimension" />
-        <attr name="editLabelView_inputTextColorHint" format="color" />
-        <attr name="editQueryView_inputHint" format="string" />
+        <attr name="editQueryView_inputText" format="string"/>
+        <attr name="editQueryView_inputTextColor" format="color"/>
+        <attr name="editQueryView_inputTextSize" format="dimension"/>
+        <attr name="editLabelView_inputTextColorHint" format="color"/>
+        <attr name="editQueryView_inputHint" format="string"/>
         <attr name="editInputType"/>
-        <attr name="editQueryView_rightButtonWidth" format="dimension" />
-        <attr name="editLabelView_rightImageButtonSrc" format="reference" />
+        <attr name="editQueryView_rightButtonWidth" format="dimension"/>
+        <attr name="editLabelView_rightImageButtonSrc" format="reference"/>
     </declare-styleable>
 
 
@@ -51,7 +22,9 @@
         <attr name="textColorHint"/>
         <attr name="hint"/>
         <attr name="editInputType"/>
-        <attr name="action1Enabled" format="boolean" />
+        <attr name="action1Enabled" format="boolean"/>
+        <attr name="softKeyboardEnabled"/>
+
     </declare-styleable>
 
 </resources>

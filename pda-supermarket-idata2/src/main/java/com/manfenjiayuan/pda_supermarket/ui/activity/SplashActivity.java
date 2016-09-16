@@ -35,7 +35,7 @@ public class SplashActivity extends InitActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ZLogger.d("adb 0008");
+        ZLogger.d("adb 0009");
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
@@ -67,8 +67,8 @@ public class SplashActivity extends InitActivity {
             SharedPreferencesManager.setAppFirstStart(false);
         }
 
-        AppHelper.clearOldPosOrder(15);
-        ZLogger.deleteOldFiles(15);
+        AppHelper.clearOldPosOrder(7);
+        ZLogger.deleteOldFiles(7);
 
         onInitializedCompleted();
     }

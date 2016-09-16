@@ -12,7 +12,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import java.util.List;
 
 /**
- * 收银－－服务菜单
+ * 菜单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class HomeAdapter extends RegularAdapter<HomeMenu, HomeAdapter.MenuOptioinViewHolder> {

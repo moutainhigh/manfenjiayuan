@@ -18,7 +18,7 @@ public class DataSyncManager {
     /**
      * 返回 DataSyncManager 实例
      *
-     * @return
+     * @return DataSyncManager
      */
     public static DataSyncManager getInstance() {
         if (instance == null) {

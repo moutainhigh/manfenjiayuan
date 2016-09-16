@@ -61,7 +61,7 @@ public class DataSyncService {
      * */
     public synchronized void sync(){
         if (bSyncInProgress){
-            ZLogger.d("DataSync--正在同步盘点机数据...");
+            ZLogger.d("正在同步盘点机数据...");
             return;
         }
 
@@ -70,7 +70,7 @@ public class DataSyncService {
 
     public void sync(int step){
         if (bSyncInProgress){
-            ZLogger.d("DataSync--正在同步盘点机数据...");
+            ZLogger.d("正在同步盘点机数据...");
             return;
         }
 
@@ -94,7 +94,7 @@ public class DataSyncService {
             break;
             default: {
                 bSyncInProgress = false;
-                ZLogger.d("DataSync--盘点机数据同步结束...");
+                ZLogger.d("盘点机数据同步结束...");
 //                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_FINISHED));
             }
             break;
@@ -116,13 +116,13 @@ public class DataSyncService {
     }
 
     private void networkError(){
-        ZLogger.d("DataSync--网络未连接，暂停同步盘点机数据。");
+        ZLogger.d("网络未连接，暂停同步盘点机数据。");
         bSyncInProgress = false;
 //        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_FINISHED));
     }
 
     private void sessionError(){
-        ZLogger.d("DataSync--会话已失效，暂停同步盘点机数据。");
+        ZLogger.d("会话已失效，暂停同步盘点机数据。");
         bSyncInProgress = false;
 //        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SYNC_DATA_FINISHED));
     }
@@ -153,7 +153,7 @@ public class DataSyncService {
                 .queryAllBy(String.format("syncStatus < '%d'", L2CSyncStatus.SYNC_STATUS_FINISHED),
                         new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
         if (entityList == null || entityList.size() < 1){
-            ZLogger.d(String.format("DataSync--没有盘点记录需要上传(%s)。", lastCursor));
+            ZLogger.d(String.format("没有盘点记录需要上传(%s)。", lastCursor));
             EventBus.getDefault().post(new StockTakeSyncEvent(StockTakeSyncEvent.EVENT_ID_SYNC_FINISHED));
             nextStep();
             return;
@@ -182,7 +182,7 @@ public class DataSyncService {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.d("DataSync--上传盘点记录失败: " + errMsg);
+                        ZLogger.d("上传盘点记录失败: " + errMsg);
                         EventBus.getDefault().post(new StockTakeSyncEvent(StockTakeSyncEvent.EVENT_ID_SYNC_FAILED));
                         nextStep();
                     }
@@ -193,7 +193,7 @@ public class DataSyncService {
                             switch (rspBody.getRetCode()){
                                 //盘点成功，检查是否还有盘点需要上传
                                 case "0":{
-                                    ZLogger.d("DataSync--盘点成功: " + rspBody.getReturnInfo());
+                                    ZLogger.d("盘点成功: " + rspBody.getReturnInfo());
                                     //需要更新订单流水
                                     SharedPreferencesHelper.setStocktakeLastUpdate(finalNewCursor);
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_FINISHED);
@@ -202,27 +202,27 @@ public class DataSyncService {
                                 break;
                                 // 系统异常，需要重试
                                 case "1":{
-                                    ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
+                                    ZLogger.d("盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_SYSTEM_ERROR);
                                     InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
                                 break;
                                 // 不能提交
                                 case "2":{
-                                    ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
+                                    ZLogger.d("盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_ERROR);
                                     InvCheckGoodsService.get().save(entity);
                                 }
                                 break;
                                 // 参数异常
                                 case "5":{
-                                    ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
+                                    ZLogger.d("盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_PARAMS_ERROR);
                                     InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
                                 break;
                                 default:{
-                                    ZLogger.d("DataSync--盘点失败: " + rspBody.getReturnInfo());
+                                    ZLogger.d("盘点失败: " + rspBody.getReturnInfo());
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_ERROR);
                                     InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
@@ -274,7 +274,7 @@ public class DataSyncService {
                 .queryAllBy(String.format("syncStatus < '%d'", L2CSyncStatus.SYNC_STATUS_FINISHED),
                         new PageInfo(1, MAX_SYNC_STOCKTAKE_PAGESIZE));
         if (entityList == null || entityList.size() < 1){
-            ZLogger.d(String.format("DataSync--没有绑定记录需要上传(%s)。", lastCursor));
+            ZLogger.d(String.format("没有绑定记录需要上传(%s)。", lastCursor));
             EventBus.getDefault().post(new StockTakeSyncEvent(StockTakeSyncEvent.EVENT_ID_SYNC_FINISHED));
             nextStep();
             return;
@@ -312,7 +312,7 @@ public class DataSyncService {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.d("DataSync--上传绑定记录失败: " + errMsg);
+                        ZLogger.d("上传绑定记录失败: " + errMsg);
                         EventBus.getDefault().post(new StockTakeSyncEvent(StockTakeSyncEvent.EVENT_ID_SYNC_FAILED));
                         nextStep();
                     }

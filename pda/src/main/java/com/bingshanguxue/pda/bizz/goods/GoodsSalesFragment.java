@@ -236,13 +236,12 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
                             }
                         }
 
-
                         if (mPageInfo.getPageNo() == 1) {
                             if (goodsAdapter != null) {
                                 goodsAdapter.setEntityList(entityList);
                             }
                         } else {
-                            if (entityList != null && entityList.size() > 0) {
+                            if (entityList.size() > 0) {
                                 if (goodsAdapter != null) {
                                     goodsAdapter.appendEntityList(entityList);
                                 }
