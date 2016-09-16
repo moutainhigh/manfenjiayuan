@@ -119,6 +119,12 @@
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name="com.bingshanguxue.pda.bizz.FragmentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <receiver android:name="com.bingshanguxue.pda.alarm.KeepAlarmLiveReceiver">
             <intent-filter>

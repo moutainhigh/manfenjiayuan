@@ -1,7 +1,9 @@
 package com.bingshanguxue.pda.bizz.invrecv;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,13 +14,17 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.bizz.ARCode;
+import com.bingshanguxue.pda.bizz.FragmentActivity;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
-import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.pda.utils.ACacheHelper;
 import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.presenter.ScProductPricePresenter;
@@ -155,7 +161,7 @@ public class InvRecvInspectFragment extends PDAScanFragment
                     }
                 });
 
-        mScanBar.setSoftKeyboardEnabled(true);
+//        mScanBar.setSoftKeyboardEnabled(true);
         mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -244,10 +250,22 @@ public class InvRecvInspectFragment extends PDAScanFragment
         }
     }
 
-//    @Override
-//    public boolean onBackPressed() {
-//        return super.onBackPressed();
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ARCode.ARC_INSPECT_PRODUCTSKU: {
+                if (resultCode == Activity.RESULT_OK) {
+                    saveProductSku((ProductSku) data.getSerializableExtra("productSku"));
+                } else {
+                    saveProductSku(null);
+                }
+            }
+            break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 
     private Double calculateReceivePrice() {
         String quantityStr = labelReceiveQuantity.getInput();
@@ -468,7 +486,26 @@ public class InvRecvInspectFragment extends PDAScanFragment
     @Override
     public void onScProcuctPriceViewSuccess(PageInfo pageInfo, List<ProductSku> dataList) {
         if (dataList != null && dataList.size() > 0) {
-            saveProductSku(dataList.get(0));
+            if (dataList.size() > 1){
+                JSONArray cacheArrays = new JSONArray();
+                for (ProductSku sku : dataList){
+                    cacheArrays.add(sku);
+                }
+                ACacheHelper.put(ACacheHelper.INVRECV_INSPECT_GOODS_TEMPDATA, cacheArrays.toJSONString());
+
+                hideProgressDialog();
+                isAcceptBarcodeEnabled = true;
+//                ActivityRoute.inspectProductSku(getActivity());
+                Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+                extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_INSPECT_PRODUCT_SKU);
+                Intent intent = new Intent(getActivity(), FragmentActivity.class);
+                intent.putExtras(extras);
+                startActivityForResult(intent, ARCode.ARC_INSPECT_PRODUCTSKU);
+            }
+            else{
+                saveProductSku(dataList.get(0));
+            }
         } else {
             hideProgressDialog();
             isAcceptBarcodeEnabled = true;
@@ -532,14 +569,14 @@ public class InvRecvInspectFragment extends PDAScanFragment
 
     @Override
     public void onChainGoodsSkuViewSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-        hideProgressDialog();
-        isAcceptBarcodeEnabled = true;
-
-        if (dataList != null && dataList.size() > 0) {
-            saveChainGoodsSku(dataList.get(0));
-        } else {
-            saveChainGoodsSku(null);
-        }
+//        hideProgressDialog();
+//        isAcceptBarcodeEnabled = true;
+//
+//        if (dataList != null && dataList.size() > 0) {
+//            saveChainGoodsSku(dataList.get(0));
+//        } else {
+//            saveChainGoodsSku(null);
+//        }
     }
 
     @Override

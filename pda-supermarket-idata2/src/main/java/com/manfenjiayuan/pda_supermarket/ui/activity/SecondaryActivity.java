@@ -6,18 +6,18 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.IData95Activity;
-import com.bingshanguxue.pda.bizz.company.InvCompanyListFragment;
-import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
+import com.bingshanguxue.pda.bizz.company.InvCompanyListFragment;
+import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
+import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
+import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvReceiveOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.InvSendIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckHistoryFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertToFragment;
-import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.InvLossInspectFragment;
-import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvReceiveOrderFragment;
-import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -29,7 +29,8 @@ import com.mfh.framework.uikit.base.BaseFragment;
 public class SecondaryActivity extends IData95Activity implements BackHandledInterface {
 
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
-    public static final int FRAGMENT_TYPE_DISTRIBUTION_INSPECT = 2;//验货
+    public static final int FRAGMENT_TYPE_DISTRIBUTION_INSPECT = 0x02;//验货
+
     public static final int FT_INVRETURN_INSPECTGOODS = 0x03;//退货验货
     public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FRAGMENT_TYPE_INV_SENDORDER = 0x06;//采购订单列表
@@ -40,6 +41,7 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FRAGMENT_TYPE_STOCKTAKE_LIST = 0x11;//盘点记录
     public static final int FT_INV_COMPANYLIST = 0x12;//批发商
     public static final int FT_INVSENDIO_ORDERINSPECT = 0x13;//导入发货单
+
 
     /**
      * 0: 快递代收
