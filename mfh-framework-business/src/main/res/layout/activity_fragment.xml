@@ -4,7 +4,6 @@
              xmlns:app="http://schemas.android.com/apk/res-auto">
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_below="@+id/abl_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

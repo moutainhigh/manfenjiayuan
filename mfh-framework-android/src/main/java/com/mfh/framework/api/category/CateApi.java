@@ -20,15 +20,6 @@ public class CateApi {
      */
     public final static String CATEGORY_TENANT_ID = NetFactory.getServerUrl("category.tenant.id");
 
-    /**
-     * 类目查询－－一级类目
-     */
-    public final static String URL_CATEGORYINFO_COMNQUERY = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/comnQuery";
-
-    /**
-     * pos类目查询接口：/scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
-     */
-    public final static String URL_CATEGORYINFO_GETCODEVALUE = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/getCodeValue";
 
 
     public final static int DOMAIN_TYPE_PROD = 0;//实物型产品-默认

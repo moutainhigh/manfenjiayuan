@@ -15,6 +15,19 @@ public class ScCategoryInfoApi {
     public final static String URL_SC_CATEGORYINFO = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/";
 
     /**
+     * 类目查询－－一级类目
+     */
+    public final static String URL_COMNQUERY = MfhApi.URL_BASE_SERVER + "comnQuery";
+
+
+    /**
+     * pos类目查询接口：/scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
+     */
+    public final static String URL_GETCODEVALUE = MfhApi.URL_BASE_SERVER + "getCodeValue";
+
+
+
+    /**
      * /scCategoryInfo/create?jsonStr={},
      * 上面tenantId是当前pos机所属租户（注意不是网点，现在还没细化到网点或pos机），catePosition此次为1，domain为0
      */
@@ -111,6 +124,20 @@ public class ScCategoryInfoApi {
         params.put("jsonStr", jsonStr);
 
         AfinalFactory.postDefault(URL_UPDATE, params, responseCallback);
+    }
+
+    /**
+     * 返回一级公共子目录
+     * /scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
+     * */
+    public static void getCodeValue(Long parentId, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("parentId", String.valueOf(parentId));
+//        params.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
+//        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+//        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+
+        AfinalFactory.postDefault(URL_GETCODEVALUE, params, responseCallback);
     }
 
 }
