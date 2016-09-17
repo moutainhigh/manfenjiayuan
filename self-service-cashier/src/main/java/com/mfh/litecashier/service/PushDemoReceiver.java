@@ -36,12 +36,14 @@ public class PushDemoReceiver extends BroadcastReceiver {
     private static final String KEY_PAYLOAD     = "payload";
     private static final String KEY_APPID       = "appid";
 
-    private long offlineTime = 0;
+    private static long offlineTime = System.currentTimeMillis();
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        ZLogger.df(String.format("bundle=%s", StringUtils.decodeBundle(bundle)));
+        ZLogger.df(String.format("个推<%s> -- bundle=%s",
+                CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
+                StringUtils.decodeBundle(bundle)));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:{
                 // 获取透传（payload）数据
@@ -62,7 +64,9 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
                 if(clientId != null){
-                    ZLogger.df(String.format("个推clientId=%s", clientId));
+                    ZLogger.df(String.format("个推clientId=%s-%s",
+                            PushManager.getInstance().getClientid(CashierApp.getAppContext()),
+                            clientId));
                     IMConfig.savePushClientId(clientId);
                 }
 
@@ -79,19 +83,27 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 break;
 
             case PushConsts.GET_SDKONLINESTATE:
-                ZLogger.d("sdk is online" + IMConfig.getPushClientId());
+//                Scheduling restart of crashed service com.mfh.litecashier/com.igexin.sdk.PushService in 1000ms
+//                Start proc 16115:com.mfh.litecashier:pushservice/u0a96 for service com.mfh.litecashier/com.igexin.sdk.PushService
+
+                boolean onlineState = bundle.getBoolean("onlineState");
+                ZLogger.df(String.format("个推 %s, onlineState = %b", IMConfig.getPushClientId(), onlineState));
+                if (!onlineState){
+                    ZLogger.df("准备开启推送...");
+                    PushManager.getInstance().turnOnPush(CashierApp.getAppContext());
+                    offlineTime = System.currentTimeMillis();
+                }
                 break;
             case PushConsts.GET_SDKSERVICEPID:
+                Long rightNow = System.currentTimeMillis();
+                Long interval =  rightNow - offlineTime;
+                ZLogger.df(String.format("个推服务未启动，%d - %d = %d", rightNow, offlineTime, interval));
 //                超过5分钟会自动重启
-                Long interval = System.currentTimeMillis() - offlineTime;
-                if (interval > 1000) {
-                    ZLogger.df("个推服务断开超过 1秒,准备初始化..." + interval);
-                    PushManager.getInstance().initialize(CashierApp.getAppContext());
+                if (interval > 10) {
+                    ZLogger.df("准备初始化个推服务...");
                     offlineTime = System.currentTimeMillis();
-                } else {
-                    ZLogger.df("个推服务未启动，..." + interval);
+                    PushManager.getInstance().initialize(CashierApp.getAppContext());
                 }
-
                 break;
             default:
                 break;

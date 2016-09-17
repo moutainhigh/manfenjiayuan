@@ -11,6 +11,8 @@ import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
+import com.manfenjiayuan.im.IMConfig;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
@@ -59,7 +61,7 @@ public class SettingsTestFragment extends BaseFragment {
                     toggleItemRelease.setSubTitle("开发测试");
                 }
 
-                if (SharedPreferencesManager.isReleaseVersion() != isChecked){
+                if (SharedPreferencesManager.isReleaseVersion() != isChecked) {
                     SharedPreferencesManager.setReleaseVersion(isChecked);
                     showConfirmDialog("需要重启应用才能生效？",
                             "立即重启", new DialogInterface.OnClickListener() {
@@ -95,22 +97,22 @@ public class SettingsTestFragment extends BaseFragment {
         toggleGettui.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                if (PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()) != isChecked){
+                if (PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()) != isChecked) {
+//                    if (isChecked) {
+//                    ZLogger.df("初始化推送服务");
+//                        PushManager.getInstance().initialize(CashierApp.getAppContext());
+//                    } else {
+//                    ZLogger.df("完全终止SDK的服务");
+//                        PushManager.getInstance().stopService(CashierApp.getAppContext());
+//                    }
                     if (isChecked) {
-                        //初始化推送服务
-                        PushManager.getInstance().initialize(CashierApp.getAppContext());
+                        ZLogger.df("开启Push推送");
+                        //        优先级高于stopService，如果当前是stopService状态，调用turnOnPush之后仍然可以正常推送。
+                        PushManager.getInstance().turnOnPush(CashierApp.getAppContext());
                     } else {
-                        //完全终止SDK的服务
-                        PushManager.getInstance().stopService(CashierApp.getAppContext());
+                        ZLogger.df("关闭Push推送");
+                        PushManager.getInstance().turnOffPush(CashierApp.getAppContext());
                     }
-//                if (isChecked) {
-//                    //开启Push推送
-//                    //        优先级高于stopService，如果当前是stopService状态，调用turnOnPush之后仍然可以正常推送。
-//                    PushManager.getInstance().turnOnPush(CashierApp.getAppContext());
-//                } else {
-//                    //关闭Push推送
-//                    PushManager.getInstance().turnOffPush(CashierApp.getAppContext());
-//                }
                 }
             }
         });
@@ -120,7 +122,7 @@ public class SettingsTestFragment extends BaseFragment {
 
     /**
      * 刷新页面信息
-     * */
+     */
     private void refresh() {
         if (SharedPreferencesManager.isReleaseVersion()) {
             toggleItemRelease.setChecked(true);
@@ -146,7 +148,10 @@ public class SettingsTestFragment extends BaseFragment {
 //        pushServiceSwitchCompact.setChecked(PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()));
 
         toggleGettui.setChecked(PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()));
-        toggleGettui.setSubTitle(PushManager.getInstance().getClientid(CashierApp.getAppContext()));
+        toggleGettui.setSubTitle(String.format("%s-%s",
+                PushManager.getInstance().getClientid(CashierApp.getAppContext()),
+                IMConfig.getPushClientId()));
+//        toggleGettui.setSubTitle(PushManager.getInstance().getClientid(CashierApp.getAppContext()));
 
         //获取当前SDK的服务状态
 //        pushServiceSwitchCompact.setChecked(PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()));
@@ -154,9 +159,9 @@ public class SettingsTestFragment extends BaseFragment {
 
     /**
      * 恢复出厂设置
-     * */
+     */
     @OnClick(R.id.item_factoryreset)
-    public void resetFactoryData(){
+    public void resetFactoryData() {
         showConfirmDialog("此操作会清楚您设备中的所有数据，确定要恢复出厂设置吗？\n(恢复出厂设置后会自动重启)",
                 "恢复出厂设置", new DialogInterface.OnClickListener() {
 
@@ -174,6 +179,7 @@ public class SettingsTestFragment extends BaseFragment {
                     }
                 });
     }
+
     @OnClick(R.id.button_register_msgbridge)
     public void registerMsgBridge() {
         IMClient.getInstance().registerBridge();
