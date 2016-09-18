@@ -10,21 +10,6 @@ import java.io.Serializable;
  * Created by Nat.ZZN(bingshanguxue) on 15/9/2.
  */
 public class CashierFunctional implements ILongId, Serializable {
-    public static final Long OPTION_ID_PACKAGE = 7L;//包裹(取快递)
-    public static final Long OPTION_ID_EXPRESS = 9L;//寄快递
-    public static final Long OPTION_ID_FEEDPAPER= 12L;//走纸
-    public static final Long OPTION_ID_RETURN_GOODS= 13L;//退货
-    public static final Long OPTION_ID_MONEYBOX= 31L;//钱箱
-    public static final Long OPTION_ID_HANGUP_ORDER= 33L;//挂单
-
-    public static final Long OPTION_ID_ONLINE_ORDER     = 40L;//线上订单
-    public static final Long OPTION_ID_GOODS_LIST       = 41L;//商品列表
-    public static final Long OPTION_ID_REGISTER_VIP     = 42L;//注册
-    public static final Long OPTION_ID_BALANCE_QUERY    = 43L;//余额查询
-    public static final Long OPTION_ID_MEMBER_CARD      = 44L;//会员卡（开卡）
-    public static final Long OPTION_ID_SETTINGS         = 45L;//设置
-
-    public static final Long ADMIN_MENU_ONLINEORDER= 60L;//线上订单
 
 
     private int type = 0;//0:local;1-category
