@@ -37,10 +37,16 @@ public class UIHelper {
      * 跳转页面
      */
     public static void startActivity(Context context, java.lang.Class<?> cls) {
+        if (context == null){
+            return;
+        }
         Intent intent = new Intent(context, cls);
         context.startActivity(intent);
     }
     public static void startActivity(Context context, java.lang.Class<?> cls, Bundle extras) {
+        if (context == null){
+            return;
+        }
         Intent intent = new Intent(context, cls);
         if (extras != null){
             intent.putExtras(extras);
@@ -49,6 +55,9 @@ public class UIHelper {
     }
 
     public static void startActivityForResult(Activity context, Class<?> cls, int requestCode){
+        if (context == null){
+            return;
+        }
         Intent intent = new Intent(context, cls);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivityForResult(intent, requestCode);
@@ -58,6 +67,9 @@ public class UIHelper {
      * 发送广播
      */
     public static void sendBroadcast(Context context, String action) {
+        if (context == null){
+            return;
+        }
         Intent intent = new Intent(action);
         context.sendBroadcast(intent);
     }
@@ -73,7 +85,7 @@ public class UIHelper {
      * <br>
      */
     public static void callPhone(Context context, String phoneNumber) {
-        if (StringUtils.isEmpty(phoneNumber)) {
+        if (context == null || StringUtils.isEmpty(phoneNumber)) {
             return;
         }
 
@@ -85,7 +97,7 @@ public class UIHelper {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            ZLogger.w("sorry!! please ensure you have granted [CALL_PHONE] perssion.");
+            ZLogger.wf("sorry!! please ensure you have granted [CALL_PHONE] perssion.");
             return;
         }
 
@@ -103,7 +115,7 @@ public class UIHelper {
      * @param url
      */
     public static void openBrowser(Context context, String url) {
-        if (StringUtils.isEmpty(url)) {
+        if (context == null || StringUtils.isEmpty(url)) {
             return;
         }
 
@@ -116,6 +128,9 @@ public class UIHelper {
      * 选择图片
      */
     public static void selectPicture(final Activity context, String title) {
+        if (context == null){
+            return;
+        }
         final CommonDialog dialog = DialogHelper.getPinterestDialogCancelable(context);
 
         View.OnClickListener click = new View.OnClickListener() {
