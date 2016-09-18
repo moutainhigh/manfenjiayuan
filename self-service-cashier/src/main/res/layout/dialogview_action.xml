@@ -1,67 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="500dp"
-    android:padding="16dp"
-    android:gravity="center_vertical">
+              android:layout_width="wrap_content"
+              android:layout_height="500dp"
+              android:gravity="center_vertical"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/spacing_8x"
+              android:paddingEnd="@dimen/spacing_double"
+              android:paddingStart="@dimen/spacing_double"
+              android:paddingTop="@dimen/spacing_4x">
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
         android:singleLine="true"
         android:text=""
-        android:textSize="18sp"
         android:textColor="@color/material_black"
-        android:gravity="center"
-        android:padding="16dp"/>
+        android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/tv_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text=""
-        android:textSize="18sp"
-        android:textColor="@color/material_grey_500"
         android:layout_marginTop="@dimen/spacing_double"
         android:gravity="center"
-        android:padding="16dp"/>
+        android:padding="16dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/material_grey_500"
+        android:textSize="18sp"/>
 
     <!--锁定-->
     <Button
         android:id="@+id/button_action1"
+        style="@style/mfh_button_text"
         android:layout_width="267dp"
         android:layout_height="44dp"
-        android:text="@string/button_lock"
-        style="@style/mfh_button_text"
-        android:gravity="center"
-        android:visibility="gone"
         android:layout_marginTop="@dimen/spacing_double"
-        android:background="@drawable/btn_rectange_green"/>
+        android:background="@drawable/btn_rectange_green"
+        android:gravity="center"
+        android:text="@string/button_lock"
+        android:visibility="gone"/>
 
     <!--交接班-->
     <Button
         android:id="@+id/button_action2"
+        style="@style/mfh_button_text"
         android:layout_width="267dp"
         android:layout_height="44dp"
-        android:text="@string/button_handover"
-        style="@style/mfh_button_text"
-        android:gravity="center"
-        android:background="@drawable/btn_rectange_green"
         android:layout_marginTop="@dimen/spacing_double"
+        android:background="@drawable/btn_rectange_green"
+        android:gravity="center"
+        android:text="@string/button_handover"
         android:visibility="gone"/>
 
     <!--退出-->
     <Button
         android:id="@+id/button_action3"
+        style="@style/mfh_button_text"
         android:layout_width="267dp"
         android:layout_height="44dp"
-        android:text="@string/button_logout"
-        style="@style/mfh_button_text"
-        android:gravity="center"
-        android:background="@drawable/btn_rectange_red"
         android:layout_marginTop="@dimen/spacing_double"
+        android:background="@drawable/btn_rectange_red"
+        android:gravity="center"
+        android:text="@string/button_logout"
         android:visibility="gone"/>
 
 

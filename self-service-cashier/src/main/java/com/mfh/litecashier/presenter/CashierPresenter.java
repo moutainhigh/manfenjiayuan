@@ -1,13 +1,14 @@
 package com.mfh.litecashier.presenter;
 
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.mode.CashierMode;
+import com.bingshanguxue.cashier.model.wrapper.ResMenu;
+import com.mfh.framework.BizConfig;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.view.ICashierView;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class CashierPresenter {
         }
 
         //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
-        if (barcode.startsWith("2") && barcode.length() == 13){
+        if (barcode.startsWith("2") && barcode.length() == 13) {
             findFreshGoods(barcode);
             return;
         }
@@ -75,14 +76,14 @@ public class CashierPresenter {
 
     /**
      * 生鲜商品电子秤打印条码是以2开头的13位码：F CCCCCC XXXXX CD(13)
-     * */
-    private void findFreshGoods(String barcode){
+     */
+    private void findFreshGoods(String barcode) {
         if (StringUtils.isEmpty(barcode) || barcode.length() != 13) {
             ZLogger.d("参数无效");
             return;
         }
 
-        try{
+        try {
             String plu = barcode.substring(1, 7);
             //有小数点，单位克转换成千克。
             String weightStr = String.format("%s.%s", barcode.substring(7, 9), barcode.substring(9, 12));
@@ -119,8 +120,7 @@ public class CashierPresenter {
                     iCashierView.onFindGoodsEmpty(barcode);
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ZLogger.e(e.toString());
             if (iCashierView != null) {
                 iCashierView.onFindGoodsEmpty(barcode);
@@ -131,30 +131,36 @@ public class CashierPresenter {
     /**
      * 加载收银机前台类目：私有功能＋公共类目＋自定义类目
      */
-    public synchronized List<CashierFunctional> getCashierFunctions() {
-        List<CashierFunctional> functionalList = new ArrayList<>();
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_ONLINE_ORDER,
+    public synchronized List<ResMenu> getCashierFunctions() {
+        List<ResMenu> functionalList = new ArrayList<>();
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_ONLINE_ORDER,
                 "线上订单", R.mipmap.ic_service_online_order));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_GOODS_LIST,
-                "商品列表", R.mipmap.ic_service_goodslist));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_REGISTER_VIP,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_DISCOUNT,
+                "折扣", R.mipmap.ic_menu_cashier_discount));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
                 "注册", R.mipmap.ic_service_register_vip));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_MEMBER_CARD,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MEMBER_CARD,
                 "办卡", R.mipmap.ic_service_membercard));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_HANGUP_ORDER,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_HANGUP_ORDER,
                 "挂单", R.mipmap.ic_service_hangup_order));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_RETURN_GOODS,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_RETURN_GOODS,
                 "退货", R.mipmap.ic_service_returngoods));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_FEEDPAPER,
-                "走纸", R.mipmap.ic_service_feedpaper));
-//        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_PACKAGE,
-//                "包裹", R.mipmap.ic_service_package));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_MONEYBOX,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_PRINT_ORDER,
+                "打印订单", R.mipmap.ic_service_feedpaper));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MONEYBOX,
                 "钱箱", R.mipmap.ic_service_moneybox));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_BALANCE_QUERY,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_BALANCE_QUERY,
                 "余额查询", R.mipmap.ic_service_balance));
-        functionalList.add(CashierFunctional.generate(CashierFunctional.OPTION_ID_SETTINGS,
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SETTINGS,
                 "设置", R.mipmap.ic_service_settings));
+        if (!BizConfig.RELEASE) {
+            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_GOODS_LIST,
+                    "商品列表", R.mipmap.ic_service_goodslist));
+            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_FEEDPAPER,
+                    "走纸", R.mipmap.ic_service_feedpaper));
+//            functionalList.add(CashierFunctional.generate(ResMenu.CASHIER_MENU_PACKAGE,
+//                    "包裹", R.mipmap.ic_service_package));
+        }
 
         return functionalList;
     }

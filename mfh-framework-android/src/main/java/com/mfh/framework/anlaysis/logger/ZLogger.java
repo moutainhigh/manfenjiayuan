@@ -174,6 +174,17 @@ public class ZLogger {
     }
 
     /**
+     * Warn
+     */
+    public static void wf(String log) {
+        if (LOG_ENABLED) {
+
+//            Log.w(TAG, String.format("%s %s", log, callMethodAndLine()));
+            printWrapper(WARN_FILE, TAG, log);
+        }
+    }
+
+    /**
      * info
      */
     public static void i(String tag, String log) {

@@ -6,10 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 
 import java.util.List;
 
@@ -20,10 +19,10 @@ import butterknife.ButterKnife;
  * 收银－－服务菜单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
-public class CashierServiceMenuAdapter
-        extends RegularAdapter<CashierFunctional, CashierServiceMenuAdapter.MenuOptioinViewHolder> {
+public class CashierMenuAdapter
+        extends RegularAdapter<ResMenu, CashierMenuAdapter.MenuOptioinViewHolder> {
 
-    public CashierServiceMenuAdapter(Context context, List<CashierFunctional> entityList) {
+    public CashierMenuAdapter(Context context, List<ResMenu> entityList) {
         super(context, entityList);
     }
 
@@ -45,14 +44,9 @@ public class CashierServiceMenuAdapter
 
     @Override
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
-        final CashierFunctional entity = entityList.get(position);
+        final ResMenu entity = entityList.get(position);
 
-        if (entity.getType() == 0) {
-            holder.buttonImage.setImageResource(entity.getResId());
-        } else {
-            Glide.with(mContext).load(entity.getImageUrl())
-                    .error(R.mipmap.ic_image_error).into(holder.buttonImage);
-        }
+        holder.buttonImage.setImageResource(entity.getResId());
 
         if (entity.getBadgeNumber() > 0){
             holder.ivBadge.setVisibility(View.VISIBLE);
@@ -95,7 +89,7 @@ public class CashierServiceMenuAdapter
      * */
     public void setBadgeNumber(Long id, int badgeNumber){
         if (entityList != null && entityList.size() > 0){
-            for (CashierFunctional entity : entityList){
+            for (ResMenu entity : entityList){
                 if (entity.getId().equals(id)){
                     entity.setBadgeNumber(badgeNumber);
                     notifyDataSetChanged();

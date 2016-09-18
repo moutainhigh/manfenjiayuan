@@ -20,8 +20,8 @@ import android.widget.TextView;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
+import com.mfh.litecashier.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -183,29 +183,6 @@ public class InputNumberLabelView extends LinearLayout {
 
     public void setSoftKeyboardEnabled(boolean enabled) {
         this.softKeyboardEnabled = enabled;
-
-//        if (softKeyboardEnabled){
-//            DeviceUtils.showSoftInput(getContext(), etInput);
-//        }else{
-//            DeviceUtils.hideSoftInput(getContext(), etInput);
-//        }
-//
-//        etInput.setOnTouchListener(new OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if(event.getAction() == MotionEvent.ACTION_UP){
-//                    if (softKeyboardEnabled){
-//                        DeviceUtils.showSoftInput(getContext(), etInput);
-//                    }else{
-//                        DeviceUtils.hideSoftInput(getContext(), etInput);
-//                    }
-//                }
-//                etInput.requestFocus();
-//                etInput.setSelection(etInput.length());
-//                //返回true,不再继续传递事件
-//                return true;
-//            }
-//        });
     }
 
 
@@ -276,6 +253,10 @@ public class InputNumberLabelView extends LinearLayout {
 
     public void addTextChangedListener(TextWatcher watcher){
         etInput.addTextChangedListener(watcher);
+    }
+
+    public void setOnTouchListener(OnTouchListener l){
+        etInput.setOnTouchListener(l);
     }
 
 }

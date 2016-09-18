@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.NumberInputDialog;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
@@ -28,8 +29,10 @@ import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_user.bean.Human;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -46,11 +49,13 @@ import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.compound.MultiLayerLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -58,7 +63,6 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
-import com.mfh.litecashier.bean.wrapper.CashierFunctional;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
@@ -72,9 +76,8 @@ import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
-import com.mfh.litecashier.ui.adapter.CashierServiceMenuAdapter;
+import com.mfh.litecashier.ui.adapter.CashierMenuAdapter;
 import com.mfh.litecashier.ui.adapter.CashierSwipAdapter;
-import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.AdministratorSigninDialog;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
@@ -117,14 +120,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     @Bind(R.id.slideMenu)
     RecyclerView menuRecyclerView;
-    private CashierServiceMenuAdapter menuAdapter;
+    private CashierMenuAdapter menuAdapter;
     @Bind(R.id.button_sync)
     SyncButton btnSync;
 
-    @Bind(R.id.tv_quantity)
-    TextView tvQuantity;
-    @Bind(R.id.tv_amount)
-    TextView tvAmount;
+    @Bind(R.id.label_quantity)
+    MultiLayerLabel labelQuantity;
+    @Bind(R.id.label_amount)
+    MultiLayerLabel labelAmount;
     @Bind(R.id.tv_last_amount)
     TextView tvLastAmount;
     @Bind(R.id.tv_last_quantity)
@@ -143,8 +146,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
     ImageButton btnSettle;
     @Bind(R.id.float_hangup)
     TextView fabHangup;
+    @Bind(R.id.fab_orderDiscount)
+    TextView fabOrderDiscount;
 
 
+    private NumberInputDialog barcodeInputDialog = null;
     private DoubleInputDialog commitPriceDialog = null;//价格为空，补填价格
     private DoubleInputDialog changePriceDialog = null;
     private DoubleInputDialog changeDiscountDialog = null;
@@ -158,7 +164,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private InitCardByStepDialog initCardDialog = null;
     private ReturnGoodsDialog returnGoodsDialog = null;
     private ExpressDialog expressDialog = null;
-    private ActionDialog registerPlatDialog = null;
     private AdministratorSigninDialog mAdministratorSigninDialog = null;
 
 
@@ -246,8 +251,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
         if (menuAdapter != null) {
-            menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
-                    count);
+            menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
         }
     }
 
@@ -317,12 +321,12 @@ public class MainActivity extends CashierActivity implements ICashierView {
 //        menuRecyclerView.addItemDecoration(new GridItemDecoration(
 //                4, 2, false));
 
-        menuAdapter = new CashierServiceMenuAdapter(CashierApp.getAppContext(), null);
-        menuAdapter.setOnAdapterLitener(new CashierServiceMenuAdapter.AdapterListener() {
+        menuAdapter = new CashierMenuAdapter(CashierApp.getAppContext(), null);
+        menuAdapter.setOnAdapterLitener(new CashierMenuAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CashierFunctional entity = menuAdapter.getEntity(position);
-                if (entity != null && entity.getType() == 0) {
+                ResMenu entity = menuAdapter.getEntity(position);
+                if (entity != null) {
                     responseMenu(entity.getId());
                 }
             }
@@ -339,31 +343,33 @@ public class MainActivity extends CashierActivity implements ICashierView {
             return;
         }
 
-        if (id.compareTo(CashierFunctional.OPTION_ID_ONLINE_ORDER) == 0) {
+        if (id.compareTo(ResMenu.CASHIER_MENU_ONLINE_ORDER) == 0) {
             redirectToOnlineOrder();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_GOODS_LIST) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_GOODS_LIST) == 0) {
             redirectToGoodsList();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_PACKAGE) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_PACKAGE) == 0) {
             packageService();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_REGISTER_VIP) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_REGISTER_VIP) == 0) {
             registerVIPStep1();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_BALANCE_QUERY) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_BALANCE_QUERY) == 0) {
             queryBalance();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_MEMBER_CARD) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_MEMBER_CARD) == 0) {
             initVipCardStep1();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_EXPRESS) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_EXPRESS) == 0) {
             expressService();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_RETURN_GOODS) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_RETURN_GOODS) == 0) {
             returnGoods();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_FEEDPAPER) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_FEEDPAPER) == 0) {
             //走纸
             GPrinterAgent.feedPaper();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_MONEYBOX) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_MONEYBOX) == 0) {
             openMoneyBox();
-        }else if (id.compareTo(CashierFunctional.OPTION_ID_HANGUP_ORDER) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_HANGUP_ORDER) == 0) {
             hangUpOrder();
-        } else if (id.compareTo(CashierFunctional.OPTION_ID_SETTINGS) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_SETTINGS) == 0) {
             redirectToSettings();
+        }  else if (id.compareTo(ResMenu.CASHIER_MENU_DISCOUNT) == 0) {
+            changeOrderDiscount();
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }
@@ -411,7 +417,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     public void redirectToOnlineOrder() {
         if (menuAdapter != null) {
-            menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
+            menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER,
                     0);
         }
 
@@ -663,7 +669,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 UIHelper.startActivity(MainActivity.this, AdministratorActivity.class);
             }
         });
-        if (!mAdministratorSigninDialog.isShowing()){
+        if (!mAdministratorSigninDialog.isShowing()) {
             mAdministratorSigninDialog.show();
         }
     }
@@ -687,9 +693,10 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
             }
             obtaincurPosTradeNo(null);
-            if (productAdapter != null){
+            if (productAdapter != null) {
                 productAdapter.setEntityList(null);
             }
+            fabOrderDiscount.setVisibility(View.GONE);
 
             //刷新挂单
             refreshFloatHangup();
@@ -725,7 +732,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             }
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
-            menuAdapter.setBadgeNumber(CashierFunctional.OPTION_ID_ONLINE_ORDER,
+            menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER,
                     count);
             ZLogger.d("生鲜预定订单未读消息个数为：" + count);
             if (count > 0) {
@@ -769,8 +776,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
             btnSync.startSync();
-        }
-        else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
             btnSync.stopSync();
             //同步数据结束后开始同步订单
@@ -790,13 +796,12 @@ public class MainActivity extends CashierActivity implements ICashierView {
     public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
         ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
         if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
-            if (isWaitForExit){
+            if (isWaitForExit) {
                 isWaitForExit = false;
                 AppHelper.closeApp();
             }
-        }
-        else if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED){
-            if (isWaitForExit){
+        } else if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+            if (isWaitForExit) {
                 isWaitForExit = false;
                 AppHelper.closeApp();
             }
@@ -986,7 +991,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         isClearOrder = data.getBooleanExtra(CashierPayActivity.EXTRA_KEY_IS_CLEAR_ORDER, false);
                     }
                     if (isClearOrder) {
-
                         ZLogger.df("清空收银购物车，重新开始新订单");
 //加载订单
                         if (StringUtils.isEmpty(curPosTradeNo)) {
@@ -995,6 +999,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         }
                         obtaincurPosTradeNo(null);
                         productAdapter.setEntityList(null);
+                        fabOrderDiscount.setVisibility(View.GONE);
                     }
                     btnSettle.setEnabled(true);
 
@@ -1028,10 +1033,11 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * <p/>
      * 保存订单信息，打印小票，显示上一单信息，同步订单，统计订单金额，语音播报
      */
-    private void saveSettleResult(final String posTradeNo, final CashierOrderInfo cashierOrderInfo){
+    private void saveSettleResult(final String posTradeNo, final CashierOrderInfo cashierOrderInfo) {
         //清空当前收银列表，开始新的订单
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
+        fabOrderDiscount.setVisibility(View.GONE);
 
         Observable.create(new Observable.OnSubscribe<LastOrderInfo>() {
             @Override
@@ -1161,8 +1167,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
             @Override
             public void onDataSetChanged(boolean needScroll) {
-                tvQuantity.setText(String.format("%.2f", productAdapter.getBcount()));
-                tvAmount.setText(String.format("%.2f", productAdapter.getFinalAmount()));//成交价
+                labelQuantity.setTopText(String.format("%.2f", productAdapter.getBcount()));
+                labelAmount.setTopText(String.format("%.2f", productAdapter.getFinalAmount()));//成交价
 
                 if (productAdapter.getItemCount() > 0) {
                     btnSettle.setEnabled(true);
@@ -1201,6 +1207,20 @@ public class MainActivity extends CashierActivity implements ICashierView {
         inlvBarcode.setEnterKeySubmitEnabled(true);
         inlvBarcode.setSoftKeyboardEnabled(false);
         inlvBarcode.requestFocus();
+        inlvBarcode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled() || inlvBarcode.isSoftKeyboardEnabled()) {
+                        showBarcodeKeyboard();
+                    }
+                }
+
+                inlvBarcode.requestFocusEnd();
+                //返回true,不再继续传递事件
+                return true;
+            }
+        });
         inlvBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -1258,6 +1278,35 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
 
     /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showBarcodeKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(this);
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode("条码", EditInputType.BARCODE,
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+//                        inlvBarcode.setInputString(value);
+                        searchGoodsByBarcode(value);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+    /**
      * 修改商品价格
      */
     private void changeGoodsPrice(final int position) {
@@ -1284,14 +1333,14 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         }
                     }
                 });
-        if (!changePriceDialog.isShowing()){
+        if (!changePriceDialog.isShowing()) {
             changePriceDialog.show();
         }
     }
 
 
     /**
-     * 修改商品价格折扣
+     * 修改商品折扣
      */
     private void changeGoodsDiscount(final int position) {
         final CashierShopcartEntity entity = productAdapter.getEntity(position);
@@ -1304,7 +1353,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             changeDiscountDialog.setCancelable(true);
             changeDiscountDialog.setCanceledOnTouchOutside(true);
         }
-        changeDiscountDialog.initialzie("折扣", 0,
+        changeDiscountDialog.initialzie("商品折扣", 0,
                 100 * CashierAgent.calculatePriceDiscount(entity.getCostPrice(), entity.getFinalPrice()),
                 "%", new DoubleInputDialog.OnResponseCallback() {
                     @Override
@@ -1318,7 +1367,80 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         }
                     }
                 });
-        changeDiscountDialog.show();
+        if (!changeDiscountDialog.isShowing()) {
+            changeDiscountDialog.show();
+        }
+    }
+
+    /**
+     * 修改订单折扣
+     */
+    public void changeOrderDiscount() {
+        if (productAdapter == null || productAdapter.getItemCount() <= 0){
+            DialogUtil.showHint("订单明细不能为空");
+            return;
+        }
+
+        if (changeDiscountDialog == null) {
+            changeDiscountDialog = new DoubleInputDialog(this);
+            changeDiscountDialog.setCancelable(true);
+            changeDiscountDialog.setCanceledOnTouchOutside(true);
+        }
+        changeDiscountDialog.initialzie("订单折扣", 0, 100D, "%",
+                new DoubleInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onQuantityChanged(Double value) {
+//                        CashierShopcartService.getInstance().batchDiscount(curPosTradeNo, value);
+//
+//                        List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
+//                                .queryAllBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+//                        productAdapter.setEntityList(shopcartEntities);
+                        batchMakeDiscount(curPosTradeNo, value);
+                    }
+                });
+        if (!changeDiscountDialog.isShowing()) {
+            changeDiscountDialog.show();
+        }
+    }
+
+    /**
+     * 批量修改订单折扣
+     * */
+    private void batchMakeDiscount(final String posTradeNo, final Double discount){
+        fabOrderDiscount.setText(String.format("%.0f%%", discount));
+        fabOrderDiscount.setVisibility(View.VISIBLE);
+        Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
+            @Override
+            public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
+
+                CashierShopcartService.getInstance().batchDiscount(posTradeNo, discount);
+
+                List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
+                        .queryAllBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+
+                subscriber.onNext(shopcartEntities);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<CashierShopcartEntity>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CashierShopcartEntity> cashierShopcartEntities) {
+                        productAdapter.setEntityList(cashierShopcartEntities);
+                    }
+
+                });
     }
 
     /**
@@ -1416,6 +1538,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
+        fabOrderDiscount.setVisibility(View.GONE);
     }
 
     /**
@@ -1441,6 +1564,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
                 .queryAllBy(String.format("posTradeNo = '%s'", posTradeNo));
         productAdapter.setEntityList(shopcartEntities);
+        fabOrderDiscount.setVisibility(View.GONE);
 
         //刷新挂单
         refreshFloatHangup();
@@ -1683,26 +1807,25 @@ public class MainActivity extends CashierActivity implements ICashierView {
      */
     private void addGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
                                   final Double bCount) {
-        if (goods == null){
+        if (goods == null) {
             return;
         }
 
         Double costPrice = goods.getCostPrice();
-        if (costPrice == null){
+        if (costPrice == null) {
             // TODO: 9/4/16
             ZLogger.df("商品零售价为空，补填后才可以收银");
             commitGoodsCostprice1(orderBarCode, goods, bCount);
-        }
-        else{
+        } else {
             saveGoods2Cashier(orderBarCode, goods, bCount);
         }
     }
 
     /**
      * 补填商品零售价信息:输入商品价格
-     * */
+     */
     private void commitGoodsCostprice1(final String orderBarCode, final PosProductEntity goods,
-                                       final Double bCount){
+                                       final Double bCount) {
         if (commitPriceDialog == null) {
             commitPriceDialog = new DoubleInputDialog(this);
             commitPriceDialog.setCancelable(true);
@@ -1717,7 +1840,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                     }
                 });
         commitPriceDialog.setMinimumDoubleCheck(0.01D, true);
-        if (!commitPriceDialog.isShowing()){
+        if (!commitPriceDialog.isShowing()) {
             commitPriceDialog.show();
         }
 
@@ -1725,9 +1848,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 补填商品零售价信息：提交修改信息
-     * */
+     */
     private void commitGoodsCostprice2(final String orderBarCode, final PosProductEntity goods,
-                                       final Double bCount){
+                                       final Double bCount) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
@@ -1772,9 +1895,9 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     /**
      * 保存商品到收银台
-     * */
+     */
     private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
-                                   final Double bCount){
+                                   final Double bCount) {
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
@@ -1860,38 +1983,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         if (BizConfig.RELEASE && !alipayDialog.isShowing()) {
             alipayDialog.show();
-        }
-    }
-
-    /**
-     * 注册设备
-     */
-    private void registerPlat() {
-        if (registerPlatDialog == null) {
-            registerPlatDialog = new ActionDialog(this);
-            registerPlatDialog.setCancelable(false);
-            registerPlatDialog.setCanceledOnTouchOutside(false);
-        }
-        registerPlatDialog.initialize("注册设备", "", new ActionDialog.OnActionClickListener() {
-            @Override
-            public void onAction1() {
-                // TODO: 8/8/16 注册设备
-            }
-
-            @Override
-            public void onAction2() {
-                // TODO: 8/8/16 暂不注册
-                registerPlatDialog.dismiss();
-            }
-
-            @Override
-            public void onAction3() {
-
-            }
-        });
-        registerPlatDialog.setActions("立即注册", "暂不注册", null);
-        if (!registerPlatDialog.isShowing()) {
-            registerPlatDialog.show();
         }
     }
 

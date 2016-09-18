@@ -1,10 +1,11 @@
-package com.mfh.litecashier.ui.dialog;
+package com.bingshanguxue.cashier;
 
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -14,22 +15,20 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
-import com.mfh.litecashier.R;
 
 
 /**
- * 修改数量
+ * 输入窗口
  *
  * @author bingshanguxue
  */
-public class DoubleInputDialog extends CommonDialog {
+public class NumberInputDialog extends CommonDialog {
 
     /**
      * 输入框小数的位数
@@ -37,7 +36,8 @@ public class DoubleInputDialog extends CommonDialog {
     private static int DECIMAL_DIGITS = 2;
 
     public interface OnResponseCallback {
-        void onQuantityChanged(Double value);
+        void onNext(String value);
+        void onCompleted();
     }
 
     private OnResponseCallback mListener;
@@ -52,15 +52,14 @@ public class DoubleInputDialog extends CommonDialog {
     private boolean minimumDoubleCheckEnabled = false;
     private Double minimumDoubleCheckValue = 0D;
 
-    private DoubleInputDialog(Context context, boolean flag, OnCancelListener listener) {
+    private NumberInputDialog(Context context, boolean flag, OnCancelListener listener) {
         super(context, flag, listener);
     }
 
     @SuppressLint("InflateParams")
-    private DoubleInputDialog(Context context, int defStyle) {
+    private NumberInputDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_input_double, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_input_style_1, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -103,90 +102,73 @@ public class DoubleInputDialog extends CommonDialog {
         rootView.findViewById(R.id.key_0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 直接设置文字，不会触发filter
-//                etValue.append("0");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_0));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_0));
             }
         });
         rootView.findViewById(R.id.key_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("1");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_1));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_1));
             }
         });
         rootView.findViewById(R.id.key_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("2");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_2));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_2));
             }
         });
         rootView.findViewById(R.id.key_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("3");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_3));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_3));
             }
         });
         rootView.findViewById(R.id.key_4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("4");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_4));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_4));
             }
         });
         rootView.findViewById(R.id.key_5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("5");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_5));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_5));
             }
         });
         rootView.findViewById(R.id.key_6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("6");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_6));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_6));
             }
         });
         rootView.findViewById(R.id.key_7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("7");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_7));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_7));
             }
         });
         rootView.findViewById(R.id.key_8).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("8");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_8));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_8));
             }
         });
         rootView.findViewById(R.id.key_dot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append(".");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_NUMPAD_DOT));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_NUMPAD_DOT));
             }
         });
         rootView.findViewById(R.id.key_9).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                etValue.append("9");
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_9));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_9));
             }
         });
         rootView.findViewById(R.id.key_del).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int len = etValue.length();
-//                if (len > 0) {
-//                    String text = etValue.getText().toString();
-//                    etValue.setText(text.substring(0, Math.max(0, len - 1)));
-//                }
-                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
             }
         });
         rootView.findViewById(R.id.key_del).setOnLongClickListener(new View.OnLongClickListener() {
@@ -194,6 +176,7 @@ public class DoubleInputDialog extends CommonDialog {
             public boolean onLongClick(View v) {
 //                etValue.setText("");
                 etValue.getText().clear();
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
                 return true;
             }
         });
@@ -214,7 +197,7 @@ public class DoubleInputDialog extends CommonDialog {
         setContent(rootView, 0);
     }
 
-    public DoubleInputDialog(Context context) {
+    public NumberInputDialog(Context context) {
         this(context, R.style.dialog_common);
     }
 
@@ -244,12 +227,23 @@ public class DoubleInputDialog extends CommonDialog {
         initialzie(title, decimalDigits, hintValue, null, callback);
     }
 
-    public void initializeBarcode(String title, OnResponseCallback callback){
+    public void initializeBarcode(String title, int inputType, OnResponseCallback callback){
         initialzie(title, 0, 0D, "", callback);
+
+        if (inputType == EditInputType.BARCODE) {
+            etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        }
+        else if (inputType == EditInputType.NUMBER_DECIMAL) {
+            //相当于在.xml文件中设置inputType="numberDecimal
+            etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        }
+        else {
+            etValue.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
     }
 
     public void initialzie(String title, int decimalDigits, Double hintValue, String unit,
-                     OnResponseCallback callback) {
+                           OnResponseCallback callback) {
         this.hintValue = hintValue;
         this.unit = unit;
         this.mListener = callback;
@@ -258,10 +252,9 @@ public class DoubleInputDialog extends CommonDialog {
         this.tvTitle.setText(title);
 //        etValue.setText(hintValue.toString());
         this.etValue.getText().clear();
-        if (decimalDigits == 0){
+        if (decimalDigits == 0) {
             this.etValue.setHint(String.format("%.0f", hintValue));
-        }
-        else{
+        } else {
             this.etValue.setHint(String.format("%.2f", hintValue));
         }
 
@@ -269,10 +262,9 @@ public class DoubleInputDialog extends CommonDialog {
         this.etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
         this.etValue.requestFocus();
 
-        if (StringUtils.isEmpty(unit)){
+        if (StringUtils.isEmpty(unit)) {
             this.tvUnit.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             this.tvUnit.setText(unit);
             this.tvUnit.setVisibility(View.VISIBLE);
         }
@@ -295,27 +287,32 @@ public class DoubleInputDialog extends CommonDialog {
             return;
         }
 
-        try {
-            Double newQuantity = Double.valueOf(quantityStr);
-            //不为空，且有变化时才返回
-            if (hintValue != null && newQuantity.compareTo(hintValue) != 0) {
-                if (minimumDoubleCheckEnabled &&
-                        minimumDoubleCheckValue != null &&
-                        minimumDoubleCheckValue.compareTo(newQuantity) > 0) {
-                    DialogUtil.showHint(String.format("数量不能低于 %.2f", minimumDoubleCheckValue));
-                    return;
-                }
-                if (mListener != null) {
-                    mListener.onQuantityChanged(newQuantity);
-                }
-            }
-
-            dismiss();
-        } catch (Exception e) {
-//                        java.lang.NumberFormatException: Invalid double: "88.0.08"
-            e.printStackTrace();
-            ZLogger.e(e.toString());
+        if (mListener != null) {
+            mListener.onNext(quantityStr);
         }
+        dismiss();
+
+//        try {
+//            Double newQuantity = Double.valueOf(quantityStr);
+//            //不为空，且有变化时才返回
+//            if (hintValue != null && newQuantity.compareTo(hintValue) != 0) {
+//                if (minimumDoubleCheckEnabled &&
+//                        minimumDoubleCheckValue != null &&
+//                        minimumDoubleCheckValue.compareTo(newQuantity) > 0) {
+//                    DialogUtil.showHint(String.format("数量不能低于 %.2f", minimumDoubleCheckValue));
+//                    return;
+//                }
+//                if (mListener != null) {
+//                    mListener.onNext(newQuantity);
+//                }
+//            }
+//
+//            dismiss();
+//        } catch (Exception e) {
+////                        java.lang.NumberFormatException: Invalid double: "88.0.08"
+//            e.printStackTrace();
+//            ZLogger.ef(e.toString());
+//        }
 
     }
 

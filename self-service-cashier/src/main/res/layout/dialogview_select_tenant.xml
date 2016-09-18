@@ -19,6 +19,7 @@
         app:inputNumberLabelView_inputTextColorHint="@color/black_35"
         app:inputNumberLabelView_inputHint="门店名称"
         android:layout_margin="@dimen/spacing_double"
+
         android:layout_below="@+id/frame_top"
         android:layout_centerHorizontal="true"/>
 

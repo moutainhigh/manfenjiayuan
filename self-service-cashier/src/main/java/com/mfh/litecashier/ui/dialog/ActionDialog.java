@@ -55,6 +55,7 @@ public class ActionDialog extends CommonDialog {
         btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction1();
                 }
@@ -63,6 +64,7 @@ public class ActionDialog extends CommonDialog {
         btnAction2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction2();
                 }
@@ -71,6 +73,7 @@ public class ActionDialog extends CommonDialog {
         btnAction3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction3();
                 }
@@ -124,7 +127,7 @@ public class ActionDialog extends CommonDialog {
             btnAction2.setText(action2);
         }
 
-        if (StringUtils.isEmpty(action1)) {
+        if (StringUtils.isEmpty(action3)) {
             btnAction3.setVisibility(View.GONE);
         } else {
             btnAction3.setVisibility(View.VISIBLE);

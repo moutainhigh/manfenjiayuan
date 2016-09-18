@@ -317,6 +317,7 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
 //        refresh(null);
+        hideProgressDialog();
         DialogUtil.showHint("加载商品信息失败");
         btnSubmit.setEnabled(false);
     }
@@ -489,13 +490,21 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         product.put("unit", unit);
         product.put("priceType", priceType);
         product.put("shortName", shortName);
-        product.put("prodArea", prodArea);
-        product.put("prodLevel", prodLevel);
-        product.put("guaPeriod", guaPeriod);
+        if (!StringUtils.isEmpty(prodArea)){
+            product.put("prodArea", prodArea);
+        }
+        if (!StringUtils.isEmpty(prodArea)){
+            product.put("prodLevel", prodLevel);
+        }
+        if (!StringUtils.isEmpty(prodArea)){
+            product.put("guaPeriod", guaPeriod);
+        }
         product.put("domain", CateApi.DOMAIN_TYPE_PROD);//商品业务域
 //        product.put("shortName", shortName);
         defaultSku.put("barcode", barcode);
-        defaultSku.put("packageNum", packageNum);
+        if (!StringUtils.isEmpty(packageNum)){
+            defaultSku.put("packageNum", packageNum);
+        }
         tenantSku.put("buyPrice", buyprice);
         //Column 'cost_price' cannot be null
         tenantSku.put("costPrice", costprice);//默认零售价等于采购价。
