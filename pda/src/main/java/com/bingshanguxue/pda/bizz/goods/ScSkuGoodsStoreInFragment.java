@@ -628,7 +628,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
-                    ZLogger.d("processFailure: " + errMsg);
+                    ZLogger.df("商品建档失败: " + errMsg);
                     hideProgressDialog();
                     DialogUtil.showHint("建档失败");
                     btnSubmit.setEnabled(true);
