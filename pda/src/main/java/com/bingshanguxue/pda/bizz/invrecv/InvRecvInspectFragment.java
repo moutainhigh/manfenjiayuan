@@ -495,6 +495,8 @@ public class InvRecvInspectFragment extends PDAScanFragment
 
                 hideProgressDialog();
                 isAcceptBarcodeEnabled = true;
+                mScanBar.reset();
+                DeviceUtils.hideSoftInput(getActivity(), mScanBar);
 //                ActivityRoute.inspectProductSku(getActivity());
                 Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);

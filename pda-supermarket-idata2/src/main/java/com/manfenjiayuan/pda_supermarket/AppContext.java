@@ -39,6 +39,7 @@ public class AppContext extends MfhApplication {
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
         }
 
+//        SharedPreferencesManager.setSoftKeyboardEnabled(true);
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);
         // 如果app启用了远程的service，此application:onCreate会被调用2次

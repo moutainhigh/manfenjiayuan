@@ -125,7 +125,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
                 refresh(null);
             }
         });
-        labelQuantityCheck.setSoftKeyboardEnabled(true);
 
         btnSubmit.setEnabled(false);
     }

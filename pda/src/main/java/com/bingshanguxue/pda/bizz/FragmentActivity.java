@@ -8,13 +8,16 @@ import android.view.WindowManager;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.bizz.invrecv.InspectProductSkuFragment;
+import com.mfh.framework.core.utils.DeviceUtils;
+import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.base.BaseFragment;
 
 /**
  * 服务
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class FragmentActivity extends BaseActivity {
+public class FragmentActivity extends BaseActivity implements BackHandledInterface {
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
     public static final int FT_INSPECT_PRODUCT_SKU = 0x01;//平台商品档案
@@ -36,16 +39,6 @@ public class FragmentActivity extends BaseActivity {
     }
 
     @Override
-    protected boolean isBackKeyEnabled() {
-        return true;
-    }
-
-    @Override
-    protected boolean isFullscreenEnabled() {
-        return true;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         handleIntent();
 
@@ -56,9 +49,31 @@ public class FragmentActivity extends BaseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         initFragments();
+
+        DeviceUtils.hideSoftInput(this);
     }
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
 
+        DeviceUtils.hideSoftInput(this);
+
+        if (mBackHandedFragment == null || !mBackHandedFragment.onBackPressed()) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                super.onBackPressed();
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+    }
+
+    private BaseFragment mBackHandedFragment;
+
+    @Override
+    public void setSelectedFragment(BaseFragment selectedFragment) {
+        this.mBackHandedFragment = selectedFragment;
+    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
