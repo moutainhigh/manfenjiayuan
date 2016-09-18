@@ -63,17 +63,24 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 break;
 
             case PushConsts.GET_SDKONLINESTATE:
-                ZLogger.d("sdk.online");
+                boolean onlineState = bundle.getBoolean("onlineState");
+                ZLogger.df(String.format("个推 %s, onlineState = %b", IMConfig.getPushClientId(), onlineState));
+                if (!onlineState){
+                    ZLogger.df("准备开启推送...");
+                    PushManager.getInstance().turnOnPush(AppContext.getAppContext());
+                    offlineTime = System.currentTimeMillis();
+                }
                 break;
             case PushConsts.GET_SDKSERVICEPID:
 //                超过5分钟会自动重启
-                Long interval = System.currentTimeMillis() - offlineTime;
-                if (interval > 1000) {
-                    ZLogger.df("个推服务断开超过 1秒,准备初始化...");
-                    PushManager.getInstance().initialize(AppContext.getAppContext());
+                Long rightNow = System.currentTimeMillis();
+                Long interval =  rightNow - offlineTime;
+                ZLogger.df(String.format("个推服务未启动，%d - %d = %d", rightNow, offlineTime, interval));
+//                超过5分钟会自动重启
+                if (interval > 10) {
+                    ZLogger.df("准备初始化个推服务...");
                     offlineTime = System.currentTimeMillis();
-                } else {
-                    ZLogger.df("个推服务未启动，...");
+                    PushManager.getInstance().initialize(AppContext.getAppContext());
                 }
                 break;
             default:
