@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.model.OrderPayWay;
 import com.bingshanguxue.cashier.model.PayOrder;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -24,13 +25,11 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
@@ -40,7 +39,6 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
-import com.bingshanguxue.cashier.model.OrderPayWay;
 import com.mfh.litecashier.bean.wrapper.CashQuotaInfo;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.service.UploadSyncManager;
@@ -63,8 +61,8 @@ import butterknife.OnClick;
  */
 public class CashQuotaFragment extends BaseProgressFragment {
 
-    public static final String EXTRA_KEY_CANCELABLE = "cancelable";
-    public static final String EXTRA_KEY_DATETIME = "datetime";
+//    public static final String EXTRA_KEY_CANCELABLE = "cancelable";
+//    public static final String EXTRA_KEY_DATETIME = "datetime";
 
     @Bind(R.id.tv_header_title)
     TextView tvHeaderTitle;
@@ -95,7 +93,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
     private AlipayDialog alipayDialog = null;
 
-    private boolean cancelable = true;//是否可以关闭窗口
+//    private boolean cancelable = true;//是否可以关闭窗口
     private CashQuotaInfo mCashQuotaInfo;
 
     protected boolean bSyncInProgress = false;//是否正在同步
@@ -125,12 +123,12 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        ZLogger.df(String.format(">>开始授权查询：%s", StringUtils.decodeBundle(args)));
-        if (args != null) {
-            cancelable = args.getBoolean(EXTRA_KEY_CANCELABLE, true);
-//            dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
-        }
+//        Bundle args = getArguments();
+//        ZLogger.df(String.format(">>开始授权查询：%s", StringUtils.decodeBundle(args)));
+//        if (args != null) {
+//            cancelable = args.getBoolean(EXTRA_KEY_CANCELABLE, true);
+////            dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
+//        }
 
         tvHeaderTitle.setText("授权查询");
         ArrayAdapter<CharSequence> priceTypeAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -152,11 +150,11 @@ public class CashQuotaFragment extends BaseProgressFragment {
         spinnerBiztype.setSelection(0);
         initAggRecyclerView();
 
-        if (cancelable) {
-            btnClose.setVisibility(View.VISIBLE);
-        } else {
-            btnClose.setVisibility(View.GONE);
-        }
+//        if (cancelable) {
+//            btnClose.setVisibility(View.VISIBLE);
+//        } else {
+//            btnClose.setVisibility(View.GONE);
+//        }
 
 
         mCashQuotaInfo = new CashQuotaInfo();
@@ -174,10 +172,10 @@ public class CashQuotaFragment extends BaseProgressFragment {
 
     @OnClick(R.id.button_header_close)
     public void finishActivity() {
-        if (!cancelable) {
-            DialogUtil.showHint("请先确认当前日结");
-            return;
-        }
+//        if (!cancelable) {
+//            DialogUtil.showHint("请先确认当前日结");
+//            return;
+//        }
         getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
     }
