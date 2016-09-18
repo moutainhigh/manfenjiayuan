@@ -37,6 +37,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.EmptyEntity;
+import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.ui.adapter.PayHistoryAdapter;
 
 import java.util.List;
@@ -83,6 +84,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
             orderId = args.getLong(EXTRA_KEY_ORDER_ID);
             editable = args.getBoolean(EXTRA_KEY_EDITABLE);
         }
+        ZLogger.d(String.format("orderId=%d, editable=%b", orderId, editable));
         mToolbar.setTitle("支付记录");
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -150,6 +152,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                 }
 
                 if (!editable){
+                    ZLogger.d("item can not be edit");
                     return;
                 }
 
@@ -384,6 +387,8 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
         if (handleAmount < 0.01) {
             //修改订单支付信息（支付金额，支付状态）
             CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+
+            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntity);
         }
 
         productAdapter.notifyDataSetChanged();
