@@ -205,7 +205,6 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
             spinnerUnit.setAdapter(unitAdapter0);
             spinnerUnit.setSelection(0);
 
-            labelName.setSoftKeyboardEnabled(true);
             labelName.setOnViewListener(new EditLabelView.OnViewListener() {
                 @Override
                 public void onKeycodeEnterClick(String text) {
