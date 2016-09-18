@@ -55,28 +55,28 @@ public class ActionDialog extends CommonDialog {
         btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction1();
                 }
-                dismiss();
             }
         });
         btnAction2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction2();
                 }
-                dismiss();
             }
         });
         btnAction3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismiss();
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction3();
                 }
-                dismiss();
             }
         });
 

@@ -1407,7 +1407,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 批量修改订单折扣
      * */
     private void batchMakeDiscount(final String posTradeNo, final Double discount){
-        fabOrderDiscount.setText(MUtils.formatDouble(null, null, discount, "", "%", ""));
+        fabOrderDiscount.setText(String.format("%.0f%%", discount));
         fabOrderDiscount.setVisibility(View.VISIBLE);
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
