@@ -58,6 +58,7 @@ public class ActionDialog extends CommonDialog {
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction1();
                 }
+                dismiss();
             }
         });
         btnAction2.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +67,7 @@ public class ActionDialog extends CommonDialog {
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction2();
                 }
+                dismiss();
             }
         });
         btnAction3.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +76,7 @@ public class ActionDialog extends CommonDialog {
                 if (mOnActionClickListener != null) {
                     mOnActionClickListener.onAction3();
                 }
+                dismiss();
             }
         });
 
@@ -124,7 +127,7 @@ public class ActionDialog extends CommonDialog {
             btnAction2.setText(action2);
         }
 
-        if (StringUtils.isEmpty(action1)) {
+        if (StringUtils.isEmpty(action3)) {
             btnAction3.setVisibility(View.GONE);
         } else {
             btnAction3.setVisibility(View.VISIBLE);

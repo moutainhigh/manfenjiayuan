@@ -1,5 +1,7 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,11 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.NumberInputDialog;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.ProductCatalogEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -22,6 +28,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -29,15 +36,20 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
+import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.event.AffairEvent;
+import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
+import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
+import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 
 import java.util.ArrayList;
@@ -55,7 +67,7 @@ import rx.schedulers.Schedulers;
  * POS-本地前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFrontCategoryGoods> {
+public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFrontCategoryGoods> implements IScGoodsSkuView {
 
     public static final String KEY_CATEGORY_ID = "categoryId";
 
@@ -70,6 +82,13 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     private LocalFrontCategoryGoodsAdapter2 adapter;
 
     private Long categoryId;
+    private String tempBarcode;
+    private ActionDialog addGoodsDialog = null;
+    private NumberInputDialog barcodeInputDialog = null;
+    private FrontCategoryGoodsDialog mFrontCategoryGoodsDialog = null;
+
+
+    private ScGoodsSkuPresenter mScGoodsSkuPresenter;
 
     @Override
     protected int getLayoutResId() {
@@ -84,6 +103,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
         mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 40);
 
+        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
 
     @Override
@@ -187,7 +207,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
             @Override
             public void onClickGoods(LocalFrontCategoryGoods goods) {
-
                 Bundle args = new Bundle();
                 args.putSerializable("goods", goods);
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS, args));
@@ -411,6 +430,38 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
      * 添加更多商品
      */
     public void addMoreGoods() {
+        if (addGoodsDialog == null) {
+            addGoodsDialog = new ActionDialog(getActivity());
+            addGoodsDialog.setCancelable(false);
+            addGoodsDialog.setCanceledOnTouchOutside(false);
+        }
+        addGoodsDialog.initialize("添加商品", "", new ActionDialog.OnActionClickListener() {
+            @Override
+            public void onAction1() {
+                redirect2FrontCategory();
+            }
+
+            @Override
+            public void onAction2() {
+                // TODO: 8/8/16 暂不注册
+                manualAddGoods();
+            }
+
+            @Override
+            public void onAction3() {
+
+            }
+        });
+        addGoodsDialog.setActions("商品库", "输入商品编号", null);
+        if (!addGoodsDialog.isShowing()) {
+            addGoodsDialog.show();
+        }
+    }
+
+    /**
+     * 跳转到前台类目商品库
+     */
+    private void redirect2FrontCategory() {
         PosCategoryGodosTempService.getInstance().clear();
 
         Bundle extras = new Bundle();
@@ -422,7 +473,141 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         UIHelper.startActivity(getActivity(), FragmentActivity.class, extras);
     }
 
-    private FrontCategoryGoodsDialog mFrontCategoryGoodsDialog = null;
+    /**
+     * 输入商品编号
+     */
+    private void manualAddGoods() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getActivity());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode("输入商品编号", EditInputType.BARCODE,
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+//                        inlvBarcode.setInputString(value);
+//                        查询平台商品档案，如果有则导入到前台类目，没有则跳转到商品建档页面
+                        tempBarcode = value;
+                        if (!StringUtils.isEmpty(value)) {
+                            mScGoodsSkuPresenter.getByBarcode(value);
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+    @Override
+    public void onIScGoodsSkuViewProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+    }
+
+    @Override
+    public void onIScGoodsSkuViewError(String errorMsg) {
+        hideProgressDialog();
+
+        DialogUtil.showHint("加载商品信息失败");
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
+        if (data == null) {
+            Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
+            Bundle extras = new Bundle();
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+                    SimpleDialogActivity.FRAGMENT_TYPE_CREATE_PURCHASE_GOODS);
+            extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+                    SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+            extras.putString(ScSkuGoodsStoreInFragment.EXTRY_KEY_BARCODE, tempBarcode);
+            intent.putExtras(extras);
+            startActivityForResult(intent, Constants.ARC_CREATE_PURCHASE_GOODS);
+        } else {
+            DialogUtil.showHint("导入到类目中");
+            importFromCenterSkus(String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
+        }
+    }
+
+    /**
+     * 建档
+     */
+    private void importFromCenterSkus(final String productIds, String proSkuIds) {
+        NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("导入商品到本店仓储失败, " + errMsg);
+//                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
+                        DialogUtil.showHint("添加商品失败");
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //新建类目成功，保存类目信息，并触发同步。
+                        ZLogger.df("导入商品到本店仓储成功");
+                        add2Category(productIds);
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
+    }
+
+    /**
+     * 导入类目
+     */
+    private void add2Category(String productIds) {
+        NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("导入前台类目商品失败, " + errMsg);
+//                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
+                        DialogUtil.showHint("添加商品失败");
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //新建类目成功，保存类目信息，并触发同步。
+//                        {"code":"0","msg":"操作成功!","version":"1","data":""}
+                        ZLogger.df("导入前台类目商品成功");
+                        hideProgressDialog();
+//                        if (rspData == null) {
+//                            return;
+//                        }
+
+                        DataSyncManager.get().sync();
+
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+
+        ProductCatalogApi.add2Category(String.valueOf(categoryId), productIds, submitRC);
+    }
 
     /**
      * 修改商品
@@ -510,7 +695,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
      * 删除商品
      */
     private void deleteGoods(final LocalFrontCategoryGoods goods) {
-        if (goods == null){
+        if (goods == null) {
             return;
         }
 
@@ -532,7 +717,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         final ProductCatalogEntity finalCatalogEntity = catalogEntity;
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
-                    new NetProcessor.Processor<String>() {
+                new NetProcessor.Processor<String>() {
                     @Override
                     public void processResult(IResponseData rspData) {
                         //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean

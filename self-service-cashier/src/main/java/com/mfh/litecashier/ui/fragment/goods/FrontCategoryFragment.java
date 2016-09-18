@@ -278,6 +278,35 @@ public class FrontCategoryFragment extends BaseFragment {
 
     }
 
+
+    /**
+     * 建档
+     * */
+    private void importFromCenterSkus(final String productIds, String proSkuIds) {
+        NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("导入商品到本店仓储失败, " + errMsg);
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //新建类目成功，保存类目信息，并触发同步。
+                        ZLogger.df("导入商品到本店仓储成功");
+                        add2Category(productIds);
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
+    }
+
     /**
      * 导入类目
      * */
@@ -315,34 +344,6 @@ public class FrontCategoryFragment extends BaseFragment {
 
         ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
                 productIds, submitRC);
-    }
-
-    /**
-     * 建档
-     * */
-    private void importFromCenterSkus(final String productIds, String proSkuIds) {
-        NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("导入商品到本店仓储失败, " + errMsg);
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
-                        ZLogger.df("导入商品到本店仓储成功");
-                        add2Category(productIds);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
     }
 
 }
