@@ -3,6 +3,7 @@ package com.mfh.framework.api.category;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
@@ -17,14 +18,13 @@ public class ScCategoryInfoApi {
     /**
      * 类目查询－－一级类目
      */
-    public final static String URL_COMNQUERY = MfhApi.URL_BASE_SERVER + "comnQuery";
+    public final static String URL_COMNQUERY = URL_SC_CATEGORYINFO + "comnQuery";
 
 
     /**
      * pos类目查询接口：/scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
      */
-    public final static String URL_GETCODEVALUE = MfhApi.URL_BASE_SERVER + "getCodeValue";
-
+    public final static String URL_GETCODEVALUE = URL_SC_CATEGORYINFO + "getCodeValue";
 
 
     /**
@@ -49,8 +49,11 @@ public class ScCategoryInfoApi {
      */
     public final static String URL_LIST = URL_SC_CATEGORYINFO + "list";
 
-
-
+    /**
+     * 获取根类目
+     * /scCategoryInfo/getTopFrontId?tenantId=136076&cateType=9
+     */
+    public final static String URL_GET_TOPFRONTID = URL_SC_CATEGORYINFO + "getTopFrontId";
 
 
     /**
@@ -67,7 +70,7 @@ public class ScCategoryInfoApi {
      * @param nameCn       类目中文
      */
     public static void create(int domain, int catePosition, Long tenantId,
-                              String nameCn,
+                              String nameCn, Integer cateType,
                               AjaxCallBack<? extends Object> responseCallback) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("kind", "code");
@@ -75,6 +78,25 @@ public class ScCategoryInfoApi {
         jsonObject.put("nameCn", nameCn);
         jsonObject.put("catePosition", catePosition);
         jsonObject.put("tenantId", tenantId);
+        jsonObject.put("cateType", cateType);
+
+        AjaxParams params = new AjaxParams();
+        params.put("jsonStr", jsonObject.toJSONString());
+
+        AfinalFactory.postDefault(URL_CREATE, params, responseCallback);
+    }
+
+    public static void create(Long parentId, int domain, int catePosition, Long tenantId,
+                              String nameCn, Integer cateType,
+                              AjaxCallBack<? extends Object> responseCallback) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("kind", "code");
+        jsonObject.put("domain", domain);
+        jsonObject.put("nameCn", nameCn);
+        jsonObject.put("catePosition", catePosition);
+        jsonObject.put("tenantId", tenantId);
+        jsonObject.put("cateType", cateType);
+        jsonObject.put("parentId", parentId);
 
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonObject.toJSONString());
@@ -124,6 +146,19 @@ public class ScCategoryInfoApi {
         params.put("jsonStr", jsonStr);
 
         AfinalFactory.postDefault(URL_UPDATE, params, responseCallback);
+    }
+
+    /**
+     * 查询前台类目根目录
+     * */
+    public static void getTopFrontId(Integer cateType, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("cateType", String.valueOf(cateType));
+//        params.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
+//        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+
+        AfinalFactory.postDefault(URL_GET_TOPFRONTID, params, responseCallback);
     }
 
     /**

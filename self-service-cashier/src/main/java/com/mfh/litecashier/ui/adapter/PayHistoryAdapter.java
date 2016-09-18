@@ -99,7 +99,6 @@ public class PayHistoryAdapter
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
                     int position = getAdapterPosition();
                     if (entityList == null || position < 0 || position >= entityList.size()) {
 //                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));

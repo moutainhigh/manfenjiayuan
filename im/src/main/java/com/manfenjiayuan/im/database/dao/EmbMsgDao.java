@@ -21,7 +21,7 @@ import java.util.List;
  * Created by Administrator on 14-5-6.
  */
 public class EmbMsgDao extends BaseDbDao<EmbMsg, String> {
-    private static final String TABLE_NAME = "emb_msg_t0";
+    private static final String TABLE_NAME = "emb_msg";
     private static final String TABLE_NAME_CH = "消息表";
 
     //CRUD

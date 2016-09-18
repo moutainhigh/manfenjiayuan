@@ -60,7 +60,7 @@ public class SharedPreferencesHelper {
     //同步账号
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
     private static final String PK_SYNC_COMPANY_HUMAN_ENABLED = "pk_sync_company_human_enabled";
-   // 后台商品类目
+   //
 
     public static final String PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_bakend_categoryinfo_fresh_enabled";
       //库存
@@ -97,6 +97,7 @@ public class SharedPreferencesHelper {
     public static final String PK_B_SYNC_SMSCALE_FTP_ENABLED = "pk_b_SYNC_SMSCALE_FTP_ENABLED";
     //是否允许同步商品数据 ViaWs 2绿泰电子价签
     public static final String PK_B_SYNC_ESL_ENABLED = "pk_b_SYNC_ESL_ENABLED";
+    public static final String PK_L_CATETYPE_POS_ID = "pk_l_catetype_pos_id";
 
 
     public static String prefName = TAG;

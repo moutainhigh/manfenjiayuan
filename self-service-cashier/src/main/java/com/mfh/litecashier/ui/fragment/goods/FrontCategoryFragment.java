@@ -17,9 +17,8 @@ import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductCatalogApi;
-import com.mfh.framework.api.category.CateApiImpl;
+import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
@@ -220,8 +219,7 @@ public class FrontCategoryFragment extends BaseFragment {
                                 cacheArrays.add(item);
                             }
                         }
-                        ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
-                                .put(cacheKey, cacheArrays.toJSONString());
+                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
                         if (isNeedRefresh) {
                             refreshCategoryGoodsTab(items);
                         }
@@ -240,7 +238,7 @@ public class FrontCategoryFragment extends BaseFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        CateApiImpl.listPublicCategory(categoryId, queryRsCallBack);
+        ScCategoryInfoApi.getCodeValue(categoryId, queryRsCallBack);
     }
 
     /**

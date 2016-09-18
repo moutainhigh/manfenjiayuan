@@ -10,7 +10,7 @@ import com.mfh.framework.core.utils.TimeUtil;
  * 消息表
  * Created by Administrator on 14-5-6.
  */
-@Table(name="emb_msg_t0")
+@Table(name="emb_msg")
 public class EmbMsg extends MfhEntity<String> implements IStringId{
     private static final String KEY_PHYSICS_POINT = "pp";//物理端点
     private static final String KEY_CHANNEL_ID = "cid";//
