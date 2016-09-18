@@ -61,8 +61,6 @@ public class CateApiImpl extends CateApi{
     }
 
 
-
-
     /**
      * 查询子类目
      */
@@ -73,8 +71,5 @@ public class CateApiImpl extends CateApi{
 
         AfinalFactory.postDefault(ScCategoryInfoApi.URL_COMNQUERY, params, responseCallback);
     }
-
-
-
 
 }

@@ -1,6 +1,5 @@
 package com.mfh.framework.api.category;
 
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.network.NetFactory;
 
 /**
@@ -43,7 +42,6 @@ public class CateApi {
     /**
      * 前台类目
      */
-    public final static Integer FRONTEND_CATE_BTYPE_FRESH = 101;//生鲜类
 
 
     public static String backendCatetypeName(Integer value) {

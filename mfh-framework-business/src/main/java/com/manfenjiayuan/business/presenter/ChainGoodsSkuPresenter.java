@@ -24,70 +24,73 @@ public class ChainGoodsSkuPresenter {
 
     /**
      * 查询洗衣类目商品商品
+     *
      * @param frontCategoryId 类目编号
-     * */
-    public void findPublicChainGoodsSku(PageInfo pageInfo, Long frontCategoryId, Long netId){
+     */
+    public void findPublicChainGoodsSku(PageInfo pageInfo, Long frontCategoryId, Long netId) {
         iChainGoodsSkuMode.findPublicChainGoodsSku(pageInfo, frontCategoryId, netId,
                 new OnPageModeListener<ChainGoodsSku>() {
-            @Override
-            public void onProcess() {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
-                }
-            }
+                    @Override
+                    public void onProcess() {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewProcess();
+                        }
+                    }
 
-            @Override
-            public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
-                }
-            }
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
 
-            @Override
-            public void onError(String errorMsg) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
-                }
-            }
-        });
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
     }
 
     /**
      * 查询批发商商品
+     *
      * @param frontCategoryId 类目编号
-     * */
+     */
     public void loadCompanyChainSkuGoods(PageInfo pageInfo, Long frontCategoryId,
-                                         Long companyId, String barcode){
+                                         Long companyId, String barcode) {
         iChainGoodsSkuMode.findPublicChainGoodsSku2(pageInfo, frontCategoryId, companyId, barcode,
                 new OnPageModeListener<ChainGoodsSku>() {
-            @Override
-            public void onProcess() {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
-                }
-            }
+                    @Override
+                    public void onProcess() {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewProcess();
+                        }
+                    }
 
-            @Override
-            public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
-                }
-            }
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
 
-            @Override
-            public void onError(String errorMsg) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
-                }
-            }
-        });
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
     }
 
     /**
      * 查询批发商商品
+     *
      * @param barcode 商品条码
-     * */
-    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike, PageInfo pageInfo){
+     */
+    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike, PageInfo pageInfo) {
         iChainGoodsSkuMode.findSupplyChainGoodsSku(barcode, proSkuId, nameLike, pageInfo,
                 new OnPageModeListener<ChainGoodsSku>() {
                     @Override
@@ -116,61 +119,62 @@ public class ChainGoodsSkuPresenter {
 
     /**
      * 获取批发商商品
+     *
      * @param companyId 批发商编号
-     * */
-    public void findTenantSku(PageInfo pageInfo, Long companyId, Long frontCategoryId, String barcode){
+     */
+    public void findTenantSku(PageInfo pageInfo, Long companyId, Long frontCategoryId, String barcode) {
         iChainGoodsSkuMode.findTenantSku(pageInfo, companyId, frontCategoryId,
                 barcode, new OnPageModeListener<ChainGoodsSku>() {
-            @Override
-            public void onProcess() {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
-                }
-            }
+                    @Override
+                    public void onProcess() {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewProcess();
+                        }
+                    }
 
-            @Override
-            public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
-                }
-            }
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
 
-            @Override
-            public void onError(String errorMsg) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
-                }
-            }
-        });
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
     }
 
     /**
      * 适用场景：门店/批发商 收货查询商品
-     * */
-    public void getTenantSkuMust(Long tenantId, String barcode, boolean needLike){
+     */
+    public void getTenantSkuMust(Long tenantId, String barcode, boolean needLike) {
         iChainGoodsSkuMode.getTenantSkuMust(tenantId, barcode, needLike,
-        new OnModeListener<ChainGoodsSku>() {
-            @Override
-            public void onProcess() {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewProcess();
-                }
-            }
+                new OnModeListener<ChainGoodsSku>() {
+                    @Override
+                    public void onProcess() {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewProcess();
+                        }
+                    }
 
-            @Override
-            public void onSuccess(ChainGoodsSku data) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewSuccess(data);
-                }
-            }
+                    @Override
+                    public void onSuccess(ChainGoodsSku data) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewSuccess(data);
+                        }
+                    }
 
-            @Override
-            public void onError(String errorMsg) {
-                if (iChainGoodsSkuView != null) {
-                    iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
-                }
-            }
-        });
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (iChainGoodsSkuView != null) {
+                            iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
     }
 
 }
