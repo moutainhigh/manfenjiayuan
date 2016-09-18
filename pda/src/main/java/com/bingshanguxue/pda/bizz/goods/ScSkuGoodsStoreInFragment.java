@@ -520,7 +520,6 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
 
     /**
      * 商品建档入库
-     *
      */
     public void storeIn() {
         btnSubmit.setEnabled(false);
@@ -600,12 +599,18 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         product.put("priceType", priceType);
         product.put("shortName", shortName);
         product.put("prodArea", prodArea);
-        product.put("prodLevel", prodLevel);
-        product.put("guaPeriod", guaPeriod);
+        if (!StringUtils.isEmpty(prodLevel)) {
+            product.put("prodLevel", prodLevel);
+        }
+        if (!StringUtils.isEmpty(prodLevel)) {
+            product.put("guaPeriod", guaPeriod);
+        }
         product.put("domain", CateApi.DOMAIN_TYPE_PROD);//商品业务域
 //        product.put("shortName", shortName);
         defaultSku.put("barcode", barcode);
-        defaultSku.put("packageNum", packageNum);
+        if (!StringUtils.isEmpty(prodLevel)) {
+            defaultSku.put("packageNum", packageNum);
+        }
         tenantSku.put("buyPrice", buyprice);
         //Column 'cost_price' cannot be null
         tenantSku.put("costPrice", costprice);//默认零售价等于采购价。
