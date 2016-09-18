@@ -201,6 +201,7 @@ public class SelectCompanyInfoDialog extends CommonDialog
         this.productAdapter.setEntityList(null);
     }
 
+
     private void initShortcodeView() {
         labelShortcode.setInputSubmitEnabled(true);
         labelShortcode.setSoftKeyboardEnabled(true);

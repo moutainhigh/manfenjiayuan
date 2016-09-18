@@ -19,7 +19,6 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
 import com.mfh.litecashier.R;
@@ -90,11 +89,7 @@ public class DoubleInputDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etValue);
-                    } else {
-                        DeviceUtils.hideSoftInput(getContext(), etValue);
-                    }
+                    DeviceUtils.hideSoftInput(getContext(), etValue);
                 }
                 etValue.requestFocus();
                 etValue.setSelection(etValue.length());
@@ -109,83 +104,96 @@ public class DoubleInputDialog extends CommonDialog {
             @Override
             public void onClick(View v) {
                 // 直接设置文字，不会触发filter
-                etValue.append("0");
+//                etValue.append("0");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_0));
             }
         });
         rootView.findViewById(R.id.key_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("1");
+//                etValue.append("1");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_1));
             }
         });
         rootView.findViewById(R.id.key_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("2");
+//                etValue.append("2");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_2));
             }
         });
         rootView.findViewById(R.id.key_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("3");
+//                etValue.append("3");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_3));
             }
         });
         rootView.findViewById(R.id.key_4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("4");
+//                etValue.append("4");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_4));
             }
         });
         rootView.findViewById(R.id.key_5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("5");
+//                etValue.append("5");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_5));
             }
         });
         rootView.findViewById(R.id.key_6).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("6");
+//                etValue.append("6");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_6));
             }
         });
         rootView.findViewById(R.id.key_7).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("7");
+//                etValue.append("7");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_7));
             }
         });
         rootView.findViewById(R.id.key_8).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("8");
+//                etValue.append("8");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_8));
             }
         });
         rootView.findViewById(R.id.key_dot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append(".");
+//                etValue.append(".");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_NUMPAD_DOT));
             }
         });
         rootView.findViewById(R.id.key_9).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etValue.append("9");
+//                etValue.append("9");
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_9));
             }
         });
         rootView.findViewById(R.id.key_del).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int len = etValue.length();
-                if (len > 0) {
-                    String text = etValue.getText().toString();
-                    etValue.setText(text.substring(0, Math.max(0, len - 1)));
-                }
+//                int len = etValue.length();
+//                if (len > 0) {
+//                    String text = etValue.getText().toString();
+//                    etValue.setText(text.substring(0, Math.max(0, len - 1)));
+//                }
+                dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL));
             }
         });
         rootView.findViewById(R.id.key_del).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                etValue.setText("");
+//                etValue.setText("");
+                etValue.getText().clear();
                 return true;
             }
         });
@@ -234,6 +242,10 @@ public class DoubleInputDialog extends CommonDialog {
 
     public void init(String title, int decimalDigits, Double hintValue, OnResponseCallback callback) {
         initialzie(title, decimalDigits, hintValue, null, callback);
+    }
+
+    public void initializeBarcode(String title, OnResponseCallback callback){
+        initialzie(title, 0, 0D, "", callback);
     }
 
     public void initialzie(String title, int decimalDigits, Double hintValue, String unit,

@@ -317,6 +317,7 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
 //        refresh(null);
+        hideProgressDialog();
         DialogUtil.showHint("加载商品信息失败");
         btnSubmit.setEnabled(false);
     }

@@ -208,4 +208,18 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
         }
     }
 
+    /**
+     * 批量打折
+     * */
+    public void batchDiscount(String posTradeNo,  Double discount){
+        List<CashierShopcartEntity> entities = queryAllBy(String.format("posTradeNo = '%s'", posTradeNo));
+        if (entities != null && entities.size() > 0){
+            for (CashierShopcartEntity entity : entities){
+                entity.setFinalPrice(entity.getCostPrice() * discount / 100);
+                entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+                saveOrUpdate(entity);
+            }
+        }
+    }
+
 }

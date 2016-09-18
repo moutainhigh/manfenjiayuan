@@ -37,7 +37,7 @@ import butterknife.OnClick;
  *   </declare-styleable>
  */
 public class InputSearchView extends LinearLayout {
-    private static final String TAG = "InputNumberLabelView";
+    private static final String TAG = "InputSearchView";
 
     public static final int INPUT_TYPE_NUMBER = 0;
     public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;

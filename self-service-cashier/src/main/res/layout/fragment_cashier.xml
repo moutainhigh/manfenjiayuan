@@ -102,7 +102,6 @@
 
             <!--数量和价格-->
             <LinearLayout
-                android:id="@+id/frame_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spacing_4x"
@@ -112,53 +111,30 @@
                 android:gravity="center"
                 android:showDividers="middle">
 
-                <LinearLayout
+                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                    android:id="@+id/label_quantity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
+                    app:bottomText="数量"
+                    app:bottomTextColor="@color/black_70"
+                    app:bottomTextSize="16sp"
+                    android:background="@null"
+                    app:topText="@string/default_amount"
+                    app:topTextColor="#FF009B4E"
+                    app:topTextSize="48sp"/>
 
-                    <TextView
-                        android:id="@+id/tv_quantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:text="@string/default_amount"
-                        android:textColor="#009B4E"
-                        android:textSize="48sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_quantity"
-                        android:textColor="@color/black_70"
-                        android:textSize="16sp"/>
-                </LinearLayout>
-
-                <LinearLayout
+                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                    android:id="@+id/label_amount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_amount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:text="@string/default_amount_unit"
-                        android:textColor="#FE5000"
-                        android:textSize="48sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_amount"
-                        android:textColor="@color/black_70"
-                        android:textSize="16sp"/>
-                </LinearLayout>
+                    app:bottomText="金额"
+                    app:bottomTextColor="@color/black_70"
+                    app:bottomTextSize="16sp"
+                    app:topText="@string/default_amount"
+                    app:topTextColor="#FFFE5000"
+                    app:topTextSize="48sp"/>
             </LinearLayout>
 
             <!--输入条形码-->
@@ -184,11 +160,26 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_list"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="80dp"
                 android:layout_weight="1"/>
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/fab_orderDiscount"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_gravity="start|bottom"
+            android:layout_below="@+id/horizontal_line"
+            android:layout_margin="@dimen/spacing_double"
+            android:background="@drawable/bg_float_number"
+            android:gravity="center"
+            android:minWidth="80dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/material_white"
+            android:textSize="20sp"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <TextView
