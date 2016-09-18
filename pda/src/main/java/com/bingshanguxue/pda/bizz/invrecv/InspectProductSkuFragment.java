@@ -15,6 +15,7 @@ import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.utils.ACacheHelper;
 import com.mfh.framework.api.anon.ProductSku;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -51,7 +52,7 @@ public class InspectProductSkuFragment extends BaseListFragment<ChainGoodsSku> {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_inspect_productsku;
+        return R.layout.fragment_template_goods_list;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class InspectProductSkuFragment extends BaseListFragment<ChainGoodsSku> {
 //        }
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-        chainRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.office_list);
+        chainRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.goods_list);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
         emptyView = rootView.findViewById(R.id.empty_view);
 
@@ -78,7 +79,14 @@ public class InspectProductSkuFragment extends BaseListFragment<ChainGoodsSku> {
 
         initRecyclerView();
 
+//        DeviceUtils.toggleSoftInput(getActivity());
+//
+
         reload();
+
+        DeviceUtils.hideSoftInput(getActivity(), mToolbar);
+        mToolbar.clearFocus();
+        chainRecyclerView.requestFocus();
     }
 
     @Override
