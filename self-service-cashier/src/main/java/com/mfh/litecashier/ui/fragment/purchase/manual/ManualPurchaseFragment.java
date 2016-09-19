@@ -925,18 +925,18 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         }
     }
 
-    /**
-     * 智能订货
-     * */
-    @OnClick(R.id.fab_importFromChainSku)
-    public void importFromChainSku(){
-        CompanyInfo companyInfo = searchParams.getCompanyInfo();
-        if (companyInfo != null) {
-//            CloudSyncManager.get().importFromChainSku(companyInfo.getTenantId(),
-//                    String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRUIT));
-            CloudSyncManager.get().importFromChainSku();
-        }
-    }
+//    /**
+//     * 同步商品档案
+//     * */
+//    @OnClick(R.id.fab_importFromChainSku)
+//    public void importFromChainSku(){
+//        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+//        if (companyInfo != null) {
+////            CloudSyncManager.get().importFromChainSku(companyInfo.getTenantId(),
+////                    String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRUIT));
+//            CloudSyncManager.get().importFromChainSku();
+//        }
+//    }
 
     @Override
     public void onIntelligentPurchaseProcess() {

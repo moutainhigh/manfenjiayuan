@@ -18,7 +18,6 @@ import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -28,7 +27,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
-import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
@@ -54,8 +52,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     @Bind(R.id.item_posgoods)
     SettingsItem itemPosGoods;
-    @Bind(R.id.item_mixi_fresh)
-    SettingsItem itemMixiFresh;
+//    @Bind(R.id.item_mixi_fresh)
+//    SettingsItem itemMixiFresh;
     @Bind(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
     @Bind(R.id.item_version)
@@ -257,34 +255,34 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                 });
     }
 
-    /**
-     * 米西生鲜
-     */
-    @OnClick(R.id.item_mixi_fresh)
-    public void importFromChainSku() {
-        showConfirmDialog("选择全量更新同步米西生鲜的商品库",
-                "全量更新", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                        //清空米西生鲜商品档案同步游标
-                        String cursorKey1 = String.format("%s_%d_%s",
-                                SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
-                                135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
-                        SharedPreferencesHelper.set(cursorKey1, "");
-                        CloudSyncManager.get().importFromChainSku();
-                    }
-                }, "点错了", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-    }
+//    /**
+//     * 米西生鲜
+//     */
+//    @OnClick(R.id.item_mixi_fresh)
+//    public void importFromChainSku() {
+//        showConfirmDialog("选择全量更新同步米西生鲜的商品库",
+//                "全量更新", new DialogInterface.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//
+//                        //清空米西生鲜商品档案同步游标
+//                        String cursorKey1 = String.format("%s_%d_%s",
+//                                SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
+//                                135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
+//                        SharedPreferencesHelper.set(cursorKey1, "");
+//                        CloudSyncManager.get().importFromChainSku();
+//                    }
+//                }, "点错了", new DialogInterface.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//
+//    }
 
     /**
      * 注册设备
@@ -452,11 +450,11 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     private void refresh() {
         try {
             itemPosGoods.setSubTitle(SharedPreferencesHelper.getSyncProductsCursor());
-            //米西生鲜
-            String cursorKey1 = String.format("%s_%d_%s",
-                    SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
-                    135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
-            itemMixiFresh.setSubTitle(SharedPreferencesHelper.getText(cursorKey1, ""));
+//            //米西生鲜
+//            String cursorKey1 = String.format("%s_%d_%s",
+//                    SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
+//                    135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
+//            itemMixiFresh.setSubTitle(SharedPreferencesHelper.getText(cursorKey1, ""));
 
             String terminalId = SharedPreferencesManager.getTerminalId();
             terminalSettingsItem.setSubTitle(terminalId);

@@ -20,15 +20,15 @@
             app:position="top"
             app:subText=""
             app:text="商品库"/>
-        <!--米西生鲜-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
-            android:id="@+id/item_mixi_fresh"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:src="@mipmap/ic_fresh"
-            app:position="center"
-            app:subText=""
-            app:text="米西生鲜"/>
+        <!--&lt;!&ndash;米西生鲜&ndash;&gt;-->
+        <!--<com.bingshanguxue.vector_uikit.SettingsItem-->
+            <!--android:id="@+id/item_mixi_fresh"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="48dp"-->
+            <!--app:src="@mipmap/ic_fresh"-->
+            <!--app:position="center"-->
+            <!--app:subText=""-->
+            <!--app:text="米西生鲜"/>-->
 
         <!--设备-->
         <com.bingshanguxue.vector_uikit.SettingsItem

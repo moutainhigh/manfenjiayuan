@@ -70,7 +70,6 @@ import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
-import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
@@ -784,7 +783,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             //同步数据结束后开始同步订单
             UploadSyncManager.getInstance().sync();
 
-            CloudSyncManager.get().importFromChainSku();
+//            CloudSyncManager.get().importFromChainSku();
             EslSyncManager2.getInstance().sync();
             SMScaleSyncManager2.getInstance().sync();
         }

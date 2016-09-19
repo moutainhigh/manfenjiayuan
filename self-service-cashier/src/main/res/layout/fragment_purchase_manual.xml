@@ -185,16 +185,16 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
-    <!--同步生鲜档案（米西配送）-->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_importFromChainSku"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/fab_intelligent"
-        android:layout_marginBottom="@dimen/spacing_micro"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:src="@mipmap/ic_fab_download" />
+    <!--&lt;!&ndash;同步生鲜档案（米西配送）&ndash;&gt;-->
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab_importFromChainSku"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_above="@+id/fab_intelligent"-->
+        <!--android:layout_marginBottom="@dimen/spacing_micro"-->
+        <!--android:layout_marginEnd="@dimen/fab_margin"-->
+        <!--android:src="@mipmap/ic_fab_download" />-->
 
     <!--智能订货-->
     <android.support.design.widget.FloatingActionButton
