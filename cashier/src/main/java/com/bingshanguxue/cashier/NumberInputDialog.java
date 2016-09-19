@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,16 +38,19 @@ public class NumberInputDialog extends CommonDialog {
 
     public interface OnResponseCallback {
         void onNext(String value);
+
         void onCompleted();
     }
+
+    private int inputType = EditInputType.TEXT;
 
     private OnResponseCallback mListener;
     private View rootView;
     private TextView tvTitle;
-    private EditText etValue;
-    private TextView tvUnit;
-    private Double hintValue = 0D;
-    private String unit;
+    private EditText etInput;
+    private TextView tvEndText;
+    private Button btnSubmit;
+
     private boolean minimumIntCheckEnabled = false;
     private int minimumIntCheckValue = 0;
     private boolean minimumDoubleCheckEnabled = false;
@@ -64,12 +68,12 @@ public class NumberInputDialog extends CommonDialog {
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         tvTitle.setText("数量");
-        etValue = (EditText) rootView.findViewById(R.id.et_quantity);
-        etValue.setCursorVisible(false);//隐藏光标
-        etValue.setFocusable(true);
-        etValue.setFocusableInTouchMode(true);
-        etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
-        etValue.setOnKeyListener(new View.OnKeyListener() {
+        etInput = (EditText) rootView.findViewById(R.id.et_input);
+        etInput.setCursorVisible(false);//隐藏光标
+        etInput.setFocusable(true);
+        etInput.setFocusableInTouchMode(true);
+        etInput.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
+        etInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
@@ -84,20 +88,21 @@ public class NumberInputDialog extends CommonDialog {
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
-        etValue.setOnTouchListener(new View.OnTouchListener() {
+        etInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    DeviceUtils.hideSoftInput(getContext(), etValue);
+                    DeviceUtils.hideSoftInput(getContext(), etInput);
                 }
-                etValue.requestFocus();
-                etValue.setSelection(etValue.length());
+                etInput.requestFocus();
+                etInput.setSelection(etInput.length());
                 //返回true,不再继续传递事件
                 return true;
             }
         });
 
-        tvUnit = (TextView) rootView.findViewById(R.id.tv_unit);
+        tvEndText = (TextView) rootView.findViewById(R.id.tv_endText);
+        btnSubmit = (Button) rootView.findViewById(R.id.button_submit);
 
         rootView.findViewById(R.id.key_0).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,8 +179,8 @@ public class NumberInputDialog extends CommonDialog {
         rootView.findViewById(R.id.key_del).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                etValue.setText("");
-                etValue.getText().clear();
+//                etInput.setText("");
+                etInput.getText().clear();
                 dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
                 return true;
             }
@@ -186,7 +191,7 @@ public class NumberInputDialog extends CommonDialog {
                 dismiss();
             }
         });
-        rootView.findViewById(R.id.button_footer_positive).setOnClickListener(new View.OnClickListener() {
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submit();
@@ -223,51 +228,56 @@ public class NumberInputDialog extends CommonDialog {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
-    public void init(String title, int decimalDigits, Double hintValue, OnResponseCallback callback) {
-        initialzie(title, decimalDigits, hintValue, null, callback);
+    /**
+     * 初始化
+     */
+    public void initializeBarcode(int inputType, String title, String hint, String action,
+                                  OnResponseCallback callback) {
+        this.inputType = inputType;
+        this.tvTitle.setText(title);
+        this.etInput.setHint(hint);
+        this.mListener = callback;
+        this.btnSubmit.setText(action);
+
+        this.etInput.getText().clear();
+        if (inputType == EditInputType.BARCODE) {
+            this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        } else if (inputType == EditInputType.NUMBER_DECIMAL) {
+            //相当于在.xml文件中设置inputType="numberDecimal
+            this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        } else {
+            this.etInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+        this.etInput.requestFocus();
     }
 
-    public void initializeBarcode(String title, int inputType, OnResponseCallback callback){
-        initialzie(title, 0, 0D, "", callback);
+    public void initializeDecimalNumber(int inputType, String title, String hint,
+                                        int decimalDigits, Double raw, String endText,
+                                        OnResponseCallback callback) {
+
+        this.inputType = inputType;
+        this.tvTitle.setText(title);
+        this.etInput.setHint(hint);
+        this.tvEndText.setText(endText);
+        this.DECIMAL_DIGITS = decimalDigits;
+        this.mListener = callback;
 
         if (inputType == EditInputType.BARCODE) {
-            etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-        }
-        else if (inputType == EditInputType.NUMBER_DECIMAL) {
+            this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        } else if (inputType == EditInputType.NUMBER_DECIMAL) {
             //相当于在.xml文件中设置inputType="numberDecimal
-            etValue.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        }
-        else {
-            etValue.setInputType(InputType.TYPE_CLASS_TEXT);
-        }
-    }
-
-    public void initialzie(String title, int decimalDigits, Double hintValue, String unit,
-                           OnResponseCallback callback) {
-        this.hintValue = hintValue;
-        this.unit = unit;
-        this.mListener = callback;
-        this.DECIMAL_DIGITS = decimalDigits;
-
-        this.tvTitle.setText(title);
-//        etValue.setText(hintValue.toString());
-        this.etValue.getText().clear();
-        if (decimalDigits == 0) {
-            this.etValue.setHint(String.format("%.0f", hintValue));
+            this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         } else {
-            this.etValue.setHint(String.format("%.2f", hintValue));
+            this.etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }
-
-        this.etValue.setSelection(etValue.length());
-        this.etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
-        this.etValue.requestFocus();
-
-        if (StringUtils.isEmpty(unit)) {
-            this.tvUnit.setVisibility(View.GONE);
+        this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
+        if (raw != null) {
+            this.etInput.setText(String.valueOf(raw));
+            this.etInput.setSelection(this.etInput.length());
         } else {
-            this.tvUnit.setText(unit);
-            this.tvUnit.setVisibility(View.VISIBLE);
+            this.etInput.getText().clear();
         }
+        this.etInput.requestFocus();
     }
 
 
@@ -282,7 +292,7 @@ public class NumberInputDialog extends CommonDialog {
     }
 
     private void submit() {
-        String quantityStr = etValue.getText().toString();
+        String quantityStr = etInput.getText().toString();
         if (StringUtils.isEmpty(quantityStr)) {
             return;
         }

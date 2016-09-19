@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="@dimen/spacing_4x"
+        android:background="@color/mfhtheme_maskPrimary"
         android:paddingEnd="@dimen/spacing_4x"
-        android:background="@color/mfhtheme_maskPrimary">
+        android:paddingStart="@dimen/spacing_4x">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +27,9 @@
                 android:id="@+id/label_barcode"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
+                app:endTextSize="16sp"
                 app:startText="商品条码:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -38,9 +40,11 @@
                 app:editInputType="text"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入商品名称"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
-                app:startText="商品名称:"
                 app:softKeyboardEnabled="true"
+                app:startText="商品名称:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -51,10 +55,13 @@
                 app:editInputType="text"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="如：500ml"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
-                app:startText="规格:"
                 app:softKeyboardEnabled="true"
+                app:startText="规格:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
+
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_packageNum"
                 android:layout_width="match_parent"
@@ -63,9 +70,11 @@
                 app:editInputType="text"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="整箱数量"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
-                app:startText="箱规:"
                 app:softKeyboardEnabled="true"
+                app:startText="箱规:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
 
             <LinearLayout
@@ -118,6 +127,7 @@
                     android:layout_weight="1"
                     android:spinnerMode="dropdown"/>
             </LinearLayout>
+
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_prodArea"
                 android:layout_width="match_parent"
@@ -126,10 +136,13 @@
                 app:editInputType="text"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入产地"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
-                app:startText="产地:"
                 app:softKeyboardEnabled="true"
+                app:startText="产地:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
+
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_prodLevel"
                 android:layout_width="match_parent"
@@ -138,9 +151,12 @@
                 app:editInputType="numberDecimal"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入等级"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="等级:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
+
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_guaPeriod"
                 android:layout_width="match_parent"
@@ -149,8 +165,10 @@
                 app:editInputType="numberDecimal"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入保质期"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="保质期:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
             <!--初始库存，根节点下的quantity-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -161,8 +179,10 @@
                 app:editInputType="numberDecimal"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入初始库存"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="初始库存:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
             <!--初始成本价是tenantSku节点下的buyPrice-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -173,8 +193,10 @@
                 app:editInputType="price"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入初始成本价"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="初始成本价:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
 
             <!--售价（对于批发商就是批发价，对于零售商就是零售价）是tenantSku节点下的costPrice-->
@@ -186,8 +208,10 @@
                 app:editInputType="price"
                 app:editTextColor="@color/material_black"
                 app:editTextHint="请输入零售价"
+                app:editTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="零售价:"
+                app:startTextSize="16sp"
                 app:startTextWidth="108dp"/>
 
         </LinearLayout>

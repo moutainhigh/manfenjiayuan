@@ -27,7 +27,6 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvSendOrderEvent;
 import com.mfh.litecashier.event.PurchaseSendEvent;
-import com.mfh.litecashier.ui.adapter.PurchaseSendOrderAdapter;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;

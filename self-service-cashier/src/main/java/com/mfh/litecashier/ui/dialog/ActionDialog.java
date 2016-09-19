@@ -4,15 +4,15 @@ package com.mfh.litecashier.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ActionDialog extends CommonDialog {
 
     private TextView tvTitle, tvSubTitle;
+    private FloatingActionButton ivHeader;
     private Button btnAction1, btnAction2, btnAction3;
 
     public interface OnActionClickListener {
@@ -42,12 +43,12 @@ public class ActionDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ActionDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_action, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_action, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_title);
         tvSubTitle = (TextView) rootView.findViewById(R.id.tv_subtitle);
+        ivHeader = (FloatingActionButton) rootView.findViewById(R.id.iv_header);
         btnAction1 = (Button) rootView.findViewById(R.id.button_action1);
         btnAction2 = (Button) rootView.findViewById(R.id.button_action2);
         btnAction3 = (Button) rootView.findViewById(R.id.button_action3);
@@ -107,8 +108,26 @@ public class ActionDialog extends CommonDialog {
 
     public void initialize(String title, String subTitle,
                            OnActionClickListener onActionClickListener) {
+        initialize(title, subTitle, -1, onActionClickListener);
+    }
+
+    public void initialize(String title, String subTitle, int headResId,
+                           OnActionClickListener onActionClickListener) {
         this.tvTitle.setText(title);
-        this.tvSubTitle.setText(subTitle);
+        if (!StringUtils.isEmpty(subTitle)) {
+            this.tvSubTitle.setText(subTitle);
+            this.tvSubTitle.setVisibility(View.VISIBLE);
+        } else {
+            this.tvSubTitle.setVisibility(View.GONE);
+        }
+
+        if (headResId != -1) {
+            this.ivHeader.setImageResource(headResId);
+            this.ivHeader.setVisibility(View.VISIBLE);
+        } else {
+            this.ivHeader.setVisibility(View.GONE);
+        }
+
         this.mOnActionClickListener = onActionClickListener;
     }
 

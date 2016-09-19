@@ -19,7 +19,6 @@ import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 import com.mfh.litecashier.ui.fragment.pay.PayHistoryFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
-import com.mfh.litecashier.ui.fragment.purchase.SelectInvSendOrderFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment;
 
 import butterknife.Bind;
@@ -32,7 +31,6 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "serviceType";
     public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x02;//采购商品－新增商品
     public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x03;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_SELECT_INV_SENDORDER      = 0x06;//选择采购单
     public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x07;//选择收货单
     public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x09;//采购商品详情
     public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x10;//选择批发商&门店
@@ -181,17 +179,6 @@ public class SimpleDialogActivity extends BaseActivity {
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, dailySettleFragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_SELECT_INV_SENDORDER) {
-            SelectInvSendOrderFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = SelectInvSendOrderFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = SelectInvSendOrderFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (serviceType == FRAGMENT_TYPE_SELECT_INV_RECVORDER) {
             SelectInvRecvOrderFragment fragment;

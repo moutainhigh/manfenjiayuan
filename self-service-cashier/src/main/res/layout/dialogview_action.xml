@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="wrap_content"
               android:layout_height="500dp"
-              android:gravity="center_vertical"
+              android:gravity="center"
               android:orientation="vertical"
               android:paddingBottom="@dimen/spacing_8x"
               android:paddingEnd="@dimen/spacing_double"
@@ -28,9 +28,18 @@
         android:gravity="center"
         android:padding="16dp"
         android:singleLine="true"
+        android:visibility="gone"
         android:text=""
         android:textColor="@color/material_grey_500"
         android:textSize="18sp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/iv_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone" />
 
     <!--锁定-->
     <Button

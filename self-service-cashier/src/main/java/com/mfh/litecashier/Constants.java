@@ -11,7 +11,6 @@ package com.mfh.litecashier;
 public class Constants {
     public static final int ARC_MFPAY                           = 0x01;//支付
     public static final int ARC_NATIVE_LOGIN                    = 0x02;//登录
-    public static final int ARC_CREATE_PURCHASE_GOODS           = 0x03;//新增采购商品
     public static final int ARC_GENERATE_PURCHASE_GOODS         = 0x04;//新增采购商品
     public static final int ARC_APPLY_SHOPCART                  = 0x05;//采购商品购物车
     public static final int ARC_CREATE_PURCHASE_ORDER           = 0x06;//新建采购单

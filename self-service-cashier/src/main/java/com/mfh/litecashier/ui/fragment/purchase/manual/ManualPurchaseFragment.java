@@ -48,7 +48,6 @@ import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.PurchasePresenter;
-import com.mfh.litecashier.service.CloudSyncManager;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;

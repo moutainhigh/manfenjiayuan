@@ -31,7 +31,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
-import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
@@ -331,7 +330,7 @@ public class FrontCategoryFragment extends BaseFragment {
 //                            return;
 //                        }
 
-                        DataSyncManager.get().sync();
+//                        DataSyncManager.get().sync();
 
                         getActivity().setResult(Activity.RESULT_OK);
                         getActivity().finish();

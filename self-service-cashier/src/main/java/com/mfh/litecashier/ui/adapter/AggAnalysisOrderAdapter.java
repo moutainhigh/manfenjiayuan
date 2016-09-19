@@ -12,6 +12,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,8 +56,8 @@ public class AggAnalysisOrderAdapter
             holder.tvIndex.setText("");
         }
         holder.tvBizType.setText(entity.getCaption());
-        holder.tvQuantity.setText(String.format("%.2f", entity.getOrderNum()));
-        holder.tvAmount.setText(String.format("%.2f", entity.getTurnover()));
+        holder.tvQuantity.setText(String.format(Locale.getDefault(), "%.2f", entity.getOrderNum()));
+        holder.tvAmount.setText(String.format(Locale.getDefault(), "%.2f", entity.getTurnover()));
         holder.tvGrossMargin.setText(MUtils.retrieveFormatedGrossMargin(entity.getTurnover(),
                 entity.getGrossProfit()));
     }

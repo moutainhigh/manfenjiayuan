@@ -45,7 +45,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     @Bind(R.id.empty_view)
     View emptyView;
@@ -111,13 +111,11 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
         }
         if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
             reload();
-        }
-        else if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_SORT_RESET) {
+        } else if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_SORT_RESET) {
             mRecyclerView.scrollToPosition(0);
-        }
-        else if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_SORT_UPDATE) {
+        } else if (event.getEventId() == PosCategoryGoodsEvent.EVENT_ID_SORT_UPDATE) {
             String sortLetter = args.getString("sortLetter");
-            if (!StringUtils.isEmpty(sortLetter)){
+            if (!StringUtils.isEmpty(sortLetter)) {
                 // 该字母首次出现的位置
                 int position = adapter.getPositionForSelection(sortLetter.charAt(0));
 
@@ -225,7 +223,6 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
     }
 
 
-
     /**
      * 翻页加载更多数据
      */
@@ -273,10 +270,10 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
         Observable.create(new Observable.OnSubscribe<List<ScGoodsSkuWrapper>>() {
             @Override
             public void call(Subscriber<? super List<ScGoodsSkuWrapper>> subscriber) {
-                List<ScGoodsSkuWrapper> wrappers  = new ArrayList<>();
+                List<ScGoodsSkuWrapper> wrappers = new ArrayList<>();
 
-                if (scGoodsSkus != null && scGoodsSkus.size() > 0){
-                    for (ScGoodsSku sku : scGoodsSkus){
+                if (scGoodsSkus != null && scGoodsSkus.size() > 0) {
+                    for (ScGoodsSku sku : scGoodsSkus) {
                         ScGoodsSkuWrapper wrapper = new ScGoodsSkuWrapper();
                         wrapper.setSkuName(sku.getSkuName());
                         wrapper.setBarcode(sku.getBarcode());
@@ -287,7 +284,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
                         String namePinyin = PinyinUtils.getPingYin(sku.getSkuName());
                         wrapper.setNamePinyin(namePinyin);
                         String sortLetter = null;
-                        if (!StringUtils.isEmpty(namePinyin)){
+                        if (!StringUtils.isEmpty(namePinyin)) {
                             sortLetter = namePinyin.substring(0, 1).toUpperCase();
                         }
                         if (sortLetter != null && sortLetter.matches("[A-Z]")) {
@@ -320,10 +317,10 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
                     @Override
                     public void onNext(List<ScGoodsSkuWrapper> scGoodsSkuWrappers) {
                         List<ScGoodsSkuWrapper> entityList = adapter.getEntityList();
-                        if (entityList == null){
+                        if (entityList == null) {
                             entityList = new ArrayList<>();
                         }
-                        if (scGoodsSkuWrappers != null){
+                        if (scGoodsSkuWrappers != null) {
                             entityList.addAll(scGoodsSkuWrappers);
                         }
 

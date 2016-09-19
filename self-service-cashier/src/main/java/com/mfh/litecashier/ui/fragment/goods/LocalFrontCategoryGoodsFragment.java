@@ -1,7 +1,5 @@
 package com.mfh.litecashier.ui.fragment.goods;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -36,19 +34,16 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.event.AffairEvent;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
-import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 
@@ -67,13 +62,14 @@ import rx.schedulers.Schedulers;
  * POS-本地前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
-public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFrontCategoryGoods> implements IScGoodsSkuView {
+public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFrontCategoryGoods>
+        implements IScGoodsSkuView {
 
     public static final String KEY_CATEGORY_ID = "categoryId";
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     @Bind(R.id.empty_view)
     View emptyView;
@@ -92,7 +88,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_frontcategory_goods;
+        return R.layout.fragment_goods_list;
     }
 
     @Override
@@ -432,26 +428,26 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     public void addMoreGoods() {
         if (addGoodsDialog == null) {
             addGoodsDialog = new ActionDialog(getActivity());
-            addGoodsDialog.setCancelable(false);
-            addGoodsDialog.setCanceledOnTouchOutside(false);
+            addGoodsDialog.setCancelable(true);
+            addGoodsDialog.setCanceledOnTouchOutside(true);
         }
-        addGoodsDialog.initialize("添加商品", "", new ActionDialog.OnActionClickListener() {
-            @Override
-            public void onAction1() {
-                redirect2FrontCategory();
-            }
+        addGoodsDialog.initialize("添加商品", "", R.mipmap.ic_importfromcenterskus,
+                new ActionDialog.OnActionClickListener() {
+                    @Override
+                    public void onAction1() {
+                        redirect2FrontCategory();
+                    }
 
-            @Override
-            public void onAction2() {
-                // TODO: 8/8/16 暂不注册
-                manualAddGoods();
-            }
+                    @Override
+                    public void onAction2() {
+                        manualAddGoods();
+                    }
 
-            @Override
-            public void onAction3() {
+                    @Override
+                    public void onAction3() {
 
-            }
-        });
+                    }
+                });
         addGoodsDialog.setActions("商品库", "输入商品编号", null);
         if (!addGoodsDialog.isShowing()) {
             addGoodsDialog.show();
@@ -482,7 +478,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             barcodeInputDialog.setCancelable(true);
             barcodeInputDialog.setCanceledOnTouchOutside(true);
         }
-        barcodeInputDialog.initializeBarcode("输入商品编号", EditInputType.BARCODE,
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE,"导入商品", "商品条码", "确定",
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
@@ -513,7 +509,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
-
+        ZLogger.df(errorMsg);
         DialogUtil.showHint("加载商品信息失败");
     }
 
@@ -525,18 +521,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     @Override
     public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
         if (data == null) {
-            Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
-                    SimpleDialogActivity.FRAGMENT_TYPE_CREATE_PURCHASE_GOODS);
-            extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
-                    SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-            extras.putString(ScSkuGoodsStoreInFragment.EXTRY_KEY_BARCODE, tempBarcode);
-            intent.putExtras(extras);
-            startActivityForResult(intent, Constants.ARC_CREATE_PURCHASE_GOODS);
+            hideProgressDialog();
+
+            ActivityRoute.redirect2StoreIn(getActivity(), tempBarcode);
         } else {
-            DialogUtil.showHint("导入到类目中");
+            ZLogger.df("查询成功，准备导入商品到类目中");
             importFromCenterSkus(String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
         }
     }
@@ -554,6 +543,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         ZLogger.df("导入商品到本店仓储失败, " + errMsg);
 //                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
                         DialogUtil.showHint("添加商品失败");
+                        hideProgressDialog();
                     }
 
                     @Override
@@ -583,6 +573,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         ZLogger.df("导入前台类目商品失败, " + errMsg);
 //                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
                         DialogUtil.showHint("添加商品失败");
+                        hideProgressDialog();
                     }
 
                     @Override
@@ -595,10 +586,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //                            return;
 //                        }
 
-                        DataSyncManager.get().sync();
-
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
+//                        DataSyncManager.get().sync();
                     }
                 }
                 , String.class

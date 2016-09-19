@@ -29,6 +29,7 @@
             android:layout_marginStart="@dimen/spacing_normal"
             android:background="@null"
             android:scaleType="centerInside"
+            android:contentDescription="@null"
             android:src="@mipmap/ic_add_grey_small"/>
 
     </LinearLayout>

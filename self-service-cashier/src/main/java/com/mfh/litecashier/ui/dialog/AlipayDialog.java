@@ -47,6 +47,8 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.EmptyEntity;
 
+import java.util.Locale;
+
 
 /**
  * <h1>账号操作：锁定/交接班/登录/退出</h1><br>
@@ -250,7 +252,7 @@ public class AlipayDialog extends CommonDialog {
                     public void onQuantityChanged(Double quantity) {
                         mQuickPayInfo.setAmount(quantity);
 
-                        tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+                        tvHandleAmount.setText(String.format(Locale.getDefault(), "%.2f", mQuickPayInfo.getAmount()));
                     }
                 });
         changePriceDialog.setMinimumDoubleCheck(mQuickPayInfo.getMinAmount(), true);
@@ -579,7 +581,7 @@ public class AlipayDialog extends CommonDialog {
         if (quickPayInfo != null) {
             this.tvTitle.setText(quickPayInfo.getSubject());
             this.tvSubTitle.setText(quickPayInfo.getBody());
-            this.tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+            this.tvHandleAmount.setText(String.format(Locale.getDefault(),"%.2f", mQuickPayInfo.getAmount()));
         }
 
         if (isCancelAbled) {
@@ -677,7 +679,7 @@ public class AlipayDialog extends CommonDialog {
                                 if (mQuickPayInfo != null){
                                     mQuickPayInfo.setMinAmount(amount);
                                     mQuickPayInfo.setAmount(amount);
-                                    tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+                                    tvHandleAmount.setText(String.format(Locale.getDefault(),"%.2f", mQuickPayInfo.getAmount()));
                                 }
                                 enterStandardMode();
                             } else {
@@ -733,13 +735,15 @@ public class AlipayDialog extends CommonDialog {
                                 boolean isNeedLock = Boolean.parseBoolean(ret[0]);
                                 Double amount = Double.valueOf(ret[1]);
 
-                                ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
+                                ZLogger.df(String.format(Locale.getDefault(),
+                                        "判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
                                         isNeedLock, amount));
                                 if (isNeedLock && amount >= 0.01) {
                                     if (mQuickPayInfo != null){
                                         mQuickPayInfo.setMinAmount(amount);
                                         mQuickPayInfo.setAmount(amount);
-                                        tvHandleAmount.setText(String.format("%.2f", mQuickPayInfo.getAmount()));
+                                        tvHandleAmount.setText(String.format(Locale.getDefault(),
+                                                "%.2f", mQuickPayInfo.getAmount()));
                                     }
                                     enterStandardMode();
                                 } else {

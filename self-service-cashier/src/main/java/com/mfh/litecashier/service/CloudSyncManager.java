@@ -89,6 +89,4 @@ public class CloudSyncManager {
         ScGoodsSkuApiImpl.importFromChainSku(sendTenantId, cateType,
                 startCursorValue, responseCallback);
     }
-
-
 }

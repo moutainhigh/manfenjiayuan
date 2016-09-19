@@ -45,7 +45,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     @Bind(R.id.empty_view)
     View emptyView;
@@ -61,7 +61,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_frontcategory_goods;
+        return R.layout.fragment_goods_list;
     }
 
     @Override
@@ -298,7 +298,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                try{
+                try {
                     mPageInfo = pageInfo;
 
                     //第一页，缓存数据
@@ -338,8 +338,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
                             }
                         }
                     }
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     ZLogger.ef(e.toString());
                 }
 

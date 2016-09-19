@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *  交接班/日结
@@ -47,7 +48,8 @@ public class AnalysisHelper {
         //上一次交接班时间
         Date lastHandoverDate = SharedPreferencesHelper.getLastHandoverDateTime();
         int lastHandoverShiftId = SharedPreferencesHelper.getLastHandoverShiftId();
-        ZLogger.d(String.format("创建交接班订单--last shiftId：%d, datetime：%s",
+        ZLogger.d(String.format(Locale.getDefault(),
+                "创建交接班订单--last shiftId：%d, datetime：%s",
                 lastHandoverShiftId, TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(lastHandoverDate)));
 
         //当前交接班时间
@@ -102,7 +104,8 @@ public class AnalysisHelper {
         String barcode = MUtils.genDateBarcode(BizType.DAILYSETTLE,
                 dailySettleDate, "yyyyMMdd");
         List<DailysettleEntity> entityList  = DailysettleService.get()
-                .queryAllDesc(String.format("officeId = '%d' and barCode = '%s'",
+                .queryAllDesc(String.format(Locale.getDefault(),
+                        "officeId = '%d' and barCode = '%s'",
                         MfhLoginService.get().getCurOfficeId(), barcode), null);
 
         DailysettleEntity dailysettleEntity;
@@ -142,8 +145,8 @@ public class AnalysisHelper {
         }
         DailysettleService.get().deleteById(String.valueOf(orderEntity.getId()));
         //删除支付记录
-        PosOrderPayService.get().deleteBy(String.format("orderId = '%d'",
-                orderEntity.getId()));
+        PosOrderPayService.get().deleteBy(String.format(Locale.getDefault(),
+                "orderId = '%d'", orderEntity.getId()));
     }
 
     /**

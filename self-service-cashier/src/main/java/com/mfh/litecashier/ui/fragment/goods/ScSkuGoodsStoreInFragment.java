@@ -437,21 +437,22 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
 //            btnSubmit.setEnabled(true);
 //            return;
 //        }
+
+        String quantity = labelQuantity.getInput();
+        if (StringUtils.isEmpty(quantity)) {
+            DialogUtil.showHint("初始库存不能为空");
+            btnSubmit.setEnabled(true);
+            return;
+        }
         String buyprice = labelBuyprice.getInput();
         if (StringUtils.isEmpty(buyprice)) {
-            DialogUtil.showHint("采购价不能为空");
+            DialogUtil.showHint("初始成本价不能为空");
             btnSubmit.setEnabled(true);
             return;
         }
         String costprice = labelCostprice.getInput();
         if (StringUtils.isEmpty(costprice)) {
             DialogUtil.showHint("零售价不能为空");
-            btnSubmit.setEnabled(true);
-            return;
-        }
-        String quantity = labelQuantity.getInput();
-        if (StringUtils.isEmpty(quantity)) {
-            DialogUtil.showHint("初始库存不能为空");
             btnSubmit.setEnabled(true);
             return;
         }
@@ -537,16 +538,15 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
                 @Override
                 public void processResult(IResponseData rspData) {
 //                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-
                     onLoadFinished();
                     /**
                      * 新增商品成功，更新商品库
                      * */
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
-//
-//                        //更新商品库
-//                        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
+
+                    //商品建档成功后，后台自动发消息同步商品
+//                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class

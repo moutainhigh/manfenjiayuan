@@ -75,6 +75,7 @@ import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
+import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.CashierMenuAdapter;
 import com.mfh.litecashier.ui.adapter.CashierSwipAdapter;
 import com.mfh.litecashier.ui.dialog.AdministratorSigninDialog;
@@ -89,7 +90,6 @@ import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
 import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
-import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -371,6 +371,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
             redirectToSettings();
         }  else if (id.compareTo(ResMenu.CASHIER_MENU_DISCOUNT) == 0) {
             changeOrderDiscount();
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_PRINT_ORDER) == 0){
+            print2HomeOrder();
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }
@@ -1010,13 +1012,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
                 }
             }
             break;
-            case Constants.ARC_CREATE_PURCHASE_GOODS: {
-                if (resultCode == Activity.RESULT_OK) {
-                    //TODO,新增商品成功，同步商品
-                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
-                }
-            }
-            break;
             case Constants.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
@@ -1288,7 +1283,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             barcodeInputDialog.setCancelable(true);
             barcodeInputDialog.setCanceledOnTouchOutside(true);
         }
-        barcodeInputDialog.initializeBarcode("条码", EditInputType.BARCODE,
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "收银", "商品条码", "确定",
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
@@ -1373,6 +1368,34 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
     }
 
+    /**
+     * 打印到价订单
+     * */
+    private void print2HomeOrder(){
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(this);
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE,"订单", "订单条码", "打印订单",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+//                        inlvBarcode.setInputString(value);
+                        DialogUtil.showHint("查询并打印订单");
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+    
     /**
      * 修改订单折扣
      */
@@ -1757,16 +1780,17 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
     @Override
     public void onFindGoodsEmpty(String barcode) {
-        Intent intent = new Intent(this, SimpleDialogActivity.class);
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleDialogActivity.FRAGMENT_TYPE_CREATE_PURCHASE_GOODS);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
-                SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-        extras.putString(ScSkuGoodsStoreInFragment.EXTRY_KEY_BARCODE, barcode);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_CREATE_PURCHASE_GOODS);
+//        Intent intent = new Intent(this, SimpleDialogActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+//        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+//                SimpleDialogActivity.FRAGMENT_TYPE_CREATE_PURCHASE_GOODS);
+//        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+//                SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+//        extras.putString(ScSkuGoodsStoreInFragment.EXTRY_KEY_BARCODE, barcode);
+//        intent.putExtras(extras);
+//        startActivity(intent);
+        ActivityRoute.redirect2StoreIn(this, barcode);
     }
 
     private void cashierGoods(final LocalFrontCategoryGoods goods) {

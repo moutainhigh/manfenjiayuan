@@ -11,6 +11,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,8 +55,8 @@ public class AnalysisOrderAdapter
             holder.tvIndex.setText("");
         }
         holder.tvBizType.setText(entity.getCaption());
-        holder.tvQuantity.setText(String.format("%.2f", entity.getOrderNum()));
-        holder.tvAmount.setText(String.format("%.2f", entity.getTurnover()));
+        holder.tvQuantity.setText(String.format(Locale.getDefault(), "%.2f", entity.getOrderNum()));
+        holder.tvAmount.setText(String.format(Locale.getDefault(), "%.2f", entity.getTurnover()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {

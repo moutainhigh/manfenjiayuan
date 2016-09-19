@@ -12,7 +12,7 @@
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-            android:id="@+id/order_list"
+            android:id="@+id/goods_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/spacing_normal"/>
@@ -26,6 +26,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:scaleType="centerInside"
+        android:contentDescription="@null"
         android:src="@mipmap/emptyimage_no_goods"
         android:visibility="gone"/>
 
