@@ -18,10 +18,10 @@ import java.util.List;
 
 /**
  * 消息dao类
- * Created by Administrator on 14-5-6.
+ * Created by bingshanguxue on 14-5-6.
  */
 public class EmbMsgDao extends BaseDbDao<EmbMsg, String> {
-    private static final String TABLE_NAME = "emb_msg";
+    private static final String TABLE_NAME = "emb_msg_v0001";
     private static final String TABLE_NAME_CH = "消息表";
 
     //CRUD
@@ -33,7 +33,7 @@ public class EmbMsgDao extends BaseDbDao<EmbMsg, String> {
 
     @Override
     protected Pair<String, String> initTableChName() {
-        return new Pair<String, String>(TABLE_NAME_CH, TABLE_NAME);
+        return new Pair<>(TABLE_NAME_CH, TABLE_NAME);
     }
 
     @Override
