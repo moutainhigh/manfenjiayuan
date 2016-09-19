@@ -41,9 +41,8 @@ public class PushDemoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        ZLogger.df(String.format("个推<%s> -- bundle=%s",
-                CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid()),
-                StringUtils.decodeBundle(bundle)));
+        String processName = CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid());
+        ZLogger.df(String.format("个推<%s> -- bundle=%s", processName, StringUtils.decodeBundle(bundle)));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:{
                 // 获取透传（payload）数据
@@ -76,7 +75,6 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 请应用程序在每次获取ClientID广播后，都能进行一次关联绑定 */
                 //注册到消息桥
                 IMClient.getInstance().registerBridge();
-//                UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_PARTER_REFRESH);
             }
                 break;
             case PushConsts.THIRDPART_FEEDBACK:
@@ -85,13 +83,23 @@ public class PushDemoReceiver extends BroadcastReceiver {
             case PushConsts.GET_SDKONLINESTATE:
 //                Scheduling restart of crashed service com.mfh.litecashier/com.igexin.sdk.PushService in 1000ms
 //                Start proc 16115:com.mfh.litecashier:pushservice/u0a96 for service com.mfh.litecashier/com.igexin.sdk.PushService
-
                 boolean onlineState = bundle.getBoolean("onlineState");
-                ZLogger.df(String.format("个推 %s, onlineState = %b", IMConfig.getPushClientId(), onlineState));
-                if (!onlineState){
-                    ZLogger.df("准备开启推送...");
-                    PushManager.getInstance().turnOnPush(CashierApp.getAppContext());
+                String clientId = PushManager.getInstance().getClientid(CashierApp.getAppContext());
+
+                ZLogger.df(String.format("个推 %s-%s, onlineState = %b",
+                        clientId,
+                        IMConfig.getPushClientId(), onlineState));
+                if (!StringUtils.isEmpty(clientId)){
+                    if (!onlineState){
+                        ZLogger.df("准备开启推送...");
+                        PushManager.getInstance().turnOnPush(CashierApp.getAppContext());
+                        offlineTime = System.currentTimeMillis();
+                    }
+                }
+                else{
+                    ZLogger.df("准备初始化个推服务...");
                     offlineTime = System.currentTimeMillis();
+                    PushManager.getInstance().initialize(CashierApp.getAppContext());
                 }
                 break;
             case PushConsts.GET_SDKSERVICEPID:
