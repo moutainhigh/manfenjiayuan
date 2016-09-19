@@ -117,9 +117,6 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     /**
      * 价格为空时需要手动补充*/
     public Double getCostPrice() {
-//        if (costPrice == null){
-//            return 0D;
-//        }
         return costPrice;
     }
 

@@ -6,6 +6,7 @@ import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
@@ -107,15 +108,38 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
 
 
     /**
-     * 添加新商品
+     * 添加新商品到收银台
+     * @param orderBarCode
+     * @param goods
+     * @param bCount
+     * @param
      * */
     public void append(String orderBarCode, PosProductEntity goods,
+                       Double bCount) {
+        append(orderBarCode, 100D, goods, bCount);
+    }
+
+    /**
+     * 添加新商品到收银台
+     * @param orderBarCode 订单条码
+     * @param orderDiscount 订单折扣
+     * @param goods 商品
+     * @param bCount 商品数量
+     * */
+    public void append(String orderBarCode, Double orderDiscount, PosProductEntity goods,
                              Double bCount) {
         if (StringUtils.isEmpty(orderBarCode) || goods == null) {
             ZLogger.d("参数无效");
             return;
         }
 
+        if (!BizConfig.RELEASE){
+            ZLogger.d(String.format("添加商品到收银台:\n" +
+                    "orderBarcode=%s\n" +
+                    "orderDiscount=%.0f%%\n" +
+                    "bCount=%.3f\n" +
+                    "goods=%s", orderBarCode, orderDiscount, bCount, JSONObject.toJSONString(goods)));
+        }
         String sqlWhere = String.format("posTradeNo = '%s' and barcode = '%s'",
                 orderBarCode, goods.getBarcode());
 
@@ -137,12 +161,18 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             shopcartEntity.setName(goods.getName());
             shopcartEntity.setUnit(goods.getUnit());
             shopcartEntity.setCostPrice(goods.getCostPrice());
+
             shopcartEntity.setProviderId(goods.getProviderId());
             shopcartEntity.setPriceType(goods.getPriceType());
             shopcartEntity.setProdLineId(goods.getProdLineId());
 
             //默认会员价使用标准单价计算，可以在后面售价时修改。
-            shopcartEntity.setFinalPrice(goods.getCostPrice());
+            if (shopcartEntity.getCostPrice() != null && orderDiscount != null){
+                shopcartEntity.setFinalPrice(shopcartEntity.getCostPrice() * orderDiscount / 100);
+            }
+            else{
+                shopcartEntity.setFinalPrice(shopcartEntity.getCostPrice());
+            }
         }
 
         //标准价金额

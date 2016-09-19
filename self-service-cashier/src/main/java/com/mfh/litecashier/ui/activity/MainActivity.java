@@ -171,6 +171,8 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * POS唯一订单号，由POS机本地生成的12位字符串
      */
     private String curPosTradeNo;
+    /**订单折扣，默认值为1，新扫描商品默认使用该折扣*/
+    private Double orderDiscount = 100D;
 
     private CashierPresenter cashierPresenter;
 
@@ -696,7 +698,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             if (productAdapter != null) {
                 productAdapter.setEntityList(null);
             }
-            fabOrderDiscount.setVisibility(View.GONE);
+            changeOrderDiscount(false, 100D);
 
             //刷新挂单
             refreshFloatHangup();
@@ -999,7 +1001,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
                         }
                         obtaincurPosTradeNo(null);
                         productAdapter.setEntityList(null);
-                        fabOrderDiscount.setVisibility(View.GONE);
+                        changeOrderDiscount(false, 100D);
                     }
                     btnSettle.setEnabled(true);
 
@@ -1037,7 +1039,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         //清空当前收银列表，开始新的订单
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
-        fabOrderDiscount.setVisibility(View.GONE);
+        changeOrderDiscount(false, 100D);
 
         Observable.create(new Observable.OnSubscribe<LastOrderInfo>() {
             @Override
@@ -1375,27 +1377,32 @@ public class MainActivity extends CashierActivity implements ICashierView {
     /**
      * 修改订单折扣
      */
-    public void changeOrderDiscount() {
-        if (productAdapter == null || productAdapter.getItemCount() <= 0){
-            DialogUtil.showHint("订单明细不能为空");
-            return;
+    private void changeOrderDiscount(boolean enabled, Double discount){
+        orderDiscount = discount;
+        if (enabled){
+            fabOrderDiscount.setText(String.format("%.0f%%", discount));
+            fabOrderDiscount.setVisibility(View.VISIBLE);
+            batchMakeDiscount(curPosTradeNo, discount);
         }
-
+        else{
+            fabOrderDiscount.setVisibility(View.GONE);
+        }
+    }
+    /**
+     * 修改订单折扣
+     */
+    @OnClick(R.id.fab_orderDiscount)
+    public void changeOrderDiscount() {
         if (changeDiscountDialog == null) {
             changeDiscountDialog = new DoubleInputDialog(this);
             changeDiscountDialog.setCancelable(true);
             changeDiscountDialog.setCanceledOnTouchOutside(true);
         }
-        changeDiscountDialog.initialzie("订单折扣", 0, 100D, "%",
+        changeDiscountDialog.initialzie("订单折扣", 0, orderDiscount, "%",
                 new DoubleInputDialog.OnResponseCallback() {
                     @Override
                     public void onQuantityChanged(Double value) {
-//                        CashierShopcartService.getInstance().batchDiscount(curPosTradeNo, value);
-//
-//                        List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
-//                                .queryAllBy(String.format("posTradeNo = '%s'", curPosTradeNo));
-//                        productAdapter.setEntityList(shopcartEntities);
-                        batchMakeDiscount(curPosTradeNo, value);
+                        changeOrderDiscount(true, value);
                     }
                 });
         if (!changeDiscountDialog.isShowing()) {
@@ -1407,8 +1414,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
      * 批量修改订单折扣
      * */
     private void batchMakeDiscount(final String posTradeNo, final Double discount){
-        fabOrderDiscount.setText(String.format("%.0f%%", discount));
-        fabOrderDiscount.setVisibility(View.VISIBLE);
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
@@ -1538,7 +1543,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
-        fabOrderDiscount.setVisibility(View.GONE);
+        changeOrderDiscount(false, 100D);
     }
 
     /**
@@ -1564,7 +1569,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
                 .queryAllBy(String.format("posTradeNo = '%s'", posTradeNo));
         productAdapter.setEntityList(shopcartEntities);
-        fabOrderDiscount.setVisibility(View.GONE);
+        changeOrderDiscount(false, 100D);
 
         //刷新挂单
         refreshFloatHangup();
@@ -1813,7 +1818,6 @@ public class MainActivity extends CashierActivity implements ICashierView {
 
         Double costPrice = goods.getCostPrice();
         if (costPrice == null) {
-            // TODO: 9/4/16
             ZLogger.df("商品零售价为空，补填后才可以收银");
             commitGoodsCostprice1(orderBarCode, goods, bCount);
         } else {
@@ -1902,7 +1906,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
                 //添加商品
-                CashierShopcartService.getInstance().append(orderBarCode, goods, bCount);
+                CashierShopcartService.getInstance().append(orderBarCode, orderDiscount, goods, bCount);
 
                 //刷新订单列表
                 List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
