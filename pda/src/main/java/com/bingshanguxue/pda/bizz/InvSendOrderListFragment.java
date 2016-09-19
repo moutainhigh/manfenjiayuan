@@ -113,7 +113,6 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 
         initRecyclerView();
 
-
         reload();
     }
 
@@ -202,12 +201,12 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 //    @OnClick(R.id.empty_view)
     public void reload() {
         if (bSyncInProgress) {
-            ZLogger.d("正在加载线上订单订单流水。");
+            ZLogger.d("正在加载采购订单。");
 //            onLoadFinished();
             return;
         }
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载订单流水。");
+            ZLogger.d("网络未连接，暂停加载采购订单。");
             onLoadFinished();
             return;
         }
@@ -225,12 +224,12 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
      */
     public void loadMore() {
         if (bSyncInProgress) {
-            ZLogger.d("正在加载线上订单订单流水。");
+            ZLogger.d("正在加载采购订单。");
 //            onLoadFinished();
             return;
         }
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载线上订单订单流水。");
+            ZLogger.d("网络未连接，暂停加载采购订单。");
             onLoadFinished();
             return;
         }
@@ -254,7 +253,6 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
 
     @Override
     public void onIInvSendOrderViewError(String errorMsg) {
-
         onLoadFinished();
     }
 
@@ -283,7 +281,7 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
             onLoadFinished();
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
-            ZLogger.e(String.format("加载商品采购订单失败: %s", ex.toString()));
+            ZLogger.ef(String.format("加载商品采购订单失败: %s", ex.toString()));
 
             onLoadFinished();
         }
