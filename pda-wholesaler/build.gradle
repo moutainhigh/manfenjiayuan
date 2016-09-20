@@ -19,7 +19,7 @@ android {
         applicationId "com.manfenjiayuan.pda_wholesaler"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 27
+        versionCode 28
         versionName "0.1.4"
         multiDexEnabled true
 

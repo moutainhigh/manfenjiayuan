@@ -189,7 +189,7 @@ public static final int *;
 -keep class org.xmlpull.v1.** { *; }
 
 
-#修复Rxjava&RxAndroid代码不执行的问题
+#resolve Rxjava&RxAndroid代码不执行的 problem
 -dontwarn sun.misc.**
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
    long producerIndex;
@@ -201,3 +201,4 @@ public static final int *;
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
+#-dontwarn sun.misc.Unsafe

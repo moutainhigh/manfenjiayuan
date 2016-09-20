@@ -386,7 +386,6 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         }
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
-            isAcceptBarcodeEnabled = true;
             reload();
             return;
         }
@@ -403,8 +402,6 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         } else {
             hideProgressDialog();
         }
-        isAcceptBarcodeEnabled = true;
-
         reload();
     }
 
@@ -430,6 +427,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
 
     private void reload() {
         mScanBar.reset();
+        isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
         hideProgressDialog();
 
@@ -457,6 +455,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
     private void refresh(ScGoodsSku goodsSku) {
         hideProgressDialog();
         mScanBar.reset();
+        isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
 
         purchaseGoods = goodsSku;
