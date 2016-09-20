@@ -1,25 +1,19 @@
-package com.mfh.framework.login.entity;
+package com.mfh.framework.api.account;
+
+import com.mfh.framework.api.constant.Sex;
 
 /**
- *
- "userAttribute": {
-     "mobile": "15250065084",
-     "guid": "245389",
-     "humanid": 245389,
-     "ownerId": null,
-     "humanName": "冰珊孤雪",
-     "headimage": "33c49435faec068197c4e06f0e5d4eb7.jpg"
- }
+ * 各类用户混合信息
  * */
 public class UserAttribute implements java.io.Serializable {
 
     private String mobile = "";
     private String guid = "";
-    private String humanId = "";
-    private String ownerId = "";
+    private Long humanId;
+    private Long ownerId;
     private String humanName = "";
     private String headimage = "";
-    private String sex = "";//1=女，0=男,-1=未知
+    private Integer sex = Sex.UNKNOWN;
 
 
     public String getHumanName() {
@@ -47,19 +41,19 @@ public class UserAttribute implements java.io.Serializable {
         this.guid = guid;
     }
 
-    public String getHumanId() {
+    public Long getHumanId() {
         return humanId;
     }
 
-    public void setHumanId(String humanId) {
+    public void setHumanId(Long humanId) {
         this.humanId = humanId;
     }
 
-    public String getOwnerId() {
+    public Long getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -71,11 +65,11 @@ public class UserAttribute implements java.io.Serializable {
         this.headimage = headimage;
     }
 
-    public String getSex() {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 }

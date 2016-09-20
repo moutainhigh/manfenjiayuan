@@ -12,14 +12,15 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.IService;
 import com.mfh.framework.login.MfhLoginPreferences;
-import com.mfh.framework.login.entity.Office;
-import com.mfh.framework.login.entity.Subdis;
-import com.mfh.framework.login.entity.UserAttribute;
-import com.mfh.framework.login.entity.UserComInfo;
-import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.api.account.Office;
+import com.mfh.framework.api.account.Subdis;
+import com.mfh.framework.api.account.UserAttribute;
+import com.mfh.framework.api.account.UserComInfo;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -63,7 +64,7 @@ public class MfhLoginService implements IService {
     private Long sessionDate = 0L;
     private String cookie = "";
     private String headimage = "";
-    private String sex;
+    private Integer sex;
 
 
     //保存上一次登录信息
@@ -135,7 +136,7 @@ public class MfhLoginService implements IService {
         sessionDate = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_SESSION_DATE, 0L);
         cookie = spLogin.getString(MfhLoginPreferences.PK_LOGIN_HTTP_COOKIE, "");
         headimage = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_HEADIMAGE, "");
-        sex = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_SEX, "");
+        sex = spLogin.getInt(MfhLoginPreferences.PK_I_USER_SEX, Sex.UNKNOWN);
     }
 
     /**
@@ -163,7 +164,7 @@ public class MfhLoginService implements IService {
         loginEditor.putString(MfhLoginPreferences.PK_LOGIN_HTTP_COOKIE, cookie);
         loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_HUMANNAME, humanName);
         loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_HEADIMAGE, headimage);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_SEX, sex);
+        loginEditor.putInt(MfhLoginPreferences.PK_I_USER_SEX, sex);
         loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_SUBDIS_ID, mySubdisIds);
         loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_STOCKI_DS, stockIds);
         loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_CURRENT_OFFICE_NAME, curOfficeName);
@@ -379,11 +380,11 @@ public class MfhLoginService implements IService {
     }
 
 
-    public String getSex() {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 
@@ -455,11 +456,11 @@ public class MfhLoginService implements IService {
     /**
      * 修改密码
      */
-    public void updateSex(String sex) {
+    public void updateSex(Integer sex) {
         this.sex = sex;
 
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putString(MfhLoginPreferences.PK_LOGIN_USER_SEX, sex);
+        editor.putInt(MfhLoginPreferences.PK_I_USER_SEX, sex);
         editor.commit();
     }
 

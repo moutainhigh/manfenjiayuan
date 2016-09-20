@@ -9,23 +9,26 @@
  * 修改日期: 2014-3-14
  * 修改内容: 
  */
-package com.mfh.framework.login.entity;
+package com.mfh.framework.api.account;
+
+import com.mfh.framework.api.constant.HumanAuthFlag;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * 登录时返回的信息
+ * 用户信息(调用登录接口返回)
  * @author zhangyz created on 2014-3-14
  */
 @SuppressWarnings("serial")
 public class UserMixInfo extends User {
     private UserAttribute userAttribute;//各类用户混合信息
     private String sessionId;//会话Id
-    private Integer humanAuthFlag = 0;//认证标志 1-个人认证  2-企业认证  3-全是
+    private Integer humanAuthFlag = HumanAuthFlag.NA;//认证标志
     private List<UserComInfo> comInfos = null;//公司相关信息
     private List<String> cookiees; //仅返回给手机客户端的cookiees
+    //menus
 
     public UserAttribute getUserAttribute() {
         return userAttribute;

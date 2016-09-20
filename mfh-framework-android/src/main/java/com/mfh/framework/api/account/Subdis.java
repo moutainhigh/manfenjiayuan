@@ -1,43 +1,10 @@
-package com.mfh.framework.login.entity;
+package com.mfh.framework.api.account;
 
 import java.io.Serializable;
 
 /**
+ * 小区
  * Created by bingshanguxue on 2014/9/11.
- * <pre>
- *     {
- * "subdisName":"天域东区",
- * "areaID":"320510",
- * "mfhArea":"51203",
- * "street":"苏绣路68号",
- * "cityID":"320500",
- * "provinceID":"320000",
- * "pmcInfoId":null,
- * "pmcInfoName":null,
- * "humanId":131994,
- * "humanName":null,
- * "humanMobile":null,
- * "logopic":null,
- * "bindsign":null,
- * "newmode":1,
- * "wocode":null,
- * "latitude":31.320659,
- * "longitude":120.675759,
- * "gaoId":680,
- * "supportType":1,
- * "province":null,
- * "city":null,
- * "area":null,
- * "printFunc":false,
- * "remark":null,
- * "saasId":134342,
- * "id":741,
- * "createdBy":"131291",
- * "createdDate":"2015-07-17 15:03:16",
- * "updatedBy":"",
- * "updatedDate":"2015-07-29 20:27:50"
- * }
- * </pre>
  */
 public class Subdis implements Serializable{
     private String subdisName;//小区名

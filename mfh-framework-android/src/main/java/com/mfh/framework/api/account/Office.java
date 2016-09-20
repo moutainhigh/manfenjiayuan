@@ -1,8 +1,9 @@
-package com.mfh.framework.login.entity;
+package com.mfh.framework.api.account;
 
 import java.io.Serializable;
 
 /**
+ * 部门
  * Created by bingshanguxue on 2014/9/11.
  */
 public class Office implements Serializable{

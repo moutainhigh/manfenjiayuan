@@ -30,8 +30,10 @@ public class InvSendOrderPresenter {
      * 加载采购订单
      * @param netFlag 类目编号
      * */
-    public void loadOrders(PageInfo pageInfo, boolean netFlag, Long netId, String sendTenantId, String status){
-        invSendOrderMode.loadOrders(pageInfo, netFlag, netId, sendTenantId, status, new OnPageModeListener<InvSendOrder>() {
+    public void loadOrders(PageInfo pageInfo, boolean netFlag, Long netId, String sendTenantId,
+                           String status){
+        invSendOrderMode.loadOrders(pageInfo, netFlag, netId, sendTenantId, status,
+                new OnPageModeListener<InvSendOrder>() {
             @Override
             public void onProcess() {
                 if (invSendOrderView != null) {

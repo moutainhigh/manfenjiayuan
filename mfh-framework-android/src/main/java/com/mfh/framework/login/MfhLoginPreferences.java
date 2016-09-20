@@ -39,7 +39,7 @@ public class MfhLoginPreferences {
     public static final String PK_LOGIN_SESSION_DATE = "app.session.date";
     public static final String PK_LOGIN_USER_HUMANNAME = "app.user.humanName";
     public static final String PK_LOGIN_USER_HEADIMAGE = "app.headimage";
-    public static final String PK_LOGIN_USER_SEX = "app.user.sex";
+    public static final String PK_I_USER_SEX = "user_sex";
     public static final String PK_LOGIN_USER_STOCKI_DS = "app.user.stock_ids";
     public static final String PK_LOGIN_USER_CURRENT_STOCKID = "app.user.current.stock.id";
     public static final String PK_LOGIN_USER_CURRENT_OFFICE_NAME = "app.user.current.office.name";

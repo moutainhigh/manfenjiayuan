@@ -1,4 +1,4 @@
-package com.mfh.framework.login.entity;
+package com.mfh.framework.api.account;
 
 
 import com.mfh.framework.core.MfhEntity;
@@ -11,14 +11,9 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class User extends MfhEntity<Long> {
 
-    public static final int USERTYPE_SYS = 2;// 系统管理员
-
-    public static final int USERTYPE_NOTSYS = 1;// 普通用户
-
-    public static final int USERTYPE_TENANT = 3;//租户的系统管理员,与TUser.USERTYPE_SYS等区别;也就是sass平台的付费客户；但该客户本身还有自己的最终用户。
-
-    public static String USER_SYS = "admin";// 系统管理员。
-
+    /**
+     * 用户编号
+     */
     private Long humanId;
 
     /**
@@ -51,14 +46,19 @@ public class User extends MfhEntity<Long> {
      */
     private Integer status;
 
+
+    // 普通用户
+    public static final Integer USERTYPE_NOTSYS = 1;
+    // 系统管理员
+    public static final Integer USERTYPE_SYS = 2;
+    // 租户的系统管理员,与TUser.USERTYPE_SYS等区别;也就是sass平台的付费客户；但该客户本身还有自己的最终用户。
+    public static final Integer USERTYPE_TENANT = 3;
+
     /**
      * 用户类型
      */
     private Integer userType = USERTYPE_NOTSYS;
 
-    //private String rids;
-
-    //private List<Role> roleList = Lists.newArrayList(); // 有序的关联对象集合
 
     public String getUserName() {
         return userName;

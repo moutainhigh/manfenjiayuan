@@ -9,12 +9,12 @@
  * 修改日期: 2015-1-21
  * 修改内容: 
  */
-package com.mfh.framework.login.entity;
+package com.mfh.framework.api.account;
 
 import java.util.List;
 
 /**
- * 登录时获取的与公司及其授权的相关信息
+ * 公司及其授权的相关信息
  * @author zhangyz created on 2015-1-21
  */
 @SuppressWarnings("serial")
@@ -23,7 +23,7 @@ public class UserComInfo implements java.io.Serializable {
     private String pmcName = "";//所属公司名称    
     private Long spid;//所属公司编号
 
-    private List<Office> offices = null;
+    private List<Office> offices = null;//部门列表
     private Long curOffice;//当前所属部门编号
     private String logopic = "";
     private String pmcLevel = "";//复用：物业公司级别/或公司所带仓储编号

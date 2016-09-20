@@ -1,7 +1,7 @@
 package com.mfh.framework.login.logic;
 
 
-import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.api.account.UserMixInfo;
 
 /**
  * Created by Administrator on 14-5-6.

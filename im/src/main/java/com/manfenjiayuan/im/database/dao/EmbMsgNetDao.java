@@ -1,6 +1,7 @@
 package com.manfenjiayuan.im.database.dao;
 
 import com.alibaba.fastjson.JSONObject;
+import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMConstants;
 import com.manfenjiayuan.im.bean.BizMsgParamWithSession;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
@@ -61,9 +62,8 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
         params.remove("picUrl");
         params.put(MfhApi.PARAM_KEY_CHANNEL_ID, String.valueOf(MfhApi.CHANNEL_ID));
         params.put(MfhApi.PARAM_KEY_QUEUE_NAME, MfhApi.PARAM_VALUE_QUEUE_NAME_DEF);
-        AfinalFactory.postDefault(MfhApi.URL_REGISTER_MESSAGE, params, call);
+        AfinalFactory.postDefault(IMApi.URL_MOBILE_MESSAGE, params, call);
     }
-
 
 
     @Override
