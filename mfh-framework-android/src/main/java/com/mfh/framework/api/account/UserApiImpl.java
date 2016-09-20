@@ -1,4 +1,4 @@
-package com.bingshanguxue.vector_user;
+package com.mfh.framework.api.account;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.login.logic.MfhLoginService;

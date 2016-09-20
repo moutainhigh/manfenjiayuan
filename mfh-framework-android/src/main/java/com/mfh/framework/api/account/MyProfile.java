@@ -1,4 +1,4 @@
-package com.bingshanguxue.vector_user.bean;
+package com.mfh.framework.api.account;
 
 /**
  * 用户信息

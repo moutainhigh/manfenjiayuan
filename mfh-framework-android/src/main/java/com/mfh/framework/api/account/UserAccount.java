@@ -1,6 +1,6 @@
-package com.bingshanguxue.vector_user.bean;
+package com.mfh.framework.api.account;
 
-import com.bingshanguxue.vector_user.CommonUserAccountApi;
+import com.mfh.framework.api.account.CommonUserAccountApi;
 
 import java.io.Serializable;
 import java.util.Date;

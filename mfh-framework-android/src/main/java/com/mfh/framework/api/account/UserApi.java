@@ -1,4 +1,4 @@
-package com.bingshanguxue.vector_user;
+package com.mfh.framework.api.account;
 
 import com.mfh.framework.api.MfhApi;
 
