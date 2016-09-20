@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/material_white"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/mfh_textview_text"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="start|center_vertical"
+        android:singleLine="true"
+        android:text=""/>
+
+    <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/M_Widget_ProgressBar_Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/tv_quantity"
+        style="@style/mfh_textview_text"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text=""/>
+
+
+</LinearLayout>

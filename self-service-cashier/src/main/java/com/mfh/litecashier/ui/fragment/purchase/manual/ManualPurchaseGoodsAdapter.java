@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bingshanguxue.vector_uikit.NumberPickerView;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.bumptech.glide.Glide;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
@@ -39,6 +40,7 @@ public class ManualPurchaseGoodsAdapter
         void addToShopcart(ScGoodsSku goods, int quantity);
 
         void onShowDetail(ScGoodsSku goods);
+        void onClickSales(Long proSkuId);
 
         void onDataSetChanged();
     }
@@ -64,20 +66,11 @@ public class ManualPurchaseGoodsAdapter
 
         holder.tvName.setText(goodsSku.getSkuName());
         holder.tvDescription.setText(goodsSku.getBarcode());
-        if (StringUtils.isEmpty(goodsSku.getBuyUnit())) {
-            holder.tvPurchasePrice.setText(String.format("%.2f", goodsSku.getBuyPrice()));
-        } else {
-            holder.tvPurchasePrice.setText(String.format("%.2f／%s",
-                    goodsSku.getBuyPrice(), goodsSku.getBuyUnit()));
-        }
-//        holder.tvMinimumOrderQuantity.setText(String.format("%.2f", entity.getStartNum()));
+        holder.tvPurchasePrice.setText(MUtils.formatDouble(null, null,
+                goodsSku.getBuyPrice(), "", "/", goodsSku.getBuyUnit()));
         holder.tvStockQuantity.setText(String.format("%.2f", goodsSku.getQuantity()));
-        holder.tvPakcageNum.setText(String.format("%.2f", goodsSku.getPackageNum()));
-
-
-//        PurchaseGoodsEntity entity = PurchaseGoodsService
-//                .getInstance().fetchGoods(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL,
-//                        goodsSku.getProviderId(), goodsSku.getBarcode());
+        holder.tvAvgSellNum.setText(StringUtils.toSpanned(String.format("<u>%s</u>",
+                MUtils.formatDouble(goodsSku.getAvgSellNum(), ""))));
 
         String sqlWhere = String.format("purchaseType = '%d' and proSkuId = '%d' " +
                         "and barcode = '%s'", PurchaseOrderEntity.PURCHASE_TYPE_MANUAL,
@@ -100,8 +93,8 @@ public class ManualPurchaseGoodsAdapter
         TextView tvDescription;
         @Bind(R.id.tv_purchaseprice)
         TextView tvPurchasePrice;
-        @Bind(R.id.tv_packageNum)
-        TextView tvPakcageNum;
+        @Bind(R.id.tv_avgSellNum)
+        TextView tvAvgSellNum;
         @Bind(R.id.tv_stock_quantity)
         TextView tvStockQuantity;
         @Bind(R.id.numberPickerView)
@@ -161,19 +154,41 @@ public class ManualPurchaseGoodsAdapter
             });
         }
 
+//        /**
+//         * 详情
+//         */
+//        @OnClick(R.id.iv_header)
+//        public void showDetailInfo() {
+//            int position = getAdapterPosition();
+//            final ScGoodsSku original = getEntity(position);
+//            if (original == null) {
+//                return;
+//            }
+//
+//            if (adapterListener != null) {
+//                adapterListener.onShowDetail(original);
+//            }
+//        }
+
         /**
          * 详情
          */
-        @OnClick(R.id.iv_header)
-        public void showDetailInfo() {
-            int position = getAdapterPosition();
-            final ScGoodsSku original = getEntity(position);
-            if (original == null) {
-                return;
-            }
+        @OnClick(R.id.tv_avgSellNum)
+        public void showAvgSellNum() {
+            try{
+                int position = getAdapterPosition();
+                final ScGoodsSku original = getEntity(position);
+                if (original == null) {
+                    return;
+                }
 
-            if (adapterListener != null) {
-                adapterListener.onShowDetail(original);
+                if (adapterListener != null) {
+                    adapterListener.onClickSales(original.getProSkuId());
+                }
+            }
+            catch (Exception e){
+                ZLogger.e(e.toString());
+                e.printStackTrace();
             }
         }
     }

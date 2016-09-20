@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.GoodsSupplyInfo;
@@ -35,7 +36,6 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
-import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -55,6 +55,7 @@ import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
+import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.intelligent.IIntelligentPurchaseView;
 import com.mfh.litecashier.ui.fragment.purchase.intelligent.IntelligentPurchasePresenter;
@@ -278,39 +279,39 @@ public class ManualPurchaseFragment extends BaseProgressFragment
             selectPlatformProviderDialog.setCanceledOnTouchOutside(false);
         }
         selectPlatformProviderDialog.init(new SelectInvCompanyInfoDialog.OnDialogListener() {
-                    @Override
-                    public void onItemSelected(CompanyInfo companyInfo) {
-                        if (companyInfo == null) {
-                            getActivity().setResult(Activity.RESULT_CANCELED);
-                            getActivity().finish();
-                        } else {
-                            if (searchParams == null) {
-                                searchParams = new SearchParamsWrapper();
-                            }
-                            searchParams.setCompanyInfo(companyInfo);
-                            labelPlatformProvider.setLabelText(companyInfo.getName());
-                            loadGoodsList();
-                        }
+            @Override
+            public void onItemSelected(CompanyInfo companyInfo) {
+                if (companyInfo == null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                } else {
+                    if (searchParams == null) {
+                        searchParams = new SearchParamsWrapper();
                     }
+                    searchParams.setCompanyInfo(companyInfo);
+                    labelPlatformProvider.setLabelText(companyInfo.getName());
+                    loadGoodsList();
+                }
+            }
 
-                    @Override
-                    public void onCancel() {
-                        if (searchParams == null) {
-                            searchParams = new SearchParamsWrapper();
-                        }
-                        CompanyInfo companyInfo = searchParams.getCompanyInfo();
+            @Override
+            public void onCancel() {
+                if (searchParams == null) {
+                    searchParams = new SearchParamsWrapper();
+                }
+                CompanyInfo companyInfo = searchParams.getCompanyInfo();
 
-                        if (companyInfo == null) {
-                            getActivity().setResult(Activity.RESULT_CANCELED);
-                            getActivity().finish();
-                        }
+                if (companyInfo == null) {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
 //                        else {
 //                            labelPlatformProvider.setLabelText(companyInfo.getName());
 //                            loadGoodsList();
 //                        }
-                    }
+            }
 
-                });
+        });
         if (!selectPlatformProviderDialog.isShowing()) {
             selectPlatformProviderDialog.show();
         }
@@ -516,6 +517,27 @@ public class ManualPurchaseFragment extends BaseProgressFragment
                                                   }
 
                                                   @Override
+                                                  public void onClickSales(Long proSkuId) {
+                                                      if (proSkuId == null) {
+                                                          return;
+                                                      }
+
+                                                      try{
+                                                          Bundle extras = new Bundle();
+                                                          extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+                                                          extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+                                                          extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_GOODS_SALESHISTORY);
+                                                          extras.putLong(GoodsSalesFragment.EXTRA_KEY_PROSKUID, proSkuId);
+                                                          SimpleDialogActivity.actionStart(getActivity(), extras);
+//                                                      UIHelper.startActivity(getActivity(), SimpleDialogActivity.class, extras);
+                                                      }
+                                                      catch (Exception e){
+                                                          ZLogger.e(e.toString());
+                                                          e.printStackTrace();
+                                                      }
+                                                  }
+
+                                                  @Override
                                                   public void onDataSetChanged() {
                                                       onLoadFinished();
                                                   }
@@ -537,12 +559,11 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         PurchaseShopcartGoodsWrapper wrapper = PurchaseShopcartGoodsWrapper
                 .fromSupplyGoods(goods, goods.getSupplyItem(), IsPrivate.PLATFORM);
 
-        if (quantity == 0){
+        if (quantity == 0) {
             PurchaseGoodsService.getInstance().deleteById(String.valueOf(goods.getId()));
             PurchaseHelper.getInstance().removeGoods(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL,
                     wrapper);
-        }
-        else{
+        } else {
             wrapper.setQuantityCheck(Double.valueOf(String.valueOf(quantity)));
             PurchaseHelper.getInstance()
                     .addToShopcart(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL, wrapper, true);
@@ -913,9 +934,9 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
     /**
      * 智能订货
-     * */
+     */
     @OnClick(R.id.fab_intelligent)
-    public void intelligentPurchase(){
+    public void intelligentPurchase() {
         CompanyInfo companyInfo = searchParams.getCompanyInfo();
         if (companyInfo != null) {
             mIntelligentPurchasePresenter.loadGoodsList(companyInfo.getId());
@@ -954,8 +975,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         if (dataList != null && dataList.size() > 0 && companyInfo != null) {
             new IntelligentAsyncTask(companyInfo)
                     .execute(dataList);
-        }
-        else{
+        } else {
             showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
         }
 
@@ -972,28 +992,8 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
         @Override
         protected Long doInBackground(List<InvSendOrderItem>... params) {
-            saveQueryResult(params[0], companyInfo);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-
-            refreshFabShopcart();
-
-            goodsListAdapter.notifyDataSetChanged();
-            showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(List<InvSendOrderItem> goodsList, CompanyInfo companyInfo) {//此处在主线程中执行。
             try {
+                List<InvSendOrderItem> goodsList = params[0];
                 for (InvSendOrderItem invSendOrderItem : goodsList) {
                     PurchaseShopcartGoodsWrapper goodsWrapper = PurchaseShopcartGoodsWrapper
                             .fromIntelligentOrderItem(invSendOrderItem, companyInfo,
@@ -1008,6 +1008,18 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 //            throw new RuntimeException(ex);
                 ZLogger.e(String.format("保存智能订货商品失败: %s", ex.toString()));
             }
+            return null;
         }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+
+            refreshFabShopcart();
+
+            goodsListAdapter.notifyDataSetChanged();
+            showProgressDialog(ProgressDialog.STATUS_DONE, "智能订货完成", true);
+        }
+
     }
 }

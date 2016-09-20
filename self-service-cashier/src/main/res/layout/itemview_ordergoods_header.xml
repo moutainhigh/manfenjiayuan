@@ -19,8 +19,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="库存成本价"/>
+        android:text="库存成本价"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_header_packagenum"
@@ -29,18 +29,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="@string/label_packageNum"/>
-    <!--<TextView-->
-    <!--android:id="@+id/tv_header_minimum_order_quantity"-->
-    <!--style="@style/mfh_form_header_text"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:singleLine="true"-->
-    <!--android:text="@string/label_minimum_order_quantity" />-->
-
+        android:text="30天销量"
+        android:maxLines="1"/>
     <!--库存-->
     <TextView
         android:id="@+id/tv_stock_quantity"
@@ -49,8 +39,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="@string/label_stock_quantity"/>
+        android:text="@string/label_stock_quantity"
+        android:maxLines="1"/>
 
     <View
         android:layout_width="0dp"
