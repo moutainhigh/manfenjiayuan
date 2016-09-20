@@ -11,6 +11,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.PayloadHelper;
 
 /**
@@ -19,9 +20,9 @@ import com.mfh.framework.helper.PayloadHelper;
  */
 public class PushDemoReceiver extends BroadcastReceiver {
 
-    private static final String KEY_CLIENT_ID   = "clientid";
-    private static final String KEY_PAYLOAD     = "payload";
-    private static final String KEY_APPID       = "appid";
+    private static final String KEY_CLIENT_ID = "clientid";
+    private static final String KEY_PAYLOAD = "payload";
+    private static final String KEY_APPID = "appid";
 
     private long offlineTime = 0;
 
@@ -29,23 +30,26 @@ public class PushDemoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        ZLogger.df(String.format("onReceive, action=%d", bundle.getInt("action")));
+        String processName = AppContext.getProcessName(AppContext.getAppContext(),
+                android.os.Process.myPid());
+        ZLogger.df(String.format("个推<%s> -- bundle=%s", processName,
+                StringUtils.decodeBundle(bundle)));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
-            case PushConsts.GET_MSG_DATA:{
+            case PushConsts.GET_MSG_DATA: {
                 // 获取透传（payload）数据
                 byte[] payload = bundle.getByteArray(KEY_PAYLOAD);
-                if (payload != null){
+                if (payload != null) {
                     String data = new String(payload);
                     parsePushPayload(context, data);
                 }
                 // String appid = bundle.getString(KEY_APPID);
             }
-                break;
-            case PushConsts.GET_CLIENTID:{
+            break;
+            case PushConsts.GET_CLIENTID: {
                 // 获取ClientID(CID)
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
-                if(clientId != null){
+                if (clientId != null) {
                     ZLogger.df(String.format("个推 clientId=%s", clientId));
                     IMConfig.savePushClientId(clientId);
                 }
@@ -56,25 +60,32 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 请应用程序在每次获取ClientID广播后，都能进行一次关联绑定 */
                 //注册到消息桥
                 IMClient.getInstance().registerBridge();
-//                UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_PARTER_REFRESH);
             }
-                break;
+            break;
             case PushConsts.THIRDPART_FEEDBACK:
                 break;
 
             case PushConsts.GET_SDKONLINESTATE:
                 boolean onlineState = bundle.getBoolean("onlineState");
-                ZLogger.df(String.format("个推 %s, onlineState = %b", IMConfig.getPushClientId(), onlineState));
-                if (!onlineState){
-                    ZLogger.df("准备开启推送...");
-                    PushManager.getInstance().turnOnPush(AppContext.getAppContext());
+                String clientId = PushManager.getInstance().getClientid(AppContext.getAppContext());
+                ZLogger.df(String.format("个推 %s-%s, onlineState = %b",
+                        clientId, IMConfig.getPushClientId(), onlineState));
+                if (!StringUtils.isEmpty(clientId)) {
+                    if (!onlineState) {
+                        ZLogger.df("准备开启推送...");
+                        PushManager.getInstance().turnOnPush(AppContext.getAppContext());
+                        offlineTime = System.currentTimeMillis();
+                    }
+                } else {
+                    ZLogger.df("准备初始化个推服务...");
                     offlineTime = System.currentTimeMillis();
+                    PushManager.getInstance().initialize(AppContext.getAppContext());
                 }
                 break;
             case PushConsts.GET_SDKSERVICEPID:
 //                超过5分钟会自动重启
                 Long rightNow = System.currentTimeMillis();
-                Long interval =  rightNow - offlineTime;
+                Long interval = rightNow - offlineTime;
                 ZLogger.df(String.format("个推服务未启动，%d - %d = %d", rightNow, offlineTime, interval));
 //                超过5分钟会自动重启
                 if (interval > 10) {
@@ -90,8 +101,8 @@ public class PushDemoReceiver extends BroadcastReceiver {
 
     /**
      * 处理透传（payload）数据
-     * */
-    private static void parsePushPayload(Context context, String data){
+     */
+    private static void parsePushPayload(Context context, String data) {
         Integer bizType = PayloadHelper.getJsonMsgType(data);//获取推送的数据类型
         ZLogger.df(String.format("payload=(%s)%s", bizType, data));
     }
