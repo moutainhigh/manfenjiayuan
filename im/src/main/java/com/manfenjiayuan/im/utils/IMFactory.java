@@ -119,15 +119,15 @@ public class IMFactory {
 	 * @param guid
 	 * @return MsgParameter
 	 */
-	public static MsgParameter chatMessage(String cpid, Long guid,
-											  String content, Long toGuid){
+	public static MsgParameter chatMessage(String cpid, Long guid, String content,
+										   Long toGuid, Long channelId, String toChannelPointId){
 //		ZLogger.d(String.format("createMsgParam, cpid=%s, guid=%d,content=%s, sessionId=%d",
 //				cpid, guid, content, sessionId));
 		MsgParameter msgParameter = new MsgParameter();
 //		ZLogger.d("msgParameter: " + JSON.toJSONString(msgParameter));
 
 		msgParameter.setFrom(FromInfo.create(cpid, guid));
-		msgParameter.setTo(DestInfo.create(cpid, toGuid));
+		msgParameter.setTo(DestInfo.create(channelId, toChannelPointId, toGuid));
 
 		TextParam textParam = new TextParam(content);
 		MsgBean msgBean = new MsgBean();
@@ -177,12 +177,12 @@ public class IMFactory {
 	 */
 	public static MsgParameter textMessageParameter(Integer bizType, String content,
 													Long guid, String fromChannelPointId,
-													Long toGuid, String toChannelPointId){
+													Long toGuid, Long channelId, String toChannelPointId){
 		MsgParameter msgParameter = new MsgParameter();
 //		ZLogger.d("msgParameter: " + JSON.toJSONString(msgParameter));
 
 		msgParameter.setFrom(FromInfo.create(fromChannelPointId, guid));
-		msgParameter.setTo(DestInfo.create(toChannelPointId, toGuid));
+		msgParameter.setTo(DestInfo.create(channelId, toChannelPointId, toGuid));
 
 		MsgBean msgBean = new MsgBean();
 		msgBean.setBizType(bizType);

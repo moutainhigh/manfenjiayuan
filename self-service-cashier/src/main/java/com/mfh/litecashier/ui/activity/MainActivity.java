@@ -381,7 +381,7 @@ public class MainActivity extends CashierActivity
         } else if (id.compareTo(ResMenu.CASHIER_MENU_PRINT_ORDER) == 0){
             printScOrder();
         } else {
-            DialogUtil.showHint("@开发君 失踪了...");
+            DialogUtil.showHint(R.string.coming_soon);
         }
     }
 

@@ -117,7 +117,6 @@ dependencies {
     compile project(':mfh-framework-android')
     compile project(':im')
     compile project(path: ':mfh-framework-business')
-    compile project(path: ':vector_user')
     compile project(path: ':vector_uikit')
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
 }

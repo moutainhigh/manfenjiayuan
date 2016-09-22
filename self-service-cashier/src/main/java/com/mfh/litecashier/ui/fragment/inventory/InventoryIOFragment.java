@@ -117,7 +117,7 @@ public class InventoryIOFragment extends BaseFragment {
 
     @OnClick(R.id.button_create_bill)
     public void createNewIOOrder() {
-        DialogUtil.showHint("@开发君@ 失踪了...");
+        DialogUtil.showHint(R.string.coming_soon);
 //        Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
 //        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_INVENTORY_IO_ORDER);

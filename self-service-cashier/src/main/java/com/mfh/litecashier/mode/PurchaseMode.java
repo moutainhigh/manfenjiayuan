@@ -101,6 +101,4 @@ public class PurchaseMode {
 
         AfinalFactory.postDefault(ScGoodsSkuApi.URL_FIND_STOREWITHCHAINSKU, params, queryRsCallBack);
     }
-
-
 }

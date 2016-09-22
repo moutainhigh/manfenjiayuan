@@ -270,7 +270,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 //        ZLogger.d("wxParam: " + JSON.toJSONString(wxParam));
 //        String jsonStr = String.valueOf();
         MsgParameter msgParameter = IMFactory.chatMessage(IMConfig.getPushClientId(),
-                fromGuid, wxParam.getContent(), toGuid);
+                fromGuid, wxParam.getContent(), toGuid, null, null);
         params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);
@@ -281,7 +281,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
      * @param sessionId
      * @param wxParam
      */
-    public void sendText(Long fromGuid, Long toGuid, String toChannelPointId,
+    public void sendText(Long fromGuid, Long toGuid, Long channelId, String toChannelPointId,
                          Integer bizType, String content,
                                     NetProcessor.ComnProcessor processor)  {
         AjaxParams params = new AjaxParams();
@@ -290,7 +290,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 //        String jsonStr = String.valueOf();
         MsgParameter msgParameter = IMFactory.textMessageParameter(bizType, content,
                 fromGuid, IMConfig.getPushClientId(),
-                toGuid, toChannelPointId);
+                toGuid, channelId, toChannelPointId);
         params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);
@@ -411,7 +411,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
                 }, "/biz/msg/getMessageItems");
             }
             else{
-                System.out.print("bingshanguxue: sessionId is invalid.");
+                System.out.print("M: sessionId is invalid.");
             }
         }
         catch (Throwable ex) {

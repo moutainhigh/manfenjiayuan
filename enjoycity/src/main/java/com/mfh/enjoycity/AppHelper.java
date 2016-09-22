@@ -24,7 +24,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
-import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.lang.reflect.Field;

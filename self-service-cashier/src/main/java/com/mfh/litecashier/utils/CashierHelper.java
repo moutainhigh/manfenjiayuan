@@ -264,11 +264,9 @@ public class CashierHelper {
             }
         };
         EmbMsgService.getInstance().sendText(MfhLoginService.get().getCurrentGuId(),
-                MfhLoginService.get().getCurrentGuId(),
+                MfhLoginService.get().getCurrentGuId(), null, null,
                 IMBizType.CUSTOMER_DISPLAY_PAYORDER,
                 JSON.toJSONString(cashierOrderInfoWrapper), processor);
     }
-
-
 
 }

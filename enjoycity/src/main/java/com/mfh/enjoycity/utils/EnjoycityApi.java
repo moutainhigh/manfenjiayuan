@@ -17,8 +17,8 @@ public class EnjoycityApi {
     public final static String URL_CREATE_RECEIVE_ADDRESS = MfhApi.URL_BASE_SERVER + "/reciaddr/createForHuman";
     /**查询收货地址*/
     public final static String URL_QUERYALL_RECEIVE_ADDRESS = MfhApi.URL_BASE_SERVER + "/reciaddr/getAllAddrsByHuman";
-    //新增商城订单
-    public final static String URL_SAVE_ORDER = MfhApi.URL_BASE_SERVER + "/scOrder/saveOrder";
+
+
     //(商城/洗衣)订单支付
     public final static String URL_ORDER_ACCOUNT_PAY = MfhApi.URL_BASE_SERVER + "/commonuseraccount/scAccountPay";
     //热卖商品
@@ -32,9 +32,6 @@ public class EnjoycityApi {
     public final static String URL_FIND_PRODUCT = MfhApi.URL_BASE_SERVER + "/anon/sc/product/findProduct";
     //我常买
     public final static String URL_OFEN_BUY_PRODUCTS= MfhApi.URL_BASE_SERVER + "/anon/sc/product/mineBuysProductList";
-
-    //查询满分小伙伴服务
-    public final static String URL_QUERY_MFHPARTER_INSERVICE= MfhApi.URL_BASE_SERVER + "/scOrder/countServiceMfhPartner";
 
     /**优惠券*/
     public final static String URL_FIND_COUPONS = MfhApi.URL_BASE_SERVER + "/pmcstock/findConpousByOrderId";

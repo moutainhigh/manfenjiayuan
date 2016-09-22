@@ -1,6 +1,6 @@
 package com.bingshanguxue.pda.database.entity;
 
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 

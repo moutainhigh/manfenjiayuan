@@ -337,7 +337,7 @@ public class OrderFlowFragment extends BaseFragment {
     private PosOrderDetailDialog mPosOrderDetailDialog = null;
     private void showOrderDetail(PosOrderEntity orderEntity){
         if (orderEntity == null || orderEntity.getStatus() != PosOrderEntity.ORDER_STATUS_EXCEPTION){
-            DialogUtil.showHint("开发君失踪了...");
+            DialogUtil.showHint(R.string.coming_soon);
             return;
         }
 

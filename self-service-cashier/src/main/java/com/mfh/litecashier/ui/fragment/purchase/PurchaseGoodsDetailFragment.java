@@ -16,6 +16,7 @@ import com.mfh.litecashier.R;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.mfh.litecashier.ui.fragment.ReportFragment;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 
 import java.util.ArrayList;
 
@@ -115,7 +116,7 @@ public class PurchaseGoodsDetailFragment extends BaseFragment {
 
         viewPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(), mTabStrip, mViewPager, R.layout.tabitem_text_large);
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        mTabs.add(new ViewPageInfo("月销量", "月销量", ReportFragment.class,
+        mTabs.add(new ViewPageInfo("销量", "销量", GoodsSalesFragment.class,
                 null));
         mTabs.add(new ViewPageInfo("日销量", "日销量", ReportFragment.class,
                 null));

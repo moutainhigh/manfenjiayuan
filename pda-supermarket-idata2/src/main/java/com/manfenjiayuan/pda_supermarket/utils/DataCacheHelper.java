@@ -1,7 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.utils;
 
 
-import com.mfh.framework.login.entity.Office;
+import com.mfh.framework.api.account.Office;
 
 /**
  * Created by bingshanguxue on 15/9/9.

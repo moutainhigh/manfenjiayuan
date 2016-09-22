@@ -3,7 +3,7 @@ package com.bingshanguxue.pda.database.entity;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 盘点

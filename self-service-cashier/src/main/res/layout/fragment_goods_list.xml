@@ -14,8 +14,7 @@
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/goods_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/spacing_normal"/>
+            android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

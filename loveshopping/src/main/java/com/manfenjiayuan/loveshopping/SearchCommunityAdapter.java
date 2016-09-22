@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.framework.login.entity.Subdis;
+import com.mfh.framework.api.account.Subdis;
 
 import java.util.List;
 

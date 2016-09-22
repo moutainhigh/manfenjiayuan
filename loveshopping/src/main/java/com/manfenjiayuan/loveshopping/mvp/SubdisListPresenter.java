@@ -1,7 +1,7 @@
 package com.manfenjiayuan.loveshopping.mvp;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.login.entity.Subdis;
+import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.mvp.MvpBasePresenter;
 import com.mfh.framework.mvp.OnPageModeListener;
 

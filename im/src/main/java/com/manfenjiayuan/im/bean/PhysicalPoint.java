@@ -11,8 +11,6 @@
  */
 package com.manfenjiayuan.im.bean;
 
-import com.alibaba.fastjson.JSON;
-
 import java.io.Serializable;
 
 /**
@@ -22,9 +20,10 @@ import java.io.Serializable;
 public class PhysicalPoint implements Serializable {
     /**  */
 //    private static final long serialVersionUID = 5413326527502328200L;
-    private Integer cid;    //渠道 编号
+    private Long cid;    //渠道 编号
     private Integer ctype;  // 通信渠道类型 参见MsgChanneltypeConst
-    /**channelPointId,通讯渠道内通讯地址或者说端口，例如:微信openid、个推clientId、
+    /**
+     * channelPointId,通讯渠道内通讯地址或者说端口，例如:微信openid、个推clientId、
      * 满分家园用户号、满分家园业务模块号，如洗衣、快递、手机号、个人QQ号、个人邮箱地址,
      * 若point_type=1,则为渠道内部的组号*/
 	private String cpt;
@@ -51,11 +50,11 @@ public class PhysicalPoint implements Serializable {
 //        this.cpt = pointId;
 //    }
 
-    public Integer getCid() {
+    public Long getCid() {
         return cid;
     }
 
-    public void setCid(Integer cid) {
+    public void setCid(Long cid) {
         this.cid = cid;
     }
 

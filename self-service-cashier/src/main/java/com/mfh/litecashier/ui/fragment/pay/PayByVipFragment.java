@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.vector_user.UserApiImpl;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.account.Human;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;

@@ -180,7 +180,7 @@ public class CanaryActivity extends BaseActivity {
         } else if (id.compareTo(ResMenu.CANARY_MENU_CANARY) == 0) {
             redirect2Canary();
         } else {
-            DialogUtil.showHint("@开发君 失踪了...");
+            DialogUtil.showHint(R.string.coming_soon);
         }
     }
 

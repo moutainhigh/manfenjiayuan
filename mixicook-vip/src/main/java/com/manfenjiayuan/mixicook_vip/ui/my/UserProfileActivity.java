@@ -15,7 +15,7 @@ import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.AvatarSettingItem;
-import com.bingshanguxue.vector_user.UserApiImpl;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
@@ -24,6 +24,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -239,17 +240,8 @@ public class UserProfileActivity extends MultimediaActivity {
     };
 
     private void updateSexDisplay() {
-        switch (MfhLoginService.get().getSex()) {
-            case "0":
-                itemSex.setSubTitle("男");
-                break;
-            case "1":
-                itemSex.setSubTitle("女");
-                break;
-            default:
-                itemSex.setSubTitle("未知");
-                break;
-        }
+                itemSex.setSubTitle(Sex.formatName1(MfhLoginService.get().getSex()));
+
     }
 
 

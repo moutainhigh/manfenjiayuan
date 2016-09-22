@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bingshanguxue.vector_user.CommonUserAccountApi;
+import com.mfh.framework.api.account.CommonUserAccountApi;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;

@@ -20,7 +20,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.MfhUserManager;
-import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -414,7 +414,7 @@ public class AdministratorActivity extends BaseActivity {
         } else if (id.compareTo(ResMenu.ADMIN_MENU_CASHQUOTA) == 0) {
             redirect2CashQuota();
         } else {
-            DialogUtil.showHint("@开发君 失踪了...");
+            DialogUtil.showHint(R.string.coming_soon);
         }
     }
 

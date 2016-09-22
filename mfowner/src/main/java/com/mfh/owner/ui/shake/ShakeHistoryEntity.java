@@ -2,7 +2,7 @@ package com.mfh.owner.ui.shake;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.IStringId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 消息表

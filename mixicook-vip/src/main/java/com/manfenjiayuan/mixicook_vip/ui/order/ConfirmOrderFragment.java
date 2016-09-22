@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.vector_user.UserApiImpl;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.manfenjiayuan.business.bean.NetInfo;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.DateTimePickerDialog;

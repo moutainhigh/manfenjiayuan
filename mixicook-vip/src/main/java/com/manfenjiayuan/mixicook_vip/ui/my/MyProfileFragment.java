@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.vector_uikit.AvatarSettingItem;
-import com.bingshanguxue.vector_user.UserApiImpl;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.comn.net.data.IResponseData;
@@ -21,6 +21,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -321,7 +322,8 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
                         , MfhApplication.getAppContext())
                 {};
 
-                UserApiImpl.uploadUserHeader(MfhLoginService.get().getCurrentGuId(), protraitFile, responseCallback);
+                UserApiImpl.uploadUserHeader(MfhLoginService.get().getCurrentGuId(),
+                        protraitFile, responseCallback);
             } catch (Exception e) {
 
                 ZLogger.e("uploadNewPhoto failed, " + e.toString());
@@ -336,7 +338,7 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
     private void refresh(boolean isAutoReload) {
         avatarItem.setHeaderUrl(MfhLoginService.get().getHeadimage());
         itemNickname.setSubTitle(MfhLoginService.get().getHumanName());
-        itemSex.setSubTitle(MfhLoginService.get().getSex());
+        itemSex.setSubTitle(Sex.formatName1(MfhLoginService.get().getSex()));
     }
 
 

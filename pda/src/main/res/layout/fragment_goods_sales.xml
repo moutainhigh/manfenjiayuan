@@ -4,24 +4,6 @@
                                                  android:layout_height="match_parent"
                                                  android:orientation="vertical">
 
-    <!--<android.support.v4.widget.NestedScrollView-->
-        <!--android:id="@+id/scrollView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/material_white"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical">-->
-
-            <!--&lt;!&ndash;内容区&ndash;&gt;-->
-            <!---->
-
-        <!--</LinearLayout>-->
-    <!--</android.support.v4.widget.NestedScrollView>-->
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

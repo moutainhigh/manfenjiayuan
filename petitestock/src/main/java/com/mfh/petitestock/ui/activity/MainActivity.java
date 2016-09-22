@@ -401,7 +401,7 @@ public class MainActivity extends BaseActivity {
             extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FT_WHOLESALER_GOODSSHELVES);
             ServiceActivity.actionStart(MainActivity.this, extras);
         } else {
-            DialogUtil.showHint("开发君失踪了...");
+            DialogUtil.showHint(R.string.coming_soon);
         }
     }
 

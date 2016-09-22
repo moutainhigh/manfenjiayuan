@@ -2,7 +2,7 @@ package com.mfh.enjoycity.database;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 店铺

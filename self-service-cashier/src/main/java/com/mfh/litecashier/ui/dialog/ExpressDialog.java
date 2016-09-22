@@ -19,7 +19,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.Human;
 
 
 /**

@@ -3,7 +3,7 @@ package com.mfh.enjoycity.database;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.IStringId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 消息表

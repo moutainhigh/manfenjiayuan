@@ -21,6 +21,7 @@ import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -316,17 +317,8 @@ public class UserProfileActivity extends MultimediaActivity {
     }
 
     private void updateSexDisplay(){
-        switch(MfhLoginService.get().getSex()){
-            case "0":
-                btnItems.get(1).setSubTitle("男");
-                break;
-            case "1":
-                btnItems.get(1).setSubTitle("女");
-                break;
-            default:
-                btnItems.get(1).setSubTitle("未知");
-                break;
-        }
+                btnItems.get(1).setSubTitle(Sex.formatName1(MfhLoginService.get().getSex()));
+
     }
 
 

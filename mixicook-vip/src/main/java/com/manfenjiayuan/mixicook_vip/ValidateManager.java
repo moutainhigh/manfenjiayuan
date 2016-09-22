@@ -4,14 +4,14 @@ package com.manfenjiayuan.mixicook_vip;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.vector_user.UserApiImpl;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.impl.MfhApiImpl;
+import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
@@ -196,7 +196,7 @@ public class ValidateManager {
         }
         else {
             ZLogger.df("注册设备中..." + order.toJSONString());
-            MfhApiImpl.posRegisterCreate(order.toJSONString(), responseCallback);
+            PosRegisterApi.create(order.toJSONString(), responseCallback);
         }
     }
 

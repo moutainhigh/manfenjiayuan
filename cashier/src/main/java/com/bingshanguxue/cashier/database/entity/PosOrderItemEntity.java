@@ -4,7 +4,7 @@ import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * POS--销售订单明细

@@ -1,9 +1,5 @@
 package com.manfenjiayuan.cashierdisplay.bean;
 
-import com.mfh.comn.annotations.Table;
-import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.core.MfhEntity;
-
 import java.io.Serializable;
 
 /**

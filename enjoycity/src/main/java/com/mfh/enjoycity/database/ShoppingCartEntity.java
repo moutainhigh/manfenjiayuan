@@ -2,7 +2,7 @@ package com.mfh.enjoycity.database;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.IStringId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 购物车 商品(店铺ID+商品ID == ID)

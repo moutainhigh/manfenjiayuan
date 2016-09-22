@@ -262,12 +262,15 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
                                 }
                             }
                         }
+
+                        onLoadFinished();
                     }
 
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.d("加载商品销量数据失败:" + errMsg);
+                        onLoadFinished();
                     }
                 }, ProductAggDate.class, MfhApplication.getAppContext());
 

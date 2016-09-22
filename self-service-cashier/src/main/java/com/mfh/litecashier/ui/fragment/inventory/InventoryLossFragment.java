@@ -138,7 +138,7 @@ public class InventoryLossFragment extends BaseFragment {
 //        intent.putExtras(extras);
 //        startActivityForResult(intent, Constants.ACTIVITY_REQUEST_CODE_CREATE_STOCK_BATCH);
 
-        DialogUtil.showHint("@开发君@ 失踪了...");
+        DialogUtil.showHint(R.string.coming_soon);
     }
 
     @Override

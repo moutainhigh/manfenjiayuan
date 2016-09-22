@@ -7,7 +7,7 @@ import com.bingshanguxue.cashier.model.PayAmount;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.v2.CashierOrderItemInfo;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 

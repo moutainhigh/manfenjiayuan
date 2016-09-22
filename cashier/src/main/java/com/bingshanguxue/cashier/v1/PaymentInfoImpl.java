@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.v1;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.Human;
 
 /**
  * Created by bingshanguxue on 7/7/16.

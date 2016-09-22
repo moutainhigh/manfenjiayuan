@@ -33,7 +33,7 @@ import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.WebViewDelegate;
 import com.mfh.framework.hybrid.WebViewJavascriptBridge;
 import com.mfh.framework.hybrid.WebViewUtils;
-import com.mfh.framework.login.entity.Subdis;
+import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.api.MfhApi;
 
 import butterknife.Bind;

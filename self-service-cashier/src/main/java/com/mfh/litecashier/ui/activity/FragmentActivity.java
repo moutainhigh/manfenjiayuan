@@ -101,9 +101,9 @@ public class FragmentActivity extends BaseActivity {
             }
             break;
             case FT_STOCK_DETAIL: {
-                StockDetailFragment stockDetailFragment = new StockDetailFragment();
+                StockDetailFragment fragment = new StockDetailFragment();
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, stockDetailFragment).show(stockDetailFragment)
+                        .replace(R.id.fragment_container, fragment)
                         .commit();
             }
             //团购详情页
@@ -116,7 +116,7 @@ public class FragmentActivity extends BaseActivity {
                     fragment = GrouponFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, fragment).show(fragment)
+                        .replace(R.id.fragment_container, fragment)
                         .commit();
             }
             //消息管理器
@@ -129,7 +129,7 @@ public class FragmentActivity extends BaseActivity {
                     fragment = MessageMgrFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, fragment).show(fragment)
+                        .replace(R.id.fragment_container, fragment)
                         .commit();
             }
         }

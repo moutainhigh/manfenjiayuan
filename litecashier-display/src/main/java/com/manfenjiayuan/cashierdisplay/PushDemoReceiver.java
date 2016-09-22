@@ -36,7 +36,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        ZLogger.df(String.format("PushDemoReceive--onReceive, action=%d", bundle.getInt("action")));
+        ZLogger.df(String.format("onReceive, action=%d", bundle.getInt("action")));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA: {
                 // 获取透传（payload）数据
@@ -53,7 +53,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
                 if (clientId != null) {
-                    ZLogger.df(String.format("PushDemoReceive--clientId=%s", clientId));
+                    ZLogger.df(String.format("clientId=%s", clientId));
                     IMConfig.savePushClientId(clientId);
                 }
 
@@ -70,7 +70,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 break;
 
             case PushConsts.GET_SDKONLINESTATE:
-                ZLogger.d(String.format("PushDemoReceive--sdk.online.clientId=%s", IMConfig.getPushClientId()));
+                ZLogger.d(String.format("sdk.online.clientId=%s", IMConfig.getPushClientId()));
                 break;
             case PushConsts.GET_SDKSERVICEPID:
                 // 重新初始化sdk
@@ -87,7 +87,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
      */
     private static void parsePushPayload(Context context, String data) {
         int bizType = PayloadHelper.getJsonMsgType(data);//获取推送的数据类型
-        ZLogger.df(String.format("PushDemoReceive--payload=(%s)%s", bizType, data));
+        ZLogger.df(String.format("payload=(%s)%s", bizType, data));
 
         //小伙伴
         if (IMBizType.ORDER_TRANS_NOTIFY == bizType) {
@@ -117,21 +117,21 @@ public class PushDemoReceiver extends BroadcastReceiver {
         } else if (IMBizType.CUSTOMER_DISPLAY_PAYORDER == bizType){
 //            DialogUtil.showHint(data);
             try {
-                EmbMsg embMsg = EmbMsg.fromSendMessage(JSONObject.parseObject(data), null);
+                EmbMsg embMsg = EmbMsg.parseOjbect(JSONObject.parseObject(data));
                 MsgBean msgBean = JSONObject.parseObject(embMsg.getParam(), MsgBean.class);
-                ZLogger.df(String.format("PushDemoReceive--bizType=(%d)", msgBean.getBizType()));
+                ZLogger.df(String.format("bizType=(%d)", msgBean.getBizType()));
 
                 String body = JSON.toJSONString(msgBean.getBody());
                 if (IMTechType.TEXT.equals(msgBean.getType())) {
                     TextParam textParam = TextParam.fromJson(body);
                     CashierOrderInfoWrapper cashierOrderInfoWrapper = JSON.toJavaObject(JSONObject.parseObject(textParam.getContent()), CashierOrderInfoWrapper.class);
-                    ZLogger.df(String.format("PushDemoReceive--cashierOrderInfo=%s", JSON.toJSONString(cashierOrderInfoWrapper)));
+                    ZLogger.df(String.format("cashierOrderInfo=%s", JSON.toJSONString(cashierOrderInfoWrapper)));
 
                     EventBus.getDefault().post(new CashierOrderEvent(cashierOrderInfoWrapper));
                 }
                 //TODO
                 else {
-                    ZLogger.df(String.format("PushDemoReceive--body=(%s)", body));
+                    ZLogger.df(String.format("body=(%s)", body));
                 }
 
             } catch (Exception e) {

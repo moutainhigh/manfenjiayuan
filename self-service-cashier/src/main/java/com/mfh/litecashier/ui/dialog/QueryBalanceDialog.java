@@ -16,8 +16,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bingshanguxue.vector_user.CommonUserAccountApi;
-import com.bingshanguxue.vector_user.bean.UserAccount;
+import com.mfh.framework.api.account.CommonUserAccountApi;
+import com.mfh.framework.api.account.UserAccount;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;

@@ -10,6 +10,7 @@ import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.PayApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scOrder.ScOrderApi;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -20,6 +21,8 @@ import com.mfh.framework.api.ScApi;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
+
+import static com.mfh.framework.api.scOrder.ScOrderApi.URL_COUNT_SERVICEMFHPARTER;
 
 /**
  * 网络请求
@@ -247,17 +250,7 @@ public class EnjoycityApiProxy {
         NetFactory.getHttp().post(EnjoycityApi.URL_QUERYALL_RECEIVE_ADDRESS, params, responseCallback);
     }
 
-    /**
-     * 新增商城订单
-     * */
-    public static void saveOrder(String order, String items, AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put("order", order);
-        params.put("items", items);
-        params.put("needAmount", "true");
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_SAVE_ORDER, params, responseCallback);
-    }
 
     /**
      * 查询热卖商品
@@ -316,9 +309,6 @@ public class EnjoycityApiProxy {
      *  查询满分小伙伴服务,需要用户登录
      * */
     public static void queryMfhParterInService(){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {
@@ -348,7 +338,7 @@ public class EnjoycityApiProxy {
         {
         };
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_QUERY_MFHPARTER_INSERVICE, params, responseCallback);
+        ScOrderApi.countServiceMfhPartner(responseCallback);
     }
     /**
      *  获取订单的优惠券信息

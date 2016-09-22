@@ -64,7 +64,6 @@
             android:id="@+id/item_ahscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_rs232"
             app:text="爱华电子秤 (ACS-P215)"
             app:position="center"/>
@@ -74,7 +73,6 @@
             android:id="@+id/item_smscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_rs232"
             app:text="寺冈电子秤 (DS781)"
             app:position="center"/>
@@ -103,7 +101,6 @@
             android:id="@+id/item_greentags_webservice"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="@dimen/spacing_double"
             app:src="@mipmap/ic_tag"
             app:text="绿泰电子价签"
             app:position="center"/>
@@ -123,7 +120,6 @@
             android:id="@+id/item_momory"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="@dimen/sectioin_divider_height"
             app:src="@mipmap/ic_memory"
             app:position="center"
             app:subText="吃饱了别忘记减肥噢"
@@ -145,11 +141,20 @@
             android:id="@+id/item_version"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="@dimen/sectioin_divider_height"
             app:src="@mipmap/ic_upgrade"
             app:position="bottom"
             app:subText=""
             app:text="应用版本"/>
+
+        <!--语音播报-->
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
+            android:id="@+id/toggle_superPermission"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:text="超级权限"
+            app:src="@mipmap/ic_voice"
+            app:subText="常在河边走,哪有不湿手"
+            app:position="center"/>
 
     </LinearLayout>
 

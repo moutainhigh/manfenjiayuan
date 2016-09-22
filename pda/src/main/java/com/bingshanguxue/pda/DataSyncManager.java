@@ -45,7 +45,7 @@ public class DataSyncManager {
         EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class,
                 MfhApplication.getAppContext());
         msgService.sendText(MfhLoginService.get().getCurrentGuId(),
-                MfhLoginService.get().getCurrentGuId(),
+                MfhLoginService.get().getCurrentGuId(), null, null,
                 IMBizType.TENANT_SKU_UPDATE, "update sku", processor);
     }
 }

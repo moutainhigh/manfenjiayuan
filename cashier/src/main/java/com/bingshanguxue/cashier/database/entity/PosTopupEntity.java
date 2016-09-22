@@ -4,9 +4,8 @@ import com.bingshanguxue.cashier.PayStatus;
 import com.bingshanguxue.cashier.SyncStatus;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * POS充值记录

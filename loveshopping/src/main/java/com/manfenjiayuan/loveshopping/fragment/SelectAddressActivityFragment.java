@@ -20,7 +20,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.compound.CustomSearchView;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
-import com.mfh.framework.login.entity.Subdis;
+import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.mvp.MvpFragment;
 
 import java.util.List;

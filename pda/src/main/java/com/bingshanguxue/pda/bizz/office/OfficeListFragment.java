@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
-import com.mfh.framework.login.entity.Office;
+import com.mfh.framework.api.account.Office;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

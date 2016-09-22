@@ -417,17 +417,8 @@ public class UserProfileActivity extends BaseActivity {
     }
 
     private void updateSexDisplay(){
-        switch(MfhLoginService.get().getSex()){
-            case "0":
-                btnItems.get(1).setDetailText("男");
-                break;
-            case "1":
-                btnItems.get(1).setDetailText("女");
-                break;
-            default:
-                btnItems.get(1).setDetailText("未知");
-                break;
-        }
+                btnItems.get(1).setDetailText("Sex.formatName1(MfhLoginService.get().getSex())");
+
     }
 
 

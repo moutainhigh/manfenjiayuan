@@ -29,51 +29,6 @@ public class DestInfo implements java.io.Serializable {
     private Long guid = null;//逻辑端点信息
     private PhysicalPoint pp = null;//目标物理端点信息
 
-//    /**
-//	 * fastjson 反序列化是需要默认无参构造函数
-//	 */
-//	public DestInfo() {
-//		super();
-//	}
-//
-//	/**
-//     * 构造函数
-//     * @param sessionId 会话编号
-//     */
-//    public DestInfo(Long sessionId) {
-//        super();
-//        this.sid = sessionId;
-//    }
-//
-//    /**
-//     * 构造函数
-//     * @param toGuid 目标端编号
-//     * @param sessionId 空
-//     */
-//    public DestInfo(Long toGuid, Long sessionId) {
-//        super();
-//        this.guid = toGuid;
-//    }
-//
-//    /**
-//     * 构造函数
-//     * @param toPhysicalPoint 物理端点信息
-//     */
-//    public DestInfo(PhysicalPoint toPhysicalPoint) {
-//        super();
-//        this.pp = toPhysicalPoint;
-//    }
-//
-//    /**
-//     * 构造函数
-//     * @param channelId 物理渠道编号
-//     * @param pointId 物理端点号
-//     */
-//    public DestInfo(Integer channelId, String pointId, Integer channelType) {
-//        super();
-//        this.pp = new PhysicalPoint(channelId, channelType, pointId);
-//    }
-
     public void setSid(Long sid) {
         this.sid = sid;
     }
@@ -98,14 +53,16 @@ public class DestInfo implements java.io.Serializable {
         this.pp = pp;
     }
 
-    public static DestInfo create(String channePointId, Long guid) {
+    public static DestInfo create(Long channelId, String channePointId, Long guid) {
         DestInfo destInfo = new DestInfo();
         destInfo.setGuid(guid);
         if (!StringUtils.isEmpty(channePointId)) {
-            PhysicalPoint fromPhysicalPoint = new PhysicalPoint();
-            fromPhysicalPoint.setCtype(IMChannelType.APP);
-            fromPhysicalPoint.setCpt(channePointId);
-            destInfo.setPp(fromPhysicalPoint);
+            PhysicalPoint physicalPoint = new PhysicalPoint();
+            physicalPoint.setCtype(IMChannelType.APP);
+            physicalPoint.setCpt(channePointId);
+            physicalPoint.setCid(channelId);
+
+            destInfo.setPp(physicalPoint);
         }
 
         return destInfo;

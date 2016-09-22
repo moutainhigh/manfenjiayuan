@@ -183,7 +183,10 @@ public static final int *;
 -keep public class com.tencent.bugly.**{*;}
 #bugly end
 
+#gexin start
+-dontwarn com.igexin.**
 -keep class com.igexin.**{*;}
+#gexin end
 
 #java.lang.NoSuchMethodError: android.util.Xml.asAttributeSet
 -keep class org.xmlpull.v1.** { *; }

@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.ProfileView;
-import com.bingshanguxue.vector_user.UserApiImpl;
-import com.bingshanguxue.vector_user.bean.MyProfile;
+import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.account.MyProfile;
 import com.manfenjiayuan.business.ui.HybridActivity;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AppContext;

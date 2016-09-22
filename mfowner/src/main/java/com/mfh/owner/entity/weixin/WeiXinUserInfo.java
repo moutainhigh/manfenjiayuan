@@ -1,7 +1,7 @@
 package com.mfh.owner.entity.weixin;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 import java.util.List;
 

@@ -8,14 +8,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.components.HandoverFragment;
-import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
+import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
+import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
 import com.mfh.litecashier.ui.fragment.pay.PayHistoryFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
@@ -29,15 +31,17 @@ import butterknife.Bind;
  */
 public class SimpleDialogActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "serviceType";
-    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x02;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x03;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x07;//选择收货单
-    public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x09;//采购商品详情
-    public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x10;//选择批发商&门店
-    public static final int FRAGMENT_TYPE_DAILY_SETTLE              = 0x20;//日结
-    public static final int FRAGMENT_TYPE_HANDOVER                  = 0x21;//交接班
-    public static final int FT_CANARY_CASH_QUOTA = 0x22;//现金授权
-    public static final int FT_PAY_HISTORY = 0x23;//支付记录
+    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x01;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x02;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x03;//选择收货单
+    public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x04;//采购商品详情
+    public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x05;//选择批发商&门店
+    public static final int FRAGMENT_TYPE_DAILY_SETTLE              = 0x06;//日结
+    public static final int FRAGMENT_TYPE_HANDOVER                  = 0x07;//交接班
+    public static final int FT_CANARY_CASH_QUOTA = 0x08;//现金授权
+    public static final int FT_PAY_HISTORY = 0x09;//支付记录
+    public static final int FT_GOODS_SALESHISTORY = 0x10;//商品销量记录
+
 
     private int serviceType = 0;
 
@@ -235,6 +239,26 @@ public class SimpleDialogActivity extends BaseActivity {
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                     .replace(R.id.fragment_container, fragment)
                     .commit();
+        }
+        else if (serviceType == FT_GOODS_SALESHISTORY)  {
+            ZLogger.d("准备跳转到销量页面");
+            try{
+                GoodsSalesFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = GoodsSalesFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = GoodsSalesFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            catch (Exception e){
+                ZLogger.e(e.toString());
+                e.printStackTrace();
+            }
         }
     }
 }

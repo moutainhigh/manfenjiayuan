@@ -223,12 +223,6 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
         onLoadStart();
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-//        if (entityList == null){
-//            entityList = new ArrayList<>();
-//        }
-//        else{
-//            entityList.clear();
-//        }
 
         load(mPageInfo);
         mPageInfo.setPageNo(1);

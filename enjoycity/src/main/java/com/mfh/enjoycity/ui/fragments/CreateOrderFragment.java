@@ -41,6 +41,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.api.impl.PayApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scOrder.ScOrderApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -219,7 +220,7 @@ public class CreateOrderFragment extends BaseFragment {
             }
         }
 
-        EnjoycityApiProxy.saveOrder(order.toJSONString(), items.toJSONString(), saveOrderResponseCallback);
+        ScOrderApi.saveOrder(order.toJSONString(), items.toJSONString(), saveOrderResponseCallback);
     }
 
 

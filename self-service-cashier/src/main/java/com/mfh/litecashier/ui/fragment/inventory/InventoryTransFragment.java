@@ -14,7 +14,7 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.Human;
 import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;

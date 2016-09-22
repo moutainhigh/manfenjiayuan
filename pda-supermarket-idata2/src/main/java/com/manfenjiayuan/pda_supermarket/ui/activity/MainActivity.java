@@ -37,7 +37,7 @@ import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
-import com.mfh.framework.login.entity.Office;
+import com.mfh.framework.api.account.Office;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -420,7 +420,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_PRINT_PRICETAGS);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         }  else {
-            DialogUtil.showHint("开发君失踪了...");
+            DialogUtil.showHint(R.string.coming_soon);
         }
     }
 

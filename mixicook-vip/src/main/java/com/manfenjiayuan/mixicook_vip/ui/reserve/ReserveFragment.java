@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.framework.api.category.CategoryQueryInfo;
 import com.mfh.framework.api.category.CategoryOption;
+import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
@@ -303,7 +304,7 @@ public class ReserveFragment extends BaseProgressFragment
                 , AppContext.getAppContext()) {
         };
 
-        CateApiImpl.listPublicCategory(option.getCode(), queryRsCallBack);
+        ScCategoryInfoApi.getCodeValue(option.getCode(), queryRsCallBack);
     }
 
     /**

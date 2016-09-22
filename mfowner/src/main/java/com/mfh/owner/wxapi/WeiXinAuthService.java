@@ -12,7 +12,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.AsyncTaskCallBack;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.login.entity.UserMixInfo;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.MfhApi;

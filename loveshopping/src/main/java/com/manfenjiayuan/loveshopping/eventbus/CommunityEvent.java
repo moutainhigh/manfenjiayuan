@@ -1,6 +1,6 @@
 package com.manfenjiayuan.loveshopping.eventbus;
 
-import com.mfh.framework.login.entity.Subdis;
+import com.mfh.framework.api.account.Subdis;
 
 /**
  * 事务

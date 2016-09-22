@@ -5,7 +5,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.login.entity.Subdis;
+import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;

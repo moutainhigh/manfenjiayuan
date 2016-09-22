@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
-import com.mfh.framework.login.entity.Office;
+import com.mfh.framework.api.account.Office;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;

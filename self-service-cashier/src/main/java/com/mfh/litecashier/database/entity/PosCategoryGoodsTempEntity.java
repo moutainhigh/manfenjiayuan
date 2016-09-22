@@ -2,7 +2,7 @@ package com.mfh.litecashier.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  *

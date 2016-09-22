@@ -18,6 +18,9 @@ import com.mfh.enjoycity.ui.settings.AccountSettingActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.account.UserApi;
+import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
@@ -198,7 +201,7 @@ public class ProfileActivity extends BaseActivity {
     /**
      * 修改性别
      */
-    private void updateSex(final String sex) {
+    private void updateSex(final Integer sex) {
         if (!NetWorkUtil.isConnect(this)) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
@@ -236,7 +239,7 @@ public class ProfileActivity extends BaseActivity {
         JSONObject object = new JSONObject();
         object.put("id", MfhLoginService.get().getCurrentGuId());
         object.put("sex", sex);
-        EnjoycityApiProxy.updateProfile(object.toJSONString(), responseCallback);
+        UserApiImpl.updateProfile(object.toJSONString(), responseCallback);
     }
 
     private final static int MSG_UPDATE_HEADER_SUCCESS = 1;
@@ -247,25 +250,12 @@ public class ProfileActivity extends BaseActivity {
                 case MSG_UPDATE_SEX_SUCCESS:
                     DialogUtil.showHint(getString(R.string.toast_change_sex_success));
 
-                    updateSexDisplay();
+                    btnItems.get(2).setSubTitle(Sex.formatName1(MfhLoginService.get().getSex()));
+
                     break;
             }
             super.handleMessage(msg);
         }
     };
-
-    private void updateSexDisplay() {
-        switch (MfhLoginService.get().getSex()) {
-            case "0":
-                btnItems.get(2).setSubTitle("先生");
-                break;
-            case "1":
-                btnItems.get(2).setSubTitle("女士");
-                break;
-            default:
-                btnItems.get(2).setSubTitle("");
-                break;
-        }
-    }
 
 }

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
