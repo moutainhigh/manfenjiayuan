@@ -8,6 +8,8 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.scOrder.ScOrder;
+import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -155,7 +157,7 @@ public class PrintManagerImpl extends PrintManager {
                 esc.addText(line.toString());
 
 //                assert nameTemp != null;
-                if (!StringUtils.isEmpty(nameTemp)){
+                if (!StringUtils.isEmpty(nameTemp)) {
                     nameTemp = nameTemp.substring(nameLine.length(), nameTemp.length()).trim();
                 }
 //            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
@@ -818,6 +820,110 @@ public class PrintManagerImpl extends PrintManager {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
                 subscriber.onNext(makeEsc(orderItems));
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        GPrinterAgent.print(escCommand);
+                    }
+                });
+    }
+
+    /**
+     * 打印商城订单
+     */
+    private static EscCommand makeScOrderEsc(ScOrder scOrder) {
+        if (scOrder == null) {
+            return null;
+        }
+        EscCommand esc = new EscCommand();
+        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
+        //设置打印居中
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
+//        //设置为倍高倍宽
+//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+
+        esc.addPrintAndLineFeed();//进纸一行
+        //设置打印左对齐
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
+        esc.addText(String.format("顾客姓名:%s \n", scOrder.getBuyerName()));
+        esc.addText(String.format("下单网点:%s \n", scOrder.getOfficeName()));
+        esc.addText(String.format("下单时间：%s \n", TimeUtil.format(scOrder.getCreatedDate(),
+                TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("买手姓名:%s \n", scOrder.getServiceHumanName()));
+        esc.addText(String.format("买手电话:%s \n", scOrder.getServiceMobile()));
+        esc.addPrintAndLineFeed();//进纸一行
+        esc.addText(String.format("收件人:%s \n", scOrder.getReceiveName()));
+        esc.addText(String.format("收件人电话:%s \n", scOrder.getReceivePhone()));
+        esc.addText(String.format("收件人地址:%s \n", scOrder.getAddress()));
+        esc.addText(String.format("物流费:%s \n", MUtils.formatDouble(scOrder.getTransFee(), "")));
+//        esc.addPrintAndLineFeed();//进纸一行
+        esc.addText(String.format("订单金额:%s \n", MUtils.formatDouble(scOrder.getAmount(), "")));
+
+        /**打印 商品明细*/
+        esc.addText("品名               单位   数量\n");
+        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+        //设置为倍高倍宽
+        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
+                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+        List<ScOrderItem> items = scOrder.getItems();
+        if (items != null && items.size() > 0){
+            esc.addText("--------------------------------\n");//32个
+            for (ScOrderItem item : items) {
+                makeOrderItem1(esc, item.getProductName(), item.getUnitName(),
+                        MUtils.formatDouble(item.getBcount(), ""));
+            }
+        }
+
+//        /**
+//         * 打印合计信息
+//         * */
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+        esc.addText("--------------------------------\n");//32个
+//        esc.addText(String.format("金额:%.2f\n", invSendOrder.getGoodsFee()));
+//        esc.addText(String.format("优惠:%.2f\n", orderEntity.getDiscountAmount() + orderEntity.getCouponDiscountAmount()));
+////        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
+//        esc.addText(String.format("合计:%.2f\n", CashierHelper.getPayableAmount(orderEntity)));
+//        esc.addText(String.format("付款:%.2f\n", orderEntity.getPaidMoney()));
+//        esc.addText(String.format("找零:%.2f\n", Math.abs(orderEntity.getCharge())));
+
+        /**
+         * 打印 结束语
+         * */
+//        esc.addPrintAndLineFeed();
+        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
+        esc.addText("让生活更美好\n");
+//        esc.addPrintAndLineFeed();
+        esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
+
+        return esc;
+    }
+
+
+    /**
+     * 打印商城订单
+     */
+    public static void printScOrder(final ScOrder scOrder) {
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                subscriber.onNext(makeScOrderEsc(scOrder));
                 subscriber.onCompleted();
             }
         })

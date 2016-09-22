@@ -34,7 +34,7 @@ import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
-import com.bingshanguxue.vector_user.bean.Human;
+import com.mfh.framework.api.account.Human;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
@@ -45,6 +45,7 @@ import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
+import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -67,9 +68,11 @@ import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.com.PrintManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
+import com.mfh.litecashier.presenter.ScOrderPresenter;
 import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
@@ -91,6 +94,7 @@ import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
 import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
 import com.mfh.litecashier.ui.view.ICashierView;
+import com.mfh.litecashier.ui.view.IScOrderView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
@@ -115,7 +119,8 @@ import rx.schedulers.Schedulers;
  * 首页
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class MainActivity extends CashierActivity implements ICashierView {
+public class MainActivity extends CashierActivity
+        implements ICashierView, IScOrderView {
 
     @Bind(R.id.slideMenu)
     RecyclerView menuRecyclerView;
@@ -174,6 +179,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
     private Double orderDiscount = 100D;
 
     private CashierPresenter cashierPresenter;
+    private ScOrderPresenter mScOrderPresenter;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -198,6 +204,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         super.onCreate(savedInstanceState);
 
         cashierPresenter = new CashierPresenter(this);
+        mScOrderPresenter = new ScOrderPresenter(this);
 
         //hide soft input
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -372,7 +379,7 @@ public class MainActivity extends CashierActivity implements ICashierView {
         }  else if (id.compareTo(ResMenu.CASHIER_MENU_DISCOUNT) == 0) {
             changeOrderDiscount();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_PRINT_ORDER) == 0){
-            print2HomeOrder();
+            printScOrder();
         } else {
             DialogUtil.showHint("@开发君 失踪了...");
         }
@@ -1369,20 +1376,19 @@ public class MainActivity extends CashierActivity implements ICashierView {
     }
 
     /**
-     * 打印到价订单
+     * 打印商城订单
      * */
-    private void print2HomeOrder(){
+    private void printScOrder(){
         if (barcodeInputDialog == null) {
             barcodeInputDialog = new NumberInputDialog(this);
             barcodeInputDialog.setCancelable(true);
             barcodeInputDialog.setCanceledOnTouchOutside(true);
         }
-        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE,"订单", "订单条码", "打印订单",
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "商城订单", "订单条码", "打印订单",
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
-//                        inlvBarcode.setInputString(value);
-                        DialogUtil.showHint("查询并打印订单");
+                        mScOrderPresenter.getByCode(value);
                     }
 
                     @Override
@@ -2044,5 +2050,22 @@ public class MainActivity extends CashierActivity implements ICashierView {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_plugin, fragment).show(fragment)
                 .commit();
+    }
+
+    @Override
+    public void onIScOrderViewProcess() {
+//        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
+    }
+
+    @Override
+    public void onIScOrderViewError(String errorMsg) {
+        DialogUtil.showHint(errorMsg);
+    }
+
+    @Override
+    public void onIScOrderViewNext(ScOrder data) {
+        if (data != null){
+            PrintManagerImpl.printScOrder(data);
+        }
     }
 }

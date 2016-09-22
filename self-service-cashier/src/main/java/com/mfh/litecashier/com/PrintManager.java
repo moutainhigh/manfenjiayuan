@@ -125,6 +125,44 @@ public class PrintManager {
     }
 
 
+
+    /**
+     * 订单明细模版1
+     * */
+    public static EscCommand makeOrderItem1(EscCommand rawEsc, String name, String unit,
+                                            String bcount) {
+        EscCommand esc = rawEsc;
+        if (esc == null) {
+            esc = new EscCommand();
+        }
+
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+
+        //最多显示17*0.6=10.2个汉字
+        if (getLength(name) > 21) {
+            esc.addText(name);//显示名称
+            esc.addText("\n");
+            //另起一行显示单价/数量/小计，居右显示
+            esc.addSelectJustification(EscCommand.JUSTIFICATION.RIGHT);//设置打印左对齐
+            esc.addText(String.format("%s%s", formatShort(unit, 5, BLANK_GRAVITY.RIGHT),
+                    formatShort(bcount, 5, BLANK_GRAVITY.LEFT)));
+        } else {
+            //在名称后面显示单价/数量/小计
+            String printText = String.format("%s%s%s",
+                    formatShort(name, 21, BLANK_GRAVITY.RIGHT),
+                    formatShort(unit, 5, BLANK_GRAVITY.RIGHT),
+                    formatShort(bcount, 5, BLANK_GRAVITY.LEFT));
+            esc.addText(printText);
+
+//            ZLogger.d("printText:" + printText);
+        }
+        esc.addText("\n");
+
+        return esc;
+    }
+
+
+
     /**
      * 打印生鲜预定订单
      * */
@@ -172,7 +210,7 @@ public class PrintManager {
         esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
         for (FreshScheduleGoods entity : goodsList) {
-            makeSheduleLine(esc, String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
+            makeOrderItem1(esc, String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
                     entity.getBuyUnit(), MUtils.formatDouble(entity.getAskTotalCount(), ""));
         }
 
@@ -201,37 +239,6 @@ public class PrintManager {
         return esc;
     }
 
-    private static EscCommand makeSheduleLine(EscCommand rawEsc, String name, String unit,
-                                              String bcount) {
-        EscCommand esc = rawEsc;
-        if (esc == null) {
-            esc = new EscCommand();
-        }
-
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
-
-        //最多显示17*0.6=10.2个汉字
-        if (getLength(name) > 21) {
-            esc.addText(name);//显示名称
-            esc.addText("\n");
-            //另起一行显示单价/数量/小计，居右显示
-            esc.addSelectJustification(EscCommand.JUSTIFICATION.RIGHT);//设置打印左对齐
-            esc.addText(String.format("%s%s", formatShort(unit, 5, BLANK_GRAVITY.RIGHT),
-                    formatShort(bcount, 5, BLANK_GRAVITY.LEFT)));
-        } else {
-            //在名称后面显示单价/数量/小计
-            String printText = String.format("%s%s%s",
-                    formatShort(name, 21, BLANK_GRAVITY.RIGHT),
-                    formatShort(unit, 5, BLANK_GRAVITY.RIGHT),
-                    formatShort(bcount, 5, BLANK_GRAVITY.LEFT));
-            esc.addText(printText);
-
-//            ZLogger.d("printText:" + printText);
-        }
-        esc.addText("\n");
-
-        return esc;
-    }
 
     /**
      * 打印生鲜预定订单
@@ -677,6 +684,7 @@ public class PrintManager {
                     }
                 });
     }
+
 
 
 
