@@ -65,7 +65,6 @@ public class PosRegisterMode {
         order.put("channelPointId", channelPointId);
         order.put("netId", netId);
 
-        ZLogger.df("register terminal id," + order.toJSONString());
         PosRegisterApi.create(order.toJSONString(), responseCallback);
     }
 

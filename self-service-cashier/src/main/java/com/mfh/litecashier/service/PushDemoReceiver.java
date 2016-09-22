@@ -216,5 +216,8 @@ public class PushDemoReceiver extends BroadcastReceiver {
 
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
         }
+        else if (IMBizType.REMOTE_CONTROL_CMD == bizType){
+            CloudSyncManager.get().remoteControl();
+        }
     }
 }

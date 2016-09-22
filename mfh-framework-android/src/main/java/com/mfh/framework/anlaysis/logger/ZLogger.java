@@ -65,7 +65,7 @@ public class ZLogger {
 
     private int logLevel = VERBOSE;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     public static String CRASH_FOLDER_PATH = "ZLogger";//可以在外面修改
 
 
