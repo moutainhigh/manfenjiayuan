@@ -14,14 +14,7 @@ public class MfhApi {
     public static String WXPAY_CHANNEL_ID = NetFactory.getWxPayChannelId();
     public static String ALIPAY_CHANNEL_ID = NetFactory.getAliPayChannelId();
 
-    /**
-     * <b>设备注册接口</b><br>
-     * 传递唯一序列号如网卡序列号，后台返回一个整形编号<br>
-     * /posRegister/create?jsonStr={"serialNo":"2222"}
-     * */
-    public static final String URL_POS_REGISTER_CREATE = URL_BASE_SERVER + "/posRegister/create";
-    public static final String URL_POS_REGISTER_UPDATE = URL_BASE_SERVER + "/posRegister/update";
-    
+
     //网络电话
     public static String URL_NET_PHONE = URL_BASE_SERVER.replace(":8080/pmc", "") + "/msgcore/embYtx/getYuninfoByGuid";
     /**登录*/

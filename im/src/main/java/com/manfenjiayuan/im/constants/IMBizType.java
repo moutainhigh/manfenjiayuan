@@ -28,6 +28,7 @@ public class IMBizType {
     public final static int LOCK_POS_CLIENT_NOTIFY      = 1103;//现金超过授权额度，要求锁定pos机
     public final static int PRE_LOCK_POS_CLIENT_NOTIFY  = 1104;//现金授权额度将要用完，即将锁定pos机
     public final static int CUSTOMER_DISPLAY_PAYORDER   = 1105;//收银机推送订单到客显设备
+    public final static int REMOTE_CONTROL_CMD   = 1106;//远程控制指令
 
     public static String name(int value) {
         switch (value) {

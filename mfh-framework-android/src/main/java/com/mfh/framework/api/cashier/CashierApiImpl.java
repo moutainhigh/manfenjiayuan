@@ -104,19 +104,6 @@ public class CashierApiImpl extends CashierApi {
         AfinalFactory.postDefault(URL_FIND_SUBDISCODES_BY_NETID, params, responseCallback);
     }
 
-    /**
-     * 发货
-     * http://devnew.manfenjiayuan.cn/pmc/scOrder/sendOrder?JSESSIONID=9d01cbf0-059b-4ee9-9391-1612e9276165&orderId=557612
-     * 1:orderId参数不能为空!
-     */
-    public static void sendOrder(Long orderId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("orderId", orderId == null ? "" : String.valueOf(orderId));
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_SCORDER_SENDORDER, params, responseCallback);
-    }
-
-
     public static void refundAlipayOrder(AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
 //        params.put("netId", MfhLoginService.get().getCurOfficeId() == null ? "" : String.valueOf(MfhLoginService.get().getCurOfficeId()));

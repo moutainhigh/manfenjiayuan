@@ -2,10 +2,16 @@ package com.mfh.framework.network;
 
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.configure.UConfigHelper;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.configure.UConfigHelper;
 
 import org.apache.http.cookie.Cookie;
+
+import static com.mfh.comn.config.UConfig.CONFIG_COMMON;
+import static com.mfh.comn.config.UConfig.CONFIG_PARAM_IMAGE_UPLOAD;
+import static com.mfh.comn.config.UConfig.CONFIG_PARAM_SERVERURL;
+import static com.mfh.comn.config.UConfig.CONFIG_PARAM_UPDATEURL;
+import static com.mfh.comn.config.UConfig.CONFIG_URL_MESSAGE;
 
 /**
  * 服务器网络连接工厂
@@ -21,9 +27,6 @@ public class NetFactory {
     public static final String CHARSET_UTF8 = "utf-8";
     public static final int TIMEOUT = 30000;
 
-
-    public final static String URL_REGISTER_MESSAGE = "app.message.url";
-
 //    private static FinalHttp fh = null;//fh可以被多线程同时使用
     public static Cookie cookie;
     
@@ -36,8 +39,7 @@ public class NetFactory {
 //        return getHttp(MfhLoginService.get().getCurrentSessionId());
 //    }
 //
-//    public static FinalHttp getHttp(boolean bAttachCookie) {
-//        if (bAttachCookie){
+//    public static FinalHttp getHttp(boolean bAttachCookUConfig
 //            return getHttp(MfhLoginService.get().getCurrentSessionId());
 //        }else{
 //            return getHttp(null);
@@ -99,16 +101,16 @@ public class NetFactory {
      */
     public static String getServerUrl() {
         if(BizConfig.RELEASE){
-            return getServerUrl(UConfig.CONFIG_COMMON, UConfig.CONFIG_PARAM_SERVERURL);
+            return getServerUrl(CONFIG_COMMON, CONFIG_PARAM_SERVERURL);
         }else{
-            return getServerUrl(UConfig.CONFIG_COMMON, "dev." + UConfig.CONFIG_PARAM_SERVERURL);
+            return getServerUrl(CONFIG_COMMON, "dev." + CONFIG_PARAM_SERVERURL);
         }
     }
     public static String getServerUrl(String key) {
         if(BizConfig.RELEASE){
-            return getServerUrl(UConfig.CONFIG_COMMON, key);
+            return getServerUrl(CONFIG_COMMON, key);
         }else{
-            return getServerUrl(UConfig.CONFIG_COMMON, "dev." + key);
+            return getServerUrl(CONFIG_COMMON, "dev." + key);
         }
     }
 
@@ -118,17 +120,17 @@ public class NetFactory {
      */
     public static String getUpdateServerUrl() {
         if(BizConfig.RELEASE){
-            return getServerUrl(UConfig.CONFIG_COMMON, UConfig.CONFIG_PARAM_UPDATEURL);
-        }else{
-            return getServerUrl(UConfig.CONFIG_COMMON, "dev." + UConfig.CONFIG_PARAM_UPDATEURL);
+            return getServerUrl(CONFIG_COMMON, UConfig.CONFIG_PARAM_UPDATEURL);
+        } else{
+            return getServerUrl(CONFIG_COMMON, "dev." + CONFIG_PARAM_UPDATEURL);
         }
     }
 
     public static String getRegisterMessageUrl(){
         if(BizConfig.RELEASE){
-            return NetFactory.getServerUrl(UConfig.CONFIG_COMMON, URL_REGISTER_MESSAGE);
+            return NetFactory.getServerUrl(CONFIG_COMMON, CONFIG_URL_MESSAGE);
         }else{
-            return NetFactory.getServerUrl(UConfig.CONFIG_COMMON, "dev." + URL_REGISTER_MESSAGE);
+            return NetFactory.getServerUrl(CONFIG_COMMON, "dev." + CONFIG_URL_MESSAGE);
         }
     }
 
@@ -137,14 +139,14 @@ public class NetFactory {
      * @return
      */
     public static String getImageUploadUrl() {
-        return getServerUrl(UConfig.CONFIG_COMMON, UConfig.CONFIG_PARAM_IMAGE_UPLOAD);
+        return getServerUrl(CONFIG_COMMON, CONFIG_PARAM_IMAGE_UPLOAD);
     }
 
     /**
      *  获取渠道编号
      *  */
     public static String getChannelId(){
-        String channelId = UConfigHelper.getInstance().getDomainString(UConfig.CONFIG_COMMON, "channel.id");
+        String channelId = UConfigHelper.getInstance().getDomainString(CONFIG_COMMON, "channel.id");
 //        if (StringUtils.isEmpty(channelId)){
 //            channelId = String.valueOf(MfhApi.PARAM_VALUE_CHANNEL_ID_DEF);
 //        }
@@ -155,7 +157,7 @@ public class NetFactory {
      *  获取微信支付渠道编号
      *  */
     public static String getWxPayChannelId(){
-        String channelId = UConfigHelper.getInstance().getDomainString(UConfig.CONFIG_COMMON, "wxpay_chId");
+        String channelId = UConfigHelper.getInstance().getDomainString(CONFIG_COMMON, "wxpay_chId");
 //        if (StringUtils.isEmpty(channelId)){
 //            channelId = String.valueOf(MfhApi.PARAM_VALUE_CHANNEL_ID_DEF);
 //        }
@@ -165,7 +167,7 @@ public class NetFactory {
      *  获取支付宝支付渠道编号
      *  */
     public static String getAliPayChannelId(){
-        String channelId = UConfigHelper.getInstance().getDomainString(UConfig.CONFIG_COMMON, "alipay_chId");
+        String channelId = UConfigHelper.getInstance().getDomainString(CONFIG_COMMON, "alipay_chId");
 //        if (StringUtils.isEmpty(channelId)){
 //            channelId = String.valueOf(MfhApi.PARAM_VALUE_CHANNEL_ID_DEF);
 //        }

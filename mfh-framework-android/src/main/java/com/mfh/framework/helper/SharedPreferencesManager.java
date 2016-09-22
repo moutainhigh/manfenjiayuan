@@ -18,6 +18,8 @@ public class SharedPreferencesManager {
     public static final String PREF_KEY_APP_UNIQUE_ID = "PREF_KEY_COMN_APP_UNIQUEID";//App唯一标识
     public static final String PREF_KEY_APP_USERAGENT = "PREF_KEY_COMN_APP_USERAGENT";//UserAgent
     public static final String PREF_KEY_APP_TERMINAL_ID = "PREF_KEY_COMN_APP_TERMINAL_ID";//App唯一终端编号
+    public static final String PK_B_SUPER_PERMISSION_GRANTED = "pk_b_SUPER_PERMISSION_GRANTED";//获取超级权限
+
 
     //出厂配置
     public static final String PREF_NAME_APP_BORN = "PREF_NAME_APP_BORN_v1";// 应用出厂配置

@@ -175,16 +175,14 @@ public class IMFactory {
 	 * @param guid
 	 * @return MsgParameter
 	 */
-	public static MsgParameter textMessageParameter(Long guid, Integer bizType, String content,
-													Long toGuid){
-//		ZLogger.d(String.format("createMsgParam, cpid=%s, guid=%d,content=%s, sessionId=%d",
-//				cpid, guid, content, sessionId));
-		String channelPointId = IMConfig.getPushClientId();
+	public static MsgParameter textMessageParameter(Integer bizType, String content,
+													Long guid, String fromChannelPointId,
+													Long toGuid, String toChannelPointId){
 		MsgParameter msgParameter = new MsgParameter();
 //		ZLogger.d("msgParameter: " + JSON.toJSONString(msgParameter));
 
-		msgParameter.setFrom(FromInfo.create(channelPointId, guid));
-		msgParameter.setTo(DestInfo.create(null, toGuid));
+		msgParameter.setFrom(FromInfo.create(fromChannelPointId, guid));
+		msgParameter.setTo(DestInfo.create(toChannelPointId, toGuid));
 
 		MsgBean msgBean = new MsgBean();
 		msgBean.setBizType(bizType);

@@ -99,15 +99,14 @@ public class DestInfo implements java.io.Serializable {
     }
 
     public static DestInfo create(String channePointId, Long guid) {
+        DestInfo destInfo = new DestInfo();
+        destInfo.setGuid(guid);
         if (!StringUtils.isEmpty(channePointId)) {
             PhysicalPoint fromPhysicalPoint = new PhysicalPoint();
             fromPhysicalPoint.setCtype(IMChannelType.APP);
             fromPhysicalPoint.setCpt(channePointId);
+            destInfo.setPp(fromPhysicalPoint);
         }
-
-        DestInfo destInfo = new DestInfo();
-        destInfo.setGuid(guid);
-//        destInfo.setPp(fromPhysicalPoint);
 
         return destInfo;
     }
@@ -118,6 +117,4 @@ public class DestInfo implements java.io.Serializable {
 
         return destInfo;
     }
-
-
 }

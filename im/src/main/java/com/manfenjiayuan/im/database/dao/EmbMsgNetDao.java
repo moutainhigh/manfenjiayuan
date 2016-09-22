@@ -7,7 +7,7 @@ import com.manfenjiayuan.im.bean.BizMsgParamWithSession;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
 import com.mfh.framework.network.AfinalFactory;
@@ -51,7 +51,6 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
      * @param processor
      */
     public void sendMessage(AjaxParams params, NetProcessor.ComnProcessor<EmbMsg> processor) {
-        final String picUrl = params.getNormalValue("picUrl");
         NetCallBack.SaveCallBackJson call = new NetCallBack.SaveCallBackJson<EmbMsg> (processor, EmbMsg.class){
             @Override
             protected EmbMsg changeJsonToBean(JSONObject json) {
@@ -59,6 +58,7 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
             }
         };
         //使用post，因为消息有中文
+        final String picUrl = params.getNormalValue("picUrl");
         params.remove("picUrl");
         params.put(MfhApi.PARAM_KEY_CHANNEL_ID, String.valueOf(MfhApi.CHANNEL_ID));
         params.put(MfhApi.PARAM_KEY_QUEUE_NAME, MfhApi.PARAM_VALUE_QUEUE_NAME_DEF);

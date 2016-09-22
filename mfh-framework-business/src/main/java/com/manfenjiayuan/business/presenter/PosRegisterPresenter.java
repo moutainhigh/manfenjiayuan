@@ -1,9 +1,9 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.manfenjiayuan.business.mode.PosRegisterMode;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.posRegister.PosRegisterMode;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;

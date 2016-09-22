@@ -9,7 +9,7 @@
  * 修改日期: 2014-3-12
  * 修改内容: 
  */
-package com.mfh.framework.core;
+package com.mfh.framework.api.abs;
 
 import java.util.Date;
 

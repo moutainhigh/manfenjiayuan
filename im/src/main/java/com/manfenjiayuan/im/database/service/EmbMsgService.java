@@ -281,14 +281,16 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
      * @param sessionId
      * @param wxParam
      */
-    public void sendText(Long fromGuid, Long toGuid, Integer bizType, String content,
+    public void sendText(Long fromGuid, Long toGuid, String toChannelPointId,
+                         Integer bizType, String content,
                                     NetProcessor.ComnProcessor processor)  {
         AjaxParams params = new AjaxParams();
 
 //        ZLogger.d("wxParam: " + JSON.toJSONString(wxParam));
 //        String jsonStr = String.valueOf();
-        MsgParameter msgParameter = IMFactory.textMessageParameter(fromGuid,
-                bizType, content, toGuid);
+        MsgParameter msgParameter = IMFactory.textMessageParameter(bizType, content,
+                fromGuid, IMConfig.getPushClientId(),
+                toGuid, toChannelPointId);
         params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);

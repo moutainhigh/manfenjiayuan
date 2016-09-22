@@ -13,7 +13,7 @@ package com.manfenjiayuan.im.bean;
 
 import com.alibaba.fastjson.JSON;
 import com.mfh.comn.bean.IObject;
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 import java.io.Serializable;
 

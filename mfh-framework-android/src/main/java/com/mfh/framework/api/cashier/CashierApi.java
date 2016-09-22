@@ -75,12 +75,6 @@ public class CashierApi {
 
 
     /**
-     * 当前登录人员即发货人员，自己进行发货 /scOrder/sendOrder?orderId=
-     */
-    public static final String URL_SCORDER_SENDORDER = MfhApi.URL_BASE_SERVER + "/scOrder/sendOrder";
-
-
-    /**
      * pos端提交客户编号和订单基础信息获取可用卡券
      * /pmcstock/findConpousByOrderInfo?humanId=..&jsonStr={productId:[1,2,3], officeId:.., orderAmount:...}
      */

@@ -1,7 +1,7 @@
 package com.mfh.framework.api.account;
 
 
-import com.mfh.framework.core.MfhEntity;
+import com.mfh.framework.api.abs.MfhEntity;
 
 import java.util.Date;
 

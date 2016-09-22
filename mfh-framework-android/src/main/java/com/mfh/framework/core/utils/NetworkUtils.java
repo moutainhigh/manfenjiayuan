@@ -25,18 +25,27 @@ public class NetworkUtils {
      * need permissoin{@link android.Manifest.permission#ACCESS_NETWORK_STATE}
      */
     public static boolean isConnect(Context context) {
-        if (context != null) {
-            ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (conManager != null) {
-                try {
-                    NetworkInfo info = conManager.getActiveNetworkInfo();
-                    if (info != null) {
-                        return info.isAvailable();
+        if (context == null){
+            return false;
+        }
+
+        PackageManager packageManager = context.getPackageManager();
+        //java.lang.SecurityException: ConnectivityService: Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE.
+        if (packageManager.checkPermission(Manifest.permission.ACCESS_NETWORK_STATE,
+                context.getPackageName()) != PackageManager.PERMISSION_GRANTED) {
+            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+        }
+
+        ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (conManager != null) {
+            try {
+                NetworkInfo info = conManager.getActiveNetworkInfo();
+                if (info != null) {
+                    return info.isAvailable();
 //                return e.isConnected();
-                    }
-                } catch (Exception e) {
-                    ZLogger.e("检查网络是否连接:" + e.toString());
                 }
+            } catch (Exception e) {
+                ZLogger.ef("检查网络是否连接:" + e.toString());
             }
         }
 
@@ -118,6 +127,7 @@ public class NetworkUtils {
 
         try {
             PackageManager packageManager = context.getPackageManager();
+            //java.lang.SecurityException: ConnectivityService: Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE.
             if (packageManager.checkPermission(Manifest.permission.ACCESS_NETWORK_STATE,
                     context.getPackageName()) != PackageManager.PERMISSION_GRANTED) {
                 arrayOfString[0] = "Unknown";

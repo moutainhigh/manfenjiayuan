@@ -32,7 +32,9 @@ public interface UConfig extends IConfiguration{
     String CONFIG_PARAM_SERVERURL = "app.server.url";
     String CONFIG_PARAM_UPDATEURL = "app.update.url";//升级地址
     String CONFIG_PARAM_IMAGE_UPLOAD = "app.image.update.url";
-    
+    String CONFIG_URL_MESSAGE = "app.message.url";//消息
+
+
     String CONFIG_PARAM_MAXCODENUM = "app.comn.maxCodeNum";
     String CONFIG_PARAM_ISLOCALMAP = "app.comn.localMap";//是否本地map
 

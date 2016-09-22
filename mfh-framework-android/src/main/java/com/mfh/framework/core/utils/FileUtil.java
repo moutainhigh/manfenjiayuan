@@ -68,7 +68,8 @@ public class FileUtil {
 	}
 
 	public static File getSaveFile(String folderPath, String fileNmae) {
-		File file = new File(getSavePath(folderPath) + File.separator + fileNmae);
+		String pathName = getSavePath(folderPath) + File.separator + fileNmae;
+		File file = new File(pathName);
 
 		try {
 			file.createNewFile();
