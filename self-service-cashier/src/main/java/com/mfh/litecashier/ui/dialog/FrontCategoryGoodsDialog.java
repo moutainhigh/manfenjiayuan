@@ -203,6 +203,17 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
                 }
             }
         });
+        rootView.findViewById(R.id.button_sellout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogUtil.showHint(R.string.coming_soon);
+//                dismiss();
+//
+//                if (mListener != null){
+//                    mListener.on();
+//                }
+            }
+        });
 
         setContent(rootView, 0);
     }

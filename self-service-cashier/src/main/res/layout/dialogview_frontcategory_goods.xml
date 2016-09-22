@@ -82,6 +82,19 @@
             android:textSize="16sp"
             android:visibility="visible" />
 
+        <Button
+            android:id="@+id/button_sellout"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/btn_corner_red"
+            android:gravity="center"
+            android:text="售罄"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:textColor="@color/material_white"
+            android:textSize="16sp"
+            android:visibility="visible" />
+
     </LinearLayout>
 
 
