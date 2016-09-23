@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button_clientlog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/spacing_normal"
+        android:text="日志列表"
+        android:textColor="@color/material_black"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tv_pos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/spacing_normal"
+        android:text="选择设备"
+        android:layout_marginTop="@dimen/spacing_micro"
+        android:textColor="@color/material_black"
+        android:textSize="18sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="108dp"
+            android:layout_height="match_parent"
+            android:gravity="end|center_vertical"
+            android:text="远程指令:"
+            android:textColor="@color/black_35"
+            android:textSize="16sp"/>
+
+        <!--style="@style/SpinnerMfhTheme"-->
+        <com.bingshanguxue.vector_uikit.OptionalLabel
+            android:id="@+id/label_remoteControl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/tv_date"
+            app:mLabelView_inputHint=""
+            app:mLabelView_inputTextColor="@color/black"
+            app:mLabelView_inputTextColorHint="@color/black_35"
+            app:mLabelView_inputTextSize="12sp"
+            app:mLabelView_rightImageButtonEnabled="false"/>
+
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_menu_send"/>
+
+</LinearLayout>

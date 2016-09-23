@@ -1,0 +1,156 @@
+apply plugin: 'com.android.application'
+
+def releaseTime() {
+    return new Date().format("MMdd", TimeZone.getTimeZone("UTC"))
+}
+
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    signingConfigs {
+        debug {
+        }
+        release {
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.bingshanguxue.almigod"
+        minSdkVersion 19
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0.1"
+
+
+        multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+
+        manifestPlaceholders = [
+                UMENG_APP_KEY   : "56652e4467e58e75f5001144", // 友盟 app key
+                GETUI_APP_ID    : "cUNBGjRI3R88RlvWhLXBU6", // 个推 app id
+                GETUI_APP_KEY   : "kljp80eDTp5P8r2nLPCYN", // 个推 app key
+                GETUI_APP_SECRET: "MvILANyTIp9nO6fa2zEZ8", // 个推 app secret
+                PACKAGE_NAME    : applicationId // apk 包名
+        ]
+    }
+    /**
+     * The buildTypes {} block is where you can configure multiple build types.
+     * By default, the build system defines two build types: debug and release. The
+     * debug build type is not explicitly shown in the default build configuration,
+     * but it includes debugging tools and is signed with the debug key. The release
+     * build type applies Proguard settings and is not signed by default.
+     */
+    buildTypes {
+        debug {
+//            buildConfigField "boolean", "LOG_DEBUG", "true"//是否输出LOG信息
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        /**
+         * By default, Android Studio configures the release build type to enable code
+         * shrinking, using minifyEnabled, and specifies the Proguard settings file.
+         */
+        release {
+//            buildConfigField "boolean", "LOG_DEBUG", "false"//是否输出LOG信息
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName
+                if (variant.buildType.name == "release") {
+                    // 输出apk名称为mfh_cashier_v1.0.1_101915_wandoujia.apk
+                    fileName = "almigod" +
+                            "_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}" +
+                            "_${variant.productFlavors[0].name}.apk"
+                } else {
+                    fileName = "almigod" +
+                            "_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}_beta" +
+                            "_${variant.productFlavors[0].name}.apk"
+                }
+
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
+        }
+    }
+
+    /**
+     * The productFlavors {} block is where you can configure multiple product
+     * flavors. This allows you to create different versions of your app that can
+     * override defaultConfig {} with their own settings. Product flavors are
+     * optional, and the build system does not create them by default. This example
+     * creates a free and paid product flavor. Each product flavor then specifies
+     * its own application ID, so that they can exist on the Google Play Store, or
+     * an Android device, simultaneously.
+     */
+    productFlavors {
+        bingshanguxue {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "bingshanguxue"]
+        }
+    }
+
+    File propFile = file('signing.properties');
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+        if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+//    compile 'com.android.support:appcompat-v7:24.2.1'
+//    compile 'com.android.support:design:24.2.1'
+    testCompile 'junit:junit:4.12'
+
+    compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["cardview-v7"]
+    debugCompile rootProject.ext.dependencies["support-v4"]
+    compile project(':mfh-framework-all')
+    compile project(':mfh-framework-android')
+    compile project(':mfh-framework-business')
+    compile project(path: ':vector_uikit')
+    compile rootProject.ext.dependencies["rxjava"]
+    compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile rootProject.ext.dependencies["rxandroid"]
+    compile 'com.getui:sdk:2.9.0.0'
+}
