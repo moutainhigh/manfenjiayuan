@@ -10,6 +10,7 @@ public class RemoteControl implements Serializable{
     private Long id;//编号
     private String name;
     private String description;//描述
+    private String data;
 
     public RemoteControl(Long id, String name, String description) {
         this.id = id;
@@ -39,5 +40,13 @@ public class RemoteControl implements Serializable{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

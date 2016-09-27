@@ -133,12 +133,19 @@ public class RemoteControlListFragment extends BaseListFragment<CompanyInfo> {
         companyAdapter.setOnAdapterLitener(new RemoteControlAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //TODO,跳转至详情页
-                Intent data = new Intent();
-                data.putExtra("remoteControl", companyAdapter.getEntity(position));
+                RemoteControl remoteControl = companyAdapter.getEntity(position);
+                if (remoteControl != null){
+                    Intent data = new Intent();
+                    data.putExtra("remoteControl", companyAdapter.getEntity(position));
 
-                getActivity().setResult(Activity.RESULT_OK, data);
-                getActivity().finish();
+                    getActivity().setResult(Activity.RESULT_OK, data);
+                    getActivity().finish();
+                }
+                else{
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
+
             }
 
         });
@@ -169,6 +176,7 @@ public class RemoteControlListFragment extends BaseListFragment<CompanyInfo> {
         List<RemoteControl> remoteControls = new ArrayList<>();
         remoteControls.add(new RemoteControl(1L, "上传日志", "上传系统日志信息"));
         remoteControls.add(new RemoteControl(2L, "软件更新", "检查软件版本更新"));
+        remoteControls.add(new RemoteControl(3L, "远程打印", "远程打印票据"));
         companyAdapter.setEntityList(remoteControls);
 
     }

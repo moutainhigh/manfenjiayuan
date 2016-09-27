@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.almigod.FragmentActivity;
 import com.bingshanguxue.almigod.R;
+import com.bingshanguxue.almigod.printer.GPrinterAgent;
 import com.bingshanguxue.vector_uikit.OptionalLabel;
+import com.gprinter.command.EscCommand;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
@@ -23,6 +26,10 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Vector;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -138,6 +145,7 @@ public class RemoteControlFragment extends BaseFragment {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("remoteId", mRemoteControl.getId());
         jsonObject.put("remoteInfo", mRemoteControl.getName());
+        jsonObject.put("data", mRemoteControl.getData());
         msgService.sendText(MfhLoginService.get().getCurrentGuId(),
                 null, mPosRegister.getChannelId(), mPosRegister.getChannelPointId(),
                 IMBizType.REMOTE_CONTROL_CMD, jsonObject.toJSONString(), processor);
@@ -157,6 +165,17 @@ public class RemoteControlFragment extends BaseFragment {
         if (mRemoteControl != null){
             labelRemotecontrol.setLabelText(String.format("%d-%s",
                     mRemoteControl.getId(), mRemoteControl.getName()));
+
+            if (mRemoteControl.getId().equals(3L)){
+                EscCommand escCommand = GPrinterAgent.makeTestEsc();
+                if (escCommand != null){
+                    Vector<Byte> datas = escCommand.getCommand();//发送数据
+                    Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+                    byte[] bytes = ArrayUtils.toPrimitive(Bytes);
+                    String str = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    mRemoteControl.setData(str);
+                }
+            }
         }
         else{
             labelRemotecontrol.setLabelText("选择指令");
