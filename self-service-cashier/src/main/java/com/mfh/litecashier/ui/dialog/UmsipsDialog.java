@@ -25,6 +25,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.pay.umsips.TransType;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
@@ -248,6 +249,16 @@ public class UmsipsDialog extends CommonDialog {
 
         mPortSpinner.setSelection(aspnDevices.getPosition(umsipsPort));
         mBaudrateSpinner.setSelection(adapter.getPosition(SerialManager.getUmsipsBaudrate()));
+
+        if (SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
+                SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false)){
+            mPortSpinner.setEnabled(true);
+            mBaudrateSpinner.setEnabled(true);
+        }
+        else {
+            mPortSpinner.setEnabled(false);
+            mBaudrateSpinner.setEnabled(false);
+        }
     }
 
     /**

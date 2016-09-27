@@ -414,6 +414,12 @@ public abstract class CashierActivity extends BaseActivity {
                 String str = Base64.encodeToString(raw, Base64.DEFAULT);
                 sendEscCommand(str);
             }
+        }
+        else if (event.getType() == SerialPortEvent.GPRINTER_SEND_DATA_V3) {
+            if (comPrint != null){
+                OpenComPort(comPrint);
+                sendEscCommand(event.getCmd());
+            }
         } else if (event.getType() == SerialPortEvent.UPDATE_PORT_GPRINTER) {
             CloseComPort(comPrint);
 

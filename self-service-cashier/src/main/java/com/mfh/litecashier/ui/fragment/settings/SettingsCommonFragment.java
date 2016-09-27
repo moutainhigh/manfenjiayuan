@@ -24,10 +24,11 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
@@ -80,6 +81,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     ToggleSettingItem toggleSmscaleFtp;
     @Bind(R.id.item_greentags_webservice)
     ToggleSettingItem toggleGreenTags;
+    @Bind(R.id.toggle_superPermission)
+    ToggleSettingItem toggleSuperPermission;
 
 
     private SetPortDialog setPortDialog = null;
@@ -193,7 +196,19 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
             }
         });
 
-        refresh();
+        toggleSuperPermission.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                boolean isSuperPermissionGranted = SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
+                        SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false);
+                if (isSuperPermissionGranted != isChecked) {
+                    SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
+                            SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, isChecked);
+                    reload();
+                }
+            }
+        });
+        reload();
     }
 
     @Override
@@ -244,7 +259,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                         SharedPreferencesHelper.setSyncProductsCursor("");
                         SharedPreferencesHelper.setPosSkuLastUpdate("");
 
-                        DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
+                        DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -292,9 +307,40 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         GlobalInstance.getInstance().registerPos(getActivity());
     }
 
+
+    private static long exitTime = 0;
+    private static int clickVersionTimes = 0;
     @OnClick(R.id.item_version)
     public void checkUpdate() {
-        Beta.checkUpgrade();
+        if (SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
+                SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false)){
+            if ((System.currentTimeMillis() - exitTime) > 3000) {
+                Beta.checkUpgrade();
+                exitTime = System.currentTimeMillis();
+            }
+        }
+        else{
+            if ((System.currentTimeMillis() - exitTime) > 3000) {
+                clickVersionTimes = 1;
+                exitTime = System.currentTimeMillis();
+                Beta.checkUpgrade();
+            }
+            else{
+                clickVersionTimes++;
+            }
+
+            if (clickVersionTimes == 8){
+                clickVersionTimes = 0;
+
+                DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
+                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
+                        SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, true);
+                reload();
+            }
+            else{
+                DialogUtil.showHint(String.format("再点 %d 次即可获得超级权限!", 8-clickVersionTimes));
+            }
+        }
     }
 
 //    @OnClick(R.id.toggleItem_leddisplay)
@@ -337,7 +383,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                 SerialManager.setPrinterPort(port);
                 GPrinterAgent.setPort(port);
                 EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
-                refresh();
+                togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                        SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate()));
             }
         });
         if (!setPortDialog.isShowing()) {
@@ -359,7 +406,9 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     public void onSetPort(String port, String baudrate) {
                         AHScaleAgent.setPort(port);
                         EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
-                        refresh();
+                        toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                                AHScaleAgent.getPort(),
+                                AHScaleAgent.getBaudrate()));
                     }
                 });
         if (!setPortDialog.isShowing()) {
@@ -380,7 +429,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     public void onSetPort(String port, String baudrate) {
                         SMScaleAgent.setPort(port);
                         EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SMSCALE, ""));
-                        refresh();
+                        toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+                                SMScaleAgent.getPort(), SMScaleAgent.getBaudrate()));
                     }
                 });
         if (!setPortDialog.isShowing()) {
@@ -421,7 +471,8 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         mFileZillaDialog.init("FileZila 参数设置", new FileZillaDialog.DialogViewClickListener() {
             @Override
             public void onSubmit() {
-                refresh();
+                toggleSmscaleFtp.setSubTitle(String.format("%s:%d",
+                        SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
             }
         });
         if (!mFileZillaDialog.isShowing()) {
@@ -439,7 +490,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         mGreenTagsSettingsDialog.init(new GreenTagsSettingsDialog.DialogViewClickListener() {
             @Override
             public void onSubmit() {
-                refresh();
+                toggleGreenTags.setSubTitle(GreenTagsApi.URL);
             }
         });
         if (!mGreenTagsSettingsDialog.isShowing()) {
@@ -447,8 +498,9 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         }
     }
 
-    private void refresh() {
+    private void reload() {
         try {
+
             itemPosGoods.setSubTitle(SharedPreferencesHelper.getSyncProductsCursor());
 //            //米西生鲜
 //            String cursorKey1 = String.format("%s_%d_%s",
@@ -456,8 +508,7 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 //                    135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
 //            itemMixiFresh.setSubTitle(SharedPreferencesHelper.getText(cursorKey1, ""));
 
-            String terminalId = SharedPreferencesManager.getTerminalId();
-            terminalSettingsItem.setSubTitle(terminalId);
+            terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
 
             AppInfo appInfo = AnalysisAgent.getAppInfo(CashierApp.getAppContext());
             if (appInfo != null) {
@@ -496,6 +547,22 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
                     SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
                             SharedPreferencesManager.PK_B_TTS_ENABLED, true));
 
+            boolean isSuperPermissionGranted = SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
+                    SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false);
+            if (isSuperPermissionGranted){
+                togglePrinter.setVisibility(View.VISIBLE);
+                toggleAhscale.setVisibility(View.VISIBLE);
+                toggleSmscale.setVisibility(View.VISIBLE);
+                toggleSuperPermission.setVisibility(View.VISIBLE);
+            }
+            else{
+                togglePrinter.setVisibility(View.GONE);
+                toggleAhscale.setVisibility(View.GONE);
+                toggleSmscale.setVisibility(View.GONE);
+                toggleSuperPermission.setVisibility(View.GONE);
+            }
+            toggleSuperPermission.setChecked(isSuperPermissionGranted);
+
             //        ActivityManager am =  (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
             //        ACache cache = ACache.get(CashierApp.getAppContext(), Constants.CACHE_NAME);
 //        sbMem.append(String.format("系统总内存:%d\n", memoryInfo.totalMem));
@@ -522,13 +589,18 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     @Override
     public void onRegisterPlatSuccess(String terminalId) {
         SharedPreferencesManager.setTerminalId(terminalId);
-        refresh();
+        terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
         DialogUtil.showHint("注册成功");
     }
 
     @Override
     public void onPlatUpdate() {
-        refresh();
+        terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
+    }
+
+    @OnClick(R.id.button_test)
+    public void test(){
+        PrintManagerImpl.printTest();
     }
 
 }
