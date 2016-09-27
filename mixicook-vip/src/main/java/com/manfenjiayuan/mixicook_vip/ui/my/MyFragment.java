@@ -33,7 +33,7 @@ import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.MultiLayerLabel;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;

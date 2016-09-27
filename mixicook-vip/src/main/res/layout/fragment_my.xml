@@ -84,14 +84,14 @@
                 android:id="@+id/ll_second"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:divider="@drawable/divider_vertical"
+                android:divider="@drawable/divider_vertical_line"
                 android:dividerPadding="@dimen/spacing_normal"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_micro"
                 android:showDividers="middle">
 
-                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/item_balance"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -99,7 +99,7 @@
                     app:bottomText="余额"
                     app:topText="￥ 0.00"/>
 
-                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/item_redpacket"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -107,7 +107,7 @@
                     app:bottomText="红包"
                     app:topText="￥ 0.00"/>
 
-                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/item_score"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

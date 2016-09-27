@@ -152,10 +152,10 @@ public class UserProfileActivity extends MultimediaActivity {
                     changeSexDialog.dismiss();
                     switch (id) {
                         case R.id.tv_male:
-                            updateSex("0");
+                            updateSex(Sex.MALE);
                             break;
                         case R.id.tv_female:
-                            updateSex("1");
+                            updateSex(Sex.FEMALE);
                             break;
                         default:
                             break;
@@ -177,7 +177,7 @@ public class UserProfileActivity extends MultimediaActivity {
     /**
      * 修改性别
      */
-    private void updateSex(final String sex) {
+    private void updateSex(final Integer sex) {
         if (!NetworkUtils.isConnect(this)) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
