@@ -3,6 +3,7 @@ package com.manfenjiayuan.pda_supermarket.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
+import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.database.entity.ShelveEntity;

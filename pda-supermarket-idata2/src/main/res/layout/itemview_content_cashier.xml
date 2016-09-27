@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              android:layout_height="72dp"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:baselineAligned="false"
+              android:layout_width="match_parent">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2.5">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="商品"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <!--成交价-->
+    <LinearLayout
+        android:id="@+id/ll_finalPrice"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_finalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableEnd="@mipmap/ic_marker_edit"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="成交价"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_quantity"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableEnd="@mipmap/ic_marker_edit"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="数量"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="价格"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -27,7 +27,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.activity.PrimaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
-import com.manfenjiayuan.pda_supermarket.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;

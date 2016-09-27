@@ -8,6 +8,7 @@ import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.database.logic.CashierShopcartService;
 import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
@@ -67,8 +68,9 @@ public class SplashActivity extends InitActivity {
             SharedPreferencesManager.setAppFirstStart(false);
         }
 
-        AppHelper.clearOldPosOrder(7);
-        ZLogger.deleteOldFiles(7);
+
+        CashierShopcartService.getInstance().clear();//购物车－收银
+        AppHelper.clearRedunantData(false);
 
         onInitializedCompleted();
     }

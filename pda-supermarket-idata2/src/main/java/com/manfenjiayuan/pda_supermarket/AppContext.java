@@ -4,7 +4,7 @@ package com.manfenjiayuan.pda_supermarket;
 import android.os.Environment;
 
 import com.manfenjiayuan.im.IMClient;
-import com.manfenjiayuan.pda_supermarket.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;

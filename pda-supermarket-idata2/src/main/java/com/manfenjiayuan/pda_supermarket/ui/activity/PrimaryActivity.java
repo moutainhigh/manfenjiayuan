@@ -13,6 +13,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.PackageFragment;
 import com.bingshanguxue.pda.bizz.goods.ScGoodsSkuFragment;
+import com.manfenjiayuan.pda_supermarket.ui.fragment.cashier.CashierFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.invconvert.InvConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.fragment.CreateInvIoOrderFragment;
@@ -47,6 +48,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_OFFICE_LIST = 0x24;//网店租户列表
     public static final int FT_SHELVES_LIST = 0x25;//盘点区域
     public static final int FT_STORE_IN = 0x26;//商品建档
+    public static final int FT_CASHIER = 0x27;//收银
 
 
     /**
@@ -293,6 +295,19 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = ScSkuGoodsStoreInFragment.newInstance(intent.getExtras());
             }else{
                 fragment = ScSkuGoodsStoreInFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+//                    .add(R.id.fragment_container, goodsShelvesHistoryFragment).show(goodsShelvesHistoryFragment)
+                    .commit();
+        }
+        else if(fragmentType == FT_CASHIER){
+            CashierFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null){
+                fragment = CashierFragment.newInstance(intent.getExtras());
+            }else{
+                fragment = CashierFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <!--支付金额-->
+    <com.bingshanguxue.vector_uikit.widget.EditLabelView
+        android:id="@+id/label_paidmoney"
+        style="@style/mfh_editlabelview"
+        android:layout_width="400dp"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/spacing_double"
+        app:editInputType="numberDecimal"
+        app:editTextHint="请输入收取金额"
+        app:editTextSize="18sp"
+        app:startText="收取金额"
+        app:startTextWidth="90dp"
+        app:startTextColor="@color/black_70"
+        app:startTextSize="18sp"/>
+
+    <LinearLayout
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_double"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="找零金额"
+            android:textColor="@color/black_70"
+            android:gravity="end|center_vertical"
+            android:textSize="18sp"/>
+
+        <com.bingshanguxue.vector_uikit.FontFitTextView
+            android:id="@+id/tv_charge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:paddingStart="@dimen/spacing_normal"
+            android:text=""
+            android:textColor="@color/material_black"
+            android:textSize="64sp"/>
+    </LinearLayout>
+
+</LinearLayout>

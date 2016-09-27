@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/mfhtheme_maskPrimary"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
+
+    <include layout="@layout/appbar"/>
+
+    <!--应收金额-->
+    <include
+        android:id="@+id/view_pay_brief"
+        layout="@layout/include_cashier_pay_header_2"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="0dp"
+        android:background="#D2D2D2"/>
+
+    <!--商品金额-->
+    <LinearLayout
+        android:id="@+id/ll_orderInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:baselineAligned="false"
+        android:divider="@drawable/divider_vertical_line_primary"
+        android:dividerPadding="12dp"
+        android:padding="12dp"
+        android:showDividers="middle">
+        <!--商品原价／档案价格汇总-->
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+            android:id="@+id/labelTotalAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bottomText="商品原价"
+            app:bottomTextColor="@color/black_70"
+            app:bottomTextSize="12sp"
+            app:topText="0.00"
+            app:topTextColor="@color/material_black"
+            app:topTextSize="26sp"/>
+
+        <!--调整金额-->
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+            android:id="@+id/labelAdjustAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bottomText="调整金额"
+            app:bottomTextColor="@color/black_70"
+            app:bottomTextSize="12sp"
+            app:topText="0.00"
+            app:topTextColor="@color/mfh_colorPrimary"
+            app:topTextSize="26sp"/>
+
+    </LinearLayout>
+
+    <!--支付-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        android:divider="@drawable/divider_horizontal_line_primary"
+        android:orientation="vertical"
+        android:showDividers="middle">
+        <!--导航-->
+        <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
+            android:id="@+id/tabstrip_pay"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:allowWidthFull="true"
+            app:slidingBlock="@drawable/slidingblock_white_greenline"/>
+        <!--内容区-->
+        <com.mfh.framework.uikit.widget.CustomViewPager
+            android:id="@+id/tab_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</LinearLayout>
+

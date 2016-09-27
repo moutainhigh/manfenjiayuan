@@ -9,7 +9,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,25 +23,32 @@ import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
+import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
+import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
+import com.manfenjiayuan.pda_supermarket.service.DataSyncManagerImpl;
+import com.manfenjiayuan.pda_supermarket.service.TimeTaskManager;
+import com.manfenjiayuan.pda_supermarket.service.UploadSyncManager;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Office;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
-import com.mfh.framework.api.account.Office;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.tencent.bugly.beta.Beta;
 
 import java.util.ArrayList;
@@ -66,7 +72,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     private GridLayoutManager mRLayoutManager;
     private HomeAdapter menuAdapter;
 
-    private PosRegisterPresenter mPosRegisterPresenter;
+
+    boolean isWaitForExit = false;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -137,8 +144,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         EventBus.getDefault().register(this);
 
-        mPosRegisterPresenter = new PosRegisterPresenter(this);
-
         if (!BizConfig.RELEASE) {
             DialogUtil.showHint("您正在使用的是测试版本，如需切换到正式版本请联系服务商。");
         }
@@ -151,6 +156,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         Beta.checkUpgrade(false, false);
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
+
+        TimeTaskManager.getInstance().start();
     }
 
     @Override
@@ -225,26 +232,12 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-    /**
-     * 实现再按一次退出提醒
-     */
-    private long exitTime = 0;
-
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            if ((System.currentTimeMillis() - exitTime) > 3000) {
-                DialogUtil.showHint("再按一次将退出程序");
-                exitTime = System.currentTimeMillis();
-            } else {
-                finish();
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+//        super.onBackPressed();
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
+        isWaitForExit = true;
+        UploadSyncManager.getInstance().sync();
     }
 
     private void refreshToolbar() {
@@ -313,6 +306,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         List<HomeMenu> menus = new ArrayList<>();
 
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_CASHIER,
+                "收银", R.mipmap.ic_cashier));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_GOODS,
                 "商品", R.mipmap.ic_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STORE_IN,
@@ -409,17 +404,22 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_IN);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }  else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }  else if (id.compareTo(HomeMenu.OPTION_ID_PRINT_TAGS) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_PRINT_TAGS) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_PRINT_PRICETAGS);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        }  else {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_CASHIER) == 0) {
+            Bundle extras = new Bundle();
+//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CASHIER);
+            PrimaryActivity.actionStart(MainActivity.this, extras);
+        } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
     }
@@ -431,15 +431,15 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         Office office = null;
         List<Office> offices = MfhLoginService.get().getOffices();
         if (offices != null && offices.size() > 0) {
-            for (Office office1 : offices){
+            for (Office office1 : offices) {
                 ZLogger.d(String.format("%d,%d", office1.getCode(), MfhLoginService.get().getCurOfficeId()));
-                if (ObjectsCompact.equals(office1.getCode(), MfhLoginService.get().getCurOfficeId())){
+                if (ObjectsCompact.equals(office1.getCode(), MfhLoginService.get().getCurOfficeId())) {
                     office = office1;
                     break;
                 }
             }
 
-            if (office == null){
+            if (office == null) {
                 office = offices.get(0);
             }
         }
@@ -511,8 +511,56 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
                 Beta.checkUpgrade(false, false);
+
+                DataSyncManagerImpl.get().sync();
             }
             break;
+        }
+    }
+
+    public void onEventMainThread(AffairEvent event) {
+        int eventId = event.getAffairId();
+        Bundle bundle = event.getArgs();
+        ZLogger.d(String.format("AffairEvent(%d)", eventId));
+        if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
+            ZLogger.d("SKU更新未读消息个数为：" + count);
+            if (count > 1) {
+                DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+            }
+        }
+    }
+
+    /**
+     * 在主线程接收CashierEvent事件，必须是public void
+     */
+    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
+        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
+//            btnSync.startSync();
+        } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+            hideProgressDialog();
+//            btnSync.stopSync();
+            //同步数据结束后开始同步订单
+            UploadSyncManager.getInstance().sync();
+        }
+    }
+
+    /**
+     * 上传数据到云端
+     */
+    public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
+        ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
+        if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
+            if (isWaitForExit) {
+                isWaitForExit = false;
+                AppHelper.closeApp();
+            }
+        } else if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+            if (isWaitForExit) {
+                isWaitForExit = false;
+                AppHelper.closeApp();
+            }
         }
     }
 
