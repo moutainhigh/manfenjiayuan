@@ -10,7 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,12 +32,12 @@ import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Office;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
-import com.mfh.framework.api.account.Office;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -73,6 +72,11 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             intent.putExtras(extras);
         }
         context.startActivity(intent);
+    }
+
+    @Override
+    protected boolean isDoubleClickExitEnabled() {
+        return true;
     }
 
     @Override
@@ -228,28 +232,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    /**
-     * 实现再按一次退出提醒
-     */
-    private long exitTime = 0;
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK
-                && event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            if ((System.currentTimeMillis() - exitTime) > 3000) {
-                DialogUtil.showHint("再按一次将退出程序");
-                exitTime = System.currentTimeMillis();
-            } else {
-                finish();
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     private void refreshToolbar() {

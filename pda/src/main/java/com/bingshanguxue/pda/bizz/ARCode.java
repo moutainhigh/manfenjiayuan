@@ -19,6 +19,8 @@ public class ARCode {
     public static final int ARC_INV_COMPROVIDER_LIST = 0x09;//批发商供应商列表
     public static final int ARC_INVFINDORDER_INSPECT = 0x11;//拣货单
     public static final int ARC_INSPECT_PRODUCTSKU = 0x12;//平台商品档案
+    public static final int ARC_CASHIER = 0x13;//收银
+
 
 
 }

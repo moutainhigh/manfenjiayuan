@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.widget.ScanBar;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
@@ -33,16 +34,19 @@ import java.util.List;
 public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
         implements IInvCompanyInfoView {
 
-//    @Bind(R.id.toolbar)
+    //    @Bind(R.id.toolbar)
     Toolbar mToolbar;
-//    @Bind(R.id.goods_list)
+
+    //    @Bind(R.id.scanBar)
+    public ScanBar mScanBar;
+    //    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private InvCompanyAdapter companyAdapter;
 
-//    @Bind(R.id.empty_view)
+    //    @Bind(R.id.empty_view)
     View emptyView;
-//    @Bind(R.id.animProgress)
+    //    @Bind(R.id.animProgress)
     ProgressBar progressBar;
 
 
@@ -59,7 +63,7 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_template_goods_list;
+        return R.layout.fragment_invcompany_list;
     }
 
     @Override
@@ -75,6 +79,7 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
         super.initViews(rootView);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
         mRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.goods_list);
         emptyView = rootView.findViewById(R.id.empty_view);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
@@ -104,6 +109,17 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
                     }
                 });
 
+        mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                reload();
+            }
+
+            @Override
+            public void onAction1Click(String text) {
+                reload();
+            }
+        });
         initRecyclerView();
 
         reload();
@@ -202,7 +218,7 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        mInvCompanyPresenter.list(mPageInfo, null);
+        mInvCompanyPresenter.list(mPageInfo, mScanBar.getInputText());
         mPageInfo.setPageNo(1);
     }
 
@@ -225,7 +241,7 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            mInvCompanyPresenter.list(mPageInfo, null);
+            mInvCompanyPresenter.list(mPageInfo, mScanBar.getInputText());
         } else {
             ZLogger.d("加载采购订单，已经是最后一页。");
             onLoadFinished();

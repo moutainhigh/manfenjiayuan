@@ -70,8 +70,7 @@ public class SplashActivity extends InitActivity {
             SharedPreferencesManager.setAppFirstStart(false);
         }
 
-        AppHelper.clearOldPosOrder(15);
-        ZLogger.deleteOldFiles(15);
+        AppHelper.clearRedunantData(false);
 
         onInitializedCompleted();
     }

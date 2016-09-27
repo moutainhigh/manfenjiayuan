@@ -541,25 +541,41 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         String prodLevel = labelProdLevel.getInput();
         String guaPeriod = labelGuaPeriod.getInput();
 
-        String buyprice = labelBuyprice.getInput();
-        if (StringUtils.isEmpty(buyprice)) {
-            DialogUtil.showHint("采购价不能为空");
-            btnSubmit.setEnabled(true);
-            return;
-        }
-
-        String costprice = labelCostprice.getInput();
-        if (StringUtils.isEmpty(costprice)) {
-            DialogUtil.showHint("零售价不能为空");
-            btnSubmit.setEnabled(true);
-            return;
-        }
-
         String quantity = labelQuantity.getInput();
         if (StringUtils.isEmpty(quantity)) {
             DialogUtil.showHint("初始库存不能为空");
             btnSubmit.setEnabled(true);
             return;
+        }
+
+        String buyprice = labelBuyprice.getInput();
+        if (StringUtils.isEmpty(buyprice)) {
+            DialogUtil.showHint("初始成本价不能为空");
+            btnSubmit.setEnabled(true);
+            return;
+        }
+
+
+        String costprice = labelCostprice.getInput();
+        String hintPrice = labelHintPrice.getInput();
+        if (StoreType.WHOLESALER.equals(storeType)) {
+            if (StringUtils.isEmpty(costprice)) {
+                DialogUtil.showHint("批发价不能为空");
+                btnSubmit.setEnabled(true);
+                return;
+            }
+
+            if (StringUtils.isEmpty(hintPrice)) {
+                DialogUtil.showHint("建议零售价不能为空");
+                btnSubmit.setEnabled(true);
+                return;
+            }
+        } else {
+            if (StringUtils.isEmpty(costprice)) {
+                DialogUtil.showHint("零售价不能为空");
+                btnSubmit.setEnabled(true);
+                return;
+            }
         }
 
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
@@ -613,6 +629,9 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         tenantSku.put("buyPrice", buyprice);
         //Column 'cost_price' cannot be null
         tenantSku.put("costPrice", costprice);//默认零售价等于采购价。
+        if (StringUtils.isEmpty(hintPrice)){
+            tenantSku.put("costPrice", hintPrice);//建议零售价,批发商才有
+        }
 
         //入库数量不能为空或为0!
         item.put("quantity", quantity);

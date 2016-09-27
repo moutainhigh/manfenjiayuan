@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.utils;
+package com.bingshanguxue.pda.utils;
 
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.MfhApplication;
@@ -15,14 +15,37 @@ import java.util.Date;
  *         Created by Nat.ZZN(bingshanguxue) on 2015/6/17.
  */
 public class SharedPreferencesHelper {
-    public static final String RELEASE_PREFIX = "release_pda_wholesaler";
-    public static final String DEV_PREFIX = "dev_pda_wholesaler";
-    public static String PREF_NAME_PREFIX = "pda_wholesaler";
+
+    public static final String RELEASE_PREFIX = "release_pda";
+    public static final String DEV_PREFIX = "dev_pda";
+    public static String PREF_NAME_PREFIX = "pda";
 
 
     public static final String PREF_KEY_STOCKTAKE_LAST_UPDATE = "stocktake_lastUpdate";//最后一次更新时间
     public static final String PREF_KEY_STOCKTAKE_LAST_ORDERID = "PREF_KEY_STOCKTAKE_LAST_ORDERID";// 上一次盘点批次编号
 
+
+    public static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
+    public static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
+    public static final String PK_S_POSORDER_SYNC_STARTCURSOR = "pos_order_lastUpdate";//最后一次更新时间
+
+
+//    private static SharedPreferencesHelper instance = null;
+//    /**
+//     * 返回 SharedPreferencesHelper 实例
+//     * @return
+//     */
+//    public static SharedPreferencesHelper getInstance() {
+//
+//        if (instance == null) {
+//            synchronized (SharedPreferencesHelper.class) {
+//                if (instance == null) {
+//                    instance = new SharedPreferencesHelper();
+//                }
+//            }
+//        }
+//        return instance;
+//    }
 
 
     public static String getStocktakeLastUpdate() {
@@ -67,8 +90,7 @@ public class SharedPreferencesHelper {
         return getLong(PREF_KEY_STOCKTAKE_LAST_ORDERID, 0L);
     }
 
-
-/**
+    /**
      * 前缀＋公司编号＋部门编号
      * 使用静态数据会导致数据不能同步
      */
@@ -120,4 +142,5 @@ public class SharedPreferencesHelper {
     public static void set(String key, boolean value) {
         SharedPreferencesUtil.set(MfhApplication.getAppContext(), register(), key, value);
     }
+
 }
