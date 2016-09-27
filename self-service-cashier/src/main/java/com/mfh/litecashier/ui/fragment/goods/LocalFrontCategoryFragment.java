@@ -28,7 +28,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -115,9 +115,9 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
+    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
+        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
             reload();
 //            int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
 //            ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
@@ -129,7 +129,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 //                }
 //                mCategoryGoodsViewPager.setCurrentItem(oldIndex);
 //            }
-        } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
+        } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
             notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
         }
     }
@@ -255,7 +255,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                             Long code = Long.valueOf(result);
                             ZLogger.df("新建前台类目成功:" + code);
 
-                            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
+                            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_FRONTEND_CATEGORY);
                         }
 
                     } catch (Exception e) {

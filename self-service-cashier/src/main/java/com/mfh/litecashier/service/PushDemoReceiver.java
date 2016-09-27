@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
@@ -20,6 +21,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
+import com.tencent.bugly.beta.Beta;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -137,12 +139,11 @@ public class PushDemoReceiver extends BroadcastReceiver {
         if (msgBeanObj == null){
             return;
         }
-
         JSONObject bodyObj = msgBeanObj.getJSONObject("body");
         String content = bodyObj.getString("content");
         Integer bizType = msgBeanObj.getIntValue("bizType");//获取推送的数据类型
         String time = msgBeanObj.getString("time");
-        ZLogger.df(String.format("%s--%s\ncontent=%s", bizType, data, content));
+        ZLogger.df(String.format("<--%s\n%s\ncontent=%s", bizType, data, content));
 
         //SKU更新
         if (IMBizType.TENANT_SKU_UPDATE == bizType){
@@ -217,7 +218,25 @@ public class PushDemoReceiver extends BroadcastReceiver {
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
         }
         else if (IMBizType.REMOTE_CONTROL_CMD == bizType){
-            CloudSyncManager.get().remoteControl();
+            JSONObject contentOjb = JSONObject.parseObject(content);
+            Long remoteId = contentOjb.getLong("remoteId");
+            String remoteInfo = contentOjb.getString("remoteInfo");
+            String remoteData = contentOjb.getString("data");
+            ZLogger.df(String.format("<--远程控制: %d %s\n", remoteId, remoteInfo, remoteData));
+            if (remoteId.equals(1L)){
+                CloudSyncManager.get().remoteControl();
+            }
+            else if (remoteId.equals(2L)){
+                Beta.checkUpgrade(false, false);
+            }
+            else if (remoteId.equals(3L)){
+                if (!StringUtils.isEmpty(remoteData)){
+                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA_V3, remoteData));
+                }
+                else{
+                    ZLogger.d("远程打印内容为空");
+                }
+            }
         }
     }
 }

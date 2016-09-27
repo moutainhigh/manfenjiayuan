@@ -27,7 +27,7 @@
     <attr name="src" format="reference"/>
 
 
-    <!--自定义输入类型 {@link com.bingshanguxue.vector_uikit.EditInputType }-->
+    <!--自定义输入类型 {@link com.bingshanguxue.vector_uikit#EditInputType }-->
     <attr name="editInputType">
         <enum name="text" value="0"/>
         <enum name="numberDecimal" value="1"/>
@@ -35,6 +35,9 @@
         <enum name="barcode" value="2"/>
         <!--价格，*\d［0-9].\d{2}-->
         <enum name="price" value="3"/>
+        <!--价格，*\d［0-9].\d{2}-->
+        <enum name="weight" value="4"/>
+        <enum name="textPassword" value="5"/>
     </attr>
 
     <attr name="isArrowVisible" format="boolean"/>
@@ -122,6 +125,15 @@
         <attr name="endTextColor"/>
         <attr name="endTextSize"/>
         <attr name="endTextVisible"/>
+    </declare-styleable>
+
+    <declare-styleable name="MultiLayerLabel">
+        <attr name="topText" format="string|reference"/>
+        <attr name="topTextColor" format="reference|color"/>
+        <attr name="topTextSize" format="dimension"/>
+        <attr name="bottomText" format="string|reference"/>
+        <attr name="bottomTextColor" format="reference|color"/>
+        <attr name="bottomTextSize" format="dimension"/>
     </declare-styleable>
 
 </resources>

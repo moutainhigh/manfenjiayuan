@@ -50,7 +50,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.event.CommodityStockEvent;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
@@ -505,9 +505,9 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
+    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
+        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
             //刷新供应商
             readCategoryInfoCache();
         }
@@ -519,7 +519,7 @@ public class InventoryCostFragment extends BaseProgressFragment
     public void loadData() {
         //加载后台类目树
         if (!readCategoryInfoCache()) {
-            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
+            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_BACKEND_CATEGORYINFO);
         }
     }
 

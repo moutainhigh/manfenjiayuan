@@ -12,6 +12,9 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 4/21/16.
  */
 public class PayApi {
+    public static String WXPAY_CHANNEL_ID = NetFactory.getWxPayChannelId();
+    public static String ALIPAY_CHANNEL_ID = NetFactory.getAliPayChannelId();
+
     /**预支付(充值)--支付宝*/
     public final static String URL_PRE_PAY = MfhApi.URL_BASE_SERVER + "/payOrder/prepay";
     /**预支付(充值)--微信*/
@@ -50,7 +53,7 @@ public class PayApi {
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonStr);
         params.put("bizType", bizType);
-        params.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
+        params.put("chId", ALIPAY_CHANNEL_ID);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_ALIPAY_BARPAY, params, responseCallback);
     }
@@ -58,7 +61,7 @@ public class PayApi {
     public static void queryAliBarpayStatus(String outTradeNo, AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("out_trade_no", outTradeNo);
-        params.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
+        params.put("chId", ALIPAY_CHANNEL_ID);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_ALIPAY_QUERY, params, responseCallback);
     }
@@ -66,11 +69,10 @@ public class PayApi {
     public static void cancelAliBarpay(String outTradeNo, AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("out_trade_no", outTradeNo);
-        params.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
+        params.put("chId", ALIPAY_CHANNEL_ID);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_ALIPAY_CANCEL, params, responseCallback);
     }
-
 
     /**
      * 微信条码支付
@@ -80,18 +82,18 @@ public class PayApi {
      * @param discountableAmount 可打折金额
      * @param subject 订单标题
      * */
-    public static void wxBarPay(String jsonStr,String bizType, AjaxCallBack<? extends Object> responseCallback){
+    public static void wxBarPay(String jsonStr, String bizType, AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonStr);
         params.put("bizType", bizType);
-        params.put("chId", MfhApi.WXPAY_CHANNEL_ID);
+        params.put("chId", WXPAY_CHANNEL_ID);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_WXBARPAY_PAY, params, responseCallback);
     }
     public static void queryWxBarpayStatus(String outTradeNo, AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("out_trade_no", outTradeNo);
-        params.put("chId", MfhApi.WXPAY_CHANNEL_ID);
+        params.put("chId", WXPAY_CHANNEL_ID);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_WXBARPAY_QUERY, params, responseCallback);
     }
@@ -99,7 +101,7 @@ public class PayApi {
     public static void cancelWxBarpay(String outTradeNo, AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("out_trade_no", outTradeNo);
-        params.put("chId", MfhApi.WXPAY_CHANNEL_ID);
+        params.put("chId", WXPAY_CHANNEL_ID);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_WXBARPAY_CANCEL, params, responseCallback);
     }

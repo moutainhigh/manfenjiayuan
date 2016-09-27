@@ -98,6 +98,25 @@ public class SignInActivity extends BaseActivity {
 //                return false;
 //            }
 //        });
+        etUserName.setOnKeyListener(new EditText.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                ZLogger.d(String.format("setOnKeyListener(etPassword):keyCode=%d, action=%d",
+                        event.getKeyCode(), event.getAction()));
+//                etQuery.requestFocus();
+//                etBarCode.setFocusableInTouchMode(true);
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                        || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        etPassword.requestFocus();
+                        etPassword.setSelection(etPassword.length());
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
         etPassword.setOnKeyListener(new EditText.OnKeyListener() {
 
             @Override
@@ -106,7 +125,8 @@ public class SignInActivity extends BaseActivity {
                         event.getKeyCode(), event.getAction()));
 //                etQuery.requestFocus();
 //                etBarCode.setFocusableInTouchMode(true);
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                        || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         attemptLogin();
                     }

@@ -51,9 +51,9 @@ public class TableInfo {
 	private boolean checkDatabese;//在对实体进行数据库操作的时候查询是否已经有表了，只需查询一遍，用此标示
 	
 	
-	private static final HashMap<String, TableInfo> tableInfoMap = new HashMap<String, TableInfo>();
-	private static final Map<Class<?>, String> classTableNameMap = new HashMap<Class<?>, String>();
-	
+	private static final HashMap<String, TableInfo> tableInfoMap = new HashMap<>();
+	private static final Map<Class<?>, String> classTableNameMap = new HashMap<>();
+
 	private TableInfo(){}
 	
 	/**
@@ -99,7 +99,7 @@ public class TableInfo {
 
 			List<FieldInfo> fins = ClassUtils.getAllNormalFields(clazz);//按属性名的字母顺序返回
 			boolean bFindId = false;
-			List<Property> pList = new ArrayList<Property>();
+			List<Property> pList = new ArrayList<>();
 			for (FieldInfo item : fins) {
 			    Field fieldItem = item.getField();
 			    if (fieldItem == null)
@@ -159,13 +159,11 @@ public class TableInfo {
 				throw new DbException("the class["+clazz+"]'s idField is null , \n you can define _id,id property or use annotation @id to solution this exception");
 			}			
 			List<Property> pList = ClassUtils.getPropertyList(clazz);*/
-			
-			if(pList!=null){
-				for(Property p : pList){
-					if(p!=null) {
-						tableInfo.propertyMap.put(p.getColumn(), p);
-						tableInfo.propertyMap2.put(p.getFieldName(), p);
-					}
+
+			for(Property p : pList){
+				if(p!=null) {
+					tableInfo.propertyMap.put(p.getColumn(), p);
+					tableInfo.propertyMap2.put(p.getFieldName(), p);
 				}
 			}
 			

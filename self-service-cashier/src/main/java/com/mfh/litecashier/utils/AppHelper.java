@@ -15,6 +15,7 @@ import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
+import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
@@ -233,6 +234,8 @@ public class AppHelper {
             PosTopupService.get().deleteOldData(0);
             ZLogger.deleteOldFiles(0);
             SMScaleSyncManager2.deleteOldFiles(0);
+            EmbMsgService.getInstance().clearReduantData(0);
+
 
             //删除缓存
             ACacheHelper.clear();
@@ -246,6 +249,7 @@ public class AppHelper {
             PosTopupService.get().deleteOldData(7);
             ZLogger.deleteOldFiles(7);
             SMScaleSyncManager2.deleteOldFiles(1);
+            EmbMsgService.getInstance().clearReduantData(7);
 
             AppHelper.clearCacheData();
         }

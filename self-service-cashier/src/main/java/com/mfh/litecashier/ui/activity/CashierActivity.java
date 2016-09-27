@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Base64;
 
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
@@ -11,6 +12,7 @@ import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
+import com.gprinter.command.GpCom;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
@@ -37,12 +39,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
 import android_serialport_api.SerialPortFinder;
 import de.greenrobot.event.EventBus;
-
 
 /**
  * 首页
@@ -67,6 +69,9 @@ public abstract class CashierActivity extends BaseActivity {
     private int mPercentForPlaying = 0;
     // 引擎类型
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
+
+//    private GpService mGpService= null;
+//    private PrinterServiceConnection conn = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -401,6 +406,14 @@ public abstract class CashierActivity extends BaseActivity {
                 OpenComPort(comPrint);
                 sendPortData(comPrint, event.getCmdBytes());
             }
+        }
+        else if (event.getType() == SerialPortEvent.GPRINTER_SEND_DATA_V2) {
+            if (comPrint != null){
+                OpenComPort(comPrint);
+                byte[] raw = event.getCmdBytes();
+                String str = Base64.encodeToString(raw, Base64.DEFAULT);
+                sendEscCommand(str);
+            }
         } else if (event.getType() == SerialPortEvent.UPDATE_PORT_GPRINTER) {
             CloseComPort(comPrint);
 
@@ -447,6 +460,63 @@ public abstract class CashierActivity extends BaseActivity {
             OpenComPort(comDisplay);
             sendPortData(comDisplay, event.getCmdBytes());
         }
+    }
+
+
+    public int sendEscCommand(String b64)  {
+        ZLogger.d("sendEscCommand:\n" + b64);
+        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
+        byte[] datas = Base64.decode(b64, 0);
+        Vector vector = new Vector();
+        byte[] var9 = datas;
+        int var8 = datas.length;
+
+        for(int var7 = 0; var7 < var8; ++var7) {
+            byte b = var9[var7];
+            vector.add(Byte.valueOf(b));
+        }
+
+        retval = sendDataImmediately(vector);
+
+        return retval.ordinal();
+    }
+
+    public GpCom.ERROR_CODE sendDataImmediately(Vector<Byte> Command) {
+        ZLogger.d("sendDataImmediately:\n" + Command.toString());
+        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
+        Vector data = new Vector(Command.size());
+        for(int k = 0; k < Command.size(); ++k) {
+            if(data.size() >= 1024) {
+                retval = writeDataImmediately(data);
+                data.clear();
+                if(retval != GpCom.ERROR_CODE.SUCCESS) {
+                    return retval;
+                }
+            }
+
+            data.add((Byte)Command.get(k));
+        }
+
+        retval = writeDataImmediately(data);
+
+        return retval;
+    }
+
+    public GpCom.ERROR_CODE writeDataImmediately(Vector<Byte> data) {
+        ZLogger.d("writeDataImmediately:\n" + data.toString());
+
+        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
+        if(data != null && data.size() > 0) {
+            byte[] sendData = new byte[data.size()];
+
+            for(int e = 0; e < data.size(); ++e) {
+                sendData[e] = ((Byte)data.get(e)).byteValue();
+            }
+
+            sendPortData(comPrint, sendData);
+        }
+
+        return retval;
     }
 
     /**

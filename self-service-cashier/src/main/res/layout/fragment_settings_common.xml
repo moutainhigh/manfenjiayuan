@@ -35,7 +35,7 @@
             android:id="@+id/item_terminal"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:src="@mipmap/ic_cashier"
+            app:src="@mipmap/ic_terminal"
             app:position="bottom"
             app:subText=""
             app:text="设备编号"/>
@@ -156,6 +156,13 @@
             app:subText="常在河边走,哪有不湿手"
             app:position="center"/>
 
+
+        <Button
+            android:id="@+id/button_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="测试"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

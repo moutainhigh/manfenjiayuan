@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.pay;
+package com.bingshanguxue.cashier.pay;
 
 import android.app.Activity;
 import android.content.DialogInterface;

@@ -32,7 +32,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 
 import butterknife.Bind;
@@ -462,7 +462,7 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
 
-                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
+                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class

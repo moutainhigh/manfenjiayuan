@@ -1,4 +1,4 @@
-package com.mfh.litecashier.database.dao;
+package com.bingshanguxue.cashier.database.dao;
 
 
 import com.bingshanguxue.cashier.model.ProductSkuBarcode;

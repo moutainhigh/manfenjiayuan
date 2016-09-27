@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.pay;
+package com.bingshanguxue.cashier.pay;
 
 import android.os.Bundle;
 
@@ -13,17 +13,8 @@ public class PayStep1Event {
 
     private int action;
 
-    public static final String KEY_CASHIERORDERINFO   = "CashierOrderInfo"; //订单信息
     public static final String KEY_PAYMENT_INFO   = "paymentInfo";  //支付信息
     public static final String KEY_ERROR_MESSAGE    = "errorMessage";    //错误信息
-    public static final String KEY_DISCOUNT_INFO  = "discountInfo"; //支付信息
-    public static final String KEY_OUTTRADENO   = "outTradeNo"; //商户订单号
-    public static final String KEY_PAY_TYPE     = "payType";    //支付方式
-    public static final String KEY_PAY_SUBTYPE     = "paySubType";    //支付方式
-    public static final String KEY_MEMBERINFO   = "memberInfo"; //会员信息
-    public static final String KEY_CARD_ID     = "cardId";    //卡芯片号
-    public static final String KEY_AMOUNT       = "amount";     //支付金额
-    public static final String KEY_PAY_STATUS   = "payStatus";  //支付状态
     private Bundle args;
 
     public PayStep1Event(int action, Bundle args) {

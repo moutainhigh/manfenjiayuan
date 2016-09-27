@@ -41,14 +41,7 @@
         <attr name="textSize"/>
         <attr name="src"/>
     </declare-styleable>
-    <declare-styleable name="MultiLayerLabel">
-        <attr name="topText" format="string|reference"/>
-        <attr name="topTextColor" format="reference|color"/>
-        <attr name="topTextSize" format="dimension"/>
-        <attr name="bottomText" format="string|reference"/>
-        <attr name="bottomTextColor" format="reference|color"/>
-        <attr name="bottomTextSize" format="dimension"/>
-    </declare-styleable>
+
 
     <declare-styleable name="NaviAddressView">
         <attr name="text"/>

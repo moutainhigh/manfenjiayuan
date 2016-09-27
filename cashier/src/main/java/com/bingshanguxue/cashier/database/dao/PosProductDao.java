@@ -77,7 +77,7 @@ public class PosProductDao extends BaseDbDao<PosProductEntity, String> {
         try {
             return getFinalDb().findAllByWhere(PosProductEntity.class, strWhere, "updatedDate desc");//"id desc"
         } catch (Exception ex) {
-            ZLogger.e(ex.toString());
+            ZLogger.ef(ex.toString());
 
             return null;
         }

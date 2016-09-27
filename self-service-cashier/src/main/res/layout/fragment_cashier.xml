@@ -112,7 +112,7 @@
                 android:background="@color/material_white"
                 android:showDividers="middle">
 
-                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/label_quantity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                     app:topTextColor="#FF009B4E"
                     app:topTextSize="48sp"/>
 
-                <com.mfh.framework.uikit.compound.MultiLayerLabel
+                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/label_amount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

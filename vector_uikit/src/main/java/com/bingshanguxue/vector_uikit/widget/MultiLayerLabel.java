@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.compound;
+package com.bingshanguxue.vector_uikit.widget;
 
 
 import android.content.Context;
@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mfh.framework.R;
+import com.bingshanguxue.vector_uikit.R;
+import com.mfh.framework.core.utils.DensityUtil;
 
 /**
  * 垂直分布的文字
@@ -34,11 +35,16 @@ public class MultiLayerLabel extends RelativeLayout {
 
             tvTop.setText(a.getString(R.styleable.MultiLayerLabel_topText));
             tvTop.setTextColor(a.getColor(R.styleable.MultiLayerLabel_topTextColor, Color.BLACK));
-            tvTop.setTextSize(a.getDimension(R.styleable.MultiLayerLabel_topTextSize, 12));
+            int textSizeInPx = a.getDimensionPixelSize(R.styleable.MultiLayerLabel_topTextSize, 12);
+            int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+            tvTop.setTextSize(textSizeInSp);
+
 
             tvBottom.setText(a.getString(R.styleable.MultiLayerLabel_bottomText));
             tvBottom.setTextColor(a.getColor(R.styleable.MultiLayerLabel_bottomTextColor, Color.BLACK));
-            tvBottom.setTextSize(a.getDimension(R.styleable.MultiLayerLabel_bottomTextSize, 12));
+            int bottomTextSizeInPx = a.getDimensionPixelSize(R.styleable.MultiLayerLabel_bottomTextSize, 12);
+            int bottomTextSizeInSp = DensityUtil.px2sp(getContext(), bottomTextSizeInPx);
+            tvBottom.setTextSize(bottomTextSizeInSp);
             a.recycle();
         }
 	}

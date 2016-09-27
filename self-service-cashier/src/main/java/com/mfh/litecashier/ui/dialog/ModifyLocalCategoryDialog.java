@@ -35,7 +35,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataSyncManagerImpl;
 
 
 /**
@@ -249,7 +249,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
                                 listener.onComplete();
                             }
 
-                            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
+                            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_FRONTEND_CATEGORY);
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }
@@ -311,7 +311,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
                                 listener.onComplete();
                             }
 
-                            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_FRONTEND_CATEGORY);
+                            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_FRONTEND_CATEGORY);
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }

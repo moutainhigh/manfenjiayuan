@@ -63,7 +63,7 @@
         android:padding="12dp"
         android:showDividers="middle">
         <!--商品金额-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/label_quota"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             app:topTextSize="30sp"/>
 
         <!--价格调整-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/label_out"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             app:topTextSize="30sp"/>
 
         <!--已付金额-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/label_left"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

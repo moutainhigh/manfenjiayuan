@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Cashier</string>
 
+
+    <string name="default_amount">0.00</string>
+    <string name="default_net_weight">0.000</string>
+    <string name="default_amount_unit">¥0.00</string>
+
+
     <!--计件单位-->
     <string-array name="unit_name_0">
         <item>个</item>
@@ -18,4 +24,5 @@
     <string-array name="unit_name_1">
         <item>Kg</item>
     </string-array>
+
 </resources>

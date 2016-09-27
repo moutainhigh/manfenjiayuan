@@ -586,7 +586,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //                            return;
 //                        }
 
-//                        DataSyncManager.get().sync();
+//                        DataSyncManagerImpl.get().sync();
                     }
                 }
                 , String.class

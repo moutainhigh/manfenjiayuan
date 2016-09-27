@@ -68,7 +68,7 @@ public class GPrinterAgent {
     public static void print(EscCommand escCommand){
         if (escCommand != null) {
             //获得打印命令
-            Vector<Byte> datas = escCommand.getCommand();
+            Vector<Byte> datas = escCommand.getCommand();//发送数据
             Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
             byte[] bytes = ArrayUtils.toPrimitive(Bytes);
 //        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
@@ -168,4 +168,19 @@ public class GPrinterAgent {
         Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
         return ArrayUtils.toPrimitive(Bytes);
     }
+
+//    public static String SimToTra(String simpStr) {
+//        String traditionalStr = null;
+//        try {
+//            JChineseConvertor jChineseConvertor = JChineseConvertor
+//                    .getInstance();
+//            traditionalStr = jChineseConvertor.s2t(simpStr);
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        return traditionalStr;
+//    }
+
+
 }

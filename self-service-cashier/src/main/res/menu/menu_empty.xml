@@ -1,5 +1,4 @@
 <menu
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.mfh.litecashier.ui.activity.SettingsActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
 </menu>

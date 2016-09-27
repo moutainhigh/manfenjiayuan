@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.pay;
+package com.bingshanguxue.cashier.pay;
 
 import android.content.BroadcastReceiver;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.cashier.CashierFactory;
-import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.uikit.base.BaseFragment;
 
 /**
@@ -24,24 +24,22 @@ public abstract class BasePayFragment extends BaseFragment {
     public static final String EXTRA_KEY_HANDLE_AMOUNT  = "handleAmount";   //应收金额
     public static final String EXTRA_KEY_MEMBERINFO     = "memberInfo";     //会员信息
 
-    static final Double MAX_RECHARGE_AMOUNT = 100D;
+    protected int payType;//支付类型
 
-    int payType;//支付类型
-
-    String bizType;//业务类型
-    String orderBarcode;//订单条码（本地数据库）
-    Long orderId;//本地数据库订单编号
-    String subject;//订单标题
-    String body;//对交易或商品的描述
+    protected String bizType;//业务类型
+    protected String orderBarcode;//订单条码（本地数据库）
+    protected Long orderId;//本地数据库订单编号
+    protected String subject;//订单标题
+    protected String body;//对交易或商品的描述
 
     //设备号＋订单编号＋时间（每次提交订单时自动生成）
-    String outTradeNo;//商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
-    Double handleAmount   = 0D;//应收金额
-    Double paidAmount     = 0D;//实收金额
-    Double rechargeAmount = 0D;//找零金额
-    BroadcastReceiver receiver;
+    protected String outTradeNo;//商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
+    protected Double handleAmount   = 0D;//应收金额
+    protected Double paidAmount     = 0D;//实收金额
+    protected Double rechargeAmount = 0D;//找零金额
+    protected BroadcastReceiver receiver;
 
-    boolean bPayProcessing = false;//支付状态
+    protected boolean bPayProcessing = false;//支付状态
 
     /**
      * 设置支付类型*/
@@ -106,24 +104,24 @@ public abstract class BasePayFragment extends BaseFragment {
     /**
      * 注册监听器
      */
-    void registerReceiver() {
+    protected void registerReceiver() {
     }
 
     /**
      * 应收金额发生改变*/
-    void onHandleAmountChnaged(){
+    protected void onHandleAmountChnaged(){
     }
 
     /**
      * 计算收取金额
      * */
-    void calculatePaidAmount(){
+    protected void calculatePaidAmount(){
     }
 
     /**
      * 计算找零金额,需要先计算收取金额
      * */
-    void calculateCharge(){
+    protected void calculateCharge(){
         calculatePaidAmount();
         rechargeAmount = paidAmount - handleAmount;
     }
@@ -131,7 +129,7 @@ public abstract class BasePayFragment extends BaseFragment {
     /**
      * 支付订单
      * */
-    void submitOrder(){
+    protected void submitOrder(){
         //验证参数
         //生成商户订单号
         generateOutTradeNo();
@@ -142,23 +140,23 @@ public abstract class BasePayFragment extends BaseFragment {
     /**
      * 支付开始
      * */
-    void onPayStart(String message){
+    protected void onPayStart(String message){
 
     }
 
-    void onPayProcess(String message){
+    protected void onPayProcess(String message){
 
     }
 
-    void onPayFailed(){
+    protected void onPayFailed(){
 
     }
 
-    void onPayError(){
+    protected void onPayError(){
 
     }
 
-    void onPaySuccess(){
+    protected void onPaySuccess(){
 
     }
 

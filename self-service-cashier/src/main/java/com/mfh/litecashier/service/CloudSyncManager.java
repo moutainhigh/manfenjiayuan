@@ -32,7 +32,7 @@ public class CloudSyncManager {
     private static CloudSyncManager instance = null;
 
     /**
-     * 返回 DataSyncManager 实例
+     * 返回 DataSyncManagerImpl 实例
      *
      * @return CloudSyncManager
      */

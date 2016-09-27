@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
 
 
 /**
@@ -26,7 +27,6 @@ import android.widget.TextView;
  *   </declare-styleable>
  */
 public class OptionalLabel extends RelativeLayout {
-    private static final String TAG = "OptionalLabel";
 
     private View rootView;
     private TextView tvLabel;
@@ -50,19 +50,21 @@ public class OptionalLabel extends RelativeLayout {
         super(context, attrs);
 
         View rootView = View.inflate(getContext(), R.layout.mfh_optional_label_view, this);
-        tvLabel = (TextView) this.findViewById(R.id.tv_label);
-        ibDel = (ImageButton) this.findViewById(R.id.ib_del);
+        tvLabel = (TextView) rootView.findViewById(R.id.tv_label);
+        ibDel = (ImageButton) rootView.findViewById(R.id.ib_del);
 
         if (attrs != null){
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.OptionalLabel);
-            float inputTextSize = ta.getDimension(R.styleable.OptionalLabel_mLabelView_inputTextSize, 16);
+            float inputTextSizeInPx = ta.getDimension(R.styleable.OptionalLabel_mLabelView_inputTextSize, 16);
+            int inputTextSizeInSp = DensityUtil.px2sp(getContext(), inputTextSizeInPx);
+
             int inputTextColor = ta.getColor(R.styleable.OptionalLabel_mLabelView_inputTextColor, 0);
             int inputTextColorHint = ta.getColor(R.styleable.OptionalLabel_mLabelView_inputTextColorHint, 0);
             String inputHint = ta.getString(R.styleable.OptionalLabel_mLabelView_inputHint);
             isRightButtonEnabled = ta.getBoolean(R.styleable.OptionalLabel_mLabelView_rightImageButtonEnabled, true);
             ta.recycle();
 
-            tvLabel.setTextSize(inputTextSize);
+            tvLabel.setTextSize(inputTextSizeInSp);
             tvLabel.setTextColor(inputTextColor);
             tvLabel.setHintTextColor(inputTextColorHint);
             tvLabel.setHint(inputHint);

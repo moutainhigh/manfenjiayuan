@@ -11,8 +11,6 @@ public class MfhApi {
     //UBS
     public static String URL_BASE_SERVER = NetFactory.getServerUrl();
     public static String URL_REGISTER_MESSAGE = NetFactory.getRegisterMessageUrl();
-    public static String WXPAY_CHANNEL_ID = NetFactory.getWxPayChannelId();
-    public static String ALIPAY_CHANNEL_ID = NetFactory.getAliPayChannelId();
 
 
     //网络电话

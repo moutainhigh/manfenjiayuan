@@ -13,7 +13,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.fragment.pay.PayActionEvent;
+import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep2Fragment;
 

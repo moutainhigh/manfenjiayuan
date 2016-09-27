@@ -92,9 +92,6 @@
     <string name="title_fragment_cashier_express">寄快递</string>
 
 
-    <string name="default_amount">0.00</string>
-    <string name="default_net_weight">0.000</string>
-    <string name="default_amount_unit">¥0.00</string>
 
 
     <string name="maxquota_tip">现金已经累计超过最大授权金额 %1$.2f，请尽快完成支付</string>

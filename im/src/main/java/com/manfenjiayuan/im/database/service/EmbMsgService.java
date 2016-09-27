@@ -26,6 +26,7 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetProcessor;
 
 import net.tsz.afinal.db.table.KeyValue;
@@ -35,6 +36,7 @@ import java.security.Key;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -289,6 +291,26 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 //        ZLogger.d("wxParam: " + JSON.toJSONString(wxParam));
 //        String jsonStr = String.valueOf();
         MsgParameter msgParameter = IMFactory.textMessageParameter(bizType, content,
+                fromGuid, IMConfig.getPushClientId(),
+                toGuid, channelId, toChannelPointId);
+        params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
+
+        netDao.sendMessage(params, processor);
+    }
+
+    /**
+     * 向后台发送消息
+     * @param sessionId
+     * @param wxParam
+     */
+    public void sendText(Long fromGuid, Long toGuid, Long channelId, String toChannelPointId,
+                         Integer bizType, Object body,
+                         NetProcessor.ComnProcessor processor)  {
+        AjaxParams params = new AjaxParams();
+
+//        ZLogger.d("wxParam: " + JSON.toJSONString(wxParam));
+//        String jsonStr = String.valueOf();
+        MsgParameter msgParameter = IMFactory.textMessageParameter(bizType, body,
                 fromGuid, IMConfig.getPushClientId(),
                 toGuid, channelId, toChannelPointId);
         params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
@@ -667,6 +689,29 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
         String sqlWhere = String.format("bizType = %d and isRead = %d", bizType, EmbMsg.UNREAD);
         List<EmbMsg> msgs = getDao().queryAll(sqlWhere, null);
         return msgs != null ? msgs.size() : 0;
+    }
+
+    public void deleteBy(String strWhere) {
+        try {
+            getDao().deleteBy(strWhere);
+        } catch (Exception e) {
+            ZLogger.e(e.toString());
+        }
+    }
+
+    /**
+     * 清除旧的订单数据
+     *
+     * @param saveDate 保存的天数
+     */
+    public void clearReduantData(int saveDate) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 0 - saveDate);//
+        String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
+        ZLogger.d(String.format("订单过期时间(%s)保留最近 %d 天数据。", expireCursor, saveDate));
+
+        deleteBy(String.format("createdDate < '%s'", expireCursor));
     }
 
 }

@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.alibaba.fastjson.JSON;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
+import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.account.Human;
 import com.mfh.comn.net.data.IResponseData;

@@ -24,7 +24,7 @@ public class TimeTaskManager {
     private static TimeTaskManager instance = null;
 
     /**
-     * 返回 DataSyncManager 实例
+     * 返回 DataSyncManagerImpl 实例
      *
      * @return
      */
@@ -79,7 +79,7 @@ public class TimeTaskManager {
                 break;
                 case MSG_WHAT_SYNC_POSGOODS: {
                     ZLogger.df("定时任务激活：同步商品库");
-                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
+                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
                 }
                 break;
             }

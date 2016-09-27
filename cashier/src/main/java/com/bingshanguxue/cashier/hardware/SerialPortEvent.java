@@ -15,6 +15,9 @@ public class SerialPortEvent {
     public static final int SERIAL_TYPE_VFD_INIT = 6;
     public static final int SERIAL_TYPE_VFD_BYTE = 7;
 
+    public static final int GPRINTER_SEND_DATA_V2 = 8;
+    public static final int GPRINTER_SEND_DATA_V3= 9;
+
     int type;
     String cmd;
     byte[] cmdBytes;

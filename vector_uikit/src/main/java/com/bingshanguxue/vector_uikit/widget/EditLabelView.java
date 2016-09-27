@@ -94,6 +94,10 @@ public class EditLabelView extends LinearLayout {
                 //相当于在.xml文件中设置inputType="numberDecimal
                 etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }
+            else if (inputType == EditInputType.TEXT_PASSWORD) {
+                //相当于在.xml文件中设置inputType="numberDecimal
+                etInput.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+            }
             else {
                 etInput.setInputType(InputType.TYPE_CLASS_TEXT);
             }
@@ -170,6 +174,9 @@ public class EditLabelView extends LinearLayout {
                     return true;
                 }
 
+//                return (keyCode == KeyEvent.KEYCODE_TAB
+//                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+//                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
                 return false;
             }
         });
@@ -203,6 +210,10 @@ public class EditLabelView extends LinearLayout {
 
     public String getInput() {
         return etInput.getText().toString();
+    }
+
+    public void clearInput(){
+        this.etInput.getText().clear();
     }
 
     public void setEndText(String text) {

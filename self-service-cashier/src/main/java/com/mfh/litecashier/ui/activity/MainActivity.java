@@ -56,7 +56,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.compound.MultiLayerLabel;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -73,7 +73,7 @@ import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.presenter.ScOrderPresenter;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
@@ -128,10 +128,7 @@ public class MainActivity extends CashierActivity
     @Bind(R.id.button_sync)
     SyncButton btnSync;
 
-    @Bind(R.id.label_quantity)
-    MultiLayerLabel labelQuantity;
-    @Bind(R.id.label_amount)
-    MultiLayerLabel labelAmount;
+
     @Bind(R.id.tv_last_amount)
     TextView tvLastAmount;
     @Bind(R.id.tv_last_quantity)
@@ -140,6 +137,10 @@ public class MainActivity extends CashierActivity
     TextView tvLastDiscount;
     @Bind(R.id.tv_last_charge)
     TextView tvLastCharge;
+    @Bind(R.id.label_quantity)
+    MultiLayerLabel labelQuantity;
+    @Bind(R.id.label_amount)
+    MultiLayerLabel labelAmount;
     @Bind(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
     @Bind(R.id.product_list)
@@ -626,7 +627,7 @@ public class MainActivity extends CashierActivity
 
         //同步数据
         ZLogger.d("点击同步按钮，准备同步数据...");
-        DataSyncManager.get().sync();
+        DataSyncManagerImpl.get().sync();
     }
 
     /**
@@ -646,7 +647,7 @@ public class MainActivity extends CashierActivity
                     true, false);
         }
         btnSync.startSync();
-        DataSyncManager.get().sync();
+        DataSyncManagerImpl.get().sync();
 
         /**
          * @param isManual  用户手动点击检查，非用户点击操作请传false
@@ -736,7 +737,7 @@ public class MainActivity extends CashierActivity
             if (count > 1) {
 //                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
                 btnSync.startSync();
-                DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
+                DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
             } else {
                 btnSync.setBadgeEnabled(true);
             }
@@ -782,11 +783,11 @@ public class MainActivity extends CashierActivity
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
+    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
+        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
             btnSync.startSync();
-        } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
             btnSync.stopSync();
             //同步数据结束后开始同步订单
@@ -1303,7 +1304,7 @@ public class MainActivity extends CashierActivity
 
                     }
                 });
-        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
         if (!barcodeInputDialog.isShowing()) {
             barcodeInputDialog.show();
         }
@@ -1716,7 +1717,6 @@ public class MainActivity extends CashierActivity
         } else {
             curPosTradeNo = barcode;
         }
-
     }
 
     @Override

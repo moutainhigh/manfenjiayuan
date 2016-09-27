@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -175,7 +177,7 @@ public class PayByCashFragment extends BasePayFragment {
             return;
         }
 
-        if (rechargeAmount.compareTo(MAX_RECHARGE_AMOUNT) >= 0) {
+        if (rechargeAmount.compareTo(100D) >= 0) {
             //找零超过100元，提示是否支付
             ZLogger.df("收取金额过大，请确认是否支付");
             showConfirmDialog(String.format("找零: %.2f, 确认支付吗？", rechargeAmount),

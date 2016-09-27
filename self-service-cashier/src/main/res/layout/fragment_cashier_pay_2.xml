@@ -33,7 +33,7 @@
         android:padding="12dp"
         android:showDividers="middle">
         <!--订单金额-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelHandleAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             app:topTextColor="@color/material_black"
             app:topTextSize="30sp"/>
         <!--会员优惠-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelRuleDiscount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             app:topTextSize="30sp"/>
 
         <!--代金券-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelCouponDiscount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
             app:topTextColor="@color/mfh_colorPrimary"
             app:topTextSize="30sp"/>
         <!--积分-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelScore"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             app:topTextSize="30sp"/>
 
         <!--应付金额-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelDealPayAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

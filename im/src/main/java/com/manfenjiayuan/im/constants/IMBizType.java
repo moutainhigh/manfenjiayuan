@@ -72,6 +72,8 @@ public class IMBizType {
                 return "网点sku信息更新";
             case NEW_PURCHASE_ORDER:
                 return "新的生鲜预订单";
+            case REMOTE_CONTROL_CMD:
+                return "远程控制";
             default:
                 return "Unkown";
         }

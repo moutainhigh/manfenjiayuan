@@ -581,7 +581,7 @@ public class AlipayDialog extends CommonDialog {
         if (quickPayInfo != null) {
             this.tvTitle.setText(quickPayInfo.getSubject());
             this.tvSubTitle.setText(quickPayInfo.getBody());
-            this.tvHandleAmount.setText(String.format(Locale.getDefault(),"%.2f", mQuickPayInfo.getAmount()));
+            this.tvHandleAmount.setText(String.format(Locale.getDefault(), "%.2f", mQuickPayInfo.getAmount()));
         }
 
         if (isCancelAbled) {

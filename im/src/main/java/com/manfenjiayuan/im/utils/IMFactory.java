@@ -195,5 +195,30 @@ public class IMFactory {
 		return msgParameter;
 	}
 
+	/**
+	 * 获得消息所用的参数
+	 * @param cpid
+	 * @param guid
+	 * @return MsgParameter
+	 */
+	public static MsgParameter textMessageParameter(Integer bizType, Object body,
+													Long guid, String fromChannelPointId,
+													Long toGuid, Long channelId, String toChannelPointId){
+		MsgParameter msgParameter = new MsgParameter();
+//		ZLogger.d("msgParameter: " + JSON.toJSONString(msgParameter));
+
+		msgParameter.setFrom(FromInfo.create(fromChannelPointId, guid));
+		msgParameter.setTo(DestInfo.create(channelId, toChannelPointId, toGuid));
+
+		MsgBean msgBean = new MsgBean();
+		msgBean.setBizType(bizType);
+		msgBean.setType(IMTechType.TEXT);
+		msgBean.setTime(new Date());
+		msgBean.setBody(body);
+
+		msgParameter.setMsgBean(msgBean);
+		ZLogger.d(JSON.toJSONString(msgParameter));
+		return msgParameter;
+	}
 
 }

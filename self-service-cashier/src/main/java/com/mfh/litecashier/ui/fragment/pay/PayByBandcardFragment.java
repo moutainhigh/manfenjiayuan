@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.chinaums.mis.bank.BankDAO;
 import com.chinaums.mis.bank.ICallBack;
@@ -328,14 +330,14 @@ public class PayByBandcardFragment extends BasePayFragment {
     }
 
     @Override
-    void onPayStart(String message) {
+    protected void onPayStart(String message) {
         super.onPayStart(message);
         llPayInfo.setVisibility(View.GONE);
         payProcessView.setState(PayProcessView.STATE_PROCESS, message);
     }
 
     @Override
-    void onPayProcess(String message) {
+    protected void onPayProcess(String message) {
         super.onPayProcess(message);
         try {
             llPayInfo.setVisibility(View.GONE);

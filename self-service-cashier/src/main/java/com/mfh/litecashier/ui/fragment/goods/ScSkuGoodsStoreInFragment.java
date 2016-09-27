@@ -546,7 +546,7 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
                     getActivity().finish();
 
                     //商品建档成功后，后台自动发消息同步商品
-//                    DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_PRODUCTS);
+//                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class

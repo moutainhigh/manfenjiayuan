@@ -330,7 +330,7 @@ public class FrontCategoryFragment extends BaseFragment {
 //                            return;
 //                        }
 
-//                        DataSyncManager.get().sync();
+//                        DataSyncManagerImpl.get().sync();
 
                         getActivity().setResult(Activity.RESULT_OK);
                         getActivity().finish();

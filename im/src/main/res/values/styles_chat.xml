@@ -122,7 +122,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">8dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:divider">@drawable/divider_vertical</item>
+        <item name="android:divider">@drawable/divider_vertical_line</item>
         <item name="android:showDividers">middle</item>
         <item name="android:orientation">horizontal</item>
     </style>

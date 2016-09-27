@@ -8,24 +8,24 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * 图片消息
  */
-public class ImageParam extends WxParam{
-	private String title, description, picurl,url;
-	
-	public ImageParam(String title, String description, String picurl, String url) {
+public class ImageParam extends WxParam {
+    private String title, description, picurl, url;
+
+    public ImageParam(String title, String description, String picurl, String url) {
         super(IMTechType.IMAGE);
-		this.title = title;
-		this.description = description;
-		this.picurl = picurl;
-		this.url = url;
-	}
+        this.title = title;
+        this.description = description;
+        this.picurl = picurl;
+        this.url = url;
+    }
 
     public ImageParam() {
         super(IMTechType.IMAGE);
     }
 
-	public ImageParam(String title, String description,String url) {
-		this(title, description, "", url);
-	}
+    public ImageParam(String title, String description, String url) {
+        this(title, description, "", url);
+    }
 
     @Override
     public String getSummary() {
@@ -53,6 +53,7 @@ public class ImageParam extends WxParam{
 
     /**
      * 从json串中构造
+     *
      * @param rawString
      * @return
      */
@@ -62,43 +63,44 @@ public class ImageParam extends WxParam{
         return ret;
     }
 
-	public String getTitle() {
-		return title;
-	}
-	
-	public void setSignname(String signname){
-		setTitle(signname+getTitle());
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setSignname(String signname) {
+        setTitle(signname + getTitle());
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getPicurl() {
-		return picurl;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setPicurl(String picurl) {
-		this.picurl = picurl;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getPicurl() {
+        return picurl;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setPicurl(String picurl) {
+        this.picurl = picurl;
+    }
 
-	@Override
-	public String toString(){
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public String toString() {
         return JSONObject.toJSONString(this);
-	}
+    }
 }

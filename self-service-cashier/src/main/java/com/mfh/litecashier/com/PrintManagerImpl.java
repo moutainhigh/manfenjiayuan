@@ -1,8 +1,13 @@
 package com.mfh.litecashier.com;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
+import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.google.zxing.WriterException;
 import com.gprinter.command.EscCommand;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
@@ -11,10 +16,13 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.DataConvertUtil;
+import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.PosOrder;
@@ -24,9 +32,13 @@ import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.bean.wrapper.HandOverBill;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
+import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -261,97 +273,83 @@ public class PrintManagerImpl extends PrintManager {
         return esc;
     }
 
-    private static EscCommand makeEsc() {
-        EscCommand esc = new EscCommand();
-        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
-        //设置打印居中
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
+    /**
+     * 打印测试
+     */
+    private static EscCommand makeTestEsc() {
+        try {
+            EscCommand esc = new EscCommand();
+            esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
+            //设置打印居中
+            esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
 //        //设置为倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
-        /**打印 标题*/
-        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
-            esc.addText("满分家园\n");
-        } else {
-            //显示当前网点名称
-            esc.addText(MfhLoginService.get().getCurOfficeName());
-        }
+            esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+                    EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+            esc.addText("打印测试");
+            esc.addPrintAndLineFeed();//进纸一行
+
+
 //        //取消倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+            esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+                    EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+            esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+            esc.addText("Welcome to use Gprinter!\n");   //  打印文字
+            esc.addPrintAndLineFeed();//进纸一行
 
-
-        esc.addPrintAndLineFeed();//进纸一行
-        //设置打印左对齐
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
-        /**打印 机器设备号＋订单号*/
-        esc.addText(String.format("%s NO.%s \n", SharedPreferencesManager.getTerminalId(), MUtils.getOrderBarCode()));
-        /**打印 订购日期*/
-        esc.addText(String.format("%s \n", DATE_FORMAT.format(new Date())));
-        //5个数字等于3个汉字（1个数字＝3/5个汉字）
-        esc.addText("--------------------------------\n");//32(正确)
-        esc.addText("01234567890123456789012345678901\n");//32(正确)
-        esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
-        esc.addText("零一二三四五六七八九零一二三四五六七八\n");//19.2(错误)
-
-        esc.addText("货号/品名       单价 数量 小计\n");
-        esc.addText("货号/品名       单价 数量   小计\n");
-        esc.addText("货号/品名          00.0100.0200.03\n");//32=17+5+5+5
-
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-        //设置为倍高倍宽
-        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
-                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
-        for (int i = 0; i < 8; i++) {
-            makeTestTemp(esc, String.format("%s/%s", MUtils.getOrderBarCode(), StringUtils.genNonceStringByLength(8)),
-                    "12.34", "23.45", "34.56");
-        }
-
-        /**
-         * 打印合计信息
-         * */
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
-        esc.addText("--------------------------------\n");//32个
-        esc.addText(String.format("应收:%.2f\n", 88.88));
-        esc.addText(String.format("优惠:%.2f\n", 77.77));
-//        esc.addText(String.format("代金券:%.2f\n", orderEntity.getCouponDiscountAmount()));
-        esc.addText(String.format("合计:%.2f\n", 11.11));
-        esc.addText(String.format("付款:%.2f\n", 33.33));
-        esc.addText(String.format("找零:%.2f\n", 22.22));
-
-        /**
-         * 打印 结束语
-         * */
-        esc.addPrintAndLineFeed();
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
-        esc.addText("谢谢惠顾!\n");
-        esc.addText("欢迎下次光临\n");
+//        /*打印繁体中文  需要打印机支持繁体字库*/
+//        String message = GPrinterAgent.SimToTra("佳博票据打印机\n");
+//        //	esc.addText(message,"BIG5");
+//        esc.addText(message,"GB2312");
 //        esc.addPrintAndLineFeed();
-        esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
+
+            /**打印 APP LOGO*/
+            esc.addText("Print bitmap!\n");   //  打印文字
+            Bitmap b = BitmapFactory.decodeResource(CashierApp.getAppContext().getResources(),
+                    R.mipmap.ic_launcher);
+            esc.addRastBitImage(b, b.getWidth(), 0);
 
 
+            /**打印 机器设备号＋订单号*/
+            esc.addText(String.format("%s NO.%s \n", SharedPreferencesManager.getTerminalId(),
+                    MUtils.getOrderBarCode()));
+            /**打印 订购日期*/
+            esc.addText(String.format("%s \n", DATE_FORMAT.format(new Date())));
+            //5个数字等于3个汉字（1个数字＝3/5个汉字）
+            esc.addText("--------------------------------\n");//32(正确)
+            esc.addText("01234567890123456789012345678901\n");//32(正确)
+            esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
+            esc.addText("零一二三四五六七八九零一二三四五六七八\n");//19.2(错误)
 
-        /*打印一维条码code128*/
-        // 一维条码：设置条码可识别字符位置在条码下方
-        esc.addSelectPrintingPositionForHRICharacters(EscCommand.HRI_POSITION.BELOW);
-        //设置条码高度为 60 点
-        esc.addSetBarcodeHeight((byte) 60);
-        //设置条码宽度
-//            esc.addSetBarcodeWidth((byte)500);
+            esc.addText("货号/品名       单价 数量 小计\n");
+            esc.addText("货号/品名       单价 数量   小计\n");
+            esc.addText("货号/品名          00.0100.0200.03\n");//32=17+5+5+5
 
-        //最多打印8位数字
-        //选择字符集B
-        esc.addCODE128(String.format("{B%s", MUtils.getOrderBarCode())); //打印 Code128 码
-        esc.addCODE128(String.format("{C%s", MUtils.getOrderBarCode())); //打印 Code128 码
-        esc.addCODE39(String.format("*%s*", MUtils.getOrderBarCode())); //打印 Code39 码"{B" +
-        esc.addCODE93(MUtils.getOrderBarCode()); //打印 Code93码"{B" +
-        esc.addCODABAR(MUtils.getOrderBarCode()); //打印 Code93码"{B" +
+            esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+            //设置为倍高倍宽
+            esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
+                    EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+            for (int i = 0; i < 8; i++) {
+                makeTestTemp(esc, String.format("%s/%s", MUtils.getOrderBarCode(), StringUtils.genNonceStringByLength(8)),
+                        "12.34", "23.45", "34.56");
+            }
 
-        String codeStr2 = "12359";
-        esc.addUserCommand(DataConvertUtil.HexToByteArr(String.format("1D6B49%02X", (byte) (codeStr2.length())) + DataConvertUtil.ByteArrToHex(codeStr2.getBytes(), "")));
+//        esc.addPrintAndLineFeed();
+            esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
 
-        String codeStr3 = "{B01234567{C9876243";
-        esc.addUserCommand(DataConvertUtil.HexToByteArr(String.format("1D6B49%02X", (byte) (codeStr3.length())) + DataConvertUtil.ByteArrToHex(codeStr3.getBytes(), "")));
+
+            //最多打印8位数字
+            //选择字符集B
+            esc.addCODE128(String.format("{B%s", MUtils.getOrderBarCode())); //打印 Code128 码
+            esc.addCODE128(String.format("{C%s", MUtils.getOrderBarCode())); //打印 Code128 码
+            esc.addCODE39(String.format("*%s*", MUtils.getOrderBarCode())); //打印 Code39 码"{B" +
+            esc.addCODE93(MUtils.getOrderBarCode()); //打印 Code93码"{B" +
+            esc.addCODABAR(MUtils.getOrderBarCode()); //打印 Code93码"{B" +
+
+            String codeStr2 = "12359";
+            esc.addUserCommand(DataConvertUtil.HexToByteArr(String.format("1D6B49%02X", (byte) (codeStr2.length())) + DataConvertUtil.ByteArrToHex(codeStr2.getBytes(), "")));
+
+            String codeStr3 = "{B01234567{C9876243";
+            esc.addUserCommand(DataConvertUtil.HexToByteArr(String.format("1D6B49%02X", (byte) (codeStr3.length())) + DataConvertUtil.ByteArrToHex(codeStr3.getBytes(), "")));
 
 //            String cmdStr4 = "1D6B49" + String.format("%02X", (byte) (content2.length())) + DataConvertUtil.ByteArrToHex(content2.getBytes(), "");
 //            String codeCmd = "1D6B49" + String.format("%02X", (byte) (codeStr.length())) + DataConvertUtil.ByteArrToHex(codeStr.getBytes(), "");
@@ -359,40 +357,91 @@ public class PrintManagerImpl extends PrintManager {
 
 //            printBarcode(codeStr);
 
+/*打印一维条码code128*/
+            esc.addText("Print code128\n");   //  打印文字
+            // 一维条码：设置条码可识别字符位置在条码下方
+            esc.addSelectPrintingPositionForHRICharacters(EscCommand.HRI_POSITION.BELOW);
+            //设置条码高度为 60 点
+            esc.addSetBarcodeHeight((byte) 60);
+            //设置条码宽度
+//            esc.addSetBarcodeWidth((byte)500);
+            esc.addCODE128("Gprinter");  //打印Code128码
+            esc.addPrintAndLineFeed();
+
+
         /*QRCode 命令打印
         此命令只在支持 QRCode 命令打印的机型才能使用。
         在不支持二维码指令打印的机型上,则需要发送二维条码图片
         */
-//        esc.addSelectErrorCorrectionLevelForQRCode((byte) 0x31); //设置纠错等级
-//        esc.addSelectSizeOfModuleForQRCode((byte) 3);//设置 qrcode 模块大小
-//        esc.addStoreQRCodeData("www.manfenjiayuan.cn");//设置 qrcode 内容
-//        esc.addPrintQRCode();//打印 QRCode
-//        esc.addPrintAndLineFeed();
+            esc.addText("Print QRcode\n");   //  打印文字
+            esc.addSelectErrorCorrectionLevelForQRCode((byte) 0x31); //设置纠错等级
+            esc.addSelectSizeOfModuleForQRCode((byte) 3);//设置 qrcode 模块大小
+            esc.addStoreQRCodeData("www.manfenjiayuan.cn");//设置 qrcode 内容
+            esc.addPrintQRCode();//打印 QRCode
+            esc.addPrintAndLineFeed();
 
-//        /**打印 二维码图片*/
+            try {
+                Bitmap QRCodeBmp = QrCodeUtils.Create2DCode("www.manfenjiayuan.cn");
+                esc.addRastBitImage(QRCodeBmp, QRCodeBmp.getWidth(), 0); //打印图片
+                esc.addPrintAndLineFeed();
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
+
+            /**打印 订单号条形码code128图片*/
 //        try {
-//            Bitmap QRCodeBmp = QRCodeUtils.Create2DCode("www.manfenjiayuan.cn");
+//            Bitmap QRCodeBmp = QrCodeUtils.CreateCode128ForGPrinter(String.valueOf(orderEntity.getId()), 300, 60);
 //            esc.addRastBitImage(QRCodeBmp, QRCodeBmp.getWidth(), 0); //打印图片
 //            esc.addPrintAndLineFeed();
 //        } catch (WriterException e) {
 //            e.printStackTrace();
 //        }
 
-//        /**打印 订单号条形码code128图片*/
-////        try {
-////            Bitmap QRCodeBmp = QRCodeUtils.CreateCode128ForGPrinter(String.valueOf(orderEntity.getId()), 300, 60);
-////            esc.addRastBitImage(QRCodeBmp, QRCodeBmp.getWidth(), 0); //打印图片
-////            esc.addPrintAndLineFeed();
-////        } catch (WriterException e) {
-////            e.printStackTrace();
-////        }
-
-//        /**打印 APP LOGO*/
-//        Bitmap b = BitmapFactory.decodeResource(CashierApp.getInstance().getResources(), R.mipmap.ic_launcher);
-//        esc.addRastBitImage(b, b.getWidth(), 0);
-
-        return esc;
+            return esc;
+        } catch (Exception e) {
+            ZLogger.ef(e.toString());
+            return null;
+        }
     }
+
+
+//    void sendLabel(){
+//        TscCommand tsc = new TscCommand();
+//        tsc.addSize(60, 60); //设置标签尺寸，按照实际尺寸设置
+//        tsc.addGap(0);           //设置标签间隙，按照实际尺寸设置，如果为无间隙纸则设置为0
+//        tsc.addDirection(TscCommand.DIRECTION.BACKWARD, TscCommand.MIRROR.NORMAL);//设置打印方向
+//        tsc.addReference(0, 0);//设置原点坐标
+//        tsc.addTear(EscCommand.ENABLE.ON); //撕纸模式开启
+//        tsc.addCls();// 清除打印缓冲区
+//        //绘制简体中文
+//        tsc.addText(20,20, TscCommand.FONTTYPE.SIMPLIFIED_CHINESE, TscCommand.ROTATION.ROTATION_0, TscCommand.FONTMUL.MUL_1, TscCommand.FONTMUL.MUL_1,"Welcome to use Gprinter!");
+//        //绘制图片
+//        Bitmap b = BitmapFactory.decodeResource(CashierApp.getAppContext().getResources(),
+//                R.mipmap.ic_launcher);
+//        tsc.addBitmap(20,50, TscCommand.BITMAP_MODE.OVERWRITE, b.getWidth()*2,b);
+//
+//        tsc.addQRCode(250, 80, TscCommand.EEC.LEVEL_L,5, TscCommand.ROTATION.ROTATION_0, " www.gprinter.com.cn");
+//        //绘制一维条码
+//        tsc.add1DBarcode(20,250, TscCommand.BARCODETYPE.CODE128, 100, TscCommand.READABEL.EANBEL, TscCommand.ROTATION.ROTATION_0, "Gprinter");
+//        tsc.addPrint(1,1); // 打印标签
+//        tsc.addSound(2, 100); //打印标签后 蜂鸣器响
+//        Vector<Byte> datas = tsc.getCommand(); //发送数据
+//        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+//        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
+//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
+//        int rel;
+//        try {
+//            rel = mGpService.sendTscCommand(mPrinterIndex, str);
+//            GpCom.ERROR_CODE r=GpCom.ERROR_CODE.values()[rel];
+//            if(r != GpCom.ERROR_CODE.SUCCESS){
+//                Toast.makeText(getApplicationContext(),GpCom.getErrorText(r),
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (RemoteException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * 打印测试
@@ -401,7 +450,7 @@ public class PrintManagerImpl extends PrintManager {
         Observable.create(new Observable.OnSubscribe<EscCommand>() {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
-                subscriber.onNext(makeEsc());
+                subscriber.onNext(makeTestEsc());
                 subscriber.onCompleted();
             }
         })
@@ -420,7 +469,14 @@ public class PrintManagerImpl extends PrintManager {
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        GPrinterAgent.print(escCommand);
+//                        GPrinterAgent.print(escCommand);
+                        if (escCommand != null) {
+                            //获得打印命令
+                            Vector<Byte> datas = escCommand.getCommand();//发送数据
+                            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+                            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
+                            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA_V2, bytes));
+                        }
                     }
                 });
     }
@@ -882,7 +938,7 @@ public class PrintManagerImpl extends PrintManager {
         esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
                 EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
         List<ScOrderItem> items = scOrder.getItems();
-        if (items != null && items.size() > 0){
+        if (items != null && items.size() > 0) {
             esc.addText("--------------------------------\n");//32个
             for (ScOrderItem item : items) {
                 makeOrderItem1(esc, item.getProductName(), item.getUnitName(),

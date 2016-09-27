@@ -5,25 +5,24 @@ import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.account.UserApiImpl;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
-import com.mfh.framework.api.impl.MfhApiImpl;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -66,7 +65,7 @@ public class ValidateManager {
     private static ValidateManager instance = null;
 
     /**
-     * 返回 DataSyncManager 实例
+     * 返回 DataSyncManagerImpl 实例
      *
      * @return
      */

@@ -35,7 +35,7 @@
         android:padding="12dp"
         android:showDividers="middle">
         <!--商品原价／档案价格汇总-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelTotalAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             app:topTextSize="30sp"/>
 
         <!--调整金额-->
-        <com.mfh.framework.uikit.compound.MultiLayerLabel
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
             android:id="@+id/labelAdjustAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
