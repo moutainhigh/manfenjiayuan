@@ -89,6 +89,15 @@ public class ReserveFragment extends BaseProgressFragment
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
 
         toolbar.setTitle("米西厨房");
+        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+
         initCategoryRecyclerView();
         initGoodsRecyclerView();
 

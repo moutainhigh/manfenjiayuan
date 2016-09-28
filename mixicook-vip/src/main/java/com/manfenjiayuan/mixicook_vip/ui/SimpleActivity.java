@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.manfenjiayuan.mixicook_vip.InputTextFragment;
@@ -96,9 +95,6 @@ public class SimpleActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         handleIntent();
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
 

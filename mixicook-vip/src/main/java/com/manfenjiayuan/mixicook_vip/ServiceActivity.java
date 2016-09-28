@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -84,10 +83,7 @@ public class ServiceActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         handleIntent();
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        super.onCreate(savedInstanceState);
+       super.onCreate(savedInstanceState);
 
 //        startService(new Intent(this, Utf7ImeService.class));
         //hide soft input

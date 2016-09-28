@@ -2,55 +2,36 @@ package com.manfenjiayuan.mixicook_vip.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.manfenjiayuan.business.Constants;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
-import com.manfenjiayuan.business.widget.MyFragmentTabHost;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.mixicook_vip.MainEvent;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ValidateManager;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
-import com.manfenjiayuan.mixicook_vip.ui.my.MyFragment;
+import com.manfenjiayuan.mixicook_vip.ui.home.HomeFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.api.account.Office;
 import com.mfh.framework.api.account.UserMixInfo;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.widget.OnTabReselectListener;
 import com.tencent.bugly.beta.Beta;
 
 import java.util.List;
 
-import butterknife.Bind;
 import de.greenrobot.event.EventBus;
 
 public class  MainActivity extends BaseActivity implements IPosRegisterView {
 
-    //    @Bind(R.id.toolbar)
-//    Toolbar toolbar;
-    @Bind(R.id.bottomNavigationBar)
-    MyFragmentTabHost mTabHost;
     private PosRegisterPresenter mPosRegisterPresenter;
+
+    private HomeFragment mHomeFragment;
 
     @Override
     public int getLayoutResId() {
@@ -63,46 +44,7 @@ public class  MainActivity extends BaseActivity implements IPosRegisterView {
     }
 
     @Override
-    protected void initViews() {
-        super.initViews();
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        mTabHost.setup(this, getSupportFragmentManager(), R.id.fragment_container);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            mTabHost.getTabWidget().setShowDividers(0);
-        }
-        initTabs();
-        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-                final int size = mTabHost.getTabWidget().getTabCount();
-                for (int i = 0; i < size; i++) {
-                    View v = mTabHost.getTabWidget().getChildAt(i);
-                    if (i == mTabHost.getCurrentTab()) {
-                        v.setSelected(true);
-                    } else {
-                        v.setSelected(false);
-                    }
-                }
-            }
-        });
-
-
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         mPosRegisterPresenter = new PosRegisterPresenter(this);
@@ -110,6 +52,8 @@ public class  MainActivity extends BaseActivity implements IPosRegisterView {
         ValidateManager.get().batchValidate();
 
         Beta.checkUpgrade(false, false);
+
+        showHomeFragment();
     }
 
     @Override
@@ -125,99 +69,34 @@ public class  MainActivity extends BaseActivity implements IPosRegisterView {
         EventBus.getDefault().post(new MainEvent(MainEvent.EID_SHOPCART_DATASET_CHANGED));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void showHomeFragment(){
+        if (mHomeFragment == null){
+            mHomeFragment = new HomeFragment();
         }
-
-        return super.onOptionsItemSelected(item);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, mHomeFragment)
+                .commit();
     }
-
-    private void initTabs() {
-        MainTab[] tabs = MainTab.values();
-        final int size = tabs.length;
-        for (int i = 0; i < size; i++) {
-            MainTab tab = tabs[i];
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(getString(tab.getResName()));
-            View indicator = LayoutInflater.from(getApplicationContext())
-                    .inflate(R.layout.main_tab_indicator, null);
-            TextView title = (TextView) indicator.findViewById(R.id.tab_title);
-            Drawable drawable = this.getResources().getDrawable(tab.getResIcon());
-            title.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
-            title.setText(getString(tab.getResName()));
-            tabSpec.setIndicator(indicator);
-            tabSpec.setContent(new TabHost.TabContentFactory() {
-                @Override
-                public View createTabContent(String tag) {
-                    return new View(MainActivity.this);
-                }
-            });
-            mTabHost.addTab(tabSpec, tab.getClz(), null);
-            mTabHost.getTabWidget().getChildAt(i).setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (v.equals(mTabHost.getCurrentTabView())) {
-                        Fragment currentFragment = getCurrentFragment();
-
-                        if (currentFragment != null) {
-                            if (currentFragment instanceof MyFragment && !MfhLoginService.get().haveLogined()) {
-                                redirectToLogin();
-                            }
-
-                            if (currentFragment instanceof OnTabReselectListener) {
-                                ((OnTabReselectListener) currentFragment).onTabReselect();
-                                return true;
-                            }
-                        }
-
-//                        if (currentFragment != null && currentFragment instanceof OnTabReselectListener) {
-//                            ((OnTabReselectListener) currentFragment).onTabReselect();
-//                            return true;
-//                        }
-                    }
-                    return false;
-                }
-            });
-        }
-    }
-
-    private Fragment getCurrentFragment() {
-        return getSupportFragmentManager().findFragmentByTag(mTabHost.getCurrentTabTag());
-    }
-
     public void onEventMainThread(MainEvent event) {
         ZLogger.d(String.format("MainEvent(%d)", event.getEventId()));
         if (event.getEventId() == MainEvent.EID_SHOPCART_DATASET_CHANGED) {
             //刷新购物车商品数量
-            TextView badgeView = (TextView) mTabHost.getBadgeView(2);
-            if (badgeView != null) {
-                List<PurchaseShopcartEntity> entities = PurchaseShopcartService.getInstance()
-                        .fetchFreshEntites();
-
-                if (entities != null && entities.size() > 0) {
-                    badgeView.setText(String.valueOf(entities.size()));
-                    badgeView.setVisibility(View.VISIBLE);
-                } else {
-                    badgeView.setVisibility(View.INVISIBLE);
-                }
-                ZLogger.d("商品数：" + (entities != null ? String.valueOf(entities.size()) : ""));
-            } else {
-                ZLogger.d("badgeView is null");
-            }
+//            TextView badgeView = (TextView) mTabHost.getBadgeView(2);
+//            if (badgeView != null) {
+//                List<PurchaseShopcartEntity> entities = PurchaseShopcartService.getInstance()
+//                        .fetchFreshEntites();
+//
+//                if (entities != null && entities.size() > 0) {
+//                    badgeView.setText(String.valueOf(entities.size()));
+//                    badgeView.setVisibility(View.VISIBLE);
+//                } else {
+//                    badgeView.setVisibility(View.INVISIBLE);
+//                }
+//                ZLogger.d("商品数：" + (entities != null ? String.valueOf(entities.size()) : ""));
+//            } else {
+//                ZLogger.d("badgeView is null");
+//            }
         }
     }
 
@@ -234,15 +113,11 @@ public class  MainActivity extends BaseActivity implements IPosRegisterView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_START: {
             }
             break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN: {
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN: {
                 redirectToLogin();
             }
             break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_SESSION_EXPIRED: {
-                retryLogin();
-            }
-            break;
-            case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER: {
+            case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
                 showRegisterPlatDialog();
             }
             break;

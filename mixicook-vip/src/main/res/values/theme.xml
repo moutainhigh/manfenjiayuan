@@ -11,6 +11,7 @@
         <item name="windowNoTitle">true</item>
         <!--<item name="android:displayOptions">homeAsUp|showTitle|showHome</item>-->
         <!--<item name="android:windowIsTranslucent">true</item>-->
+
     </style>
 
     <!-- 夜间模式 -->

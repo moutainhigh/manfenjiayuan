@@ -50,8 +50,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:contentDescription=""
                         android:layout_marginEnd="@dimen/spacing_normal"
+                        android:contentDescription=""
                         android:src="@mipmap/ic_settings"/>
 
                 </android.support.v7.widget.ButtonBarLayout>
@@ -64,6 +64,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/material_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -83,7 +84,7 @@
             <LinearLayout
                 android:id="@+id/ll_second"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="64dp"
                 android:divider="@drawable/divider_vertical_line"
                 android:dividerPadding="@dimen/spacing_normal"
                 android:gravity="center_vertical"
@@ -97,7 +98,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     app:bottomText="余额"
-                    app:topText="￥ 0.00"/>
+                    app:bottomTextColor="@color/black_70"
+                    app:bottomTextSize="12sp"
+                    app:topText="￥ 0.00"
+                    app:topTextColor="#FF4081"
+                    app:topTextSize="26sp"/>
 
                 <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/item_redpacket"
@@ -105,7 +110,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     app:bottomText="红包"
-                    app:topText="￥ 0.00"/>
+                    app:bottomTextColor="@color/black_70"
+                    app:bottomTextSize="12sp"
+                    app:topText="￥ 0.00"
+                    app:topTextColor="#FE5000"
+                    app:topTextSize="26sp"/>
 
                 <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                     android:id="@+id/item_score"
@@ -113,7 +122,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     app:bottomText="积分"
-                    app:topText="￥ 0.00"/>
+                    app:bottomTextColor="@color/black_70"
+                    app:bottomTextSize="12sp"
+                    app:topText="￥ 0.00"
+                    app:topTextColor="@color/mfh_colorPrimary"
+                    app:topTextSize="26sp"/>
 
             </LinearLayout>
 
@@ -123,8 +136,8 @@
                 android:id="@+id/item_order"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:src="@mipmap/icon_orders_normal"
                 app:position="top"
+                app:src="@mipmap/icon_orders_normal"
                 app:subText=""
                 app:text="订单"/>
             <!--充值-->
@@ -132,8 +145,8 @@
                 android:id="@+id/item_topup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:src="@mipmap/ic_topup_normal"
                 app:position="center"
+                app:src="@mipmap/ic_topup_normal"
                 app:subText=""
                 app:text="充值"/>
             <!--会员卡-->
@@ -141,8 +154,8 @@
                 android:id="@+id/item_card"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:src="@mipmap/ic_card_normal"
                 app:position="bottom"
+                app:src="@mipmap/ic_card_normal"
                 app:subText=""
                 app:text="会员卡"/>
 
@@ -152,8 +165,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_normal"
-                app:src="@mipmap/ic_store_normal"
                 app:position="top"
+                app:src="@mipmap/ic_store_normal"
                 app:subText=""
                 app:text="门店"/>
             <!--反馈-->
@@ -161,8 +174,8 @@
                 android:id="@+id/item_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:src="@mipmap/ic_feedback_normal"
                 app:position="bottom"
+                app:src="@mipmap/ic_feedback_normal"
                 app:subText="吐槽"
                 app:text="反馈"/>
 
@@ -173,8 +186,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_normal"
-                app:src="@mipmap/icon_mfhpartner_normal"
                 app:position="single"
+                app:src="@mipmap/icon_mfhpartner_normal"
                 app:subText="马上加入"
                 app:text="米西合伙人"/>
         </LinearLayout>

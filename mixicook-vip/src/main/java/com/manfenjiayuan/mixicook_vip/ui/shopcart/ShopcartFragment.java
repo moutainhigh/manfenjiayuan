@@ -58,6 +58,14 @@ public class ShopcartFragment extends BaseFragment {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         toolbar.setTitle("购物车");
+        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
 
         initGoodsRecyclerView();
 

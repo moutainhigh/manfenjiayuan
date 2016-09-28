@@ -13,8 +13,9 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,42 +24,43 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:padding="@dimen/spacing_normal"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_normal">
+
                 <ImageView
                     android:id="@+id/iv_marker"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_location" />
+                    android:src="@mipmap/ic_location"/>
 
                 <TextView
                     android:id="@+id/tv_net_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxWidth="200dp"
                     android:layout_marginStart="8dp"
                     android:layout_toEndOf="@+id/iv_marker"
                     android:gravity="start"
+                    android:maxWidth="200dp"
                     android:paddingEnd="4dp"
+                    android:singleLine="true"
                     android:text="收货人: 冰珊孤雪"
                     android:textColor="@color/black_80"
-                    android:textSize="14sp"
-                    android:singleLine="true" />
+                    android:textSize="14sp"/>
 
                 <TextView
                     android:id="@+id/tv_net_phonenumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/tv_net_name"
+                    android:layout_marginEnd="4dp"
                     android:layout_toEndOf="@+id/tv_net_name"
                     android:layout_toStartOf="@+id/iv_arrow"
-                    android:layout_marginEnd="4dp"
                     android:gravity="end"
                     android:text="15250065084"
                     android:textColor="@color/black_80"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"/>
 
                 <TextView
                     android:id="@+id/tv_net_address"
@@ -72,7 +74,7 @@
                     android:paddingEnd="4dp"
                     android:text=""
                     android:textColor="@color/black_50"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"/>
 
                 <ImageView
                     android:id="@+id/iv_arrow"
@@ -104,8 +106,7 @@
             <!--商品-->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp">
+                android:layout_height="wrap_content">
                 <!--空视图-->
                 <TextView
                     android:id="@+id/empty_view"
@@ -134,8 +135,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/bg_topline"
         android:layout_gravity="bottom"
+        android:background="@drawable/bg_topline"
         android:orientation="horizontal">
 
         <TextView

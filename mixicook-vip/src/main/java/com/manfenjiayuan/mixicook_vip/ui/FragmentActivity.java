@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.my.MyFragment;
 import com.manfenjiayuan.mixicook_vip.ui.order.ConfirmOrderFragment;
+import com.manfenjiayuan.mixicook_vip.ui.reserve.ReserveFragment;
+import com.manfenjiayuan.mixicook_vip.ui.shopcart.ShopcartFragment;
 import com.mfh.framework.uikit.base.BaseActivity;
 
 /**
@@ -17,8 +20,10 @@ import com.mfh.framework.uikit.base.BaseActivity;
 public class FragmentActivity extends BaseActivity {
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
-
-    public static final int FT_CONFIRM_ORDER = 0x1;//确认订单
+    public static final int FT_CONFIRM_ORDER = 0x01;//确认订单
+    public static final int FT_MY = 0x02;//我的
+    public static final int FT_SHOPCART = 0x03;//购物车
+    public static final int FT_RESERVE = 0x04;//预定
 
     private int fragmentType = 0;
 
@@ -37,11 +42,6 @@ public class FragmentActivity extends BaseActivity {
 
     @Override
     protected boolean isBackKeyEnabled() {
-        return true;
-    }
-
-    @Override
-    protected boolean isFullscreenEnabled() {
         return true;
     }
 
@@ -86,6 +86,30 @@ public class FragmentActivity extends BaseActivity {
         switch (fragmentType) {
             case FT_CONFIRM_ORDER: {
                 ConfirmOrderFragment fragment = new ConfirmOrderFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_MY: {
+                MyFragment fragment = new MyFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_SHOPCART: {
+                ShopcartFragment fragment = new ShopcartFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_RESERVE: {
+                ReserveFragment fragment = new ReserveFragment();
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)
