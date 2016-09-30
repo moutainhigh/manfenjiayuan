@@ -10,7 +10,6 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
  */
 public abstract class BaseProgressFragment extends BaseFragment {
 
-
     protected boolean isLoadingMore;
     protected boolean bSyncInProgress = false;//是否正在同步
     /**

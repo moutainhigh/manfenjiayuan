@@ -142,7 +142,7 @@ public class WebViewUtils {
     }
 
     private Map<String,String> generateAdditionalHttpHeaders(){
-        HashMap<String, String> map = new HashMap<String,String>();
+        HashMap<String, String> map = new HashMap<>();
 //            //手动设置Referer来判断页面的来源
 //            map.put("Referer", view.getOriginalUrl());
         map.put("Accept-Encoding", "gzip");
@@ -170,7 +170,6 @@ public class WebViewUtils {
      * @return true 加载本地资源; false 加载网络资源
      * */
     public static boolean loadUrl(WebView webView, String url){
-        //TODO
         //测试服务器才加载本地文件，因为html中有刷新按钮，后面会做优化
         if(!BizConfig.RELEASE){
         //判断是否需要加载本地文件
