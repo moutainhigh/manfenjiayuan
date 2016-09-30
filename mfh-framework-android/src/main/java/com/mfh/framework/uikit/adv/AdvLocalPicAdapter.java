@@ -42,7 +42,7 @@ public class AdvLocalPicAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return data.size();
+        return data != null ? data.size() : 0;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class AdvLocalPicAdapter extends PagerAdapter {
 
         View view = View.inflate(context, R.layout.adv_item_pic, null);
         ImageView ivAdv = (ImageView) view.findViewById(R.id.adv_pic);
-        ivAdv.setImageResource(item.getResId());
+        ivAdv.setBackgroundResource(item.getResId());
 
         container.addView(view);
 
