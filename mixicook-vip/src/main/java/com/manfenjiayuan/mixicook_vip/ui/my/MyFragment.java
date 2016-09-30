@@ -22,6 +22,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.Mixicook;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -187,6 +188,15 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     @OnClick(R.id.item_balance)
     public void showBalance() {
         String url = URLHelper.append(H5Api.URL_ME_WALLET,
+                String.format("humanid=%d",
+                        MfhLoginService.get().getCurrentGuId()));
+//                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
+        redirectToJBWebForResult(url, true, -1);
+    }
+
+    @OnClick(R.id.item_redpacket)
+    public void showRedpacket() {
+        String url = URLHelper.append(Mixicook.URL_ME_ACCOUNT,
                 String.format("humanid=%d",
                         MfhLoginService.get().getCurrentGuId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
