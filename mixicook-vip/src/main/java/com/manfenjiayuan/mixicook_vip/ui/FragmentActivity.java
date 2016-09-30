@@ -11,6 +11,7 @@ import com.manfenjiayuan.mixicook_vip.ui.my.MyFragment;
 import com.manfenjiayuan.mixicook_vip.ui.order.ConfirmOrderFragment;
 import com.manfenjiayuan.mixicook_vip.ui.reserve.ReserveFragment;
 import com.manfenjiayuan.mixicook_vip.ui.shopcart.ShopcartFragment;
+import com.manfenjiayuan.mixicook_vip.ui.location.LocationFragment;
 import com.mfh.framework.uikit.base.BaseActivity;
 
 /**
@@ -24,6 +25,7 @@ public class FragmentActivity extends BaseActivity {
     public static final int FT_MY = 0x02;//我的
     public static final int FT_SHOPCART = 0x03;//购物车
     public static final int FT_RESERVE = 0x04;//预定
+    public static final int FT_LOCATION = 0x05;//定位
 
     private int fragmentType = 0;
 
@@ -57,7 +59,6 @@ public class FragmentActivity extends BaseActivity {
 
         initFragments();
     }
-
 
 
     @Override
@@ -110,6 +111,14 @@ public class FragmentActivity extends BaseActivity {
             break;
             case FT_RESERVE: {
                 ReserveFragment fragment = new ReserveFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_LOCATION: {
+                LocationFragment fragment = new LocationFragment();
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)

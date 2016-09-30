@@ -2,6 +2,7 @@ package com.manfenjiayuan.mixicook_vip.ui.home;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,9 +31,12 @@ import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.hybrid.HybridWebView;
+import com.mfh.framework.hybrid.JBridgeConf;
 import com.mfh.framework.hybrid.WebViewDelegate;
 import com.mfh.framework.hybrid.WebViewJavascriptBridge;
+import com.mfh.framework.hybrid.WebViewUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.adv.AdvertisementViewPager;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -136,7 +140,6 @@ public class HomeFragment extends BaseFragment {
             }
         });
 
-        DialogUtil.showHint("首页");
         loadInit();
     }
 
@@ -274,6 +277,20 @@ public class HomeFragment extends BaseFragment {
     }
 
     /**
+     * 跳转至定位
+     */
+    @OnClick(R.id.address_view)
+    public void redirect2Location(){
+        Bundle extras = new Bundle();
+        extras.putString(SimpleActivity.EXTRA_TITLE, "定位");
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_LOCATION);
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivity(intent);
+    }
+
+    /**
      * 初始化菜单
      */
     private void initCloudMenus() {
@@ -332,7 +349,21 @@ public class HomeFragment extends BaseFragment {
      * register native method
      */
     private void registerHandle() {
-
+//新增商品到购物车
+        bridge.registerHandler(JBridgeConf.HANDLE_NAME_ADD2CART,
+                new WebViewJavascriptBridge.WVJBHandler() {
+                    @Override
+                    public void handle(String data, WebViewJavascriptBridge.WVJBResponseCallback responseCallback) {
+//                        {
+//                                "productId": 456,
+//                                "productName": "商品名",
+//                                "productPrice": 88.88,
+//                                "productImageUrl": "商品图片链接",
+//                                "shopId": 789
+//                        }
+                        // TODO: 9/28/16 保存商品到数据库
+                    }
+                });
     }
 
     class UserServerHandler implements WebViewJavascriptBridge.WVJBHandler {
@@ -435,8 +466,32 @@ public class HomeFragment extends BaseFragment {
                 "https://store.taobao.com/shop/view_shop.htm?spm=a21bo.50862.201863-4.d9.YgfLLw&pvid=b3cc2262-f10a-4534-8635-eef3730de34b&abbucket=_AB-M65_B5&acm=03014.1003.1.765824&aldid=xpXHqNce&user_number_id=669816508&abtest=_AB-LR65-PR65&brandId=95804681&scm=1007.13143.30625.100200300000000&pos=9"));
         menuAdapter.setEntityList(menus);
 
-        mWebView.loadUrl("http://www.jd.com/");
+        String raw = "http://mobile.mixicook.com/mobile/market/shop?netId=136076";
+        String newUrl = URLHelper.append(raw,
+                String.format("humanid=%d",
+                        MfhLoginService.get().getCurrentGuId()));
+
+        syncCookies(getContext(), newUrl);
+        WebViewUtils.loadUrl(mWebView, newUrl);
+//        mWebView.loadUrl("http://www.jd.com/");
     }
+
+    /**
+     * 同步Cookie
+     * */
+    public static void syncCookies(Context context, String url){
+        String sessionId = MfhLoginService.get().getCurrentSessionId();
+        if(sessionId != null){
+            StringBuilder sbCookie = new StringBuilder();
+            sbCookie.append(String.format("JSESSIONID=%s", sessionId));
+            sbCookie.append(String.format(";domain=%s", MfhApi.DOMAIN));
+            sbCookie.append(String.format(";path=%s", "/"));
+            String cookieValue = sbCookie.toString();
+
+            WebViewUtils.syncCookies(context, url, cookieValue);
+        }
+    }
+
 
     /**
      * 重新加载

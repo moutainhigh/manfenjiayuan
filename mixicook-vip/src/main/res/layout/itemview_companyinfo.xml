@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/rootview"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:orientation="vertical"
+              android:background="@color/material_white"
+              android:paddingBottom="8dp"
+              android:paddingEnd="2dp"
+              android:paddingStart="8dp"
+              android:paddingTop="8dp">
+
+    <!--名称-->
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/mfh_textview_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="商品名称"/>
+    <TextView
+        android:id="@+id/tv_addr"
+        style="@style/mfh_textview_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="商品名称"/>
+
+</LinearLayout>

@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.adv.AdvertisementViewPager;
 
 import java.util.ArrayList;
@@ -120,7 +119,7 @@ public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapt
     public void finishUpdate(ViewGroup container) {
 //        super.finishUpdate(container);
         int position = mViewPager.getCurrentItem();
-        ZLogger.d("finish update before, position=" + position);
+//        ZLogger.d("finish update before, position=" + position);
         if (position == 0) {
             position = getRealCount();
             mViewPager.setCurrentItem(position, false);
@@ -128,7 +127,7 @@ public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapt
             position = getRealCount() - 1;
             mViewPager.setCurrentItem(position, false);
         }
-        ZLogger.d("finish update after, position=" + position);
+//        ZLogger.d("finish update after, position=" + position);
     }
 
 

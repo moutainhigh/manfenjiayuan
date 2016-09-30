@@ -39,8 +39,8 @@ public class  MainActivity extends BaseActivity implements IPosRegisterView {
     }
 
     @Override
-    protected void initToolBar() {
-        super.initToolBar();
+    protected boolean isMfLocationEnable() {
+        return true;
     }
 
     @Override
