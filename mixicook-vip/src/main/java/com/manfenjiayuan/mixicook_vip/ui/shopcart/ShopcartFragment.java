@@ -1,9 +1,9 @@
 package com.manfenjiayuan.mixicook_vip.ui.shopcart;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,17 +14,20 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
-import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.shoppingCart.CartPack;
+import com.mfh.framework.api.shoppingCart.ShoppingCart;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -33,7 +36,7 @@ import butterknife.OnClick;
 /**
  * Created by bingshanguxue on 6/28/16.
  */
-public class ShopcartFragment extends BaseFragment {
+public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements IShopcartView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -49,6 +52,17 @@ public class ShopcartFragment extends BaseFragment {
     TextView tvBrief;
     @Bind(R.id.button_confirm)
     Button btnConfirm;
+
+    private ShopcartPresenter mShopcartPresenter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+//        EventBus.getDefault().register(this);
+
+        mShopcartPresenter = new ShopcartPresenter(this);
+    }
 
     @Override
     protected int getLayoutResId() {
@@ -69,10 +83,7 @@ public class ShopcartFragment extends BaseFragment {
 
         initGoodsRecyclerView();
 
-        List<PurchaseShopcartEntity> entities = PurchaseShopcartService.getInstance().fetchFreshEntites();
-        goodsListAdapter.setEntityList(entities);
-
-        DialogUtil.showHint("购物车" + entities.size());
+        reload();
     }
 
     @Override
@@ -81,17 +92,23 @@ public class ShopcartFragment extends BaseFragment {
             case 0: {
                 if (resultCode == Activity.RESULT_OK) {
                     showProgressDialog(ProgressDialog.STATUS_DONE, "预定成功", true);
+
+                    reload();
                 }
-                refresh();
             }
             break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void refresh() {
-        List<PurchaseShopcartEntity> entities = PurchaseShopcartService.getInstance().fetchFreshEntites();
-        goodsListAdapter.setEntityList(entities);
+    @Override
+    public void reload() {
+        super.reload();
+        mShopcartPresenter.list(null, null);
+//        List<PurchaseShopcartEntity> entities = PurchaseShopcartService.getInstance().fetchFreshEntites();
+//        goodsListAdapter.setEntityList(entities);
+//
+//        DialogUtil.showHint("购物车" + entities.size());
     }
 
     @OnClick(R.id.button_confirm)
@@ -150,31 +167,6 @@ public class ShopcartFragment extends BaseFragment {
                                                   }
 
                                                   @Override
-                                                  public void onDeleteConfirm(final int position) {
-                                                      final PurchaseShopcartEntity entity = goodsListAdapter.getEntity(position);
-                                                      if (entity == null){
-                                                          return;
-                                                      }
-
-                                                      showConfirmDialog(String.format("确定要删除 %s 吗？", entity.getName()),
-                                                              "删除", new DialogInterface.OnClickListener() {
-
-                                                                  @Override
-                                                                  public void onClick(DialogInterface dialog, int which) {
-                                                                      dialog.dismiss();
-                                                                      goodsListAdapter.removeEntity(position);
-
-                                                                  }
-                                                              }, "点错了", new DialogInterface.OnClickListener() {
-
-                                                                  @Override
-                                                                  public void onClick(DialogInterface dialog, int which) {
-                                                                      dialog.dismiss();
-                                                                  }
-                                                              });
-                                                  }
-
-                                                  @Override
                                                   public void onDataSetChanged() {
                                                       int count = goodsListAdapter.getItemCount();
                                                       if (count > 0) {
@@ -189,5 +181,56 @@ public class ShopcartFragment extends BaseFragment {
 
         );
         goodsRecyclerView.setAdapter(goodsListAdapter);
+    }
+
+    @Override
+    public void onIShopcartViewProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+        onLoadStart();
+    }
+
+    @Override
+    public void onIShopcartViewError(String errorMsg) {
+        if (!StringUtils.isEmpty(errorMsg)){
+            ZLogger.df(errorMsg);
+        }
+
+        hideProgressDialog();
+        onLoadFinished();
+    }
+
+    @Override
+    public void onIShopcartViewSuccess(PageInfo pageInfo, List<ShoppingCart> dataList) {
+        try {
+            mPageInfo = pageInfo;
+
+            List<CartPack> cartPacks = new ArrayList<>();
+            if (dataList != null && dataList.size() > 0) {
+                for (ShoppingCart shoppingCart : dataList) {
+                    List<CartPack> products = shoppingCart.getProducts();
+                    if (products != null) {
+                        cartPacks.addAll(products);
+                    }
+                }
+            }
+            //第一页，缓存数据
+            if (mPageInfo.getPageNo() == 1) {
+                ZLogger.d("缓存商品收货订单第一页数据");
+
+                if (goodsListAdapter != null) {
+                    goodsListAdapter.setEntityList(cartPacks);
+                }
+            } else {
+                if (goodsListAdapter != null) {
+                    goodsListAdapter.appendEntityList(cartPacks);
+                }
+            }
+
+            onLoadFinished();
+        } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+            ZLogger.e(String.format("加载商品收货订单失败: %s", ex.toString()));
+            onLoadFinished();
+        }
     }
 }

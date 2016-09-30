@@ -7,37 +7,39 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.NumberPickerView;
 import com.bumptech.glide.Glide;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.bingshanguxue.vector_uikit.NumberPickerView;
-import com.manfenjiayuan.mixicook_vip.MainEvent;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
+import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.shoppingCart.Cart;
+import com.mfh.framework.api.shoppingCart.CartPack;
+import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 
 /**
  * 生鲜预定购物车
  * Created by Nat.ZZN(bingshanguxue) on 15/6/5.
  */
 public class ShopcartGoodsAdapter
-        extends RegularAdapter<PurchaseShopcartEntity, ShopcartGoodsAdapter.CategoryViewHolder> {
+        extends RegularAdapter<CartPack, ShopcartGoodsAdapter.CategoryViewHolder> {
 
-    public ShopcartGoodsAdapter(Context context, List<PurchaseShopcartEntity> entityList) {
+    public ShopcartGoodsAdapter(Context context, List<CartPack> entityList) {
         super(context, entityList);
     }
 
     public interface OnAdapterListener {
         void onItemClick(View view, int position);
 
-        void onDeleteConfirm(int position);
         void onDataSetChanged();
     }
 
@@ -55,43 +57,27 @@ public class ShopcartGoodsAdapter
 
     @Override
     public void onBindViewHolder(final CategoryViewHolder holder, final int position) {
-        final PurchaseShopcartEntity entity = entityList.get(position);
+        final CartPack cartPack = entityList.get(position);
+        Cart cart = cartPack.getCart();
 
-        Glide.with(mContext).load(entity.getImgUrl()).error(R.mipmap.ic_image_error)
+        Glide.with(mContext).load(cartPack.getImgUrl()).error(R.mipmap.ic_image_error)
                 .into(holder.tvHeader);
-        holder.tvName.setText(entity.getName());
-        holder.tvPrice.setText(MUtils.formatDouble(null, null,
-                entity.getPrice(), "", "/", entity.getUnit()));
-        holder.mNumberPickerView.setValue(String.format("%.0f", entity.getQuantity()));
+        holder.tvName.setText(cartPack.getProductName());
+
+        if (cart != null){
+            holder.tvPrice.setText(MUtils.formatDouble(null, null,
+                    cart.getPrice(), "", "/", cartPack.getUnitName()));
+            holder.mNumberPickerView.setValue(String.format("%.0f", cart.getBcount()));
+        }
+        else{
+            holder.tvPrice.setText("");
+            holder.mNumberPickerView.setValue(0);
+        }
     }
 
     @Override
-    public void setEntityList(List<PurchaseShopcartEntity> entityList) {
+    public void setEntityList(List<CartPack> entityList) {
         super.setEntityList(entityList);
-        if (adapterListener != null) {
-            adapterListener.onDataSetChanged();
-        }
-    }
-
-    @Override
-    public void removeEntity(int position) {
-//        super.removeEntity(position);
-
-        PurchaseShopcartEntity entity = getEntity(position);
-        if (entity == null){
-            return;
-        }
-
-        String sqlWhere = String.format("purchaseType = '%d' and providerId = '%d' and barcode = '%s'",
-                PurchaseShopcartEntity.PURCHASE_TYPE_FRESH,
-                entity.getProviderId(), entity.getBarcode());
-        PurchaseShopcartService.getInstance().deleteBy(sqlWhere);
-        //刷新列表
-        entityList.remove(position);
-        notifyItemRemoved(position);
-
-        EventBus.getDefault().post(new MainEvent(MainEvent.EID_SHOPCART_DATASET_CHANGED));
-
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
         }
@@ -99,17 +85,44 @@ public class ShopcartGoodsAdapter
 
     /**
      * */
-    public void onItemValueChanged(int position, int quantity){
+    public void adjustCart(final int position, final int quantity){
         try{
-            PurchaseShopcartEntity entity = getEntity(position);
-            if (entity == null){
+            CartPack cartPack = getEntity(position);
+            if (cartPack == null){
                 return;
             }
-            PurchaseShopcartService.getInstance()
-                    .saveOrUpdateFreshGoods(entity,
-                            Double.valueOf(String.valueOf(quantity)), false);
-            notifyItemChanged(position);
-            EventBus.getDefault().post(new MainEvent(MainEvent.EID_SHOPCART_DATASET_CHANGED));
+            final Cart cart = cartPack.getCart();
+
+            NetCallBack.NetTaskCallBack responseC = new NetCallBack.NetTaskCallBack<String,
+                    NetProcessor.Processor<String>>(
+                    new NetProcessor.Processor<String>() {
+                        @Override
+                        public void processResult(IResponseData rspData) {
+                            //{"code":"0","msg":"操作成功!","version":"1","data":""}
+                            ZLogger.df("调整购物车商品数量: 操作成功");
+
+                            cart.setBcount(Double.valueOf(String.valueOf(quantity)));
+                            cart.setAmount(cart.getPrice() * cart.getBcount());
+
+                            if (quantity <= 0){
+                                removeEntity(position);
+                            }
+                            else{
+                                notifyItemChanged(position);
+                            }
+                        }
+
+                        @Override
+                        protected void processFailure(Throwable t, String errMsg) {
+                            super.processFailure(t, errMsg);
+                            ZLogger.df("调整购物车商品数量: " + errMsg);
+                        }
+                    }
+                    , String.class
+                    , MfhApplication.getAppContext()) {
+            };
+
+            ShoppingCartApiImpl.adjustCart(cart.getId(), quantity, responseC);
 
             if (adapterListener != null) {
                 adapterListener.onDataSetChanged();
@@ -159,9 +172,6 @@ public class ShopcartGoodsAdapter
 
                 @Override
                 public void onPreDecrease() {
-                    if (adapterListener != null) {
-                        adapterListener.onDeleteConfirm(getAdapterPosition());
-                    }
                 }
 
                 @Override
@@ -170,7 +180,7 @@ public class ShopcartGoodsAdapter
                         removeEntity(getAdapterPosition());
                     }
                     else{
-                        onItemValueChanged(getAdapterPosition(), value);
+                        adjustCart(getAdapterPosition(), value);
                     }
                 }
             });
