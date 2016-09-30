@@ -1,13 +1,9 @@
 package com.mfh.framework.uikit.adv;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,9 +30,8 @@ import com.mfh.framework.uikit.widget.HorizontalInnerViewPager;
  *
  * -----------------------------------------------------------------
  */
-public class AdvertisementViewPager extends RelativeLayout implements OnPageChangeListener {
-
-	private static final int WHAT = 1;
+public class AdvertisementViewPager extends RelativeLayout
+		implements OnPageChangeListener {
 
 	private Context                     context;
 	private HorizontalInnerViewPager mViewPager;
@@ -45,15 +40,6 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 	/** Point layout of the current page*/
 	private LinearLayout 	mPointLinearLayout;
 
-	/**Whether automatic scroll*/
-	private boolean 		isAuto = false;
-	private int 			mIntervalTime;
-	/** whether stop auto scroll when touching, default is true **/
-	private boolean			stopScrollWhenTouch = true;
-	private boolean			isStopByTouch = false;
-
-	private Handler 		mHandler;
-
 	/**point image resource id*/
 	private int 			mNormalPointImageResid;
 	private int 			mSelectPointImageResid;
@@ -61,6 +47,7 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 	private boolean 		isShowPoint = true;
 	/**previous page index*/
 	private int				mPreviousItem = 0;
+
 
 	public AdvertisementViewPager(Context context) {
 		super(context);
@@ -72,20 +59,6 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 		super(context, attrs);
 		this.context = context;
 		initView();
-	}
-
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (stopScrollWhenTouch) {
-			if (ev.getAction() == MotionEvent.ACTION_DOWN && isAuto) {
-				isStopByTouch = true;
-				stopSlide();
-			}
-			else if (ev.getAction() == MotionEvent.ACTION_UP && isStopByTouch) {
-				startSlide(mIntervalTime);
-			}
-		}
-		return super.dispatchTouchEvent(ev);
 	}
 
 	@Override
@@ -164,15 +137,6 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 		mDescriptionTextView.setText(description);
 	}
 
-	
-	/**
-     * set whether stop auto scroll when touching, default is true
-     * 
-     * @param stopScrollWhenTouch
-     */
-	public void setStopScrollWhenTouch(boolean stopScrollWhenTouch) {
-		this.stopScrollWhenTouch = stopScrollWhenTouch;
-	}
 
 	public void setCurrentItem(int item) {
 		//fasle,不显示跳转过程的动画
@@ -204,6 +168,9 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 
 	private void changePointImageState(int index, boolean isSelect) {
 		ImageView poiImageView = (ImageView) mPointLinearLayout.getChildAt(index);
+		if (poiImageView == null){
+			return;
+		}
 		int resId = isSelect ? mSelectPointImageResid : mNormalPointImageResid;
 		poiImageView.setBackgroundResource(resId);
 	}
@@ -214,13 +181,7 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 	 * @param intervalTime  slide  interval time
 	 */
 	public void startSlide(int intervalTime) {
-		isAuto = true;
-		this.mIntervalTime = intervalTime;
-		if (mHandler == null) {
-			mHandler = new MHandler();
-		}
-		mHandler.removeMessages(WHAT);
-		mHandler.sendEmptyMessageDelayed(WHAT, mIntervalTime);
+		mViewPager.startupTimer(intervalTime);
 	}
 
 	/**
@@ -228,21 +189,7 @@ public class AdvertisementViewPager extends RelativeLayout implements OnPageChan
 	 * Suggest to destroy at the interface between the time to stop
 	 */
 	public void stopSlide() {
-		isAuto = false;
-		if (mHandler != null) {
-			mHandler.removeMessages(WHAT);
-		}
-	}
-
-	@SuppressLint("HandlerLeak")
-	private class MHandler extends Handler{
-		@Override
-		public void handleMessage(Message msg) {
-			if (isAuto) {
-				nextPage();
-				mHandler.sendEmptyMessageDelayed(WHAT, mIntervalTime);
-			}
-		}
+		mViewPager.shutdownTimer();
 	}
 
 }

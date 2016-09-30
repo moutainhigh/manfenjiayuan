@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Created by NAT.ZZN on 2015/5/26.
+ * Created by bingshanguxue on 2015/5/26.
  */
 public class SharedPreferencesUtil {
 
@@ -31,6 +31,7 @@ public class SharedPreferencesUtil {
         editor.putLong(key, value);
         editor.commit();
     }
+
 
     public static boolean get(Context context, String prefName, String key, boolean defValue) {
         return getSharedPreferences(context, prefName).getBoolean(key, defValue);

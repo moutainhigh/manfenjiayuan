@@ -24,7 +24,8 @@ public class ScGoodsSkuMode {
     /**
      * 查询商品
      */
-    public void findGoodsListByFrontCategory(Long categoryId, PageInfo pageInfo, final OnPageModeListener<ScGoodsSku> listener) {
+    public void findGoodsListByFrontCategory(Long categoryId, PageInfo pageInfo,
+                                             final OnPageModeListener<ScGoodsSku> listener) {
         if (listener != null) {
             listener.onProcess();
         }

@@ -152,7 +152,6 @@ public class BaseActivity extends AppCompatActivity {
         //hide soft input
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-
         if (isMfLocationEnable()) {
             initMfLocation();
         }

@@ -10,20 +10,18 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.mfh.framework.R;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.qrcode.camera.CameraManager;
 import com.mfh.framework.core.qrcode.decoding.CaptureActivityHandler;
 import com.mfh.framework.core.qrcode.decoding.InactivityTimer;
 import com.mfh.framework.core.qrcode.view.ViewfinderView;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.uikit.base.BaseActivity;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -65,12 +63,14 @@ public class ScanActivity extends BaseActivity implements Callback {
 		ivFlash = (ImageView) findViewById(R.id.ivFlash);
 	}
 
+	@Override
+	protected boolean isFullscreenEnabled() {
+		return true;
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
 		super.onCreate(savedInstanceState);
 
 		//ViewUtil.addTopView(getApplicationContext(), this, R.string.scan_card);

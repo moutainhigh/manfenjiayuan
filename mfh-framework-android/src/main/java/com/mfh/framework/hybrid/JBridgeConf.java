@@ -41,6 +41,6 @@ public class JBridgeConf {
     public static final String HANDLE_NAME_REDIRECT_TO_NATIVE_PRODUCT_DETAIL = "redirectToNativeProductDetail";
 
     //新增商品到购物车
-    public static final String HANDLE_NAME_SHOPCART_ADD = "shopcartAdd";
+    public static final String HANDLE_NAME_ADD2CART = "add2Cart";
 
 }

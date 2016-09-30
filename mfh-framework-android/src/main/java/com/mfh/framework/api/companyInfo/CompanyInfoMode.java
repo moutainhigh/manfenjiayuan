@@ -17,7 +17,8 @@ import java.util.List;
  */
 public class CompanyInfoMode {
 
-    public void findPublicCompanyInfo(PageInfo pageInfo, String nameLike, Integer abilityItem, final OnPageModeListener<CompanyInfo> listener) {
+    public void findPublicCompanyInfo(PageInfo pageInfo, String nameLike, Integer abilityItem,
+                                      final OnPageModeListener<CompanyInfo> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -40,13 +41,49 @@ public class CompanyInfoMode {
             @Override
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
-                ZLogger.d("加载关联租户失败:" + errMsg);
+                ZLogger.d("查询网点失败:" + errMsg);
                 if (listener != null) {
                     listener.onError(errMsg);
                 }
             }
         }, CompanyInfo.class, MfhApplication.getAppContext());
 
-        CompanyInfoApi.findPublicCompanyInfo(nameLike, abilityItem, pageInfo, queryRsCallBack);
+        CompanyInfoApiImpl.findPublicCompanyInfo(nameLike, abilityItem, pageInfo, queryRsCallBack);
     }
+
+    public void findServicedNetsForUserPos(Long cityId, String userLng, String userLat,
+                                           PageInfo pageInfo,
+                                      final OnPageModeListener<CompanyInfo> listener) {
+        if (listener != null) {
+            listener.onProcess();
+        }
+        ZLogger.d(String.format("加载门店开始:page=%d/%d", pageInfo.getPageNo(), pageInfo.getTotalPage()));
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<CompanyInfo>(pageInfo) {
+            @Override
+            public void processQueryResult(RspQueryResult<CompanyInfo> rs) {
+                //此处在主线程中执行。
+                List<CompanyInfo> entityList = new ArrayList<>();
+                if (rs != null) {
+                    for (EntityWrapper<CompanyInfo> wrapper : rs.getRowDatas()) {
+                        entityList.add(wrapper.getBean());
+                    }
+                }
+                if (listener != null) {
+                    listener.onSuccess(pageInfo, entityList);
+                }
+            }
+
+            @Override
+            protected void processFailure(Throwable t, String errMsg) {
+                super.processFailure(t, errMsg);
+                ZLogger.d("查询网点失败:" + errMsg);
+                if (listener != null) {
+                    listener.onError(errMsg);
+                }
+            }
+        }, CompanyInfo.class, MfhApplication.getAppContext());
+
+        CompanyInfoApiImpl.findServicedNetsForUserPos(cityId, userLng, userLat,pageInfo, queryRsCallBack);
+    }
+
 }

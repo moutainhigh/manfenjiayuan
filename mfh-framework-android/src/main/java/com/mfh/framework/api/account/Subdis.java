@@ -10,7 +10,7 @@ public class Subdis implements Serializable{
     private String subdisName;//小区名
     private String areaID;
     private String mfhArea;
-    private String street;
+    private String street;//小区地址
     private String cityID;
     private String provinceID;
     private String pmcInfoId;
@@ -25,7 +25,7 @@ public class Subdis implements Serializable{
     private Double latitude;//纬度
     private Double longitude;//经度
     private Long gaoId;
-    private Long id;
+    private Long id;//小区编号
     private Integer supportType;
     private String province;
     private String city;
