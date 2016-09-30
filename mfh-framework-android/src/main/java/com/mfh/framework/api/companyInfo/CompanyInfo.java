@@ -5,7 +5,7 @@ import com.mfh.comn.bean.ILongId;
 import java.io.Serializable;
 
 /**
- * 供应商
+ * 网点
  *
  * @author Nat.ZZN(bingshanguxue) created on 2015-9-6
  */
@@ -15,6 +15,7 @@ public class CompanyInfo implements ILongId, Serializable {
     private Long tenantId;//租户编号
     private String contact;//
     private String mobilenumber;
+    private String addr;//地址
 
     public Long getId() {
         return id;
@@ -54,5 +55,13 @@ public class CompanyInfo implements ILongId, Serializable {
 
     public void setMobilenumber(String mobilenumber) {
         this.mobilenumber = mobilenumber;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 }

@@ -46,4 +46,35 @@ public class CompanyInfoPresenter {
         });
 
     }
+
+    /**
+     * 获取门店
+     */
+    public void findServicedNetsForUserPos(Long cityId, String userLng, String userLat,
+                                           PageInfo pageInfo) {
+        mCompanyInfoMode.findServicedNetsForUserPos(cityId, userLng, userLat,pageInfo,
+                new OnPageModeListener<CompanyInfo>() {
+                    @Override
+                    public void onProcess() {
+                        if (mICompanyInfoView != null) {
+                            mICompanyInfoView.onICompanyInfoViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<CompanyInfo> dataList) {
+                        if (mICompanyInfoView != null) {
+                            mICompanyInfoView.onICompanyInfoViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (mICompanyInfoView != null) {
+                            mICompanyInfoView.onICompanyInfoViewError(errorMsg);
+                        }
+                    }
+                });
+
+    }
 }

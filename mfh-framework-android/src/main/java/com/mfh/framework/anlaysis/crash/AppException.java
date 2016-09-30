@@ -195,7 +195,11 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
 //        String time = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 //        String fileName = "crash-" + time + "-" + timestamp + ".log";
 
+//        java.io.FileNotFoundException: /storage/emulated/0/com.manfenjiayuan.mixicook_vip/crash/Crash.txt: open failed: ENOENT (No such file or directory)
         File file = FileUtil.getSaveFile(CRASH_FOLDER_PATH, CRASH_FILE_NAME);
+        if (file == null){
+            return false;
+        }
         if (System.currentTimeMillis() - file.lastModified() > 5000) {
             append = true;
         }
