@@ -192,6 +192,7 @@
 
     <string name="wx_pay_result_callback_msg" formatted="false">微信支付结果: %s</string>
 
+    <string name="address_outofrange">%1$s不在配送范围</string>
 
     <string name="format_balance_ammount">￥ %s</string>
     <string name="mf_format_price_1">￥ %.2f</string>

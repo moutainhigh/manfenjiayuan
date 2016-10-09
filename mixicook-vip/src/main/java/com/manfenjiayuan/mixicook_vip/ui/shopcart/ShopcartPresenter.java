@@ -23,8 +23,8 @@ public class ShopcartPresenter {
     /**
      * 加载采购商品
      * */
-    public void list(Long shopId, PageInfo pageInfo){
-        mShoppingCartMode.list(shopId, pageInfo,
+    public void list(Long shopId, Long ownerId, PageInfo pageInfo){
+        mShoppingCartMode.list(shopId, ownerId, pageInfo,
                 new OnPageModeListener<ShoppingCart>() {
                     @Override
                     public void onProcess() {

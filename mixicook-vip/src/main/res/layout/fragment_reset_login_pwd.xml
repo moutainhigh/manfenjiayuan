@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white">
 
     <TextView
         android:id="@+id/label_new_pwd"
@@ -10,25 +11,25 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="16dp"
-        android:text="重置密码" />
+        android:text="重置密码"/>
 
     <EditText
         android:id="@+id/et_new_pwd"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:hint="@string/hint_edit_new_pwd"
-        android:gravity="start|center_vertical"
-        android:inputType="textPassword"
-        android:layout_marginTop="8dp"
         android:layout_below="@+id/label_new_pwd"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:padding="8dp"
-        android:textSize="14sp"
-        android:linksClickable="false"
-        android:singleLine="true"
+        android:layout_marginTop="8dp"
         android:background="@drawable/widget_chat_message_editbox_background"
-        android:imeOptions="actionNext" />
+        android:gravity="start|center_vertical"
+        android:hint="@string/hint_edit_new_pwd"
+        android:imeOptions="actionNext"
+        android:inputType="textPassword"
+        android:linksClickable="false"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:textSize="14sp"/>
 
     <TextView
         android:id="@+id/label_new_pwd_confirm"
@@ -38,47 +39,47 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="16dp"
-        android:text="确认密码" />
+        android:text="确认密码"/>
 
     <EditText
         android:id="@+id/et_new_pwd_confirm"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:hint="@string/hint_edit_new_pwd_confirm"
-        android:gravity="start|center_vertical"
-        android:inputType="textPassword"
-        android:layout_marginTop="8dp"
-        android:textSize="14sp"
-        android:linksClickable="false"
-        android:singleLine="true"
-        android:background="@drawable/widget_chat_message_editbox_background"
-        android:imeOptions="actionDone"
         android:layout_below="@+id/label_new_pwd_confirm"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:padding="8dp" />
+        android:layout_marginTop="8dp"
+        android:background="@drawable/widget_chat_message_editbox_background"
+        android:gravity="start|center_vertical"
+        android:hint="@string/hint_edit_new_pwd_confirm"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:linksClickable="false"
+        android:padding="8dp"
+        android:singleLine="true"
+        android:textSize="14sp"/>
 
     <Button
         android:id="@+id/button_submit"
-        android:text="@string/button_confirm"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_below="@+id/et_new_pwd_confirm"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/green_button_select"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:text="@string/button_confirm"
+        android:textColor="#ffffff"/>
 
     <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@mipmap/ic_launcher"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:visibility="gone"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"/>
 
 
 </RelativeLayout>

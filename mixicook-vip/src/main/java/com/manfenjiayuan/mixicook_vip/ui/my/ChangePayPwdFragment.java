@@ -3,6 +3,7 @@ package com.manfenjiayuan.mixicook_vip.ui.my;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,8 @@ import butterknife.OnClick;
  * @since Framework 1.0
  */
 public class ChangePayPwdFragment extends BaseFragment {
-
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.et_old_pwd) EditText etOldPwd;
     @Bind(R.id.et_new_pwd) EditText etNewPwd;
     @Bind(R.id.et_new_pwd_confirm) EditText etNewConfirmPwd;
@@ -46,6 +48,15 @@ public class ChangePayPwdFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("修改支付密码");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
         etOldPwd.setHint(R.string.hint_edit_old_paypwd);
         etOldPwd.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         etNewPwd.setHint(R.string.hint_edit_new_paypwd);

@@ -27,7 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * 生鲜预定购物车
+ * 购物车
  * Created by Nat.ZZN(bingshanguxue) on 15/6/5.
  */
 public class ShopcartGoodsAdapter
@@ -166,22 +166,17 @@ public class ShopcartGoodsAdapter
 
             mNumberPickerView.setonOptionListener(new NumberPickerView.onOptionListener() {
                 @Override
-                public void onPreIncrease() {
-//                    onItemValueChanged(getAdapterPosition(), value);
+                public void onPreIncrease(int value) {
+                    adjustCart(getAdapterPosition(), value);
                 }
 
                 @Override
-                public void onPreDecrease() {
+                public void onPreDecrease(int value) {
+                    adjustCart(getAdapterPosition(), value);
                 }
 
                 @Override
                 public void onValueChanged(int value) {
-                    if (value <= 0){
-                        removeEntity(getAdapterPosition());
-                    }
-                    else{
-                        adjustCart(getAdapterPosition(), value);
-                    }
                 }
             });
 

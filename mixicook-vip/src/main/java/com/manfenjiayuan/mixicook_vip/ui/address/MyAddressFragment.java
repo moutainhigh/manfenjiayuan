@@ -1,4 +1,4 @@
-package com.manfenjiayuan.mixicook_vip.ui.shopcart;
+package com.manfenjiayuan.mixicook_vip.ui.address;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,13 +15,14 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.shoppingCart.CartPack;
-import com.mfh.framework.api.shoppingCart.ShoppingCart;
+import com.mfh.framework.api.reciaddr.Reciaddr;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -29,39 +31,39 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 
 /**
- * 购物车
+ * 我的收货地址
  * Created by bingshanguxue on 6/28/16.
  */
-public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements IShopcartView {
-    public static final String EXTRA_KEY_SHOP_ID = "shopId";
+public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IReciaddrView {
+//    public static final String EXTRA_KEY_SHOP_ID = "shopId";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
-    private ShopcartGoodsAdapter goodsListAdapter;
+    private MyAddressAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
     @Bind(R.id.empty_view)
     TextView emptyView;
 
     @Bind(R.id.tv_brief)
     TextView tvBrief;
-    @Bind(R.id.button_confirm)
+    @Bind(R.id.button_add)
     Button btnConfirm;
+    @Bind(R.id.noAddressView)
+    View mNoAddressView;
 
-    private Long shopId = null;
-    private ShopcartPresenter mShopcartPresenter;
+    private ReciaddrPresenter mReciaddrPresenter;
 
-    public static ShopcartFragment newInstance(Bundle args){
-        ShopcartFragment fragment = new ShopcartFragment();
+    public static MyAddressFragment newInstance(Bundle args){
+        MyAddressFragment fragment = new MyAddressFragment();
 
         if (args != null){
             fragment.setArguments(args);
@@ -76,22 +78,22 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements 
 
 //        EventBus.getDefault().register(this);
 
-        mShopcartPresenter = new ShopcartPresenter(this);
+        mReciaddrPresenter = new ReciaddrPresenter(this);
     }
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_shopcart;
+        return R.layout.fragment_myaddress;
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        if (args != null) {
-            shopId = args.getLong(EXTRA_KEY_SHOP_ID);
-        }
+//        Bundle args = getArguments();
+//        if (args != null) {
+//            shopId = args.getLong(EXTRA_KEY_SHOP_ID);
+//        }
 
-        toolbar.setTitle("购物车");
+        toolbar.setTitle("收货地址");
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -101,48 +103,96 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements 
                     }
                 });
 
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_manager) {
+                    DialogUtil.showHint("管理收货地址");
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        toolbar.inflateMenu(R.menu.menu_myaddress);
+
         initGoodsRecyclerView();
 
-        if (shopId == null || shopId.compareTo(0L) == 0){
-            DialogUtil.showHint("店铺编号无效");
-            getActivity().setResult(Activity.RESULT_CANCELED);
-            getActivity().finish();
-        }
-        else{
-            reload();
-        }
+        reload();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case 0: {
-                if (resultCode == Activity.RESULT_OK) {
-                    showProgressDialog(ProgressDialog.STATUS_DONE, "预定成功", true);
-
+        switch (requestCode){
+            case ARCode.ARC_ADD_ADDRESS:{
+                if (resultCode == Activity.RESULT_OK){
                     reload();
                 }
             }
             break;
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void reload() {
         super.reload();
-        mShopcartPresenter.list(shopId, MfhLoginService.get().getCurrentGuId(), null);
+        if (bSyncInProgress) {
+            ZLogger.d("正在加载收货地址。");
+//            onLoadFinished();
+            return;
+        }
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
+            ZLogger.d("网络未连接，暂停加载订单流水。");
+            onLoadFinished();
+            return;
+        }
+
+        mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
+        mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getCurrentGuId());
+
+        mPageInfo.setPageNo(1);
     }
 
-    @OnClick(R.id.button_confirm)
-    public void redirect2OrderFragment() {
+    @Override
+    public void loadMore() {
+        super.loadMore();
+        onLoadFinished();
+
+//        if (bSyncInProgress) {
+//            ZLogger.d("正在加载收货地址。");
+////            onLoadFinished();
+//            return;
+//        }
+//        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
+//            ZLogger.d("网络未连接，暂停加载收货地址。");
+//            onLoadFinished();
+//            return;
+//        }
+//
+//
+//        if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
+//            mPageInfo.moveToNext();
+//
+//            mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getCurrentGuId(), mPageInfo);
+//
+//        } else {
+//            ZLogger.d("加载收货地址，已经是最后一页。");
+//            onLoadFinished();
+//        }
+    }
+
+    @OnClick(R.id.button_add)
+    public void addAddress() {
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "确认订单");
+        extras.putString(SimpleActivity.EXTRA_TITLE, "收货地址");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_CONFIRM_ORDER);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_MYADDRESS);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, ARCode.ARC_ADD_ADDRESS);
     }
 
 
@@ -167,26 +217,37 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                int lastVisibleItem = mRLayoutManager.findLastVisibleItemPosition();
-//                int totalItemCount = mRLayoutManager.getItemCount();
-//                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
-//                // dy>0 表示向下滑动
-////                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
-//                if (lastVisibleItem >= totalItemCount - 1 && dy > 0) {
-//                    if (!isLoadingMore) {
-//                        loadMore();
-//                    }
-//                } else if (dy < 0) {
-//                    isLoadingMore = false;
-//                }
+                int lastVisibleItem = mRLayoutManager.findLastVisibleItemPosition();
+                int totalItemCount = mRLayoutManager.getItemCount();
+                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
+                // dy>0 表示向下滑动
+//                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
+                if (lastVisibleItem >= totalItemCount - 1 && dy > 0) {
+                    if (!isLoadingMore) {
+                        loadMore();
+                    }
+                } else if (dy < 0) {
+                    isLoadingMore = false;
+                }
             }
         });
 
-        goodsListAdapter = new ShopcartGoodsAdapter(AppContext.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListsner(new ShopcartGoodsAdapter.OnAdapterListener() {
+        goodsListAdapter = new MyAddressAdapter(AppContext.getAppContext(), null);
+        goodsListAdapter.setOnAdapterListsner(new MyAddressAdapter.OnAdapterListener() {
                                                   @Override
                                                   public void onItemClick(View view, int position) {
 
+                                                      Reciaddr reciaddr = goodsListAdapter.getEntity(position);
+                                                      if (reciaddr != null){
+                                                          Intent data = new Intent();
+                                                          data.putExtra("reciaddr", reciaddr);
+                                                          getActivity().setResult(Activity.RESULT_OK, data);
+                                                          getActivity().finish();
+                                                      }
+                                                      else{
+                                                          getActivity().setResult(Activity.RESULT_CANCELED);
+                                                          getActivity().finish();
+                                                      }
                                                   }
 
                                                   @Override
@@ -195,9 +256,11 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements 
                                                       if (count > 0) {
                                                           tvBrief.setText(String.format("商品数：%d", count));
                                                           btnConfirm.setEnabled(true);
+                                                          mNoAddressView.setVisibility(View.GONE);
                                                       } else {
                                                           tvBrief.setText("暂无商品");
                                                           btnConfirm.setEnabled(false);
+                                                          mNoAddressView.setVisibility(View.VISIBLE);
                                                       }
                                                   }
                                               }
@@ -212,14 +275,16 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements 
         hideProgressDialog();
     }
 
+
+
     @Override
-    public void onIShopcartViewProcess() {
+    public void onIReciaddrViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         onLoadStart();
     }
 
     @Override
-    public void onIShopcartViewError(String errorMsg) {
+    public void onIReciaddrViewError(String errorMsg) {
         if (!StringUtils.isEmpty(errorMsg)){
             ZLogger.df(errorMsg);
         }
@@ -228,37 +293,23 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart> implements 
     }
 
     @Override
-    public void onIShopcartViewSuccess(PageInfo pageInfo, List<ShoppingCart> dataList) {
+    public void onIReciaddrViewSuccess(PageInfo pageInfo, List<Reciaddr> dataList) {
         try {
             mPageInfo = pageInfo;
-
-            List<CartPack> cartPacks = new ArrayList<>();
-            if (dataList != null && dataList.size() > 0) {
-                for (ShoppingCart shoppingCart : dataList) {
-                    List<CartPack> products = shoppingCart.getProducts();
-                    if (products != null) {
-                        cartPacks.addAll(products);
-                    }
-                }
+            if (goodsListAdapter != null) {
+                goodsListAdapter.setEntityList(dataList);
             }
-            //第一页，缓存数据
-//            if (mPageInfo.getPageNo() == 1) {
-//                ZLogger.d("缓存商品收货订单第一页数据");
-
-                if (goodsListAdapter != null) {
-                    goodsListAdapter.setEntityList(cartPacks);
-                }
-//            } else {
-//                if (goodsListAdapter != null) {
-//                    goodsListAdapter.appendEntityList(cartPacks);
-//                }
-//            }
 
             onLoadFinished();
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
-            ZLogger.e(String.format("加载商品收货订单失败: %s", ex.toString()));
+            ZLogger.e(String.format("加载收货地址失败: %s", ex.toString()));
             onLoadFinished();
         }
+    }
+
+    @Override
+    public void onIReciaddrViewSuccess(Reciaddr data) {
+
     }
 }

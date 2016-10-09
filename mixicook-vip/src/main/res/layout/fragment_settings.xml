@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/appbar"/>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_material_light"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_bindshop"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:text="绑定门店"
+                app:position="single"/>
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_loginpwd"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:text="登录密码"
+                app:position="top"/>
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_paypwd"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:text="支付密码"
+                app:position="center" />
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_general"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:text="通用"
+                app:position="bottom" />
+
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_version"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:text="版本更新"
+                app:position="bottom" />
+
+            <!--退出当前账号-->
+            <Button
+                android:id="@+id/button_logout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:text="@string/button_logout"
+                android:textSize="16sp"
+                android:layout_margin="@dimen/spacing_double"
+                android:background="@drawable/btn_corner_red"
+                android:textColor="#ffffff"
+                android:layout_alignParentBottom="true" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

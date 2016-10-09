@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,8 @@ import butterknife.OnClick;
  * @since bingshanguxue
  */
 public class MyProfileFragment extends BaseFragment implements OnTabReselectListener {
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.item_avatar)
     AvatarSettingItem avatarItem;
     @Bind(R.id.item_nickname)
@@ -71,8 +74,16 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("个人资料");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
         refresh(true);
-        DialogUtil.showHint("我的");
     }
 
     @Override

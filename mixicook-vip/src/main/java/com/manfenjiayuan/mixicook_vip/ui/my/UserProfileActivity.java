@@ -16,7 +16,7 @@ import com.bingshanguxue.vector_uikit.AvatarSettingItem;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
+import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
@@ -123,10 +123,10 @@ public class UserProfileActivity extends MultimediaActivity {
     @OnClick(R.id.item_nickname)
     public void changeNickName() {
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "修改昵称");
+        extras.putString(FragmentActivity.EXTRA_TITLE, "修改昵称");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_FRAGMENT_TYPE, SimpleActivity.FT_PROFILE_CHANGE_NICKNAME);
-        Intent intent = new Intent(this, SimpleActivity.class);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_CHANGE_NICKNAME);
+        Intent intent = new Intent(this, FragmentActivity.class);
         intent.putExtras(extras);
         startActivity(intent);
     }

@@ -3,6 +3,7 @@ package com.manfenjiayuan.mixicook_vip.ui.my;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -30,7 +31,8 @@ import butterknife.OnClick;
  * @since Framework 1.0
  */
 public class ChangeNicknameFragment extends BaseFragment {
-
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     @Bind(R.id.et_nickname) EditText etNickname;
 
     public ChangeNicknameFragment() {
@@ -44,6 +46,15 @@ public class ChangeNicknameFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        mToolbar.setTitle("修改昵称");
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
         etNickname.setText(MfhLoginService.get().getHumanName());
     }
 

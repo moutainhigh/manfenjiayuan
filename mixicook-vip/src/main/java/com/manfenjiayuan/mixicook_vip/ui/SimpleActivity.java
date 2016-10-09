@@ -12,11 +12,12 @@ import android.view.WindowManager;
 import com.manfenjiayuan.mixicook_vip.InputTextFragment;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.home.QuickPayFragment;
-import com.manfenjiayuan.mixicook_vip.ui.my.ChangeNicknameFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.MyProfileFragment;
 import com.mfh.framework.uikit.base.BaseActivity;
 
 import butterknife.Bind;
+
+import static com.manfenjiayuan.mixicook_vip.ui.FragmentActivity.FT_QUICK_PAY;
 
 /**
  *
@@ -26,9 +27,7 @@ public class SimpleActivity extends BaseActivity {
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
     public static final int FT_INPUT_TEXT = 0x02;
-    public static final int FT_QUICK_PAY = 0x03;
     public static final int FT_MYPROFILE = 0x04;
-    public static final int FT_PROFILE_CHANGE_NICKNAME = 0x10;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -154,13 +153,6 @@ public class SimpleActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_QUICK_PAY: {
-                QuickPayFragment fragment = new QuickPayFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, fragment).show(fragment)
-                        .commit();
-            }
-            break;
             case FT_MYPROFILE: {
                 MyProfileFragment fragment = new MyProfileFragment();
                 getSupportFragmentManager().beginTransaction()
@@ -168,13 +160,8 @@ public class SimpleActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_PROFILE_CHANGE_NICKNAME: {
-                ChangeNicknameFragment fragment = new ChangeNicknameFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, fragment).show(fragment)
-                        .commit();
-            }
-            break;
+            default:
+                break;
         }
     }
 
