@@ -43,8 +43,6 @@ import rx.schedulers.Schedulers;
  */
 public class ValidateManager {
 
-    private static final String TAG = "ValidateManager";
-
     public static final int STEP_VALIDATE_NA = -1;
     public static final int STEP_VALIDATE_SESSION = 0;// 检查是否已经登录/会话是否有效
     /**设备注册,每次启动都需要注册，由后台去判断是否需要注册*/
@@ -273,6 +271,8 @@ public class ValidateManager {
      */
     private void checkSessionExpire() {
         if (!MfhLoginService.get().haveLogined()) {
+            ZLogger.d("检测账号未登录，准备跳转到登录页面");
+
             validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
                     null, "未登录，跳转到登录页面");
             return;
@@ -327,13 +327,13 @@ public class ValidateManager {
 
                     @Override
                     public void loginFailed(String errMsg) {
+                        ZLogger.d("账号重登录失败，账号失效，准备跳转到登录页面");
+
                         validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
                                 null, "登录已失效－－" + errMsg);
                     }
                 });
     }
-
-
 
     public class ValidateManagerEvent {
         public static final int EVENT_ID_VALIDATE_START             = 0X01;//验证开始

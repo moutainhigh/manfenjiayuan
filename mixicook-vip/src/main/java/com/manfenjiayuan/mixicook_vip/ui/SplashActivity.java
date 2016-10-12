@@ -1,5 +1,6 @@
 package com.manfenjiayuan.mixicook_vip.ui;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -7,14 +8,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
+import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.utils.AppHelper;
 import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.UIHelper;
+import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
 
 import butterknife.Bind;
@@ -48,6 +53,7 @@ public class SplashActivity extends InitActivity {
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        AppHelper.getInstance().addActivity(this);
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
@@ -60,7 +66,6 @@ public class SplashActivity extends InitActivity {
             tvVersion.setText(String.format("%s-%d", appInfo.getVersionName(),
                     appInfo.getVersionCode()));
         }
-
     }
 
     @Override
@@ -80,14 +85,18 @@ public class SplashActivity extends InitActivity {
 
 //        AppHelper.clearOldPosOrder(15);
 
-        onInitializedCompleted();
+        if (MfhLoginService.get().haveLogined()) {
+            redirect2Main();
+        } else {
+            redirect2Login();
+        }
     }
 
 
     /**
      *  初始化完成
      */
-    private void onInitializedCompleted(){
+    private void redirect2Main(){
         ZLogger.d("应用程序初始化完成。");
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -97,4 +106,40 @@ public class SplashActivity extends InitActivity {
             }
         }, 500);
     }
+
+    /** 跳转至登录页面
+    */
+    private void redirect2Login() {
+        ZLogger.d("初始化应用，未登录准备跳转到登录页面");
+        MfhLoginService.get().clear();
+
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+
+        if (AppContext.loginType == 0) {
+            Intent intent = new Intent(this, SignInActivity.class);
+            intent.putExtras(extras);
+            startActivityForResult(intent, ARCode.ARC_SIGNIN);
+        } else {
+            Intent intent = new Intent(this, SmsSignActivity.class);
+            intent.putExtras(extras);
+            startActivityForResult(intent, ARCode.ARC_SIGNIN);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ARCode.ARC_SIGNIN: {
+                if (resultCode == Activity.RESULT_OK) {
+                    redirect2Main();
+                }
+            }
+            break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 }
