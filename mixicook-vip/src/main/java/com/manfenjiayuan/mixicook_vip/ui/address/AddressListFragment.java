@@ -10,22 +10,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
-import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.reciaddr.Reciaddr;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -40,8 +35,7 @@ import butterknife.OnClick;
  * 我的收货地址
  * Created by bingshanguxue on 6/28/16.
  */
-public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IReciaddrView {
-//    public static final String EXTRA_KEY_SHOP_ID = "shopId";
+public class AddressListFragment extends BaseListFragment<Reciaddr> implements IReciaddrView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -51,19 +45,12 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
     private MyAddressAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
     @Bind(R.id.empty_view)
-    TextView emptyView;
-
-    @Bind(R.id.tv_brief)
-    TextView tvBrief;
-    @Bind(R.id.button_add)
-    Button btnConfirm;
-    @Bind(R.id.noAddressView)
-    View mNoAddressView;
+    View emptyView;
 
     private ReciaddrPresenter mReciaddrPresenter;
 
-    public static MyAddressFragment newInstance(Bundle args){
-        MyAddressFragment fragment = new MyAddressFragment();
+    public static AddressListFragment newInstance(Bundle args){
+        AddressListFragment fragment = new AddressListFragment();
 
         if (args != null){
             fragment.setArguments(args);
@@ -83,7 +70,7 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_myaddress;
+        return R.layout.fragment_address_list;
     }
 
     @Override
@@ -93,7 +80,7 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
 //            shopId = args.getLong(EXTRA_KEY_SHOP_ID);
 //        }
 
-        toolbar.setTitle("收货地址");
+        toolbar.setTitle("选择地址");
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -109,7 +96,7 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
                 // Handle the menu item
                 int id = item.getItemId();
                 if (id == R.id.action_manager) {
-                    DialogUtil.showHint("管理收货地址");
+                    redirect2AddrMgr();
                 }
                 return true;
             }
@@ -125,6 +112,13 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
+            case ARCode.ARC_MGR_ADDRESS:{
+//                if (resultCode == Activity.RESULT_OK){
+//
+//                }
+                reload();
+            }
+            break;
             case ARCode.ARC_ADD_ADDRESS:{
                 if (resultCode == Activity.RESULT_OK){
                     reload();
@@ -184,12 +178,26 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
 //        }
     }
 
-    @OnClick(R.id.button_add)
-    public void addAddress() {
+    /**
+     * 管理收货地址
+     * */
+    public void redirect2AddrMgr() {
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "收货地址");
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_MYADDRESS);
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_MANAGER_ADDRESS);
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_MGR_ADDRESS);
+    }
+    /**
+     * 新增收货地址
+     * */
+    @OnClick(R.id.button_add_address)
+    public void redirect2AddAddress(){
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_ADD_ADDRESS);
+        extras.putInt(AddAddressFragment.EXTRA_KEY_MODE, 0);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, ARCode.ARC_ADD_ADDRESS);
@@ -252,16 +260,6 @@ public class MyAddressFragment extends BaseListFragment<Reciaddr> implements IRe
 
                                                   @Override
                                                   public void onDataSetChanged() {
-                                                      int count = goodsListAdapter.getItemCount();
-                                                      if (count > 0) {
-                                                          tvBrief.setText(String.format("商品数：%d", count));
-                                                          btnConfirm.setEnabled(true);
-                                                          mNoAddressView.setVisibility(View.GONE);
-                                                      } else {
-                                                          tvBrief.setText("暂无商品");
-                                                          btnConfirm.setEnabled(false);
-                                                          mNoAddressView.setVisibility(View.VISIBLE);
-                                                      }
                                                   }
                                               }
 

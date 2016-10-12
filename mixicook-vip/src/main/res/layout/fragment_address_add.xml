@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/appbar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--小区、写字楼、学校-->
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
+                android:id="@+id/label_subname"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:endTextColor="@color/black_65"
+                app:endTextSize="16sp"
+                app:startText="收货地址:"
+                app:endText="小区、写字楼、学校"
+                app:startTextColor="@color/material_black"
+                app:startTextSize="16sp"
+                app:startTextWidth="130dp"/>
+
+            <!--详细地址（如：楼号、层数、门牌号等）-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_address"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:editInputType="text"
+                app:editTextHint="详细地址（如：楼号、层数、门牌号等）"
+                app:editTextSize="16sp"
+                app:softKeyboardEnabled="true"
+                app:startText=""
+                app:startTextColor="@color/material_black"
+                app:editTextColor="@color/material_black"
+                app:editTextColorHint="@color/black_65"
+                app:startTextSize="16sp"
+                app:startTextWidth="0dp"/>
+
+            <!--收件人-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_receiveName"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:editInputType="text"
+                app:editTextHint="请输入收件人姓名"
+                app:editTextSize="16sp"
+                app:softKeyboardEnabled="true"
+                app:startText="收件人:"
+                app:startTextColor="@color/material_black"
+                app:editTextColor="@color/material_black"
+                app:editTextColorHint="@color/black_65"
+                app:startTextSize="16sp"
+                app:startTextWidth="130dp"/>
+
+            <!--联系电话-->
+            <com.bingshanguxue.vector_uikit.widget.EditLabelView
+                android:id="@+id/label_receiveMobile"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                app:editInputType="numberDecimal"
+                app:editTextHint="请输入收件人电话号码"
+                app:editTextSize="16sp"
+                app:softKeyboardEnabled="true"
+                app:startText="联系电话:"
+                app:startTextColor="@color/material_black"
+                app:editTextColor="@color/material_black"
+                app:editTextColorHint="@color/black_65"
+                app:startTextSize="16sp"
+                app:startTextWidth="130dp"/>
+
+            <!--设置默认地址-->
+            <com.bingshanguxue.vector_uikit.ToggleSettingItem
+                android:id="@+id/toggle_isDefault"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:position="single"
+                app:text="设置默认地址"/>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

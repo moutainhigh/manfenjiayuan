@@ -8,10 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.address.AddressBrief;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by bingshanguxue on 2015/4/20.
@@ -19,7 +19,7 @@ import java.util.Map;
 public class PoiAdapter extends BaseAdapter {
 
     private Context context;
-    private List<Map<String, String>> data = new ArrayList<>();
+    private List<AddressBrief> data = new ArrayList<>();
 
     private int curSelectedId = -1;//这里默认值为-1，因为列表有headerview
 
@@ -35,7 +35,7 @@ public class PoiAdapter extends BaseAdapter {
         this.curSelectedId = 0;
     }
 
-    public PoiAdapter(Context context, List<Map<String, String>> data) {
+    public PoiAdapter(Context context, List<AddressBrief> data) {
         super();
         this.context = context;
         this.data = data;
@@ -47,12 +47,12 @@ public class PoiAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size();
+        return data != null ? data.size() : 0;
     }
 
     @Override
     public Object getItem(int i) {
-        return data.get(i);
+        return data != null ? data.get(i) : null;
     }
 
     @Override
@@ -74,10 +74,10 @@ public class PoiAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        Map<String, String> entity = data.get(i);
+        AddressBrief entity = data.get(i);
 
-        viewHolder.tvTitle.setText(entity.get("DATA_KEY_NAME"));
-        viewHolder.tvSubTitle.setText(entity.get("DATA_KEY_ADDRESS"));
+        viewHolder.tvTitle.setText(entity.getName());
+        viewHolder.tvSubTitle.setText(entity.getAddress());
 
         if (curSelectedId == i){
             viewHolder.ivMarker.setSelected(true);
@@ -95,7 +95,7 @@ public class PoiAdapter extends BaseAdapter {
         this.notifyDataSetChanged();
     }
 
-    public void setData(List<Map<String, String>> data) {
+    public void setData(List<AddressBrief> data) {
         this.data = data;
         this.notifyDataSetChanged();
     }

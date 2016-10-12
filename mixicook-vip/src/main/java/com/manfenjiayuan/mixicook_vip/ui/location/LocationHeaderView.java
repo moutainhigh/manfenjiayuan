@@ -9,9 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.R;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.manfenjiayuan.mixicook_vip.ui.address.AddressBrief;
 
 
 /**
@@ -24,7 +22,7 @@ public class LocationHeaderView extends FrameLayout{
     private TextView tvTitle, tvSubTitle;
     private ImageView ivMarker;
 
-    private Map<String, String> data = new HashMap<>();
+    private AddressBrief mAddressBrief = new AddressBrief();
 
     public LocationHeaderView(Context context) {
         super(context);
@@ -58,7 +56,7 @@ public class LocationHeaderView extends FrameLayout{
         tvSubTitle = (TextView) rootView.findViewById(R.id.tv_subtitle);
         ivMarker = (ImageView) rootView.findViewById(R.id.iv_marker);
 
-        tvTitle.setText("[位置]");
+        tvTitle.setText("[当前位置]");
 //        rootView.setOnClickListener(new OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -67,21 +65,22 @@ public class LocationHeaderView extends FrameLayout{
 //        });
     }
 
-    public void setData(Map<String, String> data){
-        this.data = data;
-        tvTitle.setText(String.format("[当前位置] %s", data.get("DATA_KEY_NAME")));
-        tvSubTitle.setText(data.get("DATA_KEY_ADDRESS"));
+    public AddressBrief getAddressBrief() {
+        return mAddressBrief;
     }
 
-    public void appendData(String key, String value){
-        this.data.put(key, value);
-        tvTitle.setText(String.format("[当前位置] %s", data.get("DATA_KEY_NAME")));
-        tvSubTitle.setText(data.get("DATA_KEY_ADDRESS"));
+    public void setAddressBrief(AddressBrief addressBrief) {
+        mAddressBrief = addressBrief;
+
+        if (mAddressBrief != null){
+            tvSubTitle.setText(mAddressBrief.getAddress());
+        }
+        else{
+            tvSubTitle.setText("对不起，没有搜索到相关数据！");
+        }
+
     }
 
-    public Map<String, String> getData() {
-        return data;
-    }
 
     public void setMarkerEnabled(boolean enabled){
         ivMarker.setSelected(enabled);

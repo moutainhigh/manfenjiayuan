@@ -3,34 +3,31 @@ package com.manfenjiayuan.mixicook_vip.ui.address;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import com.manfenjiayuan.mixicook_vip.AppContext;
+import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
-import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
-import com.mfh.comn.bean.PageInfo;
+import com.manfenjiayuan.mixicook_vip.ui.location.PoiActivity;
+import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.reciaddr.Reciaddr;
+import com.mfh.framework.api.reciaddr.ReciaddrApi;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.base.BaseListFragment;
-import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
-import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
-
-import java.util.List;
+import com.mfh.framework.uikit.base.BaseFragment;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -39,58 +36,71 @@ import butterknife.OnClick;
  * 添加收货地址
  * Created by bingshanguxue on 6/28/16.
  */
-public class AddAddressFragment extends BaseListFragment<Reciaddr> implements IReciaddrView {
-//    public static final String EXTRA_KEY_SHOP_ID = "shopId";
+public class AddAddressFragment extends BaseFragment {
+    public static final String EXTRA_KEY_MODE = "mode";
+    public static final String EXTRA_KEY_ADDR = "reciaddr";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.label_subname)
+    TextLabelView labelSubName;
+    @Bind(R.id.label_address)
+    EditLabelView labelAddress;
+    @Bind(R.id.label_receiveName)
+    EditLabelView labelReceiveName;
+    @Bind(R.id.label_receiveMobile)
+    EditLabelView labelReceiveMobile;
+    @Bind(R.id.toggle_isDefault)
+    ToggleSettingItem isDefaultItem;
 
-    @Bind(R.id.goods_list)
-    RecyclerViewEmptySupport goodsRecyclerView;
-    private MyAddressAdapter goodsListAdapter;
-    private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
-    TextView emptyView;
+    private int mode;
+    private Reciaddr mReciaddr;
+    private AddressBrief mAddressBrief;
 
-    @Bind(R.id.tv_brief)
-    TextView tvBrief;
-    @Bind(R.id.button_add)
-    Button btnConfirm;
-
-    private ReciaddrPresenter mReciaddrPresenter;
-
-    public static AddAddressFragment newInstance(Bundle args){
+    public static AddAddressFragment newInstance(Bundle args) {
         AddAddressFragment fragment = new AddAddressFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
     }
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        EventBus.getDefault().register(this);
-
-        mReciaddrPresenter = new ReciaddrPresenter(this);
-    }
-
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_add_address;
+        return R.layout.fragment_address_add;
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            shopId = args.getLong(EXTRA_KEY_SHOP_ID);
-//        }
+        Bundle args = getArguments();
+        if (args != null) {
+            mode = args.getInt(EXTRA_KEY_MODE);
+            mReciaddr = (Reciaddr) args.getSerializable(EXTRA_KEY_ADDR);
 
-        toolbar.setTitle("收货地址");
+        }
+        if (mode == 0){
+            toolbar.setTitle("新增地址");
+            mAddressBrief = null;
+        }
+        else{
+            toolbar.setTitle("编辑地址");
+            mAddressBrief = new AddressBrief();
+            if (mReciaddr != null){
+                mAddressBrief.setId(mReciaddr.getId());
+                mAddressBrief.setLatitude(mReciaddr.getLatitude());
+                mAddressBrief.setLongitude(mReciaddr.getLongitude());
+                mAddressBrief.setAreaID(String.valueOf(mReciaddr.getAreaID()));
+                mAddressBrief.setName(mReciaddr.getSubName());
+                mAddressBrief.setAddress(mReciaddr.getAddrName());
+
+                labelReceiveName.setInput(mReciaddr.getReceiveName());
+                labelReceiveMobile.setInput(mReciaddr.getReceivePhone());
+            }
+
+            labelSubName.setEndText(mAddressBrief.getName());
+            labelAddress.setInput(mAddressBrief.getAddress());
+        }
         toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -105,188 +115,141 @@ public class AddAddressFragment extends BaseListFragment<Reciaddr> implements IR
             public boolean onMenuItemClick(MenuItem item) {
                 // Handle the menu item
                 int id = item.getItemId();
-                if (id == R.id.action_manager) {
-                    DialogUtil.showHint("管理收货地址");
+                if (id == R.id.action_submit) {
+                    submit();
                 }
                 return true;
             }
         });
         // Inflate a menu to be displayed in the toolbar
-        toolbar.inflateMenu(R.menu.menu_myaddress);
+        toolbar.inflateMenu(R.menu.menu_submit);
 
-        initGoodsRecyclerView();
 
-        reload();
+        labelAddress.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelReceiveName.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+            }
+        });
+        labelReceiveName.setOnViewListener(new EditLabelView.OnViewListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+                labelReceiveMobile.requestFocusEnd();
+            }
+
+            @Override
+            public void onScan() {
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case 0: {
-                if (resultCode == Activity.RESULT_OK) {
-                    showProgressDialog(ProgressDialog.STATUS_DONE, "预定成功", true);
-
-                    reload();
+            case ARCode.ARC_AMAP_POI: {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    mAddressBrief = (AddressBrief) data.getSerializableExtra("addressBrief");
+                    if (mAddressBrief != null){
+                        labelSubName.setEndText(mAddressBrief.getName());
+                    }
+                    else{
+                        labelSubName.setEndText("小区、写字楼、学校");
+                    }
+                    labelAddress.setEndText("");
                 }
             }
             break;
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void reload() {
-        super.reload();
-        if (bSyncInProgress) {
-            ZLogger.d("正在加载收货地址。");
-//            onLoadFinished();
-            return;
-        }
-        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载订单流水。");
-            onLoadFinished();
-            return;
-        }
-
-        mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getCurrentGuId());
-
-        mPageInfo.setPageNo(1);
+    @OnClick(R.id.label_subname)
+    public void redirect2Poi(){
+//        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+//        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_LOCATION);
+        Intent intent = new Intent(getActivity(), PoiActivity.class);
+//        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_AMAP_POI);
     }
-
-    @Override
-    public void loadMore() {
-        super.loadMore();
-        onLoadFinished();
-
-//        if (bSyncInProgress) {
-//            ZLogger.d("正在加载收货地址。");
-////            onLoadFinished();
-//            return;
-//        }
-//        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
-//            ZLogger.d("网络未连接，暂停加载收货地址。");
-//            onLoadFinished();
-//            return;
-//        }
-//
-//
-//        if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
-//            mPageInfo.moveToNext();
-//
-//            mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getCurrentGuId(), mPageInfo);
-//
-//        } else {
-//            ZLogger.d("加载收货地址，已经是最后一页。");
-//            onLoadFinished();
-//        }
-    }
-
-    @OnClick(R.id.button_add)
-    public void redirect2OrderFragment() {
+    private void redirect2Location() {
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "确认订单");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_CONFIRM_ORDER);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_LOCATION);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, ARCode.ARC_LOCATION);
     }
 
-
-    private void initGoodsRecyclerView() {
-        mRLayoutManager = new LinearLayoutManager(AppContext.getAppContext());
-        mRLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        goodsRecyclerView.setLayoutManager(mRLayoutManager);
-        //enable optimizations if all item views are of the same height and width for
-        //signficantly smoother scrolling
-        goodsRecyclerView.setHasFixedSize(true);
-//        //添加分割线
-        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        //设置列表为空时显示的视图
-        goodsRecyclerView.setEmptyView(emptyView);
-        goodsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = mRLayoutManager.findLastVisibleItemPosition();
-                int totalItemCount = mRLayoutManager.getItemCount();
-                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
-                // dy>0 表示向下滑动
-//                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
-                if (lastVisibleItem >= totalItemCount - 1 && dy > 0) {
-                    if (!isLoadingMore) {
-                        loadMore();
+    /**
+     * 保存收货地址
+     */
+    private void submit() {
+        NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(final IResponseData rspData) {
+                        DialogUtil.showHint("操作成功");
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
                     }
-                } else if (dy < 0) {
-                    isLoadingMore = false;
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        //{"code":"1","msg":"缺少渠道端点标识！","version":"1","data":null}
+                        ZLogger.e(String.format("操作失败:%s", errMsg));
+                        DialogUtil.showHint(errMsg);
+                    }
                 }
-            }
-        });
+                , String.class
+                , MfhApplication.getAppContext()) {
+        };
 
-        goodsListAdapter = new MyAddressAdapter(AppContext.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListsner(new MyAddressAdapter.OnAdapterListener() {
-                                                  @Override
-                                                  public void onItemClick(View view, int position) {
+        String receiveName = labelReceiveName.getInput();
+        String receivePhone = labelReceiveMobile.getInput();
+        String addressName = labelSubName.getEndText();
+        String address = labelAddress.getInput();
 
-                                                  }
-
-                                                  @Override
-                                                  public void onDataSetChanged() {
-                                                  }
-                                              }
-
-        );
-        goodsRecyclerView.setAdapter(goodsListAdapter);
-    }
-
-    @Override
-    public void onLoadFinished() {
-        super.onLoadFinished();
-        hideProgressDialog();
-    }
-
-
-
-    @Override
-    public void onIReciaddrViewProcess() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-        onLoadStart();
-    }
-
-    @Override
-    public void onIReciaddrViewError(String errorMsg) {
-        if (!StringUtils.isEmpty(errorMsg)){
-            ZLogger.df(errorMsg);
+        if (mAddressBrief == null){
+            DialogUtil.showHint("请选择收货地址");
+//            labelSubName.requestFocusEnd();
+            return;
         }
 
-        onLoadFinished();
-    }
-
-    @Override
-    public void onIReciaddrViewSuccess(PageInfo pageInfo, List<Reciaddr> dataList) {
-        try {
-            mPageInfo = pageInfo;
-            if (goodsListAdapter != null) {
-                goodsListAdapter.setEntityList(dataList);
-            }
-
-            onLoadFinished();
-        } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-            ZLogger.e(String.format("加载收货地址失败: %s", ex.toString()));
-            onLoadFinished();
+        if (StringUtils.isEmpty(receiveName)){
+            DialogUtil.showHint("请输入收件人姓名");
+            labelReceiveName.requestFocusEnd();
+            return;
         }
-    }
 
-    @Override
-    public void onIReciaddrViewSuccess(Reciaddr data) {
+        if (StringUtils.isEmpty(receivePhone)){
+            DialogUtil.showHint("请输入收件人手机号");
+            labelReceiveMobile.requestFocusEnd();
+            return;
+        }
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("receiveName", receiveName);
+        jsonObject.put("receivePhone", receivePhone);
+        jsonObject.put("subName", mAddressBrief.getName());
+        jsonObject.put("addrName", address);
+        jsonObject.put("areaID", mAddressBrief.getAreaID());
+        jsonObject.put("latitude", mAddressBrief.getLatitude());
+        jsonObject.put("longitude", mAddressBrief.getLongitude());
+
+        if (mode == 0){
+            ReciaddrApi.createForHuman(MfhLoginService.get().getCurrentGuId(), jsonObject, submitRC);
+        }
+        else{
+            jsonObject.put("id", mAddressBrief.getId());
+            ReciaddrApi.updateForHuman(MfhLoginService.get().getCurrentGuId(), jsonObject, submitRC);
+        }
     }
 }

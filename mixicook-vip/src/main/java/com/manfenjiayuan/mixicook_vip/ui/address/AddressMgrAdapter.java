@@ -15,20 +15,23 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
- * 购物车
+ * 收货地址
  * Created by Nat.ZZN(bingshanguxue) on 15/6/5.
  */
-public class MyAddressAdapter
-        extends RegularAdapter<Reciaddr, MyAddressAdapter.CategoryViewHolder> {
+public class AddressMgrAdapter
+        extends RegularAdapter<Reciaddr, AddressMgrAdapter.CategoryViewHolder> {
 
-    public MyAddressAdapter(Context context, List<Reciaddr> entityList) {
+    public AddressMgrAdapter(Context context, List<Reciaddr> entityList) {
         super(context, entityList);
     }
 
     public interface OnAdapterListener {
-        void onItemClick(View view, int position);
+        void onClickSetDefault(Long id);
+        void onClickUpdate(Reciaddr reciaddr);
+        void onClickDel(Long id);
 
         void onDataSetChanged();
     }
@@ -41,7 +44,7 @@ public class MyAddressAdapter
 
     @Override
     public CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new CategoryViewHolder(mLayoutInflater.inflate(R.layout.itemview_address_list,
+        return new CategoryViewHolder(mLayoutInflater.inflate(R.layout.itemview_address_mgr,
                 parent, false));
     }
 
@@ -81,25 +84,49 @@ public class MyAddressAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position < 0 || position >= entityList.size()) {
-//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-                        return;
-                    }
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (position < 0 || position >= entityList.size()) {
+////                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+//                        return;
+//                    }
+//
+//                    notifyDataSetChanged();
+//
+//                    if (adapterListener != null) {
+//                        adapterListener.onItemClick(itemView, position);
+//                    }
+//                }
+//            });
+        }
 
-                    notifyDataSetChanged();
+        @OnClick(R.id.button_setdefault)
+        public void setDefault(){
+            int position = getAdapterPosition();
+            Reciaddr reciaddr = getEntity(position);
+            if (reciaddr != null && adapterListener != null){
+                adapterListener.onClickSetDefault(reciaddr.getId());
+            }
+        }
 
-                    if (adapterListener != null) {
-                        adapterListener.onItemClick(itemView, position);
-                    }
-                }
-            });
+        @OnClick(R.id.button_update)
+        public void update(){
+            int position = getAdapterPosition();
+            Reciaddr reciaddr = getEntity(position);
+            if (reciaddr != null && adapterListener != null){
+                adapterListener.onClickUpdate(reciaddr);
+            }
+        }
 
-
-
+        @OnClick(R.id.button_delete)
+        public void delete(){
+            int position = getAdapterPosition();
+            Reciaddr reciaddr = getEntity(position);
+            if (reciaddr != null && adapterListener != null){
+                adapterListener.onClickDel(reciaddr.getId());
+            }
         }
     }
 }
