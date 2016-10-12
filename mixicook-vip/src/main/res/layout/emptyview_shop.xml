@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/background_material_light"
+              android:background="@color/mfh_background_light"
               android:gravity="center"
               android:orientation="vertical">
 
@@ -11,23 +11,25 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_double"
         android:background="@null"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/img_mapout"/>
 
     <TextView
+        android:id="@+id/tv_company_outofrange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_double"
         android:gravity="center"
-        android:text="抱歉,你还未设置收货地址"/>
+        android:text="不在配送范围"
+        />
 
     <Button
-        android:id="@+id/button_add_address"
+        android:id="@+id/button_change_address"
         android:layout_width="match_parent"
         android:layout_height="@dimen/minimum_touch_height"
         android:layout_margin="@dimen/spacing_double"
         android:background="@drawable/btn_rectange_primary"
         android:gravity="center"
-        android:text="添加收货地址"
+        android:text="切换收货地址"
         android:textColor="@color/material_white"
         android:textSize="20sp"/>
 

@@ -1,4 +1,4 @@
-package com.manfenjiayuan.mixicook_vip.ui.home;
+package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -17,10 +17,10 @@ import java.util.List;
  * 广告图片显示适配器
  * Created by bingshanguxue on 2015/4/20.
  */
-public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapter {
+public class Card1ViewAdapter<V extends AdvertisementViewPager>  extends PagerAdapter {
 
     private Context context;//用于接收传递过来的Context对象
-    private List<Banner> data = new ArrayList<>();
+    private List<Card1Item> data = new ArrayList<>();
     private V mViewPager;
 
     public interface OnBannerAdapterCallback {
@@ -28,30 +28,13 @@ public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapt
     }
     private OnBannerAdapterCallback callback;
 
-    public BannerAdapter(Context context, List<Banner> data, V viewPager, OnBannerAdapterCallback callback) {
+    public Card1ViewAdapter(Context context, List<Card1Item> data, V viewPager, OnBannerAdapterCallback callback) {
         this.context = context;
         this.data = data;
         mViewPager = viewPager;
         this.callback = callback;
     }
 
-    //    public BannerAdapter(Context context) {
-//        super();
-//        this.context = context;
-//    }
-//
-//    public BannerAdapter(Context context, OnBannerAdapterCallback callback) {
-//        super();
-//        this.context = context;
-//        this.callback = callback;
-//    }
-//
-//    public BannerAdapter(Context context, List<Banner> data, OnBannerAdapterCallback callback) {
-//        super();
-//        this.context = context;
-//        this.data = data;
-//        this.callback = callback;
-//    }
 
     @Override
     public int getCount() {
@@ -70,7 +53,6 @@ public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapt
     public int getFakeCount(){
         return getRealCount() * 3;
     }
-
 
 
     @Override
@@ -92,13 +74,13 @@ public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapt
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         position %= getRealCount();
-        final Banner item = data.get(position);
+        final Card1Item item = data.get(position);
 
         View view = View.inflate(context, R.layout.itemview_banner, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.iv_banner);
 
         Glide.with(context)
-                .load(item.getUrl())
+                .load(item.getImageUrl())
                 .error(R.mipmap.ic_image_error).into(imageView);
 
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -131,9 +113,10 @@ public class BannerAdapter<V extends AdvertisementViewPager>  extends PagerAdapt
     }
 
 
-    public void setData(List<Banner> data){
+    public void setEntityList(List<Card1Item> data){
         this.data = data;
         this.notifyDataSetChanged();
+//        ZLogger.d(String.format("共有%s个元素个元素\"", data != null ? data.size() : 0));
     }
 
 }

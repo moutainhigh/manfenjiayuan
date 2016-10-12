@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mfh.framework.uikit.adv.AdvertisementViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                                                    android:id="@+id/adv_viewpager"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="115dp"
+                                                    android:orientation="vertical"/>
+

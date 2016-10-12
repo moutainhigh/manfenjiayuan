@@ -7,6 +7,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -21,9 +22,10 @@
                 android:id="@+id/address_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:textColorHint="@color/black_35"
+                app:text="请选择收货地址"
                 app:textColor="@color/black_35"
-                app:text="请选择收货地址"/>
+                app:textColorHint="@color/black_35"/>
+
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
@@ -32,7 +34,7 @@
         android:id="@+id/nestedScrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
+        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -40,20 +42,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--广告轮播 205-->
-            <com.mfh.framework.uikit.adv.AdvertisementViewPager
-                android:id="@+id/viewpager_adv"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:background="@color/material_white"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/nav"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/material_white"/>
-
             <LinearLayout
+                android:id="@+id/shortcut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/material_white"
@@ -78,28 +68,16 @@
                     android:src="@mipmap/btn_scan"/>
             </LinearLayout>
 
-
-            <RelativeLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/storeRackList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.mfh.framework.hybrid.HybridWebView
-                    android:id="@+id/webview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-                <com.mfh.framework.uikit.widget.EmptyLayout
-                    android:id="@+id/error_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_8x"
+                android:background="@color/material_white"/>
 
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
-
 
     <!--app:srcCompat="@mipmap/btn_cart_dark"-->
     <android.support.design.widget.FloatingActionButton
@@ -107,9 +85,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@mipmap/btn_cart_dark"
+        android:src="@mipmap/ic_fab_cart"
         app:borderWidth="0dp"
         app:layout_anchor="@+id/nestedScrollView2"
-        app:layout_anchorGravity="bottom|end"/>
+        app:layout_anchorGravity="bottom|end"
+        app:backgroundTint="@color/material_black"/>
+
+    <include
+        android:id="@+id/noAddressView"
+        layout="@layout/emptyview_address"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <include
+        android:id="@+id/noCompanyView"
+        layout="@layout/emptyview_shop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
