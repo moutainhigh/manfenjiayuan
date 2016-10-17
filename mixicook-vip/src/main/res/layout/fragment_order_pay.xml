@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/appbar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mfh_background_light"
+        android:paddingBottom="@dimen/spacing_double"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--店铺信息-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@color/material_white"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_double">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/material_white"
+                    android:gravity="center"
+                    android:text="总价格"
+                    android:textColor="@color/material_black"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tv_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:gravity="center"
+                    android:text="￥ 0.00"
+                    android:textColor="@color/material_red_500"
+                    android:textSize="32sp"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="start|center_vertical"
+                android:text="请选择支付方式"
+                android:paddingStart="@dimen/spacing_normal"
+                android:textColor="@color/black_65"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/divider_horizontal_line"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+                    android:id="@+id/action_mfpay"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:src="@mipmap/ic_launcher"
+                    app:subText="大家都在用"
+                    app:subTextColor="@color/black_65"
+                    app:subTextSize="12sp"
+                    app:text="账户支付"
+                    app:textColor="@color/material_black"
+                    app:textSize="16sp"/>
+
+                <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+                    android:id="@+id/action_alipay"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:isChecked="true"
+                    app:labelSrc="@mipmap/ic_label_recommend"
+                    app:src="@mipmap/ic_alipay_logo"
+                    app:subText="数亿用户都在用，安全可托付"
+                    app:subTextColor="@color/black_65"
+                    app:subTextSize="12sp"
+                    app:text="支付宝"
+                    app:textColor="@color/material_black"
+                    app:textSize="16sp"/>
+
+                <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+                    android:id="@+id/action_wepay"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:labelSrc="@mipmap/ic_wepay_label_recommend"
+                    app:src="@mipmap/ic_wepay_logo"
+                    app:subText="亿万用户的选择，更快更安全"
+                    app:subTextColor="@color/black_65"
+                    app:subTextSize="12sp"
+                    app:text="微信支付"
+                    app:textColor="@color/material_black"
+                    app:textSize="16sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="@drawable/btn_rectange_green"
+        android:gravity="center"
+        android:text="支付"
+        android:textColor="@color/material_white"
+        android:textSize="16sp"/>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,4 +1,4 @@
-package com.manfenjiayuan.mixicook_vip.ui.shopcart;
+package com.manfenjiayuan.mixicook_vip.ui.reserve;
 
 import com.manfenjiayuan.business.bean.NetInfo;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;

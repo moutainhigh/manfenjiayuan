@@ -1,4 +1,4 @@
-package com.manfenjiayuan.mixicook_vip.ui.shopcart;
+package com.manfenjiayuan.mixicook_vip.ui.order;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,26 +9,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.mixicook_vip.MainEvent;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartEntity;
-import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
+import com.mfh.framework.api.shoppingCart.Cart;
+import com.mfh.framework.api.shoppingCart.CartPack;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 
 /**
  * 订单明细
  * Created by Nat.ZZN(bingshanguxue) on 15/6/5.
  */
 public class OrderGoodsAdapter
-        extends RegularAdapter<PurchaseShopcartEntity, OrderGoodsAdapter.CategoryViewHolder> {
+        extends RegularAdapter<CartPack, OrderGoodsAdapter.CategoryViewHolder> {
 
-    public OrderGoodsAdapter(Context context, List<PurchaseShopcartEntity> entityList) {
+    public OrderGoodsAdapter(Context context, List<CartPack> entityList) {
         super(context, entityList);
     }
 
@@ -50,47 +48,25 @@ public class OrderGoodsAdapter
 
     @Override
     public void onBindViewHolder(final CategoryViewHolder holder, final int position) {
-        final PurchaseShopcartEntity entity = entityList.get(position);
+        final CartPack entity = entityList.get(position);
+        Cart cart = entity.getCart();
 
         Glide.with(mContext).load(entity.getImgUrl()).error(R.mipmap.ic_image_error)
                 .into(holder.tvHeader);
-        holder.tvName.setText(entity.getName());
+        holder.tvName.setText(entity.getProductName());
         holder.tvPrice.setText(MUtils.formatDouble(null, null,
-                entity.getPrice(), "", "/", entity.getUnit()));
-        holder.tvQuantity.setText(String.format("x %.0f", entity.getQuantity()));
+                cart.getPrice(), "", "/", entity.getUnitName()));
+        holder.tvQuantity.setText(String.format("x %.0f", cart.getBcount()));
     }
 
     @Override
-    public void setEntityList(List<PurchaseShopcartEntity> entityList) {
+    public void setEntityList(List<CartPack> entityList) {
         super.setEntityList(entityList);
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
         }
     }
 
-    @Override
-    public void removeEntity(int position) {
-//        super.removeEntity(position);
-
-        PurchaseShopcartEntity entity = getEntity(position);
-        if (entity == null){
-            return;
-        }
-
-        String sqlWhere = String.format("purchaseType = '%d' and providerId = '%d' and barcode = '%s'",
-                PurchaseShopcartEntity.PURCHASE_TYPE_FRESH,
-                entity.getProviderId(), entity.getBarcode());
-        PurchaseShopcartService.getInstance().deleteBy(sqlWhere);
-        //刷新列表
-        entityList.remove(position);
-        notifyItemRemoved(position);
-
-        EventBus.getDefault().post(new MainEvent(MainEvent.EID_SHOPCART_DATASET_CHANGED));
-
-        if (adapterListener != null) {
-            adapterListener.onDataSetChanged();
-        }
-    }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_header)

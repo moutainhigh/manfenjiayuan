@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rootview"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_margin="@dimen/spacing_micro"
+                android:background="@mipmap/bg_rule_present"
+                android:orientation="horizontal"
+                android:paddingEnd="30dp"
+                android:paddingStart="30dp">
+
+    <RelativeLayout
+        android:id="@+id/frame_common"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_exec_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/material_white"
+            android:textSize="42sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/tv_exec_num"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/tv_coupon_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:singleLine="true"
+                android:text="标题"
+                android:textColor="@color/material_white"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_coupon_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:singleLine="true"
+                android:text="描述"
+                android:textColor="@color/material_white"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/frame_vip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="积分"
+                android:textColor="#fcc419"
+                android:textSize="28sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="获取积分"
+                android:textColor="@color/mfhtheme_maskPrimary"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="折扣"
+                android:textColor="#fcc419"
+                android:textSize="28sp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="会员折扣"
+                android:textColor="@color/mfhtheme_maskPrimary"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

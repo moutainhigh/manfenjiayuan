@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/appbar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mfh_background_light"
+        android:paddingBottom="@dimen/spacing_double"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--收货地址-->
+            <com.manfenjiayuan.mixicook_vip.widget.LabelView2
+                android:id="@+id/address_view"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="@color/material_white"
+                app:endSrcVisible="false"
+                app:src="@mipmap/ic_address_new"
+                app:subTextColor="@color/black_65"
+                app:subTextSize="12sp"
+                app:textColor="@color/material_black"
+                app:textSize="16sp"/>
+
+            <!--店铺信息-->
+            <TextView
+                android:id="@+id/tv_shop_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/spacing_double"
+                android:background="@color/material_white"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/spacing_normal"
+                android:text=""
+                android:textColor="@color/black_65"
+                android:textSize="14sp"/>
+
+            <!--商品-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!--空视图-->
+                <TextView
+                    android:id="@+id/empty_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:gravity="center"
+                    android:text="肚子空空的，快去补充能量吧～"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/goods_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+
+            <!--送货时间-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_serviceTime"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:isLogoVisible="false"
+                app:position="top"
+                app:subText="未选择时间"
+                app:subTextColor="@color/material_pink_400"
+                app:text="期望送达时间"/>
+            <!--备注-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_remark"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:isLogoVisible="false"
+                app:position="bottom"
+                app:subText="请输入购买留言信息"
+                app:text="备注"/>
+
+            <!--商品金额-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/goodsAmount_view"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:isArrowVisible="false"
+                app:isLogoVisible="false"
+                app:position="single"
+                app:subText=""
+                app:subTextColor="@color/material_pink_400"
+                app:text="商品金额"/>
+            <!--优惠券-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_coupon"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:isLogoVisible="false"
+                app:position="bottom"
+                app:subText="未选择优惠券"
+                app:subTextColor="@color/material_pink_400"
+                app:text="优惠券"/>
+
+            <!--配送费-->
+            <com.manfenjiayuan.mixicook_vip.widget.LabelView2
+                android:id="@+id/transfee_view"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginTop="@dimen/spacing_double"
+                android:background="@color/material_white"
+                app:endSrcVisible="false"
+                app:endTextColor="@color/material_orange_500"
+                app:endTextSize="14sp"
+                app:subText="本订单由米西物流提供配送"
+                app:subTextColor="@color/material_grey_500"
+                app:subTextSize="12sp"
+                app:text="配送费"
+                app:textColor="@color/material_orange_500"
+                app:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"/>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_topline"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_brief"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/spacing_normal"
+            android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/button_confirm"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/mfh_colorPrimary"
+            android:gravity="center"
+            android:text="确认下单"
+            android:textColor="@color/material_white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
