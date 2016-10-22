@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:padding="@dimen/spacing_normal">
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_alipay_logo"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:layout_toEndOf="@+id/iv_logo"
+        android:layout_toStartOf="@+id/checkbox"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="支付宝"
+            android:textColor="@color/material_black"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/iv_label"
+            android:layout_width="32dp"
+            android:layout_height="14dp"
+            android:layout_alignParentTop="true"
+            android:src="@mipmap/ic_wepay_label_recommend"
+            android:layout_toEndOf="@+id/tv_title"/>
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:text="数亿用户都在用，安全可托付"
+            android:textColor="@color/black_65"
+            android:textSize="12sp"/>
+    </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/spacing_micro"
+        android:checked="false"
+        android:gravity="center"
+        android:theme="@style/checkBoxStyle"/>
+
+</RelativeLayout>
