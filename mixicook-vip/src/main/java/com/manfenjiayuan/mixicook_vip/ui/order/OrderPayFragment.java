@@ -20,7 +20,7 @@ import com.manfenjiayuan.mixicook_vip.AlipayConstants;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.widget.LabelView1;
-import com.manfenjiayuan.mixicook_vip.wxapi.WXHelper;
+import net.sourceforge.simcpux.WXHelper;
 import com.manfenjiayuan.mixicook_vip.wxapi.WXUtil;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;

@@ -1,6 +1,7 @@
 package com.manfenjiayuan.mixicook_vip.ui.my;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +14,6 @@ import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
-import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
-import com.manfenjiayuan.mixicook_vip.ui.shopcart.ShopcartFragment;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.api.mobile.Mixicook;
@@ -22,6 +21,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -89,10 +89,8 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
     @OnClick(R.id.item_loginpwd)
     public void changeLoginPwd(){
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "修改登录密码");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_LOGIN_PASSWORD);
-        extras.putLong(ShopcartFragment.EXTRA_KEY_SHOP_ID, 136076L);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivity(intent);
@@ -100,10 +98,8 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
     @OnClick(R.id.item_paypwd)
     public void changePayPwd(){
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "修改支付密码");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_PAY_PASSWORD);
-        extras.putLong(ShopcartFragment.EXTRA_KEY_SHOP_ID, 136076L);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivity(intent);
@@ -185,9 +181,12 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
      * 跳转至登录页面
      */
     private void redirectToLogin() {
-//        Intent data = new Intent();
-//        data.putExtra(Constants.INTENT_KEY_IS_LOGOUT, true);
-//        setResult(Activity.RESULT_OK, data);
+        MfhLoginService.get().clear();
+
+        Intent data = new Intent();
+        getActivity().setResult(Activity.RESULT_OK, data);
+        getActivity().finish();
+
 //
 ////        Intent intent = new Intent(this, H5AuthActivity.class);
 ////        intent.putExtra(H5AuthActivity.EXTRA_KEY_REDIRECT_URL, MobileURLConf.URL_AUTH_GUIDE);
@@ -196,7 +195,6 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
 //
 ////        MainActivity.actionStart(SettingsActivity.this, 0);
 //
-//        finish();
     }
 
     private static long exitTime = 0;

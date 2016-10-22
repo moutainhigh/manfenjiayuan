@@ -16,9 +16,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.manfenjiayuan.business.Constants;
 import com.manfenjiayuan.business.ui.HybridActivity;
-import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
@@ -33,7 +31,6 @@ import com.mfh.framework.hybrid.WebViewUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 
@@ -110,6 +107,10 @@ public class HybridFragment extends BaseFragment {
         // Inflate a menu to be displayed in the toolbar
 //        mToolbar.inflateMenu(R.menu.menu_home);
 
+        if (StringUtils.isEmpty(originalUrl)){
+            originalUrl = "";
+        }
+
         initWebView();
 
         emptyView.setLoadingTheme(1);
@@ -183,25 +184,6 @@ public class HybridFragment extends BaseFragment {
         intent.putExtra(HybridActivity.EXTRA_KEY_COOKIE_DOMAIN, Mixicook.DOMAIN);
         startActivity(intent);
     }
-
-    /**
-     * 跳转至登录页面
-     */
-    private void redirect2Login() {
-        MfhLoginService.get().clear();
-
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-
-        Intent intent = new Intent(getActivity(), SignInActivity.class);
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
-
-//        LoginActivity.actionStart(MainActivity.this, null);
-//        finish();
-    }
-
-
 
     /**
      * 初始化webview

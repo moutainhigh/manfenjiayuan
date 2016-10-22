@@ -1,25 +1,26 @@
 package com.manfenjiayuan.mixicook_vip.ui.my;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.vector_uikit.ProfileView;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
-import com.manfenjiayuan.mixicook_vip.ui.SimpleActivity;
+import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
 import com.manfenjiayuan.mixicook_vip.ui.hybrid.HybridFragment;
-import com.manfenjiayuan.mixicook_vip.ui.shopcart.ShopcartFragment;
 import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
@@ -39,10 +40,13 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
+import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+
+import static com.manfenjiayuan.mixicook_vip.ui.ARCode.ARC_SETTINGS;
 
 
 /**
@@ -59,8 +63,12 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //    CollapsingToolbarLayout mCollapsingToolbarLayout;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.profileView)
-    ProfileView mProfileView;
+//    @Bind(R.id.profileView)
+//    ProfileView mProfileView;
+    @Bind(R.id.iv_header)
+    AvatarView mAvatarView;
+    @Bind(R.id.tv_name)
+    TextView tvName;
     @Bind(R.id.item_balance)
     MultiLayerLabel itemBalance;
     @Bind(R.id.item_redpacket)
@@ -145,42 +153,35 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ZLogger.d(String.format("MyFragment.onActivityResult.requestCode=%d, resultCode=%d", requestCode, resultCode));
+        ZLogger.d(String.format("requestCode=%d, resultCode=%d", requestCode, resultCode));
 
         switch (requestCode) {
-//            case OwnerConstants.ACTIVITY_REQUEST_CODE_SETTINGS:
-//                if(resultCode == Activity.RESULT_OK){
-//                    if(data.getBooleanExtra(OwnerConstants.INTENT_KEY_IS_LOGOUT, false)){
-//                        needLoadData = false;
-//                        UIHelper.sendLoginBroadcast(getActivity());
+            case ARCode.ARC_SETTINGS: {
+//                if (resultCode == Activity.RESULT_OK){
 //
-//                        //在设置页面点击退出账号后需要将之前打开的页面关掉。
-////                        getActivity().finish();
-//                        break;
-//                    }else{
-//
-//                    }
 //                }
-//            case Constants.ACTIVITY_REQUEST_ME_ORDER:
-//            case Constants.ACTIVITY_REQUEST_ME_PACKAGE:
-//            case Constants.ACTIVITY_REQUEST_ME_CART:
-//            case Constants.ACTIVITY_REQUEST_RECEIVE_STOCK:
-//            case Constants.ACTIVITY_REQUEST_SUBDIS_SELECT:
-//                loadData();//刷新数据
-//                break;
+                if (!MfhLoginService.get().haveLogined()) {
+                    getActivity().setResult(Activity.RESULT_OK, data);
+                    getActivity().finish();
+                }
+            }
+            break;
+            case ARCode.ARC_INUT_TEXT:{
+                if (resultCode == Activity.RESULT_OK){
+                // TODO: 12/10/2016 提交反馈信息
+
+                }
+            }
+            break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     /**
      * 客服中心
-     * */
+     */
     @OnClick(R.id.item_customer_service)
     public void customerService() {
         CommonDialog dialog = new CommonDialog(getActivity());
@@ -206,16 +207,14 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     @OnClick(R.id.item_settings)
     public void redirectToSettings() {
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "设置");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_SETTINGS);
-        extras.putLong(ShopcartFragment.EXTRA_KEY_SHOP_ID, 136076L);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);
-        startActivity(intent);
+        startActivityForResult(intent, ARC_SETTINGS);
     }
 
-    @OnClick(R.id.profileView)
+    @OnClick(R.id.frame_header)
     public void redirectToProfile() {
         Bundle extras = new Bundle();
 //        extras.putString(SimpleActivity.EXTRA_TITLE, "个人资料");
@@ -279,11 +278,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
      */
     @OnClick(R.id.item_shopcart)
     public void showCart() {
-        String url = URLHelper.append(Mixicook.URL_MARKET_CART,
-                String.format("ownerId=%d",
-                        MfhLoginService.get().getCurrentGuId()));
-//                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
-        redirectToJBWebForResult(url, true, -1);
+        ActivityRoute.redirect2Cart(getActivity(), null, null);
     }
 
     /**
@@ -291,11 +286,12 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
      */
     @OnClick(R.id.item_recvaddr)
     public void showRecvAddr() {
-        String url = URLHelper.append(Mixicook.URL_ME_ADDRESS,
-                String.format("ownerId=%d&mgr=1",
-                        MfhLoginService.get().getCurrentGuId()));
-//                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
-        redirectToJBWebForResult(url, true, -1);
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_MANAGER_ADDRESS);
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_MGR_ADDRESS);
     }
 
     /**
@@ -333,7 +329,6 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //        startActivity(intent);
 
         Bundle extras = new Bundle();
-        extras.putString(SimpleActivity.EXTRA_TITLE, "");
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_HYBRID);
         extras.putString(HybridFragment.EXTRA_KEY_ORIGINALURL, url);
@@ -347,9 +342,11 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
      * 加载用户数据
      */
     private void refresh(boolean isAutoReload) {
-        mProfileView.setAvatarUrl(MfhLoginService.get().getHeadimage());
-        mProfileView.setPrimaryText(MfhLoginService.get().getHumanName());
-        mProfileView.setSecondaryText(MfhLoginService.get().getTelephone());
+//        mProfileView.setAvatarUrl(MfhLoginService.get().getHeadimage());
+//        mProfileView.setPrimaryText(MfhLoginService.get().getHumanName());
+//        mProfileView.setSecondaryText(MfhLoginService.get().getTelephone());
+        mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
+        tvName.setText(MfhLoginService.get().getHumanName());
 
         MyProfile myProfile = null;
 
@@ -527,15 +524,18 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 ////                    UIHelper.redirectToActivity(getActivity(), H5CategoryActivity.class);
 //    }//反馈
 //
-//    @OnClick(R.id.item_4_0)
-//    public void showFeedback() {
-//        String url = URLHelper.append(H5Api.URL_FEEDBACK,
-//                String.format("humanid=%d&channelid=%s",
-//                        MfhLoginService.get().getCurrentGuId(),
-//                        MfhApi.CHANNEL_ID));
-//        redirectToJBWebForResult(url,
-//                true, 0, Constants.ACTIVITY_REQUEST_SUBDIS_SELECT);
-//    }
+    @OnClick(R.id.item_feedback)
+    public void redirect2Feedback() {
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_INPUT_TEXT);
+        extras.putString(InputTextFragment.EXTRA_KEY_TITLE, "反馈");
+        extras.putString(InputTextFragment.EXTRA_KEY_HINT_TEXT, "随便吐槽400字以内");
+//        extras.putString(InputTextFragment.EXTRA_KEY_RAW_TEXT, mOrderBrief.getRemark());
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_INUT_TEXT);
+    }
 //
 //
 //    /**

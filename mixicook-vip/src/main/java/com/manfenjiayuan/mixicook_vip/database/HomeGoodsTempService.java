@@ -125,7 +125,7 @@ public class HomeGoodsTempService extends BaseService<HomeGoodsTempEntity, Strin
     public void batch(List<ScGoodsSku> dataList){
         clear();
 
-        if (dataList == null || dataList.size() > 0){
+        if (dataList != null && dataList.size() > 0){
             for (ScGoodsSku goodsSku : dataList){
                 saveOrUpdate(goodsSku);
             }
@@ -139,14 +139,20 @@ public class HomeGoodsTempService extends BaseService<HomeGoodsTempEntity, Strin
             return;
         }
 
-        HomeGoodsTempEntity entity = new HomeGoodsTempEntity();
-        entity.setId(goods.getId());
-        entity.setProSkuId(goods.getProSkuId());
-        entity.setBuyUnit(goods.getBuyUnit());
-        entity.setCostPrice(goods.getCostPrice());
-        entity.setProductId(goods.getProductId());
+        try{
+            HomeGoodsTempEntity entity = new HomeGoodsTempEntity();
+            entity.setId(goods.getId());
+            entity.setProSkuId(goods.getProSkuId());
+            entity.setBuyUnit(goods.getBuyUnit());
+            entity.setCostPrice(goods.getCostPrice());
+            entity.setProductId(goods.getProductId());
 
-        saveOrUpdate(entity);
+            saveOrUpdate(entity);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 //    /**

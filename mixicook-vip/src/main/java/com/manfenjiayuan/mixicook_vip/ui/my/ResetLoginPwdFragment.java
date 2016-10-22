@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.mfh.framework.api.account.CommonUserAccountApi;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;

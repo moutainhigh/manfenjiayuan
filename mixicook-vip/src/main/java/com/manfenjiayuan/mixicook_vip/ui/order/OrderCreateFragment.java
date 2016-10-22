@@ -674,9 +674,8 @@ public class OrderCreateFragment extends BaseFragment {
         public void processQueryResult(RspQueryResult<MarketRules> rs) {
             //此处在主线程中执行。
             MarketRuleBrief marketRuleBrief = new MarketRuleBrief();
-            int retSize = rs.getReturnNum();
             //不考虑订单拆分，取第一个就可以了
-            if (retSize > 0) {
+            if (rs != null && rs.getReturnNum() > 0) {
                 marketRuleBrief.setMarketRules(rs.getRowEntity(0));
 
             }

@@ -42,7 +42,7 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
 
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
-    private MyAddressAdapter goodsListAdapter;
+    private AddressListAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
     @Bind(R.id.empty_view)
     View emptyView;
@@ -240,8 +240,8 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
             }
         });
 
-        goodsListAdapter = new MyAddressAdapter(AppContext.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListsner(new MyAddressAdapter.OnAdapterListener() {
+        goodsListAdapter = new AddressListAdapter(AppContext.getAppContext(), null);
+        goodsListAdapter.setOnAdapterListsner(new AddressListAdapter.OnAdapterListener() {
                                                   @Override
                                                   public void onItemClick(View view, int position) {
 
