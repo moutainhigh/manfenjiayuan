@@ -1,5 +1,7 @@
 package com.mfh.framework.api.account;
 
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
+
 import java.io.Serializable;
 import java.util.Date;
 

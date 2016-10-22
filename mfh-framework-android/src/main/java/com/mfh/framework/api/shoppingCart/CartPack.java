@@ -14,6 +14,8 @@ public class CartPack implements Serializable{
     private String imgUrl;//商品图片
     private Long imgId;//商品图片
 
+    private boolean isChecked = true;//默认选中状态
+
     public Cart getCart() {
         return cart;
     }
@@ -52,5 +54,13 @@ public class CartPack implements Serializable{
 
     public void setImgId(Long imgId) {
         this.imgId = imgId;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

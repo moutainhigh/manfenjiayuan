@@ -24,6 +24,32 @@ public class InvSkuStoreApiImpl extends InvSkuStoreApi{
     }
 
     /**
+     * 当前登录用户更改其本店库
+     * 存商品的线上售卖状态,0代表下线，1代表上线
+     * /invSkuStore/updateStatus?status=0|1&id=11111
+     * 或/invSkuStore/updateStatus?status=0|1&barcode=11111
+     */
+    public static void updateStatusByBarcode(Integer status, String barcode, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("status", String.valueOf(status));
+        params.put("barcode", barcode);
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_UPDATE_STATUS, params, responseCallback);
+    }
+    /**
+     * 当前登录用户更改其本店库存商品的线上售卖状态,0代表下线，1代表上线
+     * /invSkuStore/updateStatus?status=0|1&id=11111
+     * 或/invSkuStore/updateStatus?status=0|1&barcode=11111
+     */
+    public static void updateStatusById(Integer status, Long id, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("status", String.valueOf(status));
+        params.put("id", String.valueOf(id));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_UPDATE_STATUS, params, responseCallback);
+    }
+
+    /**
      * 货架绑定商品:
      * /pmcstock/findConpousByOrderInfo?jsonStr={productId:[1,2,3], officeId:.., shopId:..., orderAmount:...} 其中officeId和shopId可以只提供一个，也可以同时为空
      */

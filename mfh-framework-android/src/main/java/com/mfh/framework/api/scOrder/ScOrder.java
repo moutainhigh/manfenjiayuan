@@ -11,6 +11,12 @@ import java.util.List;
 
 public class ScOrder extends AbsOnlineOrder {
 
+    public static final Integer MFHORDER_STATUS_ORDERED = 0;//已创建（买手可以抢单拣货，组货）
+    public static final Integer MFHORDER_STATUS_PREPARE = 3;//已发货（骑手可以揽件）
+    public static final Integer MFHORDER_STATUS_SENDED = 6;//配送中（骑手可以妥投）
+    public static final Integer MFHORDER_STATUS_INSTOCK = 9;//已到达
+    public static final Integer MFHORDER_STATUS_OUTSTOCK = 12;//已签收
+
     /**
      * 客户
      * */
@@ -18,8 +24,10 @@ public class ScOrder extends AbsOnlineOrder {
 
     /**
      * 小伙伴(买手)*/
+    private Long guideHumanId;//买手人员编号
     private String serviceHumanName;//小伙伴(买手)名称
     private String serviceMobile;//小伙伴手机
+    private String serviceHumanImg;//买手头像
 
     private String companyName;//供应商名称
     private String sellerName;// 销售方租户名称
@@ -32,6 +40,14 @@ public class ScOrder extends AbsOnlineOrder {
 
     public void setBuyerName(String buyerName) {
         this.buyerName = buyerName;
+    }
+
+    public Long getGuideHumanId() {
+        return guideHumanId;
+    }
+
+    public void setGuideHumanId(Long guideHumanId) {
+        this.guideHumanId = guideHumanId;
     }
 
     public String getServiceHumanName() {
@@ -48,6 +64,14 @@ public class ScOrder extends AbsOnlineOrder {
 
     public void setServiceMobile(String serviceMobile) {
         this.serviceMobile = serviceMobile;
+    }
+
+    public String getServiceHumanImg() {
+        return serviceHumanImg;
+    }
+
+    public void setServiceHumanImg(String serviceHumanImg) {
+        this.serviceHumanImg = serviceHumanImg;
     }
 
     public String getCompanyName() {

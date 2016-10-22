@@ -88,4 +88,10 @@ public class ScGoodsSkuApi {
      * */
     public final static String URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
 
+    /**
+     * 批量查询商品信息
+     * */
+    public final static String URL_FINDONLINEGOODSLIST = URL_SCGOODSSKU + "findOnlineGoodsList";
+
+
 }

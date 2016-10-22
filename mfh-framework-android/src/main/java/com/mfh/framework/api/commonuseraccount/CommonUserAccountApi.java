@@ -1,4 +1,4 @@
-package com.mfh.framework.api.account;
+package com.mfh.framework.api.commonuseraccount;
 
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.StringUtils;
@@ -21,9 +21,17 @@ public class CommonUserAccountApi {
     /**检查支付密码*/
     public final static String URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
 
-    /**pos端直接使用满分账户进行支付:
-     (若mineCps参数不为空，则相当于支付完毕同时将其废弃，避免再调用一次下面的abandonCouponById接口)
-     /commonuseraccount/payDirect?humanId=94182&accountPassword=196735&amount=100000&bizType=2&orderId=123&officeId=1111&mineCps=...*/
+    /**
+     * pos端直接使用满分账户进行余额支支付或积分支付，无具体业务背景:
+     * <ol>
+     *     <li>满分余额支付</li>
+     *     /commonuseraccount/payDirect?humanId=94182&accountPassword=196735&amount=100000&bizType=3&orderId=123
+     *     <li>满分扫码积分兑换</li>
+     *     /commonuseraccount/payDirect?cardNo=245245245254254&score=1000
+     * </ol>
+     *
+     * (若mineCps参数不为空，则相当于支付完毕同时将其废弃，避免再调用一次下面的abandonCouponById接口)
+     * */
     public final static String URL_PAYDIRECT = URL_COMMONUSERACCOUNT + "payDirect";
 
     /**用户注册,
@@ -37,6 +45,30 @@ public class CommonUserAccountApi {
      /commonuseraccount/getUserAccountByCardId?cardId=
      */
     public final static String URL_GET_USERACCOUNT_BYCARDID = URL_COMMONUSERACCOUNT + "getUserAccountByCardId";
+
+    /**
+     * 开卡并激活用户账户
+     * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
+     */
+    public final static String URL_ACTIVATEACCOUNT = URL_COMMONUSERACCOUNT + "activateAccount";
+
+    /**
+     * 会员卡充值:给其他帐号转账
+     * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
+     */
+    public final static String URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
+
+    /**
+     * pos端提交客户编号、订单基础信息和卡券信息，计算金额
+     */
+    public final static String URL_GETPAYAMOUNT_BYORDERINFO = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfo";
+    public final static String URL_GET_PAYAMOUNT_BY_ORDERINFOS = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfos";
+
+    /**
+     * (商城/洗衣)订单支付
+     */
+    public final static String URL_SCACCOUNTPAY = URL_COMMONUSERACCOUNT + "scAccountPay";
+
 
     /**
      * 修改 支付密码
@@ -112,11 +144,29 @@ public class CommonUserAccountApi {
         params.put("bizType", bizType);
         params.put("orderId", orderId);
         params.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-//        params.put("ruleIds", "");//这里的卡券核销为空，统一在订单结束时核销
-//        params.put("mineCps", "");//这里的卡券核销为空，统一在订单结束时核销
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_PAYDIRECT, params, responseCallback);
     }
+
+    /**
+     * 满分扫码积分兑换(免密)
+     *
+     * @param cardNo          扫描的支付码
+     * @param score          积分值
+     */
+    public static void payDirectBySweepCode(String humanId, Double score,
+                                            AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("humanId", humanId);
+        if (score != null){
+            params.put("score", String.format("%.0f", score));
+        }
+        params.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_PAYDIRECT, params, responseCallback);
+    }
+
+
 
     /**
      * 用户注册

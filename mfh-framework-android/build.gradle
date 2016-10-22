@@ -37,10 +37,9 @@ dependencies {
     compile rootProject.ext.dependencies["design"]
     compile rootProject.ext.dependencies["appcompat-v7"]
     compile rootProject.ext.dependencies["recyclerview-v7"]
-
     compile rootProject.ext.dependencies["butterknife"]
-
     compile rootProject.ext.dependencies["eventbus"]
     compile rootProject.ext.dependencies["glide"]
     compile project(':mfh-framework-all')
+    compile 'me.drakeet.multitype:multitype:2.0.0'
 }

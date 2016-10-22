@@ -3,7 +3,6 @@ package com.mfh.framework.api.invFindOrder;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.mvp.OnModeListener;
@@ -18,7 +17,7 @@ public class InvFindOrderMode  {
     /**
      * 适用场景，批发商根据拣货单发货，扫描拣货单条码，快速录入数量
      * */
-    public void loadOrderItemsByBarcode(String barcode, final OnModeListener<InvFindOrderItemBrief> listener) {
+    public void getById(String barcode, final OnModeListener<InvFindOrderItemBrief> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -66,7 +65,7 @@ public class InvFindOrderMode  {
                 , MfhApplication.getAppContext()) {
         };
 
-        InvOrderApiImpl.getInvFindOrderByBarcode(barcode, responseCallback);
+        InvFindOrderApi.getById(barcode, responseCallback);
     }
 
 }

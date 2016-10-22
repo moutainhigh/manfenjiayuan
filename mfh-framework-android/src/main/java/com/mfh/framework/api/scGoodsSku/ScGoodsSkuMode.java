@@ -412,4 +412,77 @@ public class ScGoodsSkuMode {
         };
         ScGoodsSkuApiImpl.checkWithBuyInfoByBarcode(barcode, responseCallback);
     }
+
+    /**
+     * 批量查询店铺商品信息
+     */
+    public void findOnlineGoodsList(Long netId, String proSkuIds, PageInfo pageInfo,
+                                    final OnPageModeListener<ScGoodsSku> listener) {
+        if (listener != null) {
+            listener.onProcess();
+        }
+
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<ScGoodsSku>(pageInfo) {
+            @Override
+            public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
+                List<ScGoodsSku> entityList = new ArrayList<>();
+                if (rs != null) {
+                    for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
+                        entityList.add(wrapper.getBean());
+                    }
+                }
+                if (listener != null) {
+                    listener.onSuccess(pageInfo, entityList);
+                }
+            }
+
+            @Override
+            protected void processFailure(Throwable t, String errMsg) {
+                super.processFailure(t, errMsg);
+                ZLogger.df("加载库存商品失败:" + errMsg);
+                if (listener != null) {
+                    listener.onError(errMsg);
+                }
+            }
+        }, ScGoodsSku.class, MfhApplication.getAppContext());
+
+        ScGoodsSkuApiImpl.findOnlineGoodsList(netId, proSkuIds, pageInfo, queryRsCallBack);
+    }
+    /**
+     * 批量查询店铺商品信息
+     */
+    public void findOnlineGoodsList2(Long netId, Long frontCategoryId, PageInfo pageInfo,
+                                    final OnPageModeListener<ScGoodsSku> listener) {
+        if (listener != null) {
+            listener.onProcess();
+        }
+
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<ScGoodsSku>(pageInfo) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
+                        List<ScGoodsSku> entityList = new ArrayList<>();
+                        if (rs != null) {
+                            for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
+                                entityList.add(wrapper.getBean());
+                            }
+                        }
+                        if (listener != null) {
+                            listener.onSuccess(pageInfo, entityList);
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("加载库存商品失败:" + errMsg);
+                        if (listener != null) {
+                            listener.onError(errMsg);
+                        }
+                    }
+                }, ScGoodsSku.class, MfhApplication.getAppContext());
+
+        ScGoodsSkuApiImpl.findOnlineGoodsList2(netId, frontCategoryId, pageInfo, queryRsCallBack);
+    }
 }

@@ -1,5 +1,6 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.pay;
 
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetFactory;
@@ -14,6 +15,14 @@ import net.tsz.afinal.http.AjaxParams;
 public class PayApi {
     public static String WXPAY_CHANNEL_ID = NetFactory.getWxPayChannelId();
     public static String ALIPAY_CHANNEL_ID = NetFactory.getAliPayChannelId();
+
+    /**支付方式*/
+    public final static Integer WAYTYPE_ALIPAY = 1;//支付宝支付
+    public final static Integer WAYTYPE_WXPAY = 512;//微信支付
+
+
+    //123满分家园，124满分小伙伴，125城市之间
+    public final static int WX_PAY_CONFIG_ID = 125;
 
     /**预支付(充值)--支付宝*/
     public final static String URL_PRE_PAY = MfhApi.URL_BASE_SERVER + "/payOrder/prepay";

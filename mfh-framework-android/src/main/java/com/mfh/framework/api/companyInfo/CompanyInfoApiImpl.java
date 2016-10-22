@@ -41,23 +41,5 @@ public class CompanyInfoApiImpl extends CompanyInfoApi{
         AfinalFactory.getHttp(true).post(URL_GETNETINFO_BYID, params, responseCallback);
     }
 
-    /**
-     * 查询网点
-     *
-     * @param cityId {@link AbilityItem}
-     */
-    public static void findServicedNetsForUserPos(Long cityId, String userLng, String userLat,
-                                                  PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("cityId", String.valueOf(cityId));
-        params.put("userLng", String.valueOf(userLng));
-        params.put("userLat", String.valueOf(userLat));
-        if (pageInfo != null){
-            params.put("page", Integer.toString(pageInfo.getPageNo()));
-            params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        }
 
-        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_FIND_SERVICEDNETS_FORUSERPOS, params, responseCallback);
-    }
 }

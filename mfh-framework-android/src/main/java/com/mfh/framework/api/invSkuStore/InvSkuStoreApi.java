@@ -18,6 +18,13 @@ public class InvSkuStoreApi {
     public final static String URL_UPDATE = URL_INVSKUSTORE + "update";
 
     /**
+     * 当前登录用户更改其本店库存商品的线上售卖状态,0代表下线，1代表上线
+     * /invSkuStore/updateStatus?status=0|1&id=11111
+     * 或/invSkuStore/updateStatus?status=0|1&barcode=11111
+     * */
+    public final static String URL_UPDATE_STATUS = URL_INVSKUSTORE + "updateStatus";
+
+    /**
      * 商品和货架绑定
      * /invSkuStore/bindRackNo?barcode=998800000000&rackNo=00102，
      */

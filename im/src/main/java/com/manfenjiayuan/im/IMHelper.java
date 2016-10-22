@@ -7,88 +7,14 @@ import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.IMConversationService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.logic.ServiceFactory;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 /**
  * Created by bingshanguxue on 14-5-8.
  */
 public class IMHelper {
-    /**
-     * 通过传进来的时间返回翻译时间，如：早上 6：00
-     * @param time
-     * @param type 类型，昨天，前天是否带后续时间(in,代表是对话里面，带时间，out不带)
-     * @return
-     */
-    public static String getCaptionTime (String time, String type) {
-        Calendar calendar = Calendar.getInstance();
-        //获取系统当前时间
-        //年
-        String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
-        String year = time.substring(0, 4);
-        //月
-        String currentMon = String.valueOf(calendar.get(Calendar.MONTH) + 1);
-        if (currentMon.length() == 1) {
-            currentMon = "0" + currentMon;
-        }
-        String mon = time.substring(5, 7);
-        //日
-        Integer currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-        String day = time.substring(8, 10);
-        if (day.substring(0, 1).equals(0) && day.length() > 1)
-            day.substring(1);
-
-        Integer inDay = 0;
-        if (day != null && StringUtils.isDigit(day))
-            inDay = Integer.valueOf(day);
-
-        //判断年月是否相等
-        if (currentMon.equals(mon) && currentYear.equals(year)) {
-            //判断日是否相等
-            if (currentDay == inDay) {
-                return getCaptionDay(time);
-            }
-            else if (currentDay - 1 == inDay) {
-                if ("in".equals(type))//里面的时间
-                    return "昨天 " + getCaptionDay(time);
-                else//外面的时间
-                    return "昨天";
-            }
-            else if (currentDay - 2 == inDay) {
-                if ("in".equals(type))//里面的时间
-                    return "前天 " + getCaptionDay(time);
-                else//外面的时间
-                    return "前天";
-            }
-
-        }
-        else {
-            return time.substring(5, 16);
-        }
-
-        return time.substring(5, 16);
-    }
-
-    public static String  getCaptionDay (String time) {
-        String trimTime = time.trim();
-        //获得时间
-        String hour = trimTime.substring(11, 13);
-        Integer theHour = Integer.valueOf(hour);
-        if (theHour >= 0 && theHour <= 5)
-            return "凌晨" + trimTime.substring(11, 16);
-        else if (theHour > 5 && theHour <= 11)
-            return "早上" + trimTime.substring(11, 16);
-        else if (theHour > 11 && theHour <= 17)
-            return "下午" + trimTime.substring(11, 16);
-        else if (theHour >18 && theHour <= 23)
-            return "晚上" + trimTime.substring(11, 16);
-        else
-            return time.substring(5, 16);
-    }
-
     /**
      * 第一次登陆，把对话等都油标都设置为最大
      */

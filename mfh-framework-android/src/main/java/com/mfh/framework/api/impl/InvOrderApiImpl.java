@@ -2,7 +2,6 @@ package com.mfh.framework.api.impl;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -110,35 +109,6 @@ public class InvOrderApiImpl extends InvOrderApi {
         params.put("jsonStr", jsonStr);
         AfinalFactory.getHttp(true).post(URL_INVLOSSORDERITEM_BATCHCOMMIT, params, responseCallback);
     }
-
-
-    /**
-     * 根据拣货单编号或条码检索一个拣货单及其所有明细
-     * {@link com.mfh.framework.api.InvOrderApi#URL_INVFINDORDER_GETBYID InvFindOrder}
-     */
-    public static void getInvFindOrderById(Long id, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (id != null) {
-            params.put("id", String.valueOf(id));
-        }
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_INVFINDORDER_GETBYID, params, responseCallback);
-    }
-
-    /**
-     * 根据拣货单编号或条码检索一个拣货单及其所有明细
-     * @param barcode 单据条码，采购单以“4”开头。
-     */
-    public static void getInvFindOrderByBarcode(String barcode, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(barcode)) {
-            params.put("barcode", barcode);
-        }
-        params.put("wrapper", "true");
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_INVFINDORDER_GETBYID, params, responseCallback);
-    }
-
 
 
 }

@@ -35,9 +35,8 @@ public class ResApi {
 
 
     /**
-     * 图片上传修改
-     * 采用multipart/form-data或post方式提交图片。
-     * /res/remotesave/upload? responseType=1
+     * 文件下载
+     * /res/remote/download?id=2513&type=1
      */
     public static final String URL_REMOTE_UPLOAD = URL_REMOTE + "download";
 

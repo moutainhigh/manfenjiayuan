@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.Queue;
 
 /**
- * 日志记录工具
+ * Utility class that 日志记录工具
  * <ol>
  * <li>程序运行日志记录工具</li>
  * <li>参考1:{@see http://kaizige.vip/2016/06/13/klog/  Android专用Log打印工具KLog}</li>
@@ -33,10 +33,6 @@ import java.util.Queue;
 public class ZLogger {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final String NULL_TIPS = "Log with null object";
-    public static final String TAG_DEFAULT = "manfenjiayuan";
-    private static final String SUFFIX = ".java";
-    private static final String PARAM = "Param";
-    private static final String NULL = "null";
 
     public static String TAG = "Mfh";
 
@@ -257,7 +253,7 @@ public class ZLogger {
         if (!LOG_ENABLED) {
             return;
         }
-        String[] contents = wrapperContent(tagStr, objectMsg);
+        String[] contents = LogWrapper.wrapper(tagStr, objectMsg);
         String tag = contents[0];
         String msg = contents[1];
         String headString = contents[2];
@@ -296,59 +292,9 @@ public class ZLogger {
         }
     }
 
-    private static String[] wrapperContent(String tagStr, Object... objects) {
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        int index = 5;
-        String className = stackTrace[index].getClassName();//stackTrace[index].getFileName();
-        String[] classNameInfo = className.split("\\.");
-        if (classNameInfo.length > 0) {
-            className = classNameInfo[classNameInfo.length - 1] + SUFFIX;
-        }
-        if (className.contains("$")) {
-            className = className.split("\\$")[0] + SUFFIX;
-        }
 
-        String methodName = stackTrace[index].getMethodName();
-        int lineNumber = stackTrace[index].getLineNumber();
-        if (lineNumber < 0) {
-            lineNumber = 0;
-        }
 
-        String methodNameShort = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-        String tag = (tagStr == null ? className : tagStr);
-        if (StringUtils.isEmpty(tag)) {
-            tag = TAG_DEFAULT;
-        }
 
-        String msg = (objects == null) ? "" : getObjectsString(objects);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("[ (").append(className)
-                .append(":").append(lineNumber)
-                .append(")#").append(methodNameShort).append(" ]");
-        String headString = sb.toString();
-
-        return new String[]{tag, msg, headString};
-    }
-
-    private static String getObjectsString(Object... objects) {
-        if (objects.length > 1) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("\n");
-            for (int i = 0; i < objects.length; i++) {
-                Object object = objects[i];
-                if (object == null) {
-                    stringBuilder.append(PARAM).append("[").append(i).append("]").append(" = ").append(NULL).append("\n");
-                } else {
-                    stringBuilder.append(PARAM).append("[").append(i).append("]").append(" = ").append(object.toString()).append("\n");
-                }
-            }
-            return stringBuilder.toString();
-        } else {
-            Object object = objects[0];
-            return object == null ? NULL : object.toString();
-        }
-    }
 
     /**
      * 刷新显示线程

@@ -76,8 +76,10 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         }
         params.put("needSellNum", "true");//销量
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
@@ -94,8 +96,10 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         }
         params.put("needSellNum", "true");
         params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.getHttp(true).post(URL_FINDGOODSLIST, params, responseCallback);
@@ -169,8 +173,10 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         params.put("joinFlag", String.valueOf(joinFlag));// 只查网点商品
         params.put("barcode", barcode);
         params.put("name", name);
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_LIST, params, responseCallback);
     }
@@ -268,5 +274,44 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_IMPORT_FROM_CHAINSKU, params, responseCallback);
+    }
+
+    /**
+     * 批量查询网点商品信息
+     * @param netId 店铺编号
+     * @param proSkuIds 商品编号
+     * */
+    public static void findOnlineGoodsList(Long netId, String proSkuIds, PageInfo pageInfo,
+                                           AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (!StringUtils.isEmpty(proSkuIds)) {
+            params.put("proSkuIds", proSkuIds);
+        }
+        params.put("netId", String.valueOf(netId));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_FINDONLINEGOODSLIST, params, responseCallback);
+    }
+    /**
+     * 批量查询网点商品信息
+     * @param netId 店铺编号
+     * @param frontCategoryId 类目编号
+     * */
+    public static void findOnlineGoodsList2(Long netId, Long frontCategoryId, PageInfo pageInfo,
+                                           AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("netId", String.valueOf(netId));
+        params.put("frontCategoryId", String.valueOf(frontCategoryId));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_FINDONLINEGOODSLIST, params, responseCallback);
     }
 }

@@ -77,7 +77,6 @@ public class InvOrderApi {
     //收发单：收货单&发货单
     private final static String URL_INVIOORDER_ITEM = MfhApi.URL_BASE_SERVER + "/invIoOrderItem/";
     //拣货单
-    private final static String URL_INVFINDORDER = MfhApi.URL_BASE_SERVER + "/invFindOrder/";
 
     /**
      * 获取当前网点正在盘点的盘点单号和名称
@@ -145,12 +144,7 @@ public class InvOrderApi {
      */
     public final static String URL_INVIOORDERITEM_LIST = URL_INVIOORDER_ITEM + "list";
 
-    /**
-     * 根据拣货单编号或条码检索一个拣货单及其所有明细
-     *  /invFindOrder/getById?id=|barcode=451201106160530006
-     *  注意拣货单的条码是4开头
-     */
-    public final static String URL_INVFINDORDER_GETBYID = URL_INVFINDORDER + "getById";
+
 
 
 }

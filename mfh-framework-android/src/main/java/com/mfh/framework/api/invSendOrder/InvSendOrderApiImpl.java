@@ -87,8 +87,10 @@ public class InvSendOrderApiImpl extends InvSendOrderApi {
 //        if (!StringUtils.isEmpty(sendTenantId)) {
 //            params.put("sendTenantId", sendTenantId);
 //        }
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AfinalFactory.postDefault(URL_INVSENDORDER_LIST, params, responseCallback);

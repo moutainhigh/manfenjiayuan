@@ -17,9 +17,10 @@ public class MfhApi {
     public static String URL_NET_PHONE = URL_BASE_SERVER.replace(":8080/pmc", "") + "/msgcore/embYtx/getYuninfoByGuid";
     /**登录*/
     public static String URL_LOGIN = URL_BASE_SERVER + "/login";
+    /**登录*/
+    public static String URL_LOGINBYSMS = URL_BASE_SERVER + "/loginBySms";
     /**退出*/
     public static String URL_LOGOUT = URL_BASE_SERVER + "/exit";
-
 
     //域名
     public static String DOMAIN = "devmobile.manfenjiayuan.cn";

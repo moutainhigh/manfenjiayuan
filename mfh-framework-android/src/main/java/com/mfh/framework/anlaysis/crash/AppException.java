@@ -226,28 +226,28 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
         pw.print(pi.versionName);
         pw.print('_');
         pw.println(pi.versionCode);
-        pw.println();
+//        pw.println();
 
         // android版本号
         pw.print("OS Version: ");
         pw.print(Build.VERSION.RELEASE);
         pw.print("_");
         pw.println(Build.VERSION.SDK_INT);
-        pw.println();
+//        pw.println();
 
         // 手机制造商
         pw.print("Vendor: ");
         pw.println(Build.MANUFACTURER);
-        pw.println();
+//        pw.println();
 
         // 手机型号
         pw.print("Model: ");
         pw.println(Build.MODEL);
-        pw.println();
+//        pw.println();
 
         // cpu架构
         pw.print("CPU ABI: ");
         pw.println(Build.CPU_ABI);
-        pw.println();
+//        pw.println();
     }
 }

@@ -19,9 +19,5 @@ public class CompanyInfoApi {
      * 查询网点信息
      * */
     public final static String URL_GETNETINFO_BYID = URL_COMPANYINFO + "getNetInfoById";
-    /**
-     * 根据经纬度查询网点
-     * */
-    public final static String URL_FIND_SERVICEDNETS_FORUSERPOS = URL_COMPANYINFO + "findServicedNetsForUserPos";
 
 }

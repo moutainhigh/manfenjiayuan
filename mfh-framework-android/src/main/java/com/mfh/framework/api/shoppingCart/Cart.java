@@ -20,6 +20,7 @@ public class Cart extends MfhEntity<Long>{
     private Integer subType;
     private Long ownerId;
 
+
     public Long getGoodsId() {
         return goodsId;
     }
@@ -99,4 +100,5 @@ public class Cart extends MfhEntity<Long>{
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
+
 }

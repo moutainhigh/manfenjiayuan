@@ -385,7 +385,8 @@ public class MfhApplication extends Application {
         jsonObject.put("IMEI", PhoneUtils.getImei(getAppContext()));
         jsonObject.put("IMSI", PhoneUtils.getImsi(getAppContext()));
         jsonObject.put("simSerialNumber", PhoneUtils.getSimSerialNumber(getAppContext()));
-        jsonObject.put("SHA1", SystemUtils.getSignature(getAppContext()));
+        jsonObject.put("Signature-SHA1", SystemUtils.getSignature(getAppContext()));
+        jsonObject.put("Signature-MD5", SystemUtils.getSignatureMD5(getAppContext()));
         jsonObject.put("applicationLabel", SystemUtils.getApplicationLabel(getAppContext()));
         jsonObject.put("cupInfo", SystemUtils.getCpuInfo());
         jsonObject.put("mobileInfo", SystemUtils.getMobileInfo());
@@ -482,6 +483,9 @@ public class MfhApplication extends Application {
 //        ZLogger.d(String.format("1^1=%d, \t1|1=%d", 1^1, 1|1));//'1^1' can be replaced with '0','1|1' can be replaced with '1'
         ZLogger.d(String.format("1^2=%d, \t1|2=%d", 1 ^ 2, 1 | 2));
         ZLogger.d(String.format("1^4=%d, \t1|4=%d", 1 ^ 4, 1 | 4));
+//        2^2=0, 	2|2=2 	2&2=2
+        ZLogger.d(String.format("2^2=%d, \t2|2=%d, \t2&2=%d", 2^2, 2|2, 2&2));
+
         ZLogger.d(String.format("1^8=%d, \t1|8=%d", 1 ^ 8, 1 | 8));
         ZLogger.d(String.format("1^16=%d, \t1|16=%d", 1 ^ 16, 1 | 16));
         ZLogger.d(String.format("2^1=%d, \t2|1=%d", 2 ^ 1, 2 | 1));
@@ -572,6 +576,15 @@ public class MfhApplication extends Application {
 
         boolean ret = EncryptUtil.validPwd("732d078bed4c2b0f5ccd6c0442790a453e2ac424", "053927b27f560434", "196715");
         ZLogger.d("validPwd:" + ret);
+
+        ZLogger.d(String.format("decodePwd:[%s]-[%s]\n--[%s]",
+                "e4526e080f1a395cecb64dad92543cbff8dddd7c",
+                "7af0d44c36438091",
+                EncryptUtil.decodePwd("7af0d44c36438091", "e4526e080f1a395cecb64dad92543cbff8dddd7c")));
+        ZLogger.d(String.format("decodePwd:[%s]-[%s]\n--[%s]",
+                "b59fb451d718d8bdeff216bbedc503ed0eb15906",
+                "51313a52e04695c9",
+                EncryptUtil.decodePwd("51313a52e04695c9", "b59fb451d718d8bdeff216bbedc503ed0eb15906")));
     }
 
 }

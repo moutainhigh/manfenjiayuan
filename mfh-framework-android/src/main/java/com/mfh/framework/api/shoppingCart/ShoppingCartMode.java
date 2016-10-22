@@ -20,7 +20,7 @@ public class ShoppingCartMode {
     /**
      * 加载购物车
      */
-    public void list(Long shopId, PageInfo pageInfo, final OnPageModeListener<ShoppingCart> listener) {
+    public void list(Long shopId, Long ownerId, PageInfo pageInfo, final OnPageModeListener<ShoppingCart> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -59,7 +59,7 @@ public class ShoppingCartMode {
                     }
                 }, ShoppingCart.class, MfhApplication.getAppContext());
 
-        ShoppingCartApiImpl.list(shopId, pageInfo, queryRsCallBack);
+        ShoppingCartApiImpl.list(shopId, ownerId, pageInfo, queryRsCallBack);
     }
 
 

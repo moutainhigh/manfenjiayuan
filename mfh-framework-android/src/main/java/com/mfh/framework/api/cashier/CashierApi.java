@@ -59,10 +59,6 @@ public class CashierApi {
      */
     public static final String URL_RECEIVEBATCH_SAVE_HUMANFDCOMPANY = MfhApi.URL_BASE_SERVER + "/stock/receiveBatch/saveHumanFdCompany";
 
-    /**
-     * 查询订单列表 /pmcstock/findGoodsOrderList?orderStatus=4&btype=7
-     */
-    public static final String URL_STOCK_FIND_GOODS_ORDERLIST = MfhApi.URL_BASE_SERVER + "/pmcstock/findGoodsOrderList";
 
 //    {"code":"0","msg":"查询成功!","version":"1","data":{"val":"{"deepType":"0","levelNum":"1",
 // "options":[{"access":"0","code":731,"hasChild":"false","levelName":"","value":"玲珑湾精英公寓"},
@@ -73,25 +69,6 @@ public class CashierApi {
      */
     public static final String URL_FIND_SUBDISCODES_BY_NETID = MfhApi.URL_BASE_SERVER + "/shopSubdistRelation/findSubdisCodesByNetId";
 
-
-    /**
-     * pos端提交客户编号和订单基础信息获取可用卡券
-     * /pmcstock/findConpousByOrderInfo?humanId=..&jsonStr={productId:[1,2,3], officeId:.., orderAmount:...}
-     */
-    public final static String URL_FIND_COUPONS_BY_ORDERINFO = MfhApi.URL_BASE_SERVER + "/pmcstock/findConpousByOrderInfo";
-
-    /**
-     * 查询卡券,订单提交前
-     */
-    public final static String URL_FIND_MARKETRULES_BY_ORDERINFO = MfhApi.URL_BASE_SERVER + "/pmcstock/findMarketRulesByOrderInfo";
-    public final static String URL_FIND_MARKETRULES_BY_ORDERINFOS = MfhApi.URL_BASE_SERVER + "/pmcstock/findMarketRulesByOrderInfos";
-
-
-    /**
-     * pos端提交客户编号、订单基础信息和卡券信息，计算金额
-     */
-    public final static String URL_GET_PAYAMOUNT_BY_ORDERINFO = MfhApi.URL_BASE_SERVER + "/commonuseraccount/getPayAmountByOrderInfo";
-    public final static String URL_GET_PAYAMOUNT_BY_ORDERINFOS = MfhApi.URL_BASE_SERVER + "/commonuseraccount/getPayAmountByOrderInfos";
 
     /**
      * pos端核销卡券:
@@ -125,13 +102,6 @@ public class CashierApi {
             "/embWxUserRegister/beginAuthenBysms";
 
     /**
-     * 对接收到的手机验证码进行验证。
-     * /embWxUserRegister/doAuthenBysms?token=&userTmpId=
-     */
-    public final static String URL_DOAUTHENBYSMS = MfhApi.URL_BASE_SERVER +
-            "/embWxUserRegister/doAuthenBysms";
-
-    /**
      * 对某个临时用户重新发送手机短信验证码
      * /embWxUserRegister/retryAuthenBysms?mobile=&userTmpId=
      */
@@ -139,17 +109,11 @@ public class CashierApi {
             "/embWxUserRegister/retryAuthenBysms";
 
     /**
-     * 开卡并激活用户账户  /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
+     * 对接收到的手机验证码进行验证。
+     * /embWxUserRegister/doAuthenBysms?token=&userTmpId=
      */
-    public final static String URL_ACTIVATEACCOUNT = MfhApi.URL_BASE_SERVER +
-            "/commonuseraccount/activateAccount";
-
-    /**
-     * 会员卡充值:给其他帐号转账  /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
-     */
-    public final static String URL_TRANSFERFROMMYACCOUNT = MfhApi.URL_BASE_SERVER +
-            "/commonuseraccount/transferFromMyAccount";
-
+    public final static String URL_DOAUTHENBYSMS = MfhApi.URL_BASE_SERVER +
+            "/embWxUserRegister/doAuthenBysms";
 
     /**
      * 银联支付后调用后台  /payOrder/create?jsonStr={}

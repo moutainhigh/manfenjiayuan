@@ -1,5 +1,7 @@
 package com.mfh.framework.api.abs;
 
+import java.util.Date;
+
 /**
  * 线上订单
  * Created by bingshanguxue on 9/22/16.
@@ -13,6 +15,8 @@ public class AbsOnlineOrder extends AbsOrder{
     private String receiveName;// 最终收件人名称
     private String receivePhone;// 最终收件人手机
     private Double transFee;//订单总金额中的其中物流费用
+    private Date dueDate;//送达时间-开始
+    private Date dueDateEnd;//送达时间-结束
 
     public String getAddress() {
         return address;
@@ -44,5 +48,21 @@ public class AbsOnlineOrder extends AbsOrder{
 
     public void setTransFee(Double transFee) {
         this.transFee = transFee;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Date getDueDateEnd() {
+        return dueDateEnd;
+    }
+
+    public void setDueDateEnd(Date dueDateEnd) {
+        this.dueDateEnd = dueDateEnd;
     }
 }
