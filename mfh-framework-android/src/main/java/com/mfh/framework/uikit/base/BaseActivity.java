@@ -37,7 +37,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final String EXTRA_KEY_ANIM_TYPE = "animationType";
 
     //窗口动画
-    public static final int ANIM_TYPE_NEW_NONE = -1;//无动画
+    public static final int ANIM_TYPE_NEW_NONE = -1;//默认动画
     public static final int ANIM_TYPE_NEW_FLOW = 0;//新流程，底部弹出
     protected int animType = ANIM_TYPE_NEW_NONE;
     protected int activityCloseEnterAnimation;
@@ -113,6 +113,10 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected boolean isDoubleClickExitEnabled() {
         return false;
+    }
+
+    protected void doubleClickExit(){
+        finish();
     }
 
     @Override
@@ -205,12 +209,11 @@ public class BaseActivity extends AppCompatActivity {
             if (isDoubleClickExitEnabled()) {
                 if (keyCode == KeyEvent.KEYCODE_BACK
                         && event.getAction() == KeyEvent.ACTION_DOWN) {
-
                     if ((System.currentTimeMillis() - exitTime) > 3000) {
                         DialogUtil.showHint("再按一次将退出程序");
                         exitTime = System.currentTimeMillis();
                     } else {
-                        finish();
+                        doubleClickExit();
                     }
                     return true;
                 }

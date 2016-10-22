@@ -309,8 +309,8 @@
 
 
     <!--Material Color : Grey-->
-    <color name="material_grey_50">#FAFAFA</color>
-    <color name="material_grey_100">#F5F5F5</color>
+    <!--<color name="material_grey_50">#FAFAFA</color>-->
+    <!--<color name="material_grey_100">#F5F5F5</color>-->
     <color name="material_grey_200">#EEEEEE</color>
     <color name="material_grey_300">#E0E0E0</color>
     <color name="material_grey_400">#BDBDBD</color>
@@ -336,6 +336,7 @@
 
     <!--Material Color : Black-->
     <color name="material_black">#000000</color>
+    <color name="material_black_A80">#32000000</color>
     <color name="material_black_hint">#26000000</color>
 
     <!--Material Color : White-->

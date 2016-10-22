@@ -1,5 +1,10 @@
 package com.mfh.framework.core.utils;
 
+import com.alibaba.fastjson.parser.deserializer.CharArrayDeserializer;
+import com.mfh.comn.utils.MD5;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.pay.alipay.Base64;
+
 import net.tsz.afinal.core.Arrays;
 
 import java.security.GeneralSecurityException;
@@ -9,6 +14,23 @@ import java.security.MessageDigest;
  * Created by Nat.ZZN(bingshanguxue) on 15/11/23.
  */
 public class EncryptUtil {
+
+    public static String decodePwd(String strSalt, String checkPwd){
+        try {
+            byte[] salt = decodeHex(strSalt.toCharArray());
+            byte[] hashPassword = digest(checkPwd.getBytes(), "SHA-1", salt, 1024);
+
+            ZLogger.d(Base64.encode(hashPassword));
+            ZLogger.d(new String(hashPassword));
+            return MD5Util.byteArrayToHexString(hashPassword);
+
+
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * 检查密码是否正确
      * @param credentials 加密后的原密码

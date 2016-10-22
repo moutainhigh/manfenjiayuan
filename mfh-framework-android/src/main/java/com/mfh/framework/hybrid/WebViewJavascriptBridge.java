@@ -3,22 +3,24 @@ package com.mfh.framework.hybrid;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.net.http.SslError;
 import android.os.Build;
 import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
-
 
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.R;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 
 import org.json.JSONObject;
 
@@ -149,8 +151,15 @@ public class WebViewJavascriptBridge implements Serializable {
 
     private class MyWebViewClient extends WebViewClient {
         @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            ZLogger.d(String.format("网页加载开始：%s", url));
+        }
+
+        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            ZLogger.d(String.format("网页加载结束：%s", url));
             loadWebViewJavascriptBridgeJs(view);
             if (delegate != null){
                 delegate.onPageFinished(view, url);
@@ -159,6 +168,9 @@ public class WebViewJavascriptBridge implements Serializable {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            ZLogger.d(String.format("url=%s\ncookie=",
+                    url, CookieManager.getInstance().getCookie(url)));
+
             if (delegate != null){
                 boolean innerFlag = delegate.shouldOverrideUrlLoading(view, url);
                 if (innerFlag){
@@ -176,11 +188,21 @@ public class WebViewJavascriptBridge implements Serializable {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            ZLogger.d(String.format("onReceivedError errorCode=%d, description=%s, failingUrl=%s",
+            ZLogger.d(String.format("errorCode=%d, description=%s, failingUrl=%s",
                     errorCode, description, failingUrl));
             if (delegate != null){
                 delegate.onReceivedError(view, errorCode, description, failingUrl);
             }
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//            super.onReceivedSslError(view, handler, error);
+            ZLogger.d(error.getUrl());
+            //handler.cancel(); 默认的处理方式，WebView变成空白页
+//                        //接受证书
+            handler.proceed();
+            //handleMessage(Message msg); 其他处理
         }
     }
 
@@ -189,7 +211,9 @@ public class WebViewJavascriptBridge implements Serializable {
         public boolean onConsoleMessage(ConsoleMessage cm) {
             //Uncaught SyntaxError: Unexpected token var line:1
             if(cm != null){
-                ZLogger.d("Console " + cm.message() + " line:" + cm.lineNumber() + " sourceId:" + cm.sourceId());
+                DialogUtil.showHint(cm.message());
+                ZLogger.d(cm.message() + "-- From line:"+ cm.lineNumber()
+                        + " of " + cm.sourceId());
             }else{
                 ZLogger.d("null");
             }
@@ -203,7 +227,8 @@ public class WebViewJavascriptBridge implements Serializable {
             // you can check this :
             // http://stackoverflow.com/questions/15892644/android-webview-after-onjsalert-not-responding-taps
             result.cancel();
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            ZLogger.d(String.format("url=%s, message=%s"));
+            DialogUtil.showHint(message);
             return true;
         }
 

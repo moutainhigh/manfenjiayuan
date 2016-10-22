@@ -22,10 +22,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.H5Api;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.api.H5Api;
-import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.widget.EmptyLayout;
@@ -44,12 +44,16 @@ public class BaseHybridActivity extends BaseActivity {
     public static final String EXTRA_KEY_JSBRIDGE_ENABLED = "jsBridgeEnabled";
     public static final String EXTRA_KEY_SYNC_COOKIE = "syncCookie";
     public static final String EXTRA_KEY_BACKASHOMEUP = "backAsHomeUp";
+    public static final String EXTRA_KEY_COOKIE_URL = "cookieUrl";
+    public static final String EXTRA_KEY_COOKIE_DOMAIN = "cookieDomain";
 
     protected Toolbar toolbar;
     private ProgressBar animProgress;
     private EmptyLayout emptyView;
     protected HybridWebView myWebView;
 
+    private String cookieUrl;
+    private String cookieDomain;
     private boolean jsBridgeEnabled;//是否使用JSBridge
     private boolean bNeedSyncCookie;//是否需要同步cookie
     private boolean backAsHomeUp = true;//true,关闭网页(默认);false,返回上一页
@@ -66,6 +70,21 @@ public class BaseHybridActivity extends BaseActivity {
     protected int getLayoutResId() {
         return R.layout.activity_base_hybrid;
     }
+
+    protected void syncCookie(){
+//        WebViewUtils.syncCookies(this, MfhApi.URL_DEFAULT);
+        String sessionId = MfhLoginService.get().getCurrentSessionId();
+        if(sessionId != null){
+            StringBuilder sbCookie = new StringBuilder();
+            sbCookie.append(String.format("JSESSIONID=%s", sessionId));
+            sbCookie.append(String.format(";domain=%s", cookieDomain));
+            sbCookie.append(String.format(";path=%s", "/"));
+            String cookieValue = sbCookie.toString();
+
+            WebViewUtils.syncCookies(this, cookieUrl, cookieValue);
+        }
+    }
+
 
     @Override
     protected void initViews() {
@@ -125,7 +144,7 @@ public class BaseHybridActivity extends BaseActivity {
             emptyView.setErrorType(EmptyLayout.NETWORK_LOADING);
             WebViewUtils.loadUrl(myWebView, mCurrentUrl);
         } else {
-            DialogUtil.showHint("地址无效");
+            DialogUtil.showHint("url无效");
             finish();
         }
     }
@@ -214,10 +233,12 @@ public class BaseHybridActivity extends BaseActivity {
         Intent intent = this.getIntent();
         if (intent != null) {
             mCurrentUrl = intent.getStringExtra(EXTRA_KEY_REDIRECT_URL);
-            jsBridgeEnabled = intent.getBooleanExtra(EXTRA_KEY_JSBRIDGE_ENABLED, true);
+            jsBridgeEnabled = intent.getBooleanExtra(EXTRA_KEY_JSBRIDGE_ENABLED, false);
             bNeedSyncCookie = intent.getBooleanExtra(EXTRA_KEY_SYNC_COOKIE, false);
             backAsHomeUp = intent.getBooleanExtra(EXTRA_KEY_BACKASHOMEUP, true);
             animType = intent.getIntExtra(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            cookieUrl = intent.getStringExtra(EXTRA_KEY_COOKIE_URL);
+            cookieDomain = intent.getStringExtra(EXTRA_KEY_COOKIE_DOMAIN);
         }
 
         //TODO,
@@ -250,8 +271,9 @@ public class BaseHybridActivity extends BaseActivity {
 //            myWebView.setEnabled(true);
 //            myWebView.setActivated(true);
 
+
             if (bNeedSyncCookie) {
-                WebViewUtils.syncCookies(this, MfhApi.URL_DEFAULT);
+                syncCookie();
             }
 
             if (jsBridgeEnabled) {
@@ -270,22 +292,23 @@ public class BaseHybridActivity extends BaseActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             mCurrentUrl = url;
-            ZLogger.d("onPageFinished.mCurrentUrl = " + mCurrentUrl);
-            if (emptyView.getErrorState() == EmptyLayout.NETWORK_LOADING) {
+            ZLogger.d("网页加载完成 " + mCurrentUrl);
+//            if (emptyView.getErrorState() == EmptyLayout.NETWORK_LOADING) {
                 emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
-            }
+//            }
+            emptyView.setVisibility(View.GONE);
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            ZLogger.d(String.format("onReceivedError errorCode=%d, description=%s, failingUrl=%s",
+            ZLogger.d(String.format("errorCode=%d, description=%s, failingUrl=%s",
                     errorCode, description, failingUrl));
             emptyView.setErrorType(EmptyLayout.NETWORK_ERROR);
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            ZLogger.d(String.format("shouldOverrideUrlLoading url=%s\ncookie=",
+            ZLogger.d(String.format("url=%s\ncookie=",
                     url, CookieManager.getInstance().getCookie(url)));
 
             if (url.equalsIgnoreCase(H5Api.URL_NATIVIE_REDIRECT_AUTH)) {
@@ -303,6 +326,8 @@ public class BaseHybridActivity extends BaseActivity {
 
         @Override
         public void onReceivedTitle(WebView view, String title) {
+            ZLogger.d(String.format("网页标题 %s", title));
+
             onWebTitle(view, title);
         }
 
@@ -312,6 +337,8 @@ public class BaseHybridActivity extends BaseActivity {
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
+            ZLogger.d(String.format("网页加载进度 %d%%", newProgress));
+
 //            if (newProgress > 90) {
 ////                loadingImageView.toggle(false);
 ////                emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
@@ -330,16 +357,23 @@ public class BaseHybridActivity extends BaseActivity {
             }
         }
 
-        /*慎重在shouldoverrideurlloading中返回true
-        当设置了WebviewClient时，在shouldoverrideurlloading中如果不需要对url进行拦截做处理，而是简单的继续加载此网址。
-        则建议采用返回false的方式而不是loadUrl的方式进行加载网址。
-        因为如果采用loadUrl的方式进行加载，那么对于加载有跳转的网址时，进行webview.goBack就会特别麻烦。
-        例如加载链接如下：
-        A->(B->C->D)->E 括号内为跳转
-        如果采用return false的方式，那么在goBack的时候，可以从第二步直接回到A网页。从E回到A只需要执行两次goBack
-        而如果采用的是loadUrl，则没办法直接从第二步回到A网页。因为loadUrl把第二步的每个跳转都认为是一个新的网页加载，因此从E回到A需要执行四次goBack
+//        @Override
+//        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+//            return super.shouldOverrideUrlLoading(view, request);
+//        }
 
-        只有当不需要加载网址而是拦截做其他处理，如拦截tel:xxx等特殊url做拨号处理的时候，才应该返回true。*/
+        /**
+         * 慎重在shouldoverrideurlloading中返回true
+         * 当设置了WebviewClient时，在shouldoverrideurlloading中如果不需要对url进行拦截做处理，而是简单的继续加载此网址。
+         * 则建议采用返回false的方式而不是loadUrl的方式进行加载网址。
+         * 因为如果采用loadUrl的方式进行加载，那么对于加载有跳转的网址时，进行webview.goBack就会特别麻烦。
+                例如加载链接如下：
+                A->(B->C->D)->E 括号内为跳转
+                如果采用return false的方式，那么在goBack的时候，可以从第二步直接回到A网页。从E回到A只需要执行两次goBack
+                而如果采用的是loadUrl，则没办法直接从第二步回到A网页。因为loadUrl把第二步的每个跳转都认为是一个新的网页加载，因此从E回到A需要执行四次goBack
+
+                只有当不需要加载网址而是拦截做其他处理，如拦截tel:xxx等特殊url做拨号处理的时候，才应该返回true。
+         */
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (webviewDelegate != null) {
@@ -383,7 +417,10 @@ public class BaseHybridActivity extends BaseActivity {
         public boolean onConsoleMessage(ConsoleMessage cm) {
             //Uncaught SyntaxError: Unexpected token var line:1
             if (cm != null) {
-                ZLogger.d("Console " + cm.message() + " line:" + cm.lineNumber() + " sourceId:" + cm.sourceId());
+                DialogUtil.showHint(cm.message());
+                ZLogger.d(cm.message()
+                        + "-- From line:"+ cm.lineNumber()
+                        + " of " + cm.sourceId());
             } else {
                 ZLogger.d("null");
             }
@@ -396,6 +433,7 @@ public class BaseHybridActivity extends BaseActivity {
             // you can check this :
             // http://stackoverflow.com/questions/15892644/android-webview-after-onjsalert-not-responding-taps
             result.cancel();
+            ZLogger.d(String.format("url=%s, message=%s"));
             DialogUtil.showHint(message);
             return true;
         }
@@ -485,7 +523,8 @@ public class BaseHybridActivity extends BaseActivity {
      * register native method
      */
     protected void registerHandle() {
-        bridge = new WebViewJavascriptBridge(this, myWebView, new UserServerHandler(), webviewDelegate);
+        bridge = new WebViewJavascriptBridge(this, myWebView, new UserServerHandler(),
+                webviewDelegate);
         //选择图片
         bridge.registerHandler(JBridgeConf.HANDLE_NAME_SELECT_PICTURE,
                 new WebViewJavascriptBridge.WVJBHandler() {

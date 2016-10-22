@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/titleView"
-        layout="@layout/contentview_dialog_header"
+        layout="@layout/dialogview_headerview"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"/>

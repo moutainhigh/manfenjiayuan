@@ -20,7 +20,13 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragment extends Fragment {
     private static final String TAG = "BaseFragment";
+    public static final String EXTRA_KEY_ANIM_TYPE = "animationType";
+
+
     protected View rootView;
+    public static final int ANIM_TYPE_NEW_NONE = -1;//默认动画
+    public static final int ANIM_TYPE_NEW_FLOW = 0;//新流程，底部弹出
+    protected int animType = ANIM_TYPE_NEW_NONE;
 
     //确认对话框
     private CommonDialog confirmDialog = null;

@@ -19,8 +19,6 @@ import com.mfh.framework.core.utils.NetworkUtils;
  * Created by NAT.ZZN on 2015/5/13.
  */
 public class HybridWebView extends WebView {
-    private static final String TAG = HybridWebView.class.getSimpleName();
-
     protected Context context;
 
     public HybridWebView(Context context) {
@@ -64,9 +62,16 @@ public class HybridWebView extends WebView {
      * 初始化
      * */
     private void init(){
+        ZLogger.d("initialize webview...");
         setVerticalScrollBarEnabled(false);
 //        requestFocus();
-        CookieManager.getInstance().setAcceptCookie(true);
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        // Allow third party cookies for Android Lollipo
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            //This method was deprecated in API level 18. In future quota will be managed automatically.
+            cookieManager.setAcceptThirdPartyCookies(this, true);
+        }
 
         initWebSettings();
 
@@ -130,6 +135,10 @@ public class HybridWebView extends WebView {
             ZLogger.d("DB_PATH=" + WebViewUtils.DB_PATH);
             localWebSettings.setDatabasePath(WebViewUtils.DB_PATH);//设置数据库缓存路径
         }
+
+        //自适应屏幕
+        localWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        localWebSettings.setLoadWithOverviewMode(true);
 
 //        localWebSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);//提高渲染的优先级(Deprecated)
 //        localWebSettings.setBlockNetworkImage(true);//把图片加载放在最后来加载渲染

@@ -11,6 +11,7 @@ import android.webkit.WebView;
 
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -55,6 +56,7 @@ public class WebViewUtils {
             WebViewUtils.syncCookies(context, url, cookieValue);
         }
     }
+
 
     public static void syncCookie(Context context, String domainNameUrl, String... strings) {
         CookieSyncManager.createInstance(context);
@@ -161,8 +163,14 @@ public class WebViewUtils {
 //                url.lastIndexOf(suffix) + suffix.length())));
 //        return url.substring(url.indexOf(".com") + prefix.length(),
 //                url.lastIndexOf(suffix) + suffix.length());
-        //避免URL中带有参数
-        return url.substring(url.indexOf(".com") + prefix.length(),url.length());
+        if (!StringUtils.isEmpty(url)){
+            int index = url.indexOf(prefix);
+            if (index >= 0){
+                //避免URL中带有参数
+                return url.substring(index + prefix.length(), url.length());
+            }
+        }
+        return null;
     }
 
     /**

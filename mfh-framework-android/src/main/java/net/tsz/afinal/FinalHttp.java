@@ -138,19 +138,19 @@ public class FinalHttp {
                     }
                 }
 //
-//                StringBuilder sb = new StringBuilder();
+//
+                httpClient.getCookieStore().clear();
+//                foStringBuilder sb = new StringBuilder();
 //                sb.append("FinalHttp.requst.header:\n");
 //                for(Header header : request.getAllHeaders()){
 //                    sb.append(String.format("\t%s\t%s\n", header.getName(), header.getValue()));
 //                }
 //                ZLogger.d(sb.toString());
-
-                CookieStore cookieStore = httpClient.getCookieStore();
+//
+//                CookieStore cookieStore = httpClient.getCookieStore();
 //                for (Cookie cookie : httpClient.getCookieStore().getCookies()){
 //                    ZLogger.d("FinalHttp.request.cookie:" + cookie.toString());
-//                }
-                httpClient.getCookieStore().clear();
-//                for (Cookie cookie : httpClient.getCookieStore().getCookies()){
+//                }r (Cookie cookie : httpClient.getCookieStore().getCookies()){
 //                    ZLogger.d("FinalHttp.request.cookie:" + cookie.toString());
 //                }
 //                for (final Cookie cookie : cookieStore.getCookies()){
@@ -246,7 +246,7 @@ public class FinalHttp {
 //                    sb.append(String.format("\t%s\t%s\n", header.getName(), header.getValue()));
 //                }
 //                ZLogger.d(sb.toString());
-//
+////
 //                for (Cookie cookie : httpClient.getCookieStore().getCookies()){
 //                    ZLogger.d("FinalHttp.response.cookie:" + cookie.toString());
 //                }

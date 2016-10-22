@@ -63,10 +63,10 @@ public class ScanActivity extends BaseActivity implements Callback {
 		ivFlash = (ImageView) findViewById(R.id.ivFlash);
 	}
 
-	@Override
-	protected boolean isFullscreenEnabled() {
-		return true;
-	}
+//	@Override
+//	protected boolean isFullscreenEnabled() {
+//		return true;
+//	}
 
 	/** Called when the activity is first created. */
 	@Override

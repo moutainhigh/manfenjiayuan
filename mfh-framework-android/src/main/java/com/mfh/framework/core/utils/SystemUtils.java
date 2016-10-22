@@ -230,6 +230,28 @@ public class SystemUtils {
     }
 
 
+    public static String getSignatureMD5(Context context) {
+        try {
+            PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
+            if (packageInfo == null) {
+                return null;
+            }
+
+            Signature[] signatures = packageInfo.signatures;
+            if (signatures == null || signatures.length < 1) {
+                ZLogger.d("SHA1: signatures is null");
+                return null;
+            }
+
+            byte[] cert = signatures[0].toByteArray();
+            return MD5Util.getMessageDigest("MD5", null, cert);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ZLogger.e("MD5:" + e.toString());
+        }
+        return null;
+    }
+
     public static String getApplicationLabel(Context context) {
         if (context == null) {
             return null;

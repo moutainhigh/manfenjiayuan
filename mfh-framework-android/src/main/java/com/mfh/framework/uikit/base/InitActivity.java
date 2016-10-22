@@ -20,7 +20,6 @@ import com.mfh.framework.core.utils.DialogUtil;
 public abstract class InitActivity extends BaseActivity implements OnClickListener,
         IBaseViewComponent<Object, Object> {
 
-    private static final String TAG = "InitActivity";
     private Handler mHandler = null;//用于异步更新界面
 
     @Override

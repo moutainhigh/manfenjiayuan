@@ -237,4 +237,55 @@ public class ScGoodsSkuPresenter {
                 });
     }
 
+    public void findOnlineGoodsList(Long netId, String proSkuIds, PageInfo pageInfo) {
+        mScGoodsSkuMode.findOnlineGoodsList(netId, proSkuIds, pageInfo,
+                new OnPageModeListener<ScGoodsSku>() {
+            @Override
+            public void onProcess() {
+                if (mIScGoodsSkuView != null){
+                    mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                }
+            }
+
+            @Override
+            public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                if (mIScGoodsSkuView != null){
+                    mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
+                }
+            }
+
+            @Override
+            public void onError(String errorMsg) {
+                if (mIScGoodsSkuView != null){
+                    mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                }
+            }
+        });
+    }
+    public void findOnlineGoodsList2(Long netId, Long frontCategoryId, PageInfo pageInfo) {
+        mScGoodsSkuMode.findOnlineGoodsList2(netId, frontCategoryId, pageInfo,
+                new OnPageModeListener<ScGoodsSku>() {
+                    @Override
+                    public void onProcess() {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (mIScGoodsSkuView != null){
+                            mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
+                        }
+                    }
+                });
+    }
+
 }

@@ -10,12 +10,22 @@ public class MD5Util {
 	private static final String hexDigits[] = { "0", "1", "2", "3", "4", "5",
 			"6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
 
-	public static String getMessageDigest(byte[] buffer) {
+	/**
+	 * 通用加密算法
+	 * @param algorithm can be "MD5", "SHA-1", "SHA-256"
+	 * */
+	public static String getMessageDigest(String algorithm, byte[] salt) {
 		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		try {
-			MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-			mdTemp.update(buffer);
+			// 获得MD5摘要算法的 MessageDigest 对象
+			MessageDigest mdTemp = MessageDigest.getInstance(algorithm);
+			// 使用指定的字节更新摘要
+			if (salt != null) {
+				mdTemp.update(salt);
+			}
+			// 获得密文
 			byte[] md = mdTemp.digest();
+			// 把密文转换成十六进制的字符串形式(convert hash bytes to string (usually in hexadecimal form))
 			int j = md.length;
 			char str[] = new char[j * 2];
 			int k = 0;
@@ -25,8 +35,43 @@ public class MD5Util {
 			}
 			return new String(str);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 通用加密算法
+	 * @param algorithm can be "MD5", "SHA-1", "SHA-256"
+	 * */
+	public static String getMessageDigest(String algorithm, byte[] salt, byte[] input) {
+		char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+		try {
+			// 获得MD5摘要算法的 MessageDigest 对象
+			MessageDigest mdTemp = MessageDigest.getInstance(algorithm);
+			// 使用指定的字节更新摘要
+			if (salt != null) {
+				mdTemp.update(salt);
+			}
+			// 获得密文
+			byte[] md = mdTemp.digest(input);
+			// 把密文转换成十六进制的字符串形式(convert hash bytes to string (usually in hexadecimal form))
+			int j = md.length;
+			char str[] = new char[j * 2];
+			int k = 0;
+			for (byte byte0 : md) {
+				str[k++] = hexDigits[byte0 >>> 4 & 0xf];
+				str[k++] = hexDigits[byte0 & 0xf];
+			}
+			return new String(str);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static String getMessageDigest(byte[] buffer) {
+		return getMessageDigest("MD5", buffer);
 	}
 
 	/**
@@ -34,7 +79,7 @@ public class MD5Util {
 	 * @param b 字节数组
 	 * @return 16进制字串
 	 */
-	private static String byteArrayToHexString(byte b[]) {
+	public static String byteArrayToHexString(byte b[]) {
 		StringBuilder resultSb = new StringBuilder();
 		for (byte aB : b) {
 			resultSb.append(byteToHexString(aB));

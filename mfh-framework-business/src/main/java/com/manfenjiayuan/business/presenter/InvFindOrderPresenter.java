@@ -18,8 +18,8 @@ public class InvFindOrderPresenter {
         this.mInvFindOrderMode = new InvFindOrderMode();
     }
 
-    public void loadOrderItemsByBarcode(String barcode) {
-        mInvFindOrderMode.loadOrderItemsByBarcode(barcode, new OnModeListener<InvFindOrderItemBrief>() {
+    public void getById(String barcode) {
+        mInvFindOrderMode.getById(barcode, new OnModeListener<InvFindOrderItemBrief>() {
             @Override
             public void onProcess() {
                 if (mIInvFindOrderView != null) {

@@ -280,6 +280,28 @@ public class StringUtils {
         return null;
     }
 
+    /**
+     * 添加空格
+     */
+    public static String genBlankspace(int len) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 添加空格
+     */
+    public static String contact(int len, char c) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
     public static boolean contains(String raw, String seed){
         if (raw != null && seed != null && raw.contains(seed)){
             return true;

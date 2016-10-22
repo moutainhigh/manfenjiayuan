@@ -55,8 +55,7 @@ public class InitService extends BaseService {
      *
      * @author zhangyz created on 2013-5-7
      */
-    protected void checkDb(Context context) {
-
+    public void checkDb(Context context) {
         ZLogger.d("check database start");
 //        UConfigCache uConfigCache = UConfigCache.getInstance();
 //        if (uConfigCache == null){

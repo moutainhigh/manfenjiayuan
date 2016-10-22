@@ -159,4 +159,22 @@ public class MUtils {
         return String.format("%.2f%%", 100 * grossMargin);
     }
 
+    /**
+     * 快捷支付码
+     * */
+    public static String genQuickpamentCode(String raw, int length){
+        if (StringUtils.isEmpty(raw)){
+            return StringUtils.contact(length, '0');
+        }
+        else{
+            int blackLen = Math.max(length - raw.length(), 0);
+            if (blackLen > 0){
+                return StringUtils.contact(blackLen, '0') + raw;
+            }
+            else{
+                return raw;
+            }
+        }
+    }
+
 }

@@ -22,14 +22,19 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
 public abstract class BaseListFragment<T> extends Fragment {
+    public static final String EXTRA_KEY_ANIM_TYPE = "animationType";
 
     protected View rootView;
 
-    protected static final int STATE_NONE       = 0;
-    protected static final int STATE_REFRESH    = 1;
-    protected static final int STATE_LOADMORE   = 2;
-    protected static final int STATE_NOMORE     = 3;
-    protected static final int STATE_PRESSNONE  = 4;// 正在下拉但还没有到刷新的状态
+    public static final int ANIM_TYPE_NEW_NONE = -1;//默认动画
+    public static final int ANIM_TYPE_NEW_FLOW = 0;//新流程，底部弹出
+    protected int animType = ANIM_TYPE_NEW_NONE;
+
+    protected static final int STATE_NONE = 0;
+    protected static final int STATE_REFRESH = 1;
+    protected static final int STATE_LOADMORE = 2;
+    protected static final int STATE_NOMORE = 3;
+    protected static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
     protected static int mState = STATE_NONE;
 
     protected boolean isLoadingMore;
@@ -46,10 +51,12 @@ public abstract class BaseListFragment<T> extends Fragment {
     private CommonDialog confirmDialog = null;
 
 
-    protected int getLayoutResId(){return 0;}
+    protected int getLayoutResId() {
+        return 0;
+    }
 
 
-    protected void initViews(View rootView){
+    protected void initViews(View rootView) {
         ButterKnife.bind(this, rootView);
     }
 
@@ -133,14 +140,14 @@ public abstract class BaseListFragment<T> extends Fragment {
     /**
      * 重新加载数据
      */
-    public void reload(){
+    public void reload() {
 
     }
 
     /**
      * 加载更多数据
      */
-    public void loadMore(){
+    public void loadMore() {
 
     }
 
@@ -162,7 +169,7 @@ public abstract class BaseListFragment<T> extends Fragment {
     /**
      * 隐藏进度对话框
      */
-    public void hideProgressDialog(){
+    public void hideProgressDialog() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
@@ -170,19 +177,19 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     /**
      * 显示确认对话框
-     * */
+     */
     public void showConfirmDialog(String message, String positive,
                                   DialogInterface.OnClickListener positiveListener,
                                   String negative,
-                                  DialogInterface.OnClickListener negativelistener){
-        if (confirmDialog == null){
+                                  DialogInterface.OnClickListener negativelistener) {
+        if (confirmDialog == null) {
             confirmDialog = new CommonDialog(getActivity());
         }
 
         confirmDialog.setMessage(message);
         confirmDialog.setPositiveButton(positive, positiveListener);
         confirmDialog.setNegativeButton(negative, negativelistener);
-        if (!confirmDialog.isShowing()){
+        if (!confirmDialog.isShowing()) {
             confirmDialog.show();
         }
     }
@@ -190,7 +197,7 @@ public abstract class BaseListFragment<T> extends Fragment {
     /**
      * 隐藏确认对话框
      */
-    public void hideConfirmDialog(){
+    public void hideConfirmDialog() {
         if (confirmDialog != null) {
             confirmDialog.dismiss();
         }

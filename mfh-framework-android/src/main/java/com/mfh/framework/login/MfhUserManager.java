@@ -112,8 +112,28 @@ public class MfhUserManager {
         return mCurrentModules.contains(moduleName);
     }
 
+    /**
+     * 检查能力是否存在
+     * */
+    public static boolean checkModule(String moduleName, List<String> collections){
+        if (collections == null){
+            return false;
+        }
 
+        return collections.contains(moduleName);
+    }
 
+    /**
+     * 检查能力是否存在
+     * */
+    public static boolean checkModule(String moduleName, String[] collections){
+        if (collections == null){
+            return false;
+        }
 
+        List<String> modulesList = Arrays.asList(collections);
+
+        return modulesList.contains(moduleName);
+    }
 
 }

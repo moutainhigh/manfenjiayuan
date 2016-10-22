@@ -45,8 +45,9 @@ public class MfhLoginService implements IService {
     private SharedPreferences spLogin = null;
     private String loginName;//登录账号
     private String password;//登录密码
+    private String salt;
     private String sessionId = null;//会话,null表示未登录
-    private Long guid = null;//humanId，获取当前消息通讯号
+    private Long guid = null;//humanId/ownerId,获取当前消息通讯号
     private Long cpid = null;//通讯标识号,channel point id
     private Long userId = null;// 用户编号
     private String mySubdisIds = null;//关联的小区

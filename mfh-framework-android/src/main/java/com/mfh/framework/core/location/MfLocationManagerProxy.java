@@ -71,7 +71,8 @@ public class MfLocationManagerProxy {
         Location location = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location != null) {
 //            Log.d("Nat: LastKnownLocation", String.format("Latitude:%f, longigude:%f", (location.getLatitude() * 1E6), (location.getLongitude() * 1E6)));
-            ZLogger.d(String.format("LastKnownLocation: Latitude:%f, longigude:%f", location.getLatitude(), location.getLongitude()));
+            ZLogger.d(String.format("LastKnownLocation: Latitude:%f, longigude:%f",
+                    location.getLatitude(), location.getLongitude()));
         }
 
         //GPS定位，在室内反应迟缓，比较耗时，精确

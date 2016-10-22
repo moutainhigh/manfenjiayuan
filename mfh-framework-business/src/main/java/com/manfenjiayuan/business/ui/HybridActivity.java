@@ -67,7 +67,7 @@ public class HybridActivity extends BaseHybridActivity {
         context.startActivity(intent);
     }
 
-    //TODO
+
 //    //actionStartForResult
 //    public static void actionStart(Context context, String redirectUrl, boolean bSyncCookie,
 //                                   boolean backAsHomeUp, int animationType){
@@ -356,9 +356,9 @@ public class HybridActivity extends BaseHybridActivity {
 //            EnjoycityApiProxy.prePay(MfhLoginService.get().getCurrentGuId(), amount, wayType, responseCallback);
 //        } else if (wayType == EnjoycityApiProxy.WAYTYPE_WXPAY) {
 //            //回调
-//            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<WXPrePayResponse,
-//                    NetProcessor.Processor<WXPrePayResponse>>(
-//                    new NetProcessor.Processor<WXPrePayResponse>() {
+//            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<AppPrePayRsp,
+//                    NetProcessor.Processor<AppPrePayRsp>>(
+//                    new NetProcessor.Processor<AppPrePayRsp>() {
 //                        @Override
 //                        protected void processFailure(Throwable t, String errMsg) {
 //                            super.processFailure(t, errMsg);
@@ -369,8 +369,8 @@ public class HybridActivity extends BaseHybridActivity {
 //                        @Override
 //                        public void processResult(IResponseData rspData) {
 ////                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-//                            RspBean<WXPrePayResponse> retValue = (RspBean<WXPrePayResponse>) rspData;
-//                            WXPrePayResponse prePayResponse = retValue.getValue();
+//                            RspBean<AppPrePayRsp> retValue = (RspBean<AppPrePayRsp>) rspData;
+//                            AppPrePayRsp prePayResponse = retValue.getValue();
 //                            ZLogger.d("prePayResponse: " + prePayResponse.toString());
 //                            String prepayId = prePayResponse.getPrepayId();
 //
@@ -382,7 +382,7 @@ public class HybridActivity extends BaseHybridActivity {
 //                            }
 //                        }
 //                    }
-//                    , WXPrePayResponse.class
+//                    , AppPrePayRsp.class
 //                    , MfhApplication.getAppContext()) {
 //            };
 //
@@ -421,9 +421,9 @@ public class HybridActivity extends BaseHybridActivity {
 //        }
 //
 //        //回调
-//        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderResponse,
-//                NetProcessor.Processor<PreOrderResponse>>(
-//                new NetProcessor.Processor<PreOrderResponse>() {
+//        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderRsp,
+//                NetProcessor.Processor<PreOrderRsp>>(
+//                new NetProcessor.Processor<PreOrderRsp>() {
 //                    @Override
 //                    protected void processFailure(Throwable t, String errMsg) {
 //                        super.processFailure(t, errMsg);
@@ -432,8 +432,8 @@ public class HybridActivity extends BaseHybridActivity {
 //
 //                    @Override
 //                    public void processResult(IResponseData rspData) {
-//                        RspBean<PreOrderResponse> retValue = (RspBean<PreOrderResponse>) rspData;
-//                        PreOrderResponse prePayResponse = retValue.getValue();
+//                        RspBean<PreOrderRsp> retValue = (RspBean<PreOrderRsp>) rspData;
+//                        PreOrderRsp prePayResponse = retValue.getValue();
 //                        ZLogger.d("prePayResponse: " + prePayResponse.toString());
 //                        //商户网站唯一订单号
 //                        String outTradeNo = prePayResponse.getId();
@@ -474,7 +474,7 @@ public class HybridActivity extends BaseHybridActivity {
 //                        }
 //                    }
 //                }
-//                , PreOrderResponse.class
+//                , PreOrderRsp.class
 //                , MfhApplication.getAppContext()) {
 //        };
 //
@@ -635,8 +635,8 @@ public class HybridActivity extends BaseHybridActivity {
 //// "version":"1",
 //// "data":[{"dueDate":null,"sellerId":245514,"orderType":0,"bcount":1,"amount":0.01,"guideHumanid":null,"sellOffice":245552,"score":0.0,"discount":1.0,"payType":1,"session_id":null,"adjPrice":"0.0","couponsIds":null,"receiveStock":1192,"finishTime":null,"moneyRegion":null,"paystatus":1,"barcode":"9903000000182199","btype":3,"humanId":245514,"subdisId":null,"addrvalId":null,"addressId":null,"sendhome":0,"urgent":0,"status":0,"remark":"","companyId":245468,"id":138760,"createdBy":"245514","createdDate":"2015-07-21 17:05:11","updatedBy":"","updatedDate":"2015-07-21 17:07:19"}]}
 ////                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-////                        RspBean<WXPrePayResponse> retValue = (RspBean<WXPrePayResponse>) rspData;
-////                        WXPrePayResponse prePayResponse = retValue.getValue();
+////                        RspBean<AppPrePayRsp> retValue = (RspBean<AppPrePayRsp>) rspData;
+////                        AppPrePayRsp prePayResponse = retValue.getValue();
 ////                        ZLogger.d("prePayResponse: " + prePayResponse.toString());
 //                        notifyPayResult(0);
 //                        DialogUtil.showHint("支付成功");
