@@ -11,13 +11,15 @@ import java.util.Locale;
 import java.util.Random;
 
 /**
- * 支付宝支付
+ * 支付宝App支付
  *
  * Created by bingshanguxue on 4/20/16.
+ * <ol>
+ *     <li>@see <a href="https://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.6L5pUZ&treeId=26&articleId=104040&docType=1">支付宝条码支付</a></li>
+ *     @see <a href="https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.MWHs9P&treeId=193&articleId=105051&docType=1">App支付产品介绍</a>
+ * </ol>
  */
 public class AlipayUtil {
-
-
     /**
      * create the order info. 创建订单信息
      * @param totalFee 该笔订单的资金总额，单位为 RMB-Yuan。取值范围为[0.01，100000000.00]，精确到小数点后两位。
@@ -85,6 +87,7 @@ public class AlipayUtil {
         return orderInfo;
     }
 
+
     /**
      * get the out_trade_no for an order. 生成商户订单号，该值在商户端应保持唯一（可自定义格式规范）
      *
@@ -138,4 +141,7 @@ public class AlipayUtil {
 
         return payInfo;
     }
+
+
+
 }
