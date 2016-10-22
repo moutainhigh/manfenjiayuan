@@ -120,7 +120,6 @@ public static final int *;
 -keep class com.manfenjiayuan.im.** { * ; }
 -keep class com.manfenjiayuan.business.** { * ; }
 -keep class com.bingshanguxue.cashier.** { * ; }
--keep class com.bingshanguxue.vector_user.** { * ; }
 -keep class com.bingshanguxue.vector_uikit.** { * ; }
 -keep class com.alibaba.fastjson.** { * ; }
 -keep class com.mfh.litecashier.** { * ; }

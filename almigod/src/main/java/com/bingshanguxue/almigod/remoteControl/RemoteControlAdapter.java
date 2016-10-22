@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.almigod.R;
+import com.mfh.framework.anlaysis.remoteControl.RemoteControl;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;

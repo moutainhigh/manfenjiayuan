@@ -13,13 +13,12 @@ import android.widget.ProgressBar;
 
 import com.bingshanguxue.almigod.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.anlaysis.remoteControl.RemoteControl;
+import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -173,12 +172,7 @@ public class RemoteControlListFragment extends BaseListFragment<CompanyInfo> {
      */
     @OnClick(R.id.empty_view)
     public void reload() {
-        List<RemoteControl> remoteControls = new ArrayList<>();
-        remoteControls.add(new RemoteControl(1L, "上传日志", "上传系统日志信息"));
-        remoteControls.add(new RemoteControl(2L, "软件更新", "检查软件版本更新"));
-        remoteControls.add(new RemoteControl(3L, "远程打印", "远程打印票据"));
-        companyAdapter.setEntityList(remoteControls);
-
+        companyAdapter.setEntityList(RemoteControlClient.getInstance().generateRemoteControls());
     }
 
 

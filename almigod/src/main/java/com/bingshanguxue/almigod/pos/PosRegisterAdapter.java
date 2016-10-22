@@ -56,9 +56,11 @@ public class PosRegisterAdapter
 //        } else {
 //            holder.rootView.setSelected(false);
 //        }
-        holder.tvId.setText(String.valueOf(entity.getId()));
-        holder.tvChannelPointId.setText(String.format("渠道编号: %d", entity.getChannelId()));
+        holder.tvId.setText(String.format("设备编号: %d", entity.getId()));
+        holder.tvChannelId.setText(String.format("渠道编号: %d", entity.getChannelId()));
         holder.tvChannelPointId.setText(String.format("端点号:%s", entity.getChannelPointId()));
+        holder.tvSerialNo.setText(String.format("SerialNo:%s", entity.getSerialNo()));
+        holder.tvNetId.setText(String.format("网点编号:%d", entity.getNetId()));
         holder.tvCreateDate.setText(String.format("创建时间: %s",
                 TimeUtil.format(entity.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
         holder.tvUpdateDate.setText(String.format("更新时间: %s",
@@ -73,6 +75,10 @@ public class PosRegisterAdapter
         TextView tvChannelId;
         @Bind(R.id.tv_channelPointId)
         TextView tvChannelPointId;
+        @Bind(R.id.tv_serialNo)
+        TextView tvSerialNo;
+        @Bind(R.id.tv_netId)
+        TextView tvNetId;
         @Bind(R.id.tv_createDate)
         TextView tvCreateDate;
         @Bind(R.id.tv_updateDate)

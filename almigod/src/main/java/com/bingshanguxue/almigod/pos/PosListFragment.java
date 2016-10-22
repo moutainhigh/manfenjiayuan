@@ -19,7 +19,6 @@ import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.posRegister.PosRegister;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
@@ -107,8 +106,8 @@ public class PosListFragment extends BaseListFragment<CompanyInfo>
         //signficantly smoother scrolling
         mRecyclerView.setHasFixedSize(true);
         //添加分割线
-        mRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
+//        mRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         mRecyclerView.setEmptyView(emptyView);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

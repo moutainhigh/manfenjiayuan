@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity
 
 
         ValidateManager.get().batchValidate();
-        Beta.checkUpgrade(false, false);
+//        Beta.checkUpgrade(false, false);
 
 //        AlarmManagerHelper.registerBuglyUpgrade(this);
     }
@@ -203,7 +203,7 @@ public class MainActivity extends BaseActivity
                     //注册到消息桥
                     IMClient.getInstance().registerBridge();
 
-                    Beta.checkUpgrade(false, false);
+//                    Beta.checkUpgrade(false, false);
 
                     ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
                 }

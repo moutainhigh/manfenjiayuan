@@ -305,6 +305,8 @@ public class ValidateManager {
                     public void processResult(IResponseData rspData) {
                         //{"code":"0","msg":"登录成功!","version":"1","data":""}
                         ZLogger.df("登录状态有效 ");
+                        IMClient.getInstance().registerBridge();
+
                         nextStep();
                     }
 

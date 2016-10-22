@@ -7,7 +7,6 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -19,8 +18,8 @@ import com.tencent.bugly.beta.Beta;
 public class AlmigodApp extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
-//        return false;
-        return SharedPreferencesManager.isReleaseVersion();
+        return false;
+//        return SharedPreferencesManager.isReleaseVersion();
     }
 
     @Override

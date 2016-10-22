@@ -14,13 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_normal">
+        <TextView
+            android:id="@+id/tv_loginName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text=""
+            android:textColor="@color/material_black"
+            android:maxLines="1"/>
         <!-- 供应商-->
         <TextView
             android:id="@+id/tv_hardwareInformation"
             android:layout_width="match_parent"
+            android:layout_below="@+id/tv_loginName"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_micro"
             android:text=""
             android:maxLines="1"/>
         <TextView
@@ -28,8 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_hardwareInformation"
-            android:layout_marginTop="@dimen/spacing_micro"
-            android:textColor="@color/material_black"/>
+            android:layout_marginTop="@dimen/spacing_micro"/>
 
         <TextView
             android:id="@+id/tv_softVersion"
@@ -37,19 +44,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_androidLevel"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:layout_marginStart="@dimen/spacing_normal"
             android:text=""
             android:maxLines="1"/>
         <!--批发价-->
-        <TextView
-            android:id="@+id/tv_loginName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_softVersion"
-            android:layout_marginTop="@dimen/spacing_micro"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:text=""
-            android:maxLines="1"/>
+
         <!--建议零售价-->
 
 
@@ -57,9 +55,8 @@
             android:id="@+id/tv_errorTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_loginName"
+            android:layout_below="@+id/tv_softVersion"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:layout_marginStart="@dimen/spacing_normal"
             android:text=""
             android:maxLines="1"/>
         <TextView
@@ -68,7 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_errorTime"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:layout_marginStart="@dimen/spacing_normal"
             android:text=""
             android:maxLines="1"/>
 
