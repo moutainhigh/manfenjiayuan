@@ -4,6 +4,7 @@ import android.content.ComponentCallbacks2;
 import android.os.Environment;
 
 import com.manfenjiayuan.im.IMClient;
+import com.manfenjiayuan.mixicook_vip.ui.mutitype.MultiTypeInstaller;
 import com.manfenjiayuan.mixicook_vip.utils.SharedPreferencesHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
@@ -15,10 +16,14 @@ import com.tencent.bugly.beta.Beta;
 
 
 /**
+ *
+ * 3befb5a280205b0ff2866ef0faf3c26c
+ *
  * Created by Nat.ZZN(bingshanguxue) on 2015/7/10.
  */
 public class AppContext extends MfhApplication {
 
+    public static int loginType = 1;
     @Override
     protected boolean isReleaseVersion() {
 //        return false;
@@ -27,8 +32,6 @@ public class AppContext extends MfhApplication {
 
     @Override
     public void onCreate() {
-//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
         super.onCreate();
 
         configBugly();
@@ -39,11 +42,13 @@ public class AppContext extends MfhApplication {
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
 //            Constants.CACHE_NAME = "ACache_Release";
         } else {
-//            ZLogger.d("测试版本");
+//            ZLogger.d("测试版    本");
             ZLogger.LOG_ENABLED = true;
             SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
 //            ACacheHelper.CACHE_NAME = "ACache_Dev";
         }
+
+        MultiTypeInstaller.start();
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);

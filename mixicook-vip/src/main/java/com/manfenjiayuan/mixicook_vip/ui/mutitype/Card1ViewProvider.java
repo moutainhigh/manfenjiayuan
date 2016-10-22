@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.adv.AdvertisementViewPager;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class Card1ViewProvider extends ItemViewProvider<Card1,
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Card1 card) {
         List<Card1Item> items = card.getItems();
-//        ZLogger.d(String.format("共有%s个元素", items != null ? items.size() : 0));
+        ZLogger.d(String.format("共有%s个元素", items != null ? items.size() : 0));
         holder.setEntityList(items);
 
     }

@@ -137,8 +137,6 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
                 this.mAdapter.setEntityList(null);
                 btnMore.setEnabled(false);
             }
-
-
         }
 
         /**

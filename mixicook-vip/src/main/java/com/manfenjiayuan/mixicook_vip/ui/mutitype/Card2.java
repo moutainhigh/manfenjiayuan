@@ -1,6 +1,7 @@
 package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
 import com.mfh.framework.api.anon.storeRack.CardProduct;
+import com.mfh.framework.api.anon.storeRack.StoreRackCardItem;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,17 +9,29 @@ import java.util.List;
 import me.drakeet.multitype.Item;
 
 /**
- * 类目商品卡片 3*2
  * Created by bingshanguxue on 10/10/2016.
  */
 
-public class Card9 implements Serializable, Item {
+public class Card2 implements Serializable, Item {
     private Integer type;//卡片类型不同样式布局
+    private Long netId;//指定该卡片是在哪个网点购买
+    private String netName;//网点名称
+    private List<StoreRackCardItem> items;
+
+    //类目card
     private Long frontCategoryId;//lnktype为1时前台类目编号
     private String categoryName;//类目名称
     private List<CardProduct> products;
 
-    private Long shopId;//店铺编号
+//    private List<Card2Item> items;
+//
+//    public List<Card2Item> getItems() {
+//        return items;
+//    }
+//
+//    public void setItems(List<Card2Item> items) {
+//        this.items = items;
+//    }
 
     public Integer getType() {
         return type;
@@ -26,6 +39,22 @@ public class Card9 implements Serializable, Item {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Long getNetId() {
+        return netId;
+    }
+
+    public void setNetId(Long netId) {
+        this.netId = netId;
+    }
+
+    public String getNetName() {
+        return netName;
+    }
+
+    public void setNetName(String netName) {
+        this.netName = netName;
     }
 
     public Long getFrontCategoryId() {
@@ -52,11 +81,11 @@ public class Card9 implements Serializable, Item {
         this.products = products;
     }
 
-    public Long getShopId() {
-        return shopId;
+    public void setItems(List<StoreRackCardItem> items) {
+        this.items = items;
     }
 
-    public void setShopId(Long shopId) {
-        this.shopId = shopId;
+    public List<StoreRackCardItem> getItems() {
+        return items;
     }
 }
