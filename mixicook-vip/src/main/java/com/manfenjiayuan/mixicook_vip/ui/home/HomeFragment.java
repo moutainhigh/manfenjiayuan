@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +23,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
-import com.manfenjiayuan.mixicook_vip.ui.SmsSignActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;
@@ -31,16 +32,22 @@ import com.manfenjiayuan.mixicook_vip.database.HomeGoodsTempService;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
+import com.manfenjiayuan.mixicook_vip.ui.SmsSignActivity;
 import com.manfenjiayuan.mixicook_vip.ui.address.AddAddressFragment;
 import com.manfenjiayuan.mixicook_vip.ui.address.IReciaddrView;
 import com.manfenjiayuan.mixicook_vip.ui.address.ReciaddrPresenter;
 import com.manfenjiayuan.mixicook_vip.ui.hybrid.HybridFragment;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card1;
+import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card10;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card1Item;
+import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card2Item;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card9;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
+import com.mfh.comn.net.data.RspQueryResult;
+import com.mfh.framework.Constants;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.anon.storeRack.CardProduct;
@@ -59,6 +66,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -89,9 +97,10 @@ public class HomeFragment extends BaseFragment
     Toolbar mToolbar;
     @Bind(R.id.address_view)
     NaviAddressView mNaviAddressView;
-    @Bind(R.id.storeRackList)
-    RecyclerView storeRackRecyclerView;
-    //    private MultiTypeAdapter storeRackAdapter;
+    @Bind(R.id.bannerRackList)
+    RecyclerView bannerRackRecyclerView;
+    @Bind(R.id.homeRackList)
+    RecyclerView homeRackRecyclerView;
     @Bind(R.id.noAddressView)
     View mNoAddressView;
     @Bind(R.id.noCompanyView)
@@ -154,7 +163,8 @@ public class HomeFragment extends BaseFragment
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_home);
 
-        initStoreRack();
+        initBannerRack();
+        initHomeRack();
 
         ValidateManager.get().batchValidate();
         loadInitStep1();
@@ -275,7 +285,7 @@ public class HomeFragment extends BaseFragment
 
     /**
      * 快捷支付
-     * */
+     */
     @OnClick(R.id.btn_pay)
     public void quickPay() {
         if (!MfhLoginService.get().haveLogined()) {
@@ -288,7 +298,12 @@ public class HomeFragment extends BaseFragment
 
     @OnClick(R.id.btn_scan)
     public void scannerQR() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        // Check if the Camera permission is already available.
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            DialogUtil.showHint("拍照权限未打开！");
+            // Camera permission has not been granted.
+            requestCameraPermission();
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -296,14 +311,97 @@ public class HomeFragment extends BaseFragment
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            DialogUtil.showHint("拍照权限未打开！");
             return;
+        } else {
+            // Camera permissions is already available, show the ScanActivity.
+            Intent intent = new Intent(getActivity(), ScanActivity.class);
+            startActivityForResult(intent, UIHelper.ACTIVITY_REQUEST_CODE_ZXING_QRCODE);
         }
-
-        //需要处理扫描结果
-        Intent intent = new Intent(getActivity(), ScanActivity.class);
-        startActivityForResult(intent, UIHelper.ACTIVITY_REQUEST_CODE_ZXING_QRCODE);
     }
+
+
+    /**
+     * Requests the Camera permission.
+     * If the permission has been denied previously, a SnackBar will prompt the user to grant the
+     * permission, otherwise it is requested directly.
+     */
+    private void requestCameraPermission() {
+        ZLogger.i("CAMERA permission has NOT been granted. Requesting permission.");
+
+        // BEGIN_INCLUDE(camera_permission_request)
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.CAMERA)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example if the user has previously denied the permission.
+            ZLogger.i("Displaying camera permission rationale to provide additional context.");
+            Snackbar.make(homeRackRecyclerView, R.string.permission_camera_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(getActivity(),
+                                    new String[]{Manifest.permission.CAMERA},
+                                    Constants.REQUEST_CODE_CAMERA);
+                        }
+                    })
+                    .show();
+        } else {
+            // Camera permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},
+                    Constants.REQUEST_CODE_CAMERA);
+        }
+        // END_INCLUDE(camera_permission_request)
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == Constants.REQUEST_CODE_CAMERA) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            ZLogger.i("Received response for Camera permission request.");
+
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                ZLogger.i("CAMERA permission has now been granted. Showing preview.");
+                Snackbar.make(homeRackRecyclerView, R.string.permision_available_camera,
+                        Snackbar.LENGTH_SHORT).show();
+            } else {
+                ZLogger.i("CAMERA permission was NOT granted.");
+                Snackbar.make(homeRackRecyclerView, R.string.permissions_not_granted,
+                        Snackbar.LENGTH_SHORT).show();
+
+            }
+            // END_INCLUDE(permission_result)
+
+        } else if (requestCode == Constants.REQUEST_CODE_CONTACTS) {
+            ZLogger.i("Received response for contact permissions request.");
+
+            // We have requested multiple permissions for contacts, so all of them need to be
+            // checked.
+            if (PermissionUtil.verifyPermissions(grantResults)) {
+                // All required permissions have been granted, display contacts fragment.
+                Snackbar.make(homeRackRecyclerView, R.string.permision_available_contacts,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            } else {
+                ZLogger.i("Contacts permissions were NOT granted.");
+                Snackbar.make(homeRackRecyclerView, R.string.permissions_not_granted,
+                        Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
 
     /**
      * 跳转到购物车
@@ -417,18 +515,18 @@ public class HomeFragment extends BaseFragment
 
 
     /**
-     * 初始化菜单
+     * 初始化广告货架
      */
-    private void initStoreRack() {
+    private void initBannerRack() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        storeRackRecyclerView.setLayoutManager(linearLayoutManager);
+        bannerRackRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        storeRackRecyclerView.setHasFixedSize(true);
+        bannerRackRecyclerView.setHasFixedSize(true);
 //        menuRecyclerView.setScrollViewCallbacks(mScrollViewScrollCallbacks);
         //设置Item增加、移除动画
-//        storeRackRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        homeRackRecyclerView.setItemAnimator(new DefaultItemAnimator());
         //添加分割线
 //        menuRecyclerView.addItemDecoration(new GridItemDecoration2(this, 1,
 //                getResources().getColor(R.color.gray), 1f,
@@ -438,7 +536,32 @@ public class HomeFragment extends BaseFragment
 //        menuRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
 //        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
 
-//        storeRackRecyclerView.setAdapter(menuAdapter);
+//        homeRackRecyclerView.setAdapter(menuAdapter);
+    }
+
+    /**
+     * 初始化首页货架
+     */
+    private void initHomeRack() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        homeRackRecyclerView.setLayoutManager(linearLayoutManager);
+        //enable optimizations if all item views are of the same height and width for
+        //signficantly smoother scrolling
+        homeRackRecyclerView.setHasFixedSize(true);
+//        menuRecyclerView.setScrollViewCallbacks(mScrollViewScrollCallbacks);
+        //设置Item增加、移除动画
+//        homeRackRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        //添加分割线
+//        menuRecyclerView.addItemDecoration(new GridItemDecoration2(this, 1,
+//                getResources().getColor(R.color.gray), 1f,
+//                getResources().getColor(R.color.gray), 1f,
+//                getResources().getColor(R.color.gray), 1f));
+
+//        menuRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
+//        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
+
+//        homeRackRecyclerView.setAdapter(menuAdapter);
     }
 
 
@@ -446,7 +569,7 @@ public class HomeFragment extends BaseFragment
      * 初始化：加载默认收货地址
      */
     private void loadInitStep1() {
-        if (MfhLoginService.get().haveLogined()){
+        if (MfhLoginService.get().haveLogined()) {
             showProgressDialog(ProgressView.STATUS_PROCESSING, "加载地址...", false);
             mReciaddrPresenter.getDefaultAddrsByHuman(MfhLoginService.get().getCurrentGuId());
         }
@@ -538,125 +661,364 @@ public class HomeFragment extends BaseFragment
         mNoCompanyView.setVisibility(View.GONE);
 
         showProgressDialog(ProgressView.STATUS_PROCESSING, "加载货架...", false);
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<StoreRack,
-                NetProcessor.Processor<StoreRack>>(
-                new NetProcessor.Processor<StoreRack>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
+        ScStoreRackApi.findByShopMust(curCompanyInfo.getId(),
+                String.format("%d,%d",
+                        ScStoreRackApi.RACK_TYPE_SC_HOME, ScStoreRackApi.RACK_TYPE_SHOP_HOME),
+                rackRC);
+//        ScStoreRackApi.getByShopMust(curCompanyInfo.getId(), getByShopMustRC);
+    }
+
+    private NetCallBack.QueryRsCallBack rackRC = new NetCallBack.QueryRsCallBack<>(
+            new NetProcessor.QueryRsProcessor<StoreRack>(new PageInfo(1, 100)) {
+                //                处理查询结果集，子类必须继承
+                @Override
+                public void processQueryResult(RspQueryResult<StoreRack> rs) {//此处在主线程中执行。
+                    List<StoreRack> racks = new ArrayList<>();
+
+                    if (rs != null && rs.getReturnNum() > 0) {
+                        for (int i = 0; i < rs.getReturnNum(); i++) {
+                            racks.add(rs.getRowEntity(i));
+                        }
+                    }
+
+                    refreshRackFloor(racks);
+                }
+
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    ZLogger.d("processFailure: " + errMsg);
+                }
+            }
+            , StoreRack.class
+            , MfhApplication.getAppContext());
+
+    /**
+     * 刷新首页楼层
+     */
+    private void refreshRackFloor(List<StoreRack> racks) {
+        hideProgressDialog();
+        bannerRackRecyclerView.setAdapter(null);
+        homeRackRecyclerView.setAdapter(null);
+        if (racks == null || racks.size() < 1) {
+            DialogUtil.showHint("这个人很懒，什么都没有发布");
+            return;
+        }
+        try {
+            for (StoreRack rack : racks) {
+                String dataInfo = rack.getDataInfo();
+                ZLogger.d("dataInfo:\n" + dataInfo);
+                String unescapeDataInfo = StringEscapeUtils.unescapeJava(dataInfo);
+                ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
+
+                if (StringUtils.isEmpty(unescapeDataInfo)){
+                    ZLogger.d(String.format("<%s>: 什么都没有", rack.getRackName()));
+                    continue;
+                }
+
+                List<StoreRackCard> cards = JSONArray.parseArray(unescapeDataInfo,
+                        StoreRackCard.class);
+
+                if (cards == null) {
+                    ZLogger.d(String.format("<%s>: 什么都没有", rack.getRackName()));
+                    continue;
+                } else {
+                    ZLogger.d(String.format("<%s>:\n%s", rack.getRackName(), JSONObject.toJSONString(cards)));
+                }
+                if (rack.getRackType() == ScStoreRackApi.RACK_TYPE_SC_HOME) {
+                    decodeBannerCard(cards);
+                } else if (rack.getRackType() == ScStoreRackApi.RACK_TYPE_SHOP_HOME) {
+                    decodeHomeCard(cards);
+                } else {
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
+    }
+
+    /**
+     * 解析商城首页数据
+     */
+    private void decodeBannerCard(List<StoreRackCard> cards) {
+        List<CardProduct> products = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
+        if (cards != null && cards.size() > 0) {
+            for (StoreRackCard card : cards) {
+                List<StoreRackCardItem> cardItems = card.getItems();
+                if (card.getType().equals(1)) {
+                    List<Card1Item> card1Items = new ArrayList<>();
+                    if (cardItems != null && cardItems.size() > 0) {
+                        for (StoreRackCardItem cardItem : cardItems) {
+                            Card1Item card1Item = new Card1Item();
+                            card1Item.setImageUrl(cardItem.getImageUrl());
+                            card1Item.setLink(cardItem.getLink());
+                            card1Item.setLnktype(cardItem.getLnktype());
+                            card1Items.add(card1Item);
+                        }
+                    }
+                    Card1 card1 = new Card1();
+                    card1.setItems(card1Items);
+                    items.add(card1);
+                    ZLogger.d(String.format("添加card1: %d", card1Items.size()));
+                } else if (card.getType().equals(2)) {
+                    List<Card2Item> card2Items = new ArrayList<>();
+//                                if (cardItems != null && cardItems.size() > 0) {
+//                                    for (StoreRackCardItem cardItem : cardItems) {
+//                                        Card2Item card2Item = new Card2Item();
+//                                        card2Item.setImageUrl(cardItem.getImageUrl());
+//                                        card2Item.setLink(cardItem.getLink());
+//                                        card2Item.setLnktype(cardItem.getLnktype());
+//                                        card2Items.add(card2Item);
+//                                    }
+//                                }
+//                                Card2 card2 = new Card2();
+//                                card2.setType(card.getType());
+//                                card2.setNetId(card.getNetId());
+//                                card2.setItems(card.getItems());
+//                                card2.setNetName(card.getNetName());
+//                                card2.setCategoryName(card.getCategoryName());
+//                                card2.setFrontCategoryId(card.getFrontCategoryId());
+//                                card2.setProducts(card.getProducts());
+//                                card2.setItems(card2Items);
+//                                items.add(card2);
+//                                ZLogger.d(String.format("添加card2: %d", card2Items.size()));
+                    items.add(card);
+                    ZLogger.d("添加card2：" + card.getCategoryName());
+                } else if (card.getType().equals(9)) {
+                    Card9 card9 = new Card9();
+                    card9.setType(card.getType());
+                    card9.setCategoryName(card.getCategoryName());
+                    card9.setFrontCategoryId(card.getFrontCategoryId());
+                    card9.setProducts(card.getProducts());
+                    card9.setShopId(curCompanyInfo.getId());
+                    items.add(card9);
+                    ZLogger.d("添加card3：" + card9.getCategoryName());
+
+                    products.addAll(card.getProducts());
+                }
+            }
+        }
+//            ZLogger.d("items.size=" + items.size());
+        if (items.size() > 0) {
+            bannerRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
+        } else {
+            bannerRackRecyclerView.setAdapter(null);
+        }
+
+        loadInitStep5(products);
+    }
+
+
+    /**
+     * 解析首页卡片数据
+     */
+    private void decodeHomeCard(List<StoreRackCard> cards) {
+        List<CardProduct> products = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
+        if (cards != null && cards.size() > 0) {
+            for (StoreRackCard card : cards) {
+                List<StoreRackCardItem> cardItems = card.getItems();
+                if (card.getType().equals(1)) {
+                    List<Card1Item> card1Items = new ArrayList<>();
+                    if (cardItems != null && cardItems.size() > 0) {
+                        for (StoreRackCardItem cardItem : cardItems) {
+                            Card1Item card1Item = new Card1Item();
+                            card1Item.setImageUrl(cardItem.getImageUrl());
+                            card1Item.setLink(cardItem.getLink());
+                            card1Item.setLnktype(cardItem.getLnktype());
+                            card1Items.add(card1Item);
+                        }
+                    }
+                    Card1 card1 = new Card1();
+                    card1.setItems(card1Items);
+                    items.add(card1);
+                    ZLogger.d(String.format("添加card1: %d", card1Items.size()));
+                } else if (card.getType().equals(2)) {
+                    List<Card2Item> card2Items = new ArrayList<>();
+//                                if (cardItems != null && cardItems.size() > 0) {
+//                                    for (StoreRackCardItem cardItem : cardItems) {
+//                                        Card2Item card2Item = new Card2Item();
+//                                        card2Item.setImageUrl(cardItem.getImageUrl());
+//                                        card2Item.setLink(cardItem.getLink());
+//                                        card2Item.setLnktype(cardItem.getLnktype());
+//                                        card2Items.add(card2Item);
+//                                    }
+//                                }
+//                                Card2 card2 = new Card2();
+//                                card2.setType(card.getType());
+//                                card2.setNetId(card.getNetId());
+//                                card2.setItems(card.getItems());
+//                                card2.setNetName(card.getNetName());
+//                                card2.setCategoryName(card.getCategoryName());
+//                                card2.setFrontCategoryId(card.getFrontCategoryId());
+//                                card2.setProducts(card.getProducts());
+//                                card2.setItems(card2Items);
+//                                items.add(card2);
+//                                ZLogger.d(String.format("添加card2: %d", card2Items.size()));
+                    items.add(card);
+                    ZLogger.d("添加card2：" + card.getCategoryName());
+
+                } else if (card.getType().equals(9)) {
+                    Card9 card9 = new Card9();
+                    card9.setType(card.getType());
+                    card9.setCategoryName(card.getCategoryName());
+                    card9.setFrontCategoryId(card.getFrontCategoryId());
+                    card9.setProducts(card.getProducts());
+                    card9.setShopId(curCompanyInfo.getId());
+                    items.add(card9);
+                    ZLogger.d("添加card9：" + card9.getCategoryName());
+
+
+                    products.addAll(card.getProducts());
+                }
+                else if (card.getType().equals(10)) {
+                    Card10 card10 = new Card10();
+                    card10.setType(card.getType());
+                    card10.setNetName(card.getNetName());
+                    card10.setItems(card.getItems());
+                    items.add(card10);
+                    ZLogger.d("添加card10：" + card10.getNetName());
+                }
+            }
+        }
+//            ZLogger.d("items.size=" + items.size());
+        if (items.size() > 0) {
+            homeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
+        } else {
+            homeRackRecyclerView.setAdapter(null);
+        }
+
+        loadInitStep5(products);
+    }
+
+
+    private NetCallBack.NetTaskCallBack getByShopMustRC = new NetCallBack.NetTaskCallBack<StoreRack,
+            NetProcessor.Processor<StoreRack>>(
+            new NetProcessor.Processor<StoreRack>() {
+                @Override
+                public void processResult(IResponseData rspData) {
 //                        java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
 //                        {"code":"0","msg":"查询成功!","version":"1","dat"}}
-                        StoreRack storeRack = null;
-                        try {
-                            if (rspData != null) {
-                                RspBean<StoreRack> retValue = (RspBean<StoreRack>) rspData;
-                                storeRack = retValue.getValue();
-                            }
-                        } catch (Exception e) {
-                            ZLogger.ef(e.toString());
+                    StoreRack storeRack = null;
+                    try {
+                        if (rspData != null) {
+                            RspBean<StoreRack> retValue = (RspBean<StoreRack>) rspData;
+                            storeRack = retValue.getValue();
                         }
+                    } catch (Exception e) {
+                        ZLogger.ef(e.toString());
+                    }
 //                            loadInitStep4(rackId);
 
-                        hideProgressDialog();
-//            List<StoreRackCard> dataInfo = data.getDataInfo();
-//            if (dataInfo != null && dataInfo.size() > 0){
-//                for (StoreRackCard storeRackCard : dataInfo){
-//                    ZLogger.d("storeRackCard:\n" + JSONObject.toJSONString(storeRackCard));
-//                }
-//            }
-                        if (storeRack == null) {
-                            DialogUtil.showHint("这个人很懒，什么都没有发布");
-                            return;
-                        }
+                    hideProgressDialog();
 
-                        String dataInfo = storeRack.getDataInfo();
-                        ZLogger.d("dataInfo:\n" + dataInfo);
-                        String unescapeDataInfo = StringEscapeUtils.unescapeJava(dataInfo);
-                        ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-//            //后台返回的unescapeDataInfo前后各有一个双引号，需要删除才能正确解析
-//            if (!StringUtils.isEmpty(unescapeDataInfo)) {
-//                unescapeDataInfo = unescapeDataInfo.substring(1);
-//                ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-//                unescapeDataInfo = unescapeDataInfo.substring(0, unescapeDataInfo.length() - 1);
-//                ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-//            }
-
-                        List<StoreRackCard> storeRackCards2 = null;
-                        try {
-                            storeRackCards2 = JSONArray.parseArray(unescapeDataInfo,
-                                    StoreRackCard.class);
-                            if (storeRackCards2 == null) {
-                                ZLogger.d("storeRackCards2 is null");
-                            } else {
-                                ZLogger.d("storeRackCards2:\n" + JSONObject.toJSONString(storeRackCards2));
-                            }
-                        } catch (Exception e) {
-                            ZLogger.e(e.toString());
-                        }
-
-                        List<CardProduct> products = new ArrayList<>();
-                        List<Item> items = new ArrayList<>();
-                        if (storeRackCards2 != null && storeRackCards2.size() > 0) {
-                            for (StoreRackCard card : storeRackCards2) {
-                                List<StoreRackCardItem> cardItems = card.getItems();
-                                if (card.getType().equals(1)) {
-                                    List<Card1Item> card1Items = new ArrayList<>();
-                                    if (cardItems != null && cardItems.size() > 0) {
-                                        for (StoreRackCardItem cardItem : cardItems) {
-                                            Card1Item card1Item = new Card1Item();
-                                            card1Item.setImageUrl(cardItem.getImageUrl());
-                                            card1Item.setLink(cardItem.getLink());
-                                            card1Item.setLnktype(cardItem.getLnktype());
-                                            card1Items.add(card1Item);
-                                        }
-                                    }
-                                    Card1 card1 = new Card1();
-                                    card1.setItems(card1Items);
-                                    items.add(card1);
-                                    ZLogger.d("添加card1");
-                                } else if (card.getType().equals(2)) {
-                                    items.add(card);
-                                    ZLogger.d("添加card2");
-                                } else if (card.getType().equals(9)) {
-                                    Card9 card9 = new Card9();
-                                    card9.setType(card.getType());
-                                    card9.setCategoryName(card.getCategoryName());
-                                    card9.setFrontCategoryId(card.getFrontCategoryId());
-                                    card9.setProducts(card.getProducts());
-                                    card9.setShopId(curCompanyInfo.getId());
-                                    items.add(card9);
-                                    ZLogger.d("添加card3" + card9.getCategoryName());
-
-                                    products.addAll(card.getProducts());
-                                }
-                            }
-                        }
-//            ZLogger.d("items.size=" + items.size());
-                        if (items.size() > 0) {
-                            storeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
-                        } else {
-                            storeRackRecyclerView.setAdapter(null);
-                        }
-
-                        loadInitStep5(products);
+                    if (storeRack == null) {
+                        DialogUtil.showHint("这个人很懒，什么都没有发布");
+                        return;
                     }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        if (StringUtils.isEmpty(errMsg)) {
-                            ZLogger.e(errMsg);
-                            showProgressDialog(ProgressView.STATUS_ERROR, errMsg, true);
+                    String dataInfo = storeRack.getDataInfo();
+                    ZLogger.d("dataInfo:\n" + dataInfo);
+                    String unescapeDataInfo = StringEscapeUtils.unescapeJava(dataInfo);
+                    ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
+                    List<StoreRackCard> storeRackCards2 = null;
+                    try {
+                        storeRackCards2 = JSONArray.parseArray(unescapeDataInfo,
+                                StoreRackCard.class);
+                        if (storeRackCards2 == null) {
+                            ZLogger.d("storeRackCards2 is null");
                         } else {
-                            hideProgressDialog();
+                            ZLogger.d("storeRackCards2:\n" + JSONObject.toJSONString(storeRackCards2));
                         }
+                    } catch (Exception e) {
+                        ZLogger.e(e.toString());
+                    }
+
+                    List<CardProduct> products = new ArrayList<>();
+                    List<Item> items = new ArrayList<>();
+                    if (storeRackCards2 != null && storeRackCards2.size() > 0) {
+                        for (StoreRackCard card : storeRackCards2) {
+                            List<StoreRackCardItem> cardItems = card.getItems();
+                            if (card.getType().equals(1)) {
+                                List<Card1Item> card1Items = new ArrayList<>();
+                                if (cardItems != null && cardItems.size() > 0) {
+                                    for (StoreRackCardItem cardItem : cardItems) {
+                                        Card1Item card1Item = new Card1Item();
+                                        card1Item.setImageUrl(cardItem.getImageUrl());
+                                        card1Item.setLink(cardItem.getLink());
+                                        card1Item.setLnktype(cardItem.getLnktype());
+                                        card1Items.add(card1Item);
+                                    }
+                                }
+                                Card1 card1 = new Card1();
+                                card1.setItems(card1Items);
+                                items.add(card1);
+                                ZLogger.d(String.format("添加card1: %d", card1Items.size()));
+                            } else if (card.getType().equals(2)) {
+                                List<Card2Item> card2Items = new ArrayList<>();
+//                                if (cardItems != null && cardItems.size() > 0) {
+//                                    for (StoreRackCardItem cardItem : cardItems) {
+//                                        Card2Item card2Item = new Card2Item();
+//                                        card2Item.setImageUrl(cardItem.getImageUrl());
+//                                        card2Item.setLink(cardItem.getLink());
+//                                        card2Item.setLnktype(cardItem.getLnktype());
+//                                        card2Items.add(card2Item);
+//                                    }
+//                                }
+//                                Card2 card2 = new Card2();
+//                                card2.setType(card.getType());
+//                                card2.setNetId(card.getNetId());
+//                                card2.setItems(card.getItems());
+//                                card2.setNetName(card.getNetName());
+//                                card2.setCategoryName(card.getCategoryName());
+//                                card2.setFrontCategoryId(card.getFrontCategoryId());
+//                                card2.setProducts(card.getProducts());
+//                                card2.setItems(card2Items);
+//                                items.add(card2);
+//                                ZLogger.d(String.format("添加card2: %d", card2Items.size()));
+                                items.add(card);
+                                ZLogger.d("添加card2：" + card.getCategoryName());
+
+                            } else if (card.getType().equals(9)) {
+                                Card9 card9 = new Card9();
+                                card9.setType(card.getType());
+                                card9.setCategoryName(card.getCategoryName());
+                                card9.setFrontCategoryId(card.getFrontCategoryId());
+                                card9.setProducts(card.getProducts());
+                                card9.setShopId(curCompanyInfo.getId());
+                                items.add(card9);
+                                ZLogger.d("添加card3：" + card9.getCategoryName());
+
+                                products.addAll(card.getProducts());
+                            }
+                        }
+                    }
+//            ZLogger.d("items.size=" + items.size());
+                    if (items.size() > 0) {
+                        homeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
+                    } else {
+                        homeRackRecyclerView.setAdapter(null);
+                    }
+
+                    loadInitStep5(products);
+                }
+
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    if (StringUtils.isEmpty(errMsg)) {
+                        ZLogger.e(errMsg);
+                        showProgressDialog(ProgressView.STATUS_ERROR, errMsg, true);
+                    } else {
+                        hideProgressDialog();
                     }
                 }
-                , StoreRack.class
-                , getAppContext()) {
-        };
-
-        ScStoreRackApi.getByShopMust(curCompanyInfo.getId(), responseCallback);
-    }
+            }
+            , StoreRack.class
+            , getAppContext()) {
+    };
 
     /**
      * 初始化：加载货架商品信息
@@ -762,9 +1124,9 @@ public class HomeFragment extends BaseFragment
             }
 //            ZLogger.d("items.size=" + items.size());
             if (items.size() > 0) {
-                storeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
+                homeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
             } else {
-                storeRackRecyclerView.setAdapter(null);
+                homeRackRecyclerView.setAdapter(null);
             }
 
             loadInitStep5(products);
@@ -821,7 +1183,6 @@ public class HomeFragment extends BaseFragment
 
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
-
         if (StringUtils.isEmpty(errorMsg)) {
             ZLogger.e(errorMsg);
             showProgressDialog(ProgressView.STATUS_ERROR, errorMsg, true);
@@ -835,7 +1196,7 @@ public class HomeFragment extends BaseFragment
         hideProgressDialog();
         HomeGoodsTempService.getInstance().batch(dataList);
 //        保存数据
-        storeRackRecyclerView.getAdapter().notifyDataSetChanged();
+        homeRackRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
