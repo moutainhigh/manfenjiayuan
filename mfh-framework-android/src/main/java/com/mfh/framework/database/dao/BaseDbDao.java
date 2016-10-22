@@ -8,8 +8,10 @@ import com.mfh.comn.bean.Pair;
 import com.mfh.comn.config.UConfig;
 import com.mfh.comn.logic.SeqInit;
 import com.mfh.comn.net.data.RspQueryResult;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.uikit.base.InitService;
 
 import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.db.sqlite.SqlBuilder;
@@ -299,7 +301,15 @@ public abstract class BaseDbDao<T extends IObject, PK> extends ComnDao<T, PK> im
     }
 
 
+    /**
+     * */
     public static FinalDb getFinalDb() {
+        // ADD: 21/10/2016 自动修复数据库
+        if (finalDb == null){
+            InitService.getService(MfhApplication.getAppContext())
+                    .checkDb(MfhApplication.getAppContext());
+        }
+
         if (finalDb == null){
             throw new RuntimeException("本地数据库还未初始化");
         }
