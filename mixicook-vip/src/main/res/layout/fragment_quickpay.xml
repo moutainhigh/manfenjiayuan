@@ -44,6 +44,15 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:scaleType="centerCrop"/>
+                <TextView
+                    android:id="@+id/tv_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_micro"
+                    android:textSize="14sp"
+                    android:text=""
+                    android:textColor="@color/material_black"/>
 
                 <ImageView
                     android:id="@+id/iv_qr_code"
@@ -64,14 +73,6 @@
                 android:textColor="@color/material_white"/>
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/iv_launcher"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@null"
-            android:layout_margin="@dimen/spacing_double"
-            android:src="@mipmap/ic_launcher"
-            android:scaleType="centerCrop"/>
 
     </LinearLayout>
 
