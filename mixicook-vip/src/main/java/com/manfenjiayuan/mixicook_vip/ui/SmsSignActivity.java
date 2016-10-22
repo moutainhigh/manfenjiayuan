@@ -282,7 +282,7 @@ public class SmsSignActivity extends BaseActivity {
         if (userTmpId == null) {
             HumanAuthTempApi.beginAuthenBysms(phoneNumber, verifyCodeCallback);
         } else {
-            HumanAuthTempApi.retryAuthenBysms(phoneNumber, userTmpId, verifyCodeCallback);
+            HumanAuthTempApi.retryAuthenBysms(phoneNumber, userTmpId, retryRC);
         }
     }
 
@@ -291,12 +291,45 @@ public class SmsSignActivity extends BaseActivity {
             new NetProcessor.Processor<Long>() {
                 @Override
                 public void processResult(final IResponseData rspData) {
+//                    {"code":"0","msg":"操作成功!","version":"1","data":""}
+//                    {"code":"0","msg":"操作成功!","version":"1","data":6696}
                     if (rspData != null) {
                         RspValue<Long> retValue = (RspValue<Long>) rspData;
                         userTmpId = retValue.getValue();
                         DialogUtil.showHint("验证码已经发送成功，请注意查收");
                         ZLogger.d(String.format("发送验证码成功:%d", userTmpId));
                     }
+
+//                    progressBar.setVisibility(View.GONE);
+                    secondStep();
+                }
+
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    //{"code":"1","msg":"缺少渠道端点标识！","version":"1","data":null}
+                    ZLogger.e(String.format("发送验证码失败:%s", errMsg));
+                    DialogUtil.showHint("发送验证码失败");
+//                    progressBar.setVisibility(View.GONE);
+                }
+            }
+            , Long.class
+            , MfhApplication.getAppContext()) {
+    };
+
+    private NetCallBack.NetTaskCallBack retryRC = new NetCallBack.NetTaskCallBack<Long,
+            NetProcessor.Processor<Long>>(
+            new NetProcessor.Processor<Long>() {
+                @Override
+                public void processResult(final IResponseData rspData) {
+//                    {"code":"0","msg":"操作成功!","version":"1","data":""}
+//                    {"code":"0","msg":"操作成功!","version":"1","data":6696}
+//                    if (rspData != null) {
+//                        RspValue<Long> retValue = (RspValue<Long>) rspData;
+//                        userTmpId = retValue.getValue();
+//                        DialogUtil.showHint("验证码已经发送成功，请注意查收");
+//                        ZLogger.d(String.format("发送验证码成功:%d", userTmpId));
+//                    }
 
 //                    progressBar.setVisibility(View.GONE);
                     secondStep();
@@ -441,6 +474,7 @@ public class SmsSignActivity extends BaseActivity {
                         ZLogger.e(String.format("短信码验证验证失败:%s", errMsg));
                         DialogUtil.showHint("短信码验证验证失败,请重新输入");
                         showProgress(false);
+                        userTmpId = null;
                         secondStep();
 //                        btnVerifyCode.setVisibility(View.VISIBLE);
                     }
@@ -450,28 +484,6 @@ public class SmsSignActivity extends BaseActivity {
         };
 
         HumanAuthTempApi.loginBySms(token, userTmpId, authCallback);
-
-//        MfhLoginService.get().doLoginAsync(username, password, new LoginCallback() {
-//            @Override
-//            public void loginSuccess(UserMixInfo user) {
-//                //登录成功
-//                DialogUtil.showHint("登录成功");
-////                MainActivity.actionStart(LoginActivity.this, null);
-//
-//                IMClient.getInstance().registerBridge();
-//
-//                setResult(RESULT_OK);
-//                finish();
-//            }
-//
-//            @Override
-//            public void loginFailed(String errMsg) {
-//                //登录失败
-//                ZLogger.d("登录失败：" + errMsg);
-//                DialogUtil.showHint(errMsg);
-//                showProgress(false);
-//            }
-//        }, MfhApi.URL_LOGINBYSMS, null, null);
     }
 
     private boolean isPasswordValid(String password) {
