@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/appbar"/>
+
+    <!--商品-->
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mfh_background_light"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/spacing_8x"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <!--空视图-->
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="这个人很懒，什么都没有发布～"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <!--app:srcCompat="@mipmap/btn_cart_dark"-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@mipmap/ic_fab_cart"
+        app:backgroundTint="@color/material_black"
+        app:borderWidth="0dp"
+        app:layout_anchor="@+id/nestedScrollView2"
+        app:layout_anchorGravity="bottom|end"/>
+
+
+</android.support.design.widget.CoordinatorLayout>

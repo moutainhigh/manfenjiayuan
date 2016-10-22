@@ -10,7 +10,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_material_light"
+        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -22,9 +22,10 @@
             <com.bingshanguxue.vector_uikit.ProfileView
                 android:id="@+id/profileView"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="@dimen/spacing_4x"
                 android:background="@color/material_white"
+                app:endArrowVisible="false"
                 app:subTextSize="16sp"
                 app:textSize="16sp"/>
 

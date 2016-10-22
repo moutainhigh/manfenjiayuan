@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="LabelView1">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="src"/>
+        <attr name="isChecked"/>
+        <attr name="labelSrc" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="LabelView2">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="endText"/>
+        <attr name="endTextColor"/>
+        <attr name="endTextSize"/>
+        <attr name="src"/>
+        <attr name="endSrc" format="reference"/>
+        <attr name="endSrcVisible" format="boolean"/>
+    </declare-styleable>
+
+</resources>

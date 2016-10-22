@@ -18,6 +18,8 @@
 #压缩: 移除无效的类、属性、方法等
 #优化: 优化字节码，并删除未使用的结构
 
+#默认开启，用以减小应用体积，移除未被使用的类和成员，并且会在优化动作执行之后再次执行（因为优化后可能会再次暴露一些未被使用的类和成员）。
+#-dontshrink
 #包明不混合大小写
 -dontusemixedcaseclassnames
 # Optimization is turned off by default. Dex does not like code run
@@ -25,6 +27,9 @@
 # of these optimizations on its own).
 #不优化输入的类文件
 -dontoptimize
+#指定代码的压缩级别,n 表示proguard对代码进行迭代优化的次数，Android一般为5
+-optimizationpasses 5
+
 #预校验
 -dontpreverify
 
@@ -33,11 +38,11 @@
 -allowaccessmodification
 -printmapping map.txt
 
-#指定代码的压缩级别
--optimizationpasses 7
 #混淆时是否记录日志
 -verbose
 
+# Preserve some attributes that may be required for reflection.
+#-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 -keepattributes Exceptions,InnerClasses
 #不跳过library中的非public的类
 -dontskipnonpubliclibraryclasses
@@ -121,7 +126,6 @@ public static final int *;
 -keep class com.manfenjiayuan.business.** { * ; }
 -keep class com.alibaba.fastjson.** { * ; }
 -keep class com.manfenjiayuan.mixicook_vip.** { * ; }
--keep class com.bingshanguxue.vector_user.** { * ; }
 -keep class com.bingshanguxue.vector_uikit.** { * ; }
 -keep class android.serialport.api.** { * ; }
 -keep class com.zebra.adc.decoder.** { * ; }
@@ -138,6 +142,18 @@ public static final int *;
     @butterknife.* <methods>;
 }
 # Butter Knife end
+
+
+#alipay start
+#specified twice.
+#-libraryjars libs/alipaySdk-20161009.jar
+-keep class com.alipay.android.app.IAlixPay{*;}
+-keep class com.alipay.android.app.IAlixPay$Stub{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback{*;}
+-keep class com.alipay.android.app.IRemoteServiceCallback$Stub{*;}
+-keep class com.alipay.sdk.app.PayTask{ public *;}
+-keep class com.alipay.sdk.app.AuthTask{ public *;}
+#alipay end
 
 
 #eventbus start (https://github.com/greenrobot/EventBus)
@@ -182,7 +198,30 @@ public static final int *;
 #bugly end
 
 
+#amap start
+#3D 地图
+-keep   class com.amap.api.mapcore.**{*;}
+-keep   class com.amap.api.maps.**{*;}
+-keep   class com.autonavi.amap.mapcore.*{*;}
+#定位
+-keep class com.amap.api.location.**{*;}
+-keep class com.amap.api.fence.**{*;}
+-keep class com.autonavi.aps.amapapi.model.**{*;}
+#搜索
+-keep   class com.amap.api.services.**{*;}
+#2D地图
+-keep class com.amap.api.maps2d.**{*;}
+-keep class com.amap.api.mapcore2d.**{*;}
+#导航
+-keep class com.amap.api.navi.**{*;}
+-keep class com.autonavi.**{*;}
+#amap end
+
+
 -keep class com.igexin.**{*;}
 
 #java.lang.NoSuchMethodError: android.util.Xml.asAttributeSet
 -keep class org.xmlpull.v1.** { *; }
+
+-keepattributes *JavascriptInterface*
+-keep class android.webkit.JavascriptInterface {*;}

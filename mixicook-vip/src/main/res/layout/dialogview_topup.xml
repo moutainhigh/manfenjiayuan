@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:background="@color/mfh_background_light"
+              android:orientation="vertical">
+
+    <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+        android:id="@+id/action_alipay"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        app:src="@mipmap/ic_alipay_logo"
+        app:text="支付宝"
+        app:textSize="16sp"
+        app:textColor="@color/material_black"
+        app:subText="数亿用户都在用，安全可托付"
+        app:subTextSize="12sp"
+        app:subTextColor="@color/black_65"
+        app:labelSrc="@mipmap/ic_label_recommend"
+        app:isChecked="true"/>
+
+    <View
+        style="@style/separator_horizontal"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"/>
+
+    <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+        android:id="@+id/action_wepay"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        app:src="@mipmap/ic_wepay_logo"
+        app:text="微信支付"
+        app:textSize="16sp"
+        app:textColor="@color/material_black"
+        app:subText="亿万用户的选择，更快更安全"
+        app:subTextSize="12sp"
+        app:subTextColor="@color/black_65"
+        app:labelSrc="@mipmap/ic_wepay_label_recommend"/>
+
+    <!--<View-->
+        <!--android:id="@+id/second_line"-->
+        <!--style="@style/separator_horizontal"-->
+        <!--android:layout_height="0.5dp"-->
+        <!--android:layout_marginLeft="5dp"-->
+        <!--android:layout_marginRight="5dp"/>-->
+
+    <!--<com.manfenjiayuan.mixicook_vip.widget.LabelView1-->
+        <!--android:id="@+id/action_mfpay"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="52dp"-->
+        <!--app:src="@mipmap/ic_launcher"-->
+        <!--app:text="平台支付"-->
+        <!--app:textSize="16sp"-->
+        <!--app:textColor="@color/material_black"-->
+        <!--app:subText="大家都在用"-->
+        <!--app:subTextSize="12sp"-->
+        <!--app:subTextColor="@color/black_65"/>-->
+
+
+</LinearLayout>

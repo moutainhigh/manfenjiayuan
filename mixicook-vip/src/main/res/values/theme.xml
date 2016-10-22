@@ -3,6 +3,8 @@
     <!-- 日间模式 -->
     <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
         <!-- Customize your theme here. -->
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
+
 
     </style>
 
@@ -43,7 +45,14 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="NewFlow" parent="AppBaseTheme_Light">
+    <style name="AppBaseTheme_Light.NewFlow">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowIsFloating">true</item>-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
         <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
     </style>
 
@@ -54,13 +63,7 @@
         <!--<item name="android:windowNoTitle">true</item>-->
         <!--<item name="android:windowIsFloating">true</item>-->
         <item name="android:backgroundDimEnabled">false</item>
-
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
     </style>
-
-    <!--Activity-->
-    <!--<style name="activity_new_task" parent="AppBaseTheme_Light.FullScreen">-->
-        <!--<item name="android:windowAnimationStyle">@style/anim_bottom_in</item>-->
-    <!--</style>-->
-
 
 </resources>

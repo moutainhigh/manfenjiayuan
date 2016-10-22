@@ -2,7 +2,6 @@
 
     <!-- application theme 日间模式 -->
     <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
-
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -26,6 +25,19 @@
     </style>
 
 
+    <style name="AppBaseTheme_Light.NewFlow">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--<item name="android:windowContentOverlay">@null</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowIsFloating">true</item>-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
+        <item name="android:statusBarColor">@color/material_green_500</item>
+        <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
+
+    </style>
+
     <style name="AppBaseTheme_Light.Transparent">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -33,7 +45,7 @@
         <!--<item name="android:windowNoTitle">true</item>-->
         <!--<item name="android:windowIsFloating">true</item>-->
         <item name="android:backgroundDimEnabled">false</item>
-
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
         <item name="android:statusBarColor">@color/material_green_500</item>
     </style>
 
@@ -67,11 +79,6 @@
     </style>
 
 
-    <style name="NewFlow" parent="AppBaseTheme_Light">
-        <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
-    </style>
-
-
     <style name="DialogActivity" parent="AppBaseTheme_Light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/mf_dialog_frame</item>
@@ -81,10 +88,5 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowAnimationStyle">@style/anim_pay_dialog</item>
     </style>
-
-    <!--Activity-->
-    <!--<style name="activity_new_task" parent="AppBaseTheme_Light.FullScreen">-->
-        <!--<item name="android:windowAnimationStyle">@style/anim_bottom_in</item>-->
-    <!--</style>-->
 
 </resources>

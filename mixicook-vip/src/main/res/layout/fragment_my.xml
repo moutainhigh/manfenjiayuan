@@ -8,56 +8,56 @@
     android:fitsSystemWindows="true">
 
     <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:id="@+id/app_bar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="120dp"-->
-        <!--android:fitsSystemWindows="true"-->
-        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+    <!--android:id="@+id/app_bar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="120dp"-->
+    <!--android:fitsSystemWindows="true"-->
+    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
 
-        <!--<android.support.design.widget.CollapsingToolbarLayout-->
-            <!--android:id="@+id/collaps_toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:fitsSystemWindows="true"-->
-            <!--app:contentScrim="?attr/colorPrimary"-->
-            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
+    <!--<android.support.design.widget.CollapsingToolbarLayout-->
+    <!--android:id="@+id/collaps_toolbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:fitsSystemWindows="true"-->
+    <!--app:contentScrim="?attr/colorPrimary"-->
+    <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
 
-            <!--&lt;!&ndash;顶部背景图片&ndash;&gt;-->
-            <!--<ImageView-->
-                <!--android:id="@+id/iv_background_top"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_alignParentTop="true"-->
-                <!--android:background="@color/mfh_colorPrimary"-->
-                <!--android:contentDescription=""/>-->
+    <!--&lt;!&ndash;顶部背景图片&ndash;&gt;-->
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_background_top"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:background="@color/mfh_colorPrimary"-->
+    <!--android:contentDescription=""/>-->
 
 
-            <!--&lt;!&ndash;app:layout_scrollFlags="scroll|enterAlways|snap"&ndash;&gt;-->
-            <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id="@+id/toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--app:layout_collapseMode="pin"-->
-                <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
+    <!--&lt;!&ndash;app:layout_scrollFlags="scroll|enterAlways|snap"&ndash;&gt;-->
+    <!--<android.support.v7.widget.Toolbar-->
+    <!--android:id="@+id/toolbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="?attr/actionBarSize"-->
+    <!--app:layout_collapseMode="pin"-->
+    <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
 
-                <!--<android.support.v7.widget.ButtonBarLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:gravity="end|center_vertical">-->
+    <!--<android.support.v7.widget.ButtonBarLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:gravity="end|center_vertical">-->
 
-                    <!--<ImageView-->
-                        <!--android:id="@+id/iv_settings"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_alignParentTop="true"-->
-                        <!--android:layout_marginEnd="@dimen/spacing_normal"-->
-                        <!--android:contentDescription=""-->
-                        <!--android:src="@mipmap/ic_settings"/>-->
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_settings"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--android:layout_marginEnd="@dimen/spacing_normal"-->
+    <!--android:contentDescription=""-->
+    <!--android:src="@mipmap/ic_settings"/>-->
 
-                <!--</android.support.v7.widget.ButtonBarLayout>-->
-            <!--</android.support.v7.widget.Toolbar>-->
+    <!--</android.support.v7.widget.ButtonBarLayout>-->
+    <!--</android.support.v7.widget.Toolbar>-->
 
-        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+    <!--</android.support.design.widget.CollapsingToolbarLayout>-->
     <!--</android.support.design.widget.AppBarLayout>-->
 
     <include layout="@layout/appbar"/>
@@ -66,24 +66,47 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_material_light"
+        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <!--个人信息-->
-            <com.bingshanguxue.vector_uikit.ProfileView
-                android:id="@+id/profileView"
+            <LinearLayout
+                android:id="@+id/frame_header"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:background="@color/mfh_colorPrimary"
-                app:textColor="@color/material_white"
-                app:textSize="16sp"
-                app:subTextSize="16sp"
-                app:subTextColor="@color/material_white"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/spacing_4x"
+                android:gravity="center"
+                android:background="@mipmap/headbg_me"
+                android:paddingBottom="@dimen/spacing_4x">
+                <com.mfh.framework.uikit.widget.AvatarView
+                    android:id="@+id/iv_header"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_margin="@dimen/spacing_double"
+                    android:src="@drawable/chat_tmp_user_head"/>
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="冰珊孤雪"
+                    android:textColor="@color/material_white"
+                    android:textSize="14sp"/>
+
+            </LinearLayout>
+            <!--<com.bingshanguxue.vector_uikit.ProfileView-->
+                <!--android:id="@+id/profileView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="120dp"-->
+                <!--android:background="@color/mfh_colorPrimary"-->
+                <!--app:subTextColor="@color/material_white"-->
+                <!--app:subTextSize="16sp"-->
+                <!--app:textColor="@color/material_white"-->
+                <!--app:textSize="16sp"/>-->
 
             <!--余额/会员积分/我的收藏-->
             <LinearLayout
@@ -135,14 +158,13 @@
 
             </LinearLayout>
 
-
             <!--订单-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_order"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="top"
-                app:src="@mipmap/icon_orders_normal"
+                app:src="@mipmap/ic_order"
                 app:subText=""
                 app:text="订单"/>
             <!--购物车-->
@@ -151,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="center"
-                app:src="@mipmap/icon_orders_normal"
+                app:src="@mipmap/ic_cart"
                 app:subText=""
                 app:text="购物车"/>
             <!--收货地址-->
@@ -160,7 +182,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="bottom"
-                app:src="@mipmap/icon_orders_normal"
+                app:src="@mipmap/ic_address"
                 app:subText=""
                 app:text="收货地址"/>
 
@@ -169,9 +191,9 @@
                 android:id="@+id/item_topup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:position="top"
-                app:src="@mipmap/ic_topup_normal"
                 android:layout_marginTop="@dimen/spacing_double"
+                app:position="top"
+                app:src="@mipmap/ic_topup"
                 app:subText=""
                 app:text="充值"/>
             <!--会员卡-->
@@ -180,7 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="bottom"
-                app:src="@mipmap/ic_card_normal"
+                app:src="@mipmap/ic_card"
                 app:subText=""
                 app:text="会员卡"/>
 
@@ -200,7 +222,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="center"
-                app:src="@mipmap/ic_feedback_normal"
+                app:src="@mipmap/ic_feedback"
                 app:subText="吐槽"
                 app:text="反馈"/>
 
@@ -210,7 +232,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="bottom"
-                app:src="@mipmap/icon_mfhpartner_normal"
+                app:src="@mipmap/ic_mfhparter"
                 app:subText="马上加入"
                 app:text="米西合伙人"/>
 
@@ -221,8 +243,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_double"
-                app:text="@string/label_settings_customer_center"
-                app:position="top"/>
+                app:position="top"
+                app:src="@mipmap/ic_customer_service"
+                app:text="@string/label_settings_customer_center"/>
 
             <!--设置-->
             <com.bingshanguxue.vector_uikit.SettingsItem
@@ -230,7 +253,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:position="bottom"
-                app:src="@mipmap/icon_mfhpartner_normal"
+                app:src="@mipmap/ic_settings"
+                android:layout_marginBottom="@dimen/spacing_4x"
                 app:subText=""
                 app:text="设置"/>
         </LinearLayout>

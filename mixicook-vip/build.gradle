@@ -5,6 +5,9 @@ def releaseTime() {
 }
 
 android {
+    useLibrary 'org.apache.http.legacy'
+
+
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
@@ -19,14 +22,14 @@ android {
         applicationId "com.manfenjiayuan.mixicook_vip"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 5
+        versionName "1.0.2"
 
         multiDexEnabled true
 
         ndk {
             //设置支持的SO库架构
-            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
 
         manifestPlaceholders = [
@@ -113,10 +116,15 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["cardview-v7"]
     compile project(':mfh-framework-all')
     compile project(':mfh-framework-android')
     compile project(':im')
     compile project(path: ':mfh-framework-business')
     compile project(path: ':vector_uikit')
+    compile rootProject.ext.dependencies["rxjava"]
+    compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile 'me.drakeet.multitype:multitype:2.0.0'
 }

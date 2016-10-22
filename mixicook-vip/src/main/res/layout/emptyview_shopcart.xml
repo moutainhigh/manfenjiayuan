@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/mfh_background_light"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_double"
+        android:background="@null"
+        android:src="@mipmap/img_cart"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_4x"
+        android:gravity="center"
+        android:textColor="@color/black_65"
+        android:textSize="16sp"
+        android:text="您的购物车里啥都没有"/>
+
+    <Button
+        android:id="@+id/button_go2shopping"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/minimum_touch_height"
+        android:layout_margin="@dimen/spacing_double"
+        android:background="@drawable/btn_rectange_primary"
+        android:gravity="center"
+        android:text="再逛逛"
+        android:textColor="@color/material_white"
+        android:textSize="20sp"/>
+
+</LinearLayout>

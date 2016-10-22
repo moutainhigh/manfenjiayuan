@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_shoppingcart_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="3dp"
+    android:background="@drawable/mfhtheme_list_selector_holo_light"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_shop_name"
+            android:layout_marginEnd="@dimen/default_margin_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="送货时间"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            android:drawableStart="@mipmap/ic_shoptime"
+            android:gravity="center"
+            android:drawablePadding="4dp"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/line"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="16dp">
+
+        <Spinner
+            android:id="@+id/spinner_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
+        <Spinner
+            android:id="@+id/spinner_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"/>
+    </LinearLayout>
+
+</LinearLayout>
