@@ -8,36 +8,94 @@
     <include layout="@layout/appbar"/>
 
     <!--商品-->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
+        android:background="@color/mfh_background_light"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <!--空视图-->
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/bottom_bar"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:text="肚子空空的，快去补充能量吧～"
-            android:textColor="@color/material_black"
-            android:textSize="16sp"/>
 
-        <!--订单列表-->
-        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-            android:id="@+id/goods_list"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nestedScrollView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/bottom_bar"/>
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/divider_horizontal_line"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <!--收货地址-->
+                <com.manfenjiayuan.mixicook_vip.widget.LabelView2
+                    android:id="@+id/address_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:background="@color/material_white"
+                    app:src="@mipmap/ic_address_new"
+                    app:subTextColor="@color/black_65"
+                    app:subTextSize="12sp"
+                    app:textColor="@color/material_black"
+                    app:textSize="16sp"/>
+
+                <!--店铺信息-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/minimum_touch_height"
+                    android:layout_marginTop="@dimen/spacing_double"
+                    android:background="@color/material_white"
+                    android:paddingStart="@dimen/spacing_micro"
+                    android:paddingEnd="@dimen/spacing_micro"
+                    android:gravity="center_vertical">
+
+                    <CheckBox
+                        android:id="@+id/shop_checkbox"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="@dimen/spacing_normal"
+                        android:layout_marginStart="@dimen/spacing_normal"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:theme="@style/checkBoxStyle"/>
+
+                    <TextView
+                        android:id="@+id/tv_shop_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/shop_checkbox"
+                        android:paddingStart="@dimen/spacing_normal"
+                        android:gravity="start|center_vertical"
+                        android:text=""
+                        android:textColor="@color/black_65"
+                        android:textSize="14sp"/>
+                </RelativeLayout>
+
+                <!--商品列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/goods_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <!--配送规则-->
+        <com.bingshanguxue.vector_uikit.SettingsItem
+            android:id="@+id/item_transFeeRule"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:position="single"
+            app:subText=""
+            app:text=""/>
 
         <LinearLayout
             android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
-            android:background="@drawable/bg_topline"
             android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_topline"
             android:orientation="horizontal">
 
             <TextView
@@ -45,7 +103,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:textColor="@color/material_black"
+                android:textSize="14sp"/>
 
             <Button
                 android:id="@+id/button_confirm"
@@ -56,9 +116,22 @@
                 android:gravity="center"
                 android:text="下单"
                 android:textColor="@color/material_white"
-                android:textSize="20sp"/>
+                android:textSize="16sp"/>
         </LinearLayout>
-    </RelativeLayout>
+
+    </LinearLayout>
+
+
+    <!--空视图-->
+    <include
+        android:id="@+id/empty_view"
+        layout="@layout/emptyview_shopcart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="72dp"
+        android:paddingBottom="72dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

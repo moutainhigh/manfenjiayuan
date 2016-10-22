@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -60,16 +63,16 @@ public class ShopcartGoodsAdapter
         final CartPack cartPack = entityList.get(position);
         Cart cart = cartPack.getCart();
 
+        holder.mCheckBox.setChecked(cartPack.isChecked());
         Glide.with(mContext).load(cartPack.getImgUrl()).error(R.mipmap.ic_image_error)
                 .into(holder.tvHeader);
         holder.tvName.setText(cartPack.getProductName());
 
-        if (cart != null){
+        if (cart != null) {
             holder.tvPrice.setText(MUtils.formatDouble(null, null,
                     cart.getPrice(), "", "/", cartPack.getUnitName()));
             holder.mNumberPickerView.setValue(String.format("%.0f", cart.getBcount()));
-        }
-        else{
+        } else {
             holder.tvPrice.setText("");
             holder.mNumberPickerView.setValue(0);
         }
@@ -85,10 +88,10 @@ public class ShopcartGoodsAdapter
 
     /**
      * */
-    public void adjustCart(final int position, final int quantity){
-        try{
+    public void adjustCart(final int position, final int quantity) {
+        try {
             CartPack cartPack = getEntity(position);
-            if (cartPack == null){
+            if (cartPack == null) {
                 return;
             }
             final Cart cart = cartPack.getCart();
@@ -104,11 +107,13 @@ public class ShopcartGoodsAdapter
                             cart.setBcount(Double.valueOf(String.valueOf(quantity)));
                             cart.setAmount(cart.getPrice() * cart.getBcount());
 
-                            if (quantity <= 0){
+                            if (quantity <= 0) {
                                 removeEntity(position);
-                            }
-                            else{
+                            } else {
                                 notifyItemChanged(position);
+                            }
+                            if (adapterListener != null) {
+                                adapterListener.onDataSetChanged();
                             }
                         }
 
@@ -123,17 +128,14 @@ public class ShopcartGoodsAdapter
             };
 
             ShoppingCartApiImpl.adjustCart(cart.getId(), quantity, responseC);
-
-            if (adapterListener != null) {
-                adapterListener.onDataSetChanged();
-            }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             ZLogger.e("onValueChanged failed, " + ex.toString());
         }
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.checkbox)
+        CheckBox mCheckBox;
         @Bind(R.id.iv_header)
         ImageView tvHeader;
         @Bind(R.id.tv_name)
@@ -147,22 +149,22 @@ public class ShopcartGoodsAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position < 0 || position >= entityList.size()) {
-//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-                        return;
-                    }
-
-                    notifyDataSetChanged();
-
-                    if (adapterListener != null) {
-                        adapterListener.onItemClick(itemView, position);
-                    }
-                }
-            });
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (position < 0 || position >= entityList.size()) {
+////                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+//                        return;
+//                    }
+//
+//                    notifyDataSetChanged();
+//
+//                    if (adapterListener != null) {
+//                        adapterListener.onItemClick(itemView, position);
+//                    }
+//                }
+//            });
 
             mNumberPickerView.setonOptionListener(new NumberPickerView.onOptionListener() {
                 @Override
@@ -180,6 +182,58 @@ public class ShopcartGoodsAdapter
                 }
             });
 
+            mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                    ZLogger.d("check checkbox" + isChecked);
+
+                    int position = getAdapterPosition();
+                    CartPack cartPack = getEntity(position);
+                    if (cartPack == null) {
+                        return;
+                    }
+                    boolean isCheckChanged = false;
+                    if (isChecked != cartPack.isChecked()){
+                        isCheckChanged = true;
+                    }
+                    cartPack.setChecked(isChecked);
+                    if (isCheckChanged && adapterListener != null) {
+                        adapterListener.onDataSetChanged();
+                    }
+                }
+            });
+
         }
+    }
+
+    /**
+     * 全选or取消全选
+     * */
+    public void setChecked(boolean checked) {
+        if (entityList != null && entityList.size() > 0) {
+            for (CartPack pack : entityList) {
+                pack.setChecked(checked);
+            }
+
+            notifyDataSetChanged();
+            if (adapterListener != null) {
+                adapterListener.onDataSetChanged();
+            }
+        }
+    }
+
+    /**
+     * 获取选中的商品
+     */
+    public List<CartPack> retrieveSelectedPacks() {
+        List<CartPack> packs = new ArrayList<>();
+        if (entityList != null && entityList.size() > 0) {
+            for (CartPack pack : entityList) {
+                if (pack.isChecked()) {
+                    packs.add(pack);
+                }
+            }
+        }
+        return packs;
     }
 }

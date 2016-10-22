@@ -4,27 +4,34 @@
               android:id="@+id/rootview"
               android:layout_width="match_parent"
               android:layout_height="72dp"
+              android:background="@color/material_white"
               android:gravity="center_vertical"
               android:orientation="horizontal"
-              android:background="@color/material_white"
-              android:paddingBottom="8dp"
-              android:paddingEnd="2dp"
-              android:paddingStart="8dp"
-              android:paddingTop="8dp">
+              android:padding="@dimen/spacing_normal">
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="@dimen/spacing_micro"
+        android:checked="false"
+        android:gravity="center"
+        android:theme="@style/checkBoxStyle"/>
 
     <!--图片-->
     <ImageView
         android:id="@+id/iv_header"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_marginStart="8dp"
         android:contentDescription="@null"
         android:src="@mipmap/ic_image_error"/>
 
     <RelativeLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_weight="1.5"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:layout_marginStart="@dimen/spacing_normal"
         android:orientation="vertical">
 
         <!--名称-->
@@ -35,7 +42,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="商品名称"/>
+            android:text="商品名称"
+            android:textColor="@color/material_black"
+            android:textSize="14sp"/>
 
         <!--采购价格&单位-->
         <TextView
@@ -44,21 +53,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
+            android:layout_marginTop="@dimen/spacing_micro"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="价格"
-            android:textColor="@color/black_65"/>
+            android:textColor="@color/black_65"
+            android:textSize="12sp"/>
+
+        <com.bingshanguxue.vector_uikit.NumberPickerView
+            android:id="@+id/numberPickerView"
+            android:layout_width="100dp"
+            android:layout_height="44dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            app:decreaseDrawableAutoHide="true"
+            app:decreaseIntercept="true"
+            app:increaseIntercept="true"/>
 
     </RelativeLayout>
-
-
-    <com.bingshanguxue.vector_uikit.NumberPickerView
-        android:id="@+id/numberPickerView"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        app:decreaseDrawableAutoHide="true"
-        app:increaseIntercept="true"
-        app:decreaseIntercept="true"/>
 
 </LinearLayout>
