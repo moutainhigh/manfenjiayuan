@@ -3,8 +3,8 @@ package com.mfh.litecashier.mode;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.pmcstock.PmcStockApi;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.AfinalFactory;
@@ -64,6 +64,6 @@ public class OrderflowMode implements IOrderflowMode<PosOrder>{
             }
         }, PosOrder.class, CashierApp.getAppContext());
 
-        AfinalFactory.postDefault(CashierApi.URL_STOCK_FIND_GOODS_ORDERLIST, params, queryRsCallBack);
+        AfinalFactory.postDefault(PmcStockApi.URL_FIND_GOODS_ORDERLIST, params, queryRsCallBack);
     }
 }

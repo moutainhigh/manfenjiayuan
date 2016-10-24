@@ -499,7 +499,6 @@ public class OrderFlowFragment extends BaseFragment {
 
         List<PosOrderEntity> entityList = PosOrderService.get()
                 .queryAllDesc(sbWhere.toString(), pageInfo);
-
         if (entityList == null || entityList.size() < 1) {
             ZLogger.d("没有找到订单。");
 

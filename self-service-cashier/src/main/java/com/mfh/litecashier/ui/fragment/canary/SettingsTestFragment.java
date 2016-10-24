@@ -12,23 +12,14 @@ import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.res.ResApi;
-import com.mfh.framework.api.scOrder.ScOrder;
-import com.mfh.framework.core.utils.FileUtil;
+import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
-
-import java.io.File;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -197,42 +188,10 @@ public class SettingsTestFragment extends BaseFragment {
 
     @OnClick(R.id.button_upload_log)
     public void uploadLog(){
-        String time = ZLogger.DATE_FORMAT.format(new Date());
-        String fileName = time + ".log";
-
-        File file = FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<ScOrder,
-                NetProcessor.Processor<ScOrder>>(
-                new NetProcessor.Processor<ScOrder>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-//                        ScOrder scOrder = null;
-//                        if (rspData != null) {
-//                            RspBean<ScOrder> retValue = (RspBean<ScOrder>) rspData;
-//                            scOrder = retValue.getValue();
-//                        }
-//                        if (listener != null) {
-//                            listener.onSuccess(scOrder);
-//                        }
-
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
-//                        if (listener != null) {
-//                            listener.onError(errMsg);
-//                        }
-                    }
-                }
-                , ScOrder.class
-                , MfhApplication.getAppContext()) {
-        };
-
-        ResApi.upload(file, responseCallback);
-
+        RemoteControlClient.getInstance().uploadLogFileStep1();
+    }
+    @OnClick(R.id.button_upload_crash)
+    public void uploadCrash(){
+        RemoteControlClient.getInstance().uploadCrashFileStep1();
     }
 }

@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
@@ -18,12 +20,15 @@ import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
@@ -39,6 +44,7 @@ import com.tencent.bugly.beta.Beta;
 import org.century.GreenTagsApi;
 import org.century.GreenTagsSettingsDialog;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -600,6 +606,13 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
 
     @OnClick(R.id.button_test)
     public void test(){
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
+                MfhLoginService.get().getSpid(), BizType.POS, PosOrderEntity.ORDER_STATUS_FINISH);
+        List<PosOrderEntity> entities =  PosOrderService.get().queryAllDesc(sqlOrder, null);
+        if (entities != null && entities.size() > 0){
+            PrintManager.printPosOrder(entities.get(0), true);
+
+        }
         PrintManagerImpl.printTest();
     }
 

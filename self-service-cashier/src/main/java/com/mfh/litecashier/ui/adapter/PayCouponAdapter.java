@@ -11,10 +11,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.model.CoupBean;
-import com.bingshanguxue.cashier.model.MarketRules;
+import com.mfh.framework.api.pmcstock.CoupBean;
+import com.mfh.framework.api.pmcstock.MarketRules;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
-import com.bingshanguxue.cashier.model.RuleBean;
+import com.mfh.framework.api.pmcstock.RuleBean;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.ObjectsCompact;
@@ -396,6 +396,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         entity.setDiscount(coupon.getDiscount());
         entity.setCouponsId(coupon.getMyCouponsId());
         entity.setSelected(false);
+        
         entity.setAmount(finalAmount);
         entity.setSplitOrderId(splitOrderId);
 
@@ -410,8 +411,11 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (CouponRule.TYPE_COUPON.equals(couponRule.getType()) &&
                         coupon.getId().equals(couponRule.getId()) &&
                         coupon.getMyCouponsId().equals(couponRule.getCouponsId())){
+                    
                     spilitOrderIds.addAll(couponRule.getSplitOrderIds());
 
+                    //// TODO: 14/10/2016 这里可能会有问题，目的应该是相同的卡券仅显示一个，但是其他信息应该替换掉。 
+                    // TODO: 14/10/2016 由于不考虑本地拆分订单，所以这里应该也只有一份关联订单编号
                     if (finalAmount.compareTo(couponRule.getAmount()) > 0){
                         entity.setAmount(couponRule.getAmount());
                         entity.setSplitOrderId(couponRule.getSplitOrderId());

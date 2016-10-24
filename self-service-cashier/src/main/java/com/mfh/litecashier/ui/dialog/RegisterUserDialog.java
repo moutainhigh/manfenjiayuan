@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.account.CommonUserAccountApi;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.account.Human;
 import com.mfh.comn.net.data.IResponseData;

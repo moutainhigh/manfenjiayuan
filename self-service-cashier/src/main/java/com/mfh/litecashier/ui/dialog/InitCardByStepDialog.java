@@ -18,15 +18,15 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.account.UserApiImpl;
-import com.mfh.framework.api.account.Human;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.api.cashier.CashierApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.network.NetCallBack;
@@ -425,7 +425,7 @@ public class InitCardByStepDialog extends CommonDialog {
 
 //                DialogUtil.showHint("开卡");
                 progressBar.setVisibility(View.VISIBLE);
-                CashierApiImpl.activateAccount(shortNo, cardId, mHuman.getId(), submitCallback);
+                CommonUserAccountApiImpl.activateAccount(shortNo, cardId, mHuman.getId(), submitCallback);
             }
         });
         confirmDialog.setNegativeButton("点错了", new DialogInterface.OnClickListener() {

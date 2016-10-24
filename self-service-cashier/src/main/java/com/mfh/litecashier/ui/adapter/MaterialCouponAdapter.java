@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.model.CoupBean;
-import com.bingshanguxue.cashier.model.RuleBean;
+import com.mfh.framework.api.pmcstock.CoupBean;
+import com.mfh.framework.api.pmcstock.RuleBean;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DrawableUtils;

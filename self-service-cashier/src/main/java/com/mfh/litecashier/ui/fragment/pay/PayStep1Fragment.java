@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,11 +14,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.pay.BasePayStepFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
@@ -36,6 +39,7 @@ import com.mfh.litecashier.R;
 import java.util.ArrayList;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -66,6 +70,8 @@ public class PayStep1Fragment extends BasePayStepFragment {
     @Bind(R.id.tab_viewpager)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
+    @Bind(R.id.fab_give)
+    FloatingActionButton fabGive;
 
 
     public static PayStep1Fragment newInstance(Bundle args) {
@@ -172,9 +178,27 @@ public class PayStep1Fragment extends BasePayStepFragment {
     }
 
 
+    /**
+     * 赠送
+     * */
+    @OnClick(R.id.fab_give)
+    public void onClickGive(){
+        CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+
+        onPayFinished();
+    }
+
+    /**
+     * */
     public void activeMode(boolean isActive) {
         mViewPager.setScrollEnabled(isActive);
         paySlidingTabStrip.setClickEnabled(isActive);
+        if (isActive){
+            fabGive.setVisibility(View.VISIBLE);
+        }
+        else {
+            fabGive.setVisibility(View.GONE);
+        }
     }
 
     public void onEventMainThread(PayStep1Event event) {

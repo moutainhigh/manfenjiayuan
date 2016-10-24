@@ -27,7 +27,7 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.PayApi;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;

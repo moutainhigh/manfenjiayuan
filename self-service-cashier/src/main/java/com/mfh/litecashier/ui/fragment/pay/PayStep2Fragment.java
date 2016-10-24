@@ -21,7 +21,6 @@ import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
-import com.bingshanguxue.cashier.model.PayAmount;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.pay.BasePayStepFragment;
 import com.bingshanguxue.cashier.v1.CashierAgent;
@@ -29,8 +28,7 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
-import com.mfh.framework.api.account.CommonUserAccountApi;
-import com.mfh.framework.api.account.Human;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
@@ -40,15 +38,18 @@ import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
+import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.framework.uikit.widget.AvatarView;
@@ -302,7 +303,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
         jsonObject.put("items", cashierOrderInfo.getProductsInfo());
         jsonArray.add(jsonObject);
 
-        CashierApiImpl.findMarketRulesByOrderInfos(jsonArray.toJSONString(), marketRulesRC);
+        PmcStockApiImpl.findMarketRulesByOrderInfos(jsonArray.toJSONString(), marketRulesRC);
     }
 
     NetCallBack.QueryRsCallBack marketRulesRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<OrderMarketRules>(new PageInfo(1, 20)) {
@@ -431,7 +432,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        CashierApiImpl.getPayAmountByOrderInfos(cashierOrderInfo.getBizType(),
+        CommonUserAccountApiImpl.getPayAmountByOrderInfos(cashierOrderInfo.getBizType(),
                 jsonstr.toJSONString(), responseCallback);
     }
 

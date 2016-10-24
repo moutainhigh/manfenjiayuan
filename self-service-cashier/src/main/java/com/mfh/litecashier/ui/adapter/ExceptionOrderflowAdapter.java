@@ -167,7 +167,6 @@ public class ExceptionOrderflowAdapter
             drawableSyncStatus.setText1(String.format("已同步(%d)", entity.getSyncStatus()));
             drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
         } else {
-
             drawableSyncStatus.setText1(String.format("(%d)", entity.getSyncStatus()));
         }
         if (PosOrderEntity.ACTIVE.equals(entity.getIsActive())) {

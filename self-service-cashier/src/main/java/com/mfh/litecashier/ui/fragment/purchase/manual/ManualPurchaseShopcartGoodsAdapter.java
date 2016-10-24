@@ -105,13 +105,15 @@ public class ManualPurchaseShopcartGoodsAdapter
 //            });
 
             mNumberPickerView.setonOptionListener(new NumberPickerView.onOptionListener() {
+
+
                 @Override
-                public void onPreIncrease() {
+                public void onPreIncrease(int value) {
 
                 }
 
                 @Override
-                public void onPreDecrease() {
+                public void onPreDecrease(int value) {
 
                 }
 

@@ -17,7 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.InvOrderApi;
-import com.mfh.framework.api.companyInfo.CompanyInfoApi;
+import com.mfh.framework.api.companyInfo.CompanyInfoApiImpl;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -370,7 +370,7 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        CompanyInfoApi.getNetInfoById(String.valueOf(MfhLoginService.get().getCurOfficeId()),
+        CompanyInfoApiImpl.getNetInfoById(String.valueOf(MfhLoginService.get().getCurOfficeId()),
                 netTaskCallBack);
     }
 }

@@ -25,7 +25,7 @@ import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.PayApi;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;

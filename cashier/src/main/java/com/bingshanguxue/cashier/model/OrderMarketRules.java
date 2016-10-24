@@ -1,5 +1,7 @@
 package com.bingshanguxue.cashier.model;
 
+import com.mfh.framework.api.pmcstock.MarketRules;
+
 import java.io.Serializable;
 import java.util.List;
 

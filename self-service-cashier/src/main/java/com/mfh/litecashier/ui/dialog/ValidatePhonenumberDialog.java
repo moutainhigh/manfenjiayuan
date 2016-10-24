@@ -21,8 +21,8 @@ import android.widget.TextView;
 
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.sms.EmbWxUserRegisterApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -312,9 +312,9 @@ public class ValidatePhonenumberDialog extends CommonDialog {
         progressBar.setVisibility(View.VISIBLE);
 
         if (userTmpId == null) {
-            CashierApiImpl.beginAuthenBysms(phoneNumber, verifyCodeCallback);
+            EmbWxUserRegisterApi.beginAuthenBysms(phoneNumber, verifyCodeCallback);
         } else {
-            CashierApiImpl.retryAuthenBysms(phoneNumber, userTmpId, verifyCodeCallback);
+            EmbWxUserRegisterApi.retryAuthenBysms(phoneNumber, userTmpId, verifyCodeCallback);
         }
     }
 
@@ -413,7 +413,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        CashierApiImpl.doAuthenBysms(verifyCode, userTmpId, authCallback);
+        EmbWxUserRegisterApi.doAuthenBysms(verifyCode, userTmpId, authCallback);
     }
 
 

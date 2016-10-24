@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.v1;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.model.OrderMarketRules;
-import com.bingshanguxue.cashier.model.PayAmount;
+import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.v2.CashierOrderItemInfo;
