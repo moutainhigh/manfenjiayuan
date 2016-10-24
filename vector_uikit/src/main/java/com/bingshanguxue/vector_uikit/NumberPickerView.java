@@ -28,12 +28,14 @@ public class NumberPickerView extends LinearLayout {
     private int number = 0;
 
     private boolean isdecreaseDrawableAutoHide = false;
+    private boolean increaseIntercept = false;
+    private boolean decreaseIntercept = false;
     private boolean zeroIntercept = false;//数字改变时是否拦截处理
 
     public interface onOptionListener {
-        void onPreIncrease();
+        void onPreIncrease(int value);
 
-        void onPreDecrease();
+        void onPreDecrease(int value);
 
         void onValueChanged(int value);
     }
@@ -87,41 +89,60 @@ public class NumberPickerView extends LinearLayout {
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.NumberPickerView);
             btnDecrease.setImageResource(a.getResourceId(R.styleable.NumberPickerView_decreaseDrawable,
-                            R.drawable.btn_decrease));
+                    R.drawable.btn_decrease));
             btnIncrease.setImageResource(a.getResourceId(R.styleable.NumberPickerView_increaseDrawable,
-                            R.drawable.btn_increase));
+                    R.drawable.btn_increase));
             isdecreaseDrawableAutoHide = a.getBoolean(R.styleable.NumberPickerView_decreaseDrawableAutoHide,
                     false);
-            zeroIntercept = a.getBoolean(R.styleable.NumberPickerView_zeroIntercept,
-                    false);
+            zeroIntercept = a.getBoolean(R.styleable.NumberPickerView_zeroIntercept, false);
+            increaseIntercept = a.getBoolean(R.styleable.NumberPickerView_increaseIntercept, false);
+            decreaseIntercept = a.getBoolean(R.styleable.NumberPickerView_decreaseIntercept, false);
+
             a.recycle();
         }
         setValue(0);
     }
 
+    /**
+     * 减
+     * */
     public void decrease() {
-        if (zeroIntercept) {
+        int dest = number - 1;
+
+        if (decreaseIntercept) {
             if (optionListener != null) {
-                optionListener.onPreDecrease();
+                optionListener.onPreIncrease(dest);
             }
             return;
         }
 
-        setValue(number - 1);
+//        if (zeroIntercept) {
+//            if (optionListener != null) {
+//                optionListener.onPreDecrease();
+//            }
+//            return;
+//        }
+
+        setValue(dest);
         if (optionListener != null) {
             optionListener.onValueChanged(getValue());
         }
     }
 
+    /**
+     * 加
+     * */
     public void increase() {
-//        if (zeroIntercept) {
-//            if (optionListener != null) {
-//                optionListener.onPreIncrease();
-//            }
-//            return;
-//        }
+        int dest = number + 1;
 
-        setValue(number + 1);
+        if (increaseIntercept) {
+            if (optionListener != null) {
+                optionListener.onPreIncrease(dest);
+            }
+            return;
+        }
+
+        setValue(dest);
         if (optionListener != null) {
             optionListener.onValueChanged(getValue());
         }
@@ -137,7 +158,7 @@ public class NumberPickerView extends LinearLayout {
 
     /**
      * 设置数字
-     * */
+     */
     public void setValue(int paramInt) {
         if (number != paramInt && paramInt >= MIN && paramInt <= MAX) {
             number = paramInt;
@@ -145,18 +166,16 @@ public class NumberPickerView extends LinearLayout {
         }
 
         // 当数字小于等于最小值时自动隐藏‘－’按钮
-        if (number <= MIN){
-            if (isdecreaseDrawableAutoHide){
+        if (number <= MIN) {
+            if (isdecreaseDrawableAutoHide) {
                 btnDecrease.setVisibility(INVISIBLE);
                 tvNumber.setVisibility(INVISIBLE);
-            }
-            else{
+            } else {
                 btnDecrease.setVisibility(VISIBLE);
                 btnDecrease.setEnabled(false);
                 tvNumber.setVisibility(VISIBLE);
             }
-        }
-        else{
+        } else {
             btnDecrease.setVisibility(VISIBLE);
             btnDecrease.setEnabled(true);
             tvNumber.setVisibility(VISIBLE);

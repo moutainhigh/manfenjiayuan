@@ -49,8 +49,13 @@ public class MultiLayerLabel extends RelativeLayout {
         }
 	}
 
-    public void setTopText(String topText){
-        tvTop.setText(topText);
+    public void setTopText(String text){
+        tvTop.setText(text);
+    }
+
+    public void setTopText(String text, int color){
+        tvTop.setText(text);
+        tvTop.setTextColor(color);
     }
 
 }

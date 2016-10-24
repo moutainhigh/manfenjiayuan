@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="isChecked" format="boolean"/>
+    <attr name="itemFocusable" format="boolean"/>
+
+
 
     <attr name="startText" format="string|reference"/>
     <attr name="startTextColor" format="reference|color"/>
@@ -10,17 +14,17 @@
     <attr name="endTextColor" format="reference|color"/>
     <attr name="endTextSize" format="dimension"/>
     <attr name="endTextWidth" format="dimension"/>
-    <attr name="endTextVisible" format="boolean" />
-    <attr name="endTextSingleLine" format="boolean" />
+    <attr name="endTextVisible" format="boolean"/>
+    <attr name="endTextSingleLine" format="boolean"/>
 
     <attr name="editTextColor" format="reference|color"/>
     <attr name="editTextSize" format="dimension"/>
     <attr name="editTextHint" format="string|reference"/>
-    <attr name="editTextColorHint" format="reference|color" />
+    <attr name="editTextColorHint" format="reference|color"/>
 
 
     <!--是否支持软键盘-->
-    <attr name="softKeyboardEnabled" format="boolean" />
+    <attr name="softKeyboardEnabled" format="boolean"/>
 
 
     <!--图片-->
@@ -82,6 +86,8 @@
         <attr name="decreaseDrawableAutoHide" format="boolean"/>
         <!--数字为0时是是否拦截处理，默认为fasle-->
         <attr name="zeroIntercept" format="boolean"/>
+        <attr name="increaseIntercept" format="boolean"/>
+        <attr name="decreaseIntercept" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="OptionalLabel">
@@ -134,6 +140,28 @@
         <attr name="bottomText" format="string|reference"/>
         <attr name="bottomTextColor" format="reference|color"/>
         <attr name="bottomTextSize" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="ProfileView">
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="subText"/>
+        <attr name="subTextColor"/>
+        <attr name="subTextSize"/>
+        <attr name="src"/>
+        <attr name="endArrowVisible" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="NaviAddressView">
+        <attr name="startText"/>
+        <attr name="startTextColor"/>
+        <attr name="startTextSize"/>
+        <attr name="startTextWidth"/>
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="hint"/>
+        <attr name="textColorHint"/>
     </declare-styleable>
 
 </resources>

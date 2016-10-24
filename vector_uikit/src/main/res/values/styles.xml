@@ -74,6 +74,11 @@
         <item name="android:dropDownSelector">@drawable/mfhtheme_list_selector_holo_light</item>
     </style>
 
+    <style name="checkBoxStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/material_black_hint</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
     <!-- 加载滚动条样式 -->
     <style name="syncbutton_progressbar">
         <item name="android:indeterminate">true</item>
@@ -91,6 +96,8 @@
         <item name="android:minHeight">20dip</item>
         <item name="android:maxHeight">20dip</item>
     </style>
+
+
 
 
 </resources>

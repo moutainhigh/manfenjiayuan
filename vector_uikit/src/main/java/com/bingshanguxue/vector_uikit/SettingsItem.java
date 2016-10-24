@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
 
 
 /***
@@ -45,24 +46,28 @@ public class SettingsItem extends RelativeLayout {
         vSeperateBottom = findViewById(R.id.separate_bottom);
 
         if (attrs != null) {
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SettingsItem);
-            boolean isLogoVisible = a.getBoolean(R.styleable.SettingsItem_isLogoVisible, true);
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SettingsItem);
+            boolean isLogoVisible = ta.getBoolean(R.styleable.SettingsItem_isLogoVisible, true);
             if (isLogoVisible) {
                 this.ivLogo.setVisibility(View.VISIBLE);
             } else {
                 this.ivLogo.setVisibility(View.GONE);
             }
 
-            this.ivLogo.setImageResource(a.getResourceId(R.styleable.SettingsItem_src, 0));
+            this.ivLogo.setImageResource(ta.getResourceId(R.styleable.SettingsItem_src, 0));
 
-            tvTitle.setText(a.getString(R.styleable.SettingsItem_text));
-            tvTitle.setTextColor(a.getColor(R.styleable.SettingsItem_textColor, Color.BLACK));
-            tvTitle.setTextSize(a.getDimension(R.styleable.SettingsItem_textSize, 16));
-            tvSubTitle.setText(a.getString(R.styleable.SettingsItem_subText));
-            tvSubTitle.setTextColor(a.getColor(R.styleable.SettingsItem_subTextColor, Color.BLACK));
-            tvSubTitle.setTextSize(a.getDimension(R.styleable.SettingsItem_subTextSize, 12));
-            this.tvSubTitle.setGravity(a.getInteger(R.styleable.SettingsItem_subTextGravity, Gravity.RIGHT));
-            int subTextMaxLines = a.getInt(R.styleable.SettingsItem_subTextMaxLines, 1);
+            tvTitle.setText(ta.getString(R.styleable.SettingsItem_text));
+            tvTitle.setTextColor(ta.getColor(R.styleable.SettingsItem_textColor, Color.BLACK));
+            int textSizeInPx = ta.getDimensionPixelSize(R.styleable.SettingsItem_textSize, 16);
+            int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+            tvTitle.setTextSize(textSizeInSp);
+            tvSubTitle.setText(ta.getString(R.styleable.SettingsItem_subText));
+            tvSubTitle.setTextColor(ta.getColor(R.styleable.SettingsItem_subTextColor, Color.BLACK));
+            int sbuTextSizeInPx = ta.getDimensionPixelSize(R.styleable.SettingsItem_subTextSize, 16);
+            int sbuTextSizeInSp = DensityUtil.px2sp(getContext(), sbuTextSizeInPx);
+            tvSubTitle.setTextSize(sbuTextSizeInSp);
+            this.tvSubTitle.setGravity(ta.getInteger(R.styleable.SettingsItem_subTextGravity, Gravity.RIGHT));
+            int subTextMaxLines = ta.getInt(R.styleable.SettingsItem_subTextMaxLines, 1);
             this.tvSubTitle.setMaxLines(subTextMaxLines);
             if (subTextMaxLines > 1){
                 this.tvSubTitle.setSingleLine(false);
@@ -72,7 +77,7 @@ public class SettingsItem extends RelativeLayout {
             }
             this.tvSubTitle.setEllipsize(TextUtils.TruncateAt.END);
 
-            boolean isArrowVisible = a.getBoolean(R.styleable.SettingsItem_isArrowVisible, true);
+            boolean isArrowVisible = ta.getBoolean(R.styleable.SettingsItem_isArrowVisible, true);
             if (isArrowVisible) {
                 ivArrow.setVisibility(View.VISIBLE);
             } else {
@@ -80,7 +85,7 @@ public class SettingsItem extends RelativeLayout {
             }
 
 
-            int position = a.getInt(R.styleable.SettingsItem_position, 3);
+            int position = ta.getInt(R.styleable.SettingsItem_position, 3);
             if (position == 0) {
                 vSeperateTop.setVisibility(View.VISIBLE);
                 vSeperateMiddle.setVisibility(View.VISIBLE);
@@ -99,12 +104,24 @@ public class SettingsItem extends RelativeLayout {
                 vSeperateBottom.setVisibility(View.VISIBLE);
             }
 
-            a.recycle();
+            ta.recycle();
         }
     }
 
+    public void setTitle(String title){
+        tvTitle.setText(title);
+    }
     public void setSubTitle(String text){
         tvSubTitle.setText(text);
+    }
+
+    public void setSubTitle(CharSequence text){
+        tvSubTitle.setText(text);
+    }
+
+    public void setSubTitle(String text, int color){
+        tvSubTitle.setText(text);
+        tvSubTitle.setTextColor(color);
     }
 
     public String getSubText(){

@@ -120,6 +120,10 @@ public class ToggleSettingItem extends RelativeLayout {
         this.buttonToggle.setChecked(checked);
     }
 
+    public boolean getChecked(){
+        return buttonToggle.isChecked();
+    }
+
     public void setSubTitle(String text) {
         tvSubTitle.setText(text);
     }
