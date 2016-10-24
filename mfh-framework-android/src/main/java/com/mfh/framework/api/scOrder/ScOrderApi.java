@@ -148,6 +148,21 @@ public class ScOrderApi {
      */
     public final static String URL_FIND_SERVICEDORDERS = URL_SCORDER + "findServicedOrders";
 
+    /**
+     * 查询已服务完毕的订单列表
+     * 使用场景
+     * <ol>
+     *     骑手查询已服务完毕的订单列表,可以指定某个发货点;其中roleType=0代表买手，roleType=1代表骑手
+     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=1&rows=20&page=1</li>
+     *     买手查询已配送的订单列表
+     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=3,6&rows=20&page=1</li>
+     *     另外买手查询已完成(也就是已服务完毕)的订单列表
+     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=12&rows=20&page=1</li>
+     * </ol>
+     * /scOrder/arriveToEndCustom?orderIds=12,22
+     */
+    public final static String URL_FIND_CANCELORDERS = URL_SCORDER + "findCancelOrders";
+
 
 
     /**

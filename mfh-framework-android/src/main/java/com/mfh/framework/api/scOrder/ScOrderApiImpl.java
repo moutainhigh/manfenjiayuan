@@ -213,12 +213,29 @@ public class ScOrderApiImpl extends ScOrderApi{
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
         if (!StringUtils.isEmpty(status)){
-            params.put("wrapper", status);
+            params.put("status", status);
         }
         params.put("roleType", String.valueOf(roleType));
         params.put("wrapper", "true");
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_FIND_SERVICEDORDERS, params, responseCallback);
+    }
+
+    /**
+     * 当前登录买手可以抢单去组货（也就是拣货）的订单列表{@link #URL_FINDPREPAREABLEORDERS}
+     * @param roleType roleType=0代表买手，roleType=1代表骑手
+     */
+    public static void findCancelOrders(PageInfo pageInfo, int roleType,
+                                          AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        params.put("roleType", String.valueOf(roleType));
+        params.put("wrapper", "true");
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_FIND_CANCELORDERS, params, responseCallback);
     }
 
 }

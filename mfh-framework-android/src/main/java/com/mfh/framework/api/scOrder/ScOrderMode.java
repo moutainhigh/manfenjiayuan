@@ -347,4 +347,42 @@ public class ScOrderMode {
         ScOrderApiImpl.findServicedOrders(pageInfo, roleType, status, queryRsCallBack);
     }
 
+    /**
+     *
+     */
+    public void findCancelOrders(PageInfo pageInfo, int roleType,
+                                   final OnPageModeListener<ScOrder> listener) {
+        if (listener != null) {
+            listener.onProcess();
+        }
+
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<ScOrder>(pageInfo) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<ScOrder> rs) {
+                        //此处在主线程中执行。
+                        List<ScOrder> entityList = new ArrayList<>();
+                        if (rs != null) {
+                            for (EntityWrapper<ScOrder> wrapper : rs.getRowDatas()) {
+                                entityList.add(wrapper.getBean());
+                            }
+                        }
+                        if (listener != null) {
+                            listener.onSuccess(pageInfo, entityList);
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.d("加载待拣货订单失败:" + errMsg);
+                        if (listener != null) {
+                            listener.onError(errMsg);
+                        }
+                    }
+                }, ScOrder.class, MfhApplication.getAppContext());
+
+        ScOrderApiImpl.findCancelOrders(pageInfo, roleType, queryRsCallBack);
+    }
+
 }

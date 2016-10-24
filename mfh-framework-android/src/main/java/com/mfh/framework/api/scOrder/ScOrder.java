@@ -11,11 +11,15 @@ import java.util.List;
 
 public class ScOrder extends AbsOnlineOrder {
 
-    public static final Integer MFHORDER_STATUS_ORDERED = 0;//已创建（买手可以抢单拣货，组货）
-    public static final Integer MFHORDER_STATUS_PREPARE = 3;//已发货（骑手可以揽件）
-    public static final Integer MFHORDER_STATUS_SENDED = 6;//配送中（骑手可以妥投）
+    public static final Integer MFHORDER_STATUS_DRAFT = -1;//未生效单
+    public static final Integer MFHORDER_STATUS_ORDERED = 0;//已创建，待组货（订单已生效，买手待抢单组货）
+    public static final Integer MFHORDER_STATUS_BUYING  = 1;//组货中（买手抢完单，待组货）
+    public static final Integer MFHORDER_STATUS_PREPARE = 3;//待配送（买手组完货，骑手可以揽件）
+    public static final Integer MFHORDER_STATUS_SENDED = 6;//配送中（骑手揽件后，待妥投）
     public static final Integer MFHORDER_STATUS_INSTOCK = 9;//已到达
     public static final Integer MFHORDER_STATUS_OUTSTOCK = 12;//已签收
+    public static final Integer MFHORDER_STATUS_CANCEL = 100;//已取消
+
 
     /**
      * 客户
