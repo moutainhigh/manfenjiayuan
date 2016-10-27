@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.manfenjiayuan.business.widget.MyFragmentTabHost;
 import com.manfenjiayuan.loveshopping.AMapActivity;
 import com.manfenjiayuan.loveshopping.MainTab;
-import com.manfenjiayuan.loveshopping.MyFragmentTabHost;
 import com.manfenjiayuan.loveshopping.R;
 import com.manfenjiayuan.loveshopping.fragment.H5HomeFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;

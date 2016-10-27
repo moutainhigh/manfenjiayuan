@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:gravity="center_vertical"
         android:background="@color/colorPrimary">
-        <com.mfh.framework.uikit.compound.NaviAddressView
+        <com.bingshanguxue.vector_uikit.widget.NaviAddressView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:text="请选择收货地址"

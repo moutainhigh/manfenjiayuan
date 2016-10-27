@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.manfenjiayuan.loveshopping.R;
 import com.manfenjiayuan.loveshopping.activity.HybridActivity;
-import com.manfenjiayuan.loveshopping.widget.UserProfileView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.H5Api;
@@ -39,7 +38,6 @@ public class MainMineFragment extends BaseFragment implements
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
 
 
     @Bind(R.id.userProfileView)

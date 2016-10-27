@@ -17,7 +17,7 @@ import com.manfenjiayuan.loveshopping.mvp.SubdisListPresenter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.compound.CustomSearchView;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.api.account.Subdis;
@@ -121,7 +121,7 @@ public class SelectAddressActivityFragment extends MvpFragment<ISubdisListView, 
             return;
         }
 
-        if (!NetWorkUtil.isConnect(AppContext.getAppContext())) {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             onLoadFinished();
             DialogUtil.showHint(R.string.toast_network_error);
             return;

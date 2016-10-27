@@ -164,7 +164,6 @@
 -keep class com.manfenjiayuan.im.** { * ; }
 -keep class com.alibaba.fastjson.** { * ; }
 -keep class com.manfenjiayuan.loveshopping.** { * ; }
--keep class com.bingshanguxue.vector_user.** { * ; }
 
 #解决反射需要引用资源文件
 -keep public class com.manfenjiayuan.loveshopping.R$*{

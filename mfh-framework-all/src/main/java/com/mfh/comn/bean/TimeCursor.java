@@ -58,6 +58,7 @@ public class TimeCursor implements Cloneable{
     public static final SimpleDateFormat InnerFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     public static final SimpleDateFormat FORMAT_YYYYMMDD = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     public static final SimpleDateFormat FORMAT_HHMMSS = new SimpleDateFormat("HH:mm:ss", Locale.US);
+    public static final SimpleDateFormat FORMAT_HHMM = new SimpleDateFormat("HH:mm", Locale.US);
     public static final SimpleDateFormat FORMAT_YYYYMMDDHHMM = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
     public static final SimpleDateFormat FORMAT_YYYYMMDDHHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 

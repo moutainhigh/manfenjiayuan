@@ -2,11 +2,8 @@ package com.manfenjiayuan.loveshopping;
 
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.SharedPreferencesManager;
-
-import java.io.File;
 
 /**
  * Created by bingshanguxue on 2015/7/10.
@@ -21,11 +18,7 @@ public class AppContext extends MfhApplication {
     @Override
     public void onCreate() {
 
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
         super.onCreate();
-
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
 
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);

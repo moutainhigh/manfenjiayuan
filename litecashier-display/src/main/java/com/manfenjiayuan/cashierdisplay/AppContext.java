@@ -3,11 +3,8 @@ package com.manfenjiayuan.cashierdisplay;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.tencent.bugly.crashreport.CrashReport;
-
-import java.io.File;
 
 /**
  * Created by bingshanguxue on 16/3/24.
@@ -21,8 +18,6 @@ public class AppContext extends MfhApplication {
 
     @Override
     public void onCreate() {
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
         super.onCreate();
 
         /**初始化Bugly*/
@@ -34,8 +29,6 @@ public class AppContext extends MfhApplication {
          strategy.setAppPackageName("com.manfenjiayuan.cashierdisplay"); //App的包名
 
         CrashReport.initCrashReport(getApplicationContext(), "900023453", true, strategy);
-
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
 
         if (BizConfig.RELEASE){
 //            ZLogger.d("正式版本");

@@ -25,7 +25,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.uikit.compound.NaviAddressView;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 import com.mfh.framework.uikit.UIHelper;

@@ -18,8 +18,6 @@ import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.param.TextParam;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.helper.PayloadHelper;
-import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.login.logic.MfhLoginService;
 
 import de.greenrobot.event.EventBus;
 
@@ -89,36 +87,11 @@ public class PushDemoReceiver extends BroadcastReceiver {
         int bizType = PayloadHelper.getJsonMsgType(data);//获取推送的数据类型
         ZLogger.df(String.format("payload=(%s)%s", bizType, data));
 
-        //小伙伴
-        if (IMBizType.ORDER_TRANS_NOTIFY == bizType) {
-            Bundle extras = new Bundle();
-
-            JSONObject jsonObject = JSONObject.parseObject(data);
-            JSONObject msgObj = jsonObject.getJSONObject("msg");
-            JSONObject msgBeanObj = msgObj.getJSONObject("msgBean");
-            JSONObject bodyObj = msgBeanObj.getJSONObject("body");
-            JSONObject metaObj = msgObj.getJSONObject("meta");
-            if (metaObj != null) {
-                extras.putString("orderId", metaObj.getString("tagOne"));
-            }
-            if (bodyObj != null) {
-                extras.putString("content", bodyObj.getString("content"));
-
-//                EventBus.getDefault().post(
-//                        new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_ORDER));
-
-                //程序退到后台，显示通知
-                if (MfhLoginService.get().haveLogined() && SharedPreferencesManager.getNotificationAcceptEnabled()) {// && !PushUtil.isForeground(context)){
-//                    UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_NOTIFY_TAKE_ORDER, extras);
-//                    Notification notification = PushUtil.generateNotification(context, "接单通知", bodyObj.getString("content"));
-//                    PushUtil.showNotification(context, 0, notification);
-                }
-            }
-        } else if (IMBizType.CUSTOMER_DISPLAY_PAYORDER == bizType){
+        if (IMBizType.CUSTOMER_DISPLAY_PAYORDER == bizType){
 //            DialogUtil.showHint(data);
             try {
                 EmbMsg embMsg = EmbMsg.parseOjbect(JSONObject.parseObject(data));
-                MsgBean msgBean = JSONObject.parseObject(embMsg.getParam(), MsgBean.class);
+                MsgBean msgBean = JSONObject.parseObject(embMsg.getMsgBean(), MsgBean.class);
                 ZLogger.df(String.format("bizType=(%d)", msgBean.getBizType()));
 
                 String body = JSON.toJSONString(msgBean.getBody());

@@ -5,15 +5,13 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.manfenjiayuan.loveshopping.R;
+import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.viewpagerindicator.CirclePageIndicator;
-import com.mfh.framework.uikit.UIHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +71,10 @@ public class NavigationActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected boolean isFullscreenEnabled() {
+        return true;
+    }
 
     @Override
     protected int getLayoutResId() {
@@ -81,9 +83,6 @@ public class NavigationActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         super.onCreate(savedInstanceState);
 
         mNavigationPagerAdapter = new NavigationPagerAdapter(this, retrieveViews());

@@ -116,4 +116,5 @@ dependencies {
     compile project(':mfh-framework-android')
     compile project(':im')
     compile project(path: ':vector_uikit')
+    compile project(path: ':mfh-framework-business')
 }

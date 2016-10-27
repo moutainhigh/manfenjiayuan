@@ -2,6 +2,7 @@ package com.manfenjiayuan.loveshopping.mvp;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.account.Subdis;
+import com.mfh.framework.api.subdist.SubdisMode;
 import com.mfh.framework.mvp.MvpBasePresenter;
 import com.mfh.framework.mvp.OnPageModeListener;
 
@@ -18,7 +19,7 @@ public class SubdisListPresenter extends MvpBasePresenter<ISubdisListView> {
      * @param frontCategoryId 类目编号
      * */
     public void listSubdis(PageInfo pageInfo, String cityId, String subdisName){
-        mSubdisMode.listSubdis(pageInfo, cityId, subdisName, new OnPageModeListener<Subdis>() {
+        mSubdisMode.list(pageInfo, cityId, subdisName, new OnPageModeListener<Subdis>() {
             @Override
             public void onProcess() {
                 if (getView() != null) {
