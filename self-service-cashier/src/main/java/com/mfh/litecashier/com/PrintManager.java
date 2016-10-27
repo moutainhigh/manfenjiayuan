@@ -59,19 +59,6 @@ public class PrintManager {
         }
     }
 
-
-
-    /**
-     * 添加空格
-     */
-    public static String genBlankspace(int len) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            sb.append(' ');
-        }
-        return sb.toString();
-    }
-
     /**
      * 返回字节数
      */
@@ -106,7 +93,7 @@ public class PrintManager {
 //        int len = rawChars.length;
         int len = getLength(raw);
         String subStr = DataConvertUtil.subString(raw, Math.min(len, maxWidth));//截取字符串 String.valueOf(rawChars, 0, len2)
-        String blankStr = genBlankspace(Math.max(maxWidth - len, 0));
+        String blankStr = StringUtils.genBlankspace(Math.max(maxWidth - len, 0));
 //        ZLogger.d(String.format("subString([%s%s]", subStr, blankStr));
         if (len > maxWidth) {
             return subStr;
@@ -149,7 +136,7 @@ public class PrintManager {
         } else {
             //在名称后面显示单价/数量/小计
             String printText = String.format("%s%s%s",
-                    formatShort(name, 21, BLANK_GRAVITY.RIGHT),
+                    formatShort(name, 22, BLANK_GRAVITY.RIGHT),
                     formatShort(unit, 5, BLANK_GRAVITY.RIGHT),
                     formatShort(bcount, 5, BLANK_GRAVITY.LEFT));
             esc.addText(printText);
@@ -283,40 +270,31 @@ public class PrintManager {
         //设置打印居中
         esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
 //        //设置为倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
         /**打印 标题*/
-        if (StringUtils.isEmpty(MfhLoginService.get().getCurOfficeName())) {
-            esc.addText("购物清单\n");
-        } else {
-            //显示当前网点名称
-            esc.addText(MfhLoginService.get().getCurOfficeName());
-        }
-//        //取消倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+        esc.addText("收银小票\n");
+        //取消倍高倍宽
+        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
 
 
         esc.addPrintAndLineFeed();//进纸一行
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
-        /**打印 机器设备号＋订单号*/
-        esc.addText(String.format("%s NO.%s \n", SharedPreferencesManager.getTerminalId(),
-                posOrderEntity.getBarCode()));
-        /**打印 订购日期*/
-        esc.addText(String.format("%s \n",
-                TimeUtil.format(posOrderEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-        esc.addText("--------------------------------\n");//32个
-//        esc.addPrintAndLineFeed();
+        esc.addText(String.format("下单时间：%s \n",
+                TimeUtil.format(posOrderEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("机器设备号:%s\n", SharedPreferencesManager.getTerminalId()));
+        esc.addText(String.format("收银时间:%s/%s \n",
+                MfhLoginService.get().getLoginName(), MfhLoginService.get().getTelephone()));
+        esc.addPrintAndLineFeed();
 
         /**打印 商品明细*/
         esc.addText("货号/品名       单价 数量   小计\n");
         esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-        //设置为倍高倍宽
-        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
-                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
         List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
+            esc.addText("--------------------------------\n");//32个
             for (PosOrderItemEntity entity : posOrderItemEntityList) {
 //                makeTemp(esc, entity.getName(), String.format("%.2f", entity.getCostPrice() * entity.getBcount()));
                 makePosOrderLine(esc, String.format("%s/%s", entity.getBarcode(),
@@ -324,14 +302,14 @@ public class PrintManager {
                         String.format("%.2f", entity.getBcount()),
                         String.format("%.2f", entity.getFinalAmount()));
             }
+            esc.addText("--------------------------------\n");//32个
         }
 
         /**
          * 打印合计信息
          * */
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
-        esc.addText("--------------------------------\n");//32个
-        esc.addText(String.format("合计:%.2f\n", posOrderEntity.getFinalAmount()));
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.RIGHT);//设置打印左对齐
+        esc.addText(String.format("订单金额:%.2f\n", posOrderEntity.getFinalAmount()));
 
         //支付记录
         OrderPayInfo payWrapper = OrderPayInfo.deSerialize(posOrderEntity.getId());
@@ -364,9 +342,12 @@ public class PrintManager {
          * 打印 结束语
          * */
         esc.addPrintAndLineFeed();
+        esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
         esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印左对齐
-        esc.addText("谢谢惠顾!\n");
-        esc.addText("欢迎下次光临\n");
+        String footerText = String.format("%s%s",
+                formatShort("米西厨房", 20, BLANK_GRAVITY.RIGHT),
+                formatShort("400 8866 671", 12, BLANK_GRAVITY.LEFT));
+        esc.addText(footerText);
 //        esc.addPrintAndLineFeed();
         esc.addPrintAndFeedLines((byte) 3);//打印并且走纸3行
 
