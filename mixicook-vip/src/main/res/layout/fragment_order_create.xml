@@ -80,7 +80,9 @@
                 app:position="top"
                 app:subText="未选择时间"
                 app:subTextColor="@color/material_pink_400"
-                app:text="期望送达时间"/>
+                app:subTextSize="12sp"
+                app:text="期望送达时间"
+                app:textSize="14sp"/>
             <!--备注-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_remark"
@@ -89,7 +91,9 @@
                 app:isLogoVisible="false"
                 app:position="bottom"
                 app:subText="请输入购买留言信息"
-                app:text="备注"/>
+                app:subTextSize="12sp"
+                app:text="备注"
+                app:textSize="14sp"/>
 
             <!--商品金额-->
             <com.bingshanguxue.vector_uikit.SettingsItem
@@ -102,7 +106,9 @@
                 app:position="single"
                 app:subText=""
                 app:subTextColor="@color/material_pink_400"
-                app:text="商品金额"/>
+                app:subTextSize="12sp"
+                app:text="商品金额"
+                app:textSize="14sp"/>
             <!--优惠券-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_coupon"
@@ -112,7 +118,9 @@
                 app:position="bottom"
                 app:subText="未选择优惠券"
                 app:subTextColor="@color/material_pink_400"
-                app:text="优惠券"/>
+                app:subTextSize="12sp"
+                app:text="优惠券"
+                app:textSize="14sp"/>
 
             <!--配送费-->
             <com.manfenjiayuan.mixicook_vip.widget.LabelView2

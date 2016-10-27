@@ -20,12 +20,13 @@ import com.manfenjiayuan.mixicook_vip.AlipayConstants;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.widget.LabelView1;
-import net.sourceforge.simcpux.WXHelper;
 import com.manfenjiayuan.mixicook_vip.wxapi.WXUtil;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.api.pay.PreOrderRsp;
@@ -39,6 +40,8 @@ import com.mfh.framework.pay.alipay.OrderInfoUtil2_0;
 import com.mfh.framework.pay.alipay.PayResult;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
+
+import net.sourceforge.simcpux.WXHelper;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -264,34 +267,64 @@ public class OrderPayFragment extends BaseFragment {
      * 会员支付
      */
     private void scAccountPay() {
-        if (paymentDialog == null) {
-            paymentDialog = new ScOrderPaymentDialog(getActivity());
-            paymentDialog.setCancelable(false);
-            paymentDialog.setCanceledOnTouchOutside(false);
-        }
-        paymentDialog.init("支付密码", mPayOrderBrief.getOrderIds(),
-                new ScOrderPaymentDialog.OnResponseCallback() {
-                    @Override
-                    public void onSuccess() {
-                        getActivity().setResult(RESULT_OK);
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        btnSubmit.setEnabled(true);
-                    }
-                });
-        if (!paymentDialog.isShowing()) {
-            paymentDialog.show();
-        }
-
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSubmit.setEnabled(true);
             return;
         }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候..", false);
+        CommonUserAccountApiImpl.scAccountPay(BizType.SC, mPayOrderBrief.getOrderIds(),
+                MfhLoginService.get().getCurrentGuId(),
+                null, scAccountPayRC);
+
+//        if (paymentDialog == null) {
+//            paymentDialog = new ScOrderPaymentDialog(getActivity());
+//            paymentDialog.setCancelable(false);
+//            paymentDialog.setCanceledOnTouchOutside(false);
+//        }
+//        paymentDialog.init("支付密码", mPayOrderBrief.getOrderIds(),
+//                new ScOrderPaymentDialog.OnResponseCallback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        getActivity().setResult(RESULT_OK);
+//                        getActivity().finish();
+//                    }
+//
+//                    @Override
+//                    public void onCancel() {
+//                        btnSubmit.setEnabled(true);
+//                    }
+//                });
+//        if (!paymentDialog.isShowing()) {
+//            paymentDialog.show();
+//        }
+//
     }
+
+    NetCallBack.NetTaskCallBack scAccountPayRC = new NetCallBack.NetTaskCallBack<AccountPayResponse,
+            NetProcessor.Processor<AccountPayResponse>>(
+            new NetProcessor.Processor<AccountPayResponse>() {
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    ZLogger.d("processFailure: " + errMsg);
+                    hideProgressDialog();
+                    btnSubmit.setEnabled(true);
+                    DialogUtil.showHint(errMsg);
+                }
+
+                @Override
+                public void processResult(IResponseData rspData) {
+                    notifyPayResult(0);
+                    DialogUtil.showHint("支付成功");
+                }
+            }
+            , AccountPayResponse.class
+            , MfhApplication.getAppContext())
+    {
+    };
+
 
     /**
      * 预支付订单

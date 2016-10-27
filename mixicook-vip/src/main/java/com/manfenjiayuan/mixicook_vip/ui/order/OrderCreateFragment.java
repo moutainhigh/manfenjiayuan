@@ -1,7 +1,6 @@
 package com.manfenjiayuan.mixicook_vip.ui.order;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -258,21 +257,23 @@ public class OrderCreateFragment extends BaseFragment {
             return;
         }
 
-        showConfirmDialog("是否确认下单？",
-                "下单", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-
-                        saveOrder();
-                    }
-                }, "点错了", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        //确认下单不需要出现提示框，此次应当确保购买主流程的快速完成，而不是安全性
+        saveOrder();
+//        showConfirmDialog("是否确认下单？",
+//                "下单", new DialogInterface.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//
+//                        saveOrder();
+//                    }
+//                }, "点错了", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
     }
 
     /**
