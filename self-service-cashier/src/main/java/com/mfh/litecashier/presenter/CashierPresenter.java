@@ -137,8 +137,8 @@ public class CashierPresenter {
                 "线上订单", R.mipmap.ic_service_online_order));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_DISCOUNT,
                 "折扣", R.mipmap.ic_menu_cashier_discount));
-        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
-                "注册", R.mipmap.ic_service_register_vip));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SCORE,
+                "积分兑换", R.mipmap.ic_cashier_score));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MEMBER_CARD,
                 "办卡", R.mipmap.ic_service_membercard));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_HANGUP_ORDER,
@@ -154,6 +154,8 @@ public class CashierPresenter {
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SETTINGS,
                 "设置", R.mipmap.ic_service_settings));
         if (!BizConfig.RELEASE) {
+            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
+                    "注册", R.mipmap.ic_service_register_vip));
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_GOODS_LIST,
                     "商品列表", R.mipmap.ic_service_goodslist));
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_FEEDPAPER,

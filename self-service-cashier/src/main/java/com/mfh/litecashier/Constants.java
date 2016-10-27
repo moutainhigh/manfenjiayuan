@@ -11,7 +11,7 @@ package com.mfh.litecashier;
 public class Constants {
     public static final int ARC_MFPAY                           = 0x01;//支付
     public static final int ARC_NATIVE_LOGIN                    = 0x02;//登录
-    public static final int ARC_GENERATE_PURCHASE_GOODS         = 0x04;//新增采购商品
+    public static final int ARC_CASHIER_PREPAREGOODS            = 0x03;//拣货单组货
     public static final int ARC_APPLY_SHOPCART                  = 0x05;//采购商品购物车
     public static final int ARC_CREATE_PURCHASE_ORDER           = 0x06;//新建采购单
     public static final int ARC_CREATE_PURCHASE_RECEIPT_ORDER   = 0x07;//新建采购收货单
@@ -29,6 +29,9 @@ public class Constants {
     public static final String BA_HANDLE_AMOUNT_CHANGED_BANK    = "BA_HANDLE_AMOUNT_CHANGED_BANK";//银行卡
     public static final String BA_HANDLE_AMOUNT_CHANGED_VIP     = "BA_HANDLE_AMOUNT_CHANGED_MFCARD";//会员
     public static final String BA_HANDLE_AMOUNT_CHANGED_CREDIT  = "BA_HANDLE_AMOUNT_CHANGED_CREDIT";//赊账
+
+    public static final String BA_HANDLE_QUERY_PICKORDER  = "BA_HANDLE_QUERY_PICKORDER";//查询拣货单
+
 
     //    orderStatus:订单通用状态
 //    -1:     初始状态

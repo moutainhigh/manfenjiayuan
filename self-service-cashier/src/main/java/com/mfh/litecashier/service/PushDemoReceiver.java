@@ -15,6 +15,7 @@ import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -43,8 +44,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        String processName = CashierApp.getProcessName(CashierApp.getAppContext(), android.os.Process.myPid());
-        ZLogger.df(String.format("个推<%s> -- bundle=%s", processName, StringUtils.decodeBundle(bundle)));
+        ZLogger.df(String.format("个推-- bundle=%s", StringUtils.decodeBundle(bundle)));
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:{
                 // 获取透传（payload）数据
@@ -224,12 +224,15 @@ public class PushDemoReceiver extends BroadcastReceiver {
             String remoteData = contentOjb.getString("data");
             ZLogger.df(String.format("<--远程控制: %d %s\n", remoteId, remoteInfo, remoteData));
             if (remoteId.equals(1L)){
-                CloudSyncManager.get().remoteControl();
+                RemoteControlClient.getInstance().uploadLogFileStep1();
             }
             else if (remoteId.equals(2L)){
-                Beta.checkUpgrade(false, false);
+                RemoteControlClient.getInstance().uploadCrashFileStep1();
             }
             else if (remoteId.equals(3L)){
+                Beta.checkUpgrade(false, false);
+            }
+            else if (remoteId.equals(20L)){
                 if (!StringUtils.isEmpty(remoteData)){
                     EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA_V3, remoteData));
                 }

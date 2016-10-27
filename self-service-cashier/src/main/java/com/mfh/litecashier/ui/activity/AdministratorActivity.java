@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
 import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
+import com.mfh.litecashier.utils.AppHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -387,6 +389,8 @@ public class AdministratorActivity extends BaseActivity {
                 "授信", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_FACTORYDATA_RESET,
+                "授信", R.mipmap.ic_admin_factorydatareset));
 
         return functionalList;
     }
@@ -413,6 +417,9 @@ public class AdministratorActivity extends BaseActivity {
             redirect2Settings();
         } else if (id.compareTo(ResMenu.ADMIN_MENU_CASHQUOTA) == 0) {
             redirect2CashQuota();
+        }
+        else if (id.compareTo(ResMenu.ADMIN_MENU_FACTORYDATA_RESET) == 0) {
+            factoryDataReset();
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
@@ -578,6 +585,28 @@ public class AdministratorActivity extends BaseActivity {
         Intent intent = new Intent(this, SignInActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
+    }
+
+    /**
+     * 恢复出厂设置
+     */
+    private void factoryDataReset() {
+        showConfirmDialog("此操作会清楚您设备中的所有数据，确定要恢复出厂设置吗？\n(恢复出厂设置后会自动重启)",
+                "恢复出厂设置", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        AppHelper.resetFactoryData(CashierApp.getAppContext());
+                    }
+                }, "点错了", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
     }
 
 }

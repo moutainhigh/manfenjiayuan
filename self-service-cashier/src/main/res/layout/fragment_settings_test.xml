@@ -105,6 +105,18 @@
                 android:textColor="@color/material_white"
                 android:textSize="20sp" />
 
+            <Button
+                android:id="@+id/button_upload_crash"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_rectange_green"
+                android:layout_margin="@dimen/spacing_micro"
+                android:gravity="center"
+                android:text="上传Creash文件"
+                android:textColor="@color/material_white"
+                android:textSize="20sp" />
+
         </LinearLayout>
 
 

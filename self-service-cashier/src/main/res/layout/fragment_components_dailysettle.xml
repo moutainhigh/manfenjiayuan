@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/frame_top"
-        layout="@layout/contentview_dialog_header"/>
+        layout="@layout/dialogview_headerview"/>
 
     <LinearLayout
         android:id="@+id/ll_brief_1"
