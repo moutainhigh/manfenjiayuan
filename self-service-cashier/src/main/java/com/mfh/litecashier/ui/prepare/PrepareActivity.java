@@ -22,8 +22,8 @@ public class PrepareActivity extends BaseActivity {
 
     public static final String EXTRA_KEY_TRADENO = "tradeNo";
 
-    private PickStep1Fragment mPickStep1Fragment;
-    private PickStep2Fragment mPickStep2Fragment;
+    private PrepareStep1Fragment mPrepareStep1Fragment;
+    private PrepareStep2Fragment mPrepareStep2Fragment;
 
     private String tradeNo = null;
 
@@ -99,15 +99,15 @@ public class PrepareActivity extends BaseActivity {
         curStep = 0;
         Intent intent = this.getIntent();
         intent.putExtra(EXTRA_KEY_TRADENO, tradeNo);
-        if (mPickStep1Fragment == null) {
-            mPickStep1Fragment = PickStep1Fragment.newInstance(intent.getExtras());
+        if (mPrepareStep1Fragment == null) {
+            mPrepareStep1Fragment = PrepareStep1Fragment.newInstance(intent.getExtras());
         }
         else{
-            mPickStep1Fragment.setArguments(intent.getExtras());
+            mPrepareStep1Fragment.setArguments(intent.getExtras());
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, mPickStep1Fragment)
+                .replace(R.id.fragment_container, mPrepareStep1Fragment)
                 .commit();
     }
 
@@ -120,16 +120,16 @@ public class PrepareActivity extends BaseActivity {
 
         try{
             Bundle args = new Bundle();
-            args.putSerializable(PickStep2Fragment.EXTRA_KEY_SCORDER, scOrder);
-            if (mPickStep2Fragment == null) {
-                mPickStep2Fragment = PickStep2Fragment.newInstance(args);
+            args.putSerializable(PrepareStep2Fragment.EXTRA_KEY_SCORDER, scOrder);
+            if (mPrepareStep2Fragment == null) {
+                mPrepareStep2Fragment = PrepareStep2Fragment.newInstance(args);
             }
             else{
-                mPickStep2Fragment.setArguments(args);
+                mPrepareStep2Fragment.setArguments(args);
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mPickStep2Fragment)
+                    .replace(R.id.fragment_container, mPrepareStep2Fragment)
                     .commit();
         }
         catch (Exception e){
@@ -139,14 +139,14 @@ public class PrepareActivity extends BaseActivity {
         ZLogger.df("跳转到组货页面end");
     }
 
-    public void onEventMainThread(PickEvent event) {
+    public void onEventMainThread(PrepareEvent event) {
         Bundle args = event.getArgs();
-        ZLogger.df(String.format("PickEvent:%d\n%s",
+        ZLogger.df(String.format("PrepareEvent:%d\n%s",
                 event.getAction(), StringUtils.decodeBundle(args)));
         switch (event.getAction()){
-            case PickEvent.ACTION_PREPARE:{
+            case PrepareEvent.ACTION_PREPARE:{
                 if (args != null){
-                    ScOrder scOrder = (ScOrder) args.getSerializable(PickEvent.KEY_SCORDER);
+                    ScOrder scOrder = (ScOrder) args.getSerializable(PrepareEvent.KEY_SCORDER);
                     if (scOrder == null){
                         return;
                     }

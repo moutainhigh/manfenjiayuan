@@ -288,6 +288,9 @@ public class ValidateManager {
             , MfhApplication.getAppContext()) {
     };
 
+    /**
+     * 保存设备编号
+     * */
     private void saveTerminalId(final String respnse){
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override

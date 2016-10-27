@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
 
 /**
@@ -99,6 +103,30 @@ public abstract class BasePayFragment extends BaseFragment {
     public void generateOutTradeNo(){
         outTradeNo = CashierFactory.genTradeNo(orderId, true);
         ZLogger.df(String.format("%s支付－交易编号：%s", WayType.name(payType), outTradeNo));
+    }
+
+    /**
+     * 支付宝条码支付/微信扫码支付--创建支付订单
+     * @param paidAmount 支付金额
+     * @param authCode 扫描的支付码
+     * @return json对象
+     */
+    protected JSONObject generateOrderInfo(Double paidAmount, String authCode) {
+        JSONObject orderInfo = new JSONObject();
+        //商户订单号： 1_100014_1445935035219
+        orderInfo.put("out_trade_no", outTradeNo);
+        orderInfo.put("scene", "bar_code");
+        orderInfo.put("auth_code", authCode);
+        orderInfo.put("total_amount", MUtils.formatDouble(paidAmount, ""));
+//        orderInfo.put("discountable_amount", MStringUtil.formatAmount(discountableAmount));
+        orderInfo.put("subject", subject);
+        orderInfo.put("body", body);
+        orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
+        orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
+        orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
+        orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
+
+        return orderInfo;
     }
 
     /**

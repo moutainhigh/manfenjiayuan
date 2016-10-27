@@ -200,8 +200,8 @@ public abstract class BasePayStepFragment extends BaseFragment {
                 dialog.dismiss();
                 onPayException();
 
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                getActivity().finish();
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//                getActivity().finish();
             }
         });
         cancelPayDialog.setNegativeButton("取消支付", new DialogInterface.OnClickListener() {

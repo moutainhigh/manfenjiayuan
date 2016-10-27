@@ -4,7 +4,7 @@
     android:layout_width="@dimen/mf_simple_dialog_width"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/contentview_dialog_header"/>
+    <include layout="@layout/dialogview_headerview"/>
 
     <EditText
         android:id="@+id/et_content"

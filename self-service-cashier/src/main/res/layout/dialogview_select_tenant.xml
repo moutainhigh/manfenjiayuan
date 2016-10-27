@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:showDividers="middle">
 
-    <include layout="@layout/contentview_dialog_header"
+    <include layout="@layout/dialogview_headerview"
         android:id="@+id/frame_top"/>
 
     <!--批发商速记码-->
@@ -19,7 +19,6 @@
         app:inputNumberLabelView_inputTextColorHint="@color/black_35"
         app:inputNumberLabelView_inputHint="门店名称"
         android:layout_margin="@dimen/spacing_double"
-
         android:layout_below="@+id/frame_top"
         android:layout_centerHorizontal="true"/>
 

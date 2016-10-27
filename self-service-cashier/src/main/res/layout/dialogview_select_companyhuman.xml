@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
 
-    <include layout="@layout/contentview_dialog_header"/>
+    <include layout="@layout/dialogview_headerview"/>
 
 
     <android.support.v7.widget.RecyclerView

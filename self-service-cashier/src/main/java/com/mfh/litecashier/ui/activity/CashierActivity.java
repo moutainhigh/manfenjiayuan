@@ -472,7 +472,7 @@ public abstract class CashierActivity extends BaseActivity {
     public int sendEscCommand(String b64)  {
         ZLogger.d("sendEscCommand:\n" + b64);
         GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
-        byte[] datas = Base64.decode(b64, 0);
+        byte[] datas = Base64.decode(b64, Base64.DEFAULT);
         Vector vector = new Vector();
         byte[] var9 = datas;
         int var8 = datas.length;

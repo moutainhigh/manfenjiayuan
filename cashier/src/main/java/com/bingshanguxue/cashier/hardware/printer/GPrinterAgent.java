@@ -2,7 +2,7 @@ package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.gprinter.command.EscCommand;
-import com.gprinter.command.TscCommand;
+import com.gprinter.command.LabelCommand;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 
@@ -99,7 +99,7 @@ public class GPrinterAgent {
                 CommandConstants.CMD_HEX_STX_M));
 
         EscCommand esc = new EscCommand();
-        esc.addGeneratePluseAtRealtime(TscCommand.FOOT.F2, (byte)20);
+        esc.addGeneratePluseAtRealtime(LabelCommand.FOOT.F2, (byte)20);
         Vector<Byte> datas = esc.getCommand();
         Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
         byte[] bytes = ArrayUtils.toPrimitive(Bytes);

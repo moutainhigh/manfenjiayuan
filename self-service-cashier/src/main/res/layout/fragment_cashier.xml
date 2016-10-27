@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
@@ -7,186 +7,188 @@
              android:fitsSystemWindows="true">
 
 
-    <RelativeLayout
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!---->
+    <!--</RelativeLayout>-->
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/bg_lastorder"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@drawable/bg_lastorder"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-
-                <!--上一单信息-->
-                <LinearLayout
-                    android:id="@+id/frame_lastorder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
-
-                    <TextView
-                        android:id="@+id/tv_last_amount"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="合计：¥0.00"
-                        android:textColor="@color/material_black"
-                        android:textSize="16sp"/>
-
-                    <TextView
-                        android:id="@+id/tv_last_quantity"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="数量：0.00"
-                        android:textColor="@color/material_black"
-                        android:textSize="16sp"/>
-
-                    <TextView
-                        android:id="@+id/tv_last_discount"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="优惠：¥0.00"
-                        android:textColor="@color/material_black"
-                        android:textSize="16sp"/>
-
-                    <TextView
-                        android:id="@+id/tv_last_charge"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:text="找零：¥0.00"
-                        android:textColor="@color/material_black"
-                        android:textSize="16sp"/>
-                </LinearLayout>
-
-            </android.support.v7.widget.Toolbar>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <!--分割线-->
-        <View
-            android:id="@+id/horizontal_line"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_below="@+id/app_bar"
-            android:background="@color/mf_dividerColorPrimary"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/horizontal_line"
-            android:orientation="vertical"
-            android:paddingEnd="@dimen/spacing_4x"
-            android:paddingStart="@dimen/spacing_4x">
-
-            <!--数量和价格-->
+            <!--上一单信息-->
             <LinearLayout
+                android:id="@+id/frame_lastorder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_4x"
-                android:baselineAligned="false"
-                android:divider="@drawable/divider_vertical_line_primary"
-                android:dividerPadding="12dp"
-                android:gravity="center"
-                android:background="@color/material_white"
-                android:showDividers="middle">
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                    android:id="@+id/label_quantity"
+                <TextView
+                    android:id="@+id/tv_last_amount"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:bottomText="数量"
-                    app:bottomTextColor="@color/black_70"
-                    app:bottomTextSize="16sp"
-                    app:topText="@string/default_amount"
-                    app:topTextColor="#FF009B4E"
-                    app:topTextSize="48sp"/>
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="合计：¥0.00"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
 
-                <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                    android:id="@+id/label_amount"
+                <TextView
+                    android:id="@+id/tv_last_quantity"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    app:bottomText="金额"
-                    app:bottomTextColor="@color/black_70"
-                    app:bottomTextSize="16sp"
-                    app:topText="@string/default_amount"
-                    app:topTextColor="#FFFE5000"
-                    app:topTextSize="48sp"/>
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="数量：0.00"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_last_discount"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="优惠：¥0.00"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/tv_last_charge"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="找零：¥0.00"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
-            <!--输入条形码-->
-            <com.mfh.litecashier.ui.widget.InputNumberLabelView
-                android:id="@+id/inlv_barcode"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="@dimen/spacing_8x"
-                android:layout_marginStart="@dimen/spacing_8x"
-                app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
-                app:inputNumberLabelView_inputTextColor="@color/black"
-                app:inputNumberLabelView_inputTextColorHint="@color/black_35"
-                app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_search_del"/>
+        </android.support.v7.widget.Toolbar>
 
-            <include
-                android:id="@+id/ll_procuct_header"
-                layout="@layout/itemview_header_cashier"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+    </android.support.design.widget.AppBarLayout>
 
-            <!--商品列表-->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/product_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+    <!--分割线-->
+    <View
+        android:id="@+id/horizontal_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/app_bar"
+        android:background="@color/mf_dividerColorPrimary"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/horizontal_line"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/spacing_4x"
+        android:paddingStart="@dimen/spacing_4x">
+
+        <!--数量和价格-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_4x"
+            android:baselineAligned="false"
+            android:divider="@drawable/divider_vertical_line_primary"
+            android:dividerPadding="12dp"
+            android:gravity="center"
+            android:background="@color/material_white"
+            android:showDividers="middle">
+
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="数量"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="@string/default_amount"
+                app:topTextColor="#FF009B4E"
+                app:topTextSize="48sp"/>
+
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="金额"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="@string/default_amount"
+                app:topTextColor="#FFFE5000"
+                app:topTextSize="48sp"/>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/fab_orderDiscount"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_gravity="start|bottom"
-            android:layout_below="@+id/horizontal_line"
-            android:layout_margin="@dimen/spacing_double"
-            android:background="@drawable/bg_float_number"
-            android:gravity="center"
-            android:minWidth="80dp"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="@color/material_white"
-            android:textSize="20sp"
-            android:visibility="gone"/>
-    </RelativeLayout>
+        <!--输入条形码-->
+        <com.mfh.litecashier.ui.widget.InputNumberLabelView
+            android:id="@+id/inlv_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/spacing_8x"
+            android:layout_marginStart="@dimen/spacing_8x"
+            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
+            app:inputNumberLabelView_inputTextColor="@color/black"
+            app:inputNumberLabelView_inputTextColorHint="@color/black_35"
+            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_search_del"/>
+
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_header_cashier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!--商品列表-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/product_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fab_orderDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_gravity="start|bottom"
+        android:layout_below="@+id/horizontal_line"
+        android:layout_margin="@dimen/spacing_double"
+        android:background="@drawable/bg_float_number"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/material_white"
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/float_hangup"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:layout_gravity="start|bottom"
+        android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/spacing_double"
         android:background="@drawable/bg_float_number"
         android:gravity="center"
@@ -213,15 +215,26 @@
     <!--android:layout_marginEnd="@dimen/spacing_double"-->
     <!--android:src="@mipmap/ic_checkmark_white"/>-->
     <ImageButton
+        android:id="@+id/fab_pick"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/fab_settle"
+        android:layout_marginBottom="@dimen/spacing_double"
+        android:background="@drawable/bg_float_number"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_fab_shopcart_white"/>
+    <ImageButton
         android:id="@+id/fab_settle"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_gravity="end|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
         android:background="@drawable/bg_float_number"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_checkmark_white"
-        />
+        android:src="@mipmap/ic_checkmark_white"/>
 
-</FrameLayout>
+</RelativeLayout>

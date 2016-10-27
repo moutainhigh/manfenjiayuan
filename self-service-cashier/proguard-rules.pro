@@ -18,23 +18,30 @@
 #压缩: 移除无效的类、属性、方法等
 #优化: 优化字节码，并删除未使用的结构
 
+#默认开启，用以减小应用体积，移除未被使用的类和成员，并且会在优化动作执行之后再次执行（因为优化后可能会再次暴露一些未被使用的类和成员）。
+#-dontshrink
+
 #包明不混合大小写
 -dontusemixedcaseclassnames
+
 # Optimization is turned off by default. Dex does not like code run
 # through the ProGuard optimize and preverify steps (and performs some
 # of these optimizations on its own).
 #不优化输入的类文件
 -dontoptimize
+#指定代码的压缩级别,n 表示proguard对代码进行迭代优化的次数，Android一般为5
+-optimizationpasses 5
+
 #预校验
 -dontpreverify
 
+#默认开启，增大反编译难度，类和类成员会被随机命名，除非用keep保护。
+#-dontobfuscate
 #混淆: 将类名、属性名、方法名混淆为难以读懂的字母，比如a,b,c
 -flattenpackagehierarchy
 -allowaccessmodification
 -printmapping map.txt
 
-#指定代码的压缩级别
--optimizationpasses 7
 #混淆时是否记录日志
 -verbose
 
@@ -120,7 +127,6 @@ public static final int *;
 -keep class com.manfenjiayuan.im.** { * ; }
 -keep class com.manfenjiayuan.business.** { * ; }
 -keep class com.bingshanguxue.cashier.** { * ; }
--keep class com.bingshanguxue.vector_user.** { * ; }
 -keep class com.bingshanguxue.vector_uikit.** { * ; }
 -keep class com.alibaba.fastjson.** { * ; }
 -keep class com.mfh.litecashier.** { * ; }

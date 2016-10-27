@@ -96,7 +96,10 @@ public class FrontCategoryFragment extends BaseFragment {
             public boolean onMenuItemClick(MenuItem item) {
                 // Handle the menu item
                 int id = item.getItemId();
-                if (id == R.id.action_submit) {
+                if (id == R.id.action_reload) {
+                    reload();
+                }
+                else if (id == R.id.action_submit) {
                     submit();
                 }
                 return true;

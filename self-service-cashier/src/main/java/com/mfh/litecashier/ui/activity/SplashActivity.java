@@ -102,10 +102,8 @@ public class SplashActivity extends InitActivity {
                 AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
 
                 //首次启动(由于应用程序可能会被多次执行在不同的进程中，所以这里在启动页调用)
-                ZLogger.df(String.format("应用程序启动(%s-%d)：process: %s",
-                        appInfo.getVersionName(), appInfo.getVersionCode(),
-                        CashierApp.getProcessName(CashierApp.getAppContext(),
-                                android.os.Process.myPid())));
+                ZLogger.df(String.format("应用程序启动(%s-%d）",
+                        appInfo.getVersionName(), appInfo.getVersionCode()));
 
                 if (SharedPreferencesManager.isAppFirstStart()) {
 //                    SharedPreferencesHelper.setSyncProductsCursor("");

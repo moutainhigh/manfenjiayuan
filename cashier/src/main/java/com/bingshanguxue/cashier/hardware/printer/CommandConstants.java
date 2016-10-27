@@ -1,7 +1,8 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
 /**
- * Created by kun on 15/9/9.
+ * 客显指令集合
+ * Created by bingshanguxue on 15/9/9.
  */
 public class CommandConstants {
     public static final String HEX_CR = "0D";

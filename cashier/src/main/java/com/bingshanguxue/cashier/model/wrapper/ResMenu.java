@@ -23,6 +23,7 @@ public class ResMenu implements Serializable{
     public static final Long CASHIER_MENU_EXPRESS = 21L;//寄快递
     public static final Long CASHIER_MENU_PRINT_ORDER = 22L;//打印订单
     public static final Long CASHIER_MENU_DISCOUNT = 23L;//订单打折
+    public static final Long CASHIER_MENU_SCORE = 24L;//积分兑换
 
     //管理者控制台
     public static final Long ADMIN_MENU_PURCHASE_MANUAL = 51L;//订货
@@ -33,6 +34,7 @@ public class ResMenu implements Serializable{
     public static final Long ADMIN_MENU_DAILYSETTLE= 56L;//日结
     public static final Long ADMIN_MENU_CASHQUOTA= 57L;//现金授权
     public static final Long ADMIN_MENU_SETTINGS= 58L;//设置
+    public static final Long ADMIN_MENU_FACTORYDATA_RESET= 59L;//恢复出厂设置
 
 
     //金丝雀

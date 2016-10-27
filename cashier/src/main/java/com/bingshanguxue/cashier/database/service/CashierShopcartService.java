@@ -185,6 +185,16 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
         saveOrUpdate(shopcartEntity);
     }
 
+    public CashierShopcartEntity getEntityBy(String sqlWhere){
+        CashierShopcartEntity shopcartEntity = null;
+        List<CashierShopcartEntity> shopcartEntities = queryAllBy(sqlWhere);
+        if (shopcartEntities != null && shopcartEntities.size() > 0) {
+            shopcartEntity = shopcartEntities.get(0);
+        }
+
+        return shopcartEntity;
+    }
+
     /**
      * 加载订单明细
      * */

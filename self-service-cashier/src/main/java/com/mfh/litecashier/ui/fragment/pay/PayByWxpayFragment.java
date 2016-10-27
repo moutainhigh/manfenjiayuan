@@ -18,24 +18,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
-import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.api.PayApi;
-import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
@@ -49,7 +46,9 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
- * Created by kun on 15/8/31.
+ * 微信刷卡支付
+ * @see <a href="https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=5_4">微信刷卡支付支付流程</a>
+ * Created by bingshanguxue on 15/8/31.
  */
 public class PayByWxpayFragment extends BasePayFragment {
 
@@ -221,30 +220,6 @@ public class PayByWxpayFragment extends BasePayFragment {
         };
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
-    }
-
-    /**
-     * 微信支付--创建支付订单
-     * 1_100014_1445935035219
-     */
-    private JSONObject generateOrderInfo(Double paidAmount, String authCode) {
-        // 商户订单号
-//        outTradeNo = String.format("%s_%d", orderId, System.currentTimeMillis());
-
-        JSONObject orderInfo = new JSONObject();
-        orderInfo.put("out_trade_no", outTradeNo);
-        orderInfo.put("scene", "bar_code");
-        orderInfo.put("auth_code", authCode);
-        orderInfo.put("total_amount", MUtils.formatDouble(paidAmount, ""));
-//        orderInfo.put("discountable_amount", MStringUtil.formatAmount(discountableAmount));
-        orderInfo.put("subject", subject);
-        orderInfo.put("body", body);
-        orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
-        orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
-        orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
-        orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
-
-        return orderInfo;
     }
 
     /**

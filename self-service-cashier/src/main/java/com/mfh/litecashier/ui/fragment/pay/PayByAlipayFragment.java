@@ -18,24 +18,21 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
-import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.api.PayApi;
-import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
@@ -51,7 +48,7 @@ import de.greenrobot.event.EventBus;
 /**
  * 支付--支付宝条码支付
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
- * {@see <a href="https://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.6L5pUZ&treeId=26&articleId=104040&docType=1"></a>}
+ * @see <a href="https://doc.open.alipay.com/doc2/detail.htm?spm=0.0.0.0.6L5pUZ&treeId=26&articleId=104040&docType=1">支付宝条码支付</a>
  *
  * 商户收银系统(POS)
  * 1--收银系统轮询时，需出现等待支付结果的界面
@@ -63,7 +60,7 @@ import de.greenrobot.event.EventBus;
  * 3--未联网时需禁止支付宝收款功能
  * 商户收银系统在未联网的情况下应禁止收银员使用支付宝收款，并告知收银员网络异常。
  *
- * @link {https://app.alipay.com/market/document.htm?name=tiaomazhifu#page-6}
+ *  @see <a href="https://app.alipay.com/market/document.htm?name=tiaomazhifu#page-6">支付宝条码支付</a>
  */
 public class PayByAlipayFragment extends BasePayFragment {
 
@@ -249,31 +246,6 @@ public class PayByAlipayFragment extends BasePayFragment {
         };
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
-    }
-
-    /**
-     * 支付宝支付--创建支付订单
-     * 1_100014_1445935035219
-     */
-    private JSONObject generateOrderInfo(Double paidAmount, String authCode) {
-        JSONObject orderInfo = new JSONObject();
-        orderInfo.put("out_trade_no", outTradeNo);
-        orderInfo.put("scene", "bar_code");
-        orderInfo.put("auth_code", authCode);
-        orderInfo.put("total_amount", MUtils.formatDouble(paidAmount, ""));
-//        orderInfo.put("discountable_amount", MStringUtil.formatAmount(discountableAmount));
-        orderInfo.put("subject", subject);
-        orderInfo.put("body", body);
-        orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
-        orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
-        orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
-        orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
-//        Human member = GlobalInstance.getInstance().getMfMemberInfo();
-//        if (member != null) {
-//            orderInfo.put("seller_id", member.getGuid());
-//        }
-
-        return orderInfo;
     }
 
     /**

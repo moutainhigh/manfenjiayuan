@@ -40,6 +40,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
     public interface OnResponseCallback {
         void onAction1(Double value);
         void onAction2();
+        void onAction3();
     }
 
     private OnResponseCallback mListener;
@@ -206,12 +207,12 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
         rootView.findViewById(R.id.button_sellout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtil.showHint(R.string.coming_soon);
-//                dismiss();
-//
-//                if (mListener != null){
-//                    mListener.on();
-//                }
+//                DialogUtil.showHint(R.string.coming_soon);
+                dismiss();
+
+                if (mListener != null){
+                    mListener.onAction3();
+                }
             }
         });
 
