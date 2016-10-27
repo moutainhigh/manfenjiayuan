@@ -14,6 +14,7 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
 import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
+import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
 import com.mfh.litecashier.ui.fragment.components.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
@@ -41,6 +42,7 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FT_CANARY_CASH_QUOTA = 0x08;//现金授权
     public static final int FT_PAY_HISTORY = 0x09;//支付记录
     public static final int FT_GOODS_SALESHISTORY = 0x10;//商品销量记录
+    public static final int FT_EXCHANGE_SCORE = 0x11;//积分兑换
 
 
     private int serviceType = 0;
@@ -249,6 +251,26 @@ public class SimpleDialogActivity extends BaseActivity {
                     fragment = GoodsSalesFragment.newInstance(intent.getExtras());
                 } else {
                     fragment = GoodsSalesFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            catch (Exception e){
+                ZLogger.e(e.toString());
+                e.printStackTrace();
+            }
+        }
+
+        else if (serviceType == FT_EXCHANGE_SCORE)  {
+            try{
+                ExchangeScoreFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = ExchangeScoreFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = ExchangeScoreFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)

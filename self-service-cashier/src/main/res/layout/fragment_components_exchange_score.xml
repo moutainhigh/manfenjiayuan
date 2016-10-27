@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/spacing_4x"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/dialogview_headerview"/>
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frame_top"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_4x"
+        android:gravity="center"
+        android:drawableBottom="@mipmap/ic_marker_edit"
+        android:drawablePadding="@dimen/spacing_micro"
+        android:hint="请输入积分"
+        android:minHeight="56dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="#FE5000"
+        android:textSize="90sp"/>
+
+    <Button
+        android:id="@+id/button_exchange"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/spacing_4x"
+        android:background="@drawable/btn_rectange_primary"
+        android:gravity="center"
+        android:text="立即兑换"
+        android:textColor="@color/material_white"
+        android:textSize="24sp"
+        android:visibility="visible"/>
+
+</RelativeLayout>
