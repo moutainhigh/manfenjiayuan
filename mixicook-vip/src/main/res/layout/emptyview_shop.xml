@@ -19,6 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_double"
         android:gravity="center"
+        android:textColor="@color/black_65"
+        android:textSize="14sp"
         android:text="不在配送范围"
         />
 
@@ -31,6 +33,6 @@
         android:gravity="center"
         android:text="切换收货地址"
         android:textColor="@color/material_white"
-        android:textSize="20sp"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>

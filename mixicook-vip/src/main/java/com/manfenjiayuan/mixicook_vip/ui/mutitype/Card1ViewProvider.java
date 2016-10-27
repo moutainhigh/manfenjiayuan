@@ -36,7 +36,7 @@ public class Card1ViewProvider extends ItemViewProvider<Card1,
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Card1 card) {
         List<Card1Item> items = card.getItems();
-        ZLogger.d(String.format("共有%s个元素", items != null ? items.size() : 0));
+//        ZLogger.d(String.format("共有%s个元素", items != null ? items.size() : 0));
         holder.setEntityList(items);
 
     }

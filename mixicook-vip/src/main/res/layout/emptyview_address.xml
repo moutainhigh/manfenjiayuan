@@ -18,7 +18,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_double"
         android:gravity="center"
-        android:text="抱歉,你还未设置收货地址"/>
+        android:text="抱歉,你还未设置收货地址"
+        android:textColor="@color/black_65"
+        android:textSize="14sp"/>
 
     <Button
         android:id="@+id/button_add_address"
@@ -29,6 +31,6 @@
         android:gravity="center"
         android:text="添加收货地址"
         android:textColor="@color/material_white"
-        android:textSize="20sp"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>

@@ -19,7 +19,7 @@
         android:layout_margin="@dimen/spacing_4x"
         android:gravity="center"
         android:textColor="@color/black_65"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:text="您的购物车里啥都没有"/>
 
     <Button
@@ -31,6 +31,6 @@
         android:gravity="center"
         android:text="再逛逛"
         android:textColor="@color/material_white"
-        android:textSize="20sp"/>
+        android:textSize="16sp"/>
 
 </LinearLayout>

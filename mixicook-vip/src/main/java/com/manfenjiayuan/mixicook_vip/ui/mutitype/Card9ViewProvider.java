@@ -1,5 +1,6 @@
 package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +13,13 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
+import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.database.HomeGoodsTempEntity;
 import com.manfenjiayuan.mixicook_vip.database.HomeGoodsTempService;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
+import com.manfenjiayuan.mixicook_vip.ui.home.ShopcartEvent;
+import com.manfenjiayuan.mixicook_vip.utils.AddCartOptions;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -23,14 +27,14 @@ import com.mfh.framework.api.anon.storeRack.CardProduct;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApi;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import me.drakeet.multitype.ItemViewProvider;
-
-import static com.manfenjiayuan.mixicook_vip.R.id.products;
 
 
 /**
@@ -65,7 +69,7 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
             super(itemView);
             tvCategoryName = (TextView) itemView.findViewById(R.id.tv_categoryName);
             btnMore = (Button) itemView.findViewById(R.id.button_more);
-            recyclerView = (RecyclerView) itemView.findViewById(products);
+            recyclerView = (RecyclerView) itemView.findViewById(R.id.goods_list);
 
             btnMore.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,8 +84,8 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
             mAdapter = new Card9ViewAdapter(itemView.getContext(), null);
             mAdapter.setOnAdapterLitener(new Card9ViewAdapter.OnAdapterListener() {
                 @Override
-                public void onAdd2Cart(CardProduct product) {
-                    add2Cart(product);
+                public void onAdd2Cart(View view, CardProduct product) {
+                    add2Cart(view, product);
                 }
 
                 @Override
@@ -142,13 +146,18 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
         /**
          * 加入购物车
          * */
-        private void add2Cart(CardProduct product){
+        private void add2Cart(View view, CardProduct product){
             if (product == null){
                 return;
             }
 
-//            DialogUtil.showHint(String.format("加入购物车[%s][%s]",
-//                    product.getImageUrl(), product.getName()));
+
+            if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
+                ZLogger.d("网络未连接。");
+                return;
+            }
+
+            EventBus.getDefault().post(new ShopcartEvent(ShopcartEvent.EVENT_ID_ADD2CART, AddCartOptions.makeOptions(view)));
 
             NetCallBack.NetTaskCallBack responseC = new NetCallBack.NetTaskCallBack<String,
                     NetProcessor.Processor<String>>(
@@ -158,7 +167,7 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
                             //{"code":"0","msg":"操作成功!","version":"1","data":""}
                             ZLogger.df("加入购物车成功");
                             DialogUtil.showHint("加入购物车成功");
-                            // TODO: 10/10/2016 刷新购物车按钮 
+                            EventBus.getDefault().post(new ShopcartEvent(ShopcartEvent.EVENT_ID_DATASETCHANGED, new Bundle()));
                         }
 
                         @Override

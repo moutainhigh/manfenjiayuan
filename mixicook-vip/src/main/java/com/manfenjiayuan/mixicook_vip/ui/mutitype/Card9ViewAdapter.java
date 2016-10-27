@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.storeRack.CardProduct;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
@@ -33,7 +32,7 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
     }
 
     public interface OnAdapterListener {
-        void onAdd2Cart(CardProduct product);
+        void onAdd2Cart(View view, CardProduct product);
         void onItemClick(View view, int position);
 
         void onItemLongClick(View view, int position);
@@ -100,15 +99,14 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
             int position = getAdapterPosition();
             CardProduct product = getEntity(position);
             if (product != null && adapterListener != null) {
-                adapterListener.onAdd2Cart(product);
+                adapterListener.onAdd2Cart(ivHeader, product);
             }
-
         }
     }
 
     @Override
     public void setEntityList(List<CardProduct> entityList) {
         super.setEntityList(entityList);
-        ZLogger.d(String.format("共有%s个元素个元素\"", entityList != null ? entityList.size() : 0));
+//        ZLogger.d(String.format("共有%s个元素个元素\"", entityList != null ? entityList.size() : 0));
     }
 }
