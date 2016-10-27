@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.manfenjiayuan.business.utils.MUtils;
@@ -19,11 +20,13 @@ import butterknife.ButterKnife;
  * 菜单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
-public class TopupAdapter extends RegularAdapter<Double, TopupAdapter.MenuOptioinViewHolder> {
+public class TopupAdapter extends RegularAdapter<TopAmount, TopupAdapter.MenuOptioinViewHolder> {
 
-    public TopupAdapter(Context context, List<Double> entityList) {
+    public TopupAdapter(Context context, List<TopAmount> entityList) {
         super(context, entityList);
     }
+
+    private TopAmount curEntity;
 
     public interface AdapterListener {
         void onItemClick(View view, int position);
@@ -50,14 +53,22 @@ public class TopupAdapter extends RegularAdapter<Double, TopupAdapter.MenuOptioi
 
     @Override
     public void onBindViewHolder(MenuOptioinViewHolder holder, int position) {
-        final Double amount = entityList.get(position);
+        final TopAmount entity = entityList.get(position);
 
-        holder.tvAmount.setText(MUtils.formatDouble(null, null, amount, "", "", "元"));
+        holder.tvAmount.setText(MUtils.formatDouble(null, null, entity.getAmount(), "", "", "元"));
+        if (entity.isSelected()){
+            holder.ibRatio.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.ibRatio.setVisibility(View.GONE);
+        }
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_amount)
         TextView tvAmount;
+        @Bind(R.id.ib_ratio)
+        ImageView ibRatio;
 
         public MenuOptioinViewHolder(final View itemView) {
             super(itemView);
@@ -68,11 +79,17 @@ public class TopupAdapter extends RegularAdapter<Double, TopupAdapter.MenuOptioi
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if (entityList == null || position < 0 || position >= entityList.size()) {
-//                        MLog.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                    TopAmount entity = getEntity(position);
+                    if (entity == null){
                         return;
                     }
 
+                    if (curEntity != null){
+                        curEntity.setSelected(false);
+                    }
+                    entity.setSelected(true);
+                    curEntity = entity;
+                    notifyDataSetChanged();
                     if (adapterListener != null) {
                         adapterListener.onItemClick(v, position);
                     }
@@ -81,5 +98,13 @@ public class TopupAdapter extends RegularAdapter<Double, TopupAdapter.MenuOptioi
         }
     }
 
+    @Override
+    public void setEntityList(List<TopAmount> entityList) {
+        curEntity = null;
+        super.setEntityList(entityList);
+    }
 
+    public TopAmount getCurEntity() {
+        return curEntity;
+    }
 }

@@ -9,9 +9,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.sdk.app.PayTask;
@@ -41,8 +41,6 @@ import com.mfh.framework.pay.alipay.AppPayRespWrapper;
 import com.mfh.framework.pay.alipay.OrderInfoUtil2_0;
 import com.mfh.framework.pay.alipay.PayResult;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.dialog.DialogHelper;
 
 import net.sourceforge.simcpux.WXHelper;
 
@@ -52,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * 充值
@@ -68,6 +67,14 @@ public class TopupFragment extends BaseFragment {
     RecyclerView mRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private TopupAdapter mTopupAdapter;
+    @Bind(R.id.action_alipay)
+    LabelView1 labelAlipay;
+    @Bind(R.id.action_wepay)
+    LabelView1 labelWepay;
+    private static final int PAY_ACTION_ALIPAY = 1;
+    private static final int PAY_ACTION_WEPAY = 2;
+    private int curPayAction = PAY_ACTION_ALIPAY;
+
 
     public TopupFragment() {
         super();
@@ -122,21 +129,21 @@ public class TopupFragment extends BaseFragment {
         mRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
 //        menuRecyclerView.addItemDecoration(new GridItemDecoration(3, 2, false));
 
-        List<Double> entities = new ArrayList<>();
-        entities.add(0.01D);
-        entities.add(1D);
-        entities.add(20D);
-        entities.add(50D);
-        entities.add(100D);
-        entities.add(200D);
-        entities.add(300D);
-        entities.add(500D);
-        entities.add(1000D);
+        List<TopAmount> entities = new ArrayList<>();
+        entities.add(new TopAmount(0.01D, false));
+        entities.add(new TopAmount(1D, false));
+        entities.add(new TopAmount(20D, false));
+        entities.add(new TopAmount(50D, false));
+        entities.add(new TopAmount(100D, false));
+        entities.add(new TopAmount(200D, false));
+        entities.add(new TopAmount(300D, false));
+        entities.add(new TopAmount(500D, false));
+        entities.add(new TopAmount(1000D, false));
         mTopupAdapter = new TopupAdapter(getActivity(), entities);
         mTopupAdapter.setOnAdapterLitener(new TopupAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                topupStep1(mTopupAdapter.getEntity(position));
+//                topupStep1(mTopupAdapter.getEntity(position));
             }
 
             @Override
@@ -145,103 +152,100 @@ public class TopupFragment extends BaseFragment {
             }
         });
         mRecyclerView.setAdapter(mTopupAdapter);
+
+        labelAlipay.setOnViewListener(new LabelView1.OnViewListener() {
+
+            @Override
+            public void onClick(View v, boolean isChecked) {
+                togglePayWay(PAY_ACTION_ALIPAY, !isChecked);
+            }
+
+            @Override
+            public void onClickCheck(boolean isChecked) {
+                togglePayWay(PAY_ACTION_ALIPAY, isChecked);
+
+            }
+
+            @Override
+            public void onCheckedChanged(boolean isChecked) {
+//                togglePayWay(1, isChecked);
+            }
+        });
+        labelWepay.setOnViewListener(new LabelView1.OnViewListener() {
+            @Override
+            public void onClick(View v, boolean isChecked) {
+                togglePayWay(PAY_ACTION_WEPAY, !isChecked);
+            }
+
+            @Override
+            public void onClickCheck(boolean isChecked) {
+                togglePayWay(PAY_ACTION_WEPAY, isChecked);
+            }
+
+            @Override
+            public void onCheckedChanged(boolean isChecked) {
+//                togglePayWay(2, isChecked);
+            }
+        });
     }
 
-    private CommonDialog topupDialog = null;
+    /**
+     * 切换支付方式
+     */
+    private void togglePayWay(int payAction, boolean isChecked) {
+        ZLogger.d(String.format("%d ^ %d = ", curPayAction, payAction));
+
+        if (isChecked) {
+            curPayAction = payAction;
+        } else {
+            curPayAction ^= payAction;
+        }
+        ZLogger.d("curPayAction = " + curPayAction);
+
+        if ((curPayAction & PAY_ACTION_ALIPAY) == PAY_ACTION_ALIPAY) {
+            labelAlipay.setChecked(true);
+            labelWepay.setChecked(false);
+        } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
+            labelAlipay.setChecked(false);
+            labelWepay.setChecked(true);
+        }else {
+            labelAlipay.setChecked(false);
+            labelWepay.setChecked(false);
+        }
+    }
+
+    @Bind(R.id.button_submit)
+    Button btnSubmit;
+
+    @OnClick(R.id.button_submit)
+    public void submit(){
+        btnSubmit.setEnabled(false);
+        TopAmount amount = mTopupAdapter.getCurEntity();
+        topupStep1(amount);
+    }
 
     /**
      * 充值:选择充值方式
      *
-     * @param amount 支付金额：单位为元，最小金额为0.01元。
+     * @param topAmount 支付金额：单位为元，最小金额为0.01元。
      */
-    private void topupStep1(final Double amount) {
-        if (amount == null) {
+    private void topupStep1(final TopAmount topAmount) {
+        if (topAmount == null){
+            DialogUtil.showHint("请选择充值金额");
+            btnSubmit.setEnabled(true);
             return;
         }
 
-        if (topupDialog == null) {
-            topupDialog = DialogHelper
-                    .getPinterestDialogCancelable(getContext());
+        if ((curPayAction & PAY_ACTION_ALIPAY) == PAY_ACTION_ALIPAY) {
+            topupStep2(PayApi.WAYTYPE_ALIPAY, MUtils.formatDouble(topAmount.getAmount(), ""));
+            alipay("满分家园账单充值", "支付宝充值", MUtils.formatDouble(topAmount.getAmount(), ""), MUtils.genOutTradeNo());
+        } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
+//            topupStep2(PayApi.WAYTYPE_WXPAY, MUtils.formatDouble(amount, ""));
 
-            View view = LayoutInflater.from(getContext()).inflate(
-                    R.layout.dialogview_topup, null);
-            LabelView1 wepayPV = (LabelView1) view.findViewById(R.id.action_wepay);
-            wepayPV.setOnViewListener(new LabelView1.OnViewListener() {
-                @Override
-                public void onClick(View v, boolean isChecked) {
-                    topupDialog.dismiss();
-//                    topupStep2(PayApi.WAYTYPE_WXPAY, MUtils.formatDouble(amount, ""));
-
-                    WXHelper.getInstance(getContext()).getPrepayId();
-                }
-
-                @Override
-                public void onClickCheck(boolean isChecked) {
-                    topupDialog.dismiss();
-                    topupStep2(PayApi.WAYTYPE_WXPAY, MUtils.formatDouble(amount, ""));
-                }
-
-                @Override
-                public void onCheckedChanged(boolean isChecked) {
-//                    if (isChecked) {
-//                        topupDialog.dismiss();
-//                        topupStep2(PayApi.WAYTYPE_WXPAY, MUtils.formatDouble(amount, ""));
-//                    }
-                }
-            });
-            LabelView1 alipayPV = (LabelView1) view.findViewById(R.id.action_alipay);
-            alipayPV.setOnViewListener(new LabelView1.OnViewListener() {
-                @Override
-                public void onClick(View v, boolean isChecked) {
-                    topupDialog.dismiss();
-                    topupStep2(PayApi.WAYTYPE_ALIPAY, MUtils.formatDouble(amount, ""));
-                    alipay("满分家园账单充值", "支付宝充值", MUtils.formatDouble(amount, ""), MUtils.genOutTradeNo());
-                }
-
-                @Override
-                public void onClickCheck(boolean isChecked) {
-                    topupDialog.dismiss();
-//                    topupStep2(PayApi.WAYTYPE_ALIPAY, MUtils.formatDouble(amount, ""));
-                    alipay("满分家园账单充值", "支付宝充值", MUtils.formatDouble(amount, ""), MUtils.genOutTradeNo());
-
-                }
-
-                @Override
-                public void onCheckedChanged(boolean isChecked) {
-//                    if (isChecked) {
-//                        topupDialog.dismiss();
-//                        topupStep2(PayApi.WAYTYPE_ALIPAY, MUtils.formatDouble(amount, ""));
-//                    }
-                }
-            });
-//            LabelView1 mfpayPV = (LabelView1) view.findViewById(R.id.action_mfpay);
-//            mfpayPV.setOnViewListener(new LabelView1.OnViewListener() {
-//
-//                @Override
-//                public void onClick(View v, boolean isChecked) {
-//                    topupDialog.dismiss();
-//                    DialogUtil.showHint("等待，有时候也是一种美。");
-//                }
-//
-//                @Override
-//                public void onClickCheck(boolean isChecked) {
-//                    topupDialog.dismiss();
-//                    DialogUtil.showHint("等待，有时候也是一种美。");
-//                }
-//
-//                @Override
-//                public void onCheckedChanged(boolean isChecked) {
-////                    if (isChecked) {
-////                        topupDialog.dismiss();
-////                        DialogUtil.showHint("等待，有时候也是一种美。");
-////                    }
-//                }
-//            });
-
-            topupDialog.setContent(view);
-        }
-        if (!topupDialog.isShowing()) {
-            topupDialog.show();
+            WXHelper.getInstance(getContext()).getPrepayId();
+        }  else {
+            DialogUtil.showHint("请选择支付方式");
+            btnSubmit.setEnabled(true);
         }
     }
 
@@ -258,6 +262,7 @@ public class TopupFragment extends BaseFragment {
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
             DialogUtil.showHint(getString(R.string.toast_network_error));
+            btnSubmit.setEnabled(true);
             return;
         }
 
@@ -265,6 +270,8 @@ public class TopupFragment extends BaseFragment {
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
             DialogUtil.showHint("参数传递错误");
+            btnSubmit.setEnabled(true);
+
             return;
         }
 
@@ -311,7 +318,6 @@ public class TopupFragment extends BaseFragment {
                         @Override
                         protected void processFailure(Throwable t, String errMsg) {
                             super.processFailure(t, errMsg);
-
                             topupFailed(-1);
                         }
 
@@ -341,6 +347,8 @@ public class TopupFragment extends BaseFragment {
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
             DialogUtil.showHint("参数传递错误");
+            btnSubmit.setEnabled(true);
+
             return;
         }
     }
@@ -401,6 +409,7 @@ public class TopupFragment extends BaseFragment {
                 }
                 case ALI_CHECK_FLAG: {
                     DialogUtil.showHint("检查结果为：" + msg.obj);
+                    btnSubmit.setEnabled(true);
                     break;
                 }
                 default:
@@ -445,12 +454,15 @@ public class TopupFragment extends BaseFragment {
             else{
                 DialogUtil.showHint(appPayResp.getMsg());
             }
+            btnSubmit.setEnabled(true);
+
         } else {
             // 注意：该笔订单是否真实支付成功，需要依赖服务端的异步通知。
             // 判断resultStatus 为非“9000”则代表可能支付失败
             // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
             if (TextUtils.equals(resultStatus, "8000")) {
                 DialogUtil.showHint("支付结果确认中");
+                btnSubmit.setEnabled(true);
             } else if (TextUtils.equals(resultStatus, "6001")) {
                 topupFailed(-2);
                 DialogUtil.showHint("支付取消");
@@ -469,7 +481,7 @@ public class TopupFragment extends BaseFragment {
      * 充值失败
      */
     private void topupFailed(int errCode) {
-
+        btnSubmit.setEnabled(true);
     }
 
 

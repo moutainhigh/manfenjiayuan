@@ -22,7 +22,7 @@
             <com.bingshanguxue.vector_uikit.ProfileView
                 android:id="@+id/profileView"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="90dp"
                 android:layout_marginTop="@dimen/spacing_4x"
                 android:background="@color/material_white"
                 app:endArrowVisible="false"
@@ -42,18 +42,68 @@
                 android:layout_height="wrap_content"
                 android:background="@color/material_white"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/spacing_normal"
+                android:text="请选择支付方式"
+                android:textColor="@color/black_65"
+                android:textSize="14sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@drawable/divider_horizontal_line"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+                <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+                    android:id="@+id/action_alipay"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:isChecked="true"
+                    app:labelSrc="@mipmap/ic_label_recommend"
+                    app:src="@mipmap/ic_alipay_logo"
+                    app:subText="数亿用户都在用，安全可托付"
+                    app:subTextColor="@color/black_65"
+                    app:subTextSize="12sp"
+                    app:text="支付宝"
+                    app:textColor="@color/material_black"
+                    app:textSize="16sp"/>
+
+                <com.manfenjiayuan.mixicook_vip.widget.LabelView1
+                    android:id="@+id/action_wepay"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:labelSrc="@mipmap/ic_wepay_label_recommend"
+                    app:src="@mipmap/ic_wepay_logo"
+                    app:subText="亿万用户的选择，更快更安全"
+                    app:subTextColor="@color/black_65"
+                    app:subTextSize="12sp"
+                    app:text="微信支付"
+                    app:textColor="@color/material_black"
+                    app:textSize="16sp"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
 
-    <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginBottom="@dimen/spacing_double"
-        android:contentDescription="@null"
-        android:src="@mipmap/ic_launcher"
-        app:layout_anchor="@+id/nestedScrollView"
-        app:layout_anchorGravity="bottom|center"/>
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="@color/mfh_colorPrimary"
+        android:gravity="center"
+        android:text="充值"
+        android:textColor="@color/material_white"
+        android:textSize="16sp"/>
 
 </android.support.design.widget.CoordinatorLayout>
