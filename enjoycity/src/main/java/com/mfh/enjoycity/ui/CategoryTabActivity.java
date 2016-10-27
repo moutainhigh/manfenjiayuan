@@ -46,7 +46,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -339,7 +339,7 @@ public class CategoryTabActivity extends BaseActivity {
             return;
         }
 
-        if(!NetWorkUtil.isConnect(this)){
+        if(!NetworkUtils.isConnect(this)){
             DialogUtil.showHint(R.string.toast_network_error);
             animProgress.setVisibility(View.GONE);
             return;

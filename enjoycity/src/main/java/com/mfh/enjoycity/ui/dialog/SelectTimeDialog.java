@@ -117,7 +117,8 @@ public class SelectTimeDialog extends CommonDialog {
         //TODO
         if (hour < maxHour){//1小时送货时间，超过21点默认当前不再配送
             dateList.add("今天");
-            mTimes1 = generateTimeData(Math.max(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), minHour), Calendar.getInstance().get(Calendar.MINUTE));//今天
+            mTimes1 = generateTimeData(Math.max(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), minHour),
+                    Calendar.getInstance().get(Calendar.MINUTE));//今天
 
             dateList.add("明天");
             mTimes2 = generateTimeData(minHour, 0);//明天

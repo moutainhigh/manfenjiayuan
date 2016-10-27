@@ -23,7 +23,6 @@ import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;

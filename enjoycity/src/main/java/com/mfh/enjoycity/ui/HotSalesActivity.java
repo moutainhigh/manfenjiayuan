@@ -35,12 +35,12 @@ import com.mfh.enjoycity.ui.activity.ShoppingCartActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.view.FloatShopcartView;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.nineoldandroids.animation.Animator;
@@ -302,7 +302,7 @@ public class HotSalesActivity extends BaseActivity {
     }
 
     private void load(){
-        if(!NetWorkUtil.isConnect(this)){
+        if(!NetworkUtils.isConnect(this)){
             animProgress.setVisibility(View.GONE);
             DialogUtil.showHint(R.string.toast_network_error);
             refreshEmptyText();

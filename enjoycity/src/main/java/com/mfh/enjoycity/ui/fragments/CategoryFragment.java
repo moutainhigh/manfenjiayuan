@@ -25,7 +25,7 @@ import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -251,7 +251,7 @@ public class CategoryFragment extends BaseFragment {
             return;
         }
 
-        if(!NetWorkUtil.isConnect(getContext())){
+        if(!NetworkUtils.isConnect(getContext())){
             DialogUtil.showHint(R.string.toast_network_error);
             Message msg = new Message();
             msg.what = MSG_LOAD_FINISHED;

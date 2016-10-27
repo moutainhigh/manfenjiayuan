@@ -12,8 +12,9 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -78,7 +79,7 @@ public class ChangeNicknameFragment extends BaseFragment {
             return false;
         }
 
-        if(!NetWorkUtil.isConnect(getContext())){
+        if(!NetworkUtils.isConnect(getContext())){
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return false;
         }
@@ -126,6 +127,6 @@ public class ChangeNicknameFragment extends BaseFragment {
         JSONObject object = new JSONObject();
         object.put(EnjoycityApiProxy.PARAM_KEY_ID, MfhLoginService.get().getCurrentGuId());
         object.put(EnjoycityApiProxy.PARAM_KEY_NAME, nickName);
-        EnjoycityApiProxy.updateProfile(object.toJSONString(), responseCallback);
+        UserApiImpl.updateProfile(object.toJSONString(), responseCallback);
     }
 }

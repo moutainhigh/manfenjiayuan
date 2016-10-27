@@ -37,12 +37,12 @@ import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.view.FloatShopcartView;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.network.NetCallBack;
@@ -308,7 +308,7 @@ public class OfenBuyActivity extends BaseActivity {
     }
 
     private void load() {
-        if (!NetWorkUtil.isConnect(this)) {
+        if (!NetworkUtils.isConnect(this)) {
             animProgress.setVisibility(View.GONE);
             DialogUtil.showHint(getString(R.string.toast_network_error));
             refreshEmptyText();

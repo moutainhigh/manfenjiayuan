@@ -32,6 +32,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.sdk.app.PayTask;
+import com.manfenjiayuan.business.bean.AccountPayResponse;
 import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
@@ -39,25 +40,25 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.enjoycity.AppHelper;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.adapter.SharePopupAdapter;
-import com.mfh.enjoycity.bean.AccountPayResponse;
-import com.mfh.enjoycity.bean.PreOrderResponse;
+import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.enjoycity.bean.SharePopupData;
-import com.mfh.enjoycity.bean.WXPrePayResponse;
+import com.mfh.framework.api.pay.AppPrePayRsp;
 import com.mfh.enjoycity.ui.activity.MainActivity;
 import com.mfh.enjoycity.utils.AlipayConstants;
 import com.mfh.enjoycity.utils.EnjoycityApi;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.wxapi.WXHelper;
+import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.PayApiImpl;
-import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.pay.PayApiImpl;
+import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.BitmapUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ImageUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.hybrid.H5ShareEntity;
 import com.mfh.framework.hybrid.HybridWebView;
 import com.mfh.framework.hybrid.JBridgeConf;
@@ -395,7 +396,10 @@ public class BrowserFragment extends BaseFragment {
         public boolean onConsoleMessage(ConsoleMessage cm) {
             //Uncaught SyntaxError: Unexpected token var line:1
             if(cm != null){
-                ZLogger.d("Console " + cm.message() +" line:"+ cm.lineNumber() + " sourceId:" + cm.sourceId());
+                DialogUtil.showHint(cm.message());
+                ZLogger.d(cm.message()
+                        + "-- From line:"+ cm.lineNumber()
+                        + " of " + cm.sourceId());
             }else{
                 ZLogger.d("null");
             }
@@ -408,7 +412,8 @@ public class BrowserFragment extends BaseFragment {
             // you can check this :
             // http://stackoverflow.com/questions/15892644/android-webview-after-onjsalert-not-responding-taps
             result.cancel();
-//            DialogUtil.showHint(message);
+            ZLogger.d(String.format("url=%s, message=%s"));
+            DialogUtil.showHint(message);
             return true;
         }
 
@@ -447,7 +452,7 @@ public class BrowserFragment extends BaseFragment {
      */
     protected void onUrlFinished(WebView view, String url) {
         mCurrentUrl = url;
-        ZLogger.d("onPageFinished, mCurrentUrl = " + mCurrentUrl);
+        ZLogger.d("mCurrentUrl = " + mCurrentUrl);
         if(emptyView.getErrorState() == EmptyLayout.NETWORK_LOADING){
             emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
         }
@@ -872,7 +877,7 @@ public class BrowserFragment extends BaseFragment {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
 //        animProgress.setVisibility(View.VISIBLE);
 
-        if(!NetWorkUtil.isConnect(getContext())){
+        if(!NetworkUtils.isConnect(getContext())){
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
             DialogUtil.showHint(getString(R.string.toast_network_error));
@@ -921,13 +926,14 @@ public class BrowserFragment extends BaseFragment {
             {
             };
 
-            EnjoycityApiProxy.prePay(MfhLoginService.get().getCurrentGuId(), amount, wayType, responseCallback);
+            PayApiImpl.prePay(MfhLoginService.get().getCurrentGuId(), amount, wayType,
+                    WXUtil.genNonceStr(), responseCallback);
         }
         else if(wayType == EnjoycityApiProxy.WAYTYPE_WXPAY){
             //回调
-            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<WXPrePayResponse,
-                    NetProcessor.Processor<WXPrePayResponse>>(
-                    new NetProcessor.Processor<WXPrePayResponse>() {
+            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<AppPrePayRsp,
+                    NetProcessor.Processor<AppPrePayRsp>>(
+                    new NetProcessor.Processor<AppPrePayRsp>() {
                         @Override
                         protected void processFailure(Throwable t, String errMsg) {
                             super.processFailure(t, errMsg);
@@ -938,8 +944,8 @@ public class BrowserFragment extends BaseFragment {
                         @Override
                         public void processResult(IResponseData rspData) {
 //                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-                            RspBean<WXPrePayResponse> retValue = (RspBean<WXPrePayResponse>) rspData;
-                            WXPrePayResponse prePayResponse = retValue.getValue();
+                            RspBean<AppPrePayRsp> retValue = (RspBean<AppPrePayRsp>) rspData;
+                            AppPrePayRsp prePayResponse = retValue.getValue();
                             ZLogger.d("prePayResponse: " + prePayResponse.toString());
                             String prepayId = prePayResponse.getPrepayId();
 
@@ -951,12 +957,13 @@ public class BrowserFragment extends BaseFragment {
                             }
                         }
                     }
-                    , WXPrePayResponse.class
+                    , AppPrePayRsp.class
                     , MfhApplication.getAppContext())
             {
             };
 
-            EnjoycityApiProxy.prePayForApp(MfhLoginService.get().getCurrentGuId(), amount, wayType, responseCallback);
+            PayApiImpl.prePayForApp(MfhLoginService.get().getCurrentGuId(), amount, wayType,
+                    WXUtil.genNonceStr(), responseCallback);
         }else{
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
@@ -974,7 +981,7 @@ public class BrowserFragment extends BaseFragment {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
 //        animProgress.setVisibility(View.VISIBLE);
 
-        if(!NetWorkUtil.isConnect(getContext())){
+        if(!NetworkUtils.isConnect(getContext())){
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
             DialogUtil.showHint(getString(R.string.toast_network_error));
@@ -989,9 +996,9 @@ public class BrowserFragment extends BaseFragment {
         }
 
         //回调
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderResponse,
-                NetProcessor.Processor<PreOrderResponse>>(
-                new NetProcessor.Processor<PreOrderResponse>() {
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderRsp,
+                NetProcessor.Processor<PreOrderRsp>>(
+                new NetProcessor.Processor<PreOrderRsp>() {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
@@ -1000,8 +1007,8 @@ public class BrowserFragment extends BaseFragment {
 
                     @Override
                     public void processResult(IResponseData rspData) {
-                        RspBean<PreOrderResponse> retValue = (RspBean<PreOrderResponse>) rspData;
-                        PreOrderResponse prePayResponse = retValue.getValue();
+                        RspBean<PreOrderRsp> retValue = (RspBean<PreOrderRsp>) rspData;
+                        PreOrderRsp prePayResponse = retValue.getValue();
                         ZLogger.d("prePayResponse: " + prePayResponse.toString());
                         //商户网站唯一订单号
                         String outTradeNo = prePayResponse.getId();
@@ -1044,12 +1051,13 @@ public class BrowserFragment extends BaseFragment {
                         }
                     }
                 }
-                , PreOrderResponse.class
+                , PreOrderRsp.class
                 , MfhApplication.getAppContext())
         {
         };
 
-        EnjoycityApiProxy.prePayOrder(MfhLoginService.get().getCurrentGuId(), orderIds, btype, wayType, responseCallback);
+        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(),
+                orderIds, btype, wayType, WXUtil.genNonceStr(), responseCallback);
     }
 
     /**
@@ -1205,8 +1213,8 @@ public class BrowserFragment extends BaseFragment {
 // "version":"1",
 // "data":[{"dueDate":null,"sellerId":245514,"orderType":0,"bcount":1,"amount":0.01,"guideHumanid":null,"sellOffice":245552,"score":0.0,"discount":1.0,"payType":1,"session_id":null,"adjPrice":"0.0","couponsIds":null,"receiveStock":1192,"finishTime":null,"moneyRegion":null,"paystatus":1,"barcode":"9903000000182199","btype":3,"humanId":245514,"subdisId":null,"addrvalId":null,"addressId":null,"sendhome":0,"urgent":0,"status":0,"remark":"","companyId":245468,"id":138760,"createdBy":"245514","createdDate":"2015-07-21 17:05:11","updatedBy":"","updatedDate":"2015-07-21 17:07:19"}]}
 //                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-//                        RspBean<WXPrePayResponse> retValue = (RspBean<WXPrePayResponse>) rspData;
-//                        WXPrePayResponse prePayResponse = retValue.getValue();
+//                        RspBean<AppPrePayRsp> retValue = (RspBean<AppPrePayRsp>) rspData;
+//                        AppPrePayRsp prePayResponse = retValue.getValue();
 //                        ZLogger.d("prePayResponse: " + prePayResponse.toString());
                         notifyPayResult(0);
                         DialogUtil.showHint("支付成功");

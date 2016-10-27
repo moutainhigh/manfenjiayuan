@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="400dp"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="400dp"
+              android:orientation="vertical">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_dialog_title_address"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/space_primary"/>
+        android:layout_marginTop="@dimen/space_primary"
+        android:src="@mipmap/ic_dialog_title_address"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选择常住小区，为您匹配附近分店"
+        android:gravity="center"
         android:padding="12dp"
+        android:text="选择常住小区，为您匹配附近分店"
         android:textColor="@color/black_50"
-        android:textSize="12sp"
-        android:gravity="center"/>
+        android:textSize="12sp"/>
 
     <include layout="@layout/line"/>
 
@@ -26,23 +27,24 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="gone"/>
+
     <LinearLayout
         android:id="@+id/view_gps_failed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:clickable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
         android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:drawableStart="@mipmap/icon_gps_error"
+            android:clickable="false"
             android:drawablePadding="4dp"
-            android:text="定位失败，轻触以重试"
+            android:drawableStart="@mipmap/icon_gps_error"
             android:gravity="center"
-            android:clickable="false"/>
+            android:text="定位失败，轻触以重试"/>
     </LinearLayout>
 
     <include layout="@layout/line"/>
@@ -51,35 +53,36 @@
         android:id="@+id/ll_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:background="@drawable/btn_search_branches"
         android:clickable="true"
-        android:background="@drawable/btn_search_branches">
+        android:gravity="center">
 
         <Button
             android:id="@+id/button_search"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
-            android:gravity="center"
-            android:drawablePadding="8dp"
             android:background="@null"
-            android:drawableStart="@mipmap/icon_searchthing"
             android:clickable="false"
+            android:drawablePadding="8dp"
+            android:drawableStart="@mipmap/icon_searchthing"
+            android:gravity="center"
+            android:text="搜索其他小区"
             android:textColor="@color/mf_colorPrimary"
             android:textSize="12sp"
-            android:text="搜索其他小区"
             android:visibility="gone"/>
+
         <Button
             android:id="@+id/button_add"
             android:layout_width="wrap_content"
             android:layout_height="44dp"
-            android:gravity="center"
-            android:drawablePadding="8dp"
             android:background="@null"
-            android:drawableStart="@mipmap/icon_searchthing"
             android:clickable="false"
+            android:drawablePadding="8dp"
+            android:drawableStart="@mipmap/icon_searchthing"
+            android:gravity="center"
+            android:text="添加新地址"
             android:textColor="@color/mf_colorPrimary"
             android:textSize="12sp"
-            android:text="添加新地址"
             android:visibility="gone"/>
     </LinearLayout>
 

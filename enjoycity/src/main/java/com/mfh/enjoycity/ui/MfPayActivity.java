@@ -23,17 +23,20 @@ import com.manfenjiayuan.business.bean.AccountPayResponse;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.enjoycity.R;
-import com.mfh.enjoycity.bean.PreOrderResponse;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
+import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.enjoycity.events.WxPayEvent;
 import com.mfh.enjoycity.utils.AlipayConstants;
 import com.mfh.enjoycity.utils.EnjoycityApi;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.wxapi.WXHelper;
+import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.PayApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -188,12 +191,12 @@ public class MfPayActivity extends BaseActivity {
 
     @OnClick(R.id.ll_wxpay)
     public void wxPay(){
-        prePayOrder(EnjoycityApi.PAY_WAYTYPE_WX, EnjoycityApi.BTYPE_STORE, orderId);
+        prePayOrder(EnjoycityApi.PAY_WAYTYPE_WX, BizType.SC, orderId);
     }
 
     @OnClick(R.id.ll_alipay)
     public void alipay(){
-        prePayOrder(EnjoycityApi.PAY_WAYTYPE_ALIPAY, EnjoycityApi.BTYPE_STORE, orderId);
+        prePayOrder(EnjoycityApi.PAY_WAYTYPE_ALIPAY, BizType.SC, orderId);
     }
 
     @OnClick(R.id.ib_toggle)
@@ -362,7 +365,7 @@ public class MfPayActivity extends BaseActivity {
             finish();
         }
         else{
-            if (!NetWorkUtil.isConnect(this)){
+            if (!NetworkUtils.isConnect(this)){
                 animProgress.setVisibility(View.GONE);
                 DialogUtil.showHint(R.string.toast_network_error);
                 return;
@@ -400,8 +403,8 @@ public class MfPayActivity extends BaseActivity {
             {
             };
 
-            EnjoycityApiProxy.accountPay(MfhLoginService.get().getCurrentGuId(), orderId, passPhase, null, responseCallback);
-
+            CommonUserAccountApiImpl.scAccountPay(BizType.SC, orderId,MfhLoginService.get().getCurrentGuId(),
+                    passPhase, responseCallback);
         }
     }
 
@@ -415,7 +418,7 @@ public class MfPayActivity extends BaseActivity {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
         animProgress.setVisibility(View.VISIBLE);
 
-        if(!NetWorkUtil.isConnect(this)){
+        if(!NetworkUtils.isConnect(this)){
             animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
             DialogUtil.showHint(getString(R.string.toast_network_error));
@@ -423,9 +426,9 @@ public class MfPayActivity extends BaseActivity {
         }
 
         //回调
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderResponse,
-                NetProcessor.Processor<PreOrderResponse>>(
-                new NetProcessor.Processor<PreOrderResponse>() {
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderRsp,
+                NetProcessor.Processor<PreOrderRsp>>(
+                new NetProcessor.Processor<PreOrderRsp>() {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
@@ -434,8 +437,8 @@ public class MfPayActivity extends BaseActivity {
 
                     @Override
                     public void processResult(IResponseData rspData) {
-                        RspBean<PreOrderResponse> retValue = (RspBean<PreOrderResponse>) rspData;
-                        PreOrderResponse prePayResponse = retValue.getValue();
+                        RspBean<PreOrderRsp> retValue = (RspBean<PreOrderRsp>) rspData;
+                        PreOrderRsp prePayResponse = retValue.getValue();
                         ZLogger.d("prePayResponse: " + prePayResponse.toString());
                         //商户网站唯一订单号
                         String outTradeNo = prePayResponse.getId();
@@ -484,13 +487,13 @@ public class MfPayActivity extends BaseActivity {
                         }
                     }
                 }
-                , PreOrderResponse.class
+                , PreOrderRsp.class
                 , MfhApplication.getAppContext())
         {
         };
 
-        EnjoycityApiProxy.prePayOrder(MfhLoginService.get().getCurrentGuId(), orderIds, btype,
-                wayType, responseCallback);
+        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), orderIds, btype,
+                wayType, WXUtil.genNonceStr(), responseCallback);
     }
 
 
@@ -591,8 +594,8 @@ public class MfPayActivity extends BaseActivity {
 // "version":"1",
 // "data":[{"dueDate":null,"sellerId":245514,"orderType":0,"bcount":1,"amount":0.01,"guideHumanid":null,"sellOffice":245552,"score":0.0,"discount":1.0,"payType":1,"session_id":null,"adjPrice":"0.0","couponsIds":null,"receiveStock":1192,"finishTime":null,"moneyRegion":null,"paystatus":1,"barcode":"9903000000182199","btype":3,"humanId":245514,"subdisId":null,"addrvalId":null,"addressId":null,"sendhome":0,"urgent":0,"status":0,"remark":"","companyId":245468,"id":138760,"createdBy":"245514","createdDate":"2015-07-21 17:05:11","updatedBy":"","updatedDate":"2015-07-21 17:07:19"}]}
 //                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-//                        RspBean<WXPrePayResponse> retValue = (RspBean<WXPrePayResponse>) rspData;
-//                        WXPrePayResponse prePayResponse = retValue.getValue();
+//                        RspBean<AppPrePayRsp> retValue = (RspBean<AppPrePayRsp>) rspData;
+//                        AppPrePayRsp prePayResponse = retValue.getValue();
 //                        ZLogger.d("prePayResponse: " + prePayResponse.toString());
                         notifyPayResult(0);
                         DialogUtil.showHint("支付成功");

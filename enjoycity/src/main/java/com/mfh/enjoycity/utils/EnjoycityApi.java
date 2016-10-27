@@ -7,20 +7,15 @@ import com.mfh.framework.api.MfhApi;
  * Created by NAT.ZZN(bingshanguxue) on 2015/8/12.
  */
 public class EnjoycityApi {
-    //查询周边小区
-    public static final String URL_FIND_ARROUND_SUBDIST = MfhApi.URL_BASE_SERVER + "/subdist/findArroundSubdist";
     /**查询周边店铺*/
     public static final String URL_FIND_ARROUND_MARKET_SHOPS = MfhApi.URL_BASE_SERVER + "/scShop/findArroundMarketShops";
-    //搜索小区
-//    public static final String URL_QUERY_SUBDIST_LIST = MfhApi.URL_BASE_SERVER + "/subdist/list";
-    /**新增收货地址*/
+   /**新增收货地址*/
     public final static String URL_CREATE_RECEIVE_ADDRESS = MfhApi.URL_BASE_SERVER + "/reciaddr/createForHuman";
     /**查询收货地址*/
     public final static String URL_QUERYALL_RECEIVE_ADDRESS = MfhApi.URL_BASE_SERVER + "/reciaddr/getAllAddrsByHuman";
 
 
-    //(商城/洗衣)订单支付
-    public final static String URL_ORDER_ACCOUNT_PAY = MfhApi.URL_BASE_SERVER + "/commonuseraccount/scAccountPay";
+
     //热卖商品
     public final static String URL_SHOP_HOT_SALES = MfhApi.URL_BASE_SERVER + "/scShopHotSale/listShopHotSales";
     //商品详情
@@ -40,16 +35,12 @@ public class EnjoycityApi {
     /**商品促销价格*/
     public final static String URL_FIND_PROMOTE_PRICE = MfhApi.URL_BASE_SERVER + "/scShopPromotion/listProductPrices";
 
-    /**业务类型，1是洗衣，6是皮具 3-是商城 7是商超*/
-    public final static int BTYPE_MALL = 7;//商超
-    public final static int BTYPE_STORE = 3;//商城
+
 
     /**支付方式*/
     public final static int PAY_WAYTYPE_ALIPAY = 32;//支付宝
     public final static int PAY_WAYTYPE_WX = 512;//微信
 
-    //123满分家园，124满分小伙伴，125城市之间
-    public final static int WX_PAY_CONFIG_ID = 125;
 
       //摇一摇·店铺
     public final static String URL_WX_SHOP_DEVICE_PAGE = MfhApi.URL_BASE_SERVER + "/wxShopDevicePage/list";

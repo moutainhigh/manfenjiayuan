@@ -18,22 +18,21 @@ import android.widget.TextView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.enjoycity.R;
-import com.mfh.enjoycity.utils.EnjoycityApi;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.wxapi.WXHelper;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.api.H5Api;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.network.URLHelper;
+import com.mfh.framework.uikit.base.BaseActivity;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -103,7 +102,7 @@ public class MfOrderShareActivity extends BaseActivity {
         }
 
         //加载优惠券信息
-        load(EnjoycityApi.BTYPE_STORE, orderIds);
+        load(BizType.SC, orderIds);
     }
 
     @Override
@@ -193,7 +192,7 @@ public class MfOrderShareActivity extends BaseActivity {
         btnWxCircle.setEnabled(false);
         btnWxFriend.setEnabled(false);
 
-        if(!NetWorkUtil.isConnect(this)){
+        if(!NetworkUtils.isConnect(this)){
             animProgress.setVisibility(View.GONE);
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;

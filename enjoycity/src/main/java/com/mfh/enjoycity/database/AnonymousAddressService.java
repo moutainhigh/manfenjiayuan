@@ -1,8 +1,8 @@
 package com.mfh.enjoycity.database;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.enjoycity.bean.SubdisBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
@@ -49,7 +49,7 @@ public class AnonymousAddressService extends BaseService<AnonymousAddressEntity,
         getDao().saveOrUpdate(msg);
     }
 
-    public void saveOrUpdate(SubdisBean subdisBean) {
+    public void saveOrUpdate(Subdis subdisBean) {
 //                    dbService.clear();
         AnonymousAddressEntity entity = new AnonymousAddressEntity();
         entity.setId(String.valueOf(subdisBean.getId()));

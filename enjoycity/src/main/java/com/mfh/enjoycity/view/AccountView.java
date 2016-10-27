@@ -31,7 +31,7 @@ public class AccountView extends RelativeLayout {
 	}
 
 	private void init() {
-		View rootView = View.inflate(getContext(), R.layout.view_navi_address, this);
+		View rootView = View.inflate(getContext(), R.layout.widget_naviaddress, this);
 
 		ButterKnife.bind(rootView);
 	}

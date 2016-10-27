@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * 选择地址
  * 
- * @author NAT.ZZN(bingshanguxue)
+ * @author bingshanguxue
  * 
  */
 public class SelectAddressDialog extends CommonDialog {

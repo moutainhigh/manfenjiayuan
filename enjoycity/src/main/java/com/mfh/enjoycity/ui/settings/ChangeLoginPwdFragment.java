@@ -9,10 +9,10 @@ import android.widget.EditText;
 
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.enjoycity.R;
-import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -95,7 +95,7 @@ public class ChangeLoginPwdFragment extends BaseFragment {
             return false;
         }
 
-        if(!NetWorkUtil.isConnect(getContext())){
+        if(!NetworkUtils.isConnect(getContext())){
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return false;
         }
@@ -143,6 +143,6 @@ public class ChangeLoginPwdFragment extends BaseFragment {
 
         };
 
-        EnjoycityApiProxy.updateUserPassword(MfhLoginService.get().getCurrentGuId(), oldPwd, newPwd, responseCallback);
+        UserApiImpl.updateUserPassword(MfhLoginService.get().getCurrentGuId(), oldPwd, newPwd, responseCallback);
     }
 }

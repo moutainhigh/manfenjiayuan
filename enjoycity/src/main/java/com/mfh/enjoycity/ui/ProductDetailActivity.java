@@ -32,10 +32,10 @@ import com.mfh.enjoycity.ui.advertise.AdvertisementViewPager;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.view.ProductDetailShopcartView;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -208,7 +208,7 @@ public class ProductDetailActivity extends BaseActivity {
                     .error(R.mipmap.img_default).into(ivShopThumb);
         }
 
-        if(!NetWorkUtil.isConnect(this)){
+        if(!NetworkUtils.isConnect(this)){
 //            animProgress.setVisibility(View.GONE);
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;

@@ -145,7 +145,6 @@ public class SettingsActivity extends BaseActivity {
      * 退出当前账号
      */
     private void logout() {
-
         MfhUserManager.getInstance().logout(new Callback() {
             @Override
             public void onSuccess() {

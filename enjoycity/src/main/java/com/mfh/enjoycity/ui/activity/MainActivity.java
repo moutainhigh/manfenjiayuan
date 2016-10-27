@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
+import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.enjoycity.AppHelper;
@@ -33,7 +34,6 @@ import com.mfh.enjoycity.service.MfhUserService;
 import com.mfh.enjoycity.ui.AddAddressActivity;
 import com.mfh.enjoycity.ui.dialog.SelectAddressDialog;
 import com.mfh.enjoycity.ui.fragments.HomeFragment;
-import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.utils.ShopcartHelper;
@@ -41,9 +41,11 @@ import com.mfh.enjoycity.utils.UIHelper;
 import com.mfh.enjoycity.view.FloatParterView;
 import com.mfh.enjoycity.view.FloatShopcartView;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.H5Api;
-import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.account.Subdis;
+import com.mfh.framework.api.subdist.SubdistApi;
+import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -53,8 +55,8 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.compound.NaviAddressView;
-import com.umeng.update.UmengUpdateAgent;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
+import com.tencent.bugly.beta.Beta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +71,6 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class MainActivity extends BaseActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     public static final String EXTRA_KEY_SELECT_SHOP_ID = "EXTRA_KEY_SELECT_SHOP_ID";
 
     @Bind(R.id.toolbar)
@@ -149,9 +149,8 @@ public class MainActivity extends BaseActivity {
 
         EventBus.getDefault().register(this);
 
-        UmengUpdateAgent.setUpdateOnlyWifi(false);
-        UmengUpdateAgent.update(this);
-//        MobclickAgent.onProfileSignIn(MfhLoginService.get().getCurrentGuId());
+
+        Beta.checkUpgrade(false, false);
 
         bInitialized = false;
 
@@ -539,10 +538,10 @@ public class MainActivity extends BaseActivity {
 
         //回调
         NetCallBack.QueryRsCallBack responseCallback = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<SubdisBean>(new PageInfo(1, 100)) {
+                new NetProcessor.QueryRsProcessor<Subdis>(new PageInfo(1, 100)) {
                     //                处理查询结果集，子类必须继承
                     @Override
-                    public void processQueryResult(RspQueryResult<SubdisBean> rs) {//此处在主线程中执行。
+                    public void processQueryResult(RspQueryResult<Subdis> rs) {//此处在主线程中执行。
                         saveQuerySubids(rs);
                     }
 
@@ -555,15 +554,14 @@ public class MainActivity extends BaseActivity {
                         uiHandler.sendMessage(message);
                     }
                 }
-                , SubdisBean.class
+                , Subdis.class
                 , MfhApplication.getAppContext());
 
-        //TODO
-        EnjoycityApiProxy.findArroundSubdist(MfLocationManagerProxy.getLastLongitude(MainActivity.this),
-                MfLocationManagerProxy.getLastLatitude(MainActivity.this), responseCallback);
+        SubdistApi.findArroundSubdist(MfLocationManagerProxy.getLastLongitude(MainActivity.this),
+                MfLocationManagerProxy.getLastLatitude(MainActivity.this), null, responseCallback);
     }
 
-    private void saveQuerySubids(RspQueryResult<SubdisBean> rs) {
+    private void saveQuerySubids(RspQueryResult<Subdis> rs) {
         try {
 //            //保存下来
             int retSize = rs.getReturnNum();
@@ -577,7 +575,7 @@ public class MainActivity extends BaseActivity {
                 return;
             }//
 
-            List<SubdisBean> result = new ArrayList<>();
+            List<Subdis> result = new ArrayList<>();
             for (int i = 0; i < retSize; i++) {
                 result.add(rs.getRowEntity(i));
             }
@@ -608,10 +606,10 @@ public class MainActivity extends BaseActivity {
                     break;
                 case MSG_SUCCESS:
 //                    loadingTextView.hide();
-                    List<SubdisBean> result = (List<SubdisBean>) msg.obj;
+                    List<Subdis> result = (List<Subdis>) msg.obj;
                     AnonymousAddressService dbService = ServiceFactory.getService(AnonymousAddressService.class.getName());
                     dbService.clear();
-                    for (SubdisBean bean : result) {
+                    for (Subdis bean : result) {
                         dbService.saveOrUpdate(bean);
                     }
                     //TODO

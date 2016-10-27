@@ -281,8 +281,10 @@ public class ShoppingCartService extends BaseService<ShoppingCartEntity, String,
      * */
     public void addToShopcartFromHybird(String jsonStr){
         ShopcartProductTemp temp = JSON.parseObject(jsonStr, ShopcartProductTemp.class);
-        String id = String.valueOf(temp.getShopId()) + String.valueOf(temp.getProductId());
-
+        if (temp == null){
+            return;
+        }
+        String id = String.format("%d%d", temp.getShopId(), temp.getProductId());
         if (id != null && getDao().entityExistById(id)){
             ShoppingCartEntity entity = getDao().getEntityById(id);
             entity.setProductCount(entity.getProductCount() + temp.getProductCount());

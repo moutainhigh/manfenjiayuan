@@ -8,21 +8,21 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.enjoycity.AppContext;
 import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.PayApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.scOrder.ScOrderApi;
 import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.api.ScApi;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
-import static com.mfh.framework.api.scOrder.ScOrderApi.URL_COUNT_SERVICEMFHPARTER;
+import static com.mfh.framework.api.pay.PayApi.WX_PAY_CONFIG_ID;
 
 /**
  * 网络请求
@@ -58,7 +58,7 @@ public class EnjoycityApiProxy {
     public final static String PARAM_KEY_LATITUDE       = "latitude";
     public final static String PARAM_KEY_SUBDIS_ID      = "subdisId";
 
-
+    WX_PAY_CONFIG_ID
     public final static int WAYTYPE_ALIPAY = 1;//支付宝支付
     public final static int WAYTYPE_WXPAY = 512;//微信支付
 
@@ -74,26 +74,10 @@ public class EnjoycityApiProxy {
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         params.put(PARAM_KEY_DEVICEID, deviceId);
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_WX_SHOP_DEVICE_PAGE, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_WX_SHOP_DEVICE_PAGE, params, responseCallback);
     }
 
-    /**
-     *
-     * */
-    public static void querySubdistList(String cityId, String subdisName, AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_CITY_ID, cityId);
-        params.put(PARAM_KEY_SUBDIS_NAME, subdisName);
 
-        NetFactory.getHttp().post(ScApi.URL_SUBDIST_LIST, params, responseCallback);
-    }
-    public static void findArroundSubdist(String longitude, String latitude, AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_LONGITUDE, longitude);
-        params.put(PARAM_KEY_LATITUDE, latitude);
-
-        NetFactory.getHttp().post(EnjoycityApi.URL_FIND_ARROUND_SUBDIST, params, responseCallback);
-    }
     public static void findArroundMarketShops(Long subdisId, AjaxCallBack<? extends Object> responseCallback){
         if(subdisId == null){
             return;
@@ -101,112 +85,9 @@ public class EnjoycityApiProxy {
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_SUBDIS_ID, String.valueOf(subdisId));
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_FIND_ARROUND_MARKET_SHOPS, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_FIND_ARROUND_MARKET_SHOPS, params, responseCallback);
     }
 
-
-    /**
-     * 订单支付（满分账户）
-     * @param humanId 人员编号
-     * @param orderId 订单编号，多个订单以逗号隔开。
-     * @param accountPassword 支付密码
-     * @param couponId 优惠券ID
-     * */
-    public static void accountPay(Long humanId, String orderId, String accountPassword,
-                                  String couponId, AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
-        params.put("orderId", orderId);
-        params.put("accountPassword", accountPassword);
-        if (couponId != null){
-            params.put("couponId", couponId);
-        }
-
-        StringBuilder bType = new StringBuilder();
-        if (!StringUtils.isEmpty(orderId)){
-            String[] ids = orderId.split(",");
-            for (int i = 0; i < ids.length; i++){
-                bType.append(String.valueOf(EnjoycityApi.BTYPE_STORE));
-                if (i < ids.length - 1){
-                    bType.append(",");
-                }
-            }
-        }
-        params.put("btype", bType.toString());//订单类型
-        params.put("isCash", String.valueOf(0));//是否现金支付,0-否 1-是 默认为0
-
-        NetFactory.getHttp().post(EnjoycityApi.URL_ORDER_ACCOUNT_PAY, params, responseCallback);
-    }
-
-    /**
-     * 预支付(充值)
-     * @param humanId 人员编号
-     * @param amount 充值金额(充值金额必须为数字！单位为元，最小金额为0.01元。)
-     * @param wayType 支付途径(1-支付宝 2-微信 21-app端调用微信支付),可不填，默认为2-微信
-     *
-     * */
-    public static void prePay(Long humanId, String amount, int wayType,
-                       AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
-        params.put(PARAM_KEY_AMOUNT, amount);
-        params.put(PARAM_KEY_NONCESTR, WXUtil.genNonceStr());//随机字符串（32位,不能为空!）
-        params.put(PARAM_KEY_WAYTYPE, String.valueOf(wayType));
-        params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-
-        NetFactory.getHttp().post(PayApi.URL_PRE_PAY, params, responseCallback);
-    }
-
-    /**
-     * 预支付(充值)
-     * @param humanId 人员编号
-     * @param amount 充值金额(充值金额必须为数字！单位为元，最小金额为0.01元。)
-     * @param wayType 支付途径(1-支付宝 2-微信 21-app端调用微信支付),可不填，默认为2-微信
-     *
-     * */
-    public static void prePayForApp(Long humanId, String amount, int wayType,
-                       AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
-        params.put(PARAM_KEY_AMOUNT, amount);
-        params.put(PARAM_KEY_NONCESTR, WXUtil.genNonceStr());//随机字符串（32位,不能为空!）
-        params.put(PARAM_KEY_WAYTYPE, String.valueOf(wayType));
-        if(wayType == WAYTYPE_WXPAY){
-            params.put("configId", String.valueOf(EnjoycityApi.WX_PAY_CONFIG_ID));
-        }else{
-            params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-        }
-
-        NetFactory.getHttp().post(PayApi.URL_PRE_PAY_APP, params, responseCallback);
-    }
-
-    /**
-     * 订单预支付
-     * @param humanId 人员编号
-     * @param orderIds 订单id,多个以英文,隔开(必填)
-     * @param btype 业务类型, 3-商城(必填)
-     * @param wayType 支付途径(1-支付宝 2-微信 21-app端调用微信支付),可不填，默认为2-微信
-     *
-     * */
-    public static void prePayOrder(Long humanId, String orderIds, int btype,
-                            int wayType,
-                       AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_WAYTYPE, String.valueOf(wayType));
-        if(wayType == WAYTYPE_ALIPAY){
-            params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-        }else if(wayType == WAYTYPE_WXPAY){
-            params.put("configId", String.valueOf(EnjoycityApi.WX_PAY_CONFIG_ID));
-        }else{
-            params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-        }
-
-        params.put(PARAM_KEY_NONCESTR, WXUtil.genNonceStr());//随机字符串（32位,不能为空!）
-        params.put(PARAM_KEY_ORDER_IDS, orderIds);
-        params.put(PARAM_KEY_BIZ_TYPE, String.valueOf(btype));
-
-        NetFactory.getHttp().post(PayApi.URL_PRE_PAY_ORDER, params, responseCallback);
-    }
 
     /**
      * 新增收货地址
@@ -236,7 +117,7 @@ public class EnjoycityApiProxy {
 
         params.put(PARAM_KEY_JSONSTR, object.toJSONString());
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_CREATE_RECEIVE_ADDRESS, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_CREATE_RECEIVE_ADDRESS, params, responseCallback);
     }
 
     /**
@@ -247,7 +128,7 @@ public class EnjoycityApiProxy {
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_HUMAN_ID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_QUERYALL_RECEIVE_ADDRESS, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_QUERYALL_RECEIVE_ADDRESS, params, responseCallback);
     }
 
 
@@ -259,7 +140,7 @@ public class EnjoycityApiProxy {
         AjaxParams params = new AjaxParams();
         params.put("shopId", String.valueOf(shopId));
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_SHOP_HOT_SALES, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_SHOP_HOT_SALES, params, responseCallback);
     }
 
     /**
@@ -269,7 +150,7 @@ public class EnjoycityApiProxy {
         AjaxParams params = new AjaxParams();
         params.put("id", String.valueOf(productId));
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_PRODUCT_DETAIL, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_PRODUCT_DETAIL, params, responseCallback);
     }
 
     /**
@@ -281,7 +162,7 @@ public class EnjoycityApiProxy {
         params.put("tenantId", String.valueOf(tenantId));
         params.put("deep", "2");
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_CATEGORYINFO_COMNQUERY, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_CATEGORYINFO_COMNQUERY, params, responseCallback);
     }
 
     /**
@@ -291,7 +172,7 @@ public class EnjoycityApiProxy {
         AjaxParams params = new AjaxParams();
         params.put("categoryId", categoryId);
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_FIND_PRODUCT, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_FIND_PRODUCT, params, responseCallback);
     }
 
     /**
@@ -302,7 +183,7 @@ public class EnjoycityApiProxy {
         params.put("shopId", String.valueOf(shopId));
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_OFEN_BUY_PRODUCTS, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_OFEN_BUY_PRODUCTS, params, responseCallback);
     }
 
     /**
@@ -351,7 +232,7 @@ public class EnjoycityApiProxy {
         params.put("bType", String.valueOf(bType));
 //        params.put(PARAM_KEY_JSESSIONID, SharedPreferencesHelper.getLastSessionId());
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_FIND_COUPONS, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_FIND_COUPONS, params, responseCallback);
     }
 
     /**
@@ -363,7 +244,7 @@ public class EnjoycityApiProxy {
         params.put("shopId", String.valueOf(shopId));
         params.put("productIds", productIds);
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_FIND_PROMOTE_LABEL, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_FIND_PROMOTE_LABEL, params, responseCallback);
     }
 
     /**
@@ -375,7 +256,7 @@ public class EnjoycityApiProxy {
         params.put("shopId", String.valueOf(shopId));
         params.put("productIds", productIds);
 
-        NetFactory.getHttp().post(EnjoycityApi.URL_FIND_PROMOTE_PRICE, params, responseCallback);
+        AfinalFactory.postDefault(EnjoycityApi.URL_FIND_PROMOTE_PRICE, params, responseCallback);
     }
 
 }

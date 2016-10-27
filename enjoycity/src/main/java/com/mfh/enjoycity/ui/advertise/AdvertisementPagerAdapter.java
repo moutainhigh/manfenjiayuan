@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * 广告图片显示适配器
- * Created by Administrator on 2015/4/20.
+ * Created by bingshanguxue on 2015/4/20.
  */
 public class AdvertisementPagerAdapter extends PagerAdapter {
 

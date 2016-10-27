@@ -10,23 +10,26 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.SettingsItem;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
+import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.enjoycity.R;
+import com.mfh.enjoycity.bean.UserProfile;
 import com.mfh.enjoycity.ui.SettingsActivity;
 import com.mfh.enjoycity.ui.activity.NativeWebViewActivity;
 import com.mfh.enjoycity.ui.activity.ShoppingCartActivity;
 import com.mfh.enjoycity.ui.settings.UserProfileActivity;
-import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.UserProfileHelper;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.impl.UserApiImpl;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -34,8 +37,6 @@ import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.BadgeViewButton;
-import com.mfh.framework.uikit.compound.MultiLayerLabel;
-import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.uikit.widget.LoadingImageView;
@@ -198,11 +199,11 @@ public class IndividualFragment extends BaseFragment {
 
             //TODO 测试数据
             showVip(0);//new Random().nextInt(9)
-            if (NetWorkUtil.isConnect(getActivity())) {
+            if (NetworkUtils.isConnect(getActivity())) {
 //                loadingImageView.toggle(true);
                 animProgress.setVisibility(View.VISIBLE);
 //                emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
-                UserApiImpl.getUserProfile(responseCallback);
+                UserApiImpl.getMyProfile(responseCallback);
             } else {
                 DialogUtil.showHint(R.string.toast_network_error);
             }

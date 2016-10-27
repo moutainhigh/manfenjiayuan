@@ -22,7 +22,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.H5Api;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.network.URLHelper;
@@ -105,7 +105,7 @@ public class HomeFragment extends BaseFragment {
     public void reload(Long subdisId){
         currentSubdisId = subdisId;
 
-        if (!NetWorkUtil.isConnect(getContext())){
+        if (!NetworkUtils.isConnect(getContext())){
             DialogUtil.showHint(R.string.tip_network_error);
             return;
         }

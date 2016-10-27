@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mfh.enjoycity.database.ShoppingCartService;
 import com.mfh.enjoycity.ui.CategoryTabActivity;
 import com.mfh.enjoycity.ui.HotSalesActivity;
 import com.mfh.enjoycity.ui.OfenBuyActivity;
 import com.mfh.enjoycity.ui.ProductDetailActivity;
 import com.mfh.enjoycity.ui.activity.ShoppingCartActivity;
 import com.mfh.enjoycity.ui.web.BrowserFragment;
-import com.mfh.enjoycity.utils.ShopcartHelper;
 import com.mfh.framework.hybrid.JBridgeConf;
 import com.mfh.framework.hybrid.WebViewJavascriptBridge;
 
@@ -141,7 +141,7 @@ public class ShopHomeWebFragment extends BrowserFragment {
                 });
 
         //新增商品到购物车
-        bridge.registerHandler(JBridgeConf.HANDLE_NAME_SHOPCART_ADD,
+        bridge.registerHandler(JBridgeConf.HANDLE_NAME_ADD2CART,
                 new WebViewJavascriptBridge.WVJBHandler() {
                     @Override
                     public void handle(String data, WebViewJavascriptBridge.WVJBResponseCallback responseCallback) {
@@ -152,7 +152,7 @@ public class ShopHomeWebFragment extends BrowserFragment {
 //                                "productImageUrl": "商品图片链接",
 //                                "shopId": 789
 //                        }
-                        ShopcartHelper.getInstance().generateHybridShopcartData(data);
+                        ShoppingCartService.get().addToShopcartFromHybird(data);
                     }
                 });
     }

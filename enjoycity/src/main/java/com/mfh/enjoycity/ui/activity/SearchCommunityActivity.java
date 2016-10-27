@@ -22,15 +22,15 @@ import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.adapter.SearchCommunityAdapter;
 import com.mfh.enjoycity.bean.SubdisBean;
 import com.mfh.enjoycity.utils.Constants;
-import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.subdist.SubdistApi;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetWorkUtil;
-import com.mfh.framework.uikit.compound.CustomSearchView;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.compound.CustomSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,7 +178,7 @@ public class SearchCommunityActivity extends BaseActivity {
             return;
         }
 
-        if(!NetWorkUtil.isConnect(this)){
+        if(!NetworkUtils.isConnect(this)){
             animProgress.setVisibility(View.GONE);
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
@@ -207,10 +207,8 @@ public class SearchCommunityActivity extends BaseActivity {
                 , SubdisBean.class
                 , MfhApplication.getAppContext());
 
-        //TODO
         PageInfo pageInfo = new PageInfo(0, MAX_PAGE_SIZE);
-        EnjoycityApiProxy.querySubdistList("", queryText, responseCallback);
-
+        SubdistApi.list("", queryText, pageInfo, responseCallback);
     }
 
     /**

@@ -5,7 +5,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:background="@color/material_white"
-    android:divider="@drawable/divider_vertical"
+    android:divider="@drawable/divider_vertical_line"
     android:showDividers="middle"
     android:dividerPadding="8dp">
 
