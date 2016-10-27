@@ -74,7 +74,7 @@ public class MfhUserManager {
                     @Override
                     public void processResult(IResponseData rspData) {
 //                      {"code":"0","msg":"退出成功","version":"1","data":""}
-                        ZLogger.d("退出登录成功");
+                        ZLogger.df("退出登录成功");
                         if (callback != null) {
                             callback.onSuccess();
                         }
@@ -85,7 +85,7 @@ public class MfhUserManager {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.d("退出登录失败：" + errMsg);
+                        ZLogger.df("退出登录失败：" + errMsg);
                         if (callback != null) {
                             callback.onError(-2, errMsg);
                         }

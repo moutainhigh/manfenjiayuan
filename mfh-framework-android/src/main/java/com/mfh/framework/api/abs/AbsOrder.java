@@ -22,6 +22,8 @@ public class AbsOrder extends MfhEntity<Long>{
     private Integer status;       //订单状态，不同类型自定,3=待出库 6=已出库
     private String remark ="";    //备注
 
+    private Double commitAmount;
+
     public Double getAmount() {
         return amount;
     }
@@ -124,5 +126,13 @@ public class AbsOrder extends MfhEntity<Long>{
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Double getCommitAmount() {
+        return commitAmount;
+    }
+
+    public void setCommitAmount(Double commitAmount) {
+        this.commitAmount = commitAmount;
     }
 }

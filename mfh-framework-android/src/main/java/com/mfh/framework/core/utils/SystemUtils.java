@@ -27,6 +27,9 @@ import java.util.Locale;
  * Created by bingshanguxue on 8/25/16.
  */
 public class SystemUtils {
+    /**
+     * 获取cpu信息
+     * */
     public static String getCpuInfo() {
         IOException localIOException;
         FileReader fileReader;

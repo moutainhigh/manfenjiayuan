@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -393,6 +394,12 @@ public class MfhApplication extends Application {
         jsonObject.put("sdkVersion", SystemUtils.getSdkVersion());
         jsonObject.put("userAgent", getUserAgent());
         jsonObject.put("appInfo", AnalysisAgent.getAppInfo(getAppContext()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            jsonObject.put("supportedABIS", Build.SUPPORTED_ABIS);
+        }
+        else{
+            jsonObject.put("cupABI", Build.CPU_ABI);
+        }
 
         ZLogger.d(jsonObject.toJSONString());
 
@@ -471,7 +478,6 @@ public class MfhApplication extends Application {
 
 
 //        支付方式 1-现金 2- 满分 4-支付宝 8-微信 16-银联
-        ZLogger.d(String.format("1&2=%d", 1 & 2));
         ZLogger.d(String.format("1&4=%d", 1 & 4));
         ZLogger.d(String.format("1&8=%d", 1 & 8));
         ZLogger.d(String.format("1&16=%d", 1 & 16));
@@ -480,9 +486,12 @@ public class MfhApplication extends Application {
         ZLogger.d(String.format("2&8=%d", 2 & 8));
         ZLogger.d(String.format("2&16=%d", 2 & 16));
 
+        //'^'异或，有一个为假即为真；'|'或，有一个为真即为真；'&'与，同时为真才为真。
 //        ZLogger.d(String.format("1^1=%d, \t1|1=%d", 1^1, 1|1));//'1^1' can be replaced with '0','1|1' can be replaced with '1'
-        ZLogger.d(String.format("1^2=%d, \t1|2=%d", 1 ^ 2, 1 | 2));
-        ZLogger.d(String.format("1^4=%d, \t1|4=%d", 1 ^ 4, 1 | 4));
+        ZLogger.d(String.format("1^1=%d, \t1|1=%d, \t1&1=%d", 1^1, 1|1,1&1));
+        ZLogger.d(String.format("1^2=%d, \t1|2=%d, \t1&2=%d", 1^2, 1|2,1&2));
+        ZLogger.d(String.format("1^3=%d, \t1|3=%d, \t1&3=%d", 1^3, 1|3,1&3));
+        ZLogger.d(String.format("1^4=%d, \t1|4=%d, \t1&4=%d", 1^4, 1|4,1&2));
 //        2^2=0, 	2|2=2 	2&2=2
         ZLogger.d(String.format("2^2=%d, \t2|2=%d, \t2&2=%d", 2^2, 2|2, 2&2));
 

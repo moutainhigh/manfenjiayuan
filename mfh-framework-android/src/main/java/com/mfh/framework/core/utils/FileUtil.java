@@ -67,6 +67,16 @@ public class FileUtil {
 		return Environment.getExternalStorageDirectory().getAbsolutePath();
 	}
 
+	/**
+	 * 获取程序外部的缓存目录
+	 * @param context
+	 * @return (/mnt/sdcard/android/data/com.xxx.xxx/cache)
+	 */
+	public static File getExternalCacheDir(Context context) {
+		final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";
+		return new File(Environment.getExternalStorageDirectory().getPath() + cacheDir);
+	}
+
 	public static File getSaveFile(String folderPath, String fileNmae) {
 		String pathName = getSavePath(folderPath) + File.separator + fileNmae;
 		File file = new File(pathName);

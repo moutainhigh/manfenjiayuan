@@ -4,8 +4,10 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static android.media.CamcorderProfile.get;
@@ -21,6 +23,7 @@ public class TimeUtil {
 
     public static final SimpleDateFormat FORMAT_YYYYMMDDHHMM = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
     public static final SimpleDateFormat FORMAT_YYYYMMDDHHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    public static final SimpleDateFormat FORMAT_YYYYMMDD = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     public static final SimpleDateFormat FORMAT_MMDD = new SimpleDateFormat("MM-dd ", Locale.US);
     public static final SimpleDateFormat FORMAT_HHMM = new SimpleDateFormat("HH:mm", Locale.US);
     public static final SimpleDateFormat timeDateFormat12 = new SimpleDateFormat(DATE_TIME_FORMAT_12_HOUR, Locale.US);
@@ -182,7 +185,7 @@ public class TimeUtil {
         Calendar check = Calendar.getInstance();
         check.setTime(date);
 
-        String dayCaption = format(date, FORMAT_MMDD);
+        String dayCaption = format(date, FORMAT_YYYYMMDD);
         String timeCaption = format(date, FORMAT_HHMM);
 
         //判断年月是否相等
@@ -241,6 +244,74 @@ public class TimeUtil {
             return "晚上" + trimTime.substring(11, 16);
         else
             return time.substring(5, 16);
+    }
+
+    /**
+     * 生成时间段
+     * @param curHour 当前小时
+     * @param curMin 当前分钟
+     * @param maxHour 最大小时
+     * */
+    private String[] genTimeSpan(int minHour, int curMin, int maxHour){
+        ZLogger.d(String.format("%d:%d", minHour, curMin));
+        List<String> timeList = new ArrayList<>();
+        if (curMin == 0){
+            //临界点，从当前小时开始配送
+            for (int h = minHour; h <= maxHour; h++){
+                String timeStr = String.format("%2d:00-%2d:00", h, h+1);
+
+                ZLogger.d(timeStr);
+                timeList.add(timeStr);
+            }
+        }
+        else if (curMin > 0 && curMin < 30){//未超过30分从当前小时的30分开始
+            for (int h = minHour; h < maxHour; h++){
+                String timeStr = String.format("%2d:30-%2d:30", h, h+1);
+
+                ZLogger.d(timeStr);
+                timeList.add(timeStr);
+            }
+        }
+        else{//超过30分从下一个小时开始
+            for (int h = minHour+1; h <= maxHour; h++){
+                String timeStr = String.format("%2d:00-%2d:00", h, h+1);
+
+                ZLogger.d(timeStr);
+                timeList.add(timeStr);
+            }
+        }
+
+        return timeList.toArray(new String[timeList.size()]);
+    }
+
+    /**
+     * 生成时间段
+     * @param curHour 当前小时
+     * @param curMin 当前分钟
+     * @param maxHour 最大小时
+     * */
+    public static String[] genTimeSpanV2(int minHour, int curMin, int maxHour){
+        ZLogger.d(String.format("genTimeSpanV2: %d:%d", minHour, curMin));
+        List<String> timeList = new ArrayList<>();
+        if (curMin == 0){
+            //临界点，从当前小时开始配送
+            for (int h = minHour; h <= maxHour; h++){
+                String timeStr = String.format("%2d:00-%2d:00", h, h+1);
+
+                ZLogger.d(timeStr);
+                timeList.add(timeStr);
+            }
+        }
+        else{//从下一个小时开始
+            for (int h = minHour+1; h <= maxHour; h++){
+                String timeStr = String.format("%2d:00-%2d:00", h, h+1);
+
+                ZLogger.d(timeStr);
+                timeList.add(timeStr);
+            }
+        }
+
+        return timeList.toArray(new String[timeList.size()]);
     }
 
 }

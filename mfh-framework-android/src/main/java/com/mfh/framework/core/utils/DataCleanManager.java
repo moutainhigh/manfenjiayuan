@@ -1,7 +1,6 @@
 package com.mfh.framework.core.utils;
 
 import android.content.Context;
-import android.os.Environment;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
@@ -96,8 +95,7 @@ public class DataCleanManager {
 	 * @param context
 	 */
 	public static void cleanExternalCache(Context context) {
-		if (Environment.getExternalStorageState().equals(
-				Environment.MEDIA_MOUNTED)) {
+		if (FileUtil.IS_SDCARD_EXIST) {
 			deleteFilesByDirectory(context.getExternalCacheDir());
 		}
 	}

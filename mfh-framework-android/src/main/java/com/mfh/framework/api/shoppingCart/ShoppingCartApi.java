@@ -27,5 +27,10 @@ public class ShoppingCartApi {
      * 修改购物项数量
      * */
     public static final String URL_ADJUST_CART= URL_SHOPPING_CART + "adjustCart";
+    /**
+     * 查询购物车中商品数量
+     * /shoppingCart/staticShopCart?shopIds=
+     * */
+    public static final String URL_STATICSHOPCART= URL_SHOPPING_CART + "staticShopCart";
 
 }

@@ -222,4 +222,32 @@ public class ScOrderPresenter {
                     }
                 });
     }
+    /**
+     *
+     * */
+    public void findCancelOrders(PageInfo pageInfo, int roleType){
+        mScOrderMode.findCancelOrders(pageInfo, roleType,
+                new OnPageModeListener<ScOrder>() {
+                    @Override
+                    public void onProcess() {
+                        if (mIScOrderView != null) {
+                            mIScOrderView.onIScOrderViewProcess();
+                        }
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<ScOrder> dataList) {
+                        if (mIScOrderView != null) {
+                            mIScOrderView.onIScOrderViewSuccess(pageInfo, dataList);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (mIScOrderView != null) {
+                            mIScOrderView.onIScOrderViewError(errorMsg);
+                        }
+                    }
+                });
+    }
 }

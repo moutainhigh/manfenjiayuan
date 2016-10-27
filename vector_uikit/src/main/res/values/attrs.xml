@@ -23,6 +23,10 @@
     <attr name="editTextColorHint" format="reference|color"/>
 
 
+    <attr name="borderWidth" format="dimension"/>
+    <attr name="borderColor" format="reference|color"/>
+
+
     <!--是否支持软键盘-->
     <attr name="softKeyboardEnabled" format="boolean"/>
 
@@ -149,6 +153,8 @@
         <attr name="subTextColor"/>
         <attr name="subTextSize"/>
         <attr name="src"/>
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
         <attr name="endArrowVisible" format="boolean"/>
     </declare-styleable>
 

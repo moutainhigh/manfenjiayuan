@@ -18,10 +18,11 @@ import java.io.IOException;
 
 /**
  * 扫描二维码·声音·震动
- * Created by ZZN on 2015/6/10.
+ * Created by bingshanguxue on 2015/6/10.
  */
-public class QRBeepManager implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener, Closeable {
-    private static final String TAG = QRBeepManager.class.getSimpleName();
+public class QRBeepManager implements MediaPlayer.OnCompletionListener,
+        MediaPlayer.OnErrorListener, Closeable {
+    private static final String TAG = "QRBeepManager";
 
     private static final float BEEP_VOLUME = 0.10f;
     private static final long VIBRATE_DURATION = 200L;

@@ -67,6 +67,11 @@ public class TextLabelView extends LinearLayout {
 		this.tvEndText.setText(text);
 	}
 
+	public void setEndText(String text, int color) {
+		this.tvEndText.setText(text);
+		this.tvEndText.setTextColor(color);
+	}
+
 	public String getEndText(){
 		return this.tvEndText.getText().toString();
 	}

@@ -26,9 +26,9 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     protected View rootView;
 
-    public static final int ANIM_TYPE_NEW_NONE = -1;//默认动画
+    public static final int ANIM_TYPE_DEFAULT = -1;//默认动画
     public static final int ANIM_TYPE_NEW_FLOW = 0;//新流程，底部弹出
-    protected int animType = ANIM_TYPE_NEW_NONE;
+    protected int animType = ANIM_TYPE_DEFAULT;
 
     protected static final int STATE_NONE = 0;
     protected static final int STATE_REFRESH = 1;

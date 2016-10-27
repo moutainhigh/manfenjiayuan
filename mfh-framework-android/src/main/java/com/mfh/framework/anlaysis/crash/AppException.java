@@ -189,6 +189,10 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
         return success;
     }
 
+    public File getCrashFile(){
+        return FileUtil.getSaveFile(CRASH_FOLDER_PATH, CRASH_FILE_NAME);
+    }
+
     private boolean saveToSDCard(Throwable ex) throws Exception {
         boolean append = false;
 //        long timestamp = System.currentTimeMillis();
@@ -196,7 +200,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
 //        String fileName = "crash-" + time + "-" + timestamp + ".log";
 
 //        java.io.FileNotFoundException: /storage/emulated/0/com.manfenjiayuan.mixicook_vip/crash/Crash.txt: open failed: ENOENT (No such file or directory)
-        File file = FileUtil.getSaveFile(CRASH_FOLDER_PATH, CRASH_FILE_NAME);
+        File file = getCrashFile();
         if (file == null){
             return false;
         }
@@ -248,6 +252,9 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
         // cpu架构
         pw.print("CPU ABI: ");
         pw.println(Build.CPU_ABI);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            pw.println(Build.SUPPORTED_ABIS);
+        }
 //        pw.println();
     }
 }

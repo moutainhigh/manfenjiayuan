@@ -40,8 +40,6 @@ public class ProfileView extends RelativeLayout {
         tvSecondary = (TextView)rootView.findViewById(R.id.tv_secondary);
         ivArrow = (ImageView) rootView.findViewById(R.id.iv_arrow_end);
 
-        mAvatarView.setBorderWidth(3);
-        mAvatarView.setBorderColor(Color.parseColor("#e8e8e8"));
 
         if (attrs != null){
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ProfileView);
@@ -56,7 +54,11 @@ public class ProfileView extends RelativeLayout {
             int subTextSizeInSp = DensityUtil.px2sp(getContext(), subTextSizeInPx);
             tvSecondary.setTextSize(subTextSizeInSp);
 
+
             this.mAvatarView.setImageResource(ta.getResourceId(R.styleable.ProfileView_src, 0));
+            mAvatarView.setBorderWidth(ta.getDimensionPixelSize(R.styleable.ProfileView_borderWidth, 3));
+            mAvatarView.setBorderColor(ta.getColor(R.styleable.ProfileView_borderColor,
+                    Color.parseColor("#e8e8e8")));
 
             boolean isIvEndVisible = ta.getBoolean(R.styleable.ProfileView_endArrowVisible, true);
             if (isIvEndVisible) {

@@ -63,4 +63,17 @@ public class ShoppingCartApiImpl extends ShoppingCartApi {
 
         AfinalFactory.getHttp(true).post(URL_ADJUST_CART, params, responseCallback);
     }
+
+    /**
+     * 查询购物车中商品数量（需要登录）
+     * @param shopIds 店铺编号
+     * */
+    public static void staticShopCart(String shopIds,
+                                  AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("shopIds", shopIds);
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AfinalFactory.getHttp(true).post(URL_STATICSHOPCART, params, responseCallback);
+    }
 }

@@ -44,7 +44,7 @@
 
         <!--RecyclerView分割线-->
         <item name="itemdecoration_line">@drawable/listdivider_horizontal</item>
-        <!--<item name="android:listDivider">@drawable/listdivider_horizontal</item>-->
+        <!--<item name="android:listDivider">@drawable/divider_vertical_line</item>-->
 
         <!--<item name="android:colorControlNormal">@color/mf_colorPrimary</item>-->
         <!--<item name="android:colorControlActivated">@color/mf_colorPrimary</item>-->
