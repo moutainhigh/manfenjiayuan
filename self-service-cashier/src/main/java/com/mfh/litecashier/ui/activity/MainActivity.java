@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.NumberInputDialog;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
@@ -34,13 +33,18 @@ import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
-import com.mfh.framework.api.account.Human;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
+import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.IScOrderView;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
@@ -56,7 +60,6 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -72,7 +75,6 @@ import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
-import com.mfh.litecashier.presenter.ScOrderPresenter;
 import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
@@ -93,15 +95,16 @@ import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
 import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
+import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
+import com.mfh.litecashier.ui.prepare.PrepareActivity;
+import com.mfh.litecashier.ui.prepare.PrepareStep2Fragment;
 import com.mfh.litecashier.ui.view.ICashierView;
-import com.mfh.litecashier.ui.view.IScOrderView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
-import com.tencent.bugly.beta.Beta;
 
 import java.util.List;
 
@@ -117,8 +120,9 @@ import rx.schedulers.Schedulers;
 
 /**
  * 首页
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
+
 public class MainActivity extends CashierActivity
         implements ICashierView, IScOrderView {
 
@@ -127,8 +131,6 @@ public class MainActivity extends CashierActivity
     private CashierMenuAdapter menuAdapter;
     @Bind(R.id.button_sync)
     SyncButton btnSync;
-
-
     @Bind(R.id.tv_last_amount)
     TextView tvLastAmount;
     @Bind(R.id.tv_last_quantity)
@@ -147,6 +149,8 @@ public class MainActivity extends CashierActivity
     RecyclerView productRecyclerView;
     private ItemTouchHelper itemTouchHelper;
     private CashierSwipAdapter productAdapter;
+    @Bind(R.id.fab_pick)
+    ImageButton btnPick;
     @Bind(R.id.fab_settle)
     ImageButton btnSettle;
     @Bind(R.id.float_hangup)
@@ -176,7 +180,9 @@ public class MainActivity extends CashierActivity
      * POS唯一订单号，由POS机本地生成的12位字符串
      */
     private String curPosTradeNo;
-    /**订单折扣，默认值为1，新扫描商品默认使用该折扣*/
+    /**
+     * 订单折扣，默认值为1，新扫描商品默认使用该折扣
+     */
     private Double orderDiscount = 100D;
 
     private CashierPresenter cashierPresenter;
@@ -377,10 +383,13 @@ public class MainActivity extends CashierActivity
             hangUpOrder();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_SETTINGS) == 0) {
             redirectToSettings();
-        }  else if (id.compareTo(ResMenu.CASHIER_MENU_DISCOUNT) == 0) {
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_DISCOUNT) == 0) {
             changeOrderDiscount();
-        } else if (id.compareTo(ResMenu.CASHIER_MENU_PRINT_ORDER) == 0){
-            printScOrder();
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_PRINT_ORDER) == 0) {
+//            printScOrder();
+            printPrepareOrder();
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_SCORE) == 0) {
+            exchangeScore();
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
@@ -653,7 +662,7 @@ public class MainActivity extends CashierActivity
          * @param isManual  用户手动点击检查，非用户点击操作请传false
          * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
          */
-        Beta.checkUpgrade(false, false);
+//        Beta.checkUpgrade(false, false);
     }
 
     public void redirectToSettings() {
@@ -871,10 +880,33 @@ public class MainActivity extends CashierActivity
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
                 //验证结束开始加载数据
 //                dataSync(false);
-                Beta.checkUpgrade(false, false);
+//                Beta.checkUpgrade(false, false);
             }
             break;
         }
+    }
+
+    /**
+     * 跳转至拣货页面
+     */
+    @OnClick(R.id.fab_pick)
+    public void redirect2Pick() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+        btnPick.setEnabled(false);
+
+        //判断是否登录
+        if (!MfhLoginService.get().haveLogined()) {
+            DialogUtil.showHint("请先登录");
+            btnSettle.setEnabled(true);
+            hideProgressDialog();
+            return;
+        }
+
+        Intent intent = new Intent(MainActivity.this, PrepareActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(PrepareActivity.EXTRA_KEY_TRADENO, curPosTradeNo);
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_CASHIER_PREPAREGOODS);
     }
 
     /**
@@ -893,7 +925,7 @@ public class MainActivity extends CashierActivity
             return;
         }
 
-        //判断是否登录
+        //判断商品明细是否为空
         if (productAdapter.getItemCount() <= 0) {
             DialogUtil.showHint("商品明细不能为空");
             btnSettle.setEnabled(true);
@@ -999,7 +1031,7 @@ public class MainActivity extends CashierActivity
                     ZLogger.df("取消收银订单支付");
                     boolean isClearOrder = false;
                     if (data != null) {
-                        isClearOrder = data.getBooleanExtra(CashierPayActivity.EXTRA_KEY_IS_CLEAR_ORDER, false);
+                        isClearOrder = data.getBooleanExtra(PayStep1Fragment.EXTRA_KEY_IS_CLEAR_ORDER, false);
                     }
                     if (isClearOrder) {
                         ZLogger.df("清空收银购物车，重新开始新订单");
@@ -1018,6 +1050,29 @@ public class MainActivity extends CashierActivity
                     ZLogger.df("取消收银订单支付2");
                     btnSettle.setEnabled(true);
                 }
+            }
+            break;
+            case Constants.ARC_CASHIER_PREPAREGOODS: {
+                if (resultCode == Activity.RESULT_OK) {
+                    ZLogger.df("拣货单配送成功");
+
+                    if (StringUtils.isEmpty(curPosTradeNo)) {
+                        CashierShopcartService.getInstance()
+                                .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
+                    }
+                    obtaincurPosTradeNo(null);
+                    productAdapter.setEntityList(null);
+                    changeOrderDiscount(false, 100D);
+
+                    if (data != null){
+                        ScOrder scOrder = (ScOrder) data.getSerializableExtra(PrepareStep2Fragment.EXTRA_KEY_SCORDER);
+                        if (scOrder != null){
+                            PrintManagerImpl.printSendOrder(scOrder);
+                        }
+                    }
+                }
+
+                btnPick.setEnabled(true);
             }
             break;
             case Constants.ARC_NATIVE_LOGIN: {
@@ -1300,6 +1355,16 @@ public class MainActivity extends CashierActivity
                     }
 
                     @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
                     public void onCompleted() {
 
                     }
@@ -1377,9 +1442,16 @@ public class MainActivity extends CashierActivity
     }
 
     /**
+     * 积分兑换
+     */
+    private void exchangeScore() {
+        ActivityRoute.redirect2ExchangeScore(this);
+    }
+
+    /**
      * 打印商城订单
-     * */
-    private void printScOrder(){
+     */
+    private void printScOrder() {
         if (barcodeInputDialog == null) {
             barcodeInputDialog = new NumberInputDialog(this);
             barcodeInputDialog.setCancelable(true);
@@ -1393,30 +1465,75 @@ public class MainActivity extends CashierActivity
                     }
 
                     @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
                     public void onCompleted() {
 
                     }
                 });
-        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
         if (!barcodeInputDialog.isShowing()) {
             barcodeInputDialog.show();
         }
     }
-    
+
+    /**
+     * 打印拣货单
+     */
+    private void printPrepareOrder() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(this);
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "拣货单", "订单条码", "打印",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        mScOrderPresenter.getByBarcode(value, ScOrder.MFHORDER_STATUS_BUYING, true);
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
     /**
      * 修改订单折扣
      */
-    private void changeOrderDiscount(boolean enabled, Double discount){
+    private void changeOrderDiscount(boolean enabled, Double discount) {
         orderDiscount = discount;
-        if (enabled){
+        if (enabled) {
             fabOrderDiscount.setText(String.format("%.0f%%", discount));
             fabOrderDiscount.setVisibility(View.VISIBLE);
             batchMakeDiscount(curPosTradeNo, discount);
-        }
-        else{
+        } else {
             fabOrderDiscount.setVisibility(View.GONE);
         }
     }
+
     /**
      * 修改订单折扣
      */
@@ -1441,8 +1558,8 @@ public class MainActivity extends CashierActivity
 
     /**
      * 批量修改订单折扣
-     * */
-    private void batchMakeDiscount(final String posTradeNo, final Double discount){
+     */
+    private void batchMakeDiscount(final String posTradeNo, final Double discount) {
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {
@@ -1786,16 +1903,6 @@ public class MainActivity extends CashierActivity
 
     @Override
     public void onFindGoodsEmpty(String barcode) {
-//        Intent intent = new Intent(this, SimpleDialogActivity.class);
-//        Bundle extras = new Bundle();
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-//        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
-//                SimpleDialogActivity.FRAGMENT_TYPE_CREATE_PURCHASE_GOODS);
-//        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
-//                SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-//        extras.putString(ScSkuGoodsStoreInFragment.EXTRY_KEY_BARCODE, barcode);
-//        intent.putExtras(extras);
-//        startActivity(intent);
         ActivityRoute.redirect2StoreIn(this, barcode);
     }
 
@@ -2063,9 +2170,16 @@ public class MainActivity extends CashierActivity
     }
 
     @Override
-    public void onIScOrderViewNext(ScOrder data) {
-        if (data != null){
-            PrintManagerImpl.printScOrder(data);
+    public void onIScOrderViewSuccess(PageInfo pageInfo, List<ScOrder> dataList) {
+
+    }
+
+    @Override
+    public void onIScOrderViewSuccess(ScOrder data) {
+        if (data != null) {
+//            PrintManagerImpl.printScOrder(data);
+            PrintManagerImpl.printPrepareOrder(data);
         }
     }
+
 }

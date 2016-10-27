@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+
+    <include layout="@layout/appbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--会员信息-->
+        <include
+            android:id="@+id/view_vip_brief"
+            layout="@layout/include_cashier_pay_header_1"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="0dp"
+            android:background="#D2D2D2"/>
+
+        <!--商品金额-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:baselineAligned="false"
+            android:divider="@drawable/divider_vertical_line_primary"
+            android:dividerPadding="12dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:showDividers="middle">
+            <!--订单金额-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_orderamount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="订单金额"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_black"
+                app:topTextSize="30sp"/>
+            <!--实际金额-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_finalamount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="实际金额"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_black"
+                app:topTextSize="30sp"/>
+
+            <!--差额-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_diffamount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="差额"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/mfh_colorPrimary"
+                app:topTextSize="30sp"/>
+
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_header_prepareorder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!--商品列表-->
+        <RelativeLayout
+            android:id="@+id/frame_coupon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/material_white"
+            android:orientation="vertical">
+
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="12dp"/>
+
+            <!--空视图-->
+            <ImageView
+                android:id="@+id/empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
+                android:src="@mipmap/emptyimage_no_goods"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_checkmark_white_32"/>
+
+
+</android.support.design.widget.CoordinatorLayout>
+
