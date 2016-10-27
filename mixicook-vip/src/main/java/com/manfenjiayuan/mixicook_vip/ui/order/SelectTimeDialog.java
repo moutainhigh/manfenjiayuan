@@ -15,6 +15,7 @@ import android.widget.Spinner;
 
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 import java.util.ArrayList;
@@ -108,24 +109,23 @@ public class SelectTimeDialog extends CommonDialog {
 
         List<String> dateList = new ArrayList<>();
 
-
-        int halfHourInMinuter = 30;//
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(calendar.HOUR_OF_DAY);
-        int minute = calendar.get(calendar.MINUTE);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
 //        if (hour == 23 && minute >= 30){
         //TODO
         if (hour < maxHour){//1小时送货时间，超过21点默认当前不再配送
             dateList.add("今天");
-            mTimes1 = generateTimeData(Math.max(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), minHour),
-                    Calendar.getInstance().get(Calendar.MINUTE));//今天
+            mTimes1 = TimeUtil.genTimeSpanV2(Math.max(hour,
+                    minHour),
+                    minute, maxHour);//今天
 
             dateList.add("明天");
-            mTimes2 = generateTimeData(minHour, 0);//明天
+            mTimes2 = TimeUtil.genTimeSpanV2(minHour, 0, maxHour);//明天
         }
         else{
             dateList.add("明天");
-            mTimes1 = generateTimeData(minHour, 0);//明天
+            mTimes1 = TimeUtil.genTimeSpanV2(minHour, 0, maxHour);//明天
         }
 
         // 建立数据源
@@ -190,39 +190,5 @@ public class SelectTimeDialog extends CommonDialog {
 
     public void setResponseCallback(OnResponseCallback responseCallback){
         this.mListener = responseCallback;
-    }
-
-    /**
-     * 生成时间段
-     * */
-    private String[] generateTimeData(int hour, int minute){
-        ZLogger.d(String.format("generateTimeData: %d:%d", hour, minute));
-        List<String> timeList = new ArrayList<>();
-        if (minute == 0){//临界点，从当前小时开始配送
-            for (int h = hour; h <= maxHour; h++){
-                String timeStr = String.format("%2d:00-%2d:00", h, h+1);
-
-                ZLogger.d(timeStr);
-                timeList.add(timeStr);
-            }
-        }
-        else if (minute > 0 && minute < halfHourInMinuter){//未超过30分从当前小时的30分开始
-            for (int h = hour; h < maxHour; h++){
-                String timeStr = String.format("%2d:30-%2d:30", h, h+1);
-
-                ZLogger.d(timeStr);
-                timeList.add(timeStr);
-            }
-        }
-        else{//超过30分从下一个小时开始
-            for (int h = hour+1; h <= maxHour; h++){
-                String timeStr = String.format("%2d:00-%2d:00", h, h+1);
-
-                ZLogger.d(timeStr);
-                timeList.add(timeStr);
-            }
-        }
-
-        return timeList.toArray(new String[timeList.size()]);
     }
 }
