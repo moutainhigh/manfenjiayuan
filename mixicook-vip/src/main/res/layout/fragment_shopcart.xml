@@ -89,6 +89,8 @@
             android:layout_height="?attr/actionBarSize"
             app:position="single"
             app:subText=""
+            app:textSize="14sp"
+            app:subTextSize="12sp"
             app:text=""/>
 
         <LinearLayout

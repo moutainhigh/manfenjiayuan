@@ -44,7 +44,6 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.compound.ProgressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -56,9 +55,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-
-import static com.mfh.framework.uikit.base.BaseActivity.ANIM_TYPE_NEW_FLOW;
-import static com.mfh.framework.uikit.base.BaseActivity.ANIM_TYPE_NEW_NONE;
 
 /**
  * 购物车
@@ -132,7 +128,7 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         if (args != null) {
-            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_DEFAULT);
             curAddress = (Reciaddr) args.getSerializable(EXTRA_KEY_ADDRESSINFO);
             curCompanyInfo = (CompanyInfo) args.getSerializable(EXTRA_KEY_COMPANYINFO);
         }
@@ -239,7 +235,7 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
     @OnClick(R.id.address_view)
     public void redirect2MyAddress() {
         Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_ADDRESS_LIST);
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);

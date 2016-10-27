@@ -14,11 +14,5 @@ public class MultiTypeInstaller {
         MultiTypePool.register(StoreRackCard.class, new Card2ViewProvider());
         MultiTypePool.register(Card9.class, new Card9ViewProvider());
         MultiTypePool.register(Card10.class, new Card10ViewProvider());
-//        MultiTypePool.register(ImageItem.class, new ImageItemViewProvider());
-//        MultiTypePool.register(RichItem.class, new RichItemViewProvider());
-//        MultiTypePool.register(Category.class, new CategoryItemViewProvider());
-//        MultiTypePool.register(PostRowItem.class, new PostRowItemViewProvider());
-//        MultiTypePool.register(PostList.class, new HorizontalItemViewProvider());
-//        MultiTypePool.register(Square.class, new SquareViewProvider());
     }
 }

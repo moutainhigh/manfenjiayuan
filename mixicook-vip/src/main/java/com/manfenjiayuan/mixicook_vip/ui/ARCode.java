@@ -13,11 +13,13 @@ public class ARCode {
     public static final int ARC_INUT_TEXT = 0x05;//输入文字
     public static final int ARC_LOCATION = 0x06;//定位
     public static final int ARC_SETTINGS = 0x07;//设置
-    public static final int ARC_MY = 0x08;//我的
     public static final int ARC_SIGNIN = 0x09;//登录
     public static final int ARC_AMAP_POI = 0x0A;//高德地图poi
     public static final int ARC_ORDER_CREATE = 0x10;//下单
     public static final int ARC_ORDER_PAY= 0x11;//订单支付
     public static final int ARC_ORDER_COUPONS= 0x12;//订单支付
+
+    public static final int ARC_MY = 0x20;//我的
+    public static final int ARC_MY_PROFILE = 0x21;//我的——信息
 
 }

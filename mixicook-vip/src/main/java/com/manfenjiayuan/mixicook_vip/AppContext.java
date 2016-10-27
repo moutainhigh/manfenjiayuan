@@ -9,7 +9,6 @@ import com.manfenjiayuan.mixicook_vip.utils.SharedPreferencesHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -26,8 +25,8 @@ public class AppContext extends MfhApplication {
     public static int loginType = 1;
     @Override
     protected boolean isReleaseVersion() {
-//        return false;
-        return SharedPreferencesManager.isReleaseVersion();
+        return false;
+//        return SharedPreferencesManager.isReleaseVersion();
     }
 
     @Override

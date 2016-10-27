@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,10 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
@@ -29,6 +32,7 @@ import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ValidateManager;
 import com.manfenjiayuan.mixicook_vip.database.HomeGoodsTempService;
+import com.manfenjiayuan.mixicook_vip.model.CartBrief;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
@@ -42,6 +46,9 @@ import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card10;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card1Item;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card2Item;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card9;
+import com.manfenjiayuan.mixicook_vip.utils.AddCartAnimation;
+import com.manfenjiayuan.mixicook_vip.utils.AddCartOptions;
+import com.manfenjiayuan.mixicook_vip.widget.FloatView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
@@ -60,6 +67,7 @@ import com.mfh.framework.api.companyInfo.CompanyInfoPresenter;
 import com.mfh.framework.api.companyInfo.ICompanyInfoView;
 import com.mfh.framework.api.reciaddr.Reciaddr;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -70,7 +78,6 @@ import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.compound.NaviAddressView;
 import com.mfh.framework.uikit.compound.ProgressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.tencent.bugly.beta.Beta;
@@ -97,6 +104,8 @@ public class HomeFragment extends BaseFragment
     Toolbar mToolbar;
     @Bind(R.id.address_view)
     NaviAddressView mNaviAddressView;
+    @Bind(R.id.rootview)
+    CoordinatorLayout rootView;
     @Bind(R.id.bannerRackList)
     RecyclerView bannerRackRecyclerView;
     @Bind(R.id.homeRackList)
@@ -107,6 +116,10 @@ public class HomeFragment extends BaseFragment
     View mNoCompanyView;
     @Bind(R.id.tv_company_outofrange)
     TextView tvCompanyOutofRange;
+//    @Bind(R.id.fab_cart)
+//    FloatingActionButton fabCart;
+    @Bind(R.id.float_cart)
+    FloatView floatCartView;
 
     //当前收货地址，用来定位店铺
     private Reciaddr curAddress = null;
@@ -257,6 +270,69 @@ public class HomeFragment extends BaseFragment
         }
     }
 
+
+    public void onEventMainThread(ShopcartEvent event) {
+        int eventId = event.getEventId();
+        Bundle args = event.getArgs();
+
+        ZLogger.d(String.format("ShopcartEvent(%d)", eventId));
+        switch (eventId) {
+            case ShopcartEvent.EVENT_ID_ADD2CART: {
+                AddCartOptions options = event.getCartOptions();
+                if (options != null){
+                    AddCartAnimation.AddToCart2((ImageView) options.getSharedView(),
+                            floatCartView, getActivity(), rootView, 0.5F);
+                }
+            }
+            break;
+            case ShopcartEvent.EVENT_ID_DATASETCHANGED: {
+                refreshShopcart();
+            }
+            break;
+        }
+    }
+
+    /**
+     * 刷新购物车商品数量
+     * */
+    private void refreshShopcart(){
+        NetCallBack.NetTaskCallBack responseC = new NetCallBack.NetTaskCallBack<CartBrief,
+                NetProcessor.Processor<CartBrief>>(
+                new NetProcessor.Processor<CartBrief>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
+                        ZLogger.df("调整购物车商品数量: 操作成功");
+//
+                        CartBrief cartBrief = null;
+                        try {
+                            if (rspData != null) {
+                                RspBean<CartBrief> retValue = (RspBean<CartBrief>) rspData;
+                                cartBrief = retValue.getValue();
+                            }
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+//
+                        if (cartBrief != null){
+                            floatCartView.setBadgeNumber(cartBrief.getSkuNum());
+//                            DialogUtil.showHint(String.format("商品SKu数目 %.2f", cartBrief.getSkuNum()));
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("调整购物车商品数量: " + errMsg);
+                    }
+                }
+                , CartBrief.class
+                , MfhApplication.getAppContext()) {
+        };
+
+        ShoppingCartApiImpl.staticShopCart(String.valueOf(curCompanyInfo.getId()), responseC);
+    }
+
     /**
      * 显示注册设备提示框
      */
@@ -281,7 +357,6 @@ public class HomeFragment extends BaseFragment
         });
         dialog.show();
     }
-
 
     /**
      * 快捷支付
@@ -402,11 +477,10 @@ public class HomeFragment extends BaseFragment
         }
     }
 
-
     /**
      * 跳转到购物车
      */
-    @OnClick(R.id.fab_cart)
+    @OnClick(R.id.float_cart)
     public void redirect2Cart() {
         if (!MfhLoginService.get().haveLogined()) {
             ZLogger.d("购物车，准备跳转到登录页面");
@@ -660,6 +734,9 @@ public class HomeFragment extends BaseFragment
         }
         mNoCompanyView.setVisibility(View.GONE);
 
+        //刷新购物车
+        refreshShopcart();
+
         showProgressDialog(ProgressView.STATUS_PROCESSING, "加载货架...", false);
         ScStoreRackApi.findByShopMust(curCompanyInfo.getId(),
                 String.format("%d,%d",
@@ -785,6 +862,7 @@ public class HomeFragment extends BaseFragment
 //                                items.add(card2);
 //                                ZLogger.d(String.format("添加card2: %d", card2Items.size()));
                     items.add(card);
+
                     ZLogger.d("添加card2：" + card.getCategoryName());
                 } else if (card.getType().equals(9)) {
                     Card9 card9 = new Card9();

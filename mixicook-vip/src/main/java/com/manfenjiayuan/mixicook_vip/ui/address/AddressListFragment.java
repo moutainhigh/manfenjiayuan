@@ -75,13 +75,18 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            shopId = args.getLong(EXTRA_KEY_SHOP_ID);
-//        }
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_DEFAULT);
+        }
 
         toolbar.setTitle("选择地址");
-        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        }
+        else{
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override

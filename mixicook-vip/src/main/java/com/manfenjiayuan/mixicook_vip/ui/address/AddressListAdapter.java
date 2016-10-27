@@ -65,7 +65,7 @@ public class AddressListAdapter
             sb.append("<font color=#FE5000>[默认]</font>");
         }
         sb.append(String.format("<font color=#a6000000>%s</font>", entity.getSubName()));
-        ZLogger.d(sb.toString());
+//        ZLogger.d(sb.toString());
         holder.tvSubName.setText(StringUtils.toSpanned(sb.toString()));
 
 //        if (entity.getIsDefault() != null && entity.getIsDefault().equals(1)){
