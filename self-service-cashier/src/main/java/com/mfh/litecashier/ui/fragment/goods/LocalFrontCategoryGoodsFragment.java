@@ -10,13 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.NumberInputDialog;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.entity.ProductCatalogEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
@@ -141,6 +141,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             ZLogger.d(String.format("类目编号 %d不对，请忽略", this.categoryId));
             return;
         }
+        ZLogger.d(String.format("类目编号 %d 更新", this.categoryId));
+
         if (event.getEventId() == LocalFrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
             reload();
         }
@@ -295,7 +297,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                             pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
                     for (ProductCatalogEntity entity : entities) {
-                        String sqlWhere2 = String.format("productId = '%d'", entity.getCataItemId());
+                        String sqlWhere2 = String.format("productId = '%d' and status = '%d'",
+                                entity.getCataItemId(), 1);
 
                         List<PosProductEntity> productEntities1 = PosProductService.get()
                                 .queryAllByDesc(sqlWhere2);
@@ -491,11 +494,20 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                     }
 
                     @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
                     public void onCompleted() {
 
                     }
                 });
-        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
         if (!barcodeInputDialog.isShowing()) {
             barcodeInputDialog.show();
         }
@@ -627,6 +639,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         deleteGoods(goods);
                     }
 
+                    @Override
+                    public void onAction3() {
+                        updateStatus(goods);
+                    }
+
                 });
         if (!mFrontCategoryGoodsDialog.isShowing()) {
             mFrontCategoryGoodsDialog.show();
@@ -742,5 +759,65 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
     }
 
+
+    /**
+     * 更新商品
+     */
+    private void updateStatus(final LocalFrontCategoryGoods goods) {
+        if (goods == null) {
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+//        //查询商品所属前台类目
+//        ProductCatalogEntity catalogEntity = null;
+//        String sqlWhere = String.format("cataItemId = '%d'", goods.getProductId());
+//        List<ProductCatalogEntity> catalogs = ProductCatalogService.getInstance().queryAllBy(sqlWhere);
+//        if (catalogs != null && catalogs.size() > 0) {
+//            catalogEntity = catalogs.get(0);
+//        }
+//        if (catalogEntity == null) {
+//            ZLogger.d("删除商品失败，没有找到商品对应的类目关系");
+//            return;
+//        }
+
+        //删除该前台类目下的商品
+//        final ProductCatalogEntity finalCatalogEntity = catalogEntity;
+        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
+                        //{"code":"0","msg":"更新成功!","version":"1","data":""}
+                        RspValue<String> retValue = (RspValue<String>) rspData;
+                        String retStr = retValue.getValue();
+                        ZLogger.d("更新商品成功:" + retStr);
+
+//                        reload();
+
+                        hideProgressDialog();
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("更新商品失败：" + errMsg);
+//                        数据回滚
+                        hideProgressDialog();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(getString(R.string.toast_network_error));
+            return;
+        }
+        InvSkuStoreApiImpl.updateStatusByBarcode(0, goods.getBarcode(), responseCallback);
+
+    }
 
 }

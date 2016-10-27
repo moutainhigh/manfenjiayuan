@@ -19,6 +19,7 @@ import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -102,8 +103,8 @@ public class LocalFrontCategoryFragment extends BaseFragment {
 
     /**
      * 通知刷新数据
-     * */
-    private void notifyDataChanged(int page){
+     */
+    private void notifyDataChanged(int page) {
         ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(page);
         if (viewPageInfo != null) {
             Bundle args = viewPageInfo.args;
@@ -119,16 +120,6 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
             reload();
-//            int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
-//            ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
-//            if (viewPageInfo != null) {
-//                Long categoryId = viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
-//                PosLocalCategoryEntity categoryEntity = PosLocalCategoryService.get().getEntityById(String.valueOf(categoryId));
-//                if (categoryEntity == null){
-//                    reload();
-//                }
-//                mCategoryGoodsViewPager.setCurrentItem(oldIndex);
-//            }
         } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
             notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
         }
@@ -164,26 +155,62 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     }
 
     private void reload() {
-        curCategoryList = PosLocalCategoryService.get().queryAll(null, null);
 
-        ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        for (PosLocalCategoryEntity category : curCategoryList) {
-            Bundle args = new Bundle();
-            args.putLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID, category.getId());
+        try{
+            Long oldCategoryId = null;
+            int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
+            ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
+            if (viewPageInfo != null) {
+                oldCategoryId = viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
+            }
+            ZLogger.d(String.format("old id=%d, index=%d", oldCategoryId, oldIndex));
 
-            mTabs.add(new ViewPageInfo(category.getName(), category.getName(),
-                    LocalFrontCategoryGoodsFragment.class, args));
+            curCategoryList = PosLocalCategoryService.get().queryAll(null, null);
+
+            ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
+            for (PosLocalCategoryEntity category : curCategoryList) {
+                Bundle args = new Bundle();
+                args.putLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID, category.getId());
+
+                mTabs.add(new ViewPageInfo(category.getName(), category.getName(),
+                        LocalFrontCategoryGoodsFragment.class, args));
 //            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), FrontCategoryGoodsFragment.class, args));
-        }
-        categoryGoodsPagerAdapter.removeAll();
-        categoryGoodsPagerAdapter.addAllTab(mTabs);
+            }
+            categoryGoodsPagerAdapter.removeAll();
+            categoryGoodsPagerAdapter.addAllTab(mTabs);
 
-        mCategoryGoodsViewPager.setOffscreenPageLimit(mTabs.size());
-        if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
-            notifyDataChanged(0);
-        } else {
-            mCategoryGoodsViewPager.setCurrentItem(0, false);
+            int tabCount = categoryGoodsPagerAdapter.getCount();
+            int newIndex = 0;
+            Long newCategoryId = null;
+            for (int i = 0; i < tabCount; i++){
+                ViewPageInfo tab = categoryGoodsPagerAdapter.getTab(i);
+                if (tab != null) {
+                    Long categoryId = tab.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
+                    ZLogger.d(String.format("check id=%d, index=%d", categoryId, i));
+                    if (ObjectsCompact.equals(oldCategoryId, categoryId)){
+                        newCategoryId = categoryId;
+                        newIndex = i;
+                        break;
+                    }
+                }
+            }
+            ZLogger.d(String.format("new id=%d, index=%d", newCategoryId, newIndex));
+
+            mCategoryGoodsViewPager.setOffscreenPageLimit(mTabs.size());
+            mCategoryGoodsViewPager.setCurrentItem(newIndex, false);
+
+            notifyDataChanged(newIndex);
         }
+        catch (Exception e){
+            ZLogger.ef(e.toString());
+        }
+
+//        if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
+//        notifyDataChanged(0);
+//    }
+//        else {
+//            mCategoryGoodsViewPager.setCurrentItem(0, false);
+//        }
     }
 
 
@@ -194,7 +221,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     public void addCategory() {
         ZLogger.d("新增类目");
         final Long parentId = SharedPreferencesHelper.getLong(SharedPreferencesHelper.PK_L_CATETYPE_POS_ID, 0L);
-        if (parentId.equals(0L)){
+        if (parentId.equals(0L)) {
             DialogUtil.showHint("请先创建根目录");
             return;
         }
