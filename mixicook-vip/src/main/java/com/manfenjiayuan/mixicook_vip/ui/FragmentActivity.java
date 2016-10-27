@@ -17,6 +17,7 @@ import com.manfenjiayuan.mixicook_vip.ui.location.LocationFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangeLoginPwdFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangeNicknameFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangePayPwdFragment;
+import com.manfenjiayuan.mixicook_vip.ui.my.CustomerServiceFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.MyFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.SettingsFragment;
 import com.manfenjiayuan.mixicook_vip.ui.order.OrderCouponsFragment;
@@ -39,7 +40,6 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
     public static final int FT_INPUT_TEXT = 0x01;//输入文字
-    public static final int FT_MY = 0x02;//我的
     public static final int FT_SHOPCART = 0x03;//购物车
     public static final int FT_RESERVE = 0x04;//预定
     public static final int FT_LOCATION = 0x05;//定位
@@ -57,6 +57,9 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
     public static final int FT_ORDER_CREATE = 0x11;//下单
     public static final int FT_ORDER_PAY = 0x12;//支付订单
     public static final int FT_ORDER_COUPONS = 0x13;//订单优惠券
+    public static final int FT_MY = 0x20;//我的
+    public static final int FT_MY_CUSTOMERSERVICE = 0x21;//我的——客服中心
+
 
 
     private int fragmentType = 0;
@@ -175,6 +178,14 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
                         .commit();
             }
             break;
+            case FT_MY_CUSTOMERSERVICE: {
+                CustomerServiceFragment fragment = new CustomerServiceFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
             case FT_SHOPCART: {
                 ShopcartFragment fragment;
                 Intent intent = this.getIntent();
@@ -249,7 +260,13 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
             }
             break;
             case FT_ADDRESS_LIST: {
-                AddressListFragment fragment = new AddressListFragment();
+                AddressListFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = AddressListFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = AddressListFragment.newInstance(null);
+                }
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, fragment).show(fragment)
                         .commit();

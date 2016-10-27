@@ -2,9 +2,11 @@ package com.manfenjiayuan.mixicook_vip.ui.my;
 
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,6 @@ import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
-import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
 import com.manfenjiayuan.mixicook_vip.ui.hybrid.HybridFragment;
 import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
 import com.mfh.comn.net.data.IResponseData;
@@ -28,17 +29,17 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.MyProfile;
 import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.constant.Priv;
 import com.mfh.framework.api.mobile.Mixicook;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.network.URLHelper;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
@@ -56,14 +57,14 @@ import static com.manfenjiayuan.mixicook_vip.ui.ARCode.ARC_SETTINGS;
  * @since bingshanguxue
  */
 public class MyFragment extends BaseFragment implements OnTabReselectListener {
-//    @Bind(R.id.app_bar)
-//    AppBarLayout mAppBarLayout;
+    @Bind(R.id.appbar)
+    AppBarLayout mAppBarLayout;
 
-    //    @Bind(R.id.collaps_toolbar)
-//    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @Bind(R.id.collaps_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-//    @Bind(R.id.profileView)
+    //    @Bind(R.id.profileView)
 //    ProfileView mProfileView;
     @Bind(R.id.iv_header)
     AvatarView mAvatarView;
@@ -81,8 +82,6 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     SettingsItem itemCard;
     @Bind(R.id.item_store)
     SettingsItem itemStore;
-    @Bind(R.id.item_feedback)
-    SettingsItem itemFeedback;
     @Bind(R.id.item_parters)
     SettingsItem itemParters;
 
@@ -107,32 +106,32 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
 
-//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//
-//                if (verticalOffset == 0) {
-//                    if (state != CollapsingToolbarLayoutState.EXPANDED) {
-//                        state = CollapsingToolbarLayoutState.EXPANDED;//修改状态标记为展开
-//                        mCollapsingToolbarLayout.setTitle("EXPANDED");//设置title为EXPANDED
-//                    }
-//                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
-//                    if (state != CollapsingToolbarLayoutState.COLLAPSED) {
-//                        mCollapsingToolbarLayout.setTitle("");//设置title不显示
-////                        playButton.setVisibility(View.VISIBLE);//隐藏播放按钮
-//                        state = CollapsingToolbarLayoutState.COLLAPSED;//修改状态标记为折叠
-//                    }
-//                } else {
-//                    if (state != CollapsingToolbarLayoutState.INTERNEDIATE) {
-//                        if(state == CollapsingToolbarLayoutState.COLLAPSED){
-////                            playButton.setVisibility(View.GONE);//由折叠变为中间状态时隐藏播放按钮
-//                        }
-//                        mCollapsingToolbarLayout.setTitle("INTERNEDIATE");//设置title为INTERNEDIATE
-//                        state = CollapsingToolbarLayoutState.INTERNEDIATE;//修改状态标记为中间
-//                    }
-//                }
-//            }
-//        });
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (verticalOffset == 0) {
+                    if (state != CollapsingToolbarLayoutState.EXPANDED) {
+                        state = CollapsingToolbarLayoutState.EXPANDED;//修改状态标记为展开
+                        mCollapsingToolbarLayout.setTitle("");//设置title不显示
+                    }
+                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+                    if (state != CollapsingToolbarLayoutState.COLLAPSED) {
+                        mCollapsingToolbarLayout.setTitle("我的");//设置title为EXPANDED
+//                        playButton.setVisibility(View.VISIBLE);//隐藏播放按钮
+                        state = CollapsingToolbarLayoutState.COLLAPSED;//修改状态标记为折叠
+                    }
+                } else {
+                    if (state != CollapsingToolbarLayoutState.INTERNEDIATE) {
+                        if (state == CollapsingToolbarLayoutState.COLLAPSED) {
+//                            playButton.setVisibility(View.GONE);//由折叠变为中间状态时隐藏播放按钮
+                        }
+                        mCollapsingToolbarLayout.setTitle("INTERNEDIATE");//设置title为INTERNEDIATE
+                        state = CollapsingToolbarLayoutState.INTERNEDIATE;//修改状态标记为中间
+                    }
+                }
+            }
+        });
         mToolbar.setTitle("我的");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
@@ -166,11 +165,11 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
                 }
             }
             break;
-            case ARCode.ARC_INUT_TEXT:{
-                if (resultCode == Activity.RESULT_OK){
-                // TODO: 12/10/2016 提交反馈信息
-
-                }
+            case ARCode.ARC_MY_PROFILE: {
+//                if (resultCode == Activity.RESULT_OK){
+//
+//                }
+                refresh(false);
             }
             break;
         }
@@ -184,24 +183,12 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
      */
     @OnClick(R.id.item_customer_service)
     public void customerService() {
-        CommonDialog dialog = new CommonDialog(getActivity());
-        dialog.setMessage(Mixicook.CUSTOMER_SERVICELCENTER);
-        dialog.setPositiveButton("呼叫", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                UIHelper.callPhone(getActivity(), Mixicook.CUSTOMER_SERVICELCENTER);
-            }
-        });
-        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_MY_CUSTOMERSERVICE);
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
     @OnClick(R.id.item_settings)
@@ -222,7 +209,9 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //        extras.putInt(SimpleActivity.EXTRA_KEY_FRAGMENT_TYPE, SimpleActivity.FT_MYPROFILE);
         Intent intent = new Intent(getActivity(), UserProfileActivity.class);
         intent.putExtras(extras);
-        startActivity(intent);
+//        startActivity(intent);
+        startActivityForResult(intent, ARCode.ARC_MY_PROFILE);
+
     }
 
     /**
@@ -346,10 +335,12 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //        mProfileView.setPrimaryText(MfhLoginService.get().getHumanName());
 //        mProfileView.setSecondaryText(MfhLoginService.get().getTelephone());
         mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
+        mAvatarView.setBorderWidth(6);
+        mAvatarView.setBorderColor(Color.parseColor("#ffffff"));
+
         tvName.setText(MfhLoginService.get().getHumanName());
 
         MyProfile myProfile = null;
-
         String profileCache = ACacheHelper.getAsString(ACacheHelper.CK_MYPROFILE);
         if (!StringUtils.isEmpty(profileCache)) {
             myProfile = JSONObject.toJavaObject(JSONObject.parseObject(profileCache),
@@ -364,6 +355,13 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
             itemBalance.setTopText("");
             itemScore.setTopText("");
             itemRedPacket.setTopText("");
+        }
+
+        MfhUserManager.getInstance().updateModules();
+        if (MfhUserManager.getInstance().containsModule(Priv.FUNC_NET_SUPPORT)) {
+            itemParters.setVisibility(View.VISIBLE);
+        } else {
+            itemParters.setVisibility(View.GONE);
         }
 
         if (isAutoReload && NetworkUtils.isConnect(AppContext.getAppContext())) {
@@ -524,18 +522,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 ////                    UIHelper.redirectToActivity(getActivity(), H5CategoryActivity.class);
 //    }//反馈
 //
-    @OnClick(R.id.item_feedback)
-    public void redirect2Feedback() {
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_INPUT_TEXT);
-        extras.putString(InputTextFragment.EXTRA_KEY_TITLE, "反馈");
-        extras.putString(InputTextFragment.EXTRA_KEY_HINT_TEXT, "随便吐槽400字以内");
-//        extras.putString(InputTextFragment.EXTRA_KEY_RAW_TEXT, mOrderBrief.getRemark());
-        Intent intent = new Intent(getActivity(), FragmentActivity.class);
-        intent.putExtras(extras);
-        startActivityForResult(intent, ARCode.ARC_INUT_TEXT);
-    }
+
 //
 //
 //    /**

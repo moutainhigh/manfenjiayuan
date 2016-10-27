@@ -7,60 +7,112 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mfh_toolbar_background"
+        android:fitsSystemWindows="false"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collaps_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!--app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。-->
+            <!--&lt;!&ndash;顶部背景图片&ndash;&gt;-->
+            <!--<ImageView-->
+            <!--android:id="@+id/iv_background_top"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:background="@mipmap/headbg_me"-->
+            <!--android:contentDescription=""/>-->
+            <!---->
+
+            <!--&lt;!&ndash;个人信息&ndash;&gt;-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/frame_header"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="vertical"-->
+                <!--app:layout_collapseMode="pin">-->
+
+                <!--<com.mfh.framework.uikit.widget.AvatarView-->
+                    <!--android:id="@+id/iv_header"-->
+                    <!--android:layout_width="56dp"-->
+                    <!--android:layout_height="56dp"-->
+                    <!--android:layout_margin="@dimen/spacing_double"-->
+                    <!--android:src="@drawable/chat_tmp_user_head"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_name"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="米西厨房"-->
+                    <!--android:textColor="@color/material_white"-->
+                    <!--android:textSize="14sp"/>-->
+
+            <!--</LinearLayout>-->
+
+            <!--app:layout_scrollFlags="scroll|enterAlways|snap"-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="top"
+                android:background="@color/transparent"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <!--<android.support.v7.widget.ButtonBarLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="end|center_vertical">-->
+
+                <!--<ImageView-->
+                <!--android:id="@+id/iv_settings"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_marginEnd="@dimen/spacing_normal"-->
+                <!--android:contentDescription=""-->
+                <!--android:src="@mipmap/ic_settings"/>-->
+
+                <!--</android.support.v7.widget.ButtonBarLayout>-->
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!--<include layout="@layout/appbar"/>-->
     <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:id="@+id/app_bar"-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:id="@+id/appbar"-->
     <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="120dp"-->
-    <!--android:fitsSystemWindows="true"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:fitsSystemWindows="false"-->
+    <!--android:background="@color/transparent"-->
+    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
 
-    <!--<android.support.design.widget.CollapsingToolbarLayout-->
-    <!--android:id="@+id/collaps_toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:fitsSystemWindows="true"-->
-    <!--app:contentScrim="?attr/colorPrimary"-->
-    <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
-
-    <!--&lt;!&ndash;顶部背景图片&ndash;&gt;-->
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_background_top"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:background="@color/mfh_colorPrimary"-->
-    <!--android:contentDescription=""/>-->
-
-
-    <!--&lt;!&ndash;app:layout_scrollFlags="scroll|enterAlways|snap"&ndash;&gt;-->
+    <!--&lt;!&ndash;app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。&ndash;&gt;-->
     <!--<android.support.v7.widget.Toolbar-->
     <!--android:id="@+id/toolbar"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="?attr/actionBarSize"-->
+    <!--android:background="@color/transparent"-->
     <!--app:layout_collapseMode="pin"-->
-    <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
+    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
 
-    <!--<android.support.v7.widget.ButtonBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:gravity="end|center_vertical">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/iv_settings"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:layout_marginEnd="@dimen/spacing_normal"-->
-    <!--android:contentDescription=""-->
-    <!--android:src="@mipmap/ic_settings"/>-->
-
-    <!--</android.support.v7.widget.ButtonBarLayout>-->
-    <!--</android.support.v7.widget.Toolbar>-->
-
-    <!--</android.support.design.widget.CollapsingToolbarLayout>-->
     <!--</android.support.design.widget.AppBarLayout>-->
-
-    <include layout="@layout/appbar"/>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -73,40 +125,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <!--个人信息-->
             <LinearLayout
                 android:id="@+id/frame_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/spacing_4x"
                 android:gravity="center"
-                android:background="@mipmap/headbg_me"
-                android:paddingBottom="@dimen/spacing_4x">
+                android:padding="@dimen/spacing_double"
+                android:background="@color/mfh_toolbar_background"
+                android:orientation="vertical">
+
                 <com.mfh.framework.uikit.widget.AvatarView
                     android:id="@+id/iv_header"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_margin="@dimen/spacing_double"
                     android:src="@drawable/chat_tmp_user_head"/>
+
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="冰珊孤雪"
+                    android:text="米西厨房"
                     android:textColor="@color/material_white"
                     android:textSize="14sp"/>
 
             </LinearLayout>
-            <!--<com.bingshanguxue.vector_uikit.ProfileView-->
-                <!--android:id="@+id/profileView"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="120dp"-->
-                <!--android:background="@color/mfh_colorPrimary"-->
-                <!--app:subTextColor="@color/material_white"-->
-                <!--app:subTextSize="16sp"-->
-                <!--app:textColor="@color/material_white"-->
-                <!--app:textSize="16sp"/>-->
 
             <!--余额/会员积分/我的收藏-->
             <LinearLayout
@@ -126,8 +171,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     app:bottomText="余额"
-                    app:bottomTextColor="@color/black_70"
-                    app:bottomTextSize="12sp"
+                    app:bottomTextColor="@color/black_35"
+                    app:bottomTextSize="14sp"
                     app:topText="￥ 0.00"
                     app:topTextColor="#FF4081"
                     app:topTextSize="26sp"/>
@@ -138,8 +183,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     app:bottomText="红包"
-                    app:bottomTextColor="@color/black_70"
-                    app:bottomTextSize="12sp"
+                    app:bottomTextColor="@color/black_35"
+                    app:bottomTextSize="14sp"
                     app:topText="￥ 0.00"
                     app:topTextColor="#FE5000"
                     app:topTextSize="26sp"/>
@@ -150,8 +195,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     app:bottomText="积分"
-                    app:bottomTextColor="@color/black_70"
-                    app:bottomTextSize="12sp"
+                    app:bottomTextColor="@color/black_35"
+                    app:bottomTextSize="14sp"
                     app:topText="￥ 0.00"
                     app:topTextColor="@color/mfh_colorPrimary"
                     app:topTextSize="26sp"/>
@@ -166,7 +211,9 @@
                 app:position="top"
                 app:src="@mipmap/ic_order"
                 app:subText=""
-                app:text="订单"/>
+                app:subTextSize="12sp"
+                app:text="订单"
+                app:textSize="14sp"/>
             <!--购物车-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_shopcart"
@@ -175,7 +222,9 @@
                 app:position="center"
                 app:src="@mipmap/ic_cart"
                 app:subText=""
-                app:text="购物车"/>
+                app:subTextSize="12sp"
+                app:text="购物车"
+                app:textSize="14sp"/>
             <!--收货地址-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_recvaddr"
@@ -184,7 +233,9 @@
                 app:position="bottom"
                 app:src="@mipmap/ic_address"
                 app:subText=""
-                app:text="收货地址"/>
+                app:subTextSize="12sp"
+                app:text="我的收货地址"
+                app:textSize="14sp"/>
 
             <!--充值-->
             <com.bingshanguxue.vector_uikit.SettingsItem
@@ -195,16 +246,30 @@
                 app:position="top"
                 app:src="@mipmap/ic_topup"
                 app:subText=""
-                app:text="充值"/>
+                app:subTextSize="12sp"
+                app:text="充值"
+                app:textSize="14sp"/>
             <!--会员卡-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_card"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:position="bottom"
+                app:position="center"
                 app:src="@mipmap/ic_card"
                 app:subText=""
-                app:text="会员卡"/>
+                app:subTextSize="12sp"
+                app:text="会员卡"
+                app:textSize="14sp"/>
+            <!--客服中心-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_customer_service"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:position="bottom"
+                app:src="@mipmap/ic_customer_service"
+                app:subTextSize="12sp"
+                app:text="@string/label_settings_customer_center"
+                app:textSize="14sp"/>
 
             <!--门店-->
             <com.bingshanguxue.vector_uikit.SettingsItem
@@ -212,51 +277,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_double"
-                app:position="top"
+                android:visibility="gone"
+                app:position="single"
                 app:src="@mipmap/ic_store_normal"
                 app:subText=""
-                app:text="门店"/>
-            <!--反馈-->
-            <com.bingshanguxue.vector_uikit.SettingsItem
-                android:id="@+id/item_feedback"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/minimum_touch_height"
-                app:position="center"
-                app:src="@mipmap/ic_feedback"
-                app:subText="吐槽"
-                app:text="反馈"/>
+                app:subTextSize="12sp"
+                app:text="门店"
+                app:textSize="14sp"/>
+
 
             <!--米西合伙人-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_parters"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:position="bottom"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:position="single"
                 app:src="@mipmap/ic_mfhparter"
                 app:subText="马上加入"
-                app:text="米西合伙人"/>
-
-
-            <!--客服中心-->
-            <com.bingshanguxue.vector_uikit.SettingsItem
-                android:id="@+id/item_customer_service"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/minimum_touch_height"
-                android:layout_marginTop="@dimen/spacing_double"
-                app:position="top"
-                app:src="@mipmap/ic_customer_service"
-                app:text="@string/label_settings_customer_center"/>
+                app:subTextSize="12sp"
+                app:text="米西合伙人"
+                app:textSize="14sp"/>
 
             <!--设置-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_settings"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:position="bottom"
-                app:src="@mipmap/ic_settings"
                 android:layout_marginBottom="@dimen/spacing_4x"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:position="single"
+                app:src="@mipmap/ic_settings"
                 app:subText=""
-                app:text="设置"/>
+                app:subTextSize="12sp"
+                app:text="设置"
+                app:textSize="14sp"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

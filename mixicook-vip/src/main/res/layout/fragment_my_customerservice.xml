@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/appbar"/>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mfh_background_light"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_double"
+                android:text="@string/customer_service_help"
+                android:textColor="@color/material_black"
+                android:textSize="12sp"/>
+
+            <!--联系客服-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_call"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:textSize="14sp"
+                app:position="center"
+                app:src="@mipmap/ic_feedback"
+                app:subText="吐槽"
+                app:subTextSize="12sp"
+                app:text="联系客服"/>
+
+            <!--意见反馈-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                app:textSize="14sp"
+                app:position="center"
+                app:src="@mipmap/ic_feedback"
+                app:subText="马上吐槽"
+                app:subTextSize="12sp"
+                app:text="意见反馈"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

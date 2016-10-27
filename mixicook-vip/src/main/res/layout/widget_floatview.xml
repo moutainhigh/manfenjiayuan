@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_floatview"
+                android:minWidth="44dp"
+                android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_fab_cart"/>
+
+    <TextView
+        android:id="@+id/tv_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/mark_circle_red"
+        android:gravity="center"
+        android:maxLines="1"
+        android:minHeight="24dp"
+        android:minWidth="24dp"
+        android:padding="4dp"
+        android:text="99"
+        android:textColor="@color/material_white"
+        android:textSize="10sp"/>
+
+</RelativeLayout>

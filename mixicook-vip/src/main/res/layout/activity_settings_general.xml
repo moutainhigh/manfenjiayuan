@@ -39,6 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
                 app:src="@drawable/material_housekeeping"
                 app:text="@string/label_settings_clearcache"

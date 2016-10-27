@@ -30,6 +30,8 @@
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
                 app:position="top"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 app:src="@drawable/material_housekeeping"
                 app:text="昵称"/>
 
@@ -39,6 +41,8 @@
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
                 app:position="bottom"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 app:src="@drawable/material_housekeeping"
                 app:text="性别"/>
         </LinearLayout>

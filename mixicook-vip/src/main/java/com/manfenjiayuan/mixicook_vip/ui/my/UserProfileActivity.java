@@ -236,8 +236,7 @@ public class UserProfileActivity extends MultimediaActivity {
     };
 
     private void updateSexDisplay() {
-                itemSex.setSubTitle(Sex.formatName1(MfhLoginService.get().getSex()));
-
+        itemSex.setSubTitle(Sex.formatName1(MfhLoginService.get().getSex()));
     }
 
 

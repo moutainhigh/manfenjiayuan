@@ -27,6 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 app:text="绑定门店"
                 app:position="single"/>
             <com.bingshanguxue.vector_uikit.SettingsItem
@@ -34,17 +36,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 app:text="登录密码"
                 app:position="top"/>
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_paypwd"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 app:text="支付密码"
                 app:position="center" />
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_general"
                 android:layout_width="match_parent"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:text="通用"
                 app:position="bottom" />
@@ -52,6 +60,8 @@
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_version"
                 android:layout_width="match_parent"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:text="版本更新"
                 app:position="bottom" />
