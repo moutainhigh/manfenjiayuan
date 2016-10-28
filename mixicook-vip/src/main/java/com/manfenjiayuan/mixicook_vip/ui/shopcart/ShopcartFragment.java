@@ -21,6 +21,7 @@ import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.manfenjiayuan.mixicook_vip.ui.address.IReciaddrView;
 import com.manfenjiayuan.mixicook_vip.ui.address.ReciaddrPresenter;
+import com.manfenjiayuan.mixicook_vip.ui.home.ShopcartEvent;
 import com.manfenjiayuan.mixicook_vip.ui.order.CreateOrderBrief;
 import com.manfenjiayuan.mixicook_vip.ui.order.OrderCreateFragment;
 import com.manfenjiayuan.mixicook_vip.widget.LabelView2;
@@ -55,6 +56,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * 购物车
@@ -62,8 +64,8 @@ import butterknife.OnClick;
  */
 public class ShopcartFragment extends BaseListFragment<ShoppingCart>
         implements IReciaddrView, ICompanyInfoView, IShopcartView {
-    public static final String EXTRA_KEY_COMPANYINFO = "companyInfo";
     public static final String EXTRA_KEY_ADDRESSINFO = "reciaddr";
+    public static final String EXTRA_KEY_COMPANYINFO = "companyInfo";
 
 
     @Bind(R.id.toolbar)
@@ -87,6 +89,8 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
     TextView tvBrief;
     @Bind(R.id.button_confirm)
     Button btnConfirm;
+    @Bind(R.id.check_selectall)
+    CheckBox checkAll;
 
     private Reciaddr curAddress = null;
     private CompanyInfo curCompanyInfo = null;//当前店铺
@@ -167,6 +171,12 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
                 goodsListAdapter.setChecked(shopCheckbox.isChecked());
             }
         });
+        checkAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goodsListAdapter.setChecked(checkAll.isChecked());
+            }
+        });
         initGoodsRecyclerView();
 
         loadInitStep1();
@@ -180,6 +190,9 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
 
                 if (resultCode == Activity.RESULT_OK) {
 //                    showProgressDialog(ProgressDialog.STATUS_DONE, "下单成功", true);
+// 刷新购物车
+                    EventBus.getDefault().post(new ShopcartEvent(ShopcartEvent.EVENT_ID_DATASETCHANGED, new Bundle()));
+
                     loadInitStep3();
 
                     //加载配送规则
@@ -554,8 +567,10 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
         if (packs != null && packs.size() > 0) {
             if (packs.size() == goodsListAdapter.getItemCount()) {
                 shopCheckbox.setChecked(true);
+                checkAll.setChecked(true);
             } else {
                 shopCheckbox.setChecked(false);
+                checkAll.setChecked(false);
             }
 
             for (CartPack pack : packs) {

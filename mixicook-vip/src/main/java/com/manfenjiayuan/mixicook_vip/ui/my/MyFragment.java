@@ -64,8 +64,6 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    //    @Bind(R.id.profileView)
-//    ProfileView mProfileView;
     @Bind(R.id.iv_header)
     AvatarView mAvatarView;
     @Bind(R.id.tv_name)

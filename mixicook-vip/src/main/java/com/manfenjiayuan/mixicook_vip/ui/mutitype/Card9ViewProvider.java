@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -26,7 +25,6 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.storeRack.CardProduct;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApi;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -60,7 +58,6 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvCategoryName;
-        private Button btnMore;
         private RecyclerView recyclerView;
         private Card9ViewAdapter mAdapter;
         private Card9 card;
@@ -68,10 +65,10 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvCategoryName = (TextView) itemView.findViewById(R.id.tv_categoryName);
-            btnMore = (Button) itemView.findViewById(R.id.button_more);
+//            btnMore = (Button) itemView.findViewById(R.id.button_more);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.goods_list);
 
-            btnMore.setOnClickListener(new View.OnClickListener() {
+            tvCategoryName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (card != null) {
@@ -109,7 +106,9 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
             //enable optimizations if all item views are of the same height and width for
             //signficantly smoother scrolling
             recyclerView.setHasFixedSize(true);
-            recyclerView.addItemDecoration(new DividerGridItemDecoration(itemView.getContext()));
+            recyclerView.addItemDecoration(new DividerGridItemDecoration(itemView.getContext(),
+                    R.drawable.divider_gridview));
+//            recyclerView.addItemDecoration(new DividerGridItemDecoration());
             recyclerView.setAdapter(mAdapter);
         }
 
@@ -120,7 +119,7 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
             this.card = card;
             if (card != null) {
                 this.tvCategoryName.setText(card.getCategoryName());
-                btnMore.setEnabled(true);
+                tvCategoryName.setEnabled(true);
 
                 List<CardProduct> products = card.getProducts();
                 if (products != null && products.size() > 0){
@@ -139,7 +138,7 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
             } else {
                 this.tvCategoryName.setText("");
                 this.mAdapter.setEntityList(null);
-                btnMore.setEnabled(false);
+                tvCategoryName.setEnabled(false);
             }
         }
 
@@ -157,7 +156,8 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
                 return;
             }
 
-            EventBus.getDefault().post(new ShopcartEvent(ShopcartEvent.EVENT_ID_ADD2CART, AddCartOptions.makeOptions(view)));
+            EventBus.getDefault().post(new ShopcartEvent(ShopcartEvent.EVENT_ID_ADD2CART,
+                    AddCartOptions.makeOptions(view)));
 
             NetCallBack.NetTaskCallBack responseC = new NetCallBack.NetTaskCallBack<String,
                     NetProcessor.Processor<String>>(
@@ -166,7 +166,7 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
                         public void processResult(IResponseData rspData) {
                             //{"code":"0","msg":"操作成功!","version":"1","data":""}
                             ZLogger.df("加入购物车成功");
-                            DialogUtil.showHint("加入购物车成功");
+//                            DialogUtil.showHint("加入购物车成功");
                             EventBus.getDefault().post(new ShopcartEvent(ShopcartEvent.EVENT_ID_DATASETCHANGED, new Bundle()));
                         }
 

@@ -100,12 +100,27 @@
             android:background="@drawable/bg_topline"
             android:orientation="horizontal">
 
+            <CheckBox
+                android:id="@+id/check_selectall"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/spacing_micro"
+                android:layout_marginStart="12sp"
+                android:checked="false"
+                android:gravity="center"
+                android:text="全选"
+                android:textColor="@color/material_black"
+                android:textSize="14sp"
+                android:theme="@style/checkBoxStyle"/>
+
             <TextView
                 android:id="@+id/tv_brief"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:gravity="center_vertical"
+                android:paddingStart="@dimen/spacing_micro"
+                android:paddingEnd="@dimen/spacing_micro"
                 android:textColor="@color/material_black"
                 android:textSize="14sp"/>
 

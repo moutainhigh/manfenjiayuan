@@ -18,8 +18,11 @@ public class ARCode {
     public static final int ARC_ORDER_CREATE = 0x10;//下单
     public static final int ARC_ORDER_PAY= 0x11;//订单支付
     public static final int ARC_ORDER_COUPONS= 0x12;//订单支付
+    public static final int ARC_SHOPCART= 0x13;//购物车
 
     public static final int ARC_MY = 0x20;//我的
     public static final int ARC_MY_PROFILE = 0x21;//我的——信息
+
+    public static final String INTENT_KEY_ISRELOAD = "isReload";
 
 }

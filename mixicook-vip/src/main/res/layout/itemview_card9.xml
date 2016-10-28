@@ -3,37 +3,24 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:divider="@drawable/divider_gridview"
+              android:orientation="vertical"
+              android:paddingTop="@dimen/spacing_double"
+              android:showDividers="middle">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_categoryName"
         android:layout_width="match_parent"
         android:layout_height="@dimen/minimum_touch_height"
-        android:orientation="horizontal"
-        android:background="@color/mfh_background_light"
-        android:gravity="center_vertical"
-        android:padding="@dimen/spacing_normal">
+        android:background="@color/material_white"
+        android:drawableEnd="@drawable/icon_arrow_right"
+        android:drawablePadding="@dimen/spacing_micro"
+        android:gravity="start|center_vertical"
+        android:padding="@dimen/spacing_normal"
+        android:text="类目名称"
+        android:textColor="@color/black_65"
+        android:textSize="14sp"/>
 
-        <TextView
-            android:id="@+id/tv_categoryName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start|center_vertical"
-            android:text="类目名称"
-            android:textSize="14sp"
-            android:textColor="@color/black_65"/>
-
-        <Button
-            android:id="@+id/button_more"
-            android:layout_width="80dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="@dimen/spacing_normal"
-            android:background="@null"
-            android:gravity="center"
-            android:text="查看全部"
-            android:textColor="@color/black_65"
-            android:textSize="12sp"/>
-    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/goods_list"
