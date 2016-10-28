@@ -617,20 +617,20 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         if (!StringUtils.isEmpty(prodLevel)) {
             product.put("prodLevel", prodLevel);
         }
-        if (!StringUtils.isEmpty(prodLevel)) {
+        if (!StringUtils.isEmpty(guaPeriod)) {
             product.put("guaPeriod", guaPeriod);
         }
         product.put("domain", CateApi.DOMAIN_TYPE_PROD);//商品业务域
 //        product.put("shortName", shortName);
         defaultSku.put("barcode", barcode);
-        if (!StringUtils.isEmpty(prodLevel)) {
+        if (!StringUtils.isEmpty(packageNum)) {
             defaultSku.put("packageNum", packageNum);
         }
         tenantSku.put("buyPrice", buyprice);
         //Column 'cost_price' cannot be null
         tenantSku.put("costPrice", costprice);//默认零售价等于采购价。
-        if (StringUtils.isEmpty(hintPrice)){
-            tenantSku.put("costPrice", hintPrice);//建议零售价,批发商才有
+        if (!StringUtils.isEmpty(hintPrice)){
+            tenantSku.put("hintPrice", hintPrice);//建议零售价,批发商才有
         }
 
         //入库数量不能为空或为0!
