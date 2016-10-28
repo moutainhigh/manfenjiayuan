@@ -13,38 +13,36 @@ package com.mfh.comn.exception;
 
 /**
  * 业务异常逻辑
+ *
  * @author zhangyz created on 2014-3-10
  */
 @SuppressWarnings("serial")
-public class BusinessException extends RuntimeException{
+public class BusinessException extends RuntimeException {
 
-    public BusinessException(String message)
-    {
+    public BusinessException(String message) {
         super(message);
-    }        
+    }
 
     public BusinessException(Exception e) {
         super(e);
     }
 
-    public BusinessException(String message, Exception e)
-    {
+    public BusinessException(String message, Exception e) {
         super(message, e);
     }
 
-    public String getSource()
-    {
+    public String getSource() {
         return this.getMessage();
     }
-    
-    public static String getExDetailInfo(Exception ex){
+
+    public static String getExDetailInfo(Exception ex) {
         java.io.StringWriter out = new java.io.StringWriter();
         ex.printStackTrace(new java.io.PrintWriter(out));
         String ret = out.toString();
         return ret;
     }
-    
-    public String getDetailInfo(){
+
+    public String getDetailInfo() {
         String ret = getExDetailInfo(this);
         ret = ret.replaceAll("\r\n", "<br>");
         return ret;
