@@ -46,6 +46,7 @@ import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card10;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card1Item;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card2Item;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card9;
+import com.manfenjiayuan.mixicook_vip.ui.shopcart.ShopcartFragment;
 import com.manfenjiayuan.mixicook_vip.utils.AddCartAnimation;
 import com.manfenjiayuan.mixicook_vip.utils.AddCartOptions;
 import com.manfenjiayuan.mixicook_vip.widget.FloatView;
@@ -94,6 +95,7 @@ import me.drakeet.multitype.Item;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 import static com.mfh.framework.MfhApplication.getAppContext;
+import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by bingshanguxue on 6/28/16.
@@ -233,6 +235,15 @@ public class HomeFragment extends BaseFragment
                     if (!MfhLoginService.get().haveLogined()) {
                         ZLogger.d("退出当前登录账号，准备跳转到登录页面");
                         redirect2Login();
+                    }
+                }
+            }
+            break;
+            case ARCode.ARC_SHOPCART: {
+                if (data != null){
+                    boolean isNeedReload = data.getBooleanExtra(ARCode.INTENT_KEY_ISRELOAD, false);
+                    if (isNeedReload){
+                        refreshShopcart();
                     }
                 }
             }
@@ -487,7 +498,20 @@ public class HomeFragment extends BaseFragment
             redirect2Login();
         }
 
-        ActivityRoute.redirect2Cart(getActivity(), curAddress, curCompanyInfo);
+//        ActivityRoute.redirect2Cart(getActivity(), curAddress, curCompanyInfo);
+
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_SHOPCART);
+        if (curAddress != null){
+            extras.putSerializable(ShopcartFragment.EXTRA_KEY_ADDRESSINFO, curAddress);
+        }
+        if (curCompanyInfo != null){
+            extras.putSerializable(ShopcartFragment.EXTRA_KEY_COMPANYINFO, curCompanyInfo);
+        }
+        Intent intent = new Intent(context, FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_SHOPCART);
     }
 
     /**

@@ -12,7 +12,6 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class CategoryGoodsAdapter extends RegularAdapter<ScGoodsSku, CategoryGoo
     }
 
     public interface OnAdapterListener {
-        void onAdd2Cart(ScGoodsSku product);
+        void onAdd2Cart(View view, ScGoodsSku product);
         void onItemClick(View view, int position);
 
         void onItemLongClick(View view, int position);
@@ -86,9 +85,9 @@ public class CategoryGoodsAdapter extends RegularAdapter<ScGoodsSku, CategoryGoo
                         return;
                     }
 
-                    ScGoodsSku goodsSku = getEntity(position);
+//                    ScGoodsSku goodsSku = getEntity(position);
 
-                    DialogUtil.showHint(String.format("点击:%s%s", goodsSku.getSkuName(), goodsSku.getImgUrl()));
+//                    DialogUtil.showHint(String.format("点击:%s%s", goodsSku.getSkuName(), goodsSku.getImgUrl()));
                     if (adapterListener != null) {
                         adapterListener.onItemClick(v, position);
                     }
@@ -101,7 +100,7 @@ public class CategoryGoodsAdapter extends RegularAdapter<ScGoodsSku, CategoryGoo
             int position = getAdapterPosition();
             ScGoodsSku product = getEntity(position);
             if (product != null && adapterListener != null) {
-                adapterListener.onAdd2Cart(product);
+                adapterListener.onAdd2Cart(ivHeader, product);
             }
 
         }

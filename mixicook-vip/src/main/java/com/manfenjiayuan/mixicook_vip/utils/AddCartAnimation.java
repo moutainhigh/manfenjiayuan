@@ -130,7 +130,7 @@ public class AddCartAnimation {
                                   Context mContext, final ViewGroup parentView, final float time) {
 
         try {
-            ZLogger.d("加入购物车动画准备");
+//            ZLogger.d("加入购物车动画准备");
 
             //新建一个ImageView 用于执行动画显示
             final ImageView view = new ImageView(mContext);
@@ -151,7 +151,7 @@ public class AddCartAnimation {
             //计算终点控件位置
             final int[] endLocation = new int[2];
             endView.getLocationInWindow(endLocation);
-            ZLogger.d(String.format("endLocation: <%d,%d>", endLocation[0], endLocation[1]));
+//            ZLogger.d(String.format("endLocation: <%d,%d>", endLocation[0], endLocation[1]));
 
             //确定ImageView的位置与startView相同
             params.leftMargin = startLocation[0] - parent[0] - parentView.getPaddingLeft();
@@ -173,7 +173,7 @@ public class AddCartAnimation {
                 g = (YtoY - xv * time) / time / time * 2;
             }
 
-            ZLogger.d(String.format("dxy: <%d,%d>", XtoX, YtoY));
+//            ZLogger.d(String.format("dxy: <%d,%d>", XtoX, YtoY));
 
             ValueAnimator va = new ValueAnimator();
             va.setDuration((long) (time * 1000));
@@ -198,7 +198,7 @@ public class AddCartAnimation {
                     else if (scale > 0.7){
                         scale = 0.7f;
                     }
-                    ZLogger.d(String.format("<%f,%f>, scale=%f>", point.x, point.y, scale));
+//                    ZLogger.d(String.format("<%f,%f>, scale=%f>", point.x, point.y, scale));
 
                     view.setScaleX(scale);
                     view.setScaleY(scale);
@@ -210,7 +210,7 @@ public class AddCartAnimation {
             // TODO: 27/10/2016 缩放
 
             //开始播放动画
-            ZLogger.d("加入购物车动画开始");
+//            ZLogger.d("加入购物车动画开始");
             va.start();
 
             //设置动画

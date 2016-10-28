@@ -1,14 +1,15 @@
 package com.manfenjiayuan.mixicook_vip.ui.goods;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -18,20 +19,25 @@ import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.model.CartBrief;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
-import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
+import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
+import com.manfenjiayuan.mixicook_vip.ui.home.ShopcartEvent;
+import com.manfenjiayuan.mixicook_vip.utils.AddCartAnimation;
+import com.manfenjiayuan.mixicook_vip.widget.FloatView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
+import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApi;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -40,6 +46,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
+
+import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
@@ -52,19 +61,22 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
     public static final String EXTRA_KEY_FRONTCATEGORY_ID = "frontCategoryId";
     public static final String EXTRA_KEY_CATEGORYNAME = "categoryName";
 
+    @Bind(R.id.rootview)
+    CoordinatorLayout mRootView;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private CategoryGoodsAdapter goodsListAdapter;
     @Bind(R.id.empty_view)
     TextView emptyView;
+    @Bind(R.id.float_cart)
+    FloatView floatCartView;
 
-    private Long netId;
-    private long frontCategoryId;
-    private String categoryName;
+    private Long netId;//店铺or网点编号
+    private long frontCategoryId;//类目编号
+    private String categoryName;//类目名称
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
 
     public static CategoryGoodsFragment newInstance(Bundle args) {
@@ -81,7 +93,7 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
 
         mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
     }
@@ -132,21 +144,25 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case ARCode.ARC_MGR_ADDRESS: {
-                if (resultCode == Activity.RESULT_OK) {
-                    reload();
-                }
-            }
-            break;
-            case ARCode.ARC_ADD_ADDRESS: {
-                if (resultCode == Activity.RESULT_OK) {
-                    reload();
+            case ARCode.ARC_SHOPCART: {
+                if (data != null){
+                    boolean isNeedReload = data.getBooleanExtra(ARCode.INTENT_KEY_ISRELOAD, false);
+                    if (isNeedReload){
+                        refreshShopcart();
+                    }
                 }
             }
             break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -199,9 +215,37 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
     /**
      * 跳转到购物车
      */
-    @OnClick(R.id.fab_cart)
+    @OnClick(R.id.float_cart)
     public void redirect2Cart() {
-        ActivityRoute.redirect2Cart(getActivity(), null, null);
+//        ActivityRoute.redirect2Cart(getActivity(), null, null);
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_SHOPCART);
+
+        Intent intent = new Intent(context, FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_SHOPCART);
+    }
+
+    public void onEventMainThread(ShopcartEvent event) {
+        int eventId = event.getEventId();
+        Bundle args = event.getArgs();
+
+        ZLogger.d(String.format("ShopcartEvent(%d)", eventId));
+        switch (eventId) {
+//            case ShopcartEvent.EVENT_ID_ADD2CART: {
+//                AddCartOptions options = event.getCartOptions();
+//                if (options != null){
+//                    AddCartAnimation.AddToCart2((ImageView) options.getSharedView(),
+//                            floatCartView, getActivity(), rootView, 0.5F);
+//                }
+//            }
+//            break;
+            case ShopcartEvent.EVENT_ID_DATASETCHANGED: {
+                refreshShopcart();
+            }
+            break;
+        }
     }
 
     private void initGoodsRecyclerView() {
@@ -241,9 +285,10 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
 
         goodsListAdapter = new CategoryGoodsAdapter(AppContext.getAppContext(), null);
         goodsListAdapter.setOnAdapterListener(new CategoryGoodsAdapter.OnAdapterListener() {
+
                                                   @Override
-                                                  public void onAdd2Cart(ScGoodsSku product) {
-                                                      add2Cart(product);
+                                                  public void onAdd2Cart(View view, ScGoodsSku product) {
+                                                      add2Cart(view, product);
                                                   }
 
                                                   @Override
@@ -309,13 +354,21 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
 
     }
 
-    private void add2Cart(ScGoodsSku product) {
+    /**
+     * 加入购物车
+     */
+    private void add2Cart(View view, ScGoodsSku product) {
         if (product == null) {
             return;
         }
 
-//            DialogUtil.showHint(String.format("加入购物车[%s][%s]",
-//                    product.getImageUrl(), product.getName()));
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
+            ZLogger.d("网络未连接");
+            return;
+        }
+
+        AddCartAnimation.AddToCart2((ImageView) view,
+                floatCartView, getActivity(), mRootView, 0.5F);
 
         NetCallBack.NetTaskCallBack responseC = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
@@ -325,7 +378,8 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
                         //{"code":"0","msg":"操作成功!","version":"1","data":""}
                         ZLogger.df("加入购物车成功");
                         // TODO: 10/10/2016 刷新购物车按钮
-                        DialogUtil.showHint("加入购物车成功");
+//                        DialogUtil.showHint("加入购物车成功");
+                        refreshShopcart();
                     }
 
                     @Override
@@ -350,5 +404,46 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
 
         JSONArray specItems = new JSONArray();
         ShoppingCartApiImpl.add2Cart(cart, specItems, responseC);
+    }
+
+    /**
+     * 刷新购物车商品数量
+     * */
+    private void refreshShopcart(){
+        NetCallBack.NetTaskCallBack responseC = new NetCallBack.NetTaskCallBack<CartBrief,
+                NetProcessor.Processor<CartBrief>>(
+                new NetProcessor.Processor<CartBrief>() {
+                    @Override
+                    public void processResult(IResponseData rspData) {
+                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
+                        ZLogger.df("调整购物车商品数量: 操作成功");
+//
+                        CartBrief cartBrief = null;
+                        try {
+                            if (rspData != null) {
+                                RspBean<CartBrief> retValue = (RspBean<CartBrief>) rspData;
+                                cartBrief = retValue.getValue();
+                            }
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+//
+                        if (cartBrief != null){
+                            floatCartView.setBadgeNumber(cartBrief.getSkuNum());
+//                            DialogUtil.showHint(String.format("商品SKu数目 %.2f", cartBrief.getSkuNum()));
+                        }
+                    }
+
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("调整购物车商品数量: " + errMsg);
+                    }
+                }
+                , CartBrief.class
+                , MfhApplication.getAppContext()) {
+        };
+
+        ShoppingCartApiImpl.staticShopCart(String.valueOf(netId), responseC);
     }
 }
