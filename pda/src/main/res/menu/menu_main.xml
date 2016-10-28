@@ -8,10 +8,10 @@
         android:icon="@mipmap/ic_login_white"
         android:title="登录"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/action_sign_out"
-        android:orderInCategory="100"
-        android:icon="@mipmap/ic_logout"
-        android:title="退出"
-        app:showAsAction="always" />
+    <!--<item-->
+        <!--android:id="@+id/action_sign_out"-->
+        <!--android:orderInCategory="100"-->
+        <!--android:icon="@mipmap/ic_logout"-->
+        <!--android:title="退出"-->
+        <!--app:showAsAction="always" />-->
 </menu>

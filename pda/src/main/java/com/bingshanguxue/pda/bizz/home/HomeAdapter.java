@@ -52,33 +52,55 @@ public class HomeAdapter extends RegularAdapter<HomeMenu, HomeAdapter.MenuOptioi
         final HomeMenu bean = entityList.get(position);
 
         holder.ivHeader.setImageResource(bean.getResId());
+        if (bean.getBadgeNumber() > 0){
+            holder.ivBadge.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.ivBadge.setVisibility(View.GONE);
+        }
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
 //        @Bind(R.id.iv_header)
         ImageView ivHeader;
+        //        @Bind(R.id.iv_header)
+        ImageView ivBadge;
 
         public MenuOptioinViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
             ivHeader = (ImageView) itemView.findViewById(R.id.iv_header);
+            ivBadge = (ImageView) itemView.findViewById(R.id.iv_badge);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if (position < 0 || position >= entityList.size()) {
-//                        MLog.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-                        return;
-                    }
-
-                    if (adapterListener != null) {
-                        adapterListener.onCommandSelected(entityList.get(position));
+                    HomeMenu entity = getEntity(position);
+                    if (entity != null){
+                        if (adapterListener != null) {
+                            adapterListener.onCommandSelected(entity);
+                        }
                     }
                 }
             });
         }
     }
 
+    /**
+     * 设置数字标识
+     * */
+    public void setBadgeNumber(Long id, int badgeNumber){
+        if (entityList != null && entityList.size() > 0){
+            for (HomeMenu entity : entityList){
+                if (entity.getId().equals(id)){
+                    entity.setBadgeNumber(badgeNumber);
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+    }
 
 }
