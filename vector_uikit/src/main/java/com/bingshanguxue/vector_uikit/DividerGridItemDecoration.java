@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
@@ -32,6 +33,16 @@ public class DividerGridItemDecoration extends RecyclerView.ItemDecoration {
 
         if (mDivider == null){
             ZLogger.d("mDivider is null");
+        }
+    }
+
+    public DividerGridItemDecoration(Drawable divider) {
+        mDivider = divider;
+    }
+
+    public DividerGridItemDecoration(Context context, int resId) {
+        if (context != null){
+            mDivider = ContextCompat.getDrawable(context, resId);
         }
     }
 
