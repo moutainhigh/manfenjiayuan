@@ -20,17 +20,18 @@ android {
 
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 28
-        versionName "0.1.4"
+        versionCode 36
+        versionName "0.1.7"
         multiDexEnabled true
 
         ndk {
-            //设置支持的SO库架构
-            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            //指定需要 cup 架构的 so 库(个推)
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "mips", "mips64", "x86", "x86_64"
         }
 
         manifestPlaceholders = [
                 UMENG_APP_KEY   : "5733f880e0f55a5eb6002e54", // 友盟 app key
+                //APP_ID、APP_KEY、APP_SECRET请根据个推开发者后台申请到的应用参数进行相应替换
                 GETUI_APP_ID    : "6SPe74UAPm9Ti2rImq1uRA", // 个推 app id
                 GETUI_APP_KEY   : "xjfqAF81Nl9uLf0fffu8m1", // 个推 app key
                 GETUI_APP_SECRET: "TEKMiptTNf8rI9E8Myz6p3", // 个推 app secret
@@ -61,6 +62,8 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -121,4 +124,6 @@ dependencies {
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile 'com.getui:sdk:2.9.3.0'
+    compile rootProject.ext.dependencies["support-v4"]
 }

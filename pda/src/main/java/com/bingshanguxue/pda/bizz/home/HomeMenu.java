@@ -3,7 +3,7 @@ package com.bingshanguxue.pda.bizz.home;
 import java.io.Serializable;
 
 /**
- * Created by kun on 15/9/2.
+ * Created by bingshanguxue on 15/9/2.
  */
 public class HomeMenu implements Serializable {
 
@@ -12,7 +12,6 @@ public class HomeMenu implements Serializable {
     public static final Long OPTION_ID_STOCK_TAKE = 3L;//盘点（修改当前库存）
     public static final Long OPTION_ID_DISTRIBUTION = 4L;//收货（商品配送）
     public static final Long OPTION_ID_CREATE_INV_RETURNORDER = 5L;//采购退货
-    public static final Long OPTION_ID_PICK_GOODS = 6L;//拣货
     public static final Long OPTION_ID_BIND_GOODS_2_TAGS = 11L;//商品绑定标签
     public static final Long OPTION_ID_WHOLESALER_GOODS_SHELVES     = 12L;//商品货架绑定
     public static final Long OPTION_ID_WHOLESALER_PICKING_GOODS     = 13L;//拣货
@@ -23,14 +22,27 @@ public class HomeMenu implements Serializable {
     public static final Long OPTION_ID_INV_CONVERT = 23L;//库存转换
     public static final Long OPTION_ID_PRINT_TAGS = 24L;//价签打印
     public static final Long OPTION_ID_STORE_IN = 25L;//商品建档
-    public static final Long OPTION_ID_CASHIER = 26L;//商品建档
+    public static final Long OPTION_ID_CASHIER = 26L;//收银
+    public static final Long OPTION_ID_QUERY_BILL = 27L;//单据查询
+    public static final Long OPTION_ID_ORDER_GOODS = 28L;//订货
+    public static final Long OPTION_ID_ONLINE_ORDER = 29L;//线上订单
 
-    public static final Long OPTION_ID_ALPHA = 31L;//
+    public static final Long OPTION_ID_BUY_SCORDER = 30L;//买手——订单列表
+    public static final Long OPTION_ID_BUY_PREPARE = 31L;//买手——组货
+
+
+    public static final Long OPTION_ID_INSTOCK_SCORDER = 40L;//骑手——订单列表
+    public static final Long OPTION_ID_TUOTOU = 41L;//妥投
+    public static final Long OPTION_ID_EMBRACE = 42L;//揽件
+
+    public static final Long OPTION_ID_ALPHA = 41L;//
 
 
     private Long id;
     private String name;
     private int resId;
+    private int badgeNumber = 0;
+
 
     public HomeMenu(Long id, String name, int resId) {
         this.id = id;
@@ -60,5 +72,13 @@ public class HomeMenu implements Serializable {
 
     public void setResId(int resId) {
         this.resId = resId;
+    }
+
+    public int getBadgeNumber() {
+        return badgeNumber;
+    }
+
+    public void setBadgeNumber(int badgeNumber) {
+        this.badgeNumber = badgeNumber;
     }
 }

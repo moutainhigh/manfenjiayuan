@@ -132,7 +132,7 @@ public class InvFindOrderFragment extends PDAScanFragment implements IInvFindOrd
             return;
         }
 
-        mInvFindOrderPresenter.loadOrderItemsByBarcode(barcode);
+        mInvFindOrderPresenter.getById(barcode);
     }
 
     @OnClick(R.id.fab_submit)

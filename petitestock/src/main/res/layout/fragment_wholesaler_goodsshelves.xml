@@ -23,7 +23,7 @@
             android:text="货架绑定"
             android:gravity="start|center_vertical"/>
 
-        <!--<com.mfh.framework.uikit.compound.NaviAddressView-->
+        <!--<com.bingshanguxue.vector_uikit.widget.NaviAddressView-->
             <!--android:id="@+id/shelvesNumberView"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="match_parent"-->

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/appbar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--个人信息-->
+            <com.bingshanguxue.vector_uikit.ProfileView
+                android:id="@+id/profileView"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:subTextSize="16sp"
+                app:textSize="16sp"
+                android:background="@color/mfh_colorPrimary"/>
+
+            <!--设备-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_terminal"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:src="@mipmap/ic_terminal"
+                android:layout_marginTop="@dimen/spacing_double"
+                app:position="top"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
+                app:subText=""
+                app:text="设备编号"/>
+
+            <!--版本-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_upgrade"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:src="@mipmap/ic_upgrade"
+                app:position="center"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
+                app:subText=""
+                app:text="应用版本"/>
+            <!--版本-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_remotecontrol"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:src="@mipmap/ic_upgrade"
+                app:position="bottom"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
+                app:subText=""
+                app:text="远程协助"/>
+
+            <!--版本-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_gettui"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                app:src="@mipmap/ic_upgrade"
+                app:position="bottom"
+                app:textSize="14sp"
+                app:subTextSize="12sp"
+                app:subText=""
+                app:text="个推"/>
+
+            <Button
+                android:id="@+id/button_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:textSize="18sp"
+                android:layout_marginTop="@dimen/spacing_8x"
+                android:background="@drawable/btn_rectange_red"
+                android:text="退出当前账号"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

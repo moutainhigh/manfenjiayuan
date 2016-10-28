@@ -1,6 +1,7 @@
 package com.mfh.framework.pay.alipay;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -220,15 +221,22 @@ public class OrderInfoUtil2_0 {
 		String tailKey = keys.get(keys.size() - 1);
 		String tailValue = map.get(tailKey);
 		authInfo.append(buildKeyValue(tailKey, tailValue, false));
+		ZLogger.d("authInfo=" + authInfo);
 
-		String oriSign = SignUtils.sign(authInfo.toString(), rsaKey);
 		String encodedSign = "";
 
 		try {
-			encodedSign = URLEncoder.encode(oriSign, CHARSET_UTF8);
+			String oriSign = SignUtils.sign(authInfo.toString(), rsaKey);
+			ZLogger.d("oriSign=" + oriSign);
+
+			if (!StringUtils.isEmpty(oriSign)){
+				encodedSign = URLEncoder.encode(oriSign, CHARSET_UTF8);
+			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		ZLogger.d("encodedSign=" + encodedSign);
+
 		return "sign=" + encodedSign;
 	}
 	

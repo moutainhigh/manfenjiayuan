@@ -17,7 +17,6 @@ import java.util.Random;
 public class MUtils {
     /**
      * get the out_trade_no for an order. 生成商户订单号，该值在商户端应保持唯一（可自定义格式规范）
-     *
      */
     public static String genOutTradeNo() {
         SimpleDateFormat format = new SimpleDateFormat("MMddHHmmss",

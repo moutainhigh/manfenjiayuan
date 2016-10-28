@@ -20,6 +20,10 @@ public class ARCode {
     public static final int ARC_INVFINDORDER_INSPECT = 0x11;//拣货单
     public static final int ARC_INSPECT_PRODUCTSKU = 0x12;//平台商品档案
     public static final int ARC_CASHIER = 0x13;//收银
+    public static final int ARC_MY = 0x14;//我的
+    public static final int ARC_ACCEPT_PREPAREORDER = 0x15;//买手-抢单
+    public static final int ARC_RIDER_INSTOCK_PAY = 0x16;//骑手-妥投—补差价
+
 
 
 

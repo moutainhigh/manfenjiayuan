@@ -23,7 +23,7 @@
             app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <com.mfh.framework.uikit.compound.NaviAddressView
+            <com.bingshanguxue.vector_uikit.widget.NaviAddressView
                 android:id="@+id/shelvesNumberView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

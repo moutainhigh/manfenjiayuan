@@ -34,7 +34,7 @@
 -printmapping map.txt
 
 #指定代码的压缩级别
--optimizationpasses 7
+-optimizationpasses 5
 #混淆时是否记录日志
 -verbose
 
@@ -122,7 +122,6 @@ public static final int *;
 -keep class com.alibaba.fastjson.** { * ; }
 -keep class com.manfenjiayuan.pda_supermarket.** { * ; }
 -keep class com.bingshanguxue.pda.** { * ; }
--keep class com.bingshanguxue.vector_user.** { * ; }
 -keep class com.bingshanguxue.vector_uikit.** { * ; }
 -keep class android.serialport.api.** { * ; }
 -keep class com.zkc.** { * ; }

@@ -2,7 +2,7 @@ package com.manfenjiayuan.pda_supermarket.presenter;
 
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.manfenjiayuan.pda_supermarket.mode.InvSendIoOrderItemMode;
-import com.manfenjiayuan.pda_supermarket.ui.IInvSendIoOrderView;
+import com.manfenjiayuan.pda_supermarket.ui.store.IInvSendIoOrderView;
 import com.mfh.framework.mvp.OnModeListener;
 
 /**

@@ -140,25 +140,31 @@ public class UploadSyncManager extends OrderSyncManager {
      * 上传POS订单
      */
     public synchronized void uploadPosOrders() {
-        mOrderPageInfo = new PageInfo(1, MAX_SYNC_ORDER_PAGESIZE);
-        orderStartCursor = getPosOrderStartCursor();
-        //上传未同步并且已完成的订单
-        orderSqlWhere = String.format("updatedDate >= '%s' and sellerId = '%d' " +
-                        "and status = '%d' and isActive = '%d' and syncStatus = '%d'",
-                orderStartCursor, MfhLoginService.get().getSpid(),
-                PosOrderEntity.ORDER_STATUS_FINISH, PosOrderEntity.ACTIVE,
-                PosOrderEntity.SYNC_STATUS_NONE);
+        try{
+            mOrderPageInfo = new PageInfo(1, MAX_SYNC_ORDER_PAGESIZE);
+            orderStartCursor = getPosOrderStartCursor();
+            //上传未同步并且已完成的订单
+            orderSqlWhere = String.format("updatedDate >= '%s' and sellerId = '%d' " +
+                            "and status = '%d' and isActive = '%d' and syncStatus = '%d'",
+                    orderStartCursor, MfhLoginService.get().getSpid(),
+                    PosOrderEntity.ORDER_STATUS_FINISH, PosOrderEntity.ACTIVE,
+                    PosOrderEntity.SYNC_STATUS_NONE);
 
-        List<PosOrderEntity> orderEntityList = PosOrderService.get()
-                .queryAllAsc(orderSqlWhere, mOrderPageInfo);
-        if (orderEntityList == null || orderEntityList.size() < 1) {
-            onNext(String.format("没有收银订单需要上传(%s)。", orderStartCursor));
+            List<PosOrderEntity> orderEntityList = PosOrderService.get()
+                    .queryAllAsc(orderSqlWhere, mOrderPageInfo);
+            if (orderEntityList == null || orderEntityList.size() < 1) {
+                onNext(String.format("没有收银订单需要上传(%s)。", orderStartCursor));
+            }
+            else if (orderEntityList.size() == 1){
+                stepUploadPosOrder(orderEntityList.get(0));
+            }
+            else{
+                batchUploadPosOrder();
+            }
         }
-        else if (orderEntityList.size() == 1){
-            stepUploadPosOrder(orderEntityList.get(0));
-        }
-        else{
-            batchUploadPosOrder();
+        catch (Exception e){
+            onError(e.toString());
+            e.printStackTrace();
         }
     }
 

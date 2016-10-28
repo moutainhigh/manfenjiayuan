@@ -3,11 +3,12 @@ package com.manfenjiayuan.pda_supermarket;
 
 import android.os.Environment;
 
-import com.manfenjiayuan.im.IMClient;
 import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
@@ -19,25 +20,13 @@ public class AppContext extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
         //TODO,支持配置开发服务器&正式服务器，需要重新启动
-        return true;
+//        return false;
+        return SharedPreferencesManager.isReleaseVersion();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-
-        configBugly();
-
-        if (BizConfig.RELEASE){
-//            ZLogger.d("正式版本");
-            ZLogger.LOG_ENABLED = true;
-            SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
-        }
-        else{
-//            ZLogger.d("测试版本");
-            ZLogger.LOG_ENABLED = true;
-            SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
-        }
 
 //        SharedPreferencesManager.setSoftKeyboardEnabled(true);
         int pid = android.os.Process.myPid();
@@ -45,11 +34,27 @@ public class AppContext extends MfhApplication {
         // 如果app启用了远程的service，此application:onCreate会被调用2次
         // 默认的app会在以包名为默认的process name下运行，如果查到的process name不是app的process name就立即返回
         if (processAppName != null && processAppName.equalsIgnoreCase(getPackageName())) {
+            configBugly();
+
+            if (BizConfig.RELEASE){
+//            ZLogger.d("正式版本");
+                ZLogger.LOG_ENABLED = true;
+                SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
+            }
+            else{
+//            ZLogger.d("测试版本");
+                ZLogger.LOG_ENABLED = true;
+                SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
+            }
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());
-        }
 
-        debugPrint();
+            if (!BizConfig.RELEASE){
+                SharedPreferencesManager.setSoftKeyboardEnabled(true);
+            }
+
+            debugPrint();
+        }
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);

@@ -1,5 +1,7 @@
 package com.mfh.framework.pay.alipay;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
+
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Signature;
@@ -21,11 +23,17 @@ public class SignUtils {
         try {
             PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(
                     Base64.decode(privateKey));
-            KeyFactory keyf = KeyFactory.getInstance(ALGORITHM);
+
+            //java.security.spec.InvalidKeySpecException: java.lang.RuntimeException:
+            // error:0c0890ba:ASN.1 encoding routines:asn1_check_tlen:WRONG_TAG
+//            KeyFactory keyf = KeyFactory.getInstance(ALGORITHM);
+
+            //ClassCastException: com.android.org.bouncycastle.asn1.DLSequence cannot be
+            // cast to com.android.org.bouncycastle.asn1.ASN1Integer
+            KeyFactory keyf = KeyFactory.getInstance(ALGORITHM, "BC");
             PrivateKey priKey = keyf.generatePrivate(priPKCS8);
 
-            Signature signature = java.security.Signature
-                    .getInstance(SIGN_ALGORITHMS);
+            Signature signature = Signature.getInstance(SIGN_ALGORITHMS);
 
             signature.initSign(priKey);
             signature.update(content.getBytes(DEFAULT_CHARSET));
@@ -34,7 +42,11 @@ public class SignUtils {
 
             return Base64.encode(signed);
         } catch (Exception e) {
+
+            //
+
             e.printStackTrace();
+            ZLogger.e(e.toString());
         }
 
         return null;

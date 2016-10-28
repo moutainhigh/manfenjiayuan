@@ -42,6 +42,7 @@ import java.io.LineNumberReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.Security;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -400,6 +401,9 @@ public class MfhApplication extends Application {
         else{
             jsonObject.put("cupABI", Build.CPU_ABI);
         }
+        jsonObject.put("Security.providers", Security.getProviders());
+
+
 
         ZLogger.d(jsonObject.toJSONString());
 
