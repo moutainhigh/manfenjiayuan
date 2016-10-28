@@ -35,7 +35,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.compound.NaviAddressView;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;

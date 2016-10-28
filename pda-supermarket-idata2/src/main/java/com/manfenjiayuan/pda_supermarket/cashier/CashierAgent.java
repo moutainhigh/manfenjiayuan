@@ -18,6 +18,8 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.scOrder.ScOrder;
+import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -141,7 +143,6 @@ public class CashierAgent {
                                                         String orderBarCode,
                                                         Human vipMember) {
         CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
-
         cashierOrderInfo.setBizType(bizType);
         cashierOrderInfo.setPosTradeNo(orderBarCode);
         cashierOrderInfo.setVipMember(vipMember);
@@ -508,6 +509,72 @@ public class CashierAgent {
         }
 
         return discount;
+    }
+
+
+    /**
+     * 订单结算信息
+     *
+     * @param bizType
+     * @param orderBarCode           订单流水号
+     * @param vipMember 会员
+     */
+    public static CashierOrderInfo makeCashierOrderInfo(ScOrder scOrder, Double amount) {
+        CashierOrderInfo cashierOrderInfo = new CashierOrderInfo();
+        cashierOrderInfo.setBizType(scOrder.getBtype());
+        cashierOrderInfo.setPosTradeNo(scOrder.getBarcode());
+        cashierOrderInfo.setSubject(String.format("订单信息：流水号：%s，交易类型：%s",
+                scOrder.getBarcode(), BizType.name(scOrder.getBtype())));
+
+        if (scOrder != null){
+            Double bCount = 0D;
+            Double retailAmount = 0D;
+            Double finalAmount = 0D;
+            StringBuilder sbBody = new StringBuilder();
+            JSONArray productsInfo = new JSONArray();
+
+            List<ScOrderItem> items = scOrder.getItems();
+            if (items != null && items.size() > 0) {
+                for (ScOrderItem item : items) {
+                    bCount += item.getBcount();
+                    retailAmount += item.getAmount();
+                    finalAmount += item.getCommitAmount();
+
+                    if (sbBody.length() > 0) {
+                        sbBody.append(",");
+                    }
+                    sbBody.append(item.getProductName());
+
+                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("goodsId", item.getgo());
+                    jsonObject.put("skuId", item.getSkuId());
+                    jsonObject.put("bcount", item.getCommitCount());
+                    jsonObject.put("price", item.getPrice());
+                    jsonObject.put("factAmount", item.getCommitAmount());
+                    jsonObject.put("whereId", MfhLoginService.get().getCurOfficeId());//网点ID,netid,
+                    productsInfo.add(item);
+                }
+            }
+
+            Double adjustAmount = retailAmount - finalAmount;
+            Double discountRate;
+            if (retailAmount == 0D) {
+                discountRate = Double.valueOf(String.valueOf(Integer.MAX_VALUE));
+            } else {
+                discountRate = finalAmount / retailAmount;
+            }
+
+            cashierOrderInfo.setOrderId(scOrder.getId());
+            cashierOrderInfo.setbCount(bCount);
+            cashierOrderInfo.setRetailAmount(retailAmount);
+            cashierOrderInfo.setFinalAmount(amount);//使用后台返回的金额
+            cashierOrderInfo.setAdjustAmount(adjustAmount);
+            cashierOrderInfo.setDiscountRate(discountRate);
+            cashierOrderInfo.setBody(sbBody.length() > 20 ? sbBody.substring(0, 20) : sbBody.toString());
+            cashierOrderInfo.setProductsInfo(productsInfo);
+        }
+
+        return cashierOrderInfo;
     }
 
 }

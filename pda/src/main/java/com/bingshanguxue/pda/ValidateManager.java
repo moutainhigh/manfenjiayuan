@@ -305,6 +305,8 @@ public class ValidateManager {
                     public void processResult(IResponseData rspData) {
                         //{"code":"0","msg":"登录成功!","version":"1","data":""}
                         ZLogger.df("登录状态有效 ");
+                        IMClient.getInstance().registerBridge();
+
                         nextStep();
                     }
 
@@ -327,13 +329,16 @@ public class ValidateManager {
      * 自动重登录
      */
     private void retryLogin() {
-        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
-                MfhLoginService.get().getPassword(), new LoginCallback() {
+        final String username = MfhLoginService.get().getLoginName();
+        final String pwd = MfhLoginService.get().getPassword();
+        MfhLoginService.get().doLoginAsync(username,
+                pwd, new LoginCallback() {
                     @Override
-                    public void loginSuccess(UserMixInfo user) {
+                    public void loginSuccess(UserMixInfo userMixInfo) {
                         //登录成功
                         ZLogger.df("重登录成功：");
 
+                        MfhLoginService.get().saveUserMixInfo(username, pwd, userMixInfo);
                         //注册到消息桥
                         IMClient.getInstance().registerBridge();
 

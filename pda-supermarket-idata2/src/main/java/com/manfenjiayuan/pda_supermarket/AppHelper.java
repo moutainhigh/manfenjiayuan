@@ -78,7 +78,6 @@ public class AppHelper {
             ZLogger.deleteOldFiles(0);
             EmbMsgService.getInstance().clearReduantData(0);
 
-
             //删除缓存
             ACacheHelper.clear();
             //清除数据缓存
