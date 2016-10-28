@@ -92,7 +92,12 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
         }
     }
     public List<PosOrderEntity> queryAllAsc(String strWhere, PageInfo pageInfo) {
-        return getDao().queryAllAsc(strWhere, pageInfo);
+        try{
+            return getDao().queryAllAsc(strWhere, pageInfo);
+        }catch (Exception e){
+            ZLogger.e(e.toString());
+            return null;
+        }
     }
     public List<PosOrderEntity> queryAllDesc(String strWhere, PageInfo pageInfo) {
         return getDao().queryAllDesc(strWhere, pageInfo);

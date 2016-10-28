@@ -20,12 +20,13 @@
             app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <com.mfh.framework.uikit.compound.NaviAddressView
+            <com.bingshanguxue.vector_uikit.widget.NaviAddressView
                 android:id="@+id/providerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 app:hint="请选择批发商"
+                app:textSize="14sp"
                 app:textColor="@color/material_white"/>
         </android.support.v7.widget.Toolbar>
 

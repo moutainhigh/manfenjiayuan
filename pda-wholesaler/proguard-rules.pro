@@ -124,7 +124,6 @@ public static final int *;
 -keep class android.serialport.api.** { * ; }
 -keep class com.zebra.adc.decoder.** { * ; }
 -keep class com.bingshanguxue.pda.** { * ; }
--keep class com.bingshanguxue.vector_user.** { * ; }
 -keep class com.bingshanguxue.vector_uikit.** { * ; }
 -keep class com.android.** { * ; }
 

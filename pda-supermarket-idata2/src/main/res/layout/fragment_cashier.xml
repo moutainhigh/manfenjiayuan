@@ -13,8 +13,8 @@
         android:orientation="vertical"
         android:background="@color/material_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:paddingEnd="@dimen/spacing_4x"
-        android:paddingStart="@dimen/spacing_4x">
+        android:paddingEnd="@dimen/spacing_double"
+        android:paddingStart="@dimen/spacing_double">
 
         <!--数量和价格-->
         <LinearLayout
