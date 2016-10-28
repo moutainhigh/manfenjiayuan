@@ -1,7 +1,7 @@
 package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,9 +47,10 @@ public class Card2ViewProvider extends ItemViewProvider<StoreRackCard,
             super(itemView);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.horizontal_list);
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext());
-            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            recyclerView.setLayoutManager(layoutManager);
+//            LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext());
+//            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(itemView.getContext(), 4);
+            recyclerView.setLayoutManager(gridLayoutManager);
 
             mAdapter = new Card2ViewAdapter(AppContext.getAppContext(), null);
             recyclerView.setAdapter(mAdapter);
