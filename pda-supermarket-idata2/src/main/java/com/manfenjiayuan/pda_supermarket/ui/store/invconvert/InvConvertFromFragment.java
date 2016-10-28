@@ -4,26 +4,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
+import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
-import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;
-import com.manfenjiayuan.pda_supermarket.ui.activity.SecondaryActivity;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditLabelView;
-import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
-import com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView;
+import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -35,10 +37,12 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGoodsView {
-    private static final String TAG = "GoodsFragment";
 
-    @Bind(R.id.eqv_barcode)
-    EditQueryView eqvBarcode;
+    @Bind(R.id.toolbar)
+    public Toolbar mToolbar;
+    @Bind(R.id.scanBar)
+    public ScanBar mScanBar;
+
     @Bind(R.id.label_barcodee)
     TextLabelView labelBarcode;
     @Bind(R.id.label_productName)
@@ -49,9 +53,9 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     EditLabelView labelQuantityCheck;
     @Bind(R.id.tv_unit)
     TextView tvUnit;
+    @Bind(R.id.fab_submit)
+    public FloatingActionButton btnSubmit;
 
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
 
     private InvSkuGoods curGoods = null;
     private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
@@ -71,12 +75,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     }
 
     @Override
-    protected void onScanCode(String code) {
-        eqvBarcode.setInputString(code);
-        query(code);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -85,8 +83,41 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+        }
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
 
-        labelQuantityCheck.config(EditLabelView.INPUT_TYPE_NUMBER_DECIMAL);
+        if (mScanBar != null) {
+//            mScanBar.setSoftKeyboardEnabled(true);
+            mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
+                @Override
+                public void onKeycodeEnterClick(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
+                }
+
+                @Override
+                public void onAction1Click(String text) {
+                    mScanBar.reset();
+                    queryByBarcode(text);
+                }
+            });
+        } else {
+            ZLogger.d("mScanBar is null");
+        }
         labelQuantityCheck.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
             public void onKeycodeEnterClick(String text) {
@@ -98,36 +129,22 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
                 refresh(null);
             }
         });
-        labelQuantityCheck.setSoftKeyboardEnabled(true);
-        eqvBarcode.config(EditQueryView.INPUT_TYPE_TEXT);
-        eqvBarcode.setSoftKeyboardEnabled(true);
-        eqvBarcode.setInputSubmitEnabled(false);
-        eqvBarcode.setOnViewListener(new EditQueryView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                query(text);
-            }
-        });
+
         btnSubmit.setEnabled(false);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     /**
-     * 查询包裹信息
+     * 查询商品信息
      */
-    public void query(String barcode) {
+    public void queryByBarcode(String barcode) {
+        isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
-            eqvBarcode.requestFocus();
+            mScanBar.reset();
+            isAcceptBarcodeEnabled = true;
             return;
         }
 
-        eqvBarcode.clear();
-
-        if (!NetWorkUtil.isConnect(getActivity())) {
+        if (!NetworkUtils.isConnect(getActivity())) {
             DialogUtil.showHint(R.string.toast_network_error);
             refresh(null);
             return;
@@ -142,6 +159,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
         switch (requestCode) {
             case REQUEST_CODE_INV_CONVERT_TO: {
                 //商品签收成功
+                hideProgressDialog();
                 if (resultCode == Activity.RESULT_OK) {
                     refresh(null);
                 }
@@ -151,25 +169,27 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnClick(R.id.button_submit)
+    @OnClick(R.id.fab_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
+        isAcceptBarcodeEnabled = false;
+
+        onSubmitProcess();
+
         if (curGoods == null) {
-            btnSubmit.setEnabled(true);
-            DialogUtil.showHint("请先扫描商品");
+            onSubmitError("请先扫描商品");
             return;
         }
 
-        if (StringUtils.isEmpty(labelQuantityCheck.getEtContent())) {
-            DialogUtil.showHint("库存数不能为空");
-            btnSubmit.setEnabled(true);
+        if (StringUtils.isEmpty(labelQuantityCheck.getInput())) {
+            onSubmitError("库存数不能为空");
             return;
         }
 
         // TODO: 5/19/16
         ChangeSkuStoreItem itemWrapper = new ChangeSkuStoreItem();
         itemWrapper.setId(curGoods.getId());
-        itemWrapper.setQuantity(Double.valueOf(labelQuantityCheck.getEtContent()));
+        itemWrapper.setQuantity(Double.valueOf(labelQuantityCheck.getInput()));
 
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -182,47 +202,73 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     }
 
     /**
+     * 提交处理中
+     */
+    public void onSubmitProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+    }
+
+    /**
+     * 提交失败
+     */
+    public void onSubmitError(String errorMsg) {
+        if (!StringUtils.isEmpty(errorMsg)) {
+            showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+            ZLogger.df(errorMsg);
+        } else {
+            hideProgressDialog();
+        }
+        isAcceptBarcodeEnabled = true;
+        btnSubmit.setEnabled(true);
+    }
+
+    /**
+     * 提交成功
+     */
+    public void onSubmitSuccess() {
+        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
+//        hideProgressDialog();
+    }
+
+    /**
      * 刷新信息
      */
     private void refresh(InvSkuGoods invSkuGoods) {
+        mScanBar.reset();
+        isAcceptBarcodeEnabled = true;
+        DeviceUtils.hideSoftInput(getActivity(), mScanBar);
+
         curGoods = invSkuGoods;
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
-            labelQuantityCheck.setEtContent("");
+            labelQuantityCheck.setInput("");
             tvUnit.setText("");
 
             btnSubmit.setEnabled(false);
-
-            eqvBarcode.clear();
-            eqvBarcode.requestFocus();
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getName());
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
-            labelQuantityCheck.setEtContent("");
+            labelQuantityCheck.setInput("");
             tvUnit.setText(curGoods.getUnit());
 
             btnSubmit.setEnabled(true);
 
             labelQuantityCheck.requestFocusEnd();
-
-//                etInput.setSelection(etInput.length());
         }
-
-        DeviceUtils.hideSoftInput(getActivity(), labelQuantityCheck);
     }
 
     @Override
-    public void onProcess() {
+    public void onIInvSkuGoodsViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
     }
 
     @Override
-    public void onError(String errorMsg) {
+    public void onIInvSkuGoodsViewError(String errorMsg) {
 
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
@@ -230,10 +276,20 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     }
 
     @Override
-    public void onSuccess(InvSkuGoods invSkuGoods) {
+    public void onIInvSkuGoodsViewSuccess(InvSkuGoods invSkuGoods) {
 
         hideProgressDialog();
 
         refresh(invSkuGoods);
+    }
+
+    @Override
+    protected void onScanCode(String code) {
+        if (!isAcceptBarcodeEnabled) {
+            return;
+        }
+        isAcceptBarcodeEnabled = false;
+        mScanBar.reset();
+        queryByBarcode(code);
     }
 }

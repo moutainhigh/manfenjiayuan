@@ -1,0 +1,14 @@
+package com.manfenjiayuan.pda_supermarket.ui.store;
+
+import com.mfh.framework.mvp.MvpView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
+
+/**
+ * 采购订单
+ * Created by bingshanguxue on 16/3/21.
+ */
+public interface IInvSendIoOrderView extends MvpView {
+    void onIInvSendIoOrderViewProcess();
+    void onIInvSendIoOrderViewError(String errorMsg);
+    void onIInvSendIoOrderViewSuccess(InvSendIoOrderItemBrief data);
+}
