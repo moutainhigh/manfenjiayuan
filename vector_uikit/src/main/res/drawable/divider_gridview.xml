@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <size
+        android:height="1dp"
+        android:width="1dp" />
+
+    <solid android:color="@color/mfh_divider_light"/>
+
+</shape>
+
+<!--<nine-patch xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:src="@drawable/abc_list_divider_mtrl_alpha"-->
+            <!--android:tint="?android:attr/colorForeground"-->
+            <!--android:alpha="0.12" />-->
