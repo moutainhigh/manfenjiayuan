@@ -39,7 +39,7 @@ public class Card10ViewProvider extends ItemViewProvider<Card10,
     protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull Card10 card) {
         List<StoreRackCardItem> items = card.getItems();
 //        ZLogger.d(String.format("共有%s个元素个元素\"", items != null ? items.size() : 0));
-        if (items != null & items.size() > 0){
+        if (items != null && items.size() > 0){
             holder.setCardItem(items.get(0));
         }
         else{

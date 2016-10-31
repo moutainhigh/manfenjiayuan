@@ -45,6 +45,7 @@ import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card1;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card10;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card1Item;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card2Item;
+import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card6;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.Card9;
 import com.manfenjiayuan.mixicook_vip.ui.shopcart.ShopcartFragment;
 import com.manfenjiayuan.mixicook_vip.utils.AddCartAnimation;
@@ -888,7 +889,15 @@ public class HomeFragment extends BaseFragment
                     items.add(card);
 
                     ZLogger.d("添加card2：" + card.getCategoryName());
-                } else if (card.getType().equals(9)) {
+                }
+                else if (card.getType().equals(6)) {
+                    Card6 card6 = new Card6();
+                    card6.setType(card.getType());
+                    card6.setNetName(card.getNetName());
+                    card6.setItems(card.getItems());
+                    items.add(card6);
+                    ZLogger.d("添加card6：" + card6.getNetName());
+                }else if (card.getType().equals(9)) {
                     Card9 card9 = new Card9();
                     card9.setType(card.getType());
                     card9.setCategoryName(card.getCategoryName());
@@ -896,7 +905,7 @@ public class HomeFragment extends BaseFragment
                     card9.setProducts(card.getProducts());
                     card9.setShopId(curCompanyInfo.getId());
                     items.add(card9);
-                    ZLogger.d("添加card3：" + card9.getCategoryName());
+                    ZLogger.d("添加card9：" + card9.getCategoryName());
 
                     products.addAll(card.getProducts());
                 }
