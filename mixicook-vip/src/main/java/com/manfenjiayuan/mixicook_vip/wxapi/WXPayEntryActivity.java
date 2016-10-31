@@ -1,7 +1,6 @@
-package net.sourceforge.simcpux.wxapi;
+package com.manfenjiayuan.mixicook_vip.wxapi;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,6 +12,10 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import net.sourceforge.simcpux.wxapi.Constants;
+
+import de.greenrobot.event.EventBus;
 
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler{
 
@@ -51,12 +54,19 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler{
 //			-2	用户取消	无需处理。发生场景：用户不支付了，点击取消，返回APP。
 
 			// TODO: 14/10/2016 页面跳转
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("提示");
-			builder.setMessage(getString(R.string.wepay_result_callback_msg, String.valueOf(resp.errCode)));
-			builder.show();
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//			builder.setTitle("提示");
+//			builder.setMessage(getString(R.string.wepay_result_callback_msg, String.valueOf(resp.errCode)));
+//			builder.show();
 
+			PayResultWrapper payResultWrapper = new PayResultWrapper();
+			payResultWrapper.setErrCode(resp.errCode);
+			payResultWrapper.setErrStr(resp.errStr);
+			payResultWrapper.setOpenId(resp.openId);
+			payResultWrapper.setTransaction(resp.transaction);
+			EventBus.getDefault().post(new PayEvent(PayEvent.EVENT_ID_ONPAYRESP, payResultWrapper));
 
+			finish();
 			//sendBroadcast通知处理结果
 //			Intent intent = new Intent(WXConstants.ACTION_WXPAY_RESP);
 ////			Intent intent = new Intent();

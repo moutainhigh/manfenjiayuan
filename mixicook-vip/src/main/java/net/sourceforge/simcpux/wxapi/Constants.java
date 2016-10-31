@@ -29,4 +29,5 @@ public class Constants {
     public static final String ACTION_WXPAY_RESP = "ACTION_WXPAY_RESP";//微信支付处理结果
     public static final String EXTRA_KEY_ERR_CODE = "EXTRA_KEY_ERR_CODE";
     public static final String EXTRA_KEY_ERR_STR = "EXTRA_KEY_ERR_STR";
+
 }

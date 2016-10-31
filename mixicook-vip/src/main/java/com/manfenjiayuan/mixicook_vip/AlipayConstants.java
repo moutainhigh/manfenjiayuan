@@ -21,16 +21,15 @@ public class AlipayConstants {
     /** 支付宝账户登录授权业务：入参target_id值 */
     public static final String TARGET_ID = "";
     /** 商户私钥，pkcs8格式 */
-    public static final String RSA_PRIVATE = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOkpELoxXPsn/WyVeEQBSRoqRdUlopF7DN8G280J45Fe3R+VDAmxFwJMz3m/Kf7akH7n9gTTo/M5BbiS2ihoMJ0hZ/xyZDlh56JTfD3zrYfFI0W/WkWCzVC6bYR8T4Aikh0MTkHOpII27dy3adQQPfZVowYRY9b9JsJtsXx+/gLNAgMBAAECgYA731SxS03CHNHB2VwJsn7QHjzScBif3QZAGyXEMB7kzIRhwMdXkccDyy+X5tPk4sEqJWySbrpyEZl7fRJSP/cDVPyoUksZT1abXDanscw6AuiZM5fXiBn4/CbZkPChhOqNGuOI5gUJ9kTj36QQjSJ/n98rT3aE+7nyMskOoBVaIQJBAPf9aEaNvKZS8QbO66bRz2N+zLKRaxB6VHBO8BLv9K9t1wL1V4aANoXAsu2bK7HUGzXuYXdHP/4M3hqD9/FT7ykCQQDwsQkLZloDPrwtwErDc3ItPl6MSh8g/necKM5uyR+Dcp09QW5rKQ6oU0wRVZGMSqj+xnAkWB9GjV24LjYWrX8FAkAzwdG3l/FdjUX8s8b/BB8Slu5F/o+n2sAwyGjWqvoYewY6+dWQnsXCWJt/d7lA3hHnyZ7R9C7o6OqaAh0HYwsxAkAKLyN31QPYAU6LDQjczkS1f18WxogcqEe9VsitTVtE/5OBpQQcCqexHZ0pWpqG+h2+cf0KvKPOI2skwOfO+9ZVAkEAnjJYUSSUE/w+iSyS+prsl1p9M+lHoeWkJWyuJWTAH/SOOZrxFCI6BmZY6WvKlI66AeiXJ3sm5+TAuRkKP2CzaA==";
+    public static final String RSA_PRIVATE = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBALN7fuDnxdXo5C+zubcHXdg1vjJFdLIACQrFE41zaD/tS0dSeGUPJUM2dbAfdSjbQkLKX/btGV1oLgXgJVLBoCZN79R7cPoeBNVusx/04V59omIn1QfzfrUGwNT+hJbII1K8uudzwbmWD7VBztu63CXPG1FOFtaPMasDhxFT8zVLAgMBAAECgYEAiGXoxWi+K1Mi3rGaCGNbyS0GjtPD3GY0eO/ObSfwaOyf0eL1xe9dpRelFqTBd7wxPeroRRJovVin6SUvmBW36z0hfm52mk/7kG49JI4da+g6DbT4PlSy/vWvfOCpo6U6D0r26xxbuubM1xMANWKCQY9OQ+g8/yVZzoKxJ5rQSsECQQDqbt19+DK4EgAkDwrw3k9V/uNo0fJNsr9JNNJISTTJfu8LVHRmiKUiZc4QzCpfjx+n30RTtqtoZYrq92Fyzx9hAkEAw/58quLxTACTVeO6Kf3rRiPPwh89fQokDHmkbq4LnJzZ+G8+YAJmFAI9lg6m1h/GnpEYyDmHY00UXnJy7H7wKwJBANW8ZHZgHqXRy40Upe37Uave6qj7mQWb7WiqHvpGvDjlYL4crs94z83vsZOBATUEgWEFXv9P8TEKO0CEcLVC/6ECQBEQdTZDsBKX8jwGKc1CKFvg/lO+eJIMcfsMFD72tFgcZ/XzaZDeZJjVYRtRh0EZXyerJmc4awtASMe4Wz0wCCUCQQClaC8M0WTIQ3vclmPPhlVh025E464K8SnSoSKJLL9qoPpz/+vnTy2qvDthIAJxwnsgLF4u8dArqTTIMko5kymO";
 
     public static final String CHARSET = "UTF-8";
 
-
-    //商户收款账号
-    public static final String SELLER = "finance@manfenjiayuan.com";
+    /**商户收款账号*/
+    public static final String SELLER = "755943995@qq.com";
 
     //支付宝公钥
-    public static final String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
+    public static final String RSA_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB";
 
 
     //服务器异步通知页面路径//"http://notify.msp.hk/notify.htm"

@@ -27,6 +27,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.api.pay.PreOrderRsp;
@@ -250,11 +251,11 @@ public class OrderPayFragment extends BaseFragment {
         btnSubmit.setEnabled(false);
 
         if ((curPayAction & PAY_ACTION_ALIPAY) == PAY_ACTION_ALIPAY) {
-            prePayOrder(PayApi.WAYTYPE_ALIPAY, mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
-
+            prePayOrder(WayType.ALI, PayApi.WEPAY_CONFIGID_MIXICOOK,
+                    mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
         } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
-            prePayOrder(PayApi.WAYTYPE_WXPAY, mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
-
+            prePayOrder(WayType.WEIXIN, PayApi.WEPAY_CONFIGID_MIXICOOK,
+                    mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
         } else if ((curPayAction & PAY_ACTION_ACCOUNT) == PAY_ACTION_ACCOUNT) {
             scAccountPay();
         } else {
@@ -333,7 +334,7 @@ public class OrderPayFragment extends BaseFragment {
      * @param orderIds 订单id,多个以英文,隔开(必填)
      * @param btype    业务类型, 3-商城(必填)
      */
-    private void prePayOrder(final int wayType, final int btype, final String orderIds) {
+    private void prePayOrder(final int wayType, Long configId, final int btype, final String orderIds) {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
 //        animProgress.setVisibility(View.VISIBLE);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候..", false);
@@ -367,7 +368,7 @@ public class OrderPayFragment extends BaseFragment {
                         String token = prePayResponse.getToken();
                         if (!TextUtils.isEmpty(outTradeNo)) {
 //                                amount=1.0id=138750token=501903prepayId=nullsign=null
-                            if (wayType == PayApi.WAYTYPE_ALIPAY) {
+                            if (wayType == WayType.ALI) {
                                 orderPayData.clear();
                                 orderPayData.put("preOrderId", outTradeNo);
                                 orderPayData.put("orderIds", orderIds);
@@ -380,7 +381,7 @@ public class OrderPayFragment extends BaseFragment {
                                 alipay("商品名称", "商品详情", prePayResponse.getAmount(), outTradeNo);
 
 //                                finish();
-                            } else if (wayType == PayApi.WAYTYPE_WXPAY) {
+                            } else if (wayType == WayType.WEIXIN) {
                                 //测试支付接口
 //                                WXHelper.getInstance(MfPayActivity.this).getPrepayId();
                                 //后台调用统一下单API生成预付单,获取到prepay_id后将参数再次签名传输给APP发起支付
@@ -413,8 +414,8 @@ public class OrderPayFragment extends BaseFragment {
                 , MfhApplication.getAppContext()) {
         };
 
-        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), orderIds, btype,
-                wayType, WXUtil.genNonceStr(), responseCallback);
+        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), wayType, configId,
+                orderIds, btype, WXUtil.genNonceStr(), responseCallback);
     }
 
     /**
@@ -466,7 +467,7 @@ public class OrderPayFragment extends BaseFragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ALI_PAY_FLAG: {
-                    parseAlipayResp((String) msg.obj);
+                    parseAlipayResp((Map<String, String>) msg.obj);
                     break;
                 }
                 case ALI_CHECK_FLAG: {
@@ -484,7 +485,7 @@ public class OrderPayFragment extends BaseFragment {
      *
      * @param resp
      */
-    private void parseAlipayResp(String resp) {
+    private void parseAlipayResp(Map<String, String> resp) {
         PayResult payResult = new PayResult(resp);
 //        resultStatus={9000};memo={};result={partner="2088011585033309"&seller_id="finance@manfenjiayuan.com"&out_trade_no="138761"&subject="商品名称"&body="商品详情"&total_fee="0.01"&notify_url="http://devnew.manfenjiayuan.com/pmc/pmcstock/notifyOrder"&service="mobile.securitypay.pay"&payment_type="1"&_input_charset="utf-8"&it_b_pay="30m"&return_url="m.alipay.com"&success="true"&sign_type="RSA"&sign="OoNoZHMgXQ81Irh/DnCjEhfaEuL5lIqjxCgs05+gV/oIUUqjMffmeRf4fPuXwVsC4XpjQjdNLnCLgXqfIvpAYdt3bqDXEGV1BojgEJl1bz8HCrvT8YIAgPMY/0S9qzCDwuMNcDhcTo2dilK2isUE5AD1MjYtgmtEIWG3WDJNqIA="}
         ZLogger.d("parseAlipayResp: " + payResult.toString());
@@ -500,13 +501,13 @@ public class OrderPayFragment extends BaseFragment {
         if (TextUtils.equals(resultStatus, "9000")) {
             // 注意：该笔订单是否真实支付成功，需要依赖服务端的异步通知。
             DialogUtil.showHint("支付成功");
-            processOrder(PayApi.WAYTYPE_ALIPAY);
+            processOrder(WayType.ALI);
         } else {
             // 注意：该笔订单是否真实支付成功，需要依赖服务端的异步通知。
             // 判断resultStatus 为非“9000”则代表可能支付失败
             // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
             if (TextUtils.equals(resultStatus, "8000")) {
-                processOrder(PayApi.WAYTYPE_ALIPAY);
+                processOrder(WayType.ALI);
 //                if(BizConfig.DEBUG){
 //                    DialogUtil.showHint("支付结果确认中");
 //                }
@@ -614,7 +615,7 @@ public class OrderPayFragment extends BaseFragment {
                 case 0: {
                     //如果支付成功则去后台查询支付结果再展示用户实际支付结果。注意一定不能以客户端
                     // 返回作为用户支付的结果，应以服务器端的接收的支付通知或查询API返回的结果为准。
-                    processOrder(PayApi.WAYTYPE_WXPAY);
+                    processOrder(WayType.WEIXIN);
                 }
                 break;
                 //错误，可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。

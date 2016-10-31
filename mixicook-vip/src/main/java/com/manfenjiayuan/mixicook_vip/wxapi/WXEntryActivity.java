@@ -1,4 +1,4 @@
-package net.sourceforge.simcpux.wxapi;
+package com.manfenjiayuan.mixicook_vip.wxapi;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import net.sourceforge.simcpux.wxapi.Constants;
 
 /**
  * Created by Administrator on 2014/9/18.

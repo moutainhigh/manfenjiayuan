@@ -22,6 +22,7 @@ public class ARCode {
 
     public static final int ARC_MY = 0x20;//我的
     public static final int ARC_MY_PROFILE = 0x21;//我的——信息
+    public static final int ARC_MY_TOPUP = 0x22;//我的——充值
 
     public static final String INTENT_KEY_ISRELOAD = "isReload";
 

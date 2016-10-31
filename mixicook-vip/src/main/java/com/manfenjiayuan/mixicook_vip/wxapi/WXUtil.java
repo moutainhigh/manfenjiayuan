@@ -367,9 +367,9 @@ public class WXUtil {
 		sb.append("key=");
 		sb.append(Constants.API_KEY);
 
-		ZLogger.e("raw:" + sb.toString());
+		ZLogger.d("raw:" + sb.toString());
 		String sign = MD5Util.getMessageDigest(sb.toString().getBytes()).toUpperCase();
-		ZLogger.e("sign: " +  sign);
+		ZLogger.d("sign: " +  sign);
 		return sign;
 	}
 

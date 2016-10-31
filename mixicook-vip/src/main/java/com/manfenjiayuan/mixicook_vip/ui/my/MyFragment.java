@@ -170,6 +170,12 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
                 refresh(false);
             }
             break;
+            case ARCode.ARC_MY_TOPUP: {
+                if (resultCode == Activity.RESULT_OK){
+                    refresh(false);
+                }
+            }
+            break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -209,7 +215,6 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
         intent.putExtras(extras);
 //        startActivity(intent);
         startActivityForResult(intent, ARCode.ARC_MY_PROFILE);
-
     }
 
     /**
@@ -286,7 +291,8 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
      */
     @OnClick(R.id.item_topup)
     public void redirect2Topup() {
-        ActivityRoute.redirect2Topup(getActivity());
+//        ActivityRoute.redirect2Topup(getActivity());
+        ActivityRoute.redirect2Topup2(getActivity());
     }
 
     /**
