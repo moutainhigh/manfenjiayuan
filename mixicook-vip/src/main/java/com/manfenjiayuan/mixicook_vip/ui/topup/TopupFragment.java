@@ -294,13 +294,13 @@ public class TopupFragment extends BaseFragment {
                 alipay("满分家园账单充值", "支付宝充值", MUtils.formatDouble(amount, ""),
                         MUtils.genOutTradeNo());
             } else {
-                topupStep2(WayType.ALI, MUtils.formatDouble(amount, ""));
+                topupStep2(WayType.ALIPAY_APP, MUtils.formatDouble(amount, ""));
             }
         } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
             if (!BizConfig.RELEASE) {
                 WXHelper.getInstance(getContext()).getPrepayId();
             } else {
-                topupStep2(WayType.WEIXIN, MUtils.formatDouble(amount, ""));
+                topupStep2(WayType.WEPAY_APP, MUtils.formatDouble(amount, ""));
             }
         } else {
             DialogUtil.showHint("请选择支付方式");
@@ -334,7 +334,7 @@ public class TopupFragment extends BaseFragment {
             return;
         }
 
-        if (WayType.ALI.equals(wayType)) {
+        if (WayType.ALIPAY_APP.equals(wayType)) {
             NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                     NetProcessor.Processor<String>>(
                     new NetProcessor.Processor<String>() {
@@ -366,9 +366,10 @@ public class TopupFragment extends BaseFragment {
                     , MfhApplication.getAppContext()) {
             };
 
-            PayApiImpl.prePay(MfhLoginService.get().getCurrentGuId(), amount, wayType,
+            PayApiImpl.prePay(PayApi.ALIPAY_CONFIGID_MIXICOOK,
+                    MfhLoginService.get().getCurrentGuId(), amount, wayType,
                     WXUtil.genNonceStr(), responseCallback);
-        } else if (WayType.WEIXIN.equals(wayType)) {
+        } else if (WayType.WEPAY_APP.equals(wayType)) {
             NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<AppPrePayRsp,
                     NetProcessor.Processor<AppPrePayRsp>>(
                     new NetProcessor.Processor<AppPrePayRsp>() {
@@ -424,7 +425,8 @@ public class TopupFragment extends BaseFragment {
         Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AlipayConstants.APPID,
                 OrderInfoUtil2_0.ALIPAY_TRADE_APPPAY, AlipayConstants.CHARSET,
                 TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS),
-                AlipayConstants.ALIPAY_NOTIFY_URL, bizContent);
+                AlipayConstants.ALIPAY_NOTIFY_URL + "/" + PayApi.ALIPAY_CONFIGID_MIXICOOK,
+                bizContent);
         String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
         ZLogger.d("orderParam: \n" + orderParam);
 

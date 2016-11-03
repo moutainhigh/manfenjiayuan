@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.manfenjiayuan.mixicook_vip.AlipayConstants;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.widget.LabelView1;
+import com.manfenjiayuan.mixicook_vip.wxapi.PayEvent;
+import com.manfenjiayuan.mixicook_vip.wxapi.PayResultWrapper;
 import com.manfenjiayuan.mixicook_vip.wxapi.WXUtil;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
@@ -45,11 +48,11 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import net.sourceforge.simcpux.WXHelper;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -78,11 +81,11 @@ public class OrderPayFragment extends BaseFragment {
     @Bind(R.id.button_submit)
     Button btnSubmit;
 
-    private ScOrderPaymentDialog paymentDialog = null;
+//    private ScOrderPaymentDialog paymentDialog = null;
 
     private PayOrderBrief mPayOrderBrief;
     private int curPayAction = PAY_ACTION_ACCOUNT;
-    private Map<String, String> orderPayData = new HashMap<>();
+    private PrePayOrderInfo mPrePayOrderInfo;
 
 
     public static OrderPayFragment newInstance(Bundle args) {
@@ -102,6 +105,14 @@ public class OrderPayFragment extends BaseFragment {
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_order_pay;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -198,6 +209,42 @@ public class OrderPayFragment extends BaseFragment {
         return isResponseBackPressed();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEventMainThread(PayEvent event) {
+        int eventId = event.getEventId();
+        Bundle args = event.getArgs();
+
+        ZLogger.d(String.format("PayEvent(%d)", eventId));
+        switch (eventId) {
+            case PayEvent.EVENT_ID_ONPAYRESP: {
+                btnSubmit.setEnabled(true);
+                hideProgressDialog();
+                PayResultWrapper payResultWrapper = event.getPayResultWrapper();
+                if (payResultWrapper != null) {
+                    ZLogger.d(JSON.toJSONString(payResultWrapper));
+                    //0	成功	展示成功页面
+                    if (payResultWrapper.getErrCode() == 0) {
+//                        topupFailed();
+                        getActivity().setResult(Activity.RESULT_OK, null);
+                        getActivity().finish();
+                    }
+//                    //-1	错误	可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
+//                    else if (payResultWrapper.getErrCode() == -1) {
+//                    }
+//                    //-2	用户取消	无需处理。发生场景：用户不支付了，点击取消，返回APP。
+//                    else if (payResultWrapper.getErrCode() == -2) {
+//                    }
+                }
+            }
+            break;
+        }
+    }
+
     /**
      * 初始化
      */
@@ -251,10 +298,10 @@ public class OrderPayFragment extends BaseFragment {
         btnSubmit.setEnabled(false);
 
         if ((curPayAction & PAY_ACTION_ALIPAY) == PAY_ACTION_ALIPAY) {
-            prePayOrder(WayType.ALI, PayApi.WEPAY_CONFIGID_MIXICOOK,
+            prePayOrder(WayType.ALIPAY_APP, PayApi.ALIPAY_CONFIGID_MIXICOOK,
                     mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
         } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
-            prePayOrder(WayType.WEIXIN, PayApi.WEPAY_CONFIGID_MIXICOOK,
+            prePayOrder(WayType.WEPAY_APP, PayApi.WEPAY_CONFIGID_MIXICOOK,
                     mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
         } else if ((curPayAction & PAY_ACTION_ACCOUNT) == PAY_ACTION_ACCOUNT) {
             scAccountPay();
@@ -334,7 +381,8 @@ public class OrderPayFragment extends BaseFragment {
      * @param orderIds 订单id,多个以英文,隔开(必填)
      * @param btype    业务类型, 3-商城(必填)
      */
-    private void prePayOrder(final int wayType, Long configId, final int btype, final String orderIds) {
+    private void prePayOrder(final int wayType, Long configId,
+                             final int btype, final String orderIds) {
 //        emptyView.setErrorType(EmptyLayout.BIZ_LOADING);
 //        animProgress.setVisibility(View.VISIBLE);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候..", false);
@@ -360,53 +408,43 @@ public class OrderPayFragment extends BaseFragment {
 
                     @Override
                     public void processResult(IResponseData rspData) {
-                        RspBean<PreOrderRsp> retValue = (RspBean<PreOrderRsp>) rspData;
-                        PreOrderRsp prePayResponse = retValue.getValue();
-                        ZLogger.d("prePayResponse: " + prePayResponse.toString());
-                        //商户网站唯一订单号
-                        String outTradeNo = prePayResponse.getId();
-                        String token = prePayResponse.getToken();
-                        if (!TextUtils.isEmpty(outTradeNo)) {
-//                                amount=1.0id=138750token=501903prepayId=nullsign=null
-                            if (wayType == WayType.ALI) {
-                                orderPayData.clear();
-                                orderPayData.put("preOrderId", outTradeNo);
-                                orderPayData.put("orderIds", orderIds);
-                                orderPayData.put("btype", String.valueOf(btype));
-                                orderPayData.put("token", token);
-                                ZLogger.d("orderPayData: " + orderPayData.toString());
-//                                {btype=3, token=257052, orderIds=138756, preOrderId=138757}
+                        PreOrderRsp prePayResponse = null;
+                        if (rspData != null){
+                            RspBean<PreOrderRsp> retValue = (RspBean<PreOrderRsp>) rspData;
+                            prePayResponse = retValue.getValue();
+                        }
 
-                                //支付宝
-                                alipay("商品名称", "商品详情", prePayResponse.getAmount(), outTradeNo);
-
-//                                finish();
-                            } else if (wayType == WayType.WEIXIN) {
-                                //测试支付接口
-//                                WXHelper.getInstance(MfPayActivity.this).getPrepayId();
-                                //后台调用统一下单API生成预付单,获取到prepay_id后将参数再次签名传输给APP发起支付
-                                String prepayId = prePayResponse.getPrepayId();
-                                if (prepayId != null) {
-                                    orderPayData.clear();
-                                    orderPayData.put("preOrderId", outTradeNo);
-                                    orderPayData.put("orderIds", orderIds);
-                                    orderPayData.put("btype", String.valueOf(btype));
-                                    orderPayData.put("token", token);
-                                    ZLogger.d("orderPayData: " + orderPayData.toString());
-
-                                    hideProgressDialog();
-                                    btnSubmit.setEnabled(true);
-                                    WXHelper.getInstance(getContext()).sendPayReq(prepayId);
-
-//                                    finish();
-                                } else {
-                                    notifyPayResult(-1);
-                                    DialogUtil.showHint("prepayId 不能为空");
-                                }
-                            }
-                        } else {
+                        if (prePayResponse == null){
                             notifyPayResult(-1);
                             DialogUtil.showHint("outTradeNo 不能为空");
+                            return;
+                        }
+
+                        ZLogger.d("prePayResponse: " + prePayResponse.toString());
+
+                        mPrePayOrderInfo = genAppPayInfoWrapper(prePayResponse.getId(),
+                                orderIds, btype, prePayResponse.getToken(), wayType);
+//                                amount=1.0id=138750token=501903prepayId=nullsign=null
+                        if (wayType == WayType.ALIPAY_APP) {
+//                                {btype=3, token=257052, orderIds=138756, preOrderId=138757}
+
+                            //支付宝
+                            alipay("商品名称", "商品详情", prePayResponse.getAmount(),
+                                    String.valueOf(prePayResponse.getId()));
+//                                finish();
+                        } else if (wayType == WayType.WEPAY_APP) {
+                            //测试支付接口
+//                                WXHelper.getInstance(MfPayActivity.this).getPrepayId();
+                            //后台调用统一下单API生成预付单,获取到prepay_id后将参数再次签名传输给APP发起支付
+                            String prepayId = prePayResponse.getPrepayId();
+                            if (prepayId != null) {
+//                                    hideProgressDialog();
+                                btnSubmit.setEnabled(true);
+                                WXHelper.getInstance(getContext()).sendPayReq(prepayId);
+                            } else {
+                                notifyPayResult(-1);
+                                DialogUtil.showHint("prepayId 不能为空");
+                            }
                         }
                     }
                 }
@@ -418,6 +456,17 @@ public class OrderPayFragment extends BaseFragment {
                 orderIds, btype, WXUtil.genNonceStr(), responseCallback);
     }
 
+    private PrePayOrderInfo genAppPayInfoWrapper(Long preOrderId, String orderIds,
+                                                 Integer btype, String token, Integer wayType){
+        PrePayOrderInfo prePayOrderInfo = new PrePayOrderInfo();
+        prePayOrderInfo.setPreOrderId(preOrderId);
+        prePayOrderInfo.setOrderIds(orderIds);
+        prePayOrderInfo.setBtype(btype);
+        prePayOrderInfo.setToken(token);
+        prePayOrderInfo.setWayType(wayType);
+        return prePayOrderInfo;
+    }
+
     /**
      * call alipay sdk pay. 调用SDK支付
      * 支付行为需要在独立的非ui线程中执行
@@ -425,12 +474,12 @@ public class OrderPayFragment extends BaseFragment {
      * 系统繁忙，请稍后再试（ALI64）
      */
     public void alipay(final String subject, final String body, final String amount, final String outTradeNo) {
-        String bizContent = OrderInfoUtil2_0.buildBizContent( body, subject, outTradeNo, "30m",
+        String bizContent = OrderInfoUtil2_0.buildBizContent(body, subject, outTradeNo, "30m",
                 amount, AlipayConstants.SELLER);
         Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AlipayConstants.APPID,
                 OrderInfoUtil2_0.ALIPAY_TRADE_APPPAY, AlipayConstants.CHARSET,
                 TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS),
-                AlipayConstants.ALIPAY_NOTIFY_URL, bizContent);
+                AlipayConstants.ALIPAY_NOTIFY_URL + "/" + PayApi.ALIPAY_CONFIGID_MIXICOOK, bizContent);
         String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
         String sign = OrderInfoUtil2_0.getSign(params, AlipayConstants.RSA_PRIVATE);
         final String orderInfo = orderParam + "&" + sign;
@@ -501,13 +550,13 @@ public class OrderPayFragment extends BaseFragment {
         if (TextUtils.equals(resultStatus, "9000")) {
             // 注意：该笔订单是否真实支付成功，需要依赖服务端的异步通知。
             DialogUtil.showHint("支付成功");
-            processOrder(WayType.ALI);
+            processOrder(WayType.ALIPAY_APP);
         } else {
             // 注意：该笔订单是否真实支付成功，需要依赖服务端的异步通知。
             // 判断resultStatus 为非“9000”则代表可能支付失败
             // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
             if (TextUtils.equals(resultStatus, "8000")) {
-                processOrder(WayType.ALI);
+                processOrder(WayType.ALIPAY_APP);
 //                if(BizConfig.DEBUG){
 //                    DialogUtil.showHint("支付结果确认中");
 //                }
@@ -530,7 +579,7 @@ public class OrderPayFragment extends BaseFragment {
      * 微信/支付宝支付结束后，调用满分后台支付接口，处理订单。
      */
     private void processOrder(final int wayType) {
-        if (orderPayData.isEmpty()) {
+        if (mPrePayOrderInfo == null) {
             notifyPayResult(0);
 
             DialogUtil.showHint("支付成功");
@@ -572,14 +621,10 @@ public class OrderPayFragment extends BaseFragment {
         };
 
         DialogUtil.showHint("系统正在处理订单，请稍候...");
-        String tradeNo = orderPayData.get("preOrderId");
-        String orderIds = orderPayData.get("orderIds");
-        String btype = orderPayData.get("btype");
-        String token = orderPayData.get("token");
-        orderPayData.clear();
-        PayApiImpl.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
+        CommonUserAccountApiImpl.mfhAccountPay(mPrePayOrderInfo.getPreOrderId(),
+                mPrePayOrderInfo.getOrderIds(), mPrePayOrderInfo.getBtype(),
+                mPrePayOrderInfo.getToken(), responseCallback);
     }
-
 
     /**
      * 反馈支付结果给H5
@@ -587,6 +632,7 @@ public class OrderPayFragment extends BaseFragment {
      * @param errorCode 0 成功/-1 失败/-2 取消
      */
     private void notifyPayResult(int errorCode) {
+        mPrePayOrderInfo = null;
         hideProgressDialog();
         btnSubmit.setEnabled(true);
 
@@ -615,20 +661,21 @@ public class OrderPayFragment extends BaseFragment {
                 case 0: {
                     //如果支付成功则去后台查询支付结果再展示用户实际支付结果。注意一定不能以客户端
                     // 返回作为用户支付的结果，应以服务器端的接收的支付通知或查询API返回的结果为准。
-                    processOrder(WayType.WEIXIN);
+                    processOrder(WayType.WEPAY_APP);
                 }
                 break;
                 //错误，可能的原因：签名错误、未注册APPID、项目设置APPID不正确、注册的APPID与设置的不匹配、其他异常等。
                 case -1: {
                     notifyPayResult(-1);
-                    DialogUtil.showHint(String.format("微信充值失败:code=%d, %s", event.getErrCode(), event.getErrStr()));
+                    DialogUtil.showHint(String.format("微信支付失败:code=%d, %s",
+                            event.getErrCode(), event.getErrStr()));
 
                 }
                 break;
                 //用户取消，无需处理。发生场景：用户不支付了，点击取消，返回APP。
                 case -2: {
                     notifyPayResult(-2);
-                    DialogUtil.showHint("取消微信充值");
+                    DialogUtil.showHint("取消微信支付");
                 }
             }
         } catch (Exception e) {
