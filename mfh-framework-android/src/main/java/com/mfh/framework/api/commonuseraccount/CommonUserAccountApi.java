@@ -67,7 +67,13 @@ public class CommonUserAccountApi {
     /**
      * (商城/洗衣)订单支付
      */
-    public final static String URL_SCACCOUNTPAY = URL_COMMONUSERACCOUNT + "scAccountPay";
+    public final static String URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
+
+
+    /**
+     * 满分账户充值
+     */
+    public final static String URL_MFACCOUNT_PAY = URL_COMMONUSERACCOUNT + "mfhAccountPay";
 
 
     /**

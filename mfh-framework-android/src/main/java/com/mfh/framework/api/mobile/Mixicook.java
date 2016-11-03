@@ -10,7 +10,7 @@ public class Mixicook {
     public static String API_BASE_URL = "http://mobile.mixicook.com/mobile/";
     public static String DOMAIN = "mobile.mixicook.com";
     public static String COOKIE_URL = "http://mobile.mixicook.com";
-    public static String CUSTOMER_SERVICELCENTER = "15250065084";
+    public static String CUSTOMER_SERVICELCENTER = "400 000 0000";
 
 
     static{

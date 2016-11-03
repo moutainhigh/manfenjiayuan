@@ -6,9 +6,10 @@ package com.mfh.framework.api.pay;
  *
  */
 public class PreOrderRsp implements java.io.Serializable{
-    private String amount;
-    private String id;//订单号
+    private String amount;//订单金额
+    private Long id;//订单编号
     private String token;//支付验证码
+    private String nonceStr;//随机字符串
 
     //WEPAY
     private String prepayId;
@@ -25,11 +26,11 @@ public class PreOrderRsp implements java.io.Serializable{
         this.amount = amount;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -57,11 +58,19 @@ public class PreOrderRsp implements java.io.Serializable{
         this.sign = sign;
     }
 
+    public String getNonceStr() {
+        return nonceStr;
+    }
+
+    public void setNonceStr(String nonceStr) {
+        this.nonceStr = nonceStr;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("\namount=%s", amount));
-        sb.append(String.format("\nid=%s", id));
+        sb.append(String.format("\nid=%d", id));
 //        sb.append(subject);
 //        sb.append(body);
         sb.append(String.format("\ntoken=%s", token));

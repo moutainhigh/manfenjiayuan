@@ -36,6 +36,7 @@ public class InvSkuStoreApiImpl extends InvSkuStoreApi{
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_UPDATE_STATUS, params, responseCallback);
     }
+
     /**
      * 当前登录用户更改其本店库存商品的线上售卖状态,0代表下线，1代表上线
      * /invSkuStore/updateStatus?status=0|1&id=11111
