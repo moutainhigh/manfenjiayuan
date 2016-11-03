@@ -27,56 +27,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
-                app:textSize="14sp"
+                app:isLogoVisible="false"
+                app:position="single"
                 app:subTextSize="12sp"
                 app:text="绑定门店"
-                app:position="single"/>
+                app:textSize="14sp"/>
+
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_loginpwd"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
-                app:textSize="14sp"
+                app:isLogoVisible="false"
+                app:position="top"
                 app:subTextSize="12sp"
                 app:text="登录密码"
-                app:position="top"/>
+                app:textSize="14sp"/>
+
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_paypwd"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                app:textSize="14sp"
+                app:isLogoVisible="false"
+                app:position="center"
                 app:subTextSize="12sp"
                 app:text="支付密码"
-                app:position="center" />
+                app:textSize="14sp"/>
+
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_general"
                 android:layout_width="match_parent"
-                app:textSize="14sp"
-                app:subTextSize="12sp"
                 android:layout_height="@dimen/minimum_touch_height"
+                app:isLogoVisible="false"
+                app:position="bottom"
+                app:subTextSize="12sp"
                 app:text="通用"
-                app:position="bottom" />
+                app:textSize="14sp"/>
 
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_version"
                 android:layout_width="match_parent"
-                app:textSize="14sp"
-                app:subTextSize="12sp"
                 android:layout_height="@dimen/minimum_touch_height"
+                app:isLogoVisible="false"
+                app:position="bottom"
+                app:subTextSize="12sp"
                 app:text="版本更新"
-                app:position="bottom" />
+                app:textSize="14sp"/>
 
             <!--退出当前账号-->
             <Button
                 android:id="@+id/button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                android:text="@string/button_logout"
-                android:textSize="16sp"
+                android:layout_alignParentBottom="true"
                 android:layout_margin="@dimen/spacing_double"
                 android:background="@drawable/btn_corner_red"
+                android:text="@string/button_logout"
                 android:textColor="#ffffff"
-                android:layout_alignParentBottom="true" />
+                android:textSize="16sp"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

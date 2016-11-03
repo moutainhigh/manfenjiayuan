@@ -48,6 +48,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 import static com.manfenjiayuan.mixicook_vip.ui.ARCode.ARC_SETTINGS;
+import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
@@ -292,7 +293,13 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     @OnClick(R.id.item_topup)
     public void redirect2Topup() {
 //        ActivityRoute.redirect2Topup(getActivity());
-        ActivityRoute.redirect2Topup2(getActivity());
+//        ActivityRoute.redirect2Topup2(getActivity());
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_TOPUP);
+        Intent intent = new Intent(context, FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, ARCode.ARC_MY_TOPUP);
     }
 
     /**

@@ -10,7 +10,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
+        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -24,6 +24,7 @@
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
                 app:text="@string/label_settings_location"
+                app:isLogoVisible="false"
                 app:position="top"/>
 
             <com.bingshanguxue.vector_uikit.ToggleSettingItem
@@ -31,16 +32,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 app:text="@string/label_settings_notification"
-                app:position="bottom"
+                app:position="center"
+                app:isLogoVisible="false"
                 />
 
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_2_0"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                android:layout_marginTop="@dimen/default_margin_top"
                 app:textSize="14sp"
                 app:subTextSize="12sp"
+                app:isLogoVisible="false"
+                app:position="bottom"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
                 app:src="@drawable/material_housekeeping"
                 app:text="@string/label_settings_clearcache"

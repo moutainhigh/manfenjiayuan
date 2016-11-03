@@ -22,7 +22,6 @@ import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -107,7 +106,12 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
 
     @OnClick(R.id.item_general)
     public void generalSettings(){
-        UIHelper.startActivity(getActivity(), GeneralSettingActivity.class);
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_SETTINGS_GENERAL);
+        Intent intent = new Intent(getActivity(), FragmentActivity.class);
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
 

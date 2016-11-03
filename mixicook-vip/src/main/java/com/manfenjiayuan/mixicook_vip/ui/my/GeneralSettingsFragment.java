@@ -3,15 +3,16 @@ package com.manfenjiayuan.mixicook_vip.ui.my;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 
-import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.helper.SharedPreferencesManager;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
+import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
+import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.uikit.base.BaseFragment;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -22,7 +23,7 @@ import butterknife.OnClick;
  *
  * @author bingshanguxue
  */
-public class GeneralSettingActivity extends BaseActivity {
+public class GeneralSettingsFragment extends BaseFragment {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.item_2_0)
@@ -32,32 +33,45 @@ public class GeneralSettingActivity extends BaseActivity {
     @Bind(R.id.item_notification)
     ToggleSettingItem itemNotification;
 
+    public static GeneralSettingsFragment newInstance(Bundle args) {
+        GeneralSettingsFragment fragment = new GeneralSettingsFragment();
+
+        if (args != null) {
+            fragment.setArguments(args);
+        }
+        return fragment;
+    }
+
     @Override
     public int getLayoutResId() {
         return R.layout.activity_settings_general;
     }
 
     @Override
-    protected void initToolBar() {
+    protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+
+
+        }
+
         toolbar.setTitle(R.string.topbar_title_settings_general);
-        toolbar.setTitleTextAppearance(this, R.style.toolbar_title);
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+//        toolbar.setTitleTextAppearance(this, R.style.toolbar_title);
+//        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
+//        setSupportActionBar(toolbar);
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
         toolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        GeneralSettingActivity.this.onBackPressed();
+                        getActivity().onBackPressed();
                     }
                 });
-        // Inflate a menu to be displayed in the toolbar
-//        toolbar.inflateMenu(R.menu.menu_user);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         itemLocation.init(new ToggleSettingItem.OnViewListener() {
             @Override
@@ -71,11 +85,6 @@ public class GeneralSettingActivity extends BaseActivity {
                 SharedPreferencesManager.setNotificationAcceptEnabled(on);
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         refresh();
     }

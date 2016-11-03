@@ -18,6 +18,7 @@ import com.manfenjiayuan.mixicook_vip.ui.my.ChangeLoginPwdFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangeNicknameFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangePayPwdFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.CustomerServiceFragment;
+import com.manfenjiayuan.mixicook_vip.ui.my.GeneralSettingsFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.MyFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.SettingsFragment;
 import com.manfenjiayuan.mixicook_vip.ui.order.OrderCouponsFragment;
@@ -44,7 +45,6 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
     public static final int FT_RESERVE = 0x04;//预定
     public static final int FT_LOCATION = 0x05;//定位
     public static final int FT_HYBRID = 0x06;//Hybrid
-    public static final int FT_SETTINGS = 0x07;//设置
     public static final int FT_LOGIN_PASSWORD = 0x08;//登录密码
     public static final int FT_PAY_PASSWORD = 0x09;//支付密码
     public static final int FT_CHANGE_NICKNAME = 0x0A;//昵称
@@ -59,6 +59,8 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
     public static final int FT_ORDER_COUPONS = 0x13;//订单优惠券
     public static final int FT_MY = 0x20;//我的
     public static final int FT_MY_CUSTOMERSERVICE = 0x21;//我的——客服中心
+    public static final int FT_SETTINGS = 0x22;//设置
+    public static final int FT_SETTINGS_GENERAL = 0x23;//设置——通用
 
 
 
@@ -327,6 +329,19 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
                     fragment = InputTextFragment.newInstance(intent.getExtras());
                 } else {
                     fragment = InputTextFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, fragment).show(fragment)
+                        .commit();
+            }
+            break;
+            case FT_SETTINGS_GENERAL: {
+                GeneralSettingsFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = GeneralSettingsFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = GeneralSettingsFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_container, fragment).show(fragment)

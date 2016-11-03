@@ -16,8 +16,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.manfenjiayuan.business.ui.HybridActivity;
 import com.manfenjiayuan.mixicook_vip.R;
+import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.mobile.Mixicook;
@@ -29,7 +29,6 @@ import com.mfh.framework.hybrid.WebViewDelegate;
 import com.mfh.framework.hybrid.WebViewJavascriptBridge;
 import com.mfh.framework.hybrid.WebViewUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.EmptyLayout;
@@ -174,15 +173,16 @@ public class HybridFragment extends BaseFragment {
      */
     private void redirect2Url(String url) {
         ZLogger.d("准备跳转页面: " + url);
-        Intent intent = new Intent(getActivity(), HybridActivity.class);
-        intent.putExtra(HybridActivity.EXTRA_KEY_REDIRECT_URL,
-                URLHelper.append(url, String.format("ownerId=%d", MfhLoginService.get().getCurrentGuId())));
-        intent.putExtra(HybridActivity.EXTRA_KEY_SYNC_COOKIE, true);
-        intent.putExtra(HybridActivity.EXTRA_KEY_BACKASHOMEUP, false);
-        intent.putExtra(HybridActivity.EXTRA_KEY_ANIM_TYPE, -1);
-        intent.putExtra(HybridActivity.EXTRA_KEY_COOKIE_URL, Mixicook.COOKIE_URL);
-        intent.putExtra(HybridActivity.EXTRA_KEY_COOKIE_DOMAIN, Mixicook.DOMAIN);
-        startActivity(intent);
+        ActivityRoute.redirect2Url(getActivity(), url);
+//        Intent intent = new Intent(getActivity(), HybridActivity.class);
+//        intent.putExtra(HybridActivity.EXTRA_KEY_REDIRECT_URL,
+//                URLHelper.append(url, String.format("ownerId=%d", MfhLoginService.get().getCurrentGuId())));
+//        intent.putExtra(HybridActivity.EXTRA_KEY_SYNC_COOKIE, true);
+//        intent.putExtra(HybridActivity.EXTRA_KEY_BACKASHOMEUP, false);
+////        intent.putExtra(HybridActivity.EXTRA_KEY_ANIM_TYPE, -1);
+//        intent.putExtra(HybridActivity.EXTRA_KEY_COOKIE_URL, Mixicook.COOKIE_URL);
+//        intent.putExtra(HybridActivity.EXTRA_KEY_COOKIE_DOMAIN, Mixicook.DOMAIN);
+//        startActivity(intent);
     }
 
     /**
