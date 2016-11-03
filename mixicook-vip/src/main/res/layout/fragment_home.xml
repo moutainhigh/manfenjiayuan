@@ -55,6 +55,7 @@
                 android:id="@+id/shortcut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_double"
                 android:background="@color/material_white"
                 android:padding="@dimen/spacing_double">
 

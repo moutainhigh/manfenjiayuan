@@ -8,6 +8,7 @@
               android:orientation="horizontal"
               android:divider="@drawable/divider_gridview"
               android:showDividers="middle"
+              android:layout_marginTop="@dimen/spacing_double"
               android:contentDescription="@null">
 
     <ImageView
