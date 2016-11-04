@@ -11,6 +11,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.R;
@@ -63,7 +64,8 @@ public class TopFragmentPagerAdapter extends FragmentStatePagerAdapter {
         // 加入tab title
         View v = LayoutInflater.from(mContext).inflate(
                 tabResId, null, false);
-//        v.setLayoutParams(new ViewGroup.LayoutParams(80, 80));
+        v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
         TextView title = (TextView) v.findViewById(R.id.tab_title);
         if (title != null){
             title.setText(info.title);
