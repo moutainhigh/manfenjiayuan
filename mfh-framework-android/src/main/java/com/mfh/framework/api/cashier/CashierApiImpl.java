@@ -27,14 +27,6 @@ public class CashierApiImpl extends CashierApi {
     }
 
 
-    public static void findHumanBySecret(String secret, String stockId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("secret", secret);
-        params.put("stockId", stockId);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_STOCK_FINDHUMAN_BYSECRET, params, responseCallback);
-    }
-
     public static void findHumanInfoByMobile(String mobile, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("companyId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
@@ -43,12 +35,7 @@ public class CashierApiImpl extends CashierApi {
         AfinalFactory.postDefault(URL_RECEIVE_ORDER_FIND_HUMANINFO_BY_MOBILE, params, responseCallback);
     }
 
-    public static void findCompanyByHumanId(Long humanId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("humanId", String.valueOf(humanId));
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_FIND_COMPANY_BY_HUMANID, params, responseCallback);
-    }
+
 
     /**
      * 创建批次

@@ -12,6 +12,14 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class PmcStockApiImpl extends PmcStockApi {
+    public static void findHumanBySecret(String secret, String stockId,
+                                         AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("secret", secret);
+        params.put("stockId", stockId);
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_STOCK_FINDHUMAN_BYSECRET, params, responseCallback);
+    }
     /**
      * 根据订单编号，查询订单基本信息和详情包括订单的商品明细{@link #URL_FINDGOODSORDERLIST_BYHUMAN}
      * @param id 订单编号

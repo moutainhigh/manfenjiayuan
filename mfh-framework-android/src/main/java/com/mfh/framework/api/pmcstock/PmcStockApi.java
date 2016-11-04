@@ -16,6 +16,12 @@ public class PmcStockApi {
     public final static String URL_PMCSTOCK = MfhApi.URL_BASE_SERVER + "/pmcstock/";
 
     /**
+     * 查询用户：/pmc/pmcstock/findHumanBySecret?secret=4645&stockId=1203,1207,1209
+     */
+    public static final String URL_STOCK_FINDHUMAN_BYSECRET = MfhApi.URL_BASE_SERVER + "/pmcstock/findHumanBySecret";
+
+
+    /**
      * 查询订单列表 /pmcstock/findGoodsOrderList?orderStatus=4&btype=7
      */
     public static final String URL_FIND_GOODS_ORDERLIST = URL_PMCSTOCK + "findGoodsOrderList";

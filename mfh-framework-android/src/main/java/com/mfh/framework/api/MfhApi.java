@@ -5,10 +5,10 @@ import com.mfh.framework.network.NetFactory;
 
 /**
  * 满分家园后台接口
- * Created by Administrator on 2015/6/11.
+ * Created by bingshanguxue on 2015/6/11.
  */
 public class MfhApi {
-    //UBS
+    //UBS:默认从配置文件读取，也可以配置
     public static String URL_BASE_SERVER = NetFactory.getServerUrl();
     public static String URL_REGISTER_MESSAGE = NetFactory.getRegisterMessageUrl();
 

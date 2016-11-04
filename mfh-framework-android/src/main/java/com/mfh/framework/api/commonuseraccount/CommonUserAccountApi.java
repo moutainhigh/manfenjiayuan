@@ -163,7 +163,7 @@ public class CommonUserAccountApi {
     public static void payDirectBySweepCode(String humanId, Double score,
                                             AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        params.put("humanId", humanId);
+        params.put("cardNo", humanId);
         if (score != null){
             params.put("score", String.format("%.0f", score));
         }

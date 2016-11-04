@@ -30,19 +30,10 @@ public class CashierApi {
     public static final String URL_POS_BATCH_INORDERS = MfhApi.URL_BASE_SERVER + "/posOrder/batchInOrders";
 
 
-    /**
-     * 查询快递员所属公司
-     */
-    public static final String URL_FIND_COMPANY_BY_HUMANID = MfhApi.URL_BASE_SERVER + "/stock/receiveBatch/findFdCompanyByHumanId";
-    /**
-     * 查询用户：/pmc/pmcstock/findHumanBySecret?secret=4645&stockId=1203,1207,1209
-     */
-    public static final String URL_STOCK_FINDHUMAN_BYSECRET = MfhApi.URL_BASE_SERVER + "/pmcstock/findHumanBySecret";
-    /**
+   /**
      * 快递入库，查询用户
      */
     public static final String URL_RECEIVE_ORDER_FIND_HUMANINFO_BY_MOBILE = MfhApi.URL_BASE_SERVER + "/stock/receiveOrder/findHumanInfoByMobile";
-
 
     /**
      * 代收快递创建批次
@@ -133,7 +124,7 @@ public class CashierApi {
     public final static String URL_NEEDLOCKPOS = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/needLockPos";
 
     /**
-     * 查询限额情况,第一个是限额（0代表没有设置或限额无穷大），第二个是未缴现金
+     * 查询限额情况,第一个是限额（-1代表没有设置或限额无穷大,0代表限额就是0），第二个是未缴现金
      * /scNetRealInfo/queryLimitInfo
      * */
     public final static String URL_QUERYLIMITINFO = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/queryLimitInfo";
