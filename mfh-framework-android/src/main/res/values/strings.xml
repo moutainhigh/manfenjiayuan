@@ -75,6 +75,8 @@
     <string name="dialog_item_camera">拍照</string>
 
     <string name="toast_copy_success">复制成功</string>
+    <string name="captcha_tip">Verification code: %s, and has been copied to the clipboard, press your input box to paste the code.</string>
+
 
     <string name="permission_not_granted">%1$s 权限未获取</string>
     <string name="permision_available_camera">Camera Permission has been granted. Preview can now be opened.</string>

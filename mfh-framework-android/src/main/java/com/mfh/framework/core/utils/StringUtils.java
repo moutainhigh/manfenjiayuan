@@ -7,6 +7,7 @@ import android.text.Spanned;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
@@ -260,7 +261,28 @@ public class StringUtils {
         }
         return sb.toString();
     }
-    //captcha,验证码
+
+    /**
+     * 判断字符串中时否包含中文
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isContainsChinese(String str) {
+        String regEx = "[\u4e00-\u9fa5]";
+        Pattern pat = Pattern.compile(regEx);
+        Matcher matcher = pat.matcher(str);
+        boolean flg = false;
+        if (matcher.find()) {
+            flg = true;
+        }
+        return flg || str.contains("【") || str.contains("】") || str.contains("。");
+    }
+
+    /**
+     * 随机生成中文
+     * @param length 中文字符长度
+     * */
     public static String genNonceChinease(int length) {
         Random random = new Random();
         byte[] captcha = new byte[length * 2];

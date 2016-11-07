@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="captcha_tip">识别到验证码：%s，并已复制到剪贴板，长按你的输入框即可粘贴验证码</string>
+
+</resources>

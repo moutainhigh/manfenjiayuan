@@ -33,7 +33,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-
         <!--<activity-->
             <!--android:name=".hybrid.BaseHybridActivity"-->
             <!--android:theme="@style/MfhAppTheme.NoActionBar" />-->

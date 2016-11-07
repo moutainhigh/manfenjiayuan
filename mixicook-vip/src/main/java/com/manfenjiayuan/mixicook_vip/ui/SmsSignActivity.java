@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.utils.AppHelper;
+import com.mfh.framework.core.sms.CaptchasEvent;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
@@ -36,6 +37,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.sms.HumanAuthTempApi;
+import com.mfh.framework.core.utils.ClipboardUtils;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -44,6 +46,8 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseActivity;
+
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -94,6 +98,8 @@ public class SmsSignActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         AppHelper.getInstance().addActivity(this);
 
+        EventBus.getDefault().register(this);
+
         String lastUsername = MfhLoginService.get().getLastLoginName();
         if (!StringUtils.isEmpty(lastUsername)) {
             etUserName.setText(lastUsername);
@@ -101,6 +107,12 @@ public class SmsSignActivity extends BaseActivity {
         } else {
             etUserName.requestFocus();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -256,6 +268,24 @@ public class SmsSignActivity extends BaseActivity {
     }
 
     /**
+     * 验证
+     */
+    public void onEventMainThread(CaptchasEvent event) {
+        int eventId = event.getEventId();
+        Bundle args = event.getArgs();
+
+        ZLogger.d(String.format("CaptchasEvent(%d)", eventId));
+        switch (eventId) {
+            case CaptchasEvent.EVENT_ID_RECEIVE_SMS: {
+                etPassword.setText(ClipboardUtils.pasterText(SmsSignActivity.this));
+                hideKeyboard();
+            }
+            break;
+        }
+    }
+
+
+    /**
      * 获取验证码
      */
     private void getToken() {
@@ -378,16 +408,6 @@ public class SmsSignActivity extends BaseActivity {
      * 第二步，输入验证码
      */
     private void secondStep() {
-//        etPhoneNumber.setEnabled(false);
-
-//        userTmpId = null;
-//        if (countDownTimer != null) {
-//            countDownTimer.cancel();
-//            countDownTimer = null;
-//        }
-//        btnVerifyCode.setEnabled(false);
-//        btnVerifyCode.setText("获取验证码");
-
         etPassword.requestFocus();
         etPassword.getText().clear();
 //        etPassword.setEnabled(true);

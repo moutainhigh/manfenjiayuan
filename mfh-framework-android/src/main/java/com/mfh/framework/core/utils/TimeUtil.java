@@ -24,7 +24,8 @@ public class TimeUtil {
     public static final SimpleDateFormat FORMAT_YYYYMMDDHHMM = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
     public static final SimpleDateFormat FORMAT_YYYYMMDDHHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
     public static final SimpleDateFormat FORMAT_YYYYMMDD = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    public static final SimpleDateFormat FORMAT_MMDD = new SimpleDateFormat("MM-dd ", Locale.US);
+    public static final SimpleDateFormat FORMAT_MMDDHHMM = new SimpleDateFormat("MM-dd HH:mm", Locale.US);
+    public static final SimpleDateFormat FORMAT_MMDD = new SimpleDateFormat("MM-dd", Locale.US);
     public static final SimpleDateFormat FORMAT_HHMM = new SimpleDateFormat("HH:mm", Locale.US);
     public static final SimpleDateFormat timeDateFormat12 = new SimpleDateFormat(DATE_TIME_FORMAT_12_HOUR, Locale.US);
     public static final SimpleDateFormat timeDateFormat24 = new SimpleDateFormat(DATE_TIME_FORMAT_24_HOUR, Locale.US);
