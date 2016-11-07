@@ -9,13 +9,13 @@ import com.alibaba.fastjson.JSON;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.UserApi;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.core.logic.AsyncTaskCallBack;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.owner.dao.wexin.WeiXinNetDao;
 import com.mfh.owner.entity.weixin.WeiXinUserInfo;
@@ -187,7 +187,7 @@ public class WeiXinAuthService extends BaseService<WeiXinUserInfo, Long, WeiXinN
                             public void loginFailed(String errMsg) {
 
                             }
-                        }, MfhApi.URL_LOGIN, "PO", info.getOpenid());
+                        }, UserApi.URL_LOGIN, "PO", info.getOpenid());
                     }
                 } catch (Exception e) {
                     Intent intent = new Intent(WXConstants.AUTH_FAIL);

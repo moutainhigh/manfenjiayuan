@@ -16,29 +16,29 @@ import java.io.FileNotFoundException;
  * Created by bingshanguxue on 9/22/16.
  */
 public class ResApi {
-    private final static String URL_REMOTE = MfhApi.URL_BASE_SERVER + "/res/remote/";
-    private final static String URL_REMOTESAVE = MfhApi.URL_BASE_SERVER + "/res/remotesave/";
+    public static String URL_REMOTE = MfhApi.URL_BASE_SERVER + "/res/remote/";
+    public static String URL_REMOTESAVE = MfhApi.URL_BASE_SERVER + "/res/remotesave/";
 
     /**
      * 图片上传修改
      * 采用multipart/form-data或post方式提交图片。
      * /res/remotesave/upload? responseType=1
      */
-    public static final String URL_REMOTESAVE_UPLOAD = URL_REMOTESAVE + "upload";
+    private static String URL_REMOTESAVE_UPLOAD = URL_REMOTESAVE + "upload";
 
 
     /**
      * 图片删除
      * /res/remotesave/delete?id=1
      */
-    public static final String URL_REMOTESAVE_DELETE = URL_REMOTESAVE + "delete";
+    private static String URL_REMOTESAVE_DELETE = URL_REMOTESAVE + "delete";
 
 
     /**
      * 文件下载
      * /res/remote/download?id=2513&type=1
      */
-    public static final String URL_REMOTE_UPLOAD = URL_REMOTE + "download";
+    private static String URL_REMOTE_UPLOAD = URL_REMOTE + "download";
 
     /**
      * 图片上传修改

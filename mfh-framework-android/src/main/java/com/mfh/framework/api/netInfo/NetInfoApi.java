@@ -14,14 +14,14 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 18/10/2016.
  */
 
-public class NetInfoApi {
-    public final static String URL_NETINFO = MfhApi.URL_BASE_SERVER + "/netInfo/";
+public class NetInfoApi{
+    public static String URL_NETINFO = MfhApi.URL_BASE_SERVER + "/netInfo/";
 
     /**
      * 根据经纬度查询网点
      *  /netInfo/findServicedNetsForUserPos
      * */
-    public final static String URL_FINDSERVICEDNETS_FORUSERPOS = URL_NETINFO + "findServicedNetsForUserPos";
+    private static String URL_FINDSERVICEDNETS_FORUSERPOS = URL_NETINFO + "findServicedNetsForUserPos";
 
     /**
      * 根据经纬度查询网点

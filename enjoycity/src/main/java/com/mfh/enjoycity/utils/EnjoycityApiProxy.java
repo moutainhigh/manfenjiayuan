@@ -22,7 +22,6 @@ import com.mfh.framework.network.NetProcessor;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
-import static com.mfh.framework.api.pay.PayApi.WX_PAY_CONFIG_ID;
 
 /**
  * 网络请求
@@ -58,7 +57,7 @@ public class EnjoycityApiProxy {
     public final static String PARAM_KEY_LATITUDE       = "latitude";
     public final static String PARAM_KEY_SUBDIS_ID      = "subdisId";
 
-    WX_PAY_CONFIG_ID
+
     public final static int WAYTYPE_ALIPAY = 1;//支付宝支付
     public final static int WAYTYPE_WXPAY = 512;//微信支付
 

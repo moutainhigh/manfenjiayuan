@@ -5,7 +5,6 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.owner.utils.Constants;
 import com.mfh.owner.utils.SensoroHelper;
@@ -13,7 +12,6 @@ import com.sensoro.beacon.kit.Beacon;
 import com.sensoro.beacon.kit.BeaconManagerListener;
 import com.sensoro.cloud.SensoroManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -43,11 +41,7 @@ public class AppContext extends MfhApplication {
     @Override
     public void onCreate() {
 
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
         super.onCreate();
-
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
 
         instance = this;
 

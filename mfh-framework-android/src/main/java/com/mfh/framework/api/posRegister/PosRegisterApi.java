@@ -1,19 +1,18 @@
 package com.mfh.framework.api.posRegister;
 
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.network.AfinalFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-
-import static com.mfh.framework.api.MfhApi.URL_BASE_SERVER;
 
 /**
  * Created by bingshanguxue on 9/20/16.
  */
 
 public class PosRegisterApi {
-    public static final String URL_POS_REGISTER = URL_BASE_SERVER + "/posRegister/";
+    public static String URL_POS_REGISTER = MfhApi.URL_BASE_SERVER + "/posRegister/";
 
 
     /**
@@ -21,11 +20,11 @@ public class PosRegisterApi {
      * 传递唯一序列号如网卡序列号，后台返回一个整形编号<br>
      * /posRegister/create?jsonStr={"serialNo":"2222"}
      * */
-    public static final String URL_CREATE = URL_POS_REGISTER + "create";
+    private static String URL_CREATE = URL_POS_REGISTER + "create";
 
-    public static final String URL_UPDATE = URL_POS_REGISTER + "update";
+    private static String URL_UPDATE = URL_POS_REGISTER + "update";
 
-    public static final String URL_LIST = URL_POS_REGISTER + "list";
+    public static String URL_LIST = URL_POS_REGISTER + "list";
 
     /**
      * 设备注册

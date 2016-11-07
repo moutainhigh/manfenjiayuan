@@ -1,4 +1,4 @@
-package com.mfh.framework.api.anon.storeRack;
+package com.mfh.framework.api.anon.sc.storeRack;
 
 import com.mfh.framework.api.abs.MfhEntity;
 

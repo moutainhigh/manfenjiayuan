@@ -40,9 +40,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.enjoycity.AppHelper;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.adapter.SharePopupAdapter;
-import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.enjoycity.bean.SharePopupData;
-import com.mfh.framework.api.pay.AppPrePayRsp;
 import com.mfh.enjoycity.ui.activity.MainActivity;
 import com.mfh.enjoycity.utils.AlipayConstants;
 import com.mfh.enjoycity.utils.EnjoycityApi;
@@ -52,7 +50,14 @@ import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
+import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.pay.AppPrePayRsp;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.pay.PayApiImpl;
+import com.mfh.framework.api.pay.PreOrderRsp;
+import com.mfh.framework.api.payOrder.PayOrderApiImpl;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.BitmapUtils;
@@ -926,7 +931,7 @@ public class BrowserFragment extends BaseFragment {
             {
             };
 
-            PayApiImpl.prePay(MfhLoginService.get().getCurrentGuId(), amount, wayType,
+            PayOrderApiImpl.prePay(MfhLoginService.get().getCurrentGuId(), amount, wayType,
                     WXUtil.genNonceStr(), responseCallback);
         }
         else if(wayType == EnjoycityApiProxy.WAYTYPE_WXPAY){
@@ -962,8 +967,9 @@ public class BrowserFragment extends BaseFragment {
             {
             };
 
-            PayApiImpl.prePayForApp(MfhLoginService.get().getCurrentGuId(), amount, wayType,
-                    WXUtil.genNonceStr(), responseCallback);
+            PayOrderApiImpl.prePayForApp(PayApi.WEPAY_CONFIGID_ENJOYCITY,
+                    MfhLoginService.get().getCurrentGuId(), amount, wayType,
+                    WXUtil.genNonceStr(), BizType.RECHARGE, responseCallback);
         }else{
 //            animProgress.setVisibility(View.GONE);
 //            emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
@@ -1056,7 +1062,7 @@ public class BrowserFragment extends BaseFragment {
         {
         };
 
-        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(),
+        PmcStockApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(),
                 orderIds, btype, wayType, WXUtil.genNonceStr(), responseCallback);
     }
 
@@ -1236,7 +1242,7 @@ public class BrowserFragment extends BaseFragment {
         String btype = orderPayData.get(EnjoycityApiProxy.PARAM_KEY_BIZ_TYPE);
         String token = orderPayData.get(EnjoycityApiProxy.PARAM_KEY_TOKEN);
         orderPayData.clear();
-        PayApiImpl.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
+        CommonUserAccountApiImpl.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
     }
 
     /**

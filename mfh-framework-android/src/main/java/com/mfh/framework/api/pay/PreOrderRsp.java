@@ -11,6 +11,8 @@ public class PreOrderRsp implements java.io.Serializable{
     private String token;//支付验证码
     private String nonceStr;//随机字符串
 
+    //ALIPAY
+    private String payInfo;//签名后的请求串
     //WEPAY
     private String prepayId;
     private String sign;//签名
@@ -66,16 +68,11 @@ public class PreOrderRsp implements java.io.Serializable{
         this.nonceStr = nonceStr;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("\namount=%s", amount));
-        sb.append(String.format("\nid=%d", id));
-//        sb.append(subject);
-//        sb.append(body);
-        sb.append(String.format("\ntoken=%s", token));
-        sb.append(String.format("\nprepayId=%s", prepayId));
-        sb.append(String.format("\nsign=%s", sign));
-        return sb.toString();
+    public String getPayInfo() {
+        return payInfo;
+    }
+
+    public void setPayInfo(String payInfo) {
+        this.payInfo = payInfo;
     }
 }

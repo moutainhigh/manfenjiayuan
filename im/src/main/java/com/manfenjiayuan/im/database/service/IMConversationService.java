@@ -24,7 +24,6 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.BaseService;
@@ -168,7 +167,6 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
         params.put("sessionid", String.valueOf(sessionid));
         //params.put("subdisid", SharedPreferencesHelper.getUserSubdisId());
 
-        //回调
         NetCallBack.NetTaskCallBack callback = new NetCallBack.NetTaskCallBack<BizSessionWithMsgParam,
                 NetProcessor.Processor<BizSessionWithMsgParam>>(new NetProcessor.Processor<BizSessionWithMsgParam>() {
             @Override
@@ -231,7 +229,7 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
         //params.put("subdisid", SharedPreferencesHelper.getUserSubdisId());
         params.put(IMApi.PARAM_KEY_LASTUPDATE, lastCursor);
         //params.put("tenantId", getContext().getSharedPreferences("login", Activity.MODE_PRIVATE).getString("app.spid", null));
-        queryByNetDao(params, pageInfoParam, lastCursor, MfhApi.URL_SESSION_LIST);
+        queryByNetDao(params, pageInfoParam, lastCursor, IMApi.URL_SESSION_LIST);
     }
 
 

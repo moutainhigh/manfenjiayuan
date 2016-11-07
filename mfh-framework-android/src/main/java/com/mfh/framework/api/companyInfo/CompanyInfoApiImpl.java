@@ -41,5 +41,27 @@ public class CompanyInfoApiImpl extends CompanyInfoApi{
         AfinalFactory.getHttp(true).post(URL_GETNETINFO_BYID, params, responseCallback);
     }
 
+    /**
+     * 查询公司
+     */
+    public static void comnQuery(AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("kind", "code");
+        params.put("viewId", "2");
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_COMPANYINFO_COMNQUERY, params, responseCallback);
+    }
+
+    /**
+     * 查询公司
+     * @param companyId
+     */
+    public static void getById(Long companyId, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put("id", String.valueOf(companyId));
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.postDefault(URL_COMPANYINFO_GETBYID, params, responseCallback);
+    }
+
 
 }

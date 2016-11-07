@@ -7,33 +7,33 @@ import com.mfh.framework.api.MfhApi;
  * Created by bingshanguxue on 5/20/16.
  */
 public class ScGoodsSkuApi {
-    private final static String URL_SCGOODSSKU = MfhApi.URL_BASE_SERVER + "/scGoodsSku/";
+    public static String URL_SCGOODSSKU = MfhApi.URL_BASE_SERVER + "/scGoodsSku/";
 
     /**
      * 同步微超商品列表
      */
-    public static final String URL_DOWNLOAD_POS_PRODUCT = URL_SCGOODSSKU + "downLoadPosProduct";
+    public static String URL_DOWNLOAD_POS_PRODUCT = URL_SCGOODSSKU + "downLoadPosProduct";
     /**
      * 指定网点可同步sku总数查询接口： /scGoodsSku/countNetSyncAbleSkuNum?netId=132079
      */
-    public final static String URL_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
+    static String URL_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
 
     /**
      * 查询网点库存商品信息列表（包括本店商品库存、采购价、售价和商品档案基本信息等）.
      * 其中needSellNum代表是否需要返回商品30天平均销量
      * /scGoodsSku/findGoodsList?categoryId=&netId=&barcode=&name=&needSellNum=false
      */
-    public final static String URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
+    static String URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
     /**
      * /scGoodsSku/getLocalByBarcode
      * 查询库存商品－－
      */
-    public final static String URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
+    static String URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
 
     /**
      * /scGoodsSku/checkWithBuyInfoByBarcode
      */
-    public final static String URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
+    static String URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
             + "checkWithBuyInfoByBarcode";
 
     /**
@@ -44,20 +44,20 @@ public class ScGoodsSkuApi {
      * 若仅在产品中心中存在则返回信息中proSkuId、productId不为空, costPrice为空，quantity为0；
      * 若产品中心也不存在，则返回null
      */
-    public final static String URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
+    static String URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
 
 
     /**
      * 查询批发商采购商品
      * 适用场景：门店采购查询商品
      */
-    public final static String URL_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
+    public static String URL_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
 
     /**
      * 店家商品建档入库
      * /scGoodsSku/storeIn?jsonStr=&storeType=0|1，增加一个storeType参数，默认不传为0代表零售商，如果是批发商建档则storeType=1
      */
-    public final static String URL_STOREIN = URL_SCGOODSSKU + "storeIn";
+    static String URL_STOREIN = URL_SCGOODSSKU + "storeIn";
 
 
     /**
@@ -67,7 +67,7 @@ public class ScGoodsSkuApi {
      * <li>收银机－－根据条码查询库存商品，报损商品</li>
      * </ul>
      */
-    public final static String URL_GETGOODS_BYBARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
+    static String URL_GETGOODS_BYBARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
 
     /**
      * 查询库存商品:库存成本，批次流水，库存调拨－－
@@ -77,7 +77,7 @@ public class ScGoodsSkuApi {
      * <li>手持终端－－根据条码查询库存商品，修改商品零售价和安全库存</li>
      * </ul>
      */
-    public final static String URL_LIST = URL_SCGOODSSKU + "list";
+    public static String URL_LIST = URL_SCGOODSSKU + "list";
 
 
     /**
@@ -86,12 +86,12 @@ public class ScGoodsSkuApi {
      * startCursor是游标，同步一次后pos机本地记录一下后台返回的最大日期值，下次从这个值作为参数传递
      * /scGoodsSku/importFromChainSku?sendTenantId=134651&cateType=2&startCursor=2015-01-01 10:00:00
      * */
-    public final static String URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
+    static String URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
 
     /**
      * 批量查询商品信息
      * */
-    public final static String URL_FINDONLINEGOODSLIST = URL_SCGOODSSKU + "findOnlineGoodsList";
+    static String URL_FINDONLINEGOODSLIST = URL_SCGOODSSKU + "findOnlineGoodsList";
 
 
 }

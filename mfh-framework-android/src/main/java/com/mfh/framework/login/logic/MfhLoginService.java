@@ -10,17 +10,18 @@ import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.account.Office;
+import com.mfh.framework.api.account.Subdis;
+import com.mfh.framework.api.account.UserApi;
+import com.mfh.framework.api.account.UserAttribute;
+import com.mfh.framework.api.account.UserComInfo;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.constant.Sex;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.IService;
 import com.mfh.framework.login.MfhLoginPreferences;
-import com.mfh.framework.api.account.Office;
-import com.mfh.framework.api.account.Subdis;
-import com.mfh.framework.api.account.UserAttribute;
-import com.mfh.framework.api.account.UserComInfo;
-import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -576,7 +577,7 @@ public class MfhLoginService implements IService {
      */
     public UserMixInfo doLogin(String name, String pwd) {
         try {
-            Object ret = AfinalFactory.getHttp(false).postSync(MfhApi.URL_LOGIN,
+            Object ret = AfinalFactory.getHttp(false).postSync(UserApi.URL_LOGIN,
                     new AjaxParams(MfhApi.PARAM_KEY_USERNAME, name,
                             MfhApi.PARAM_KEY_PASSWORD, pwd,
                             "needMenu", true,
@@ -666,7 +667,7 @@ public class MfhLoginService implements IService {
     public void doLoginAsync(String name, String pwd, LoginCallback loginCallback) {
 //        doLoginAsync(name, pwd, loginCallback, MfhApi.URL_LOGIN,
 //                MfhApi.PARAM_VALUE_LOGIN_TYPE_DEF, MfhApi.PARAM_KEY_LOGIN_KIND);
-        doLoginAsync(name, pwd, loginCallback, MfhApi.URL_LOGIN, null, null);
+        doLoginAsync(name, pwd, loginCallback, UserApi.URL_LOGIN, null, null);
     }
 
     /**
@@ -678,7 +679,7 @@ public class MfhLoginService implements IService {
         AjaxParams params = new AjaxParams();
         params.put("sid", sessionId);
         params.put("lgdrt", "2");
-        AfinalFactory.postDefault(MfhApi.URL_LOGOUT, params, callback);
+        AfinalFactory.postDefault(UserApi.URL_EXIT, params, callback);
     }
 
 

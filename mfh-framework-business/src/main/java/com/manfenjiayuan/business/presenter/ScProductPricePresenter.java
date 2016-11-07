@@ -2,8 +2,8 @@ package com.manfenjiayuan.business.presenter;
 
 import com.manfenjiayuan.business.view.IScProcuctPriceView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.anon.ProductSku;
-import com.mfh.framework.api.anon.ScProductPriceMode;
+import com.mfh.framework.api.anon.sc.productPrice.ProductSku;
+import com.mfh.framework.api.anon.sc.productPrice.ScProductPriceMode;
 import com.mfh.framework.mvp.OnPageModeListener;
 
 import java.util.List;

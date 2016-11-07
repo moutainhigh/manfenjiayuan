@@ -34,6 +34,8 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
+import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -1069,8 +1071,8 @@ public class ComnJBH5Activity extends BaseActivity {
 // "version":"1",
 // "data":[{"dueDate":null,"sellerId":245514,"orderType":0,"bcount":1,"amount":0.01,"guideHumanid":null,"sellOffice":245552,"score":0.0,"discount":1.0,"payType":1,"session_id":null,"adjPrice":"0.0","couponsIds":null,"receiveStock":1192,"finishTime":null,"moneyRegion":null,"paystatus":1,"barcode":"9903000000182199","btype":3,"humanId":245514,"subdisId":null,"addrvalId":null,"addressId":null,"sendhome":0,"urgent":0,"status":0,"remark":"","companyId":245468,"id":138760,"createdBy":"245514","createdDate":"2015-07-21 17:05:11","updatedBy":"","updatedDate":"2015-07-21 17:07:19"}]}
 //                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-//                        RspBean<WXPrePayResponse> retValue = (RspBean<WXPrePayResponse>) rspData;
-//                        WXPrePayResponse prePayResponse = retValue.getValue();
+//                        RspBean<AppPrePayRsp> retValue = (RspBean<AppPrePayRsp>) rspData;
+//                        AppPrePayRsp prePayResponse = retValue.getValue();
 //                       ZLogger.d("prePayResponse: " + prePayResponse.toString());
                         notifyPayResult(0);
                         DialogUtil.showHint("支付成功");
@@ -1094,7 +1096,7 @@ public class ComnJBH5Activity extends BaseActivity {
         String btype = orderPayData.get(NetProxy.PARAM_KEY_BIZ_TYPE);
         String token = orderPayData.get(NetProxy.PARAM_KEY_TOKEN);
         orderPayData.clear();
-        NetProxy.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
+        CommonUserAccountApiImpl.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
     }
 
     /**

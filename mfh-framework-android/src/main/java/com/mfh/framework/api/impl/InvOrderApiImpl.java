@@ -14,8 +14,6 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 4/22/16.
  */
 public class InvOrderApiImpl extends InvOrderApi {
-
-
     /**
      * 查询库存盘点订单列表
      */
@@ -23,8 +21,10 @@ public class InvOrderApiImpl extends InvOrderApi {
         AjaxParams params = new AjaxParams();
         params.put("wrapper", "true");
         params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_INVCHECKORDER_LIST, params, responseCallback);
     }

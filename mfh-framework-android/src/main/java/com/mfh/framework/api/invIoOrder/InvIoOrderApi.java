@@ -16,7 +16,7 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 7/22/16.
  */
 public class InvIoOrderApi {
-    private final static String URL_INVIOORDER = MfhApi.URL_BASE_SERVER + "/invIoOrder/";
+    public static String URL_INVIOORDER = MfhApi.URL_BASE_SERVER + "/invIoOrder/";
 
 
     /**出入库类型：0-入库 1-出库 2-直接设置*/
@@ -31,19 +31,19 @@ public class InvIoOrderApi {
     /**
      * 查询出入库批次流水
      */
-    public final static String URL_LIST = URL_INVIOORDER + "list";
+    public static String URL_LIST = URL_INVIOORDER + "list";
 
     /**
      * 创建一个针对本网点仓库的出入库单
      * /invIoOrder/createIoOrder
      */
-    public final static String URL_CREATE_IOORDER = URL_INVIOORDER + "createIoOrder";
+    private static String URL_CREATE_IOORDER = URL_INVIOORDER + "createIoOrder";
 
     /**
      * 提交一个出入库单，正式出入库,如果是出库单可以进一步填写物流信息如车辆、司机（可空）。
      * /invIoOrder/commitOrder
      */
-    public final static String URL_COMMIT_ORDER = URL_INVIOORDER + "commitOrder";
+    private static String URL_COMMIT_ORDER = URL_INVIOORDER + "commitOrder";
 
 
     /**

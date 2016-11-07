@@ -15,13 +15,12 @@ import net.tsz.afinal.http.AjaxParams;
  */
 public class InvComProviderApi {
 
-    public final static String URL_INV_COMPROVIDER = MfhApi.URL_BASE_SERVER + "/invCompProvider/";
-
+    public static String URL_INV_COMPROVIDER = MfhApi.URL_BASE_SERVER + "/invCompProvider/";
 
     /**
      * 查询批发商的私有供应商
      * */
-    public final static String URL_FIND_MYPROVIDERS = URL_INV_COMPROVIDER + "findMyProviders";
+    public static String URL_FIND_MYPROVIDERS = URL_INV_COMPROVIDER + "findMyProviders";
 
     /**
     * 查询批发商租户

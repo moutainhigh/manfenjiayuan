@@ -12,19 +12,19 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 8/30/16.
  */
 public class CompanyHumanApi {
-    public final static String URL_COMPANYHUMAN = MfhApi.URL_BASE_SERVER + "/companyHuman/";
+    public static String URL_COMPANYHUMAN = MfhApi.URL_BASE_SERVER + "/companyHuman/";
 
     /**
      * 查询子账号
      * /companyHuman/findCompUserPwdInfo?page=-1&rows=
      */
-    public final static String URL_FINDCOMPUSER_PWDINFO = URL_COMPANYHUMAN + "findCompUserPwdInfo";
+    public static String URL_FINDCOMPUSER_PWDINFO = URL_COMPANYHUMAN + "findCompUserPwdInfo";
 
     /**
      * 查询部门子账号
      * /pmc/companyHuman/listWorkerBeanInfoOfCompany?page=-1&rows=
      */
-    public final static String URL_LISTWORKERBEANINFO_OFCOMPANY = URL_COMPANYHUMAN + "listWorkerBeanInfoOfCompany";
+    public static String URL_LISTWORKERBEANINFO_OFCOMPANY = URL_COMPANYHUMAN + "listWorkerBeanInfoOfCompany";
 
 
     /**
@@ -53,5 +53,4 @@ public class CompanyHumanApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_LISTWORKERBEANINFO_OFCOMPANY, params, responseCallback);
     }
-
 }

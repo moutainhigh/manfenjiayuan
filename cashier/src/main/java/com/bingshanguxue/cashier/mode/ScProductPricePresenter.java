@@ -1,8 +1,8 @@
 package com.bingshanguxue.cashier.mode;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.anon.PubSkus;
-import com.mfh.framework.api.anon.ScProductPriceMode;
+import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
+import com.mfh.framework.api.anon.sc.productPrice.ScProductPriceMode;
 import com.mfh.framework.mvp.OnPageModeListener;
 
 import java.util.List;

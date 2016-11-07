@@ -12,19 +12,15 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 4/19/16.
  */
 public class ScApi {
-
-
     /**摇一摇·店铺*/
-    public final static String URL_WX_SHOP_DEVICE_PAGE = MfhApi.URL_BASE_SERVER + "/wxShopDevicePage/list";
+    public static String URL_WX_SHOP_DEVICE_PAGE = MfhApi.URL_BASE_SERVER + "/wxShopDevicePage/list";
 
     /**
      * 查询商品销量记录
      * /productAggDate/list?officeId=135852&proSkuId=38968
      * officeId代表当前登录网点， proSkuId是产品sku编号
      * */
-    public final static String URL_PRODUCT_AGGDATE_LIST = MfhApi.URL_BASE_SERVER + "/productAggDate/list";
-
-
+    public static String URL_PRODUCT_AGGDATE_LIST = MfhApi.URL_BASE_SERVER + "/productAggDate/list";
 
 
     /**

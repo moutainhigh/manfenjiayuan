@@ -337,6 +337,9 @@
     <!--Material Color : Black-->
     <color name="material_black">#000000</color>
     <color name="material_black_A80">#32000000</color>
+    <color name="material_black_A100">#64000000</color>
+    <color name="material_black_A150">#96000000</color>
+    <color name="material_black_A200">#c8000000</color>
     <color name="material_black_hint">#26000000</color>
 
     <!--Material Color : White-->

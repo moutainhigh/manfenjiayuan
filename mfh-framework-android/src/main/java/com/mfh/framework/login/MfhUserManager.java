@@ -3,11 +3,11 @@ package com.mfh.framework.login;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.UserApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
@@ -69,7 +69,7 @@ public class MfhUserManager {
 
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, sessionId);
-        AfinalFactory.postDefault(MfhApi.URL_LOGOUT, params,
+        AfinalFactory.postDefault(UserApi.URL_EXIT, params,
                 new NetCallBack.NormalNetTask<String>(String.class) {
                     @Override
                     public void processResult(IResponseData rspData) {

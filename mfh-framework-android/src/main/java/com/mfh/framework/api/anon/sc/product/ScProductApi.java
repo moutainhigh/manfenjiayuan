@@ -1,4 +1,4 @@
-package com.mfh.framework.api.scProduct;
+package com.mfh.framework.api.anon.sc.product;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.MfhApi;
@@ -13,12 +13,12 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 8/30/16.
  */
 public class ScProductApi {
-    public final static String URL_ANON_SC_PRODUCT = MfhApi.URL_BASE_SERVER + "/anon/sc/product/";
+    public static String URL_ANON_SC_PRODUCT = MfhApi.URL_BASE_SERVER + "/anon/sc/product/";
 
     /**
      * /anon/sc/product/findProductByFrontCatalog?frontCataLogId=
      * */
-    public final static String URL_FINDPRODUCT_BYFRONTCATALOG= URL_ANON_SC_PRODUCT + "findProductByFrontCatalog";
+    private static String URL_FINDPRODUCT_BYFRONTCATALOG = URL_ANON_SC_PRODUCT + "findProductByFrontCatalog";
 
     /**
      * 查询前台类目商品商品
@@ -29,8 +29,8 @@ public class ScProductApi {
      * </ol>
      * @param frontCataLogId 前台类目编号
      */
-    public static void findProductByFrontCatalog(Long frontCataLogId, PageInfo pageInfo,
-                                     AjaxCallBack<? extends Object> responseCallback) {
+    static void findProductByFrontCatalog(Long frontCataLogId, PageInfo pageInfo,
+                                          AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (frontCataLogId != null) {
             params.put("frontCataLogId", String.valueOf(frontCataLogId));

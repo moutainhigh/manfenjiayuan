@@ -23,6 +23,7 @@ import com.manfenjiayuan.business.bean.AccountPayResponse;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.enjoycity.R;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.enjoycity.events.WxPayEvent;
@@ -35,6 +36,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.pay.PayApiImpl;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -492,7 +494,7 @@ public class MfPayActivity extends BaseActivity {
         {
         };
 
-        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), orderIds, btype,
+        PmcStockApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), orderIds, btype,
                 wayType, WXUtil.genNonceStr(), responseCallback);
     }
 
@@ -619,7 +621,7 @@ public class MfPayActivity extends BaseActivity {
         String btype = orderPayData.get(EnjoycityApiProxy.PARAM_KEY_BIZ_TYPE);
         String token = orderPayData.get(EnjoycityApiProxy.PARAM_KEY_TOKEN);
         orderPayData.clear();
-        PayApiImpl.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
+        CommonUserAccountApiImpl.mfhAccountPay(tradeNo, orderIds, Integer.valueOf(btype), token, responseCallback);
     }
 
     /**

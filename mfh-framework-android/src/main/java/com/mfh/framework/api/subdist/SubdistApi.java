@@ -12,13 +12,13 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class SubdistApi {
-    public static final String URL_SUBDIST = MfhApi.URL_BASE_SERVER + "/subdist/";
+    public static String URL_SUBDIST = MfhApi.URL_BASE_SERVER + "/subdist/";
 
 
     /**搜索小区*/
-    public static final String URL_LIST = URL_SUBDIST + "list";
+    public static String URL_LIST = URL_SUBDIST + "list";
     /**查询周边小区*/
-    public static final String URL_FIND_ARROUND_SUBDIST = URL_SUBDIST + "findArroundSubdist";
+    private static String URL_FIND_ARROUND_SUBDIST = URL_SUBDIST + "findArroundSubdist";
 
 
     /**

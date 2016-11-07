@@ -11,9 +11,9 @@ import net.tsz.afinal.http.AjaxParams;
  */
 public class InvSkuLabelApi {
 
-    public static final String URL_INVSKULABEL = MfhApi.URL_BASE_SERVER + "/invSkuLabel/";
+    static String URL_INVSKULABEL = MfhApi.URL_BASE_SERVER + "/invSkuLabel/";
     /**创建待打印价签*/
-    public final static String URL_CREATE = URL_INVSKULABEL + "create";
+    private static String URL_CREATE = URL_INVSKULABEL + "create";
 
     /**
      * 搜索小区

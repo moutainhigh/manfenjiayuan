@@ -15,14 +15,14 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class InvFindOrderApi {
-    private final static String URL_INVFINDORDER = MfhApi.URL_BASE_SERVER + "/invFindOrder/";
+    public static String URL_INVFINDORDER = MfhApi.URL_BASE_SERVER + "/invFindOrder/";
 
     /**
      * 根据拣货单编号或条码检索一个拣货单及其所有明细
      *  /invFindOrder/getById?id=|barcode=451201106160530006
      *  注意拣货单的条码是4开头
      */
-    public final static String URL_GETBYID = URL_INVFINDORDER + "getById";
+    private static String URL_GETBYID = URL_INVFINDORDER + "getById";
 
 
     /**

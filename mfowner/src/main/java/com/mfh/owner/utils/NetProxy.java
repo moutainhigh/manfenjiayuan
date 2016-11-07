@@ -14,6 +14,7 @@ import net.tsz.afinal.http.AjaxParams;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+
 /**
  * 网络请求
  * Created by NAT.ZZN on 2015/5/14.
@@ -57,14 +58,6 @@ public class NetProxy {
     public final static String PARAM_KEY_PR_EORDER_ID   = "preOrderId";
     public final static String PARAM_KEY_TOKEN          = "token";
 
-
-    public final static int WAYTYPE_ALIPAY = 32;//支付宝支付
-    public final static int WAYTYPE_WXPAY = 512;//微信支付
-
-    //123满分家园，124满分小伙伴，125城市之间
-    public final static int WX_PAY_CONFIG_ID = 123;
-
-
     /**
      * 获取用户个人信息(需要重登录)
      *
@@ -72,11 +65,10 @@ public class NetProxy {
      * "data":{"humanId":245389,"amount":0.0,"score":0.0,"favoriteNum":1,"waitPayNum":4,"waitReceiveNum":0,"waitPraiseNum":0,"serviceOrderNum":0,"shoppingCartNum":1,"cardCouponsNum":0,"defaultStock":null,"defaultSubids":"璞墅小区"}}
      * */
     public void getUserProfile(AjaxCallBack<? extends Object> responseCallback){
-        FinalHttp fh = NetFactory.getHttp();
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 //        fh.addHeader("Cookie", SharedPreferencesHelper.getLastSessionId());
-        fh.post(URL_MY_PROFILE, params, responseCallback);
+        AfinalFactory.postDefault(URL_MY_PROFILE, params, responseCallback);
     }
 
     /**
@@ -88,7 +80,7 @@ public class NetProxy {
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         params.put(PARAM_KEY_DEVICEID, deviceId);
 
-        NetFactory.getHttp().post(URL_WX_SHOP_DEVICE_PAGE, params, responseCallback);
+        AfinalFactory.postDefault(URL_WX_SHOP_DEVICE_PAGE, params, responseCallback);
     }
 
     /**
@@ -102,14 +94,13 @@ public class NetProxy {
      * 注：确认新密码在调用接口前做处理，默认确认新密码和新密码相同。
      * */
     public static void updateUserPassword(Long humanId, String oldPwd, String newPwd, AjaxCallBack<? extends Object> responseCallback){
-        FinalHttp fh = NetFactory.getHttp();
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
         params.put(PARAM_KEY_OLD_PWD, oldPwd);
         params.put(PARAM_KEY_NEW_PWD, newPwd);
         params.put(PARAM_KEY_CONFIRM_PWD, newPwd);
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        fh.post(URL_USER_UPDATE_LOGINPWD, params, responseCallback);
+        AfinalFactory.postDefault(URL_USER_UPDATE_LOGINPWD, params, responseCallback);
     }
 
     /**
@@ -137,11 +128,10 @@ public class NetProxy {
      * @param jsonString Json格式字符串
      * */
     public static void updateProfile(String jsonString, AjaxCallBack<? extends Object> responseCallback){
-        FinalHttp fh = NetFactory.getHttp();
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_JSONSTR, jsonString);
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        fh.post(URL_USER_UPDATE, params, responseCallback);
+        AfinalFactory.postDefault(URL_USER_UPDATE, params, responseCallback);
     }
 
     /**
@@ -149,7 +139,6 @@ public class NetProxy {
      * @param humanId
      * */
     public static void uploadUserHeader(Long humanId, File file, AjaxCallBack<? extends Object> responseCallback){
-        FinalHttp fh = NetFactory.getHttp();
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
         try {
@@ -158,103 +147,9 @@ public class NetProxy {
             throw new RuntimeException("不存在的文件:" + file.getAbsolutePath());
         }
         params.put(PARAM_KEY_FILETOUPLOAD, MfhLoginService.get().getCurrentSessionId());
-        fh.post(URL_USER_UPLOAD_HEAD, params, responseCallback);
+        AfinalFactory.postDefault(URL_USER_UPLOAD_HEAD, params, responseCallback);
     }
 
-
-    /**
-     * 预支付
-     * @param humanId 人员编号
-     * @param amount 充值金额(充值金额必须为数字！单位为元，最小金额为0.01元。)
-     * @param wayType 支付途径(1-支付宝 2-微信 21-app端调用微信支付),可不填，默认为2-微信
-     *
-     * */
-    public static void prePay(Long humanId, String amount, int wayType,
-                       AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
-        params.put(PARAM_KEY_AMOUNT, amount);
-        params.put(PARAM_KEY_NONCESTR, WXUtil.genNonceStr());//随机字符串（32位,不能为空!）
-        params.put(PARAM_KEY_WAYTYPE, String.valueOf(wayType));
-        params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-
-        NetFactory.getHttp().post(URL_PRE_PAY, params, responseCallback);
-    }
-    /**
-     * 预支付(充值)
-     * @param humanId 人员编号
-     * @param amount 充值金额(充值金额必须为数字！单位为元，最小金额为0.01元。)
-     * @param wayType 支付途径(1-支付宝 2-微信 21-app端调用微信支付),可不填，默认为2-微信
-     *
-     * */
-    public static void prePayForApp(Long humanId, String amount, int wayType,
-                                    AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_HUMAN_ID, String.valueOf(humanId));
-        params.put(PARAM_KEY_AMOUNT, amount);
-        params.put(PARAM_KEY_NONCESTR, WXUtil.genNonceStr());//随机字符串（32位,不能为空!）
-        params.put(PARAM_KEY_WAYTYPE, String.valueOf(wayType));
-        if(wayType == WAYTYPE_WXPAY){
-            params.put("configId", String.valueOf(WX_PAY_CONFIG_ID));
-        }else{
-            params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-        }
-
-        NetFactory.getHttp().post(URL_PRE_PAY_APP, params, responseCallback);
-    }
-
-    /**
-     * 订单预支付
-     * @param humanId 人员编号
-     * @param orderIds 订单id,多个以英文,隔开(必填)
-     * @param btype 业务类型, 3-商城(必填)
-     * @param wayType 支付途径(1-支付宝 2-微信 21-app端调用微信支付),可不填，默认为2-微信
-     *
-     * */
-    public void prePayOrder(Long humanId, String orderIds, int btype,
-                            int wayType,
-                       AjaxCallBack<? extends Object> responseCallback){
-        FinalHttp fh = NetFactory.getHttp();
-
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_WAYTYPE, String.valueOf(wayType));
-        if(wayType == WAYTYPE_ALIPAY){
-            params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-        }else if(wayType == WAYTYPE_WXPAY){
-            params.put(PARAM_KEY_CHANNEL_ID, String.valueOf(WX_PAY_CONFIG_ID));
-        }else{
-            params.put(PARAM_KEY_WXOPENID, String.valueOf(humanId));
-        }
-
-        params.put(PARAM_KEY_NONCESTR, WXUtil.genNonceStr());//随机字符串（32位,不能为空!）
-        params.put(PARAM_KEY_ORDER_IDS, orderIds);
-        params.put(PARAM_KEY_BIZ_TYPE, String.valueOf(btype));
-
-        ZLogger.d(String.format("[POST]prePayOrder: %s?%s", URL_PRE_PAY_ORDER, params.toString()));
-        fh.post(URL_PRE_PAY_ORDER, params, responseCallback);
-    }
-
-    /**
-     * 满分家园账户充值
-     * @param tradeNo 交易号
-     * @param orderIds 订单id,多个以英文,隔开(必填)
-     * @param btype 业务类型, 3-商城(必填)
-     * @param token
-     *
-     * */
-    public static void mfhAccountPay(String tradeNo, String orderIds, int btype,
-                            String token,
-                            AjaxCallBack<? extends Object> responseCallback){
-        FinalHttp fh = NetFactory.getHttp();
-
-        AjaxParams params = new AjaxParams();
-        params.put(PARAM_KEY_PR_EORDER_ID, tradeNo);
-        params.put(PARAM_KEY_ORDER_ID, orderIds);
-        params.put(PARAM_KEY_TOKEN, token);
-        params.put(PARAM_KEY_BIZ_TYPE, String.valueOf(btype));
-
-        fh.post(URL_MF_ACCOUNT_PAY, params, responseCallback);
-    }
 
 //    private AjaxCallBack userProfileCallback2 = new AjaxCallBack<Object>() {
 //        @Override

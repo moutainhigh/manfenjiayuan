@@ -13,25 +13,25 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class HumanAuthTempApi {
-    public final static String URL_HUMANAUTHTEMP = MfhApi.URL_BASE_SERVER + "/humanAuthTemp/";
+    public static String URL_HUMANAUTHTEMP = MfhApi.URL_BASE_SERVER + "/humanAuthTemp/";
 
     /**
      * 首次对某个临时用户发送手机短信验证码
      * /embWxUserRegister/humanAuthTemp?mobile=&sourceType=10, 注意返回一个userTmpId备用
      */
-    public final static String URL_BEGINAUTHENBYSMS = URL_HUMANAUTHTEMP + "beginAuthenBysms";
+    private static String URL_BEGINAUTHENBYSMS = URL_HUMANAUTHTEMP + "beginAuthenBysms";
 
     /**
      * 首次对某个临时用户发送手机短信验证码
      * /embWxUserRegister/retryAuthenBysms?mobile=&sourceType=10, 注意返回一个userTmpId备用
      */
-    public final static String URL_RETRYAUTHENBYSMS = URL_HUMANAUTHTEMP + "retryAuthenBysms";
+    private static String URL_RETRYAUTHENBYSMS = URL_HUMANAUTHTEMP + "retryAuthenBysms";
 
     /**
      * 首次对某个临时用户发送手机短信验证码
      * /embWxUserRegister/retryAuthenBysms?mobile=&sourceType=10, 注意返回一个userTmpId备用
      */
-    public final static String URL_LOGINBYSMS = MfhApi.URL_BASE_SERVER + "/loginBySms";
+    public static String URL_LOGINBYSMS = MfhApi.URL_BASE_SERVER + "/loginBySms";
 
 
     /**

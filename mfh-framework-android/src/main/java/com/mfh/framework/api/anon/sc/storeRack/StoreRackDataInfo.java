@@ -1,4 +1,4 @@
-package com.mfh.framework.api.anon.storeRack;
+package com.mfh.framework.api.anon.sc.storeRack;
 
 import java.io.Serializable;
 import java.util.List;

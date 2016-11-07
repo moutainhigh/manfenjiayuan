@@ -8,13 +8,13 @@ import com.mfh.framework.network.NetFactory;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
+import static com.mfh.framework.api.payOrder.PayOrderApi.URL_PAYORDER;
+
 /**
  * 支付API
  * Created by bingshanguxue on 4/21/16.
  */
 public class PayApi {
-    public final static String URL_PAYORDER = MfhApi.URL_BASE_SERVER + "/payOrder/";
-
     /**
      * 渠道编号
      */
@@ -30,36 +30,23 @@ public class PayApi {
     /**支付宝支付的编号*/
     public final static Long ALIPAY_CONFIGID_MIXICOOK = 127L;//米西厨房
 
-    /**
-     * 预支付(充值)--支付宝
-     */
-    public final static String URL_PRE_PAY = URL_PAYORDER + "prepay";
-    /**
-     * 充值预支付——app端微信支付
-     */
-    public final static String URL_PRE_PAY_APP = URL_PAYORDER + "prepayForApp";
-
-    /**
-     * 预支付（订单支付)--微信/支付宝
-     */
-    public final static String URL_PRE_PAY_ORDER = MfhApi.URL_BASE_SERVER + "/pmcstock/prePayOrder";
 
 
     /**
      * 支付宝条码支付请求接口：
      * /toAlipayBarTradePay/barPay?jsonStr={out_trade_no:20150929003638,auth_code:289802075510210664,total_amount:0.1,subject:test,terminal_id:001,operator_id:112369}
      */
-    public static final String URL_ALIPAY_BARPAY = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/barPay";
-    public static final String URL_ALIPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/query";
-    public static final String URL_ALIPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/cancelOrder";
+    public static String URL_ALIPAY_BARPAY = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/barPay";
+    public static String URL_ALIPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/query";
+    public static String URL_ALIPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/cancelOrder";
 
     /**
      * 微信条码支付请求接口：
      * /toAlipayBarTradePay/barPay?jsonStr={out_trade_no:20150929003638,auth_code:289802075510210664,total_amount:0.1,subject:test,terminal_id:001,operator_id:112369}
      */
-    public static final String URL_WXBARPAY_PAY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/barPay";
-    public static final String URL_WXBARPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/query";
-    public static final String URL_WXBARPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/cancelOrder";
+    public static String URL_WXBARPAY_PAY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/barPay";
+    public static String URL_WXBARPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/query";
+    public static String URL_WXBARPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/cancelOrder";
 
     /**
      * 支付宝条码支付

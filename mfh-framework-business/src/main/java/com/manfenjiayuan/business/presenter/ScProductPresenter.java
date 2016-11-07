@@ -1,14 +1,9 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.business.view.IScProductView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSkuMode;
-import com.mfh.framework.api.scProduct.ScProduct;
-import com.mfh.framework.api.scProduct.ScProductMode;
-import com.mfh.framework.mvp.OnModeListener;
+import com.mfh.framework.api.anon.sc.product.ScProduct;
+import com.mfh.framework.api.anon.sc.product.ScProductMode;
 import com.mfh.framework.mvp.OnPageModeListener;
 
 import java.util.List;

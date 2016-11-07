@@ -46,8 +46,8 @@ import com.mfh.owner.adapter.LifeCategoryAdapter;
 import com.mfh.owner.bean.FunctionCell;
 import com.mfh.owner.ui.CategoryTab;
 import com.mfh.owner.ui.activity.NativeWebViewActivity;
-import com.mfh.owner.ui.map.LocationUtil;
-import com.mfh.owner.ui.map.MyLocationListener;
+import com.mfh.framework.core.location.LocationClient;
+import com.mfh.framework.core.location.MyLocationListener;
 import com.mfh.owner.ui.shake.ShakeBeepManager;
 import com.mfh.owner.ui.shake.ShakeHelper;
 import com.mfh.owner.ui.shake.ShakeHistoryActivity;
@@ -781,14 +781,14 @@ public class LifeFragment extends BaseFragment implements
     private void setShakeEnabled(boolean enabled) {
         if (enabled) {
             if (SharedPreferencesManager.getLocationAcceptEnabled()) {
-                LocationUtil.startGPSMonitor(getContext(), locationListener);
+                LocationClient.startGPSMonitor(getContext(), locationListener);
             }
 
             if (shakeListener != null) {
                 shakeListener.start();
             }
         } else {
-            LocationUtil.stopGPSMonitor(getContext(), locationListener);
+            LocationClient.stopGPSMonitor(getContext(), locationListener);
 
             if (shakeListener != null) {
                 shakeListener.stop();

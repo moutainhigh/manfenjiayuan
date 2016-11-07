@@ -1,4 +1,4 @@
-package com.mfh.framework.api.anon;
+package com.mfh.framework.api.anon.sc.productPrice;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.MfhApi;
@@ -13,19 +13,19 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 8/30/16.
  */
 public class ScProductPriceApi {
-    public final static String URL_ANON_SC_PRODUCTPRICE = MfhApi.URL_BASE_SERVER + "/anon/sc/productPrice/";
+    public static String URL_ANON_SC_PRODUCTPRICE = MfhApi.URL_BASE_SERVER + "/anon/sc/productPrice/";
 
     /**
      * /anon/sc/productPrice/findPubSkusByFrontCatalog?frontCataLogId=&priceMask=0
      * 根据前台类目查找有效的商品列表(前台类目可能又包含后台类目),返回的id就是proSkuId，另外还有productId
      * */
-    public final static String URL_FINDPUBSKUS_BYFRONTCATALOG= URL_ANON_SC_PRODUCTPRICE + "findPubSkusByFrontCatalog";
+    private static String URL_FINDPUBSKUS_BYFRONTCATALOG= URL_ANON_SC_PRODUCTPRICE + "findPubSkusByFrontCatalog";
 
     /**
      * /anon/sc/productPrice/findProductSku?barcode
      * 根据条码查询平台商品档案
      * */
-    public final static String URL_FIND_PRODUCTSKU= URL_ANON_SC_PRODUCTPRICE + "findProductSku";
+    private static String URL_FIND_PRODUCTSKU= URL_ANON_SC_PRODUCTPRICE + "findProductSku";
 
 
     /**

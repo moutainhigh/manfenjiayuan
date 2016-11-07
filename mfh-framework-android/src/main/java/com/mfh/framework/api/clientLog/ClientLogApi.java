@@ -17,18 +17,18 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class ClientLogApi {
-    private final static String URL_CLIENTLOG = MfhApi.URL_BASE_SERVER + "/clientLog/";
+    public static String URL_CLIENTLOG = MfhApi.URL_BASE_SERVER + "/clientLog/";
 
 
     /**
      * 创建日志
      * */
-    private final static String URL_CREATE = URL_CLIENTLOG + "create";
+    private static String URL_CREATE = URL_CLIENTLOG + "create";
 
     /**
      * 日志列表
      * */
-    private final static String URL_LIST = URL_CLIENTLOG + "list";
+    private static String URL_LIST = URL_CLIENTLOG + "list";
 
 
     /**

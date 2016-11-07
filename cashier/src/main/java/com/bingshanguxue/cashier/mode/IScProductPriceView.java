@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.mode;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.anon.PubSkus;
+import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 import com.mfh.framework.mvp.MvpView;
 
 import java.util.List;

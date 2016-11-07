@@ -1,6 +1,7 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.anon.sc;
 
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -14,17 +15,17 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 8/16/16.
  */
 public class ProductCatalogApi {
-    public final static String URL_PRODUCT_CATALOG = MfhApi.URL_BASE_SERVER + "/anon/sc/productCatalog/";
+    public static String URL_PRODUCT_CATALOG = MfhApi.URL_BASE_SERVER + "/anon/sc/productCatalog/";
 
     /**
      * /anon/sc/productCatalog/delete?id=  删除关系接口
      * */
-    public final static String URL_DELETE = URL_PRODUCT_CATALOG + "delete";
+    public static String URL_DELETE = URL_PRODUCT_CATALOG + "delete";
     /**
      * 同步前台类目商品关系列表
      *  /anon/sc/productCatalog/downLoadProductCatalog?tenantId=134342&startCursor=2015-01-01 10:00:00&page=1&rows=20
      * */
-    public final static String URL_DOWNLOAD_PRODUCTCATALOG = URL_PRODUCT_CATALOG + "downLoadProductCatalog";
+    public static String URL_DOWNLOAD_PRODUCTCATALOG = URL_PRODUCT_CATALOG + "downLoadProductCatalog";
 
 
     /**
@@ -32,15 +33,19 @@ public class ProductCatalogApi {
      * 同步完downLoadProductCatalog，校验pos和云端数据一致.不一致，下次同步会自动全量同步
      * /anon/sc/productCatalog/countProductCatalogSyncAbleNum
      * */
-    public final static String URL_COUNTPRODUCTCATALOG_SYNCABLENUM = URL_PRODUCT_CATALOG + "countProductCatalogSyncAbleNum";
+    public static String URL_COUNTPRODUCTCATALOG_SYNCABLENUM = URL_PRODUCT_CATALOG + "countProductCatalogSyncAbleNum";
 
     /**
      * 把几个商品添加到指定前台类目中：  /anon/sc/productCatalog/addToCatalog?groupIds=3397&productIds=20551&catalogType=1
      其中groupIds为建好的前台类目，productIds为商品的spuId（不是skuId）
      spuId就是productId
      */
-    public final static String URL_ADD2CATEGORY = URL_PRODUCT_CATALOG + "addToCatalog";
+    public static String URL_ADD2CATEGORY = URL_PRODUCT_CATALOG + "addToCatalog";
 
+
+    public static void register(){
+        URL_PRODUCT_CATALOG = MfhApi.URL_BASE_SERVER + "/anon/sc/productCatalog/";
+    }
 
     /**
      * 删除前台类目和商品关系表

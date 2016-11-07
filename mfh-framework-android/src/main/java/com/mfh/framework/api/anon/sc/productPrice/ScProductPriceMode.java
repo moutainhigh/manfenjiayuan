@@ -1,4 +1,4 @@
-package com.mfh.framework.api.anon;
+package com.mfh.framework.api.anon.sc.productPrice;
 
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;

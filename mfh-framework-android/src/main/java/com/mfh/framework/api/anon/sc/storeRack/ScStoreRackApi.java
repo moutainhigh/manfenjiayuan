@@ -1,4 +1,4 @@
-package com.mfh.framework.api.anon.storeRack;
+package com.mfh.framework.api.anon.sc.storeRack;
 
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.StringUtils;
@@ -23,32 +23,35 @@ public class ScStoreRackApi {
     public static final int RACK_TYPE_SC_HOME = 0;//商城首页,包含滚屏、导航、促销
     public static final int RACK_TYPE_SHOP_HOME = 1;//店铺主页,每个网点设计一个主页
 
-
-    public final static String URL_ANON_SC_STORERACK = MfhApi.URL_BASE_SERVER + "/anon/sc/storeRack/";
+    private static String URL_ANON_SC_STORERACK = MfhApi.URL_BASE_SERVER + "/anon/sc/storeRack/";
 
     /**
      * /anon/sc/storeRack/getByShopIdMust?shopId=?&channelTypesItem=2
      * 查询店铺货架编号
      * */
-    public final static String URL_GETBYSHOPID_MUST= URL_ANON_SC_STORERACK + "getByShopIdMust";
+    private static String URL_GETBYSHOPID_MUST= URL_ANON_SC_STORERACK + "getByShopIdMust";
 
     /**
      * http://admin.mixicook.com/pmc/anon/sc/storeRack/getById?id=76&JSESSIONID=c2a2b05f-932e-425e-86a2-3c275a479cb3
      * 查询货架商品信息
      * */
-    public final static String URL_GETBYID= URL_ANON_SC_STORERACK + "getById";
+    private static String URL_GETBYID= URL_ANON_SC_STORERACK + "getById";
 
     /**
      * http://dev.mixicook.com/pmc/anon/sc/storeRack/getByShopMust?channelTypesItem=2&JSESSIONID=d20cc6ad-4bc8-4554-8188-13eb03fde113&shopId=136076
      * 查询店铺货架信息，原来要调用两个接口来实现，{@link #URL_GETBYSHOPID_MUST} 和 {@link #URL_GETBYID}
      * */
-    public final static String URL_GET_BYSHOPMUST= URL_ANON_SC_STORERACK + "getByShopMust";
+    private static String URL_GET_BYSHOPMUST= URL_ANON_SC_STORERACK + "getByShopMust";
 
     /**
      * http://dev.mixicook.com/pmc/anon/sc/storeRack/findByShopMust?shopId=136076&channelTypesItem=1&rackTypes=1,2
      * 查找一个网点里指定用途类型的货架，没有使用全局定义的；rackTypes支持多个类型，1-主页，2-广告区
      * */
-    public final static String URL_FIND_BYSHOPMUST= URL_ANON_SC_STORERACK + "findByShopMust";
+    private static String URL_FIND_BYSHOPMUST= URL_ANON_SC_STORERACK + "findByShopMust";
+
+    public static void register(){
+        URL_ANON_SC_STORERACK = MfhApi.URL_BASE_SERVER + "/anon/sc/storeRack/";
+    }
 
     /**
      * 查询店铺货架编号

@@ -14,12 +14,12 @@ import net.tsz.afinal.http.AjaxParams;
  */
 public class CommonUserAccountApi {
 
-    private static final String URL_COMMONUSERACCOUNT = MfhApi.URL_BASE_SERVER + "/commonuseraccount/";
+    public static String URL_COMMONUSERACCOUNT = MfhApi.URL_BASE_SERVER + "/commonuseraccount/";
 
     /**修改支付密码*/
-    public final static String URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
+    private static String URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
     /**检查支付密码*/
-    public final static String URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
+    private static String URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
 
     /**
      * pos端直接使用满分账户进行余额支支付或积分支付，无具体业务背景:
@@ -32,48 +32,51 @@ public class CommonUserAccountApi {
      *
      * (若mineCps参数不为空，则相当于支付完毕同时将其废弃，避免再调用一次下面的abandonCouponById接口)
      * */
-    public final static String URL_PAYDIRECT = URL_COMMONUSERACCOUNT + "payDirect";
+    private static String URL_PAYDIRECT = URL_COMMONUSERACCOUNT + "payDirect";
 
     /**用户注册,
      * 根据手机号新注册或修改一个个人用户,并且建立个人支付账户，需要提供登录密码password和支付密码payPassword:
      /commonuseraccount/registerUser?humanMobile=18248499111&humanName=zhangyz&password=123456&payPassword=123456*/
-    public final static String URL_REGISTERUSER = URL_COMMONUSERACCOUNT + "registerUser";
-
-
+    private static String URL_REGISTERUSER = URL_COMMONUSERACCOUNT + "registerUser";
 
     /**根据卡号获取用户信息
      /commonuseraccount/getUserAccountByCardId?cardId=
      */
-    public final static String URL_GET_USERACCOUNT_BYCARDID = URL_COMMONUSERACCOUNT + "getUserAccountByCardId";
+    private static String URL_GET_USERACCOUNT_BYCARDID = URL_COMMONUSERACCOUNT + "getUserAccountByCardId";
 
     /**
      * 开卡并激活用户账户
      * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
      */
-    public final static String URL_ACTIVATEACCOUNT = URL_COMMONUSERACCOUNT + "activateAccount";
+    static String URL_ACTIVATEACCOUNT = URL_COMMONUSERACCOUNT + "activateAccount";
 
     /**
      * 会员卡充值:给其他帐号转账
      * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
      */
-    public final static String URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
+    static String URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
 
     /**
      * pos端提交客户编号、订单基础信息和卡券信息，计算金额
      */
-    public final static String URL_GETPAYAMOUNT_BYORDERINFO = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfo";
-    public final static String URL_GET_PAYAMOUNT_BY_ORDERINFOS = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfos";
+    static String URL_GETPAYAMOUNT_BYORDERINFO = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfo";
+    static String URL_GET_PAYAMOUNT_BY_ORDERINFOS = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfos";
 
     /**
      * (商城/洗衣)订单支付
      */
-    public final static String URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
+    static String URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
 
 
     /**
      * 满分账户充值
      */
-    public final static String URL_MFACCOUNT_PAY = URL_COMMONUSERACCOUNT + "mfhAccountPay";
+    static String URL_MFACCOUNT_PAY = URL_COMMONUSERACCOUNT + "mfhAccountPay";
+
+    /**
+     * 服务器异步通知页面路径//"http://notify.msp.hk/notify.htm"
+     * */
+    public static String NOTIFY_ACCOUNT = URL_COMMONUSERACCOUNT + "notifyAccount";
 
 
     /**

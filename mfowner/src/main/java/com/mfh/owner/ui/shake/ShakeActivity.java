@@ -21,8 +21,8 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.owner.AppContext;
 import com.mfh.owner.R;
 import com.mfh.owner.ui.web.ComnJBH5Activity;
-import com.mfh.owner.ui.map.LocationUtil;
-import com.mfh.owner.ui.map.MyLocationListener;
+import com.mfh.framework.core.location.LocationClient;
+import com.mfh.framework.core.location.MyLocationListener;
 import com.sensoro.beacon.kit.Beacon;
 
 import butterknife.Bind;
@@ -134,7 +134,7 @@ public class ShakeActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        LocationUtil.stopGPSMonitor(this, locationListener);
+        LocationClient.stopGPSMonitor(this, locationListener);
 
         if(shakeListener != null){
             shakeListener.stop();
@@ -144,7 +144,7 @@ public class ShakeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LocationUtil.startGPSMonitor(this, locationListener);
+        LocationClient.startGPSMonitor(this, locationListener);
 
         if(shakeListener != null){
             shakeListener.start();
@@ -154,7 +154,7 @@ public class ShakeActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        LocationUtil.stopGPSMonitor(this, locationListener);
+        LocationClient.stopGPSMonitor(this, locationListener);
 
         if(shakeListener != null){
             shakeListener.stop();

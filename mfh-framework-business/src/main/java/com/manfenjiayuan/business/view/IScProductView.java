@@ -1,7 +1,7 @@
 package com.manfenjiayuan.business.view;
 
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.scProduct.ScProduct;
+import com.mfh.framework.api.anon.sc.product.ScProduct;
 import com.mfh.framework.mvp.MvpView;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package com.mfh.framework.api.sms;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.cashier.CashierApi;
 import com.mfh.framework.network.AfinalFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
@@ -13,31 +12,31 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class EmbWxUserRegisterApi {
-    public final static String URL_EMB_WXUSER_REGISTER = MfhApi.URL_BASE_SERVER + "/embWxUserRegister/";
+    public static String URL_EMB_WXUSER_REGISTER = MfhApi.URL_BASE_SERVER + "/embWxUserRegister/";
 
     /**
      * 首次对某个临时用户发送手机短信验证码
      * /embWxUserRegister/beginAuthenBysms?mobile=&sourceType=10, 注意返回一个userTmpId备用
      */
-    public final static String URL_BEGINAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "beginAuthenBysms";
+    private static String URL_BEGINAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "beginAuthenBysms";
 
     /**
      * 对某个临时用户重新发送手机短信验证码
      * /embWxUserRegister/retryAuthenBysms?mobile=&userTmpId=
      */
-    public final static String URL_RETRYAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "retryAuthenBysms";
+    private static String URL_RETRYAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "retryAuthenBysms";
 
     /**
      * 对接收到的手机验证码进行验证。
      * /embWxUserRegister/doAuthenBysms?token=&userTmpId=
      */
-    public final static String URL_DOAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "doAuthenBysms";
+    private static String URL_DOAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "doAuthenBysms";
 
     /**
      * 首次对某个临时用户发送手机短信验证码
      *
      * @param mobile 手机号
-     * @see CashierApi#URL_BEGINAUTHENBYSMS
+     * @see #URL_BEGINAUTHENBYSMS
      */
     public static void beginAuthenBysms(String mobile, AjaxCallBack<? extends Object> responseCallback) {
         JSONObject jsonObject = new JSONObject();
@@ -54,7 +53,7 @@ public class EmbWxUserRegisterApi {
      * 对某个临时用户重新发送手机短信验证码
      *
      * @param mobile 手机号
-     * @see CashierApi#URL_RETRYAUTHENBYSMS
+     * @see #URL_RETRYAUTHENBYSMS
      */
     public static void retryAuthenBysms(String mobile, Long userTmpId,
                                         AjaxCallBack<? extends Object> responseCallback) {
@@ -72,7 +71,7 @@ public class EmbWxUserRegisterApi {
      * 对接收到的手机验证码进行验证
      *
      * @param token 验证码
-     * @see CashierApi#URL_DOAUTHENBYSMS
+     * @see #URL_DOAUTHENBYSMS
      */
     public static void doAuthenBysms(String token, Long userTmpId,
                                      AjaxCallBack<? extends Object> responseCallback) {

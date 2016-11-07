@@ -1,4 +1,4 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.scGoodsSku;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.mfh.framework.api.anon.storeRack;
+package com.mfh.framework.api.anon.sc.storeRack;
 
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;

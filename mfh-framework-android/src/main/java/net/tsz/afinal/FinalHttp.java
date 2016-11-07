@@ -364,6 +364,13 @@ public class FinalHttp {
         post(url, null, callBack);
     }
 
+    public void post(String baseServerUrl, String url, AjaxParams params,
+                     AjaxCallBack<? extends Object> callBack) {
+        String postUrl = baseServerUrl + url;
+        ZLogger.df(String.format("[POST]%s?%s", postUrl, params.toString()));
+        post(postUrl, paramsToEntity(params), null, callBack);
+    }
+
     public void post(String url, AjaxParams params, AjaxCallBack<? extends Object> callBack) {
         ZLogger.df(String.format("[POST]%s?%s", url, params.toString()));
         post(url, paramsToEntity(params), null, callBack);

@@ -1,4 +1,4 @@
-package com.mfh.framework.api.scProduct;
+package com.mfh.framework.api.anon.sc.product;
 
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;

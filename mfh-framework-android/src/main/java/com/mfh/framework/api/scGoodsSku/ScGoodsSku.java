@@ -1,7 +1,6 @@
 package com.mfh.framework.api.scGoodsSku;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.GoodsSupplyInfo;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,7 +1,6 @@
 package com.mfh.framework.api.cashier;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -15,71 +14,7 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by NAT.ZZN(bingshanguxue) on 2015/9/14.
  */
 public class CashierApiImpl extends CashierApi {
-    /**
-     * 提交收银订单
-     * */
-    public static void batchInOrders(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        params.put("jsonStr", jsonStr);
 
-        AfinalFactory.getHttp(true).post(URL_POS_BATCH_INORDERS, params, responseCallback);
-    }
-
-
-    public static void findHumanInfoByMobile(String mobile, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("companyId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put("mobile", mobile);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_RECEIVE_ORDER_FIND_HUMANINFO_BY_MOBILE, params, responseCallback);
-    }
-
-
-
-    /**
-     * 创建批次
-     */
-    public static void receiveBatchCreateAndFee(String stockId, Long humanId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("stockId", stockId);
-        jsonObject.put("humanId", humanId);
-        jsonObject.put("stockType", 2);//1-订单类 2-快递类 99-库存类
-        jsonObject.put("income", 0);
-        jsonObject.put("accountPassword", "");
-
-        params.put("jsonStr", jsonObject.toJSONString());
-
-        AfinalFactory.postDefault(URL_RECEIVE_BATCH_CREATE_AND_FEE, params, responseCallback);
-    }
-
-    /**
-     * 入库
-     */
-    public static void receiveOrderStockInItems(String batchId, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        params.put("batchId", batchId);
-        params.put("jsonStr", jsonStr);
-
-        AfinalFactory.postDefault(URL_STOCK_RECEIVEORDER_STOCKINITEMS, params, responseCallback);
-    }
-
-
-    /**
-     * 新增快递公司
-     * humanId参数不能为空!
-     */
-    public static void receiveBatchSaveHumanFDCompany(Long humanId, Long companyId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("humanId", String.valueOf(humanId));
-        params.put("companyId", companyId == null ? "" : String.valueOf(companyId));
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_RECEIVEBATCH_SAVE_HUMANFDCOMPANY, params, responseCallback);
-    }
 
     /**
      * 查询周边小区
@@ -152,34 +87,6 @@ public class CashierApiImpl extends CashierApi {
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_MFHORDER_SAVE_LAUNDRYORDER, params, responseCallback);
-    }
-
-
-    /**
-     * 创建订单
-     * */
-    public static void createPayOrder(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        params.put("jsonStr", jsonStr);
-
-        AfinalFactory.getHttp(true).post(URL_PAYORDER_CREATE, params, responseCallback);
-    }
-
-    /**
-     * 查询订单
-     * */
-    public static void listPayOrder(Integer bizType, Integer status, PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        params.put("status", String.valueOf(status));
-        params.put("bizType", String.valueOf(bizType));
-        params.put("sellOffice", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        if (pageInfo != null){
-            params.put("page", Integer.toString(pageInfo.getPageNo()));
-            params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        }
-        AfinalFactory.getHttp(true).post(URL_PAYORDER_LIST, params, responseCallback);
     }
 
     /**

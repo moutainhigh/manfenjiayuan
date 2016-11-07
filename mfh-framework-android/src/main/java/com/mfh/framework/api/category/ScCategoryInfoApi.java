@@ -13,47 +13,47 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 8/16/16.
  */
 public class ScCategoryInfoApi {
-    public final static String URL_SC_CATEGORYINFO = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/";
+    public static String URL_SC_CATEGORYINFO = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/";
 
     /**
      * 类目查询－－一级类目
      */
-    public final static String URL_COMNQUERY = URL_SC_CATEGORYINFO + "comnQuery";
+    static String URL_COMNQUERY = URL_SC_CATEGORYINFO + "comnQuery";
 
 
     /**
      * pos类目查询接口：/scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
      */
-    public final static String URL_GETCODEVALUE = URL_SC_CATEGORYINFO + "getCodeValue";
+    private static String URL_GETCODEVALUE = URL_SC_CATEGORYINFO + "getCodeValue";
 
 
     /**
      * /scCategoryInfo/create?jsonStr={},
      * 上面tenantId是当前pos机所属租户（注意不是网点，现在还没细化到网点或pos机），catePosition此次为1，domain为0
      */
-    public final static String URL_CREATE = URL_SC_CATEGORYINFO + "create";
+    private static String URL_CREATE = URL_SC_CATEGORYINFO + "create";
 
     /**
      * 删除类目
      * /scCategoryInfo/delete?id=
      */
-    public final static String URL_DELETE = URL_SC_CATEGORYINFO + "delete";
+    private static String URL_DELETE = URL_SC_CATEGORYINFO + "delete";
 
     /**
      * 修改类目
      */
-    public final static String URL_UPDATE = URL_SC_CATEGORYINFO + "update";
+    private static String URL_UPDATE = URL_SC_CATEGORYINFO + "update";
 
     /**
      * 类目查询
      */
-    public final static String URL_LIST = URL_SC_CATEGORYINFO + "list";
+    public static String URL_LIST = URL_SC_CATEGORYINFO + "list";
 
     /**
      * 获取根类目
      * /scCategoryInfo/getTopFrontId?tenantId=136076&cateType=9
      */
-    public final static String URL_GET_TOPFRONTID = URL_SC_CATEGORYINFO + "getTopFrontId";
+    private static String URL_GET_TOPFRONTID = URL_SC_CATEGORYINFO + "getTopFrontId";
 
 
     /**

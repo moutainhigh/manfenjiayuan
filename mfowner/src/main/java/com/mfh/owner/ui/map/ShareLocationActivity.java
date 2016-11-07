@@ -43,11 +43,12 @@ import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.location.LocationClient;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.owner.R;
 
 import java.io.File;
@@ -186,10 +187,10 @@ public class ShareLocationActivity extends BaseActivity
         mapView.onResume();
 
         //TODO:移动地图中心点坐标到最近一次位置
-        if(!LocationUtil.getLastLatitude(this).equalsIgnoreCase("0")
-                && !LocationUtil.getLastLongitude(this).equalsIgnoreCase("0")){
-            LatLng latLng = new LatLng(Double.valueOf(LocationUtil.getLastLatitude(this)),
-                    Double.valueOf(LocationUtil.getLastLongitude(this)));
+        if(!LocationClient.getLastLatitude(this).equalsIgnoreCase("0")
+                && !LocationClient.getLastLongitude(this).equalsIgnoreCase("0")){
+            LatLng latLng = new LatLng(Double.valueOf(LocationClient.getLastLatitude(this)),
+                    Double.valueOf(LocationClient.getLastLongitude(this)));
             aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         }
     }
@@ -254,8 +255,8 @@ public class ShareLocationActivity extends BaseActivity
             /*
              * mAMapLocManager.setGpsEnable(false);//
              * 1.0.2版本新增方法，设置true表示混合定位中包含gps定位，false表示纯网络定位，默认是true Location
-             * API定位采用GPS和网络混合定位方式
-             * ，第一个参数是定位provider，第二个参数时间最短是2000毫秒，第三个参数距离间隔单位是米，第四个参数是定位监听者
+             * API定位采用GPS和网络混合定位方式，第一个参数是定位provider，第二个参数时间最短是2000毫秒，
+             * 第三个参数距离间隔单位是米，第四个参数是定位监听者
              */
             aMapLocManager.requestLocationData(
                     LocationProviderProxy.AMapNetwork, 2 * 1000, 10, this);
@@ -393,7 +394,7 @@ public class ShareLocationActivity extends BaseActivity
                 mListener.onLocationChanged(aLocation);// 显示系统小蓝点
             }
             ZLogger.d("onLocationChanged: " + aLocation.toString());
-            LocationUtil.saveLastLocationInfo(ShareLocationActivity.this, aLocation.getLatitude(), aLocation.getLongitude());
+            LocationClient.saveLastLocationInfo(ShareLocationActivity.this, aLocation.getLatitude(), aLocation.getLongitude());
         }
     }
 
@@ -491,30 +492,24 @@ public class ShareLocationActivity extends BaseActivity
 
     @Override
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int rCode) {
-        if (rCode == 0) {
+        if (rCode == 1000) {
             if (regeocodeResult != null && regeocodeResult.getRegeocodeAddress() != null
                     && regeocodeResult.getRegeocodeAddress().getFormatAddress() != null) {
                 if(headerView != null){
-                    headerView.appendData(DATA_KEY_ADDRESS, regeocodeResult.getRegeocodeAddress().getFormatAddress());
+                    headerView.appendData(DATA_KEY_ADDRESS,
+                            regeocodeResult.getRegeocodeAddress().getFormatAddress());
 //                            + "附近");
-                    selectedMap.put(DATA_KEY_ADDRESS, regeocodeResult.getRegeocodeAddress().getFormatAddress());
+                    selectedMap.put(DATA_KEY_ADDRESS,
+                            regeocodeResult.getRegeocodeAddress().getFormatAddress());
                 }
             } else {
                 if(headerView != null){
                     headerView.appendData(DATA_KEY_ADDRESS, "对不起，没有搜索到相关数据！");
                 }
             }
-        } else if (rCode == 27) {
-            if(headerView != null){
-                headerView.appendData(DATA_KEY_ADDRESS, "搜索失败,请检查网络连接！");
-            }
-        } else if (rCode == 32) {
-            if(headerView != null){
-                headerView.appendData(DATA_KEY_ADDRESS, "key验证无效！");
-            }
         } else {
             if(headerView != null){
-                headerView.appendData(DATA_KEY_ADDRESS, "未知错误，请稍后重试!错误码为 " + rCode);
+                headerView.appendData(DATA_KEY_ADDRESS, "对不起，没有搜索到相关数据！");
             }
         }
     }
@@ -558,7 +553,7 @@ public class ShareLocationActivity extends BaseActivity
     @Override
     public void onPoiSearched(PoiResult poiResult, int rCode) {
         loadingImageView.toggle(false);
-        if (rCode == 0) {
+        if (rCode == 1000) {
             if (poiResult != null && poiResult.getQuery() != null) {// 搜索poi的结果
                 if (poiResult.getQuery().equals(query)) {// 是否是同一条
                     poiQueryResult = poiResult;

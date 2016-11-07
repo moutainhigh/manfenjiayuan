@@ -25,6 +25,7 @@ public class IMApi {
     public static String URL_MOBILE_MESSAGE = NetFactory.getRegisterMessageUrl();
     //会话
     public static String URL_GET_SESSION_BY_ID = MfhApi.URL_BASE_SERVER + "/biz/msg/getSessionById";
+    public final static String URL_SESSION_LIST = "/biz/msg/getSessionList";
 
     //网络请求参数关键字
     public static final String PARAM_KEY_SOURCE_ID = "sourceid";
@@ -40,6 +41,9 @@ public class IMApi {
     public static final String PARAM_KEY_BIND = "bind";
     public static final String PARAM_KEY_PIC_URL = "picUrl";
 
+    public static void register(){
+        URL_GET_SESSION_BY_ID = MfhApi.URL_BASE_SERVER + "/biz/msg/getSessionById";
+    }
 
     /**
      * 注册消息桥

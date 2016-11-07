@@ -16,14 +16,14 @@ import net.tsz.afinal.http.AjaxParams;
  */
 public class InvCompanyApi {
     //上线
-    public static final Integer STATUS_ONLINE = 2;
+    static final Integer STATUS_ONLINE = 2;
 
-    public final static String URL_INV_COMPANY = MfhApi.URL_BASE_SERVER + "/invCompany/";
+    public static String URL_INV_COMPANY = MfhApi.URL_BASE_SERVER + "/invCompany/";
 
     /**
      * 查询批发商租户，使用这个接口/invCompany/list?status=2&shortCode=，shortCode是速记码，status=2代表上线的
      * */
-    public final static String URL_LIST = URL_INV_COMPANY + "list";
+    public static String URL_LIST = URL_INV_COMPANY + "list";
 
     /**
     * 查询批发商租户

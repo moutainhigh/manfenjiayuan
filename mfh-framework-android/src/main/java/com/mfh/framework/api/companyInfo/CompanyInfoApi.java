@@ -8,16 +8,21 @@ import com.mfh.framework.api.MfhApi;
  */
 public class CompanyInfoApi {
 
-    public final static String URL_COMPANYINFO = MfhApi.URL_BASE_SERVER + "/companyInfo/";
+    public static String URL_COMPANYINFO = MfhApi.URL_BASE_SERVER + "/companyInfo/";
 
     /**
      * 查询门店
      * */
-    public final static String URL_FIND_PUBLICCOMPANYINFO = URL_COMPANYINFO + "findPublicCompanyInfo";
+    public static String URL_FIND_PUBLICCOMPANYINFO = URL_COMPANYINFO + "findPublicCompanyInfo";
 
     /**
      * 查询网点信息
      * */
-    public final static String URL_GETNETINFO_BYID = URL_COMPANYINFO + "getNetInfoById";
+    public static String URL_GETNETINFO_BYID = URL_COMPANYINFO + "getNetInfoById";
+
+    public static String URL_COMPANYINFO_GETBYID = URL_COMPANYINFO + "getById";
+
+    /**查询快递公司：/companyInfo/comnQuery?kind=code&viewId=2，快递公司*/
+    public static String URL_COMPANYINFO_COMNQUERY = URL_COMPANYINFO + "comnQuery";
 
 }
