@@ -15,16 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
-import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.StringUtils;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.manfenjiayuan.business.utils.MUtils;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -43,6 +46,8 @@ public class PayByCashFragment extends BasePayFragment {
     InputNumberLabelView inlvPaidMoney;
     @Bind(R.id.tv_charge)
     FontFitTextView tvCharge;
+
+    private NumberInputDialog barcodeInputDialog = null;
 
     @Override
     protected int getLayoutResId() {
@@ -99,8 +104,17 @@ public class PayByCashFragment extends BasePayFragment {
     }
 
     private void initPaidMoneyInput() {
-        inlvPaidMoney.setEnterKeySubmitEnabled(true);
-        inlvPaidMoney.setSoftKeyboardEnabled(false);
+        inlvPaidMoney.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
+                KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
+            @Override
+            public void onKey(int keyCode, String text) {
+                //Press “Enter”
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    submitOrder();
+                }
+            }
+        });
+//        inlvPaidMoney.setSoftKeyboardEnabled(false);
         inlvPaidMoney.setDigits(2);
         inlvPaidMoney.addTextChangedListener(new TextWatcher() {
             @Override
@@ -116,23 +130,20 @@ public class PayByCashFragment extends BasePayFragment {
                 calculateCharge();
             }
         });
-        inlvPaidMoney.setOnInoutKeyListener(new View.OnKeyListener() {
+        inlvPaidMoney.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(PayByCashFragment.inlvBarcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        submitOrder();
-                    }
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                inlvPaidMoney.requestFocusEnd();
 
-                    return true;
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                            || inlvPaidMoney.isSoftKeyboardEnabled()) {
+                        showBarcodeKeyboard();
+                    }
                 }
 
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
+                //返回true,不再继续传递事件
+                return true;
             }
         });
     }
@@ -239,6 +250,49 @@ public class PayByCashFragment extends BasePayFragment {
         }
     }
 
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showBarcodeKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getActivity());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeDecimalNumber(EditInputType.PRICE, "现金",
+                inlvPaidMoney.getInputString(), 2, "元",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+                        if (value != null){
+                            inlvPaidMoney.setInputString(String.valueOf(value));
+
+                            submitOrder();
+                        }
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
 
     private void onPaidSucceed(){
         PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,

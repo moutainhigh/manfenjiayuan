@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
-import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -27,6 +31,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.InvSendOrderEvent;
 import com.mfh.litecashier.event.PurchaseSendEvent;
+import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesHelper;
@@ -63,6 +68,8 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
     private String sendType;
     private String cacheKey;
     private InvSendOrderPresenter invSendOrderPresenter;
+    private NumberInputDialog barcodeInputDialog = null;
+
 
     @Override
     protected int getLayoutResId() {
@@ -90,15 +97,14 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
         setupSwipeRefresh();
         initOrderRecyclerView();
 
-        inlvPhonenumber.requestFocus();
-
+        inlvPhonenumber.requestFocusEnd();
 //            reload();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        inlvPhonenumber.requestFocus();
+        inlvPhonenumber.requestFocusEnd();
     }
 
     @Override
@@ -112,28 +118,32 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
      * 初始化条码输入
      */
     private void initPhonenumberInput() {
-        inlvPhonenumber.setInputSubmitEnabled(true);
-        inlvPhonenumber.setSoftKeyboardEnabled(false);
 //        inlvPhonenumber.requestFocus();
-        inlvPhonenumber.setOnInoutKeyListener(new View.OnKeyListener() {
+
+        inlvPhonenumber.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(CashierFragment.inlvPhonenumber):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        reload();
-                    }
-
-                    return true;
+            public void onKey(int keyCode, String text) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER){
+                    reload();
                 }
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
+        inlvPhonenumber.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                            || inlvPhonenumber.isSoftKeyboardEnabled()) {
+                        showBarcodeKeyboard();
+                    }
+                }
+
+                inlvPhonenumber.requestFocusEnd();
+                //返回true,不再继续传递事件
+                return true;
+            }
+        });
+
 //        inlvPhonenumber.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -153,12 +163,47 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
 //                searchParams.setBarcode(s.toString());
 //            }
 //        });
-        inlvPhonenumber.setOnViewListener(new InputSearchView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                reload();
-            }
-        });
+    }
+
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showBarcodeKeyboard() {
+        DialogUtil.showHint("显示自定义键盘");
+
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getActivity());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.PHONE, "手机号码", "手机号码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        inlvPhonenumber.setInputString(value);
+                        reload();
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
     }
 
     /**

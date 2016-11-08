@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.account.Human;
@@ -93,7 +95,11 @@ public class RegisterUserDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    DeviceUtils.showSoftInput(getContext(), etName);
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                        DeviceUtils.showSoftInput(getContext(), etName);
+                    } else {
+                        DeviceUtils.hideSoftInput(getContext(), etName);
+                    }
                 }
                 etName.requestFocus();
 //                etInput.setSelection(etInput.length());
@@ -121,7 +127,12 @@ public class RegisterUserDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    DeviceUtils.showSoftInput(getContext(), etLoginPass);
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+//                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
+                        showLoginPwdKeyboard();
+                    } else {
+                        DeviceUtils.hideSoftInput(getContext(), etLoginPass);
+                    }
                 }
                 etLoginPass.requestFocus();
 //                etInput.setSelection(etInput.length());
@@ -137,6 +148,7 @@ public class RegisterUserDialog extends CommonDialog {
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         etPayPass.requestFocus();
+                        etPayPass.setSelection(etPayPass.length());
                     }
                     return true;
                 }
@@ -150,7 +162,8 @@ public class RegisterUserDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etPayPass);
+//                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
+                        showPayPwdKeyboard();
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etPayPass);
                     }
@@ -239,6 +252,83 @@ public class RegisterUserDialog extends CommonDialog {
         this.etPayPass.getText().clear();
     }
 
+    private NumberInputDialog barcodeInputDialog = null;
+
+
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showLoginPwdKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.TEXT_PASSWORD, "登录密码", "登录密码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        etLoginPass.setText(value);
+                        etPayPass.requestFocus();
+                        etPayPass.setSelection(etPayPass.length());
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+    private void showPayPwdKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.TEXT_PASSWORD, "支付密码", "支付密码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        etPayPass.setText(value);
+                        etPayPass.setSelection(etPayPass.length());
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
 
     /**
      * 提交

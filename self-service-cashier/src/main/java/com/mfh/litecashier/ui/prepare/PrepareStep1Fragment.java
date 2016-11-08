@@ -8,7 +8,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -135,26 +134,16 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
     }
 
     private void initInlvBarcode() {
-        inlvBarcode.setEnterKeySubmitEnabled(true);
-        inlvBarcode.setSoftKeyboardEnabled(false);
+//        inlvBarcode.setSoftKeyboardEnabled(false);
         inlvBarcode.setDigits(2);
-        inlvBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
+        inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
+                KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(PayByCashFragment.inlvBarcode):" + keyCode);
+            public void onKey(int keyCode, String text) {
                 //Press “Enter”
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        submitOrder();
-                    }
-
-                    return true;
+                    submitOrder();
                 }
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
     }

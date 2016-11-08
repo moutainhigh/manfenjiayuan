@@ -18,6 +18,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -92,7 +94,7 @@ public class InitCardByStepDialog extends CommonDialog {
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
 
-        tvTitle.setText("办卡");
+        tvTitle.setText("开卡");
         ivHeader.setBorderWidth(3);
         ivHeader.setBorderColor(Color.parseColor("#e8e8e8"));
 
@@ -101,7 +103,8 @@ public class InitCardByStepDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etCardNumber);
+//                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
+                        showCardNumberKeyboard();
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etCardNumber);
                     }
@@ -152,7 +155,8 @@ public class InitCardByStepDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etCardId);
+//                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
+                        showCardIdKeyboard();
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etCardId);
                     }
@@ -244,10 +248,85 @@ public class InitCardByStepDialog extends CommonDialog {
         thirdStep();
     }
 
-    public void initialize(Human human) {
+    public void initialize(Human human, OnInitCardListener mOnInitCardListener) {
+        this.mOnInitCardListener = mOnInitCardListener;
         saveHumanInfo(human);
         thirdStep();
     }
+
+    private NumberInputDialog barcodeInputDialog = null;
+
+
+    private void showCardNumberKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.TEXT, "卡面号", "卡面号", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        etCardNumber.setText(value);
+                        fourthStep();
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+    private void showCardIdKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.TEXT_PASSWORD, "芯片号", "芯片号", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        etCardId.setText(value);
+                        submit();
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
 
     /**
      * 第三步，输入卡面号

@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,10 +22,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.OptionalLabel;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.scGoodsSku.GoodsSupplyInfo;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
@@ -60,6 +61,7 @@ import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.intelligent.IIntelligentPurchaseView;
 import com.mfh.litecashier.ui.fragment.purchase.intelligent.IntelligentPurchasePresenter;
 import com.mfh.litecashier.ui.view.IPurchaseView;
+import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
@@ -360,26 +362,13 @@ public class ManualPurchaseFragment extends BaseProgressFragment
      * 初始化条码输入
      */
     private void initBarCodeInput() {
-        inlvBarcode.setInputSubmitEnabled(true);
-        inlvBarcode.setSoftKeyboardEnabled(false);
 //        inlvBarcode.requestFocus();
-        inlvBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
+        inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        loadGoodsList();
-                    }
-
-                    return true;
+            public void onKey(int keyCode, String text) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER){
+                    showBarcodeKeyboard();
                 }
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
         inlvBarcode.addTextChangedListener(new TextWatcher() {
@@ -401,39 +390,61 @@ public class ManualPurchaseFragment extends BaseProgressFragment
                 searchParams.setBarcode(s.toString());
             }
         });
-        inlvBarcode.setOnViewListener(new InputSearchView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                loadGoodsList();
-            }
-        });
     }
 
-    private void initProductNameInput() {
-        inlvProductName.setInputSubmitEnabled(true);
-        inlvProductName.setSoftKeyboardEnabled(true);
-        inlvProductName.config(InputSearchView.INPUT_TYPE_TEXT);
-//        inlvProductName.requestFocus();
-        inlvProductName.setOnInoutKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
+    private NumberInputDialog barcodeInputDialog;
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showBarcodeKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "商品条码", "商品条码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        inlvBarcode.setInputString(value);
                         loadGoodsList();
                     }
 
-                    return true;
-                }
+                    @Override
+                    public void onNext(Double value) {
 
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+
+    private void initProductNameInput() {
+        inlvProductName.setSoftKeyboardEnabled(true);
+        inlvProductName.config(InputSearchView.INPUT_TYPE_TEXT);
+//        inlvProductName.requestFocus();
+        inlvProductName.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER}, new InputNumberLabelView.OnInterceptListener() {
+            @Override
+            public void onKey(int keyCode, String text) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER){
+                    loadGoodsList();
+                }
             }
         });
-
         inlvProductName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -451,12 +462,6 @@ public class ManualPurchaseFragment extends BaseProgressFragment
                     searchParams = new SearchParamsWrapper();
                 }
                 searchParams.setProductName(s.toString());
-            }
-        });
-        inlvProductName.setOnViewListener(new InputSearchView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                loadGoodsList();
             }
         });
     }

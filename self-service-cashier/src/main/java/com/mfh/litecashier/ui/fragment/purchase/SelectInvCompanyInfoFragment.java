@@ -7,24 +7,24 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.companyInfo.CompanyInfo;
-import com.mfh.framework.api.invCompany.InvCompanyPresenter;
-import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
+import com.mfh.framework.api.invCompany.InvCompanyPresenter;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.SelectPlatformProviderAdapter;
+import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
 import java.util.ArrayList;
@@ -103,31 +103,16 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
     }
 
     private void initShortcodeView() {
-        labelShortcode.setInputSubmitEnabled(true);
-        labelShortcode.setSoftKeyboardEnabled(false);
         labelShortcode.config(InputSearchView.INPUT_TYPE_TEXT);
 //        inlvProductName.requestFocus();
-        labelShortcode.setOnInoutKeyListener(new View.OnKeyListener() {
+        labelShortcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(SelectInvCompProviderDialog.labelShortcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        reload();
-                    }
-
-                    return true;
+            public void onKey(int keyCode, String text) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER){
+                    reload();
                 }
-
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
-
         labelShortcode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,12 +126,6 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
 
             @Override
             public void afterTextChanged(Editable s) {
-                reload();
-            }
-        });
-        labelShortcode.setOnViewListener(new InputSearchView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
                 reload();
             }
         });

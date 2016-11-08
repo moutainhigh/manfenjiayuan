@@ -37,8 +37,6 @@ import butterknife.OnClick;
  *   </declare-styleable>
  */
 public class InputSearchView extends LinearLayout {
-    private static final String TAG = "InputSearchView";
-
     public static final int INPUT_TYPE_NUMBER = 0;
     public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;
     public static final int INPUT_TYPE_TEXT = 2;
@@ -52,16 +50,22 @@ public class InputSearchView extends LinearLayout {
     @Bind(R.id.ib_search)
     ImageButton ibSearch;
 
-    private boolean softKeyboardEnabled;//是否支持软键盘
-    private boolean inputSubmitEnabled;//输入框是否支持回车提交
+    /**
+     * 是否支持软键盘
+     * <ol>
+     *     <li>false, 默认使用物理键盘</li>
+     *     <li>false, 可以通过全局变量控制打开（系统）软键盘</li>
+     *     <li>true, 使用系统软键盘</li>
+     *     <li>true, 自定义OnTouchListener实现自定义的键盘</li>
+     * </ol>
+     * */
+    private boolean softKeyboardEnabled;
+    private int[] interceptKeys;
 
-    public interface OnViewListener{
-        void onSubmit(String text);
+    public interface OnInterceptListener{
+        void onKey(int keyCode, String text);
     }
-    private OnViewListener onViewListener;
-    public void setOnViewListener(OnViewListener onViewListener){
-        this.onViewListener = onViewListener;
-    }
+    private InputNumberLabelView.OnInterceptListener mOnInterceptListener;
 
     public InputSearchView(Context context) {
         this(context, null);
@@ -80,6 +84,7 @@ public class InputSearchView extends LinearLayout {
         int inputTextColor = ta.getColor(R.styleable.InputNumberLabelView_inputNumberLabelView_inputTextColor, 0);
         int inputTextColorHint = ta.getColor(R.styleable.InputNumberLabelView_inputNumberLabelView_inputTextColorHint, 0);
         String inputHint = ta.getString(R.styleable.InputNumberLabelView_inputNumberLabelView_inputHint);
+        softKeyboardEnabled = ta.getBoolean(R.styleable.InputNumberLabelView_softKeyboardEnabled, false);
 
         ta.recycle();
 
@@ -94,6 +99,7 @@ public class InputSearchView extends LinearLayout {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP){
+                    //打开or关闭系统软键盘
                     if (SharedPreferencesManager.isSoftKeyboardEnabled() || softKeyboardEnabled){
                         DeviceUtils.showSoftInput(getContext(), etInput);
                     }else{
@@ -101,8 +107,7 @@ public class InputSearchView extends LinearLayout {
                     }
                 }
 
-                etInput.requestFocus();
-                etInput.setSelection(etInput.length());
+                requestFocusEnd();
                 //返回true,不再继续传递事件
                 return true;
             }
@@ -136,15 +141,16 @@ public class InputSearchView extends LinearLayout {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
 //                ZLogger.d(String.format("setOnKeyListener(%s.%s):%d", TAG, etInput.getClass().getSimpleName(), keyCode));
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        if (inputSubmitEnabled && onViewListener != null && etInput.length() > 0) {
-                            onViewListener.onSubmit(etInput.getText().toString());
+                //intercept keys
+                if (mOnInterceptListener != null && interceptKeys != null && interceptKeys.length > 0){
+                    for (int interceptKey : interceptKeys){
+                        if (interceptKey == keyCode){
+                            if (event.getAction() == MotionEvent.ACTION_UP){
+                                mOnInterceptListener.onKey(keyCode, etInput.getText().toString());
+                            }
+                            return true;
                         }
                     }
-
-                    return true;
                 }
 
                 return (keyCode == KeyEvent.KEYCODE_TAB
@@ -152,6 +158,11 @@ public class InputSearchView extends LinearLayout {
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
+    }
+
+    public void requestFocusEnd(){
+        etInput.requestFocus();
+        etInput.setSelection(etInput.length());
     }
 
     /**
@@ -201,12 +212,12 @@ public class InputSearchView extends LinearLayout {
 //        });
     }
 
-    public boolean isInputSubmitEnabled() {
-        return inputSubmitEnabled;
-    }
-
-    public void setInputSubmitEnabled(boolean inputSubmitEnabled) {
-        this.inputSubmitEnabled = inputSubmitEnabled;
+    /**
+     * 拦截按键
+     * */
+    public void registerIntercept(int[] interceptKeys, InputNumberLabelView.OnInterceptListener onInterceptListener){
+        this.interceptKeys = interceptKeys;
+        this.mOnInterceptListener = onInterceptListener;
     }
 
     @Override
@@ -227,8 +238,8 @@ public class InputSearchView extends LinearLayout {
 
     @OnClick(R.id.ib_search)
     public void search(){
-        if (onViewListener != null && etInput.length() > 0) {
-            onViewListener.onSubmit(etInput.getText().toString());
+        if (mOnInterceptListener != null && etInput.length() > 0) {
+            mOnInterceptListener.onKey(KeyEvent.KEYCODE_ENTER, etInput.getText().toString());
         }
     }
 
@@ -245,15 +256,15 @@ public class InputSearchView extends LinearLayout {
     @OnClick(R.id.ib_del)
     public void clear(){
         etInput.getText().clear();
-        if (onViewListener != null) {
-            onViewListener.onSubmit(etInput.getText().toString());
+        if (mOnInterceptListener != null) {
+            mOnInterceptListener.onKey(KeyEvent.KEYCODE_ENTER, etInput.getText().toString());
         }
     }
 
     public void clear(boolean isSubmitEnabled){
         etInput.getText().clear();
-        if (isSubmitEnabled && onViewListener != null) {
-            onViewListener.onSubmit(etInput.getText().toString());
+        if (isSubmitEnabled && mOnInterceptListener != null) {
+            mOnInterceptListener.onKey(KeyEvent.KEYCODE_ENTER, etInput.getText().toString());
         }
     }
 
@@ -281,5 +292,9 @@ public class InputSearchView extends LinearLayout {
      * */
     public void setHintText(String hint){
         etInput.setHint(hint);
+    }
+
+    public void setOnTouchListener(OnTouchListener l){
+        etInput.setOnTouchListener(l);
     }
 }

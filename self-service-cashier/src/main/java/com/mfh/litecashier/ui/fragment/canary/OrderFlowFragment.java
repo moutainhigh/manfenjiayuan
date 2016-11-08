@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,9 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
+import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -36,6 +35,7 @@ import com.mfh.litecashier.ui.dialog.DailysettlePreviewDialog;
 import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
 import com.mfh.litecashier.ui.dialog.OrderPrintPreviewDialog;
 import com.mfh.litecashier.ui.dialog.PosOrderDetailDialog;
+import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
 import java.util.Calendar;
@@ -156,34 +156,15 @@ public class OrderFlowFragment extends BaseFragment {
     }
 
     private void initOrderIdView() {
-        insvOrderId.setInputSubmitEnabled(true);
-        insvOrderId.setSoftKeyboardEnabled(false);
         insvOrderId.config(InputSearchView.INPUT_TYPE_TEXT);
         insvOrderId.setSearchButtonVisible(false);
 //        inlvProductName.requestFocus();
-        insvOrderId.setOnInoutKeyListener(new View.OnKeyListener() {
+        insvOrderId.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        reload();
-                    }
-
-                    return true;
+            public void onKey(int keyCode, String text) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER){
+                    reload();
                 }
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-            }
-        });
-        insvOrderId.setOnViewListener(new InputSearchView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                reload();
             }
         });
         insvOrderId.addTextChangedListener(new TextWatcher() {
@@ -202,43 +183,18 @@ public class OrderFlowFragment extends BaseFragment {
 //                reload();
             }
         });
-//        labelShortcode.setOnViewListener(new InputSearchView.OnViewListener() {
-//            @Override
-//            public void onSubmit(String text) {
-//                reload();
-//            }
-//        });
     }
 
     private void initOrderBarcodeView() {
-        insvOrderBarcode.setInputSubmitEnabled(true);
-        insvOrderBarcode.setSoftKeyboardEnabled(false);
         insvOrderBarcode.config(InputSearchView.INPUT_TYPE_TEXT);
         insvOrderBarcode.setSearchButtonVisible(false);
 //        inlvProductName.requestFocus();
-        insvOrderBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
+        insvOrderBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        reload();
-                    }
-
-                    return true;
+            public void onKey(int keyCode, String text) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER){
+                    reload();
                 }
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-            }
-        });
-        insvOrderBarcode.setOnViewListener(new InputSearchView.OnViewListener() {
-            @Override
-            public void onSubmit(String text) {
-                reload();
             }
         });
         insvOrderBarcode.addTextChangedListener(new TextWatcher() {
@@ -257,12 +213,6 @@ public class OrderFlowFragment extends BaseFragment {
 //                reload();
             }
         });
-//        labelShortcode.setOnViewListener(new InputSearchView.OnViewListener() {
-//            @Override
-//            public void onSubmit(String text) {
-//                reload();
-//            }
-//        });
     }
 
     /**

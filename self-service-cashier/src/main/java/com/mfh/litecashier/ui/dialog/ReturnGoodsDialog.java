@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,6 +29,8 @@ import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
@@ -34,6 +38,7 @@ import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -101,14 +106,34 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 
         tvTitle.setText("退货");
         initRecyclerView();
-        inlvBarcode.setEnterKeySubmitEnabled(true);
-        inlvBarcode.setSoftKeyboardEnabled(false);
-        inlvBarcode.setOnViewListener(new InputNumberLabelView.OnViewListener() {
+        inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
+                KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public void onSubmit(String text) {
-                query(text);
+            public void onKey(int keyCode, String text) {
+                //Press “Enter”
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode ==  KeyEvent.KEYCODE_NUMPAD_ADD) {
+                    //条码枪扫描结束后会自动触发回车键
+                    query(text);
+                }
+
             }
         });
+        inlvBarcode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                            || inlvBarcode.isSoftKeyboardEnabled()) {
+                        showBarcodeKeyboard();
+                    }
+                }
+
+                inlvBarcode.requestFocusEnd();
+                //返回true,不再继续传递事件
+                return true;
+            }
+        });
+
 
         btnSubmit.setVisibility(View.VISIBLE);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +183,45 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         inlvBarcode.clear();
         curOrderTradeNo = MUtils.getOrderBarCode();
         productAdapter.setEntityList(null);
+    }
+
+    private NumberInputDialog barcodeInputDialog;
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showBarcodeKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "退单", "商品条码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        query(value);
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
     }
 
     private void initRecyclerView() {
@@ -263,10 +327,10 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
             return;
         }
 
-        if (goods.getStatus() != 1) {
-            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
-            return;
-        }
+//        if (goods.getStatus() != 1) {
+//            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
+//            return;
+//        }
 
         //检查订单条码
         if (StringUtils.isEmpty(curOrderTradeNo)) {
@@ -312,10 +376,10 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
             return;
         }
 
-        if (goods.getStatus() != 1) {
-            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
-            return;
-        }
+//        if (goods.getStatus() != 1) {
+//            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
+//            return;
+//        }
 
         //检查订单条码
         if (StringUtils.isEmpty(curOrderTradeNo)) {

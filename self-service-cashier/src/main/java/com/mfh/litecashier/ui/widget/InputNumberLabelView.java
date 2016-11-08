@@ -44,10 +44,6 @@ import butterknife.OnLongClick;
 public class InputNumberLabelView extends LinearLayout {
     private static final String TAG = "InputNumberLabelView";
 
-    public static final int INPUT_TYPE_NUMBER = 0;
-    public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;
-    public static final int INPUT_TYPE_TEXT = 2;
-
     /** 输入框小数的位数*/
     private static final int DECIMAL_DIGITS = 2;
 
@@ -59,19 +55,32 @@ public class InputNumberLabelView extends LinearLayout {
     ImageButton ibAction1;
 
 
-    private boolean softKeyboardEnabled;//是否支持软键盘
-    private boolean enterKeySubmitEnabled;//输入框是否支持回车提交
+    /**
+     * 是否支持软键盘
+     * <ol>
+     *     <li>false, 默认使用物理键盘</li>
+     *     <li>false, 可以通过全局变量控制打开（系统）软键盘</li>
+     *     <li>true, 使用系统软键盘</li>
+     *     <li>true, 自定义OnTouchListener实现自定义的键盘</li>
+     * </ol>
+     * */
+    private boolean softKeyboardEnabled;
+    /**
+     * 拦截按键
+     * //Press “Enter” KeyEvent.KEYCODE_ENTER
+     * //Press “*” KeyEvent.KEYCODE_NUMPAD_MULTIPLY
+     * //Press “＋” KeyEvent.KEYCODE_NUMPAD_ADD
+     */
+    private int[] interceptKeys;
+
     private boolean clearOnClickDel;//单击删除按钮清空内容
 
     private int decimalDigits = DECIMAL_DIGITS;
 
-    public interface OnViewListener{
-        void onSubmit(String text);
+    public interface OnInterceptListener{
+        void onKey(int keyCode, String text);
     }
-    private OnViewListener onViewListener;
-    public void setOnViewListener(OnViewListener onViewListener){
-        this.onViewListener = onViewListener;
-    }
+    private OnInterceptListener mOnInterceptListener;
 
     public InputNumberLabelView(Context context) {
         this(context, null);
@@ -96,6 +105,7 @@ public class InputNumberLabelView extends LinearLayout {
 //        etInput.setInputType(input);
         int rightImageButtonResId = ta.getResourceId(R.styleable.InputNumberLabelView_inputNumberLabelView_rightImageButtonSrc, R.mipmap.ic_search_del);
         clearOnClickDel = ta.getBoolean(R.styleable.InputNumberLabelView_clearOnClickDel, false);
+        softKeyboardEnabled = ta.getBoolean(R.styleable.InputNumberLabelView_softKeyboardEnabled, false);
 
         ta.recycle();
 
@@ -134,18 +144,20 @@ public class InputNumberLabelView extends LinearLayout {
                 return true;
             }
         });
+
         etInput.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        if (enterKeySubmitEnabled && onViewListener != null && etInput.length() > 0) {
-                            onViewListener.onSubmit(etInput.getText().toString());
+                //intercept keys
+                if (mOnInterceptListener != null && interceptKeys != null && interceptKeys.length > 0){
+                    for (int interceptKey : interceptKeys){
+                        if (interceptKey == keyCode){
+                            if (event.getAction() == MotionEvent.ACTION_UP){
+                                mOnInterceptListener.onKey(keyCode, etInput.getText().toString());
+                            }
+                            return true;
                         }
                     }
-
-                    return true;
                 }
 
                 return (keyCode == KeyEvent.KEYCODE_TAB
@@ -186,12 +198,12 @@ public class InputNumberLabelView extends LinearLayout {
     }
 
 
-    public boolean isEnterKeySubmitEnabled() {
-        return enterKeySubmitEnabled;
-    }
-
-    public void setEnterKeySubmitEnabled(boolean enterKeySubmitEnabled) {
-        this.enterKeySubmitEnabled = enterKeySubmitEnabled;
+    /**
+     * 拦截按键
+     * */
+    public void registerIntercept(int[] interceptKeys, OnInterceptListener onInterceptListener){
+        this.interceptKeys = interceptKeys;
+        this.mOnInterceptListener = onInterceptListener;
     }
 
     @Override
@@ -206,10 +218,14 @@ public class InputNumberLabelView extends LinearLayout {
         }
     }
 
+    /**
+     * 获取焦点
+     * */
     public void requestFocusEnd(){
         etInput.requestFocus();
         etInput.setSelection(etInput.length());
     }
+
     /**
      * 设置提示文字
      * */

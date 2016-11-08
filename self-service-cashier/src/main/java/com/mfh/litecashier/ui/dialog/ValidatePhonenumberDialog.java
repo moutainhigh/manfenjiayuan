@@ -5,8 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -19,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -91,7 +91,8 @@ public class ValidatePhonenumberDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
+//                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
+                        showPhoneNumberKeyboard();
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etPhoneNumber);
                     }
@@ -124,7 +125,8 @@ public class ValidatePhonenumberDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
-                        DeviceUtils.showSoftInput(getContext(), etVerifyCode);
+//                        DeviceUtils.showSoftInput(getContext(), etVerifyCode);
+                        showVerifycodeKeyboard();
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etVerifyCode);
                     }
@@ -151,21 +153,21 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
-        etVerifyCode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+//        etVerifyCode.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//            }
+//        });
 
         btnVerifyCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,6 +289,82 @@ public class ValidatePhonenumberDialog extends CommonDialog {
         progressBar.setVisibility(View.GONE);
     }
 
+    private NumberInputDialog barcodeInputDialog = null;
+
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showPhoneNumberKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.PHONE, "手机号码", "手机号码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        etPhoneNumber.setText(value);
+                        getVerifyCode();
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+    private void showVerifycodeKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getContext());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.TEXT, "验证码", "验证码", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        etVerifyCode.setText(value);
+                        submit();
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
     /**
      * 获取验证码
      */
@@ -317,7 +395,6 @@ public class ValidatePhonenumberDialog extends CommonDialog {
             EmbWxUserRegisterApi.retryAuthenBysms(phoneNumber, userTmpId, verifyCodeCallback);
         }
     }
-
 
     private NetCallBack.NetTaskCallBack verifyCodeCallback = new NetCallBack.NetTaskCallBack<Long,
             NetProcessor.Processor<Long>>(
@@ -403,7 +480,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                         //{"code":"1","msg":"缺少渠道端点标识！","version":"1","data":null}
                         //{"code":"1","msg":"短信验证码验证不对，请重新输入!","version":"1","data":null}
                         ZLogger.e(String.format("短信码验证验证失败:%s", errMsg));
-                        DialogUtil.showHint("短信码验证验证失败,请重新输入");
+                        DialogUtil.showHint(errMsg);
                         progressBar.setVisibility(View.GONE);
                         secondStep();
 //                        btnVerifyCode.setVisibility(View.VISIBLE);
