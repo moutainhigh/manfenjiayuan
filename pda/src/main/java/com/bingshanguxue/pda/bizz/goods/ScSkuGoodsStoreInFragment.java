@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.DataSyncManager;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;

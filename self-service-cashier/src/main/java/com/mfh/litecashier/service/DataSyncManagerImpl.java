@@ -24,7 +24,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.CompanyHumanApi;
-import com.mfh.framework.api.ProductCatalogApi;
+import com.mfh.framework.api.anon.sc.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CateApiImpl;
 import com.mfh.framework.api.category.CategoryInfo;
@@ -66,10 +66,13 @@ import rx.schedulers.Schedulers;
  */
 public class DataSyncManagerImpl extends DataSyncManager {
     public static final int SYNC_STEP_NA = -1;
+    //收银相关：同步频率较高
     public static final int SYNC_STEP_FRONTEND_CATEGORY = 0;//前台类目(一级类目)
     public static final int SYNC_STEP_PRODUCTS = 1;//商品库
     public static final int SYNC_STEP_PRODUCT_SKU = 2;//一品多码
     public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 3;//前台类目&商品库－关系表
+
+    //管理相关：同步频率较低
     public static final int SYNC_STEP_BACKEND_CATEGORYINFO = 4;//后台类目信息
     public static final int SYNC_STEP_COMPANY_HUMAN = 5;//账号,交接班切换账号需要
 

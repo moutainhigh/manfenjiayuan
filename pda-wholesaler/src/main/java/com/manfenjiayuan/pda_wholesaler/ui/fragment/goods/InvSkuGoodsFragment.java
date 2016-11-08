@@ -11,7 +11,7 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.bizz.goods.GoodsSalesFragment;
 import com.bingshanguxue.pda.bizz.goods.ScGoodsSkuEvent;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.bean.InvSkuGoods;

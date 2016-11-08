@@ -14,11 +14,12 @@ import android.widget.EditText;
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
-import com.mfh.framework.api.account.UserApiImpl;
-import com.mfh.framework.api.account.Human;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -116,24 +117,6 @@ public class PayByVipFragment extends BasePayFragment {
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
     }
-
-    /**
-     * 解析卡芯片号，十六进制转换为十进制
-     * 十六进制：466CAF31 (8位)
-     * 十进制：1181527857 (10位)
-     */
-    private String parseCardId(String rawData) {
-        if (StringUtils.isEmpty(rawData)) {
-            return null;
-        }
-        try {
-            return String.valueOf(Long.parseLong(rawData, 16));
-        } catch (Exception e) {
-            ZLogger.e(String.format("parseCardId failed, %s", e.toString()));
-            return null;
-        }
-    }
-
 
     private void initBarCodeInput() {
 //        etBarCode.setHint("请将焦点定位到输入框并刷卡");
@@ -248,7 +231,7 @@ public class PayByVipFragment extends BasePayFragment {
      * 验证会员卡芯片号
      */
     private void validateVipCard(String cardId) {
-        final String cardId2 = parseCardId(cardId);
+        final String cardId2 = MUtils.parseCardId(cardId);
         if (StringUtils.isEmpty(cardId2)) {
             validateFailed("芯片号无效");
             return;
@@ -327,17 +310,9 @@ public class PayByVipFragment extends BasePayFragment {
     /**
      * 验证会员付款码
      */
-    private void validateVipHumanId(String humanId) {
-        //这样判断不严谨，会错误的把其他0处理掉
-        int index = humanId.lastIndexOf("0");
-//        String humanId2 = humanId.substring(index + 1, humanId.length());
-        String humanId3 = humanId;
-        while (humanId3.startsWith("0")) {
-            humanId3 = humanId3.substring(1, humanId3.length());
-        }
-        ZLogger.df(String.format("验证会员微信付款码: <%s> --> <%s>",
-                humanId, humanId3));
-        if (StringUtils.isEmpty(humanId3)) {
+    private void validateVipHumanId(String paycode) {
+        String humanId = MUtils.parseMfPaycode(paycode);
+        if (StringUtils.isEmpty(humanId)) {
             validateFailed("付款码无效");
             return;
         }
@@ -371,7 +346,7 @@ public class PayByVipFragment extends BasePayFragment {
                 , CashierApp.getAppContext()) {
         };
 
-        UserApiImpl.findHumanByHumanId(humanId3, findMemberResponseCallback);
+        UserApiImpl.findHumanByHumanId(humanId, findMemberResponseCallback);
     }
 
 

@@ -9,7 +9,7 @@ import com.manfenjiayuan.pda_supermarket.database.logic.PosOrderService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.PosOrderApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -242,7 +242,7 @@ public class UploadSyncManager extends OrderSyncManager {
                 , AppContext.getAppContext()) {
         };
 
-        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+        PosOrderApi.batchInOrders(orders.toJSONString(), responseCallback);
     }
 
     /**
@@ -298,7 +298,7 @@ public class UploadSyncManager extends OrderSyncManager {
 
         JSONArray orders = new JSONArray();
         orders.add(generateOrderJson(orderEntity));
-        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+        PosOrderApi.batchInOrders(orders.toJSONString(), responseCallback);
     }
 
     /**

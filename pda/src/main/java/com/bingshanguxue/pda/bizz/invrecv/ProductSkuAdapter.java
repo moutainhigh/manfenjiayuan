@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.anon.ProductSku;
+import com.mfh.framework.api.anon.sc.productPrice.ProductSku;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.List;

@@ -14,10 +14,10 @@ import com.manfenjiayuan.pda_supermarket.ui.common.QueryBarcodeFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.StockApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -79,7 +79,7 @@ public class PackageFragment extends QueryBarcodeFragment {
 //        animProgress.setVisibility(View.VISIBLE);
 //        btnStockOut.setEnabled(false);
             //查询出库列表
-            StockApiImpl.findStockOutByCode(barcode,
+            PmcStockApiImpl.findStockOutByCode(barcode,
                     new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<StockOutItem>(new PageInfo(1, 20)) {
                         @Override
                         public void processQueryResult(RspQueryResult<StockOutItem> rs) {
@@ -144,7 +144,7 @@ public class PackageFragment extends QueryBarcodeFragment {
 
 //        animProgress.setVisibility(View.VISIBLE);
 
-        StockApiImpl.stockOut(jsonArray.toJSONString(), stockoutResponseCallback);
+        PmcStockApiImpl.stockOut(jsonArray.toJSONString(), stockoutResponseCallback);
     }
 
     //回调

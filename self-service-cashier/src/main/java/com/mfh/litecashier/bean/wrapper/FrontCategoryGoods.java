@@ -1,6 +1,6 @@
 package com.mfh.litecashier.bean.wrapper;
 
-import com.mfh.framework.api.anon.PubSkus;
+import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 
 /**
  * Created by bingshanguxue on 8/15/16.

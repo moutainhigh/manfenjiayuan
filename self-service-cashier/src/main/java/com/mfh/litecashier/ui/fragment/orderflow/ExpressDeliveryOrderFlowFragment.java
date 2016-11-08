@@ -15,8 +15,8 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.cashier.CashierApi;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
+import com.mfh.framework.api.stock.StockApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -236,8 +236,10 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
         params.put("stockId", MfhLoginService.get().getCurStockId());
         params.put("wrapper", "true");//是否翻译，显示公司名
         params.put("stockType", "2");//2,代表快递
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        if (pageInfo != null){
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -266,7 +268,7 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
             }
         }, ReceiveBatchItem.class, CashierApp.getAppContext());
 
-        AfinalFactory.postDefault(CashierApi.URL_STOCK_RECEIVEBATCH_COMNQUERY, params, queryRsCallBack);
+        AfinalFactory.postDefault(StockApi.URL_RECEIVEBATCH_COMNQUERY, params, queryRsCallBack);
     }
 
     public class QueryAsyncTask extends AsyncTask<RspQueryResult<ReceiveBatchItem>, Integer, Long> {
@@ -388,8 +390,7 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
                     "<font color=#FF009B4E>＋%.2f</font>", curOrder.getIncome())));
         }
 
-        //TODO,加载批次明细
-        StockApiImpl.findStockOut(curOrder.getId(), batchItemRspCallback);
+        PmcStockApiImpl.findStockOut(curOrder.getId(), batchItemRspCallback);
     }
 
     private NetCallBack.QueryRsCallBack batchItemRspCallback = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<StockOutItem>(new PageInfo(1, 50)) {

@@ -9,6 +9,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.litecashier.CashierApp;
@@ -72,6 +73,11 @@ public class EslSyncManager2 extends EslSyncManager{
         if (!SharedPreferencesHelper
                 .getBoolean(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, false)){
             uploadFinished("请在设置中打开同步商品库到电子价签同步开关。");
+            return;
+        }
+
+        if (StringUtils.isEmpty(GreenTagsApi.LOCAL_SERVER_IP)){
+            uploadFinished("LOCAL_SERVER_IP不能为空，请先在设置页面设置ip地址。");
             return;
         }
 

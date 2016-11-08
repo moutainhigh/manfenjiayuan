@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.mfh.framework.api.GoodsSupplyInfo;
+import com.mfh.framework.api.scGoodsSku.GoodsSupplyInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;

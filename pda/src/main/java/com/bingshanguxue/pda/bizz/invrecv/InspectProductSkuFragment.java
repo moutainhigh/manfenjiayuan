@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.utils.ACacheHelper;
-import com.mfh.framework.api.anon.ProductSku;
+import com.mfh.framework.api.anon.sc.productPrice.ProductSku;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;

@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.chinaums.mis.bank.BankDAO;
@@ -23,9 +23,9 @@ import com.chinaums.mis.bean.ResponsePojo;
 import com.chinaums.mis.bean.TransCfx;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.payOrder.PayOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -522,7 +522,7 @@ public class PayByBandcardFragment extends BasePayFragment {
         jsonObject.put("bizType", bizType);//业务类型
         jsonObject.put("tagOne", "");//备用
 
-        CashierApiImpl.createPayOrder(jsonObject.toJSONString(), responseCallback);
+        PayOrderApiImpl.create(jsonObject.toJSONString(), responseCallback);
     }
 
     private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,

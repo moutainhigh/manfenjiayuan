@@ -23,15 +23,15 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.StockApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -187,7 +187,7 @@ public class StockDetailFragment extends BaseFragment {
         animProgress.setVisibility(View.VISIBLE);
 //        btnStockOut.setEnabled(false);
         //查询出库列表
-        StockApiImpl.findStockOutByCode(queryText, queryRsCallBack);
+        PmcStockApiImpl.findStockOutByCode(queryText, queryRsCallBack);
     }
 
     @OnClick(R.id.button_stockOut)
@@ -272,7 +272,7 @@ public class StockDetailFragment extends BaseFragment {
                 , CashierApp.getAppContext())
         {
         };
-        StockApiImpl.stockOut(jsonArray.toJSONString(), stockoutResponseCallback);
+        PmcStockApiImpl.stockOut(jsonArray.toJSONString(), stockoutResponseCallback);
     }
 
     private void initRecyclerView() {

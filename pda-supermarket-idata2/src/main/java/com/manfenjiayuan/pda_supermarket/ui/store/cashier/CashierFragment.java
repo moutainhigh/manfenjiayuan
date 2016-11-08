@@ -17,7 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;

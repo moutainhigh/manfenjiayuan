@@ -17,7 +17,7 @@ import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
 import com.manfenjiayuan.pda_supermarket.ui.MainActivity;
-import com.manfenjiayuan.pda_supermarket.utils.NotificationUtils;
+import com.mfh.framework.core.utils.NotificationUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;

@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.wrapper.NetInfoWrapper;
 import com.manfenjiayuan.business.presenter.InvFindOrderPresenter;

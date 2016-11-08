@@ -17,7 +17,7 @@ import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invcheck.Shelfnumber;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;

@@ -15,8 +15,6 @@ import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
-import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -55,7 +53,7 @@ import de.greenrobot.event.EventBus;
  * 设置－－通用
  * Created by kun on 15/8/31.
  */
-public class SettingsCommonFragment extends BaseFragment implements IPosRegisterView {
+public class SettingsCommonFragment extends BaseFragment {
 
     @Bind(R.id.item_posgoods)
     SettingsItem itemPosGoods;
@@ -95,7 +93,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
     private FileZillaDialog mFileZillaDialog = null;
     private UmsipsDialog mUmsipsDialog = null;
     private GreenTagsSettingsDialog mGreenTagsSettingsDialog = null;
-    private PosRegisterPresenter mPosRegisterPresenter;
 
 
     @Override
@@ -108,8 +105,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         super.onCreate(savedInstanceState);
 
 //        EventBus.getDefault().register(this);
-
-        mPosRegisterPresenter = new PosRegisterPresenter(this);
     }
 
     @Override
@@ -581,29 +576,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         }
     }
 
-
-    @Override
-    public void onRegisterPlatProcess() {
-
-    }
-
-    @Override
-    public void onRegisterPlatError(String errorMsg) {
-
-    }
-
-    @Override
-    public void onRegisterPlatSuccess(String terminalId) {
-        SharedPreferencesManager.setTerminalId(terminalId);
-        terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
-        DialogUtil.showHint("注册成功");
-    }
-
-    @Override
-    public void onPlatUpdate() {
-        terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
-    }
-
     @OnClick(R.id.button_test)
     public void test(){
         String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
@@ -611,7 +583,6 @@ public class SettingsCommonFragment extends BaseFragment implements IPosRegister
         List<PosOrderEntity> entities =  PosOrderService.get().queryAllDesc(sqlOrder, null);
         if (entities != null && entities.size() > 0){
             PrintManager.printPosOrder(entities.get(0), true);
-
         }
         PrintManagerImpl.printTest();
     }

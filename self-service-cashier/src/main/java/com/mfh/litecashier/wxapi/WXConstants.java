@@ -1,8 +1,6 @@
 package com.mfh.litecashier.wxapi;
 
 
-import com.mfh.framework.api.MfhApi;
-
 /**
  * 微信配置参数
  * Created by Administrator on 2014/11/15.
@@ -22,10 +20,6 @@ public class WXConstants {
 
     //微信APP支付统一下单URL地址
     public static final String URL_UNIFIED_ORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-
-    //服务器异步通知页面路径//"http://notify.msp.hk/notify.htm"
-    public static final String NOTIFY_URL = MfhApi.URL_BASE_SERVER + "/commonuseraccount/notifyAccount";
-
 
     public static final String ACTION_WXPAY_RESP = "ACTION_WXPAY_RESP";//微信支付处理结果
     public static final String EXTRA_KEY_ERR_CODE = "EXTRA_KEY_ERR_CODE";

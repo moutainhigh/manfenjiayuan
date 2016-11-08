@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.api.CompanyApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.companyInfo.CompanyInfoApiImpl;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -126,7 +126,7 @@ public class ExpressCompanyDialog extends CommonDialog {
             listView.setAdapter(new ExpressCompanyAdapter(getContext(), options));
 
             if (dialogType == DT_CREATE){
-                CompanyApi.comnQuery(queryRspCallback);
+                CompanyInfoApiImpl.comnQuery(queryRspCallback);
             }
         }
         catch (Exception e){

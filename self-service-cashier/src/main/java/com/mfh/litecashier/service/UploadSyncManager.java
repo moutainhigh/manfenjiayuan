@@ -12,8 +12,8 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.PosOrderApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -406,7 +406,7 @@ public class UploadSyncManager extends OrderSyncManager {
                 , CashierApp.getAppContext()) {
         };
 
-        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+        PosOrderApi.batchInOrders(orders.toJSONString(), responseCallback);
     }
 
     /**
@@ -462,7 +462,7 @@ public class UploadSyncManager extends OrderSyncManager {
 
         JSONArray orders = new JSONArray();
         orders.add(generateOrderJson(orderEntity));
-        CashierApiImpl.batchInOrders(orders.toJSONString(), responseCallback);
+        PosOrderApi.batchInOrders(orders.toJSONString(), responseCallback);
     }
 
     /**

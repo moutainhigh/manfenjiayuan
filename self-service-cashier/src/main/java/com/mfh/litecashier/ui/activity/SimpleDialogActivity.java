@@ -32,8 +32,9 @@ import butterknife.Bind;
  */
 public class SimpleDialogActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "serviceType";
-    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x01;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x02;//采购商品－新增商品
+
+    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x21;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x22;//采购商品－新增商品
     public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x03;//选择收货单
     public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x04;//采购商品详情
     public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x05;//选择批发商&门店
@@ -142,129 +143,142 @@ public class SimpleDialogActivity extends BaseActivity {
      * Caused by: java.lang.IllegalStateException: commit already called
      */
     private void initFragments() {
-        if (serviceType == FRAGMENT_TYPE_CREATE_PURCHASE_GOODS) {
-            ScSkuGoodsStoreInFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = ScSkuGoodsStoreInFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = ScSkuGoodsStoreInFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS) {
-            GreateScSkuGoodsFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = GreateScSkuGoodsFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = GreateScSkuGoodsFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_HANDOVER) {
-            HandoverFragment handoverFragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                handoverFragment = HandoverFragment.newInstance(intent.getExtras());
-            } else {
-                handoverFragment = HandoverFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, handoverFragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_DAILY_SETTLE) {
-            DailySettleFragment dailySettleFragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                dailySettleFragment = DailySettleFragment.newInstance(intent.getExtras());
-            } else {
-                dailySettleFragment = DailySettleFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, dailySettleFragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_SELECT_INV_RECVORDER) {
-            SelectInvRecvOrderFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = SelectInvRecvOrderFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = SelectInvRecvOrderFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        }
-        //采购商品详情
-        else if (serviceType == FRAGMENT_TYPE_PURCHASE_GOODSDETAIL) {
-            PurchaseGoodsDetailFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = PurchaseGoodsDetailFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = PurchaseGoodsDetailFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT) {
-            SelectWholesalerWithTenantFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = SelectWholesalerWithTenantFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = SelectWholesalerWithTenantFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        }
-        else if (serviceType == FT_CANARY_CASH_QUOTA)  {
-            CashQuotaFragment fragment = new CashQuotaFragment();
-            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        }
-        else if (serviceType == FT_PAY_HISTORY)  {
-            PayHistoryFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = PayHistoryFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = PayHistoryFragment.newInstance(null);
-            }
-            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        }
-        else if (serviceType == FT_GOODS_SALESHISTORY)  {
-            ZLogger.d("准备跳转到销量页面");
-            try{
-                GoodsSalesFragment fragment;
+        switch (serviceType){
+            case FRAGMENT_TYPE_CREATE_PURCHASE_GOODS:{
+                ScSkuGoodsStoreInFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
-                    fragment = GoodsSalesFragment.newInstance(intent.getExtras());
+                    fragment = ScSkuGoodsStoreInFragment.newInstance(intent.getExtras());
                 } else {
-                    fragment = GoodsSalesFragment.newInstance(null);
+                    fragment = ScSkuGoodsStoreInFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS:{
+                GreateScSkuGoodsFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = GreateScSkuGoodsFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = GreateScSkuGoodsFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FRAGMENT_TYPE_HANDOVER:{
+                HandoverFragment handoverFragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    handoverFragment = HandoverFragment.newInstance(intent.getExtras());
+                } else {
+                    handoverFragment = HandoverFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, handoverFragment)
+                        .commit();
+            }
+            break;
+            case FRAGMENT_TYPE_DAILY_SETTLE:{
+                DailySettleFragment dailySettleFragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    dailySettleFragment = DailySettleFragment.newInstance(intent.getExtras());
+                } else {
+                    dailySettleFragment = DailySettleFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, dailySettleFragment)
+                        .commit();
+            }
+            break;
+            case FRAGMENT_TYPE_SELECT_INV_RECVORDER:{
+                SelectInvRecvOrderFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = SelectInvRecvOrderFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = SelectInvRecvOrderFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FRAGMENT_TYPE_PURCHASE_GOODSDETAIL:{
+                PurchaseGoodsDetailFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = PurchaseGoodsDetailFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = PurchaseGoodsDetailFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT:{
+                SelectWholesalerWithTenantFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = SelectWholesalerWithTenantFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = SelectWholesalerWithTenantFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_CANARY_CASH_QUOTA:{
+                CashQuotaFragment fragment = new CashQuotaFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_PAY_HISTORY:{
+                PayHistoryFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = PayHistoryFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = PayHistoryFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }
-            catch (Exception e){
-                ZLogger.e(e.toString());
-                e.printStackTrace();
+            break;
+            case FT_GOODS_SALESHISTORY:{
+                ZLogger.d("准备跳转到销量页面");
+                try{
+                    GoodsSalesFragment fragment;
+                    Intent intent = this.getIntent();
+                    if (intent != null) {
+                        fragment = GoodsSalesFragment.newInstance(intent.getExtras());
+                    } else {
+                        fragment = GoodsSalesFragment.newInstance(null);
+                    }
+                    getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
+                }
+                catch (Exception e){
+                    ZLogger.e(e.toString());
+                    e.printStackTrace();
+                }
             }
-        }
-
-        else if (serviceType == FT_EXCHANGE_SCORE)  {
-            try{
+            break;
+            case FT_EXCHANGE_SCORE:{
                 ExchangeScoreFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -277,10 +291,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }
-            catch (Exception e){
-                ZLogger.e(e.toString());
-                e.printStackTrace();
-            }
+            break;
         }
     }
 }

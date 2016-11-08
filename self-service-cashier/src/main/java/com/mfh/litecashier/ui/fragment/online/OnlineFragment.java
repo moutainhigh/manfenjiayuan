@@ -51,7 +51,8 @@ public class OnlineFragment extends BaseFragment {
             }
         });
 
-        viewPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(), mTabStrip, mViewPager, R.layout.tabitem_text_large);
+        viewPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(), mTabStrip,
+                mViewPager, R.layout.tabitem_text_large);
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
         mTabs.add(new ViewPageInfo("生鲜预定", "生鲜预定", FreshScheduleFragment.class,
                 null));

@@ -29,6 +29,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.payOrder.PayOrderApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -236,7 +237,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
     private void refresh() {
         try {
             tvOut.setTopText(MUtils.formatDouble(mCashQuotaInfo.getUnpaid(), ""));
-            if (mCashQuotaInfo.getLimit() == null || mCashQuotaInfo.getLimit().compareTo(0D) == 0){
+            if (mCashQuotaInfo.getLimit() == null || mCashQuotaInfo.getLimit().compareTo(-1D) == 0){
                 tvQuota.setTopText("未设置");
                 tvLeft.setTopText("无限");
             }
@@ -275,7 +276,6 @@ public class CashQuotaFragment extends BaseProgressFragment {
         CashierApiImpl.queryLimitInfo(queryLimitInfoRC);
     }
 
-    //回调
     NetCallBack.NetTaskCallBack queryLimitInfoRC = new NetCallBack.NetTaskCallBack<String,
             NetProcessor.Processor<String>>(
             new NetProcessor.Processor<String>() {
@@ -412,7 +412,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
                     }
                 }, PayOrder.class, CashierApp.getAppContext());
 
-        CashierApiImpl.listPayOrder(BizType.DAILYSETTLE, 2, pageInfo, responseRC);
+        PayOrderApiImpl.list(BizType.DAILYSETTLE, 2, pageInfo, responseRC);
     }
 
 

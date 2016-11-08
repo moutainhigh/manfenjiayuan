@@ -15,7 +15,7 @@ import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
