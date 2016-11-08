@@ -488,7 +488,6 @@ public class MainActivity extends CashierActivity
      * 会员注册2-输入登录密码和支付密码
      */
     private void registerVIPStep2(String phonenumber) {
-        //开卡
         if (mRegisterUserDialog == null) {
             mRegisterUserDialog = new RegisterUserDialog(this);
             mRegisterUserDialog.setCancelable(false);
@@ -524,7 +523,17 @@ public class MainActivity extends CashierActivity
             initCardDialog.setCancelable(false);
             initCardDialog.setCanceledOnTouchOutside(false);
         }
-        initCardDialog.initialize(human);
+        initCardDialog.initialize(human, new InitCardByStepDialog.OnInitCardListener() {
+            @Override
+            public void onSuccess() {
+                showProgressDialog(ProgressDialog.STATUS_DONE, "开卡成功", true);
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
         if (!initCardDialog.isShowing()) {
             initCardDialog.show();
         }
@@ -1263,14 +1272,50 @@ public class MainActivity extends CashierActivity
      * 初始化条码输入
      */
     private void initBarCodeInput() {
-        inlvBarcode.setEnterKeySubmitEnabled(true);
-        inlvBarcode.setSoftKeyboardEnabled(false);
-        inlvBarcode.requestFocus();
+        inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
+                KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
+            @Override
+            public void onKey(int keyCode, String text) {
+                //Press “Enter”
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    //条码枪扫描结束后会自动触发回车键
+                    searchGoodsByBarcode(text);
+//                        searchGoodsByBarcodeRx(text);
+                }
+                //Press “*”
+                if (keyCode == KeyEvent.KEYCODE_NUMPAD_MULTIPLY) {
+                    //判断是否已经有数字，如果已经有则直接加数字，否则弹窗
+                    if (StringUtils.isEmpty(text)) {
+                        changeGoodsQuantity(0);
+//                            if (productAdapter != null) {
+//                                productAdapter.changeQuantity();
+//                            }
+                    } else {
+                        inlvBarcode.clear();
+                        try {
+                            if (productAdapter != null) {
+                                productAdapter.changeQuantity(Double.valueOf(text));
+                            }
+                        } catch (Exception e) {
+                            ZLogger.e(e.toString());
+                        }
+                    }
+                }
+                //Press “＋”
+                if (keyCode == KeyEvent.KEYCODE_NUMPAD_ADD) {
+                    if (btnSettle.isEnabled()) {
+                        settle();
+                    }
+                }
+            }
+        });
+        inlvBarcode.requestFocusEnd();
         inlvBarcode.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled() || inlvBarcode.isSoftKeyboardEnabled()) {
+                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                            || inlvBarcode.isSoftKeyboardEnabled()) {
                         showBarcodeKeyboard();
                     }
                 }
@@ -1278,59 +1323,6 @@ public class MainActivity extends CashierActivity
                 inlvBarcode.requestFocusEnd();
                 //返回true,不再继续传递事件
                 return true;
-            }
-        });
-        inlvBarcode.setOnInoutKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d("setOnKeyListener(CashierFragment.inlvBarcode):" + keyCode);
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        String barcode = inlvBarcode.getInputString();
-                        searchGoodsByBarcode(barcode);
-//                        searchGoodsByBarcodeRx(barcode);
-                    }
-
-                    return true;
-                }
-                //Press “*”
-                if (keyCode == KeyEvent.KEYCODE_NUMPAD_MULTIPLY) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        //判断是否已经有数字，如果已经有则直接加数字，否则弹窗
-                        String inputText = inlvBarcode.getInputString();
-                        if (StringUtils.isEmpty(inputText)) {
-                            changeGoodsQuantity(0);
-//                            if (productAdapter != null) {
-//                                productAdapter.changeQuantity();
-//                            }
-                        } else {
-                            inlvBarcode.clear();
-                            try {
-                                if (productAdapter != null) {
-                                    productAdapter.changeQuantity(Double.valueOf(inputText));
-                                }
-                            } catch (Exception e) {
-                                ZLogger.e(e.toString());
-                            }
-                        }
-                    }
-                    return true;
-                }
-                //Press “＋”
-                if (keyCode == KeyEvent.KEYCODE_NUMPAD_ADD) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        if (btnSettle.isEnabled()) {
-                            settle();
-                        }
-                    }
-                    return true;
-                }
-
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
     }
@@ -1843,10 +1835,10 @@ public class MainActivity extends CashierActivity
             return;
         }
 
-        if (goods.getStatus() != 1) {
-            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
-            return;
-        }
+//        if (goods.getStatus() != 1) {
+//            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
+//            return;
+//        }
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
@@ -1885,10 +1877,10 @@ public class MainActivity extends CashierActivity
             return;
         }
 
-        if (goods.getStatus() != 1) {
-            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
-            return;
-        }
+//        if (goods.getStatus() != 1) {
+//            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
+//            return;
+//        }
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
@@ -1912,10 +1904,10 @@ public class MainActivity extends CashierActivity
             return;
         }
 
-        if (goods.getStatus() != 1) {
-            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
-            return;
-        }
+//        if (goods.getStatus() != 1) {
+//            DialogUtil.showHint(String.format("商品已经下架:%s", goods.getBarcode()));
+//            return;
+//        }
 
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
