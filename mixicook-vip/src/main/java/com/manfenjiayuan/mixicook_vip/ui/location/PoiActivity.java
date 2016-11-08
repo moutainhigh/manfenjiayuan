@@ -46,9 +46,11 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.geocoder.StreetNumber;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.address.AddressBrief;
+import com.manfenjiayuan.mixicook_vip.utils.AppHelper;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.location.LocationClient;
@@ -80,6 +82,8 @@ public class PoiActivity extends BaseActivity
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.scanBar)
+    public ScanBar mScanBar;
 
     private AMapLocation aMapLocation;// 用于判断定位超时
     private Handler handler = new Handler();
@@ -115,6 +119,7 @@ public class PoiActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppHelper.getInstance().addActivity(this);
 
         initTopBar();
 
@@ -136,7 +141,7 @@ public class PoiActivity extends BaseActivity
                 adapter.setSelectId(-1);
 
                 mAddressBrief = headerView.getAddressBrief();
-                if (mAddressBrief != null){
+                if (mAddressBrief != null) {
                     Intent data = new Intent();
                     data.putExtra("addressBrief", mAddressBrief);
                     setResult(Activity.RESULT_OK, data);
@@ -164,7 +169,7 @@ public class PoiActivity extends BaseActivity
                     mAddressBrief = (AddressBrief) adapterView.getAdapter().getItem(i);
                     headerView.setAddressBrief(mAddressBrief);
 
-                    if (mAddressBrief != null){
+                    if (mAddressBrief != null) {
                         Intent data = new Intent();
                         data.putExtra("addressBrief", mAddressBrief);
                         setResult(Activity.RESULT_OK, data);
@@ -243,19 +248,36 @@ public class PoiActivity extends BaseActivity
                     }
                 });
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_share) {
-                    getMapScreenShot();
+        if (!BizConfig.RELEASE){
+            toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    // Handle the menu item
+                    int id = item.getItemId();
+                    if (id == R.id.action_share) {
+                        getMapScreenShot();
+                    }
+                    return true;
                 }
-                return true;
+            });
+            // Inflate a menu to be displayed in the toolbar
+            toolbar.inflateMenu(R.menu.menu_poi);
+        }
+
+        mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
+            @Override
+            public void onKeycodeEnterClick(String text) {
+
+                doSearchQuery(new LatLonPoint(regeoMarker.getPosition().latitude,
+                        regeoMarker.getPosition().longitude), text);
+            }
+
+            @Override
+            public void onAction1Click(String text) {
+                doSearchQuery(new LatLonPoint(regeoMarker.getPosition().latitude,
+                        regeoMarker.getPosition().longitude), text);
             }
         });
-        // Inflate a menu to be displayed in the toolbar
-        toolbar.inflateMenu(R.menu.menu_poi);
     }
 
     /**
@@ -353,7 +375,7 @@ public class PoiActivity extends BaseActivity
                 geocoderSearch.getFromLocationAsyn(query);// 设置同步逆地理编码请求
 
                 //周边搜索，获取位置信息
-                doSearchQuery(lanLonPoint);
+                doSearchQuery(lanLonPoint, null);
             }
         });
         aMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
@@ -523,9 +545,11 @@ public class PoiActivity extends BaseActivity
      */
     private void shareLocation(Bitmap bitmap) {
         //TODO:发送图片并分享位置
-        DialogUtil.showHint(String.format("发送图片并分享位置\n (%f, %f), %s",
-                mAddressBrief.getLatitude(), mAddressBrief.getLongitude(),
-                mAddressBrief.getAddress()));
+        if (mAddressBrief != null) {
+            DialogUtil.showHint(String.format("发送图片并分享位置\n (%f, %f), %s",
+                    mAddressBrief.getLatitude(), mAddressBrief.getLongitude(),
+                    mAddressBrief.getAddress()));
+        }
 
         setResult(Activity.RESULT_OK);
         finish();
@@ -551,17 +575,17 @@ public class PoiActivity extends BaseActivity
                     + regeocodeAddress.getCity() + ","
                     + regeocodeAddress.getCityCode() + ","
                     + regeocodeAddress.getDistrict() + ","
-                    + regeocodeAddress.getFormatAddress() + ","
+                    + regeocodeAddress.getFormatAddress() + ","//江苏省苏州市吴中区东平街281号苏州创意产业园
                     + regeocodeAddress.getNeighborhood() + ","
                     + regeocodeAddress.getProvince() + ","
                     + regeocodeAddress.getTowncode() + ","
                     + regeocodeAddress.getTownship() + ","
                     + streetNumber.getDirection() + ","
-                    + streetNumber.getNumber() + ","
-                    + streetNumber.getStreet() + ","
+                    + streetNumber.getNumber() + ","//281号
+                    + streetNumber.getStreet() + ","//东平街
                     + streetNumber.getDistance() + ","
                     + streetNumber.getLatLonPoint().toString() + ",");
-            if (mAddressBrief == null){
+            if (mAddressBrief == null) {
                 mAddressBrief = new AddressBrief();
             }
             mAddressBrief.setName(regeocodeAddress.getFormatAddress());
@@ -586,29 +610,30 @@ public class PoiActivity extends BaseActivity
     /**
      * 开始进行poi搜索
      */
-    protected void doSearchQuery(LatLonPoint lp) {
+    protected void doSearchQuery(LatLonPoint lp, String keyword) {
         mProgressBar.setVisibility(View.VISIBLE);
         adapter.setData(null);
 
         aMap.setOnMapClickListener(null);// 进行poi搜索时清除掉地图点击事件
         currentPage = 0;
-        query = new PoiSearch.Query("", "", "");// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
+        query = new PoiSearch.Query(keyword, "", "");// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
         query.setPageSize(10);// 设置每页最多返回多少条poiitem
         query.setPageNum(currentPage);// 设置查第一页
 
+        poiSearch = new PoiSearch(this, query);
+        poiSearch.setOnPoiSearchListener(this);
         if (lp != null) {
-            poiSearch = new PoiSearch(this, query);
-            poiSearch.setOnPoiSearchListener(this);
             poiSearch.setBound(new PoiSearch.SearchBound(lp, 5000, true));//
             // 设置搜索区域为以lp点为圆心，其周围2000米范围
             /*
-			 * List<LatLonPoint> list = new ArrayList<LatLonPoint>();
+             * List<LatLonPoint> list = new ArrayList<LatLonPoint>();
 			 * list.add(lp);
 			 * list.add(AMapUtil.convertToLatLonPoint(IMConstants.BEIJING));
 			 * poiSearch.setBound(new SearchBound(list));// 设置多边形poi搜索范围
 			 */
-            poiSearch.searchPOIAsyn();// 异步搜索
         }
+        poiSearch.searchPOIAsyn();// 异步搜索
+
     }
 
     @Override

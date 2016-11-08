@@ -6,7 +6,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/appbar"/>
+    <!--<include layout="@layout/appbar"/>-->
+
+    <android.support.design.widget.AppBarLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <!--app:layout_collapseMode=”pin”来确保Toolbar在view折叠的时候仍然被固定在屏幕的顶部。-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/mfh_toolbar_background"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <com.bingshanguxue.vector_uikit.widget.ScanBar
+                android:id="@+id/scanBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:logoSrc="@mipmap/ic_edit_search_normal"
+                app:textColor="@color/material_black"
+                app:textSize="14sp"
+                app:textColorHint="@color/black_35"
+                app:softKeyboardEnabled="true"
+                app:hint="请输入地址"
+                app:editInputType="text"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
