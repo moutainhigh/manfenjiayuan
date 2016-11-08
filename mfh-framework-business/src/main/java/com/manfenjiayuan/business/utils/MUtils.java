@@ -1,6 +1,7 @@
 package com.manfenjiayuan.business.utils;
 
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.helper.SharedPreferencesManager;
@@ -174,6 +175,46 @@ public class MUtils {
                 return raw;
             }
         }
+    }
+
+    /**
+     * 解析卡芯片号，十六进制转换为十进制
+     * 十六进制：466CAF31 (8位)
+     * 十进制：1181527857 (10位)
+     */
+    public static String parseCardId(String rawData) {
+        if (StringUtils.isEmpty(rawData)) {
+            return null;
+        }
+        try {
+            return String.valueOf(Long.parseLong(rawData, 16));
+        } catch (Exception e) {
+            ZLogger.e(String.format("parseCardId failed, %s", e.toString()));
+            return null;
+        }
+    }
+
+    /**
+     * 解析满分快捷支付码
+     * 格式：000000000123456
+     */
+    public static String parseMfPaycode(String paycode) {
+        if (StringUtils.isEmpty(paycode)) {
+            return null;
+        }
+
+        //这样判断不严谨，会错误的把其他0处理掉
+//        int index = paycode.lastIndexOf("0");
+//        String humanId2 = humanId.substring(index + 1, humanId.length());
+
+        String humanId = paycode;
+        while (humanId.startsWith("0")) {
+            humanId = humanId.substring(1, humanId.length());
+        }
+
+        ZLogger.df(String.format("验证会员付款码: <%s> --> <%s>",
+                paycode, humanId));
+        return humanId;
     }
 
 }

@@ -5,7 +5,7 @@
                                    android:layout_height="?attr/actionBarSize"
                                    android:background="@color/mfh_toolbar_background">
 
-    <com.bingshanguxue.pda.widget.ScanBar
+    <com.bingshanguxue.vector_uikit.widget.ScanBar
         android:id="@+id/scanBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

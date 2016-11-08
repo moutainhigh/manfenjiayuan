@@ -13,7 +13,7 @@
         android:background="@color/material_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--批发商速记码-->
-        <com.bingshanguxue.pda.widget.ScanBar
+        <com.bingshanguxue.vector_uikit.widget.ScanBar
             android:id="@+id/scanBar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"

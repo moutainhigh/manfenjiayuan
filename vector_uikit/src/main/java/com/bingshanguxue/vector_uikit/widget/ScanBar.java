@@ -1,4 +1,4 @@
-package com.bingshanguxue.pda.widget;
+package com.bingshanguxue.vector_uikit.widget;
 
 
 import android.content.Context;
@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bingshanguxue.pda.R;
 import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -28,6 +28,7 @@ import com.mfh.framework.helper.SharedPreferencesManager;
  */
 public class ScanBar extends LinearLayout {
 
+    private ImageView ivLogo;
     private EditText etInput;
     private ImageView ivDel;
     private ImageView ivAction1;
@@ -53,13 +54,15 @@ public class ScanBar extends LinearLayout {
     public ScanBar(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        View rootView = View.inflate(getContext(), R.layout.scan_bar, this);
+        View rootView = View.inflate(getContext(), R.layout.widget_scanbar, this);
+        ivLogo = (ImageView) rootView.findViewById(R.id.iv_logo);
         etInput = (EditText) rootView.findViewById(R.id.et_input);
         ivDel = (ImageView) rootView.findViewById(R.id.iv_del);
         ivAction1 = (ImageView) rootView.findViewById(R.id.iv_action_1);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ScanBar);
 
+        this.ivLogo.setImageResource(ta.getResourceId(R.styleable.ScanBar_logoSrc, 0));
         float textSizeInPx = ta.getDimensionPixelSize(R.styleable.ScanBar_textSize, 12);
         int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
         etInput.setTextSize(textSizeInSp);

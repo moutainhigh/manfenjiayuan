@@ -17,7 +17,7 @@
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <com.bingshanguxue.pda.widget.ScanBar
+        <com.bingshanguxue.vector_uikit.widget.ScanBar
             android:id="@+id/scanBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

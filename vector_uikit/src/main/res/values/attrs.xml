@@ -29,12 +29,14 @@
 
     <!--是否支持软键盘-->
     <attr name="softKeyboardEnabled" format="boolean"/>
-
+    <attr name="isArrowVisible" format="boolean"/>
+    <attr name="isLogoVisible" format="boolean"/>
 
     <!--图片-->
     <attr name="src" format="reference"/>
+    <attr name="logoSrc" format="reference"/>
 
-
+    
     <!--自定义输入类型 {@link com.bingshanguxue.vector_uikit#EditInputType }-->
     <attr name="editInputType">
         <enum name="text" value="0"/>
@@ -47,10 +49,6 @@
         <enum name="weight" value="4"/>
         <enum name="textPassword" value="5"/>
     </attr>
-
-    <attr name="isArrowVisible" format="boolean"/>
-    <attr name="isLogoVisible" format="boolean"/>
-
 
     <declare-styleable name="SettingsItem">
         <attr name="text"/>
@@ -169,5 +167,19 @@
         <attr name="hint"/>
         <attr name="textColorHint"/>
     </declare-styleable>
+
+    <!--条码搜索控件-->
+    <declare-styleable name="ScanBar">
+        <attr name="logoSrc"/>
+        <attr name="text"/>
+        <attr name="textColor"/>
+        <attr name="textSize"/>
+        <attr name="textColorHint"/>
+        <attr name="hint"/>
+        <attr name="editInputType"/>
+        <attr name="action1Enabled" format="boolean"/>
+        <attr name="softKeyboardEnabled"/>
+    </declare-styleable>
+
 
 </resources>

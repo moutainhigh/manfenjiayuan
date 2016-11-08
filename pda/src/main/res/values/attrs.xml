@@ -13,18 +13,4 @@
         <attr name="editLabelView_rightImageButtonSrc" format="reference"/>
     </declare-styleable>
 
-
-    <!--条码搜索控件-->
-    <declare-styleable name="ScanBar">
-        <attr name="text"/>
-        <attr name="textColor"/>
-        <attr name="textSize"/>
-        <attr name="textColorHint"/>
-        <attr name="hint"/>
-        <attr name="editInputType"/>
-        <attr name="action1Enabled" format="boolean"/>
-        <attr name="softKeyboardEnabled"/>
-
-    </declare-styleable>
-
 </resources>

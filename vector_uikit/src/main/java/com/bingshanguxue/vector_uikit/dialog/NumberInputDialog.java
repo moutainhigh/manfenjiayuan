@@ -37,7 +37,7 @@ public class NumberInputDialog extends CommonDialog {
     /**
      * 输入框小数的位数
      */
-    private static int DECIMAL_DIGITS = 2;
+    private int DECIMAL_DIGITS = 2;
 
     public interface OnResponseCallback {
         void onNext(String value);
@@ -244,7 +244,7 @@ public class NumberInputDialog extends CommonDialog {
         this.btnSubmit.setText(action);
 
         this.etInput.getText().clear();
-        this.etInput.requestFocus();
+        requestFocusEnd();
     }
     /**
      * 初始化
@@ -270,7 +270,7 @@ public class NumberInputDialog extends CommonDialog {
      */
     public void setInputType(int inputType) {
         this.inputType = inputType;
-        if (inputType == EditInputType.BARCODE) {
+        if (inputType == EditInputType.BARCODE || inputType == EditInputType.PHONE) {
             this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         } else if (inputType == EditInputType.NUMBER_DECIMAL
                 || inputType == EditInputType.PRICE

@@ -87,14 +87,17 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-		if (!allowWidthFull)
+		if (!allowWidthFull){
 			return;
+		}
 		ViewGroup tabsLayout = getTabsLayout();
-		if (tabsLayout == null
-				|| tabsLayout.getMeasuredWidth() >= getMeasuredWidth())
+		if (tabsLayout == null || tabsLayout.getMeasuredWidth() >= getMeasuredWidth()){
 			return;
-		if (tabsLayout.getChildCount() <= 0)
+		}
+
+		if (tabsLayout.getChildCount() <= 0){
 			return;
+		}
 
 		if (tabViews == null) {
 			tabViews = new ArrayList<>();
@@ -119,7 +122,7 @@ public class TopSlidingTabStrip extends HorizontalScrollView implements
 	 * 
 	 * @param views
 	 *            子View集合
-	 * @param parentViewHeight
+	 * @param parentViewWidth
 	 *            父Vie的 宽度
 	 * @param parentWidthMeasureSpec
 	 *            父View的宽度规则

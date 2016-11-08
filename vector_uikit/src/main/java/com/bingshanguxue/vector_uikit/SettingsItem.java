@@ -53,7 +53,6 @@ public class SettingsItem extends RelativeLayout {
             } else {
                 this.ivLogo.setVisibility(View.GONE);
             }
-
             this.ivLogo.setImageResource(ta.getResourceId(R.styleable.SettingsItem_src, 0));
 
             tvTitle.setText(ta.getString(R.styleable.SettingsItem_text));

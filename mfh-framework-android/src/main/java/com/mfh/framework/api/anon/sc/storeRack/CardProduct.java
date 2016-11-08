@@ -21,6 +21,8 @@ public class CardProduct implements Serializable{
     private String name;//商品名称
     private String imageUrl;//图片地址
 
+    private Integer status = 0;//商品状态：0，售罄（默认值）
+
     /**
      * 以下信息通过调用
      * {@link com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl#findOnlineGoodsList(Long, String, PageInfo, AjaxCallBack)}
@@ -117,5 +119,13 @@ public class CardProduct implements Serializable{
 
     public void setCostPrice(Double costPrice) {
         this.costPrice = costPrice;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

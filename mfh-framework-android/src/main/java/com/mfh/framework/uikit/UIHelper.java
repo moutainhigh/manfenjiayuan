@@ -18,6 +18,7 @@ import com.mfh.framework.R;
 import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.DialogHelper;
@@ -96,6 +97,7 @@ public class UIHelper {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             ZLogger.wf("sorry!! please ensure you have granted [CALL_PHONE] perssion.");
+            DialogUtil.showHint("请先在设置中开启应用的电话权限");
             return;
         }
 
