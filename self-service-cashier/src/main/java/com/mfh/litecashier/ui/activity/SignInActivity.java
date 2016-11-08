@@ -1,5 +1,6 @@
 package com.mfh.litecashier.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -13,18 +14,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.alibaba.fastjson.JSONObject;
+import com.manfenjiayuan.business.bean.wrapper.HostServer;
+import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.fragment.components.HostServerFragment;
+import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -44,6 +52,8 @@ public class SignInActivity extends BaseActivity {
     EditText etPassword;
     @Bind(R.id.button_signin)
     Button btnSignin;
+    @Bind(R.id.btn_hostserver)
+    Button btnHostserver;
     @Bind(R.id.animProgressBar)
     ProgressBar progressBar;
 
@@ -122,14 +132,8 @@ public class SignInActivity extends BaseActivity {
             }
         });
 
-        String lastUsername = MfhLoginService.get().getLastLoginName();
-        if (!StringUtils.isEmpty(lastUsername)){
-            etUserName.setText(lastUsername);
-            etPassword.requestFocus();
-        }
-        else{
-            etUserName.requestFocus();
-        }
+
+        refresh();
     }
 
     @Override
@@ -199,6 +203,49 @@ public class SignInActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Constants.ARC_APP_HOSTSERVER: {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
+                    if (hostServer != null) {
+                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_S_HOSTSERVER,
+                                JSONObject.toJSONString(hostServer));
+                        MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
+                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
+                        MfhApi.register();
+                        IMApi.register();
+                        refresh();
+                    }
+                }
+            }
+            break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void refresh(){
+        String lastUsername = MfhLoginService.get().getLastLoginName();
+        if (!StringUtils.isEmpty(lastUsername)){
+            etUserName.setText(lastUsername);
+            etPassword.requestFocus();
+        }
+        else{
+            etUserName.requestFocus();
+        }
+
+        String hostServerData = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_S_HOSTSERVER, null);
+        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData), HostServer.class);
+        if (hostServer == null){
+            btnHostserver.setText("选择租户");
+        }
+        else{
+            btnHostserver.setText(String.format("%s(点击切换)", hostServer.getName()));
+        }
+    }
+
     @OnClick(R.id.tv_retrievePwd)
     public void retrievePwd() {
         Snackbar.make(etUserName, "忘记密码", Snackbar.LENGTH_SHORT)
@@ -266,4 +313,18 @@ public class SignInActivity extends BaseActivity {
 //
 //        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
 //    }
+
+    @OnClick(R.id.btn_hostserver)
+    public void redirect2HostServer(){
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE,
+                FragmentActivity.FT_APP_HOSTSERVER);
+//        extras.putInt(HostServerFragment.EXTRA_KEY_LAUNCHMODE, 0);
+
+        Intent intent = new Intent(SignInActivity.this, FragmentActivity.class);
+        intent.putExtras(extras);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, Constants.ARC_APP_HOSTSERVER);
+    }
 }

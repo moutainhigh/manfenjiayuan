@@ -99,6 +99,8 @@ public class SharedPreferencesHelper {
     public static final String PK_B_SYNC_ESL_ENABLED = "pk_b_SYNC_ESL_ENABLED";
     public static final String PK_L_CATETYPE_POS_ID = "pk_l_catetype_pos_id";
 
+    public static final String PK_S_HOSTSERVER = "pk_s_hostserver";
+
 
     public static String prefName = TAG;
 

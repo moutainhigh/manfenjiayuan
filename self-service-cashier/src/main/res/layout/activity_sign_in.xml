@@ -6,6 +6,19 @@
                 android:background="@drawable/mf_login_background"
                 android:padding="@dimen/activity_horizontal_margin">
 
+    <Button
+        android:id="@+id/btn_hostserver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/spacing_micro"
+        android:background="@null"
+        android:gravity="center"
+        android:minHeight="?android:attr/actionBarSize"
+        android:text="切换租户"
+        android:textColor="@color/white_60"
+        android:textSize="@dimen/textsize_normal"/>
+
     <LinearLayout
         android:layout_width="320dp"
         android:layout_height="wrap_content"

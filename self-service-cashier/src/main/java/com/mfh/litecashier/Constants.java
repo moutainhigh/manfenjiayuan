@@ -9,11 +9,11 @@ package com.mfh.litecashier;
  * TCK  (TEMP_CACHE_KEY)<br>
  */
 public class Constants {
-    public static final int ARC_MFPAY                           = 0x01;//支付
+    public static final int ARC_APP_HOSTSERVER           = 0x01;//选择域名
+    public static final int ARC_MFPAY                           = 0x06;//支付
     public static final int ARC_NATIVE_LOGIN                    = 0x02;//登录
     public static final int ARC_CASHIER_PREPAREGOODS            = 0x03;//拣货单组货
     public static final int ARC_APPLY_SHOPCART                  = 0x05;//采购商品购物车
-    public static final int ARC_CREATE_PURCHASE_ORDER           = 0x06;//新建采购单
     public static final int ARC_CREATE_PURCHASE_RECEIPT_ORDER   = 0x07;//新建采购收货单
     public static final int ARC_CREATE_PURCHASE_RETURN_ORDER    = 0x08;//新建采购退货单
     public static final int ARC_CREATE_STOCK_BATCH              = 0x09;//新建库存批次
