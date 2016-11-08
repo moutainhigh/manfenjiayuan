@@ -198,13 +198,14 @@ public class SplashActivity extends InitActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ARCode.ARC_ANDROID_SETTINGS: {
-                ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
+                if (data != null){
+                    ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
+                }
                 if (resultCode == Activity.RESULT_OK) {
                     doAsyncTask();
                 }
             }
             break;
-
             case ARCode.ARC_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     redirect2Main();

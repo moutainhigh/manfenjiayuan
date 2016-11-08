@@ -28,6 +28,7 @@ import com.manfenjiayuan.mixicook_vip.widget.LabelView2;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
+import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
@@ -589,7 +590,12 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
                     transFee = mTransFeeRule.getOrderTransFee();
                     transFeeRuleView.setSubTitle(spanned);
                     transFeeRuleView.setVisibility(View.VISIBLE);
-                    btnConfirm.setEnabled(false);
+                    if (!BizConfig.RELEASE){
+                        btnConfirm.setEnabled(true);
+                    }
+                    else{
+                        btnConfirm.setEnabled(false);
+                    }
                 } else {
                     Double free = mTransFeeRule.getOrderNoTransFeeLimit() - amount;
                     if (free > 0) {

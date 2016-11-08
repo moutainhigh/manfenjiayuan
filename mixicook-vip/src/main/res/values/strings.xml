@@ -185,6 +185,7 @@
     <string name="toast_login_telephone_empty">请输入手机号</string>
     <string name="toast_login_pwd_empty">请输入登录密码</string>
 
+    <string name="tel_customerservice">400-000-0000</string>
 
     <string name="yes">Yes</string>
     <string name="no">No</string>

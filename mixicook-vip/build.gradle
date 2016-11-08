@@ -20,10 +20,11 @@ android {
 
     defaultConfig {
         applicationId "com.manfenjiayuan.mixicook_vip"
-        minSdkVersion rootProject.ext.android.minSdkVersion
-        targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 5
-        versionName "1.0.2"
+        minSdkVersion 21
+//        rootProject.ext.android.minSdkVersion
+        rootProject.ext.android.targetSdkVersion
+        versionCode 6
+        versionName "1.0.3"
 
         multiDexEnabled true
 

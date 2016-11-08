@@ -84,7 +84,7 @@
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:hint="输入收到的验证码"
-                    android:inputType="numberPassword"
+                    android:inputType="numberDecimal"
                     android:maxLines="1"
                     android:paddingStart="@dimen/spacing_normal"
                     android:textColor="@color/material_black"

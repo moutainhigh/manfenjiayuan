@@ -19,11 +19,11 @@ import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.manfenjiayuan.business.bean.NetInfo;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.DateTimePickerDialog;
-import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
+import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
 import com.manfenjiayuan.mixicook_vip.ui.order.OrderGoodsAdapter;
 import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
 import com.mfh.comn.bean.TimeCursor;
@@ -32,8 +32,8 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.CompanyApi;
 import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.companyInfo.CompanyInfoApiImpl;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.api.reciaddr.Reciaddr;
 import com.mfh.framework.core.utils.StringUtils;
@@ -405,7 +405,7 @@ public class ReserveOrderFragment extends BaseFragment {
                 , MfhApplication.getAppContext()) {
         };
 
-        CompanyApi.getById(companyId, submitRC);
+        CompanyInfoApiImpl.getById(companyId, submitRC);
     }
 
 
