@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.api.anon.storeRack.StoreRackCard;
-import com.mfh.framework.api.anon.storeRack.StoreRackCardItem;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRackCard;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRackCardItem;
 
 import java.util.List;
 

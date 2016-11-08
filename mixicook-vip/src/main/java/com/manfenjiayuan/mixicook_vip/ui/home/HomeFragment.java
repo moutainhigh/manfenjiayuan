@@ -59,11 +59,11 @@ import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.anon.storeRack.CardProduct;
-import com.mfh.framework.api.anon.storeRack.ScStoreRackApi;
-import com.mfh.framework.api.anon.storeRack.StoreRack;
-import com.mfh.framework.api.anon.storeRack.StoreRackCard;
-import com.mfh.framework.api.anon.storeRack.StoreRackCardItem;
+import com.mfh.framework.api.anon.sc.storeRack.CardProduct;
+import com.mfh.framework.api.anon.sc.storeRack.ScStoreRackApi;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRack;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRackCard;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRackCardItem;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.companyInfo.CompanyInfoPresenter;
 import com.mfh.framework.api.companyInfo.ICompanyInfoView;
@@ -95,14 +95,13 @@ import de.greenrobot.event.EventBus;
 import me.drakeet.multitype.Item;
 import me.drakeet.multitype.MultiTypeAdapter;
 
-import static com.mfh.framework.MfhApplication.getAppContext;
 import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by bingshanguxue on 6/28/16.
  */
 public class HomeFragment extends BaseFragment
-        implements IReciaddrView, ICompanyInfoView, IStoreRackView, IScGoodsSkuView, IPosRegisterView {
+        implements IReciaddrView, ICompanyInfoView, IScGoodsSkuView, IPosRegisterView {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.address_view)
@@ -129,7 +128,6 @@ public class HomeFragment extends BaseFragment
     private CompanyInfo curCompanyInfo = null;//当前店铺
     private ReciaddrPresenter mReciaddrPresenter;
     private CompanyInfoPresenter mCompanyInfoPresenter;
-    private StoreRackPresenter mStoreRackPresenter;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
     private PosRegisterPresenter mPosRegisterPresenter;
 
@@ -147,7 +145,6 @@ public class HomeFragment extends BaseFragment
 
         mReciaddrPresenter = new ReciaddrPresenter(this);
         mCompanyInfoPresenter = new CompanyInfoPresenter(this);
-        mStoreRackPresenter = new StoreRackPresenter(this);
         mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
         mPosRegisterPresenter = new PosRegisterPresenter(this);
 
@@ -406,7 +403,6 @@ public class HomeFragment extends BaseFragment
         }
     }
 
-
     /**
      * Requests the Camera permission.
      * If the permission has been denied previously, a SnackBar will prompt the user to grant the
@@ -435,7 +431,8 @@ public class HomeFragment extends BaseFragment
                     .show();
         } else {
             // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.CAMERA},
                     Constants.REQUEST_CODE_CAMERA);
         }
         // END_INCLUDE(camera_permission_request)
@@ -805,6 +802,8 @@ public class HomeFragment extends BaseFragment
             DialogUtil.showHint("这个人很懒，什么都没有发布");
             return;
         }
+        List<CardProduct> products = new ArrayList<>();
+
         try {
             for (StoreRack rack : racks) {
                 String dataInfo = rack.getDataInfo();
@@ -826,14 +825,20 @@ public class HomeFragment extends BaseFragment
                 } else {
                     ZLogger.d(String.format("<%s>:\n%s", rack.getRackName(), JSONObject.toJSONString(cards)));
                 }
+                List<CardProduct> temp = null;
                 if (rack.getRackType() == ScStoreRackApi.RACK_TYPE_SC_HOME) {
-                    decodeBannerCard(cards);
+                    temp = decodeBannerCard(cards);
                 } else if (rack.getRackType() == ScStoreRackApi.RACK_TYPE_SHOP_HOME) {
-                    decodeHomeCard(cards);
+                    temp = decodeHomeCard(cards);
                 } else {
 
                 }
+                if (temp != null){
+                    products.addAll(temp);
+                }
             }
+            loadInitStep5(products);
+
         } catch (Exception e) {
             e.printStackTrace();
             ZLogger.e(e.toString());
@@ -843,7 +848,7 @@ public class HomeFragment extends BaseFragment
     /**
      * 解析商城首页数据
      */
-    private void decodeBannerCard(List<StoreRackCard> cards) {
+    private List<CardProduct> decodeBannerCard(List<StoreRackCard> cards) {
         List<CardProduct> products = new ArrayList<>();
         List<Item> items = new ArrayList<>();
         if (cards != null && cards.size() > 0) {
@@ -918,14 +923,14 @@ public class HomeFragment extends BaseFragment
             bannerRackRecyclerView.setAdapter(null);
         }
 
-        loadInitStep5(products);
+        return products;
     }
 
 
     /**
      * 解析首页卡片数据
      */
-    private void decodeHomeCard(List<StoreRackCard> cards) {
+    private List<CardProduct> decodeHomeCard(List<StoreRackCard> cards) {
         List<CardProduct> products = new ArrayList<>();
         List<Item> items = new ArrayList<>();
         if (cards != null && cards.size() > 0) {
@@ -981,10 +986,8 @@ public class HomeFragment extends BaseFragment
                     items.add(card9);
                     ZLogger.d("添加card9：" + card9.getCategoryName());
 
-
                     products.addAll(card.getProducts());
-                }
-                else if (card.getType().equals(10)) {
+                } else if (card.getType().equals(10)) {
                     Card10 card10 = new Card10();
                     card10.setType(card.getType());
                     card10.setNetName(card.getNetName());
@@ -1001,248 +1004,9 @@ public class HomeFragment extends BaseFragment
             homeRackRecyclerView.setAdapter(null);
         }
 
-        loadInitStep5(products);
+        return products;
     }
 
-
-    private NetCallBack.NetTaskCallBack getByShopMustRC = new NetCallBack.NetTaskCallBack<StoreRack,
-            NetProcessor.Processor<StoreRack>>(
-            new NetProcessor.Processor<StoreRack>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-//                        {"code":"0","msg":"查询成功!","version":"1","dat"}}
-                    StoreRack storeRack = null;
-                    try {
-                        if (rspData != null) {
-                            RspBean<StoreRack> retValue = (RspBean<StoreRack>) rspData;
-                            storeRack = retValue.getValue();
-                        }
-                    } catch (Exception e) {
-                        ZLogger.ef(e.toString());
-                    }
-//                            loadInitStep4(rackId);
-
-                    hideProgressDialog();
-
-                    if (storeRack == null) {
-                        DialogUtil.showHint("这个人很懒，什么都没有发布");
-                        return;
-                    }
-
-                    String dataInfo = storeRack.getDataInfo();
-                    ZLogger.d("dataInfo:\n" + dataInfo);
-                    String unescapeDataInfo = StringEscapeUtils.unescapeJava(dataInfo);
-                    ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-                    List<StoreRackCard> storeRackCards2 = null;
-                    try {
-                        storeRackCards2 = JSONArray.parseArray(unescapeDataInfo,
-                                StoreRackCard.class);
-                        if (storeRackCards2 == null) {
-                            ZLogger.d("storeRackCards2 is null");
-                        } else {
-                            ZLogger.d("storeRackCards2:\n" + JSONObject.toJSONString(storeRackCards2));
-                        }
-                    } catch (Exception e) {
-                        ZLogger.e(e.toString());
-                    }
-
-                    List<CardProduct> products = new ArrayList<>();
-                    List<Item> items = new ArrayList<>();
-                    if (storeRackCards2 != null && storeRackCards2.size() > 0) {
-                        for (StoreRackCard card : storeRackCards2) {
-                            List<StoreRackCardItem> cardItems = card.getItems();
-                            if (card.getType().equals(1)) {
-                                List<Card1Item> card1Items = new ArrayList<>();
-                                if (cardItems != null && cardItems.size() > 0) {
-                                    for (StoreRackCardItem cardItem : cardItems) {
-                                        Card1Item card1Item = new Card1Item();
-                                        card1Item.setImageUrl(cardItem.getImageUrl());
-                                        card1Item.setLink(cardItem.getLink());
-                                        card1Item.setLnktype(cardItem.getLnktype());
-                                        card1Items.add(card1Item);
-                                    }
-                                }
-                                Card1 card1 = new Card1();
-                                card1.setItems(card1Items);
-                                items.add(card1);
-                                ZLogger.d(String.format("添加card1: %d", card1Items.size()));
-                            } else if (card.getType().equals(2)) {
-                                List<Card2Item> card2Items = new ArrayList<>();
-//                                if (cardItems != null && cardItems.size() > 0) {
-//                                    for (StoreRackCardItem cardItem : cardItems) {
-//                                        Card2Item card2Item = new Card2Item();
-//                                        card2Item.setImageUrl(cardItem.getImageUrl());
-//                                        card2Item.setLink(cardItem.getLink());
-//                                        card2Item.setLnktype(cardItem.getLnktype());
-//                                        card2Items.add(card2Item);
-//                                    }
-//                                }
-//                                Card2 card2 = new Card2();
-//                                card2.setType(card.getType());
-//                                card2.setNetId(card.getNetId());
-//                                card2.setItems(card.getItems());
-//                                card2.setNetName(card.getNetName());
-//                                card2.setCategoryName(card.getCategoryName());
-//                                card2.setFrontCategoryId(card.getFrontCategoryId());
-//                                card2.setProducts(card.getProducts());
-//                                card2.setItems(card2Items);
-//                                items.add(card2);
-//                                ZLogger.d(String.format("添加card2: %d", card2Items.size()));
-                                items.add(card);
-                                ZLogger.d("添加card2：" + card.getCategoryName());
-
-                            } else if (card.getType().equals(9)) {
-                                Card9 card9 = new Card9();
-                                card9.setType(card.getType());
-                                card9.setCategoryName(card.getCategoryName());
-                                card9.setFrontCategoryId(card.getFrontCategoryId());
-                                card9.setProducts(card.getProducts());
-                                card9.setShopId(curCompanyInfo.getId());
-                                items.add(card9);
-                                ZLogger.d("添加card3：" + card9.getCategoryName());
-
-                                products.addAll(card.getProducts());
-                            }
-                        }
-                    }
-//            ZLogger.d("items.size=" + items.size());
-                    if (items.size() > 0) {
-                        homeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
-                    } else {
-                        homeRackRecyclerView.setAdapter(null);
-                    }
-
-                    loadInitStep5(products);
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    if (StringUtils.isEmpty(errMsg)) {
-                        ZLogger.e(errMsg);
-                        showProgressDialog(ProgressView.STATUS_ERROR, errMsg, true);
-                    } else {
-                        hideProgressDialog();
-                    }
-                }
-            }
-            , StoreRack.class
-            , getAppContext()) {
-    };
-
-    /**
-     * 初始化：加载货架商品信息
-     */
-    private void loadInitStep4(Long rackId) {
-        hideProgressDialog();
-        if (rackId == null) {
-            DialogUtil.showHint("这个人很懒，什么都没有发布");
-            return;
-        }
-
-        showProgressDialog(ProgressView.STATUS_PROCESSING, "加载货架商品...", false);
-        mStoreRackPresenter.getById(rackId);
-    }
-
-    @Override
-    public void onIStoreRackViewProcess() {
-
-    }
-
-    @Override
-    public void onIStoreRackViewError(String errorMsg) {
-        if (StringUtils.isEmpty(errorMsg)) {
-            ZLogger.e(errorMsg);
-            showProgressDialog(ProgressView.STATUS_ERROR, errorMsg, true);
-        } else {
-            hideProgressDialog();
-        }
-    }
-
-    @Override
-    public void onIStoreRackViewSuccess(StoreRack data) {
-        hideProgressDialog();
-        if (data != null) {
-//            List<StoreRackCard> dataInfo = data.getDataInfo();
-//            if (dataInfo != null && dataInfo.size() > 0){
-//                for (StoreRackCard storeRackCard : dataInfo){
-//                    ZLogger.d("storeRackCard:\n" + JSONObject.toJSONString(storeRackCard));
-//                }
-//            }
-
-            String dataInfo = data.getDataInfo();
-            ZLogger.d("dataInfo:\n" + dataInfo);
-            String unescapeDataInfo = StringEscapeUtils.unescapeJava(dataInfo);
-            ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-//            //后台返回的unescapeDataInfo前后各有一个双引号，需要删除才能正确解析
-//            if (!StringUtils.isEmpty(unescapeDataInfo)) {
-//                unescapeDataInfo = unescapeDataInfo.substring(1);
-//                ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-//                unescapeDataInfo = unescapeDataInfo.substring(0, unescapeDataInfo.length() - 1);
-//                ZLogger.d("unescapeDataInfo:\n" + unescapeDataInfo);
-//            }
-
-            List<StoreRackCard> storeRackCards2 = null;
-            try {
-                storeRackCards2 = JSONArray.parseArray(unescapeDataInfo,
-                        StoreRackCard.class);
-                if (storeRackCards2 == null) {
-                    ZLogger.d("storeRackCards2 is null");
-                } else {
-                    ZLogger.d("storeRackCards2:\n" + JSONObject.toJSONString(storeRackCards2));
-                }
-            } catch (Exception e) {
-                ZLogger.e(e.toString());
-            }
-
-            List<CardProduct> products = new ArrayList<>();
-            List<Item> items = new ArrayList<>();
-            if (storeRackCards2 != null && storeRackCards2.size() > 0) {
-                for (StoreRackCard card : storeRackCards2) {
-                    List<StoreRackCardItem> cardItems = card.getItems();
-                    if (card.getType().equals(1)) {
-                        List<Card1Item> card1Items = new ArrayList<>();
-                        if (cardItems != null && cardItems.size() > 0) {
-                            for (StoreRackCardItem cardItem : cardItems) {
-                                Card1Item card1Item = new Card1Item();
-                                card1Item.setImageUrl(cardItem.getImageUrl());
-                                card1Item.setLink(cardItem.getLink());
-                                card1Item.setLnktype(cardItem.getLnktype());
-                                card1Items.add(card1Item);
-                            }
-                        }
-                        Card1 card1 = new Card1();
-                        card1.setItems(card1Items);
-                        items.add(card1);
-                        ZLogger.d("添加card1");
-                    } else if (card.getType().equals(2)) {
-                        items.add(card);
-                        ZLogger.d("添加card2");
-                    } else if (card.getType().equals(9)) {
-                        Card9 card9 = new Card9();
-                        card9.setType(card.getType());
-                        card9.setCategoryName(card.getCategoryName());
-                        card9.setFrontCategoryId(card.getFrontCategoryId());
-                        card9.setProducts(card.getProducts());
-                        card9.setShopId(curCompanyInfo.getId());
-                        items.add(card9);
-                        ZLogger.d("添加card3" + card9.getCategoryName());
-
-                        products.addAll(card.getProducts());
-                    }
-                }
-            }
-//            ZLogger.d("items.size=" + items.size());
-            if (items.size() > 0) {
-                homeRackRecyclerView.setAdapter(new MultiTypeAdapter(items));
-            } else {
-                homeRackRecyclerView.setAdapter(null);
-            }
-
-            loadInitStep5(products);
-        }
-    }
 
     /**
      * 初始化：批量更新商品信息
@@ -1257,33 +1021,16 @@ public class HomeFragment extends BaseFragment
 
         StringBuilder sb = new StringBuilder();
         for (CardProduct product : products) {
+            Long skuId = product.getSkuId();
+            if (skuId == null){
+                continue;
+            }
+
             if (sb.length() > 0) {
                 sb.append(",");
             }
-            sb.append(product.getSkuId());
+            sb.append(skuId);
         }
-//        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
-//                new NetProcessor.QueryRsProcessor<ScGoodsSku>(null) {
-//                    @Override
-//                    public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
-//                        //此处在主线程中执行。
-//                        List<ScGoodsSku> entityList = new ArrayList<>();
-//                        if (rs != null) {
-//                            for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
-//                                entityList.add(wrapper.getBean());
-//                            }
-//                        }
-//                        // TODO: 10/10/2016 批量更新商品信息
-//                    }
-//
-//                    @Override
-//                    protected void processFailure(Throwable t, String errMsg) {
-//                        super.processFailure(t, errMsg);
-//                        ZLogger.df("加载库存商品失败:" + errMsg);
-//                    }
-//                }, ScGoodsSku.class, MfhApplication.getAppContext());
-//        ScGoodsSkuApiImpl.findOnlineGoodsList(curCompanyInfo.getId(), sb.toString(), null, queryRsCallBack);
-
         mScGoodsSkuPresenter.findOnlineGoodsList(curCompanyInfo.getId(), sb.toString(), null);
     }
 
@@ -1307,7 +1054,12 @@ public class HomeFragment extends BaseFragment
         hideProgressDialog();
         HomeGoodsTempService.getInstance().batch(dataList);
 //        保存数据
-        homeRackRecyclerView.getAdapter().notifyDataSetChanged();
+        if (bannerRackRecyclerView.getAdapter() != null){
+            bannerRackRecyclerView.getAdapter().notifyDataSetChanged();
+        }
+        if (homeRackRecyclerView.getAdapter() != null){
+            homeRackRecyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

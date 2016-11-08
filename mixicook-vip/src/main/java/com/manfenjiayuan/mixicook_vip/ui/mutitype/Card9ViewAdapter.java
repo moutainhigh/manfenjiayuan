@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.api.anon.storeRack.CardProduct;
+import com.mfh.framework.api.anon.sc.storeRack.CardProduct;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -22,7 +22,6 @@ import butterknife.OnClick;
 
 
 /**
- *
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapter.MenuOptioinViewHolder> {
@@ -33,6 +32,7 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
 
     public interface OnAdapterListener {
         void onAdd2Cart(View view, CardProduct product);
+
         void onItemClick(View view, int position);
 
         void onItemLongClick(View view, int position);
@@ -49,18 +49,25 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
         View v = mLayoutInflater.inflate(
                 R.layout.itemview_card9_adapter, null, false);
 
-       return new MenuOptioinViewHolder(v);
+        return new MenuOptioinViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(MenuOptioinViewHolder holder, int position) {
-        final CardProduct bean = entityList.get(position);
+        final CardProduct product = entityList.get(position);
 //        ZLogger.d(String.format("position=%d, imageUrl=%s", position, bean.getImageUrl()));
 
-        Glide.with(AppContext.getAppContext()).load(bean.getImageUrl())
+        Glide.with(AppContext.getAppContext()).load(product.getImageUrl())
                 .error(R.mipmap.ic_image_error).into(holder.ivHeader);
-        holder.tvName.setText(bean.getName());
-        holder.tvPrice.setText(MUtils.formatDouble("¥", "", bean.getCostPrice(), "", null, null));
+        holder.tvName.setText(product.getName());
+        holder.tvPrice.setText(MUtils.formatDouble("¥", "", product.getCostPrice(), "", null, null));
+
+        Integer status = product.getStatus();
+        if (status == null || status.equals(0)) {
+            holder.overlayView.setVisibility(View.VISIBLE);
+        } else {
+            holder.overlayView.setVisibility(View.GONE);
+        }
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
@@ -70,6 +77,8 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
         TextView tvName;
         @Bind(R.id.tv_price)
         TextView tvPrice;
+        @Bind(R.id.overlay)
+        View overlayView;
 
 
         public MenuOptioinViewHolder(final View itemView) {
@@ -81,11 +90,10 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-
-//                    if (entityList == null || position < 0 || position >= entityList.size()) {
-////                        MLog.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-//                        return;
-//                    }
+                    if (entityList == null || position < 0 || position >= entityList.size()) {
+//                        MLog.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+                        return;
+                    }
 //
                     if (adapterListener != null) {
                         adapterListener.onItemClick(v, position);
@@ -95,10 +103,19 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
         }
 
         @OnClick(R.id.ib_cart)
-        public void add2Cart(){
+        public void add2Cart() {
             int position = getAdapterPosition();
             CardProduct product = getEntity(position);
-            if (product != null && adapterListener != null) {
+            if (product == null) {
+                return;
+            }
+
+            Integer status = product.getStatus();
+            if (status == null || status.equals(0)) {
+//                ZLogger.d("商品已售罄");
+                return;
+            }
+            if (adapterListener != null) {
                 adapterListener.onAdd2Cart(ivHeader, product);
             }
         }

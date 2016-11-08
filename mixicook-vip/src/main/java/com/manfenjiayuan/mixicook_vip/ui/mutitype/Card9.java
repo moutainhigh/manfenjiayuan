@@ -1,6 +1,6 @@
 package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
-import com.mfh.framework.api.anon.storeRack.CardProduct;
+import com.mfh.framework.api.anon.sc.storeRack.CardProduct;
 
 import java.io.Serializable;
 import java.util.List;

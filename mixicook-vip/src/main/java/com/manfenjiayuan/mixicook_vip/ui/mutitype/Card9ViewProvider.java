@@ -22,10 +22,11 @@ import com.manfenjiayuan.mixicook_vip.utils.AddCartOptions;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.anon.storeRack.CardProduct;
+import com.mfh.framework.api.anon.sc.storeRack.CardProduct;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApi;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
@@ -118,7 +119,13 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
         private void setData(Card9 card) {
             this.card = card;
             if (card != null) {
-                this.tvCategoryName.setText(card.getCategoryName());
+                String categoryName = card.getCategoryName();
+                if (StringUtils.isEmpty(categoryName)){
+                    tvCategoryName.setText("类目");
+                }
+                else{
+                    this.tvCategoryName.setText(card.getCategoryName());
+                }
                 tvCategoryName.setEnabled(true);
 
                 List<CardProduct> products = card.getProducts();
@@ -130,6 +137,10 @@ public class Card9ViewProvider extends ItemViewProvider<Card9,
                             product.setBuyUnit(entity.getBuyUnit());
                             product.setCostPrice(entity.getCostPrice());
                             product.setProductId(entity.getProductId());
+                            product.setStatus(1);
+                        }
+                        else{
+                            product.setStatus(0);//未查询到商品价格的商品都认为是售罄状态
                         }
                     }
                 }

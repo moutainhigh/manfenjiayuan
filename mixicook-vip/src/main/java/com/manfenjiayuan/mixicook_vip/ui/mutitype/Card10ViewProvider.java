@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
-import com.mfh.framework.api.anon.storeRack.StoreRackCardItem;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRackCardItem;
 
 import java.util.List;
 

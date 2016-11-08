@@ -1,6 +1,6 @@
 package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
-import com.mfh.framework.api.anon.storeRack.StoreRackCard;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRackCard;
 
 import me.drakeet.multitype.MultiTypePool;
 

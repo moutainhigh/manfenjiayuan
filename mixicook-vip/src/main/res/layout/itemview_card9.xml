@@ -5,14 +5,14 @@
               android:layout_height="wrap_content"
               android:divider="@drawable/divider_gridview"
               android:orientation="vertical"
-              android:paddingTop="@dimen/spacing_double"
+              android:paddingTop="@dimen/block_margin"
               android:showDividers="middle">
 
     <TextView
         android:id="@+id/tv_categoryName"
         android:layout_width="match_parent"
         android:layout_height="@dimen/minimum_touch_height"
-        android:background="@color/material_white"
+        android:background="@drawable/bg_white_with_topline"
         android:drawableEnd="@drawable/icon_arrow_right"
         android:drawablePadding="@dimen/spacing_micro"
         android:gravity="start|center_vertical"

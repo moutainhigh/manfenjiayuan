@@ -1,7 +1,7 @@
 package com.manfenjiayuan.mixicook_vip.ui.home;
 
-import com.mfh.framework.api.anon.storeRack.ScStoreRackMode;
-import com.mfh.framework.api.anon.storeRack.StoreRack;
+import com.mfh.framework.api.anon.sc.storeRack.ScStoreRackMode;
+import com.mfh.framework.api.anon.sc.storeRack.StoreRack;
 import com.mfh.framework.mvp.OnModeListener;
 
 /**

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * <h1>采购订单购物车商品明细</h1><br>
  * <p>
- *
+ * 保存首页存在且有价格的商品
  * </p>
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */

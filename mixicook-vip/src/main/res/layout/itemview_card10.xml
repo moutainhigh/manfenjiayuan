@@ -7,5 +7,5 @@
            android:clipToPadding="false"
            android:contentDescription="@null"
            android:scaleType="fitCenter"
-           android:layout_marginTop="@dimen/spacing_double"
+           android:layout_marginTop="@dimen/block_margin"
            android:src="@mipmap/ic_image_error"/>
