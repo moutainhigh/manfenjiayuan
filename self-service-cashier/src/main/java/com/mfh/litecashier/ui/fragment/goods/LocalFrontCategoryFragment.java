@@ -155,7 +155,6 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     }
 
     private void reload() {
-
         try{
             Long oldCategoryId = null;
             int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();

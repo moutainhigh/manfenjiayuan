@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 
@@ -39,7 +38,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
         void onDataSetChanged();
 
         void onClickGoods(LocalFrontCategoryGoods goods);
-        void onLongClickGoods(LocalFrontCategoryGoods goods);
+        void onLongClickGoods(int position, LocalFrontCategoryGoods goods);
         void onClickAction();
     }
 
@@ -72,10 +71,15 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
 
         if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_GOODS.ordinal()){
             ((GoodsViewHolder)holder).tvName.setText(entity.getName());
-
             ((GoodsViewHolder)holder).tvCostPrice
                     .setText(MUtils.formatDouble(null, null,
                             entity.getCostPrice(), "", "/", entity.getUnit()));
+            if (entity.getStatus().equals(0)){
+                ((GoodsViewHolder)holder).overlayView.setVisibility(View.VISIBLE);
+            }
+            else {
+                ((GoodsViewHolder)holder).overlayView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -112,6 +116,8 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
         TextView tvName;
         @Bind(R.id.tv_costprice)
         TextView tvCostPrice;
+        @Bind(R.id.overlay)
+        TextView overlayView;
 
         public GoodsViewHolder(final View itemView) {
             super(itemView);
@@ -135,7 +141,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
                     LocalFrontCategoryGoods goods = getEntity(position);
 
                     if (goods != null && adapterListener != null) {
-                        adapterListener.onLongClickGoods(goods);
+                        adapterListener.onLongClickGoods(position, goods);
                     }
                     return false;
                 }
@@ -176,7 +182,6 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
     }
 
     public void setEntityList(List<LocalFrontCategoryGoods> goodsList) {
-//        this.entityList = goodsList;
         if (this.entityList == null){
             this.entityList = new ArrayList<>();
         }
@@ -190,7 +195,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
         LocalFrontCategoryGoods action = new LocalFrontCategoryGoods();
         action.setType(1);
         this.entityList.add(action);
-        ZLogger.d("entityList.size=" + entityList.size());
+//        ZLogger.d("entityList.size=" + entityList.size());
 
         notifyDataSetChanged();
         if (adapterListener != null) {

@@ -23,7 +23,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.ProductCatalogApi;
+import com.mfh.framework.api.anon.sc.ProductCatalogApi;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
@@ -208,14 +208,12 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                 Bundle args = new Bundle();
                 args.putSerializable("goods", goods);
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS, args));
-
             }
 
             @Override
-            public void onLongClickGoods(LocalFrontCategoryGoods goods) {
-                modifyGoods(goods);
+            public void onLongClickGoods(int position, LocalFrontCategoryGoods goods) {
+                modifyGoods(position, goods);
             }
-
             @Override
             public void onClickAction() {
                 addMoreGoods();
@@ -242,17 +240,16 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         }
 
         onLoadStart();
-        this.entityList.clear();
-        if (adapter != null) {
-            adapter.setEntityList(null);
-        }
+//        this.entityList.clear();
+//        if (adapter != null) {
+//            adapter.setEntityList(null);
+//        }
 
         mPageInfo.reset();
         mPageInfo.setPageNo(1);
         //从第一页开始请求，每页最多50条记录
         load(mPageInfo);
     }
-
 
     /**
      * 翻页加载更多数据
@@ -297,8 +294,9 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                             pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
                     for (ProductCatalogEntity entity : entities) {
-                        String sqlWhere2 = String.format("productId = '%d' and status = '%d'",
-                                entity.getCataItemId(), 1);
+//                        String sqlWhere2 = String.format("productId = '%d' and status = '%d'",
+//                                entity.getCataItemId(), 1);
+                        String sqlWhere2 = String.format("productId = '%d'", entity.getCataItemId());
 
                         List<PosProductEntity> productEntities1 = PosProductService.get()
                                 .queryAllByDesc(sqlWhere2);
@@ -318,6 +316,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                             goods.setUnit(entity1.getUnit());
                             goods.setPriceType(entity1.getPriceType());
                             goods.setProdLineId(entity1.getProdLineId());
+                            goods.setStatus(entity1.getStatus());
                             productEntities.add(goods);
                         } else {
                             ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
@@ -349,9 +348,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         if (mPageInfo.getPageNo() == 1) {
                             entityList.clear();
                         }
-                        entityList.addAll(localFrontCategoryGoodses);
-
+                        if (localFrontCategoryGoodses != null){
+                            entityList.addAll(localFrontCategoryGoodses);
+                        }
                         ZLogger.d(String.format("类目 %d 共有 %d 个商品", categoryId, entityList.size()));
+
                         if (adapter != null) {
                             adapter.setEntityList(entityList);
                         }
@@ -360,7 +361,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                     }
                 });
     }
-
 
     /**
      * 设置刷新
@@ -612,7 +612,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     /**
      * 修改商品
      */
-    private void modifyGoods(final LocalFrontCategoryGoods goods) {
+    private void modifyGoods(final int position, final LocalFrontCategoryGoods goods) {
         if (goods == null) {
             return;
         }
@@ -631,20 +631,26 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //                            ZLogger.d("价格没有变化，不需要修改");
 //                            return;
 //                        }
-                        changePrice(goods, value);
+                        changePrice(position, goods, value);
                     }
 
                     @Override
                     public void onAction2() {
-                        deleteGoods(goods);
+                        deleteGoods(position, goods);
                     }
 
                     @Override
                     public void onAction3() {
-                        updateStatus(goods);
+                        updateStatus(position, goods);
                     }
 
                 });
+        if (goods.getStatus() == 1){
+            mFrontCategoryGoodsDialog.setAction3("售罄");
+        }
+        else{
+            mFrontCategoryGoodsDialog.setAction3("补货");
+        }
         if (!mFrontCategoryGoodsDialog.isShowing()) {
             mFrontCategoryGoodsDialog.show();
         }
@@ -653,7 +659,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     /**
      * 修改零售价
      */
-    private void changePrice(final LocalFrontCategoryGoods goods, final Double costPrice) {
+    private void changePrice(final int position, final LocalFrontCategoryGoods goods, final Double costPrice) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
@@ -674,7 +680,9 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //                                ZLogger.d("修改售价成功:" + retStr);
                         DialogUtil.showHint("修改成功");
                         goods.setCostPrice(costPrice);
-                        adapter.notifyDataSetChanged();
+//                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemChanged(position);
+
                         hideProgressDialog();
                     }
 
@@ -699,7 +707,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     /**
      * 删除商品
      */
-    private void deleteGoods(final LocalFrontCategoryGoods goods) {
+    private void deleteGoods(final int position, final LocalFrontCategoryGoods goods) {
         if (goods == null) {
             return;
         }
@@ -731,10 +739,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         String retStr = retValue.getValue();
                         ZLogger.d("删除商品成功:" + retStr);
 
-                        //删除关系，假删除，如果后面调用后台接口失败了，商品会在下次同步后
+                        //删除商品后台不推送消息，所以这里直接本地修改，下次同步数据时再去更新。
                         ProductCatalogService.getInstance()
                                 .deleteById(String.valueOf(finalCatalogEntity.getId()));
-                        reload();
+                        adapter.notifyItemRemoved(position);
+//                        reload();
 
                         hideProgressDialog();
                     }
@@ -763,7 +772,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     /**
      * 更新商品
      */
-    private void updateStatus(final LocalFrontCategoryGoods goods) {
+    private void updateStatus(final int position, final LocalFrontCategoryGoods goods) {
         if (goods == null) {
             return;
         }
@@ -782,8 +791,15 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //            return;
 //        }
 
+
+        int newStatus = 0;
+        if (goods.getStatus() == 0){
+            newStatus = 1;
+        }
+
         //删除该前台类目下的商品
 //        final ProductCatalogEntity finalCatalogEntity = catalogEntity;
+        final int finalNewStatus = newStatus;
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {
@@ -795,6 +811,10 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         String retStr = retValue.getValue();
                         ZLogger.d("更新商品成功:" + retStr);
 
+                        //修改门店商品状态后台不推送消息，所以这里直接本地修改，下次同步数据时再去更新。
+                        goods.setStatus(finalNewStatus);
+                        PosProductService.get().saveOrUpdate(goods);
+                        adapter.notifyItemChanged(position);
 //                        reload();
 
                         hideProgressDialog();
@@ -816,7 +836,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             DialogUtil.showHint(getString(R.string.toast_network_error));
             return;
         }
-        InvSkuStoreApiImpl.updateStatusByBarcode(0, goods.getBarcode(), responseCallback);
+        InvSkuStoreApiImpl.updateStatusByBarcode(newStatus, goods.getBarcode(), responseCallback);
 
     }
 

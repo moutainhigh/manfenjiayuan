@@ -26,7 +26,8 @@ public class PosGoods implements ILongId, Serializable {
     private Date updatedDate;
     private Long tenantId;      // 租户信息，即微超公司id
     private Long providerId;    //商品供应商编号
-    private Integer status;     //1-有效，默认，0-无效
+    //门店商品状态，决定线上能否购买：1-有效，默认，0-无效
+    private Integer status = 1;
     private Integer priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double packageNum = 0D;//箱规
     private Long procateId;     //商品类目

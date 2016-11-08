@@ -87,7 +87,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/btn_corner_red"
+            android:background="@drawable/btn_corner_orange"
             android:gravity="center"
             android:text="售罄"
             android:layout_marginTop="@dimen/spacing_double"

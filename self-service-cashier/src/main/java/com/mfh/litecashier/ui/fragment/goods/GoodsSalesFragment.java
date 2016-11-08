@@ -274,9 +274,6 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
                     }
                 }, ProductAggDate.class, MfhApplication.getAppContext());
 
-
         ScApi.productAggDateList(proSkuId, pageInfo, queryRsCallBack);
     }
-    
-
 }

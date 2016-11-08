@@ -16,7 +16,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.ProductCatalogApi;
+import com.mfh.framework.api.anon.sc.ProductCatalogApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;

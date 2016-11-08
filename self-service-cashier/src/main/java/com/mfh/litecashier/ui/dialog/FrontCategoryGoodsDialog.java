@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
     private View rootView;
     private EditText etValue;
     private TextView tvUnit;
+    private Button btnAction3;
     private Double hintValue = 0D;
     private String unit;
     private boolean minimumIntCheckEnabled = false;
@@ -204,7 +206,8 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
                 }
             }
         });
-        rootView.findViewById(R.id.button_sellout).setOnClickListener(new View.OnClickListener() {
+        btnAction3 = (Button) rootView.findViewById(R.id.button_sellout);
+        btnAction3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                DialogUtil.showHint(R.string.coming_soon);
@@ -265,6 +268,10 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
             tvUnit.setText(unit);
             tvUnit.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void setAction3(String text){
+        btnAction3.setText(text);
     }
 
 

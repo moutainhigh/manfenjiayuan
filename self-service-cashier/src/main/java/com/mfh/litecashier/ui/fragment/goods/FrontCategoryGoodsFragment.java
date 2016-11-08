@@ -15,7 +15,7 @@ import com.bingshanguxue.cashier.mode.ScProductPricePresenter;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.anon.PubSkus;
+import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
