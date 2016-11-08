@@ -32,8 +32,8 @@ import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pay.PayApi;
-import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.api.pay.PreOrderRsp;
+import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -396,7 +396,6 @@ public class OrderPayFragment extends BaseFragment {
             return;
         }
 
-        //回调
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PreOrderRsp,
                 NetProcessor.Processor<PreOrderRsp>>(
                 new NetProcessor.Processor<PreOrderRsp>() {
@@ -429,9 +428,9 @@ public class OrderPayFragment extends BaseFragment {
 //                                {btype=3, token=257052, orderIds=138756, preOrderId=138757}
 
                             //支付宝
-                            alipay("商品名称", "商品详情", prePayResponse.getAmount(),
-                                    String.valueOf(prePayResponse.getId()));
-//                                finish();
+                            alipay(prePayResponse.getPayInfo());
+//                            alipay("商品名称", "商品详情", prePayResponse.getAmount(),
+//                                    String.valueOf(prePayResponse.getId()));
                         } else if (wayType == WayType.WEPAY_APP) {
                             //测试支付接口
 //                                WXHelper.getInstance(MfPayActivity.this).getPrepayId();
@@ -452,7 +451,7 @@ public class OrderPayFragment extends BaseFragment {
                 , MfhApplication.getAppContext()) {
         };
 
-        PayApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), wayType, configId,
+        PmcStockApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), wayType, configId,
                 orderIds, btype, WXUtil.genNonceStr(), responseCallback);
     }
 
@@ -482,8 +481,14 @@ public class OrderPayFragment extends BaseFragment {
                 AlipayConstants.ALIPAY_NOTIFY_URL + "/" + PayApi.ALIPAY_CONFIGID_MIXICOOK, bizContent);
         String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
         String sign = OrderInfoUtil2_0.getSign(params, AlipayConstants.RSA_PRIVATE);
-        final String orderInfo = orderParam + "&" + sign;
 
+        alipay(orderParam + "&" + sign);
+    }
+
+    /**
+     * 支付宝支付
+     * */
+    private void alipay(final String orderInfo){
         Runnable payRunnable = new Runnable() {
 
             @Override
@@ -509,7 +514,6 @@ public class OrderPayFragment extends BaseFragment {
         Thread payThread = new Thread(payRunnable);
         payThread.start();
     }
-
     private static final int ALI_PAY_FLAG = 1;
     private static final int ALI_CHECK_FLAG = 2;
     private Handler mHandler = new Handler() {

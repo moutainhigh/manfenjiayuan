@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/mfh_colorPrimary"
+        android:background="@drawable/btn_rectange_green"
         android:gravity="center"
         android:text="充值"
         android:textColor="@color/material_white"

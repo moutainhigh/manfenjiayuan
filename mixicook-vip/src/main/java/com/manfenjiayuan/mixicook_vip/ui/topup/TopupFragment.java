@@ -37,7 +37,7 @@ import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pay.AppPrePayRsp;
 import com.mfh.framework.api.pay.PayApi;
-import com.mfh.framework.api.pay.PayApiImpl;
+import com.mfh.framework.api.payOrder.PayOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -294,6 +294,25 @@ public class TopupFragment extends BaseFragment {
                 alipay("满分家园账单充值", "支付宝充值", MUtils.formatDouble(amount, ""),
                         MUtils.genOutTradeNo());
             } else {
+//                alipay("94182充值订单", "", MUtils.formatDouble(amount, ""),
+//                        "1090863");
+//                Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AlipayConstants.APPID,
+//                        OrderInfoUtil2_0.ALIPAY_TRADE_APPPAY, "utf-8",
+//                        "2016-11-04 12:02:12",
+//                        "http://dev.mixicook.com/pmc/commonuseraccount/notifyAccount/127",
+//                        "{\"total_amount\":\"1.0\",\"body\":\"\",\"timeout_express\":\"90m\",\"product_code\":\"QUICK_MSECURITY_PAY\",\"subject\":\"94182充值订单\",\"out_trade_no\":\"1090863\"}");
+//                String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
+//                ZLogger.d("orderParam: \n" + orderParam);
+//
+//                String sign = OrderInfoUtil2_0.getSign(params, AlipayConstants.RSA_PRIVATE);
+//                ZLogger.d("sign: \n" + sign);
+//                if (StringUtils.isEmpty(sign)) {
+//                    DialogUtil.showHint("签名失败");
+//                }
+//
+//                alipay(orderParam + "&" + sign);
+
+//                alipay("app_id=2016101502177977&sign_type=RSA&biz_content=%7B%22total_amount%22%3A%220.01%22%2C%22body%22%3A%22%22%2C%22timeout_express%22%3A%2290m%22%2C%22product_code%22%3A%22QUICK_MSECURITY_PAY%22%2C%22subject%22%3A%22136060%E5%85%85%E5%80%BC%E8%AE%A2%E5%8D%95%22%2C%22out_trade_no%22%3A%221205081%22%7D&charset=utf-8&format=JSON&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Fwww.mixicook.com%2Fpmc%2Fcommonuseraccount%2FnotifyAccount%2F127&timestamp=2016-11-04+11%3A03%3A36&version=1.0&sign=r2Zy8w5vuRinh7mAyg%2BMBY7BGuzbl%2BcK8lV8%2F5j1PGQbzR6xGVUY4Kbln6DMZXFa7JtgqQpaWo71zDRydaS6bJEj6FeuE78UommqO9G9n393uGTsXSYvmq%2FELZn5kWKj4OBc7aNtAYtPDPZbFiI9WbaC8BFBvUJtMB53d1HkHlE%3D");
                 topupStep2(WayType.ALIPAY_APP, MUtils.formatDouble(amount, ""));
             }
         } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
@@ -341,21 +360,25 @@ public class TopupFragment extends BaseFragment {
                         @Override
                         protected void processFailure(Throwable t, String errMsg) {
                             super.processFailure(t, errMsg);
-
+                            ZLogger.ef(errMsg);
                             topupFailed(-1);
                         }
 
                         @Override
                         public void processResult(IResponseData rspData) {
 //                        com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            //商户网站唯一订单号
-                            String outTradeNo = retValue.getValue();
-                            // TODO: 16/10/2016 支付宝推荐，金额由后台返回
-                            ZLogger.d("prePayResponse: " + outTradeNo);
-                            if (!TextUtils.isEmpty(outTradeNo)) {
+                            String result = null;
+                            if (rspData != null){
+                                RspValue<String> retValue = (RspValue<String>) rspData;
+                                //商户网站唯一订单号
+                                result = retValue.getValue();
+                            }
+
+                            if (!TextUtils.isEmpty(result)) {
+                                ZLogger.d("prePayResponse: " + result);
                                 //支付宝充值
-                                alipay("满分家园账单充值", "支付宝充值", amount, outTradeNo);
+//                                alipay("满分家园账单充值", "支付宝充值", amount, outTradeNo);
+                                alipay(result);
                             } else {
                                 topupFailed(-1);
                                 DialogUtil.showHint("outTradeNo 不能为空");
@@ -366,7 +389,7 @@ public class TopupFragment extends BaseFragment {
                     , MfhApplication.getAppContext()) {
             };
 
-            PayApiImpl.prePay(PayApi.ALIPAY_CONFIGID_MIXICOOK,
+            PayOrderApiImpl.prePay(PayApi.ALIPAY_CONFIGID_MIXICOOK,
                     MfhLoginService.get().getCurrentGuId(), amount, wayType,
                     WXUtil.genNonceStr(), responseCallback);
         } else if (WayType.WEPAY_APP.equals(wayType)) {
@@ -399,7 +422,7 @@ public class TopupFragment extends BaseFragment {
                     , MfhApplication.getAppContext()) {
             };
 
-            PayApiImpl.prePayForApp(PayApi.WEPAY_CONFIGID_MIXICOOK,
+            PayOrderApiImpl.prePayForApp(PayApi.WEPAY_CONFIGID_MIXICOOK,
                     MfhLoginService.get().getCurrentGuId(), amount, wayType,
                     WXUtil.genNonceStr(), BizType.RECHARGE, responseCallback);
         } else {
@@ -418,7 +441,7 @@ public class TopupFragment extends BaseFragment {
      */
     public void alipay(final String subject, final String body, final String amount,
                        final String outTradeNo) {
-        String bizContent = OrderInfoUtil2_0.buildBizContent(body, subject, outTradeNo, "30m",
+        String bizContent = OrderInfoUtil2_0.buildBizContent(body, subject, outTradeNo, "90m",
                 amount, AlipayConstants.SELLER);
         ZLogger.d("bizContent: \n" + bizContent);
 
@@ -436,7 +459,13 @@ public class TopupFragment extends BaseFragment {
             DialogUtil.showHint("签名失败");
         }
 
-        final String orderInfo = orderParam + "&" + sign;
+        alipay(orderParam + "&" + sign);
+    }
+
+    /**
+     * 支付宝支付
+     * */
+    private void alipay(final String orderInfo){
         ZLogger.d("orderInfo:\n" + orderInfo);
 
         Runnable payRunnable = new Runnable() {

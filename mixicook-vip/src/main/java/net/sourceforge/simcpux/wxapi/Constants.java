@@ -1,7 +1,5 @@
 package net.sourceforge.simcpux.wxapi;
 
-import com.mfh.framework.api.MfhApi;
-
 /**
  * Created by bingshanguxue on 14/10/2016.
  */
@@ -21,10 +19,6 @@ public class Constants {
 
     //微信APP支付统一下单URL地址
     public static final String URL_UNIFIED_ORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
-
-    //服务器异步通知页面路径//"http://notify.msp.hk/notify.htm"
-    public static final String NOTIFY_URL = MfhApi.URL_BASE_SERVER + "/commonuseraccount/notifyAccount";
-
 
     public static final String ACTION_WXPAY_RESP = "ACTION_WXPAY_RESP";//微信支付处理结果
     public static final String EXTRA_KEY_ERR_CODE = "EXTRA_KEY_ERR_CODE";
