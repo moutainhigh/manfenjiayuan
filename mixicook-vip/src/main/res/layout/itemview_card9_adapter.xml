@@ -5,7 +5,7 @@
                 android:background="@color/material_white">
 
     <!--115+28+28+8=179+4-->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:background="@null"
         android:layout_height="match_parent"
@@ -20,17 +20,19 @@
 
         <TextView
             android:id="@+id/tv_name"
+            android:layout_below="@+id/iv_header"
             android:layout_width="match_parent"
             android:layout_height="28dp"
             android:gravity="start|center_vertical"
             android:maxLines="1"
             android:padding="@dimen/spacing_micro"
-            android:text="1"
+            android:text=""
             android:textColor="@color/material_black"
             android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/tv_price"
+            android:layout_below="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="28dp"
             android:layout_marginBottom="@dimen/spacing_micro"
@@ -41,7 +43,25 @@
             android:textColor="@color/material_light_blue_400"
             android:textSize="12sp"/>
 
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="115dp"
+            android:background="@color/material_black_A80"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_overlay_circle"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="售罄"
+                android:textColor="@color/material_white"
+                android:textSize="12sp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 
     <ImageButton
@@ -54,23 +74,5 @@
         android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_add2cart"/>
-
-    <RelativeLayout
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/material_black_A80"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_overlay_circle"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="售罄"
-            android:textColor="@color/material_white"
-            android:textSize="12sp"/>
-    </RelativeLayout>
 
 </FrameLayout>

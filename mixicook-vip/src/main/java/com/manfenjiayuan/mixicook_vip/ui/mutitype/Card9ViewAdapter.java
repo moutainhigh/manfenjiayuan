@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -65,8 +66,10 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
         Integer status = product.getStatus();
         if (status == null || status.equals(0)) {
             holder.overlayView.setVisibility(View.VISIBLE);
+            holder.ibCart.setVisibility(View.GONE);
         } else {
             holder.overlayView.setVisibility(View.GONE);
+            holder.ibCart.setVisibility(View.VISIBLE);
         }
     }
 
@@ -79,6 +82,8 @@ public class Card9ViewAdapter extends RegularAdapter<CardProduct, Card9ViewAdapt
         TextView tvPrice;
         @Bind(R.id.overlay)
         View overlayView;
+        @Bind(R.id.ib_cart)
+        ImageButton ibCart;
 
 
         public MenuOptioinViewHolder(final View itemView) {

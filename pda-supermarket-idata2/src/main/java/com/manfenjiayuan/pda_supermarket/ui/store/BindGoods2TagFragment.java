@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
-import com.bingshanguxue.pda.widget.ScanBar;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
@@ -91,6 +91,8 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
         if (labelTagNo.hasFocus()) {
             labelTagNo.setInput(code);
             labelTagNo.requestFocusEnd();
+            // Fixed, 扫描价签条码后允许继续扫描修改
+            isAcceptBarcodeEnabled = true;
         } else {
 //            eqvBarcode.setInputString(code);
 //            eqvBarcode.clear();

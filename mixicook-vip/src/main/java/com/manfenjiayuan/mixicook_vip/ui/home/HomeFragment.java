@@ -34,7 +34,6 @@ import com.manfenjiayuan.mixicook_vip.ValidateManager;
 import com.manfenjiayuan.mixicook_vip.database.HomeGoodsTempService;
 import com.manfenjiayuan.mixicook_vip.model.CartBrief;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
-import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.manfenjiayuan.mixicook_vip.ui.SmsSignActivity;
 import com.manfenjiayuan.mixicook_vip.ui.address.AddAddressFragment;
@@ -58,7 +57,6 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.anon.sc.storeRack.CardProduct;
 import com.mfh.framework.api.anon.sc.storeRack.ScStoreRackApi;
 import com.mfh.framework.api.anon.sc.storeRack.StoreRack;
@@ -70,14 +68,12 @@ import com.mfh.framework.api.companyInfo.ICompanyInfoView;
 import com.mfh.framework.api.reciaddr.Reciaddr;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApiImpl;
-import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.system.PermissionUtil;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.compound.ProgressView;
@@ -192,25 +188,6 @@ public class HomeFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case UIHelper.ACTIVITY_REQUEST_CODE_ZXING_QRCODE: {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        Bundle bundle = data.getExtras();
-                        String resultText = bundle.getString("result", "");
-//                Bitmap barcode =  (Bitmap)bundle.getParcelable("bitmap");//扫描截图
-
-                        if (StringUtils.isUrl(resultText) && resultText.contains(MfhApi.DOMAIN)) {
-                            DialogUtil.showHint(resultText);
-                        } else {
-                            DialogUtil.showHint(String.format("非法的URL： %s", resultText));
-                        }
-                    } catch (Exception ex) {
-                        //TransactionTooLargeException
-                        ZLogger.e(ex.toString());
-                    }
-                }
-            }
-            break;
             case ARCode.ARC_SIGNIN: {
                 loadInitStep1();
             }
@@ -367,41 +344,6 @@ public class HomeFragment extends BaseFragment
         dialog.show();
     }
 
-    /**
-     * 快捷支付
-     */
-    @OnClick(R.id.btn_pay)
-    public void quickPay() {
-        if (!MfhLoginService.get().haveLogined()) {
-            ZLogger.d("快捷支付，准备跳转到登录页面");
-            redirect2Login();
-        }
-
-        ActivityRoute.redirect2QuickPay(getActivity());
-    }
-
-    @OnClick(R.id.btn_scan)
-    public void scannerQR() {
-        // Check if the Camera permission is already available.
-        if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            DialogUtil.showHint("拍照权限未打开！");
-            // Camera permission has not been granted.
-            requestCameraPermission();
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        } else {
-            // Camera permissions is already available, show the ScanActivity.
-            Intent intent = new Intent(getActivity(), ScanActivity.class);
-            startActivityForResult(intent, UIHelper.ACTIVITY_REQUEST_CODE_ZXING_QRCODE);
-        }
-    }
 
     /**
      * Requests the Camera permission.

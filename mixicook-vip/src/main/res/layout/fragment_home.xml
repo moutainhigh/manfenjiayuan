@@ -51,32 +51,6 @@
                 android:nestedScrollingEnabled="false"
                 android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:id="@+id/shortcut"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/block_margin"
-                android:padding="@dimen/spacing_normal">
-
-                <ImageButton
-                    android:id="@+id/btn_pay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:contentDescription="@null"
-                    android:src="@mipmap/btn_pay"/>
-
-                <ImageButton
-                    android:id="@+id/btn_scan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:contentDescription="@null"
-                    android:src="@mipmap/btn_scan"/>
-            </LinearLayout>
-
             <!--android:background="@color/material_white"-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/homeRackList"

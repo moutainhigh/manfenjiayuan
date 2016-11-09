@@ -373,6 +373,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                "线上订单", R.mipmap.ic_online_order));
 
         menuAdapter.setEntityList(menus);
+
+        int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
+        ZLogger.df("买手抢单未读消息个数为：" + count);
+        menuAdapter.setBadgeNumber(HomeMenu.OPTION_ID_BUY_PREPARE, count);
     }
 
     private void processMenuOption(Long id) {

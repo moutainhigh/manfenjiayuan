@@ -96,6 +96,21 @@ public class ActivityRoute {
     }
 
     /**
+     * 通知
+     */
+    public static void redirect2Notification(Context context) {
+        if (context == null) {
+            return;
+        }
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_MY_NOTIFICATION);
+        Intent intent = new Intent(context, FragmentActivity.class);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
+
+    /**
      * 充值
      */
     public static void redirect2Topup(Context context) {

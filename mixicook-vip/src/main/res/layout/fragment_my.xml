@@ -36,28 +36,28 @@
 
             <!--&lt;!&ndash;个人信息&ndash;&gt;-->
             <!--<LinearLayout-->
-                <!--android:id="@+id/frame_header"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="bottom"-->
-                <!--android:gravity="center"-->
-                <!--android:orientation="vertical"-->
-                <!--app:layout_collapseMode="pin">-->
+            <!--android:id="@+id/frame_header"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical"-->
+            <!--app:layout_collapseMode="pin">-->
 
-                <!--<com.mfh.framework.uikit.widget.AvatarView-->
-                    <!--android:id="@+id/iv_header"-->
-                    <!--android:layout_width="56dp"-->
-                    <!--android:layout_height="56dp"-->
-                    <!--android:layout_margin="@dimen/spacing_double"-->
-                    <!--android:src="@drawable/chat_tmp_user_head"/>-->
+            <!--<com.mfh.framework.uikit.widget.AvatarView-->
+            <!--android:id="@+id/iv_header"-->
+            <!--android:layout_width="56dp"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:layout_margin="@dimen/spacing_double"-->
+            <!--android:src="@drawable/chat_tmp_user_head"/>-->
 
-                <!--<TextView-->
-                    <!--android:id="@+id/tv_name"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="米西厨房"-->
-                    <!--android:textColor="@color/material_white"-->
-                    <!--android:textSize="14sp"/>-->
+            <!--<TextView-->
+            <!--android:id="@+id/tv_name"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="米西厨房"-->
+            <!--android:textColor="@color/material_white"-->
+            <!--android:textSize="14sp"/>-->
 
             <!--</LinearLayout>-->
 
@@ -131,25 +131,42 @@
                 android:id="@+id/frame_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="@dimen/spacing_double"
                 android:background="@color/mfh_toolbar_background"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_double">
 
                 <com.mfh.framework.uikit.widget.AvatarView
                     android:id="@+id/iv_header"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:layout_margin="@dimen/spacing_double"
+                    android:layout_margin="@dimen/spacing_normal"
                     android:src="@drawable/chat_tmp_user_head"/>
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="米西厨房"
                     android:textColor="@color/material_white"
                     android:textSize="14sp"/>
+
+                <ImageButton
+                    android:id="@+id/button_sweep"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@null"
+                    android:layout_margin="@dimen/spacing_normal"
+                    android:src="@mipmap/ic_sweep_circle"/>
+
+                <ImageButton
+                    android:id="@+id/button_vippay"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@null"
+                    android:layout_margin="@dimen/spacing_normal"
+                    android:src="@mipmap/ic_vippay_circle"/>
 
             </LinearLayout>
 

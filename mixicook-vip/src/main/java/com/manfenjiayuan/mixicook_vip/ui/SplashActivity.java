@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
+import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
@@ -86,6 +87,11 @@ public class SplashActivity extends InitActivity {
             return;
         }
 
+        // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
+//        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
+
+            setupGetui();
+
         super.doAsyncTask();
         // TODO: 07/11/2016
     }
@@ -112,6 +118,7 @@ public class SplashActivity extends InitActivity {
         expectPermissions.add(Manifest.permission.RECORD_AUDIO);
         //Phone:拨打电话
         expectPermissions.add(Manifest.permission.CALL_PHONE);
+        expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
         //SMS:短信
         expectPermissions.add(Manifest.permission.RECEIVE_SMS);
         //Storage:文件存储
@@ -247,6 +254,15 @@ public class SplashActivity extends InitActivity {
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    /**
+     * 设置个推
+     * */
+    private void setupGetui(){
+        String cid = PushManager.getInstance().getClientid(AppContext.getAppContext());
+        ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
+        PushManager.getInstance().initialize(this.getApplicationContext());
     }
 
 
