@@ -21,7 +21,7 @@ import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
- * 单张图片
+ * 促销卡片
  * Created by bingshanguxue on 09/10/2016.
  */
 
