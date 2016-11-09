@@ -28,6 +28,7 @@
         <attr name="inputNumberLabelView_rightButtonWidth" format="dimension"/>
         <attr name="inputNumberLabelView_rightImageButtonSrc" format="reference"/>
         <attr name="clearOnClickDel" format="boolean"/>
+        <attr name="softKeyboardEnabled"/>
     </declare-styleable>
 
 

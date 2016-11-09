@@ -6,14 +6,6 @@
              android:background="@color/material_white"
              android:fitsSystemWindows="true">
 
-
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-        <!---->
-    <!--</RelativeLayout>-->
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
@@ -157,6 +149,7 @@
             android:id="@+id/ll_procuct_header"
             layout="@layout/itemview_header_cashier"
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/spacing_4x"
             android:layout_height="wrap_content"/>
 
         <!--商品列表-->
@@ -175,7 +168,7 @@
         android:layout_gravity="start|bottom"
         android:layout_below="@+id/horizontal_line"
         android:layout_margin="@dimen/spacing_double"
-        android:background="@drawable/bg_float_number"
+        android:background="@drawable/bg_fab_circle_green"
         android:gravity="center"
         android:minWidth="80dp"
         android:singleLine="true"
@@ -190,7 +183,7 @@
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/spacing_double"
-        android:background="@drawable/bg_float_number"
+        android:background="@drawable/bg_fab_circle_green"
         android:gravity="center"
         android:minWidth="80dp"
         android:singleLine="true"
@@ -221,7 +214,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/fab_settle"
         android:layout_marginBottom="@dimen/spacing_double"
-        android:background="@drawable/bg_float_number"
+        android:background="@drawable/bg_fab_circle_orange"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_fab_shopcart_white"/>
@@ -232,9 +225,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
-        android:background="@drawable/bg_float_number"
+        android:background="@drawable/bg_fab_circle_green"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_checkmark_white"/>
+        android:src="@mipmap/ic_money_rmb_white"/>
 
 </RelativeLayout>

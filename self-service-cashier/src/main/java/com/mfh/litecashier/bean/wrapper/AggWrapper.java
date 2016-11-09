@@ -123,6 +123,7 @@ public class AggWrapper implements java.io.Serializable {
         this.rechargeItems = rechargeItems;
     }
 
+    //default constructor
     public AggWrapper() {
         this(null);
     }

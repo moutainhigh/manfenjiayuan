@@ -137,7 +137,8 @@ public class PrintManagerImpl extends PrintManager {
     /**
      * 打印线上订单明细
      */
-    private static EscCommand makePosOrderTemp(EscCommand rawEsc, String name, String bcount, String amount) {
+    private static EscCommand makePosOrderTemp(EscCommand rawEsc, String name,
+                                               String bcount, String amount) {
         EscCommand esc = rawEsc;
         if (esc == null) {
             esc = new EscCommand();
@@ -242,7 +243,8 @@ public class PrintManagerImpl extends PrintManager {
      * esc.addText("货号/品名       单价 数量   小计\n");
      * esc.addText("业务类型            数量    金额\n");
      */
-    private static EscCommand makeTestTemp(EscCommand rawEsc, String name, String price, String bcount, String amount) {
+    private static EscCommand makeTestTemp(EscCommand rawEsc, String name,
+                                           String price, String bcount, String amount) {
         EscCommand esc = rawEsc;
         if (esc == null) {
             esc = new EscCommand();
@@ -640,7 +642,8 @@ public class PrintManagerImpl extends PrintManager {
         esc.addText(String.format("交班人:%s\n", handOverBill.getHumanName()));
         //打印上班时间，来核对交班信息
 //        esc.addText(String.format("上班时间：%s \n", TimeCursor.InnerFormat.format(handOverBill.getStartDate())));
-        esc.addText(String.format("交班时间：%s \n", TimeCursor.InnerFormat.format(handOverBill.getEndDate())));
+        esc.addText(String.format("交班时间：%s \n",
+                TimeCursor.InnerFormat.format(handOverBill.getEndDate())));
         esc.addText(String.format("设备编号：%s \n", SharedPreferencesManager.getTerminalId()));
         esc.addText("--------------------------------\n");//32个
 //        esc.addPrintAndLineFeed();
@@ -706,7 +709,8 @@ public class PrintManagerImpl extends PrintManager {
     /**
      * 打印日结经营分析明细
      */
-    private static int printDailySettleAggItem(EscCommand esc, int startIndex, List<AggItem> aggItems) {
+    private static int printDailySettleAggItem(EscCommand esc, int startIndex,
+                                               List<AggItem> aggItems) {
         if (aggItems != null) {
             for (AggItem aggItem : aggItems) {
                 makeHandoverTemp(esc,
@@ -744,7 +748,8 @@ public class PrintManagerImpl extends PrintManager {
      * 012345678901234567890123 45678901
      * 商品名               金额
      */
-    private static EscCommand makeHandoverTemp(EscCommand rawEsc, String name, String bcount, String amount) {
+    private static EscCommand makeHandoverTemp(EscCommand rawEsc, String name,
+                                               String bcount, String amount) {
         EscCommand esc = rawEsc;
         if (esc == null) {
             esc = new EscCommand();
@@ -1182,10 +1187,13 @@ public class PrintManagerImpl extends PrintManager {
         esc.addPrintAndLineFeed();//进纸一行
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
-        esc.addText(String.format("客户:%s/%s \n", scOrder.getReceiveName(), scOrder.getReceivePhone()));
+        esc.addText(String.format("客户:%s/%s \n",
+                scOrder.getReceiveName(), scOrder.getReceivePhone()));
         esc.addText(String.format("配送地址:%s \n", scOrder.getAddress()));
-        esc.addText(String.format("下单时间：%s \n", TimeUtil.format(scOrder.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
-        esc.addText(String.format("配送时间：%s \n", TimeUtil.format(scOrder.getDueDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("下单时间：%s \n",
+                TimeUtil.format(scOrder.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("配送时间：%s \n",
+                TimeUtil.format(scOrder.getDueDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
         esc.addText(String.format("备注:%s \n", scOrder.getRemark()));
         esc.addPrintAndLineFeed();//进纸一行
 
@@ -1287,16 +1295,20 @@ public class PrintManagerImpl extends PrintManager {
         esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
-        esc.addText(String.format("客户:%s/%s \n", scOrder.getReceiveName(), scOrder.getReceivePhone()));
+        esc.addText(String.format("客户:%s/%s \n",
+                scOrder.getReceiveName(), scOrder.getReceivePhone()));
         esc.addText(String.format("配送地址:%s \n", scOrder.getAddress()));
-        esc.addText(String.format("下单时间：%s \n", TimeUtil.format(scOrder.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
-        esc.addText(String.format("配送时间：%s \n", TimeUtil.format(scOrder.getDueDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("下单时间：%s \n",
+                TimeUtil.format(scOrder.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        esc.addText(String.format("配送时间：%s \n",
+                TimeUtil.format(scOrder.getDueDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
         esc.addText(String.format("备注:%s \n", scOrder.getRemark()));
-        esc.addText(String.format("买手:%s/%s \n", scOrder.getServiceHumanName(), scOrder.getServiceMobile()));
+        esc.addText(String.format("买手:%s/%s \n",
+                scOrder.getServiceHumanName(), scOrder.getServiceMobile()));
         esc.addPrintAndFeedLines((byte) 2);//打印并且走纸3行
 
         /**打印 商品明细*/
-        esc.addText("品名                  数量   小计\n");
+        esc.addText("品名                数量   小计\n");
         esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
         Double amount = 0D, actualAmount = 0D;
         List<ScOrderItem> items = scOrder.getItems();

@@ -6,7 +6,6 @@
                 android:baselineAligned="false"
                 android:orientation="vertical">
 
-
     <include
         android:id="@+id/frame_top"
         layout="@layout/dialogview_headerview"/>

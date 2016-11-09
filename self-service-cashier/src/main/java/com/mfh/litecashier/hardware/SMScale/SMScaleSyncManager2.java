@@ -60,7 +60,7 @@ import rx.schedulers.Schedulers;
 public class SMScaleSyncManager2 extends FTPManager {
 
     public static final String PREF_SMSCALE = "pref_smscale";
-    public static final String PK_S_SMSCALE_HOST = "pk_smscale_host";       //主机IP
+    public static final String PK_S_SMSCALE_HOST = "pk_smscale_host";   //主机IP
     public static final String PK_I_SMSCALE_PORT = "pk_smscale_port";   //主机端口号
     public static final String PK_S_SMSCALE_USERNAME = "pk_smscale_username";//用户名
     public static final String PK_S_SMSCALE_PASSWORD = "pk_smscale_password";//密码
@@ -198,6 +198,11 @@ public class SMScaleSyncManager2 extends FTPManager {
             syncFailed("请在设置中打开同步商品库到电子秤同步开关。");
             return;
         }
+
+//        if (StringUtils.isEmpty(GreenTagsApi.LOCAL_SERVER_IP)){
+//            syncFailed("LOCAL_SERVER_IP不能为空，请先在设置页面设置ip地址。");
+//            return;
+//        }
 
         if (bSyncInProgress) {
             syncProcess("正在同步电子秤商品...");

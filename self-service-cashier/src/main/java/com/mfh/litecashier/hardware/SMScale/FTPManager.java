@@ -3,6 +3,7 @@ package com.mfh.litecashier.hardware.SMScale;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.Encoding;
+import com.mfh.framework.core.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,10 @@ public class FTPManager {
     public static void upload2Ftp(File file, FTPDataTransferListener transferListener){
         FTPClient ftpClient = new FTPClient();
         try {
+            if (StringUtils.isEmpty(FTPManager.FTP_HOST)){
+                ZLogger.df("未设置ftp hostname");
+                return;
+            }
 
             ZLogger.df(String.format("connect to %s:%d", FTPManager.FTP_HOST, FTPManager.FTP_PORT));
             ftpClient.connect(FTPManager.FTP_HOST, FTPManager.FTP_PORT);

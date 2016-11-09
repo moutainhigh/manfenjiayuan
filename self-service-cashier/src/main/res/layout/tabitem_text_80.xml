@@ -5,12 +5,15 @@
           style="@style/viewpage_slidingTabTitle"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
+          android:background="@null"
+          android:gravity="center"
+          android:maxLines="1"
           android:minWidth="80dp"
-          android:paddingLeft="16dp"
-          android:paddingRight="16dp"
-          android:singleLine="true"
+          android:paddingLeft="@dimen/spacing_double"
+          android:paddingRight="@dimen/spacing_double"
           android:text=""
-          android:textColor="@color/textcolor_black"
-          android:textSize="@dimen/textsize_normal">
+          android:textColor="@color/viewpage_selector_slide_title"
+          android:textSize="16sp">
+
 
 </TextView>

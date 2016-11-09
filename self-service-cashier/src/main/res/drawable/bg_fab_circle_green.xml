@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<item android:state_selected="true" android:drawable="@drawable/bg_fab_circle_green_selected">-->
+        <!--&lt;!&ndash;<shape android:shape="rectangle">&ndash;&gt;-->
+            <!--&lt;!&ndash;<solid android:color="@color/black_90" />&ndash;&gt;-->
+            <!--&lt;!&ndash;<corners android:radius="44dp" />&ndash;&gt;-->
+        <!--&lt;!&ndash;</shape>&ndash;&gt;-->
+    <!--</item>-->
+    <item android:state_pressed="true" android:drawable="@drawable/bg_fab_circle_green_selected">
+        <!--<shape android:shape="rectangle">-->
+            <!--<solid android:color="@color/black_90" />-->
+            <!--<corners android:radius="44dp" />-->
+        <!--</shape>-->
+    </item>
+    <!--<item android:state_checked="true" android:drawable="@drawable/bg_fab_circle_green_selected">-->
+        <!--&lt;!&ndash;<shape android:shape="rectangle">&ndash;&gt;-->
+            <!--&lt;!&ndash;<solid android:color="@color/black_90" />&ndash;&gt;-->
+            <!--&lt;!&ndash;<corners android:radius="44dp" />&ndash;&gt;-->
+        <!--&lt;!&ndash;</shape>&ndash;&gt;-->
+    <!--</item>-->
+    <item android:drawable="@drawable/bg_fab_circle_green_normal">
+        <!--<shape android:shape="rectangle">-->
+            <!--&lt;!&ndash;-->
+            <!--<stroke android:color="#FFC8C7CC" android:width="1px"/>&ndash;&gt;-->
+            <!--<solid android:color="@color/black_70" />-->
+            <!--<corners android:radius="44dp" />-->
+        <!--</shape>-->
+    </item>
+
+</selector>

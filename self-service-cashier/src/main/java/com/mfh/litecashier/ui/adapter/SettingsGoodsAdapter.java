@@ -107,7 +107,7 @@ public class SettingsGoodsAdapter
         if (entity.getStatus() != null && entity.getStatus().equals(1)) {
             drawableStatus.setText1("出售中");
         } else {
-            drawableStatus.setText1("已下架");
+            drawableStatus.setText1("售罄");
         }
 
         SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawablePriceType.toSpannable(),

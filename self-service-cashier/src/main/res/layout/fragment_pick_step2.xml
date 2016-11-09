@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/mfh_background_light"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--会员信息-->
@@ -80,7 +81,8 @@
             android:id="@+id/ll_procuct_header"
             layout="@layout/itemview_header_prepareorder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_4x"/>
 
         <!--商品列表-->
         <RelativeLayout
@@ -88,14 +90,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/material_white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/spacing_4x"
+            android:paddingStart="@dimen/spacing_4x">
 
             <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                 android:id="@+id/goods_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="12dp"/>
+                android:layout_height="match_parent"/>
 
             <!--空视图-->
             <ImageView

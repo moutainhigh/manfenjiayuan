@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -67,17 +68,18 @@ public class QueryGoodsDialog extends CommonDialog {
 
 
         initRecyclerView();
-        inlvBarcode.setEnterKeySubmitEnabled(true);
-        inlvBarcode.setSoftKeyboardEnabled(false);
-        inlvBarcode.setOnViewListener(new InputNumberLabelView.OnViewListener() {
+        inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER}, new InputNumberLabelView.OnInterceptListener() {
             @Override
-            public void onSubmit(String text) {
-                query(text);
+            public void onKey(int keyCode, String text) {
+                //Press “Enter”
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    query(text);
 
-                inlvBarcode.clear();
+                    inlvBarcode.clear();
+                }
+
             }
         });
-
 
         btnSubmit.setVisibility(View.VISIBLE);
         btnSubmit.setOnClickListener(new View.OnClickListener() {

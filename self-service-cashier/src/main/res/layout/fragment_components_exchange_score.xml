@@ -2,7 +2,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/spacing_4x"
+                android:layout_margin="@dimen/spacing_double"
                 android:background="@color/material_white"
                 android:baselineAligned="false"
                 android:orientation="vertical">
@@ -18,15 +18,37 @@
         android:layout_below="@+id/frame_top"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/spacing_4x"
-        android:gravity="center"
         android:drawableBottom="@mipmap/ic_marker_edit"
         android:drawablePadding="@dimen/spacing_micro"
+        android:gravity="center"
         android:hint="请输入积分"
         android:minHeight="56dp"
         android:singleLine="true"
         android:text=""
         android:textColor="#FE5000"
         android:textSize="90sp"/>
+
+    <EditText
+        android:id="@+id/et_pay_code"
+        style="@style/mfh_edittext_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_score"
+        android:layout_margin="@dimen/spacing_4x"
+        android:gravity="center"
+        android:hint="请扫描支付码"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:minHeight="48dp"
+        android:padding="@dimen/spacing_micro"
+        android:textColor="@color/material_black"
+        android:textSize="16sp">
+
+        <requestFocus
+            android:duplicateParentState="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+    </EditText>
 
     <Button
         android:id="@+id/button_exchange"

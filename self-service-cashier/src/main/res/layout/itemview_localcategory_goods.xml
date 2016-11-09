@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="106dp"
-              android:background="@null"
-              android:gravity="center"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="106dp"
+                android:background="@null"
+                android:gravity="center"
+                android:padding="@dimen/spacing_micro"
+                android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_name"
@@ -23,10 +24,26 @@
         android:id="@+id/tv_costprice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
         android:gravity="center"
         android:padding="4dp"
         android:text="@string/default_amount_unit"
         android:textColor="@color/material_black"
         android:textSize="16sp"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/btn_corner_orange"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="售罄"
+        android:textColor="@color/material_white"
+        android:textSize="12sp"
+        android:visibility="visible"/>
+
+
+</RelativeLayout>

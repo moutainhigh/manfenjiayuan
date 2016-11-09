@@ -1,12 +1,14 @@
 package com.mfh.litecashier.ui.fragment.components;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.EditInputType;
@@ -24,7 +26,6 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.dialog.SweepPaycodeDialog;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -38,11 +39,12 @@ public class ExchangeScoreFragment extends BaseProgressFragment {
     TextView tvHeaderTitle;
     @Bind(R.id.tv_score)
     TextView tvScore;
+    @Bind(R.id.et_pay_code)
+    EditText etPayCode;
     @Bind(R.id.button_exchange)
     Button btnExchange;
 
     private NumberInputDialog scoreDialog = null;
-    private SweepPaycodeDialog mSweepPaycodeDialog = null;
     private Double curScore = null;
 
     public static ExchangeScoreFragment newInstance(Bundle args) {
@@ -74,6 +76,24 @@ public class ExchangeScoreFragment extends BaseProgressFragment {
 //        }
 
         tvHeaderTitle.setText("积分兑换");
+        etPayCode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                ZLogger.d(String.format("setOnKeyListener(etBarCode): keyCode=%d, action=%d", keyCode, event.getAction()));
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        exchangeScore();
+                    }
+                    return true;
+                }
+//                return true;
+                return (keyCode == KeyEvent.KEYCODE_TAB
+                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
+            }
+        });
+
 
         if (curScore == null){
             inputScore();
@@ -141,59 +161,18 @@ public class ExchangeScoreFragment extends BaseProgressFragment {
      * 积分兑换
      */
     @OnClick(R.id.button_exchange)
-    public void sweepCode() {
-        btnExchange.setEnabled(false);
-
-        if (mSweepPaycodeDialog == null) {
-            mSweepPaycodeDialog = new SweepPaycodeDialog(getActivity());
-            mSweepPaycodeDialog.setCancelable(true);
-            mSweepPaycodeDialog.setCanceledOnTouchOutside(true);
-        }
-        mSweepPaycodeDialog.init("扫描会员码", "", new SweepPaycodeDialog.DialogViewListener() {
-            @Override
-            public void onCardDetected(String cardNo) {
-                exchangeScore(cardNo);
-            }
-
-            @Override
-            public void onCancel() {
-                btnExchange.setEnabled(false);
-            }
-        });
-        mSweepPaycodeDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                btnExchange.setEnabled(true);
-            }
-        });
-
-        if (!mSweepPaycodeDialog.isShowing()) {
-            mSweepPaycodeDialog.show();
-        }
-    }
-
-    /**
-     * 积分兑换
-     * */
-    private void exchangeScore(String cardNo){
+    public void exchangeScore(){
         onLoadProcess("请稍候...");
 
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onLoadError("网络未连接，请重新尝试。");
+        String cardNo = etPayCode.getText().toString();
+        String humanId3 = MUtils.parseMfPaycode(cardNo);
+        if (StringUtils.isEmpty(humanId3)) {
+            onLoadError("付款码无效");
             return;
         }
 
-        //这样判断不严谨，会错误的把其他0处理掉
-        int index = cardNo.lastIndexOf("0");
-//        String humanId2 = humanId.substring(index + 1, humanId.length());
-        String humanId3 = cardNo;
-        while (humanId3.startsWith("0")) {
-            humanId3 = humanId3.substring(1, humanId3.length());
-        }
-        ZLogger.df(String.format("验证会员微信付款码: <%s> --> <%s>",
-                cardNo, humanId3));
-        if (StringUtils.isEmpty(humanId3)) {
-            onLoadError("付款码无效");
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            onLoadError("网络未连接，请重新尝试。");
             return;
         }
 
@@ -216,9 +195,9 @@ public class ExchangeScoreFragment extends BaseProgressFragment {
     public void onLoadError(String errMessage) {
         super.onLoadError(errMessage);
         btnExchange.setEnabled(true);
+        etPayCode.requestFocus();
     }
 
-    //回调
     NetCallBack.NetTaskCallBack payRC = new NetCallBack.NetTaskCallBack<String,
             NetProcessor.Processor<String>>(
             new NetProcessor.Processor<String>() {
@@ -236,6 +215,7 @@ public class ExchangeScoreFragment extends BaseProgressFragment {
                 protected void processFailure(Throwable t, String errMsg) {
                     super.processFailure(t, errMsg);
                     //{"code":"1","msg":"指定网点已经日结过：132079","version":"1","data":null}
+                    etPayCode.getText().clear();
                     onLoadError("积分兑换失败：" + errMsg);
                 }
             }
