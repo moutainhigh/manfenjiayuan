@@ -75,5 +75,4 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_add2cart"/>
 
-
 </FrameLayout>

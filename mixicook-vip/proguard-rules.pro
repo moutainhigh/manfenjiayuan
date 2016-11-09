@@ -218,7 +218,11 @@ public static final int *;
 #amap end
 
 
+#gexin start
+-dontwarn com.igexin.**
 -keep class com.igexin.**{*;}
+#gexin end
+
 
 #java.lang.NoSuchMethodError: android.util.Xml.asAttributeSet
 -keep class org.xmlpull.v1.** { *; }

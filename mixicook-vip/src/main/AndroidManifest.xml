@@ -243,6 +243,17 @@
         </activity>
         <!-- alipay sdk end -->
 
+        <!-- 个推SDK配置开始 -->
+        <!-- 配置第三方Receiver -->
+        <receiver
+            android:name=".PushDemoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.igexin.sdk.action.${GETUI_APP_ID}"/>
+            </intent-filter>
+        </receiver>
+        <!-- 个推SDK配置结束 -->
+
 
     </application>
 

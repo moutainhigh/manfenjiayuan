@@ -14,6 +14,7 @@ import com.manfenjiayuan.mixicook_vip.ui.goods.CategoryGoodsFragment;
 import com.manfenjiayuan.mixicook_vip.ui.home.QuickPayFragment;
 import com.manfenjiayuan.mixicook_vip.ui.hybrid.HybridFragment;
 import com.manfenjiayuan.mixicook_vip.ui.location.LocationFragment;
+import com.manfenjiayuan.mixicook_vip.ui.message.MessageMgrFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangeLoginPwdFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangeNicknameFragment;
 import com.manfenjiayuan.mixicook_vip.ui.my.ChangePayPwdFragment;
@@ -59,8 +60,9 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
     public static final int FT_ORDER_COUPONS = 0x13;//订单优惠券
     public static final int FT_MY = 0x20;//我的
     public static final int FT_MY_CUSTOMERSERVICE = 0x21;//我的——客服中心
-    public static final int FT_SETTINGS = 0x22;//设置
-    public static final int FT_SETTINGS_GENERAL = 0x23;//设置——通用
+    public static final int FT_MY_NOTIFICATION = 0x22;//我的——通知
+    public static final int FT_SETTINGS = 0x23;//设置
+    public static final int FT_SETTINGS_GENERAL = 0x24;//设置——通用
 
 
 
@@ -182,6 +184,14 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
             break;
             case FT_MY_CUSTOMERSERVICE: {
                 CustomerServiceFragment fragment = new CustomerServiceFragment();
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_MY_NOTIFICATION: {
+                MessageMgrFragment fragment = new MessageMgrFragment();
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)
