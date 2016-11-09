@@ -786,6 +786,7 @@ public class HomeFragment extends BaseFragment
                 @Override
                 protected void processFailure(Throwable t, String errMsg) {
                     ZLogger.d("processFailure: " + errMsg);
+                    refreshRackFloor(null);
                 }
             }
             , StoreRack.class

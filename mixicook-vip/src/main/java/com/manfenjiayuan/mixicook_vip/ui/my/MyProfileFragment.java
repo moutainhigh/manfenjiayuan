@@ -98,8 +98,10 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        ZLogger.d(String.format("requestCode=%d, resultCode=%d, intent=%s", requestCode,
-                resultCode, StringUtils.decodeBundle(intent.getExtras())));
+        ZLogger.d(String.format("requestCode=%d, resultCode=%d, intent=%s",
+                requestCode,
+                resultCode,
+                StringUtils.decodeBundle(intent != null ? intent.getExtras() : null)));
         if (resultCode != Activity.RESULT_OK){
             return;
         }

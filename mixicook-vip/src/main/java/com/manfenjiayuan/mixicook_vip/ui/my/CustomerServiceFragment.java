@@ -13,17 +13,18 @@ import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ARCode;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
-import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.mobile.Mixicook;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+
+import static com.manfenjiayuan.mixicook_vip.ui.InputTextFragment.EXTRA_KEY_HINT_TEXT;
+import static com.manfenjiayuan.mixicook_vip.ui.InputTextFragment.EXTRA_KEY_TITLE;
 
 
 /**
@@ -52,8 +53,17 @@ public class CustomerServiceFragment extends BaseFragment{
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+        }
         mToolbar.setTitle("客服中心");
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        }
+        else{
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -76,8 +86,10 @@ public class CustomerServiceFragment extends BaseFragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        ZLogger.d(String.format("requestCode=%d, resultCode=%d, intent=%s", requestCode,
-                resultCode, StringUtils.decodeBundle(intent.getExtras())));
+        ZLogger.d(String.format("requestCode=%d, resultCode=%d, intent=%s",
+                requestCode,
+                resultCode,
+                StringUtils.decodeBundle(intent != null ? intent.getExtras() : null)));
         if (resultCode != Activity.RESULT_OK){
             return;
         }
@@ -126,10 +138,10 @@ public class CustomerServiceFragment extends BaseFragment{
     @OnClick(R.id.item_feedback)
     public void redirect2Feedback() {
         Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_INPUT_TEXT);
-        extras.putString(InputTextFragment.EXTRA_KEY_TITLE, "反馈");
-        extras.putString(InputTextFragment.EXTRA_KEY_HINT_TEXT, "随便吐槽400字以内");
+        extras.putString(EXTRA_KEY_TITLE, "反馈");
+        extras.putString(EXTRA_KEY_HINT_TEXT, "随便吐槽400字以内");
 //        extras.putString(InputTextFragment.EXTRA_KEY_RAW_TEXT, mOrderBrief.getRemark());
         Intent intent = new Intent(getActivity(), FragmentActivity.class);
         intent.putExtras(extras);

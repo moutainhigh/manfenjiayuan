@@ -6,6 +6,7 @@ import java.util.List;
 import me.drakeet.multitype.Item;
 
 /**
+ * 滚屏广告
  * Created by bingshanguxue on 10/10/2016.
  */
 

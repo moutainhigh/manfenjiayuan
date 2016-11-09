@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+1, scaleType:center ，按原来尺寸显示，超过长/宽，截取居中部分显示
+scaleType:FIT_CENTER ，将图片扩大或缩放到view大小
+2, 画布背景色用白色（android:background="@color/material_white"），避免图片未布满时留白
+-->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="200dp"
+              android:layout_height="180dp"
               android:clipToPadding="false"
               android:orientation="horizontal"
+              android:background="@color/material_white"
               android:divider="@drawable/divider_gridview"
               android:showDividers="middle"
               android:layout_marginTop="@dimen/block_margin"
@@ -15,7 +22,7 @@
         android:id="@+id/iv_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:layout_weight="4"/>
 
     <LinearLayout
@@ -29,12 +36,12 @@
         <ImageView
             android:id="@+id/iv_top"
             android:layout_width="match_parent"
-            android:layout_height="84dp"
-            android:scaleType="centerCrop"/>
+            android:layout_height="75dp"
+            android:scaleType="fitCenter"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="116dp"
+            android:layout_height="105dp"
             android:orientation="horizontal"
             android:divider="@drawable/divider_gridview"
             android:showDividers="middle">
@@ -42,14 +49,14 @@
             <ImageView
                 android:id="@+id/iv_bottom_left"
                 android:layout_width="0dp"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
 
             <ImageView
                 android:id="@+id/iv_bottom_right"
                 android:layout_width="0dp"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
         </LinearLayout>
