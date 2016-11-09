@@ -454,11 +454,16 @@ public class MfhApplication extends Application {
             Resources resources = getAppContext().getResources();
             int resourceId = resources.getIdentifier("navigation_bar_height",
                     "dimen", "android");
-            sb.append(String.format("DisplayMetrics: %d*%d %f%navigation_bar_height:%d\n",
-                    resources.getDisplayMetrics().widthPixels,
-                    resources.getDisplayMetrics().heightPixels,
-                    resources.getDisplayMetrics().density,
-                    resources.getDimensionPixelSize(resourceId)));
+            sb.append(String.format("DisplayMetrics: " +
+                    "\n%d*%d(%d) %f" +
+                    "\navigation_bar_height:%d(%d)" +
+                    "\n(%d*%d)\n",
+                    resources.getDisplayMetrics().widthPixels, resources.getDisplayMetrics().heightPixels,
+                    resources.getDisplayMetrics().densityDpi, resources.getDisplayMetrics().density,
+                    resources.getDimensionPixelSize(resourceId),
+                    DensityUtil.px2dip(getAppContext(), resources.getDimensionPixelSize(resourceId)),
+                    DensityUtil.px2dip(getAppContext(), resources.getDisplayMetrics().widthPixels),
+                    DensityUtil.px2dip(getAppContext(), resources.getDisplayMetrics().heightPixels)));
             sb.append(String.format("AndroidId:%s\n", getAndroidId()));
             sb.append(String.format("linuxMac:%s\n", getLinuxMac()));
             sb.append(String.format("hostAddress:%s\n", getHostAddress()));

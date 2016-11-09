@@ -83,6 +83,7 @@ public class HumanAuthTempApi {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token", token);
         jsonObject.put("userTmpId", userTmpId);
+        jsonObject.put("needMenu", "true");
 
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonObject.toJSONString());
@@ -91,5 +92,4 @@ public class HumanAuthTempApi {
 //        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_LOGINBYSMS, params, responseCallback);
     }
-
 }
