@@ -1,12 +1,15 @@
 package com.manfenjiayuan.mixicook_vip.ui.my;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +30,13 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.account.MyProfile;
 import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.constant.Priv;
 import com.mfh.framework.api.mobile.Mixicook;
+import com.mfh.framework.core.qrcode.ScanActivity;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.MfhUserManager;
@@ -38,6 +44,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.network.URLHelper;
+import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -154,6 +161,25 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
         ZLogger.d(String.format("requestCode=%d, resultCode=%d", requestCode, resultCode));
 
         switch (requestCode) {
+            case UIHelper.ACTIVITY_REQUEST_CODE_ZXING_QRCODE: {
+                if (resultCode == Activity.RESULT_OK) {
+                    try {
+                        Bundle bundle = data.getExtras();
+                        String resultText = bundle.getString("result", "");
+//                Bitmap barcode =  (Bitmap)bundle.getParcelable("bitmap");//扫描截图
+
+                        if (StringUtils.isUrl(resultText) && resultText.contains(MfhApi.DOMAIN)) {
+                            DialogUtil.showHint(resultText);
+                        } else {
+                            DialogUtil.showHint(resultText);
+                        }
+                    } catch (Exception ex) {
+                        //TransactionTooLargeException
+                        ZLogger.e(ex.toString());
+                    }
+                }
+            }
+            break;
             case ARCode.ARC_SETTINGS: {
 //                if (resultCode == Activity.RESULT_OK){
 //
@@ -184,6 +210,48 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 
 
     /**
+     * 快捷支付
+     */
+    @OnClick(R.id.button_vippay)
+    public void quickPay() {
+        if (!MfhLoginService.get().haveLogined()) {
+            DialogUtil.showHint("还没有登录");
+//            getActivity().setResult(Activity.RESULT_CANCELED);
+//            getActivity().finish();
+//            ZLogger.d("快捷支付，准备跳转到登录页面");
+//            redirect2Login();
+        }
+
+        ActivityRoute.redirect2QuickPay(getActivity());
+    }
+
+    /**
+     * 扫一扫
+     * */
+    @OnClick(R.id.button_sweep)
+    public void sweepQR() {
+        // Check if the Camera permission is already available.
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            DialogUtil.showHint("拍照权限未打开！");
+            // Camera permission has not been granted.
+//            requestCameraPermission();
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        } else {
+            // Camera permissions is already available, show the ScanActivity.
+            Intent intent = new Intent(getActivity(), ScanActivity.class);
+            startActivityForResult(intent, UIHelper.ACTIVITY_REQUEST_CODE_ZXING_QRCODE);
+        }
+    }
+
+    /**
      * 客服中心
      */
     @OnClick(R.id.item_customer_service)
@@ -206,7 +274,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
         startActivityForResult(intent, ARC_SETTINGS);
     }
 
-    @OnClick(R.id.frame_header)
+    @OnClick(R.id.iv_header)
     public void redirectToProfile() {
         Bundle extras = new Bundle();
 //        extras.putString(SimpleActivity.EXTRA_TITLE, "个人资料");
@@ -438,10 +506,6 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //        ivVip.setImageResource(vipIcons[vipLevl]);
 //    }
 //
-//    @OnClick(R.id.iv_header)
-//    public void redirectToUserProfile() {
-//        UIHelper.startActivity(getActivity(), UserProfileActivity.class);
-//    }
 //
 //    @OnClick(R.id.label_balance)
 //    public void showBalance() {
