@@ -369,7 +369,8 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
         }
 
         MfhUserManager.getInstance().updateModules();
-        if (MfhUserManager.getInstance().containsModule(Priv.FUNC_NET_SUPPORT)) {
+        if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY) ||
+                MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_STOCK)) {
             itemParters.setVisibility(View.VISIBLE);
         } else {
             itemParters.setVisibility(View.GONE);
