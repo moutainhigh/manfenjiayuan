@@ -231,7 +231,7 @@ public class FileZillaDialog extends CommonDialog {
     /**
      * 刷新会员信息
      */
-    public void refresh() {
+    private void refresh() {
         etIp.setText(SMScaleSyncManager2.FTP_HOST);
         etPort.setText(String.valueOf(SMScaleSyncManager2.FTP_PORT));
         etUsername.setText(SMScaleSyncManager2.FTP_USER);

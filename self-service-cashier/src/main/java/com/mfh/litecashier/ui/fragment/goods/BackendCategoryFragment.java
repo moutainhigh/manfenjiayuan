@@ -127,7 +127,7 @@ public class BackendCategoryFragment extends BaseFragment {
         fetchLetters();
     }
 
-    public static String[] A_Z = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
+    private static String[] A_Z = {"A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
             "W", "X", "Y", "Z", "#"};
 

@@ -109,7 +109,7 @@ public class CashierPayActivity extends BaseActivity {
     /**
      * 显示
      */
-    public void showStep1(CashierOrderInfo cashierOrderInfo) {
+    private void showStep1(CashierOrderInfo cashierOrderInfo) {
         curStep = 0;
         Intent intent = this.getIntent();
         intent.putExtra(EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
@@ -126,7 +126,7 @@ public class CashierPayActivity extends BaseActivity {
                 .commit();
     }
 
-    public void showStep2(int payType, int paySubType, String cardId, Human memberInfo) {
+    private void showStep2(int payType, int paySubType, String cardId, Human memberInfo) {
         if (curStep == 1){
             ZLogger.df("已经是会员支付页面，跳转无效。");
             return;

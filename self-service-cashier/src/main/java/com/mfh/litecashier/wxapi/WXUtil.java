@@ -140,7 +140,8 @@ public class WXUtil {
 	    }      
 	      
 		@Override
-		public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+		public Socket createSocket(Socket socket, String host, int port, boolean autoClose)
+				throws IOException, UnknownHostException {
 			return sslContext.getSocketFactory().createSocket(socket, host,	port, autoClose);
 		}
 

@@ -23,10 +23,10 @@
                 android:id="@+id/tv_query_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:text="@string/label_courier_number"
                 android:textColor="@color/material_black"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:maxLines="1"/>
 
             <EditText
                 android:id="@+id/et_courier_number"

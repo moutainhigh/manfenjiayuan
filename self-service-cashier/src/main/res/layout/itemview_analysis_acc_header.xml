@@ -12,29 +12,26 @@
         android:text="序号" />
 
     <TextView
-        style="@style/mfh_form_header_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="支付类型" />
+        android:text="支付类型"/>
     <TextView
-        style="@style/mfh_form_header_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="数量" />
+        android:text="数量"/>
 
     <TextView
-        style="@style/mfh_form_header_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:singleLine="true"
         android:text="金额" />
 
     <TextView
@@ -43,8 +40,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:singleLine="true"
         android:visibility="invisible"
-        android:text="毛利率"/>
+        android:text="毛利率"
+        android:maxLines="1"/>
 
 </LinearLayout>

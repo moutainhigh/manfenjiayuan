@@ -17,21 +17,19 @@
 
     <TextView
         android:id="@+id/tv_createDate"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:text="盘点时间"
         android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_orderstatus"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:text="状态"
         android:textSize="14sp" />
 

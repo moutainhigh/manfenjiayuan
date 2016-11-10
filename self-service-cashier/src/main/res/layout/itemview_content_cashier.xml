@@ -17,10 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:singleLine="true"
             android:text="商品"
             android:textColor="@color/material_black"
-            android:textSize="@dimen/textsize_normal"/>
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <!--成交价-->
@@ -38,10 +38,10 @@
             android:drawableEnd="@mipmap/ic_marker_edit"
             android:drawablePadding="4dp"
             android:gravity="center"
-            android:singleLine="true"
             android:text="成交价"
             android:textColor="@color/material_black"
-            android:textSize="@dimen/textsize_normal"/>
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
     </LinearLayout>
     <!--折扣-->
     <LinearLayout
@@ -58,10 +58,9 @@
             android:drawableEnd="@mipmap/ic_marker_edit"
             android:drawablePadding="4dp"
             android:gravity="center"
-            android:singleLine="true"
             android:text="折扣"
-            android:textColor="@color/material_black"
-            android:textSize="@dimen/textsize_normal"/>
+            style="@style/singleline_text"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -78,10 +77,9 @@
             android:drawableEnd="@mipmap/ic_marker_edit"
             android:drawablePadding="4dp"
             android:gravity="center"
-            android:singleLine="true"
             android:text="数量"
-            android:textColor="@color/material_black"
-            android:textSize="@dimen/textsize_normal"/>
+            style="@style/singleline_text"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -95,10 +93,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:singleLine="true"
             android:text="价格"
-            android:textColor="@color/material_black"
-            android:textSize="@dimen/textsize_normal"/>
+            style="@style/singleline_text"
+            />
     </LinearLayout>
 
 </LinearLayout>

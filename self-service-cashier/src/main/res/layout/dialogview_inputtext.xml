@@ -19,7 +19,6 @@
         android:textColorHint="@color/material_grey_500"
         android:maxLength="8"
         android:gravity="start|top"
-        android:singleLine="true"
         android:background="@drawable/bg_input_rectange"
         android:inputType="text"
         android:textIsSelectable="false"/>

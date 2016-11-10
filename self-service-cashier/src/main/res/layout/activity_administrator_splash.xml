@@ -32,10 +32,10 @@
             android:layout_marginBottom="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_normal"
             android:gravity="center"
-            android:singleLine="true"
             android:text=""
             android:textColor="@color/material_black"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:maxLines="1"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/menulist"

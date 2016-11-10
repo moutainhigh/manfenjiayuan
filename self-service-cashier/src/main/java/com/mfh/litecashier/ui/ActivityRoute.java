@@ -5,7 +5,9 @@ import android.os.Bundle;
 
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.litecashier.ui.activity.CanaryActivity;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
+import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 
@@ -15,8 +17,104 @@ import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
  */
 public class ActivityRoute {
 
-    public static void redirect(){
+    /**
+     * 手动订货&智能订货
+     */
+    public static void redirect2Purchase(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_PURCHASE_MANUAL);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
 
+    /**
+     * 库存
+     */
+    public static void redirect2Inventory(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_INVENTORY);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 流水
+     */
+    public static void redirect2Orderflow(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_ORDERFLOW);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 单据
+     */
+    public static void redirect2Receipt(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_RECEIPT);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 设置
+     */
+    public static void redirect2Settings(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_SETTINGS);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 现金授权
+     */
+    public static void redirect2CashQuota(Context context) {
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_CANARY_CASH_QUOTA);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
+//        extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
+        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
+
+    /**
+     * 金丝雀
+     */
+    public static void redirect2Canary(Context context) {
+        UIHelper.startActivity(context, CanaryActivity.class);
+    }
+
+    /**
+     * 商品
+     */
+    public static void redirect2CanaryGoods(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_CANARY_GOODS);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 订单流水
+     */
+    public static void redirect2CanaryOrderflow(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_CANARY_ORDERFLOW);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 设置
+     */
+    public static void redirect2CanarySettings(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleActivity.FT_CANARY_CANARY);
+        UIHelper.startActivity(context, SimpleActivity.class, extras);
     }
 
     /**

@@ -33,10 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:singleLine="true"
                 android:text=""
-                android:textColor="@color/material_black"
-                android:textSize="18sp" />
+                style="@style/singleline_text"
+                android:textSize="18sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,10 +46,9 @@
                     android:id="@+id/tv_query_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
                     android:text="@string/label_member_cardno"
-                    android:textColor="@color/material_black"
-                    android:textSize="18sp" />
+                    style="@style/singleline_text"
+                    android:textSize="18sp"/>
 
                 <EditText
                     android:id="@+id/et_query_content"

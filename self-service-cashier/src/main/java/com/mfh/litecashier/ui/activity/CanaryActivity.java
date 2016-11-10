@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -150,7 +149,7 @@ public class CanaryActivity extends BaseActivity {
         menuAdapter.setEntityList(getAdminMenus());
     }
 
-    public synchronized List<ResMenu> getAdminMenus() {
+    private synchronized List<ResMenu> getAdminMenus() {
         List<ResMenu> functionalList = new ArrayList<>();
         functionalList.add(new ResMenu(ResMenu.CANARY_MENU_GOODS,
                 "库存", R.mipmap.ic_admin_menu_inventory));
@@ -172,49 +171,16 @@ public class CanaryActivity extends BaseActivity {
             return;
         }
         if (id.compareTo(ResMenu.CANARY_MENU_GOODS) == 0) {
-            redirect2Goods();
+            ActivityRoute.redirect2CanaryGoods(this);
         } else if (id.compareTo(ResMenu.CANARY_MENU_ORDERFLOW) == 0) {
-            redirect2Orderflow();
+            ActivityRoute.redirect2CanaryOrderflow(this);
         } else if (id.compareTo(ResMenu.CANARY_MENU_MESSAGE_MGR) == 0) {
             ActivityRoute.redirect2MsgMgr(this);
         } else if (id.compareTo(ResMenu.CANARY_MENU_CANARY) == 0) {
-            redirect2Canary();
+            ActivityRoute.redirect2CanarySettings(this);
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
     }
-
-    /**
-     * 商品
-     */
-    public void redirect2Goods() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_CANARY_GOODS);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 订单流水
-     */
-    public void redirect2Orderflow() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_CANARY_ORDERFLOW);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-
-
-    /**
-     * 设置
-     */
-    public void redirect2Canary() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_CANARY_CANARY);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
 
 }

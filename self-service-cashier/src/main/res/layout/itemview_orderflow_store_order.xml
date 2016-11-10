@@ -9,36 +9,31 @@
 
     <TextView
         android:id="@+id/tv_barcode"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text="条码" />
+        android:text="条码"/>
 
     <TextView
         android:id="@+id/tv_createDate"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:text="下单时间" />
 
     <TextView
         android:id="@+id/tv_amount"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:text="金额" />
 
     <!--联系人信息-->
     <TextView
         android:id="@+id/tv_pay_type"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:ellipsize="end"
         android:text="支付方式" />
 
 </LinearLayout>

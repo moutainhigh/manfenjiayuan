@@ -35,20 +35,20 @@
                 style="@style/mfh_form_header_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
-                android:text="商品名称" />
+                android:text="商品名称"
+                android:maxLines="1"/>
 
             <TextView
                 android:id="@+id/tv_barcode"
                 style="@style/mfh_form_header_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
                 android:textColor="@color/black_65"
                 android:layout_below="@+id/tv_name"
-                android:text="条码" />
+                android:text="条码"
+                android:maxLines="1"/>
 
         </RelativeLayout>
 
@@ -63,8 +63,8 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="起配量" />
+        android:text="起配量"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_buyprice"
@@ -74,8 +74,8 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="配销价" />
+        android:text="配销价"
+        android:maxLines="1"/>
 
 
     <com.bingshanguxue.vector_uikit.NumberPickerView
@@ -94,7 +94,7 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:gravity="center"
-        android:singleLine="true"
-        android:text="总价" />
+        android:text="总价"
+        android:maxLines="1"/>
 
 </LinearLayout>

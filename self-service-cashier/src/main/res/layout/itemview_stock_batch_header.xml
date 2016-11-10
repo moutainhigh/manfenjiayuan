@@ -19,8 +19,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="价格" />
+        android:text="价格"
+        android:maxLines="1"/>
     <TextView
         android:id="@+id/tv_quantity"
         style="@style/mfh_form_header_text"
@@ -28,8 +28,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="数量" />
+        android:text="数量"
+        android:maxLines="1"/>
 
 
     <TextView
@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="类型" />
+        android:text="类型"
+        android:maxLines="1"/>
 
 </LinearLayout>

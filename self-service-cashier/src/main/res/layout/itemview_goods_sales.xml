@@ -10,12 +10,10 @@
 
     <TextView
         android:id="@+id/tv_name"
-        style="@style/mfh_textview_text"
+        style="@style/singleline_text"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
         android:gravity="start|center_vertical"
-        android:singleLine="true"
         android:text=""/>
 
     <!--style="@android:style/Widget.ProgressBar.Horizontal"-->
@@ -28,12 +26,10 @@
 
     <TextView
         android:id="@+id/tv_quantity"
-        style="@style/mfh_textview_text"
+        style="@style/singleline_text"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
         android:gravity="center"
-        android:singleLine="true"
         android:text=""/>
 
 

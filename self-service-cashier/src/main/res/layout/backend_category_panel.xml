@@ -37,10 +37,10 @@
             android:gravity="center"
             android:paddingEnd="64dp"
             android:paddingStart="64dp"
-            android:singleLine="true"
             android:text="全部"
             android:textColor="@color/material_black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:maxLines="1"/>
     </RelativeLayout>
 
     <!--&lt;!&ndash; google 官方下拉刷新 &ndash;&gt;-->

@@ -51,7 +51,7 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public abstract class CashierActivity extends BaseActivity {
-    DispQueueThread DispQueue;//刷新显示线程
+    private DispQueueThread DispQueue;//刷新显示线程
     private SerialPortFinder mSerialPortFinder;//串口设备搜索
     protected SerialControl comDisplay, comPrint, comSmscale, comAhScale;//串口
     private long lastAhscaleTriggle = System.currentTimeMillis();

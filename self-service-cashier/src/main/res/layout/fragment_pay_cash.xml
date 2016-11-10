@@ -52,10 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:text="@string/default_amount"
-            android:singleLine="true"
             android:ellipsize="end"
-            android:textColor="@color/material_black"
-            android:textSize="64sp" />
+            style="@style/singleline_text"
+            android:textSize="64sp"/>
     </LinearLayout>
 
 </LinearLayout>

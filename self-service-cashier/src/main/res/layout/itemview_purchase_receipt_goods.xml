@@ -34,9 +34,9 @@
                 style="@style/mfh_form_header_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
-                android:text="名称" />
+                android:text="名称"
+                android:maxLines="1"/>
 
 
             <!--条码-->
@@ -47,10 +47,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_name"
                 android:drawablePadding="4dp"
-                android:singleLine="true"
                 android:gravity="center_vertical"
                 android:textColor="@color/black_65"
-                android:text="条码" />
+                android:text="条码"
+                android:maxLines="1"/>
 
         </RelativeLayout>
 
@@ -63,10 +63,10 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:singleLine="true"
         android:gravity="center_vertical"
         android:textColor="@color/material_black"
-        android:text="价格" />
+        android:text="价格"
+        android:maxLines="1"/>
 
     <!--配送量-->
     <TextView
@@ -75,10 +75,10 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:singleLine="true"
         android:gravity="center_vertical"
         android:textColor="@color/material_black"
-        android:text="数量" />
+        android:text="数量"
+        android:maxLines="1"/>
 
     <!--总价-->
     <TextView
@@ -88,10 +88,10 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
         android:textColor="@color/material_black"
-        android:text="小计" />
+        android:text="小计"
+        android:maxLines="1"/>
 
 
 </LinearLayout>

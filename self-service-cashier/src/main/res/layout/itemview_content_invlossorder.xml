@@ -11,9 +11,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="商品"
-        android:textSize="@dimen/textsize_normal"
-        android:textColor="@color/material_black"
-        android:singleLine="true"
+        style="@style/singleline_text"
+
         android:gravity="center_vertical"/>
     <LinearLayout
         android:id="@+id/ll_quantity"
@@ -29,7 +28,7 @@
             android:textColor="@color/mf_red"
             android:drawableEnd="@mipmap/ic_marker_edit"
             android:drawablePadding="4dp"
-            android:singleLine="true"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:maxLines="1"/>
     </LinearLayout>
 </LinearLayout>

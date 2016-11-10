@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="批发商" />
+        android:text="批发商"
+        android:maxLines="1"/>
 
     <!--单位-->
     <TextView
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="单位" />
+        android:text="单位"
+        android:maxLines="1"/>
 
     <!--商品总价-->
     <TextView
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="商品总价" />
+        android:text="商品总价"
+        android:maxLines="1"/>
 
 </LinearLayout>

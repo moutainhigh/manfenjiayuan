@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:text="通讯参数"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textsize_normal"/>
@@ -40,13 +40,12 @@
                 android:gravity="center_vertical">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="主机IP"
-                    android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal"/>
+                    android:textColor="@color/black_70"/>
 
                 <EditText
                     android:id="@+id/et_ip"
@@ -67,13 +66,13 @@
                 android:layout_marginTop="@dimen/spacing_normal">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="主机端口号"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal"/>
+                    />
 
                 <EditText
                     android:id="@+id/et_port"
@@ -91,13 +90,13 @@
                 android:layout_marginTop="@dimen/spacing_normal">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="用户名"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal"/>
+                    />
 
                 <EditText
                     android:id="@+id/et_username"
@@ -115,11 +114,10 @@
                 android:layout_marginTop="@dimen/spacing_normal">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="密码"
                     android:textColor="@color/black_70"
                     android:textSize="@dimen/textsize_normal"/>
 
@@ -139,13 +137,13 @@
                 android:layout_marginTop="@dimen/spacing_normal">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="编码"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal"/>
+                    />
 
                 <Spinner
                     android:id="@+id/spinner_encoding"
@@ -156,14 +154,14 @@
             </LinearLayout>
 
             <TextView
+                style="@style/singleline_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:gravity="center_vertical"
-                android:singleLine="true"
                 android:text="寺冈电子秤"
                 android:textColor="@color/black"
-                android:textSize="@dimen/textsize_normal"/>
+                />
 
             <!--同步策略-->
             <LinearLayout
@@ -171,24 +169,24 @@
                 android:layout_height="44dp">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="同步时间戳"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal"/>
+                    />
 
                 <TextView
                     android:id="@+id/tv_smscale_cursor"
+                    style="@style/singleline_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text=""
                     android:textColor="@color/material_black"
-                    android:textSize="@dimen/textsize_normal"/>
+                    />
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/switchCompat_sync_mode"

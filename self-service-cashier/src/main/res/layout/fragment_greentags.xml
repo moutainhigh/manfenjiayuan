@@ -30,7 +30,6 @@
                     android:hint="商品数量"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:textColor="@color/material_black"/>
 
 
@@ -69,7 +68,6 @@
                     android:hint="商品条码"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:textColor="@color/material_black"/>
 
 
@@ -116,7 +114,6 @@
                     android:hint="标签编号"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true"
                     android:textColor="@color/material_black"/>
 
 

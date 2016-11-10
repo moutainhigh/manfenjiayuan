@@ -10,10 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:singleLine="true"
         android:text="0秒"
         android:textColor="@color/material_green_500"
-        android:textSize="64sp" />
+        android:textSize="64sp"
+        style="@style/singleline_text"
+        />
 
     <LinearLayout
         android:id="@+id/ll_process"

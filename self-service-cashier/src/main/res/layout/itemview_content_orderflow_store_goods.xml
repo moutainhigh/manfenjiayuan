@@ -31,21 +31,19 @@
             <!--名称-->
             <TextView
                 android:id="@+id/tv_name"
-                style="@style/mfh_form_content_text"
+                style="@style/singleline_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
-                android:text="名称" />
+                android:text="名称"/>
 
             <!--条码-->
             <TextView
                 android:id="@+id/tv_barcode"
-                style="@style/mfh_form_content_text"
+                style="@style/singleline_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="4dp"
-                android:singleLine="true"
                 android:gravity="center_vertical"
                 android:layout_below="@+id/tv_name"
                 android:textColor="@color/black_65"
@@ -58,40 +56,34 @@
     <!--零售价-->
     <TextView
         android:id="@+id/tv_costprice"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
-        android:textColor="@color/material_black"
         android:text="零售价" />
 
     <!--数量-->
     <TextView
         android:id="@+id/tv_quantity"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
-        android:textColor="@color/material_black"
         android:text="数量" />
 
     <!--总价-->
     <TextView
         android:id="@+id/tv_amount"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:drawablePadding="4dp"
-        android:singleLine="true"
         android:gravity="center_vertical"
-        android:textColor="@color/material_black"
         android:text="总价" />
 
 

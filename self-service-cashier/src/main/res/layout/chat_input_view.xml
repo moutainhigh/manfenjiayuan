@@ -18,8 +18,7 @@
         android:textColorHint="@color/material_black_hint"
         android:textSize="@dimen/ch_fontsize_button"
         android:hint="点击输入文字"
-        android:maxLines="4"
-        android:singleLine="false" />
+        android:maxLines="4"/>
 
     <ImageButton
         android:id="@+id/ib_emoji"

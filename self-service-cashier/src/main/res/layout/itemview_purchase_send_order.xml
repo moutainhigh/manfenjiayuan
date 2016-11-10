@@ -9,17 +9,16 @@
 
     <TextView
         android:id="@+id/tv_provider_name"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:text="批发商名称"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv_orderNumber"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -29,7 +28,7 @@
 
     <TextView
         android:id="@+id/tv_createDate"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -39,7 +38,7 @@
 
     <TextView
         android:id="@+id/tv_transHumanName"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

@@ -49,7 +49,7 @@ public class CloudSyncManager {
      * @param sendTenantId 平台上的某个批发商
      * @param cateType     类目
      */
-    public void importFromChainSku(Long sendTenantId, String cateType) {
+    private void importFromChainSku(Long sendTenantId, String cateType) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             return;
         }

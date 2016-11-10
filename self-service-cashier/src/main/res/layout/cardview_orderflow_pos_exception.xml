@@ -26,60 +26,52 @@
         <!--订单编号-->
         <TextView
             android:id="@+id/tv_id"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_badge"
-            android:singleLine="true"
             android:text="订单编号"/>
         <!--订单流水编号-->
         <TextView
             android:id="@+id/tv_barcode"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_id"
-            android:singleLine="true"
             android:text="订单编号"/>
 
         <TextView
             android:id="@+id/tv_createDate"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_barcode"
-            android:singleLine="true"
             android:text="下单时间"/>
         <TextView
             android:id="@+id/tv_updatedate"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_createDate"
-            android:singleLine="true"
             android:text="更新时间"/>
 
         <!-- 网点-->
         <TextView
             android:id="@+id/tv_office"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_updatedate"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="网点"/>
 
         <!-- 租户-->
         <TextView
             android:id="@+id/tv_tenant"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_office"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="租户"/>
+            android:ellipsize="end"/>
 
         <LinearLayout
             android:layout_width="match_parent"

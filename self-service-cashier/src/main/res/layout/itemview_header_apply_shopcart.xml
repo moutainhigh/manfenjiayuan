@@ -20,8 +20,8 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="起订量" />
+        android:text="起订量"
+        android:maxLines="1"/>
 
     <TextView
         style="@style/mfh_form_header_text"
@@ -30,8 +30,8 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="价格" />
+        android:text="价格"
+        android:maxLines="1"/>
 
     <TextView
         style="@style/mfh_form_header_text"
@@ -40,8 +40,8 @@
         android:layout_weight="1.5"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="数量" />
+        android:text="数量"
+        android:maxLines="1"/>
 
     <TextView
         style="@style/mfh_form_header_text"
@@ -50,7 +50,7 @@
         android:layout_weight="1"
         android:drawablePadding="4dp"
         android:gravity="center"
-        android:singleLine="true"
-        android:text="小计" />
+        android:text="小计"
+        android:maxLines="1"/>
 
 </LinearLayout>

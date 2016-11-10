@@ -17,9 +17,9 @@
         android:paddingRight="16dp"
         android:paddingTop="10dp"
         android:text=""
-        android:singleLine="true"
         android:textSize="16sp"
         android:background="@drawable/bg_oval_tab_item"
-        android:textColor="@color/textcolor_black"/>
+        android:textColor="@color/textcolor_black"
+        android:maxLines="1"/>
 
 </RelativeLayout>

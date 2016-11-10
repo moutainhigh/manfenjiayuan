@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    style="@style/mfh_form_content_transparent"
-    android:layout_height="44dp"
-    android:orientation="horizontal"
-    android:gravity="center">
+              android:id="@+id/rootview"
+              style="@style/mfh_form_content_transparent"
+              android:layout_height="44dp"
+              android:gravity="center"
+              android:orientation="horizontal">
+
     <TextView
         android:id="@+id/tv_name"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="商品"
-        android:textSize="@dimen/textsize_normal"
-        android:textColor="@color/material_black"
-        android:singleLine="true"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+
+        android:text="商品"/>
 
     <TextView
         android:id="@+id/tv_packageNum"
+        style="@style/singleline_text"
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:text="箱规"
-        android:textSize="@dimen/textsize_normal"
-        android:textColor="@color/material_black"
-        android:singleLine="true"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+
+        android:text="箱规"/>
+
     <TextView
         android:id="@+id/tv_startnum"
+        style="@style/singleline_text"
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:text="起配量"
-        android:textSize="@dimen/textsize_normal"
-        android:textColor="@color/material_black"
-        android:singleLine="true"
-        android:gravity="center_vertical"/>
+        android:gravity="center_vertical"
+
+        android:text="起配量"/>
+
     <TextView
         android:id="@+id/tv_buyprice"
+        style="@style/singleline_text"
         android:layout_width="80dp"
         android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:text="采购价"
-        android:textSize="@dimen/textsize_normal"
-        android:textColor="@color/mf_red"
-        android:singleLine="true"
-        android:gravity="center_vertical"/>
+        android:textColor="@color/mf_red"/>
 </LinearLayout>

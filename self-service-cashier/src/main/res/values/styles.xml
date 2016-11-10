@@ -46,6 +46,14 @@
         <item name="android:textColor">@color/mf_form_content_text</item>
         <item name="android:singleLine">true</item>
     </style>
+    <!--单行文本：默认字体颜色黑色，字号16sp。-->
+    <style name="singleline_text">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/material_black</item>
+        <!--<item name="android:singleLine">true</item>-->
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
 
     <!--EditText-->
     <style name="mfh_edittext_normal">

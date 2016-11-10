@@ -246,7 +246,6 @@ public class AdministratorSigninDialog extends CommonDialog {
             return;
         }
 
-        // TODO: 5/23/16 验证支付密码
         CommonUserAccountApi.checkAccountPassword(MfhLoginService.get().getCurrentGuId(),
                 pwdStr, responseCallback);
     }

@@ -23,10 +23,11 @@
         android:gravity="center"
         android:hint="请输入积分"
         android:minHeight="56dp"
-        android:singleLine="true"
         android:text=""
         android:textColor="#FE5000"
-        android:textSize="90sp"/>
+        android:textSize="90sp"
+        style="@style/singleline_text"
+        />
 
     <EditText
         android:id="@+id/et_pay_code"

@@ -30,11 +30,10 @@
 
     <TextView
         android:id="@+id/tv_provider_name"
-        style="@style/mfh_form_content_text"
+        style="@style/singleline_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:singleLine="true"
         android:text="发货方"
         android:textColor="@color/black_65"
         android:textSize="14sp" />

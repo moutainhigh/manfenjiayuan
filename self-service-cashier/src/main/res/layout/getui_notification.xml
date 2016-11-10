@@ -62,8 +62,8 @@
             style="@android:style/TextAppearance.StatusBar.EventContent.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/getui_notification_style1_content"

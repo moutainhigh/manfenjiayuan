@@ -19,13 +19,12 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.MfhUserManager;
-import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.AvatarView;
@@ -34,6 +33,7 @@ import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.event.AffairEvent;
+import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
@@ -115,7 +115,7 @@ public class AdministratorActivity extends BaseActivity {
                 // Handle the menu item
                 int id = item.getItemId();
                 if (id == R.id.action_canary) {
-                    redirect2Canary();
+                    ActivityRoute.redirect2Canary(AdministratorActivity.this);
                 }
                 return true;
             }
@@ -371,7 +371,7 @@ public class AdministratorActivity extends BaseActivity {
     /**
      * 获取菜单
      */
-    public synchronized List<ResMenu> getAdminMenus() {
+    private synchronized List<ResMenu> getAdminMenus() {
         List<ResMenu> functionalList = new ArrayList<>();
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_PURCHASE_MANUAL,
                 "手动订货", R.mipmap.ic_admin_purchase_manual));
@@ -404,19 +404,19 @@ public class AdministratorActivity extends BaseActivity {
         }
 
         if (id.compareTo(ResMenu.ADMIN_MENU_PURCHASE_MANUAL) == 0) {
-            manualPurchase();
+            ActivityRoute.redirect2Purchase(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_INVENTORY) == 0) {
-            redirect2Inventory();
+            ActivityRoute.redirect2Inventory(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_ORDERFLOW) == 0) {
-            redirect2Orderflow();
+            ActivityRoute.redirect2Orderflow(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_RECEIPT) == 0) {
-            redirect2Receipt();
+            ActivityRoute.redirect2Receipt(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_DAILYSETTLE) == 0) {
             dailySettle(null);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_SETTINGS) == 0) {
-            redirect2Settings();
+            ActivityRoute.redirect2Settings(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_CASHQUOTA) == 0) {
-            redirect2CashQuota();
+            ActivityRoute.redirect2CashQuota(this);
         }
         else if (id.compareTo(ResMenu.ADMIN_MENU_FACTORYDATA_RESET) == 0) {
             factoryDataReset();
@@ -425,75 +425,8 @@ public class AdministratorActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 手动订货&智能订货
-     */
-    public void manualPurchase() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_PURCHASE_MANUAL);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
 
-    /**
-     * 库存
-     */
-    public void redirect2Inventory() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_INVENTORY);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
 
-    /**
-     * 流水
-     */
-    public void redirect2Orderflow() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_ORDERFLOW);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 单据
-     */
-    public void redirect2Receipt() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_RECEIPT);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 设置
-     */
-    public void redirect2Settings() {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_SETTINGS);
-        UIHelper.startActivity(this, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 现金授权
-     */
-    public void redirect2CashQuota() {
-        Bundle extras = new Bundle();
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_CANARY_CASH_QUOTA);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
-//        extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
-        UIHelper.startActivity(this, SimpleDialogActivity.class, extras);
-    }
-
-    /**
-     * 金丝雀
-     */
-    public void redirect2Canary() {
-        UIHelper.startActivity(this, CanaryActivity.class);
-    }
 
     /**
      * 退出当前账号

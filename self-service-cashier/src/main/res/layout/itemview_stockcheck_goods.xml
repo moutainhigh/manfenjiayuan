@@ -34,19 +34,19 @@
                 style="@style/mfh_form_header_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
                 android:textColor="@color/black_65"
-                android:text=""/>
+                android:text=""
+                android:maxLines="1"/>
 
             <TextView
                 android:id="@+id/tv_description"
                 style="@style/mfh_form_header_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:ellipsize="end"
-                android:text="" />
+                android:text=""
+                android:maxLines="1"/>
 
         </LinearLayout>
 
@@ -59,8 +59,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="盘点数量" />
+        android:text="盘点数量"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_system_inventory"
@@ -69,8 +69,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="系统库存" />
+        android:text="系统库存"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_loss_quantity"
@@ -79,8 +79,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="盈亏数量" />
+        android:text="盈亏数量"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_costprice"
@@ -89,8 +89,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="零售价" />
+        android:text="零售价"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_loss_amount"
@@ -99,6 +99,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="盈亏金额" />
+        android:text="盈亏金额"
+        android:maxLines="1"/>
 </LinearLayout>

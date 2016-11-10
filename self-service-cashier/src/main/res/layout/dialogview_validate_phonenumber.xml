@@ -28,10 +28,10 @@
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="手机号"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal" />
+                    style="@style/singleline_text"
+                    />
 
                 <EditText
                     android:id="@+id/et_phoneNumber"
@@ -65,10 +65,10 @@
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:singleLine="true"
                     android:text="@string/label_verifycode"
                     android:textColor="@color/black_70"
-                    android:textSize="@dimen/textsize_normal" />
+                    style="@style/singleline_text"
+                    />
 
                 <EditText
                     android:id="@+id/et_verifyCode"
@@ -84,13 +84,13 @@
                 android:id="@+id/tv_tip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:visibility="gone"
                 android:text="验证码已发送到您的手机"
                 android:layout_marginStart="90dp"
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/textsize_normal" />
+                style="@style/singleline_text"
+                />
 
         </LinearLayout>
 

@@ -89,7 +89,7 @@ public class PrepareOrderAdapter
                 holder.tvName.setText(entity.getProductName());
                 holder.tvPrice.setText(String.format("%.2f", entity.getPrice()));
                 //计件：整数；记重：3位小数
-                if (entity.getPriceType() == PriceType.WEIGHT) {
+                if (PriceType.WEIGHT.equals(entity.getPriceType())) {
                     holder.tvBecount.setText(String.format("%.3f", entity.getBcount()));
                     holder.tvQuantityCheck.setText(String.format("%.3f", entity.getQuantityCheck()));
                 } else {

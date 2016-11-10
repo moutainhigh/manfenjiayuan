@@ -439,7 +439,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
      * 按订单拆分，获取选中的优惠券
      * */
     public Map<Long, List<CouponRule>> getSelectSplitCoupons() {
-        Map<Long, List<CouponRule>> selectCouponsMap= new HashMap<>();
+        Map<Long, List<CouponRule>> selectCouponsMap = new HashMap<>();
 
         if (entityList != null && entityList.size() > 0) {
             for (CouponRule couponRule : entityList){

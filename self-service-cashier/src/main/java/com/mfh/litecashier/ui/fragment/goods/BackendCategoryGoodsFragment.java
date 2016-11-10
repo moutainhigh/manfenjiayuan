@@ -50,7 +50,7 @@ public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWra
     @Bind(R.id.empty_view)
     View emptyView;
 
-    LinearLayoutManager linearLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private BackendCategoryGoodsAdapter adapter;
 
     private Long categoryId;

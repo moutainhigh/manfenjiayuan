@@ -27,10 +27,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="16dp"
-            android:singleLine="true"
             android:text=""
-            android:textColor="@color/material_black"
-            android:textSize="18sp" />
+            style="@style/singleline_text"
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/et_password"

@@ -33,12 +33,12 @@
                 android:text=""
                 android:textSize="@dimen/textsize_normal"
                 android:textColor="@color/black_70"
-                android:singleLine="true"
                 android:inputType="textPassword"
                 android:focusable="false"
                 android:gravity="center_vertical"
                 android:labelFor="@id/et_barcode"
-                android:layout_marginTop="@dimen/spacing_normal"/>
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:maxLines="1"/>
         </LinearLayout>
     </LinearLayout>
 

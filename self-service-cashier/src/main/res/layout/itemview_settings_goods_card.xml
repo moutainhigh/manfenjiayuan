@@ -27,117 +27,96 @@
         <!--编号-->
         <TextView
             android:id="@+id/tv_id"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:text="编号" />
 
         <!--商品条码&商品名称-->
         <TextView
             android:id="@+id/tv_name"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:text="商品条码&amp;商品名称" />
 
         <!--SPU编号-->
         <TextView
             android:id="@+id/tv_spu_id"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:text="SPU编号" />
 
         <!-- SKU编号-->
         <TextView
             android:id="@+id/tv_sku_id"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="SKU编号" />
 
         <!-- 零售价&单位-->
         <TextView
             android:id="@+id/tv_costprice"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="零售价&amp;单位" />
 
         <!-- 箱规-->
         <TextView
             android:id="@+id/tv_packageNum"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="箱规" />
         <!-- 租户编号-->
         <TextView
             android:id="@+id/tv_tenant_id"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="租户编号" />
         <!-- 库存-->
         <TextView
             android:id="@+id/tv_stock_quantity"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="库存" />
 
         <!-- 批发商编号-->
         <TextView
             android:id="@+id/tv_provider_id"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="批发商编号" />
 
         <!-- 类目编号-->
         <TextView
             android:id="@+id/tv_procateId"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="类目编号" />
 
 
         <!-- 创建时间-->
         <TextView
             android:id="@+id/tv_createDate"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="创建时间" />
 
         <!-- 更新时间-->
         <TextView
             android:id="@+id/tv_updatedate"
-            style="@style/mfh_form_content_text"
+            style="@style/singleline_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
             android:text="更新时间" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

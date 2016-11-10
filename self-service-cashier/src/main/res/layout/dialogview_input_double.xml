@@ -23,11 +23,11 @@
             android:inputType="numberDecimal"
             android:maxLength="8"
             android:padding="16dp"
-            android:singleLine="true"
             android:text="@string/default_amount"
             android:textColor="#FE5000"
             android:textIsSelectable="false"
-            android:textSize="@dimen/textsize_huge"/>
+            android:textSize="@dimen/textsize_huge"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/tv_unit"

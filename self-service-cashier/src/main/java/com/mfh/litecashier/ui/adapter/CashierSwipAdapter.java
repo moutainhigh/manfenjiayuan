@@ -38,7 +38,7 @@ public class CashierSwipAdapter
         void onDataSetChanged(boolean needScroll);
     }
 
-    protected OnAdapterListener adapterListener;
+    private OnAdapterListener adapterListener;
 
     public void setOnAdapterListener(OnAdapterListener adapterListener) {
         this.adapterListener = adapterListener;

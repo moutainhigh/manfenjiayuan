@@ -22,10 +22,10 @@
             android:layout_weight="1"
             android:gravity="start|center_vertical"
             android:padding="4dp"
-            android:singleLine="true"
             android:text=""
             android:textColor="@color/material_white"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:maxLines="1"/>
 
         <ImageButton
             android:id="@+id/button_sync"
@@ -63,10 +63,10 @@
             android:gravity="center_vertical"
             android:drawableEnd="@mipmap/ic_marker_edit"
             android:drawablePadding="4dp"
-            android:singleLine="true"
             android:text="@string/default_amount"
             android:textColor="#FE5000"
-            android:textSize="60sp"/>
+            android:textSize="60sp"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/tv_subtitle"

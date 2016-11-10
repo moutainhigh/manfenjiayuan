@@ -24,10 +24,11 @@
             android:layout_weight="1"
             android:gravity="start|center_vertical"
             android:padding="4dp"
-            android:singleLine="true"
             android:text=""
             android:textColor="@color/material_white"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            style="@style/singleline_text"
+            />
 
         <ImageButton
             android:id="@+id/button_header_reload"

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/material_white"
-             android:fitsSystemWindows="true">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -28,51 +28,47 @@
 
                 <TextView
                     android:id="@+id/tv_last_amount"
+                    style="@style/singleline_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:singleLine="true"
                     android:text="合计：¥0.00"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
+                    />
 
                 <TextView
                     android:id="@+id/tv_last_quantity"
+                    style="@style/singleline_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:singleLine="true"
                     android:text="数量：0.00"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
+                    />
 
                 <TextView
                     android:id="@+id/tv_last_discount"
+                    style="@style/singleline_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:singleLine="true"
                     android:text="优惠：¥0.00"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
+                    />
 
                 <TextView
                     android:id="@+id/tv_last_charge"
+                    style="@style/singleline_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:singleLine="true"
                     android:text="找零：¥0.00"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp"/>
+                    />
             </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -100,11 +96,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_4x"
+            android:background="@color/material_white"
             android:baselineAligned="false"
             android:divider="@drawable/divider_vertical_line_primary"
             android:dividerPadding="12dp"
             android:gravity="center"
-            android:background="@color/material_white"
             android:showDividers="middle">
 
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
@@ -149,8 +145,8 @@
             android:id="@+id/ll_procuct_header"
             layout="@layout/itemview_header_cashier"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/spacing_4x"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_4x"/>
 
         <!--商品列表-->
         <android.support.v7.widget.RecyclerView
@@ -163,22 +159,24 @@
 
     <TextView
         android:id="@+id/fab_orderDiscount"
+        style="@style/singleline_text"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
-        android:layout_gravity="start|bottom"
         android:layout_below="@+id/horizontal_line"
+        android:layout_gravity="start|bottom"
         android:layout_margin="@dimen/spacing_double"
         android:background="@drawable/bg_fab_circle_green"
         android:gravity="center"
         android:minWidth="80dp"
-        android:singleLine="true"
         android:text=""
         android:textColor="@color/material_white"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/float_hangup"
+        style="@style/singleline_text"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
@@ -186,11 +184,11 @@
         android:background="@drawable/bg_fab_circle_green"
         android:gravity="center"
         android:minWidth="80dp"
-        android:singleLine="true"
         android:text=""
         android:textColor="@color/material_white"
         android:textSize="20sp"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        />
 
 
     <!--结算-->
@@ -212,12 +210,13 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/fab_settle"
         android:layout_marginBottom="@dimen/spacing_double"
+        android:layout_toStartOf="@+id/fab_settle"
         android:background="@drawable/bg_fab_circle_orange"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_fab_shopcart_white"/>
+
     <ImageButton
         android:id="@+id/fab_settle"
         android:layout_width="80dp"
