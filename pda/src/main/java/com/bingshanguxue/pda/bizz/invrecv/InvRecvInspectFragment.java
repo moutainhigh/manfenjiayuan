@@ -17,12 +17,14 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.FragmentActivity;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.utils.ACacheHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -47,6 +49,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.Date;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -89,6 +92,8 @@ public class InvRecvInspectFragment extends PDAScanFragment
 
     //    @BindView(R2.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSweep;
+
 
 
     public Long tenantId;
@@ -141,6 +146,7 @@ public class InvRecvInspectFragment extends PDAScanFragment
         labelReceiveAmount = (EditLabelView) rootView.findViewById(R.id.label_receive_amount);
         labelReceivePrice = (TextLabelView) rootView.findViewById(R.id.label_receive_price);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,11 +154,27 @@ public class InvRecvInspectFragment extends PDAScanFragment
                 submit();
             }
         });
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -497,6 +519,7 @@ public class InvRecvInspectFragment extends PDAScanFragment
                 isAcceptBarcodeEnabled = true;
                 mScanBar.reset();
                 DeviceUtils.hideSoftInput(getActivity(), mScanBar);
+
 //                ActivityRoute.inspectProductSku(getActivity());
                 Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);

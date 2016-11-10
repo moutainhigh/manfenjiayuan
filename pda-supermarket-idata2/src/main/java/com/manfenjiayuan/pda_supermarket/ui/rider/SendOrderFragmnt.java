@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.view.IScOrderView;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -65,6 +67,8 @@ public class SendOrderFragmnt extends PDAScanFragment implements IScOrderView {
 
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private ScOrder mScOrder;
     private ScOrderPresenter mScOrderPresenter;
@@ -147,6 +151,22 @@ public class SendOrderFragmnt extends PDAScanFragment implements IScOrderView {
             }
         });
 
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
         initTabs();
 
         refresh(mScOrder, false, true);

@@ -1,5 +1,7 @@
 package com.bingshanguxue.pda;
 
+import android.os.Bundle;
+
 /**
  * com.android.auto.iscan
  *
@@ -16,17 +18,20 @@ public class PDAScanManager {
 
 
     public static class ScanBarcodeEvent {
-//        public static final int EVENT_ID_SCAN_BARCODE = 0X01;//扫描成功
-//        public static final int EVENT_ID_SYNC_FAILED = 0X02;//同步失败
+        public static final int EVENT_ID_START_ZXING = 0X01;//开始摄像头扫描
+        public static final int EVENT_ID_SCAN_NEXT = 0X02;//扫描结束
 
-        private String barcode;
+        public static final String KEY_EVENTID = "eventId";
+        public static final String KEY_BARCODE = "barcode";
 
-        public ScanBarcodeEvent(String barcode) {
-            this.barcode = barcode;
+        private Bundle args;
+
+        public ScanBarcodeEvent(Bundle args) {
+            this.args = args;
         }
 
-        public String getBarcode() {
-            return barcode;
+        public Bundle getArgs() {
+            return args;
         }
     }
 

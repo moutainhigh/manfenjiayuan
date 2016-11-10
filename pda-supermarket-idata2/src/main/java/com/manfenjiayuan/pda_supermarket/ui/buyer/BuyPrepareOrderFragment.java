@@ -58,7 +58,7 @@ public class BuyPrepareOrderFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_invfind_create;
+        return R.layout.fragment_buyer_scorder;
     }
 
     @Override

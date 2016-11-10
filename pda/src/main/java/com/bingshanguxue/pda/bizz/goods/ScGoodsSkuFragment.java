@@ -10,18 +10,18 @@ import android.view.ViewGroup;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.dialog.ActionDialog;
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
@@ -38,14 +38,14 @@ import de.greenrobot.event.EventBus;
  */
 public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
 
-//    @Bind(R.id.toolbar)
+    //    @Bind(R.id.toolbar)
     public Toolbar mToolbar;
-//    @Bind(R.id.scanBar)
+    //    @Bind(R.id.scanBar)
     public ScanBar mScanBar;
 
-//    @Bind(R.id.tab_page)
+    //    @Bind(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-//    @Bind(R.id.viewpager_pagecontent)
+    //    @Bind(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
@@ -81,13 +81,21 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+        }
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
         mTabStrip = (TopSlidingTabStrip) rootView.findViewById(R.id.tab_page);
         mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager_pagecontent);
 
         if (mToolbar != null) {
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+            if (animType == ANIM_TYPE_NEW_FLOW) {
+                mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+            } else {
+                mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+            }
             mToolbar.setNavigationOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -95,8 +103,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                             getActivity().onBackPressed();
                         }
                     });
-        } else {
-            ZLogger.d("mToolbar is null");
         }
 
         if (mScanBar != null) {
@@ -239,11 +245,10 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     }
 
     public void onQueryError(String errorMsg) {
-        if (!StringUtils.isEmpty(errorMsg)){
+        if (!StringUtils.isEmpty(errorMsg)) {
             ZLogger.df(errorMsg);
             showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
-        }
-        else{
+        } else {
             hideProgressDialog();
         }
         isAcceptBarcodeEnabled = true;
@@ -262,7 +267,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         curGoods = invSkuGoods;
 
         Bundle args = new Bundle();
-        if (curGoods != null){
+        if (curGoods != null) {
             args.putLong(ScGoodsSkuEvent.EXTRA_KEY_PROSKUID, curGoods.getProSkuId());
         }
         args.putSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU, curGoods);

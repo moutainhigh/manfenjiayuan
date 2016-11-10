@@ -15,11 +15,13 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.view.IScOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
@@ -77,6 +79,8 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
 
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private ScOrder mScOrder;
     private ScOrderPresenter mScOrderPresenter;
@@ -158,6 +162,23 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
                 queryByBarcode(text);
             }
         });
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
+
         initTabs();
 
         InstockTempService.get().clear();

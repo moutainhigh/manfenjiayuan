@@ -1,6 +1,6 @@
 package com.bingshanguxue.pda;
 
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
@@ -14,8 +14,6 @@ import com.mfh.framework.network.NetProcessor;
 
 import java.text.ParseException;
 import java.util.Date;
-
-import static com.bingshanguxue.pda.utils.SharedPreferencesHelper.PK_SYNC_PRODUCTS_STARTCURSOR;
 
 /**
  * Created by bingshanguxue on 5/27/16.
@@ -61,7 +59,7 @@ public class DataSyncManager {
      * 获取POS商品库同步时间
      */
     public static String getPosLastUpdateCursor() {
-        String startCursor = SharedPreferencesHelper.getText(PK_SYNC_PRODUCTS_STARTCURSOR, "");
+        String startCursor = SharedPreferencesManagerImpl.getSyncProductsStartcursor();
         ZLogger.df(String.format("上次商品更新时间(%s)。", startCursor));
 
 //        //得到指定模范的时间

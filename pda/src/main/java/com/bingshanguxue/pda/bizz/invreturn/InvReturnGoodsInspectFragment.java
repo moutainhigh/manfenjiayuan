@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -35,6 +37,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.Date;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -63,7 +66,8 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
     //    @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
     //    @Bind(R.id.fab_submit)
-    public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSubmit;    public FloatingActionButton btnSweep;
+
 
     private InvReturnGoodsEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
@@ -95,19 +99,38 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
         super.initViews(rootView);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelTotalcount = (TextLabelView) rootView.findViewById(R.id.label_totalcount);
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
         labelSignQuantity = (EditLabelView) rootView.findViewById(R.id.label_sign_quantity);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submit();
             }
         });
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -169,6 +192,13 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
                 refreshPackage(null);
 //                eqvBarcode.clear();
 //                eqvBarcode.requestFocus();
+            }
+        });
+
+        queryCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogUtil.showHint(queryCheckbox.isChecked() ? "精确查询" : "模糊查询");
             }
         });
 

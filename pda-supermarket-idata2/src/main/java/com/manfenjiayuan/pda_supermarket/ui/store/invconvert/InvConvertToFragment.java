@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -36,6 +38,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -62,6 +65,8 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
     TextView tvUnit;
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private ChangeSkuStoreItem convertSkuGoods;
     private InvSkuGoods curGoods;
@@ -134,7 +139,22 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
                 refresh(null);
             }
         });
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
 
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
         btnSubmit.setEnabled(false);
 
         Bundle args = getArguments();

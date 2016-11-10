@@ -1,17 +1,17 @@
 package com.manfenjiayuan.pda_supermarket.service;
 
 import com.bingshanguxue.pda.DataSyncManager;
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.pda_supermarket.AppContext;
+import com.manfenjiayuan.pda_supermarket.bean.PosGoods;
+import com.manfenjiayuan.pda_supermarket.bean.ProductSkuBarcode;
 import com.manfenjiayuan.pda_supermarket.database.dao.PosProductNetDao;
 import com.manfenjiayuan.pda_supermarket.database.dao.PosProductSkuNetDao;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosProductEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.PosProductService;
 import com.manfenjiayuan.pda_supermarket.database.logic.PosProductSkuService;
-import com.manfenjiayuan.pda_supermarket.bean.PosGoods;
-import com.manfenjiayuan.pda_supermarket.bean.ProductSkuBarcode;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
@@ -39,9 +39,6 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.bingshanguxue.pda.utils.SharedPreferencesHelper.PK_SYNC_PRODUCTSKU_STARTCURSOR;
-import static com.bingshanguxue.pda.utils.SharedPreferencesHelper.PK_SYNC_PRODUCTS_STARTCURSOR;
 
 /**
  * POS--数据同步
@@ -288,14 +285,13 @@ public class DataSyncManagerImpl extends DataSyncManager {
 
                     //更新游标
                     if (cussor != null) {
-                        SharedPreferencesHelper.set(PK_SYNC_PRODUCTS_STARTCURSOR,
-                                TimeCursor.InnerFormat.format(cussor));
+                        SharedPreferencesManagerImpl.setSyncProductsStartcursor(TimeCursor.InnerFormat.format(cussor));
                     }
 
                     ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 结束", rs.getReturnNum(),
                             rs.getTotalNum(), mPageInfo.getPageNo(),
                             mPageInfo.getTotalPage(),
-                            SharedPreferencesHelper.getText(PK_SYNC_PRODUCTS_STARTCURSOR)));
+                            SharedPreferencesManagerImpl.getSyncProductsStartcursor()));
 
                 } catch (Throwable ex) {
                     ZLogger.ef(String.format("保存商品库失败: %s", ex.toString()));
@@ -364,7 +360,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
                                         "下一次需要全量同步商品库", posNum, skuNum));
 
                                 //初始化游标并设置下次需要全量更新
-                                SharedPreferencesHelper.set(PK_SYNC_PRODUCTS_STARTCURSOR, "");
+                                SharedPreferencesManagerImpl.setSyncProductsStartcursor("");
 
                                 //删除无效的数据
                                 PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
@@ -415,7 +411,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
 
         mPosSkuPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        String lastCursor = SharedPreferencesHelper.getText(PK_SYNC_PRODUCTSKU_STARTCURSOR, "");
+        String lastCursor = SharedPreferencesManagerImpl.getSyncProductsStartcursor();
 
         //从第一页开始请求，每页最多50条记录
         downloadProductSku(lastCursor, mPosSkuPageInfo);
@@ -487,7 +483,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
 
                 //更新游标
                 if (cursor != null) {
-                    SharedPreferencesHelper.set(PK_SYNC_PRODUCTSKU_STARTCURSOR,
+                    SharedPreferencesManagerImpl.setSyncProductsStartcursor(
                             TimeUtil.format(cursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
                 }
                 ZLogger.df(String.format("同步 %d/%d 个箱规", retSize, rs.getTotalNum()));
@@ -509,7 +505,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
                 pageInfo.moveToNext();
                 downloadProductSku(lastCursor, pageInfo);
             } else {
-                ZLogger.df("同步规格码表品结束:" + SharedPreferencesHelper.getText(PK_SYNC_PRODUCTSKU_STARTCURSOR));
+                ZLogger.df("同步规格码表品结束:" + SharedPreferencesManagerImpl.getSyncProductsStartcursor());
 
                 nextStep();
             }

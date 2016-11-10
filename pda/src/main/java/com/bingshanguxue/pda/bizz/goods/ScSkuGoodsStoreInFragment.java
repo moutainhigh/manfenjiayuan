@@ -15,7 +15,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.DataSyncManager;
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -40,6 +42,8 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 自采商品--商品建档并入库
@@ -84,6 +88,8 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
 
     //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSweep;
+
 
     private ArrayAdapter<CharSequence> unitAdapter0;
     private ArrayAdapter<CharSequence> unitAdapter1;
@@ -131,6 +137,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         labelCostprice = (EditLabelView) rootView.findViewById(R.id.label_costPrice);
         labelHintPrice = (EditLabelView) rootView.findViewById(R.id.label_hintPrice);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
     }
 
     @Override
@@ -349,6 +356,22 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
                     storeIn();
                 }
             });
+            btnSweep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle args = new Bundle();
+                    args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                            PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                    EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+                }
+            });
+
+            if (SharedPreferencesManagerImpl.isCameraSweepEnabled()) {
+                btnSweep.setVisibility(View.VISIBLE);
+            } else {
+                btnSweep.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             ZLogger.d(e.toString());
@@ -629,7 +652,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         tenantSku.put("buyPrice", buyprice);
         //Column 'cost_price' cannot be null
         tenantSku.put("costPrice", costprice);//默认零售价等于采购价。
-        if (!StringUtils.isEmpty(hintPrice)){
+        if (!StringUtils.isEmpty(hintPrice)) {
             tenantSku.put("hintPrice", hintPrice);//建议零售价,批发商才有
         }
 

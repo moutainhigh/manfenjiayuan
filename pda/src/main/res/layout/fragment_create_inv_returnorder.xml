@@ -1,7 +1,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
 
     <android.support.design.widget.AppBarLayout
@@ -26,7 +26,8 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 app:hint="请选择批发商"
-                app:textColor="@color/material_white"/>
+                app:textColor="@color/material_white"
+                app:textSize="14sp"/>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
@@ -35,15 +36,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/material_white">
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--空视图-->
         <ImageView
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
             android:contentDescription="@null"
+            android:scaleType="centerInside"
             android:src="@mipmap/emptyimage_no_goods"/>
 
         <!--订单列表-->

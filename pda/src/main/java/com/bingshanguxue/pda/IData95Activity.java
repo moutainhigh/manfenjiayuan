@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 
 import com.android.barcodescandemo.ScannerInerface;
+import com.manfenjiayuan.business.utils.BarcodeFactory;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -152,7 +153,12 @@ public abstract class IData95Activity extends BaseActivity {
                     ZLogger.d(String.format("idata.scanResult:%s,%s", barcode, filterResullt));
 
                     if (!StringUtils.isEmpty(filterResullt)){
-                        EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(filterResullt));
+                        Bundle args = new Bundle();
+                        args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                                PDAScanManager.ScanBarcodeEvent.EVENT_ID_SCAN_NEXT);
+                        args.putString(PDAScanManager.ScanBarcodeEvent.KEY_BARCODE,
+                                filterResullt);
+                        EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
                     }
                 }
 

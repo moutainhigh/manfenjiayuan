@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.DataSyncManager;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -58,6 +60,7 @@ public class GoodsInfoFragment extends BaseFragment {
 
 //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSweep;
 
     private ScGoodsSku curGoods = null;
     private boolean isEditable = true;//网店商品档案允许被修改，平台商品档案不允许被修改。
@@ -95,6 +98,7 @@ public class GoodsInfoFragment extends BaseFragment {
         labelSellNum7 = (TextLabelView) rootView.findViewById(R.id.label_sellNum7);
         labelSellNum30 = (TextLabelView) rootView.findViewById(R.id.label_sellNum30);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
+        btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
 
         labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
             @Override
@@ -148,6 +152,22 @@ public class GoodsInfoFragment extends BaseFragment {
                 submit();
             }
         });
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -191,7 +211,7 @@ public class GoodsInfoFragment extends BaseFragment {
         onSubmitProcess();
 
         if (curGoods == null) {
-            onSubmitError("商品无效");
+            onSubmitError("请扫描商品条码");
             return;
         }
 
@@ -301,7 +321,7 @@ public class GoodsInfoFragment extends BaseFragment {
             labelCostPrice.setInputEnabled(false);
             labelUpperLimit.setInputEnabled(false);
             btnSubmit.setEnabled(false);
-            btnSubmit.setVisibility(View.GONE);
+//            btnSubmit.setVisibility(View.GONE);
 
 //            DeviceUtils.hideSoftInput(getActivity(), etQuery);
         } else {
@@ -323,11 +343,13 @@ public class GoodsInfoFragment extends BaseFragment {
             labelUpperLimit.setInputEnabled(isEditable);
             if (isEditable){
                 labelCostPrice.requestFocusEnd();
-                btnSubmit.setVisibility(View.VISIBLE);
+//                btnSubmit.setVisibility(View.VISIBLE);
                 btnSubmit.setEnabled(true);
             }
             else{
-                btnSubmit.setVisibility(View.GONE);
+//                btnSubmit.setVisibility(View.GONE);
+                btnSubmit.setEnabled(false);
+
             }
         }
     }

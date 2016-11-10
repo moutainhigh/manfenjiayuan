@@ -120,6 +120,7 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
                 reload();
             }
         });
+        mScanBar.setHint("速记码");
         initRecyclerView();
 
         reload();

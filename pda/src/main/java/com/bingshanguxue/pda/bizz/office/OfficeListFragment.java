@@ -25,16 +25,16 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
  */
 public class OfficeListFragment extends BaseListFragment<Office> {
 
-//    @Bind(R.id.toolbar)
+    //    @Bind(R.id.toolbar)
     Toolbar mToolbar;
-//    @Bind(R.id.goods_list)
+    //    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private OfficeAdapter companyAdapter;
 
-//    @Bind(R.id.empty_view)
+    //    @Bind(R.id.empty_view)
     View emptyView;
-//    @Bind(R.id.animProgress)
+    //    @Bind(R.id.animProgress)
     ProgressBar progressBar;
 
     public static OfficeListFragment newInstance(Bundle args) {
@@ -76,13 +76,17 @@ public class OfficeListFragment extends BaseListFragment<Office> {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            abilityItem = args.getInt(EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
-//        }
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_DEFAULT);
+        }
 
         mToolbar.setTitle("选择网点");
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override

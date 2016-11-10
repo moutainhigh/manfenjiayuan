@@ -13,10 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invcheck.Shelfnumber;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
@@ -27,7 +30,6 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.PrimaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
@@ -36,13 +38,13 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.UIHelper;
-import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -67,6 +69,9 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
 
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private Long curOrderId;//当前盘点批次编号
     private Shelfnumber curShelfNumber = null;//当前盘点区域
@@ -171,14 +176,30 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
             return;
         }
 
-        Long lastOrderId = SharedPreferencesHelper.getLastStocktakeOrderId();
+        Long lastOrderId = SharedPreferencesManagerImpl.getLastStocktakeOrderId();
         if (lastOrderId.compareTo(curOrderId) != 0) {
             //清空盘点记录
             InvCheckGoodsService.get().clear();
         }
         //保存当前盘点编号
-        SharedPreferencesHelper.setLastStocktakeOrderId(curOrderId);
+        SharedPreferencesManagerImpl.setLastStocktakeOrderId(curOrderId);
 
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
         mScanBar.reset();
 
         if (curShelfNumber == null){

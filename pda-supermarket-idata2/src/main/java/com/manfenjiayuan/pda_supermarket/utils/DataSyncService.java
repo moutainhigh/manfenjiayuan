@@ -2,21 +2,21 @@ package com.manfenjiayuan.pda_supermarket.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.database.entity.ShelveEntity;
-import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.ShelveService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -146,7 +146,7 @@ public class DataSyncService {
             return;
         }
 
-        String lastCursor = SharedPreferencesHelper.getStocktakeLastUpdate();
+        String lastCursor = SharedPreferencesManagerImpl.getStocktakeLastUpdate();
 
 //        List<InvCheckGoodsEntity> entityList = InvCheckGoodsService.get()
 //                .queryAllBy(String.format("createdDate > '%s' and syncStatus < '%d'",
@@ -197,7 +197,7 @@ public class DataSyncService {
                                 case "0":{
                                     ZLogger.d("盘点成功: " + rspBody.getReturnInfo());
                                     //需要更新订单流水
-                                    SharedPreferencesHelper.setStocktakeLastUpdate(finalNewCursor);
+                                    SharedPreferencesManagerImpl.setStocktakeLastUpdate(finalNewCursor);
                                     entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_FINISHED);
                                     InvCheckGoodsService.get().saveOrUpdate(entity);
                                 }
@@ -268,7 +268,7 @@ public class DataSyncService {
             return;
         }
 
-        String lastCursor = SharedPreferencesHelper.getStocktakeLastUpdate();
+        String lastCursor = SharedPreferencesManagerImpl.getStocktakeLastUpdate();
 
 //        List<InvCheckGoodsEntity> entityList = InvCheckGoodsService.get()
 //                .queryAllBy(String.format("createdDate > '%s' and syncStatus < '%d'",
@@ -304,7 +304,7 @@ public class DataSyncService {
                         ZLogger.d("上传绑定记录成功:" + retStr);
 
                         //需要更新订单流水
-                        SharedPreferencesHelper.setStocktakeLastUpdate(finalNewCursor);
+                        SharedPreferencesManagerImpl.setStocktakeLastUpdate(finalNewCursor);
                         entity.setSyncStatus(L2CSyncStatus.SYNC_STATUS_FINISHED);
                         ShelveService.get().saveOrUpdate(entity);
 
@@ -325,7 +325,6 @@ public class DataSyncService {
         };
 
         InvSkuStoreApiImpl.bindRackNo(entity.getBarcode(), String.valueOf(entity.getRackNo()), responseCallback);
-
     }
 
 

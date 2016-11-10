@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -35,6 +37,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -58,6 +61,8 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
 
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private InvLossGoodsEntity curGoods = null;
     private ScGoodsSkuPresenter chainGoodsSkuPresenter;
@@ -131,6 +136,24 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
 //                eqvBarcode.requestFocus();
             }
         });
+
+
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
 
         Bundle args = getArguments();
         if (args != null) {

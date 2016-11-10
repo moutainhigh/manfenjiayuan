@@ -85,7 +85,7 @@ public class AcceptPrepareOrdersFragment extends BaseFragment implements IScOrde
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_invfind_create;
+        return R.layout.fragment_buyer_scorder;
     }
 
     @Override

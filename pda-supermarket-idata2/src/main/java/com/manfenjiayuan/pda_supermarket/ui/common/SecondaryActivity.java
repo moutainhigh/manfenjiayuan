@@ -12,7 +12,6 @@ import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.InvSendIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invcheck.InvCheckHistoryFragment;
@@ -34,7 +33,6 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
     public static final int FT_INVRETURN_INSPECTGOODS = 0x03;//退货验货
     public static final int FT_INVIO_INSPECTGOODS = 0x04;//出入库验货
     public static final int FRAGMENT_TYPE_INV_SENDORDER = 0x06;//采购订单列表
-    public static final int FRAGMENT_TYPE_INV_RECVDORDER_CREATE = 0x07;//新建采购收货单
     public static final int FT_SKUGOODS_CONVERT_TO = 0x08;//转换成商品
     public static final int FT_INVLOSS_INSPECTGOODS = 0x09;//报损验货
     public static final int FRAGMENT_TYPE_STOCK_TAKE = 0x10;//盘点
@@ -165,19 +163,6 @@ public class SecondaryActivity extends IData95Activity implements BackHandledInt
                 fragment = InvSendOrderListFragment.newInstance(intent.getExtras());
             } else {
                 fragment = InvSendOrderListFragment.newInstance(null);
-            }
-
-            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, commodityApplyFragment).show(commodityApplyFragment)
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-        } else if (serviceType == FRAGMENT_TYPE_INV_RECVDORDER_CREATE) {
-            CreateInvReceiveOrderFragment fragment;
-            Intent intent = this.getIntent();
-            if (intent != null) {
-                fragment = CreateInvReceiveOrderFragment.newInstance(intent.getExtras());
-            } else {
-                fragment = CreateInvReceiveOrderFragment.newInstance(null);
             }
 
             getSupportFragmentManager().beginTransaction()

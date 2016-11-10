@@ -194,6 +194,13 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
 
         return isResponseBackPressed();
     }
+
+    @OnClick(R.id.fab_scan)
+    @Override
+    protected void zxingSweep() {
+        super.zxingSweep();
+    }
+
     /**
      * 获取当前订单交易编号
      */
@@ -315,6 +322,7 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
             doPosSettleStuff();
         }
     }
+
 
     /**
      * <ol>

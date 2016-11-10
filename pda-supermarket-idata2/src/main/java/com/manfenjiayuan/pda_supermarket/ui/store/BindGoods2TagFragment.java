@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -37,6 +39,7 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -63,6 +66,8 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
 
     @Bind(R.id.fab_submit)
     FloatingActionButton btnBind;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private InvSkuGoods curGoods = null;
     private InvSkuGoodsPresenter mInvSkuGoodsPresenter = null;
@@ -118,7 +123,8 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
             mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
         } else {
             mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-        }        mToolbar.setNavigationOnClickListener(
+        }
+        mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -163,6 +169,23 @@ public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoo
                 refresh(null);
             }
         });
+
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
     }
 
     @Override

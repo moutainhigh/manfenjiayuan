@@ -3,7 +3,7 @@ package com.manfenjiayuan.pda_supermarket.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.OrderPayInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierAgent;
@@ -47,8 +47,7 @@ public abstract class OrderSyncManager {
      * 获取订单同步时间游标
      * */
     public static String getPosOrderStartCursor() {
-        String lastSyncCursor = SharedPreferencesHelper
-                .getText(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR);
+        String lastSyncCursor = SharedPreferencesManagerImpl.getSyncProductsStartcursor();
         ZLogger.df(String.format("上次订单同步时间游标(%s)。", lastSyncCursor));
 
         //与当前时间相比，取最小当时间

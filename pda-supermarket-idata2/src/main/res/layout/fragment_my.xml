@@ -28,7 +28,18 @@
                 android:layout_height="120dp"
                 app:subTextSize="16sp"
                 app:textSize="16sp"
+                app:endArrowVisible="false"
                 android:background="@color/mfh_colorPrimary"/>
+
+            <!--摄像头扫描-->
+            <com.bingshanguxue.vector_uikit.ToggleSettingItem
+                android:id="@+id/item_camerasweep"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:text="摄像头扫描"
+                app:isLogoVisible="false"
+                app:position="single"/>
 
             <!--设备-->
             <com.bingshanguxue.vector_uikit.SettingsItem

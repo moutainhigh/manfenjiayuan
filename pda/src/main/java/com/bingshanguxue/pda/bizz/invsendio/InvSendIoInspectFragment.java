@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
+import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -34,6 +36,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.Date;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -67,6 +70,8 @@ public class InvSendIoInspectFragment extends PDAScanFragment
     EditLabelView labelSignQuantity;
     //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSweep;
+
 
     private InvSendIoGoodsEntity curGoods = null;
     private ChainGoodsSkuPresenter chainGoodsSkuPresenter;
@@ -106,13 +111,31 @@ public class InvSendIoInspectFragment extends PDAScanFragment
         labelQuantityCheck = (TextLabelView) rootView.findViewById(R.id.label_quantity_check);
         labelSignQuantity = (EditLabelView) rootView.findViewById(R.id.label_sign_quantity);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
-
+        btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
+        
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submit();
             }
         });
+
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
     }
 
     @Override

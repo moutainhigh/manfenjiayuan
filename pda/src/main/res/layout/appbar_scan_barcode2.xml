@@ -29,6 +29,7 @@
                 android:layout_weight="1"
                 style="@style/mfh_scanBar"
                 app:hint="请扫描商品条码"
+                app:logoSrc="@mipmap/ic_scan"
                 app:editInputType="barcode"/>
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/checkbox"

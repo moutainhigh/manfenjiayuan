@@ -2,7 +2,7 @@ package com.manfenjiayuan.pda_supermarket.service;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.PosOrderService;
@@ -214,7 +214,7 @@ public class UploadSyncManager extends OrderSyncManager {
                     @Override
                     public void processResult(IResponseData rspData) {
                         // 保存批量上传订单时间
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR,
+                        SharedPreferencesManagerImpl.setSyncProductsStartcursor(
                                 TimeUtil.format(finalNewCursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
 
                         //继续上传订单
@@ -282,7 +282,7 @@ public class UploadSyncManager extends OrderSyncManager {
                         PosOrderService.get().saveOrUpdate(orderEntity);
 
                         onNext(String.format("上传收银订单数据完成。%s",
-                                SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR)
+                                SharedPreferencesManagerImpl.getSyncProductsStartcursor()
                         ));
                     }
 
@@ -318,7 +318,7 @@ public class UploadSyncManager extends OrderSyncManager {
         }
         else{
             onNext(String.format("上传收银订单数据完成。%s",
-                    SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR)
+                    SharedPreferencesManagerImpl.getSyncProductsStartcursor()
             ));
         }
     }

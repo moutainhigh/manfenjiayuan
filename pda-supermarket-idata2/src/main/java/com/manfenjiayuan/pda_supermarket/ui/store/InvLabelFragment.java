@@ -3,10 +3,13 @@ package com.manfenjiayuan.pda_supermarket.ui.store;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.PDAScanManager;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
@@ -30,6 +33,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.List;
 
 import butterknife.Bind;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -54,6 +58,8 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     TextLabelView labelProdArea;
     @Bind(R.id.label_prodLevel)
     TextLabelView labelProdLevel;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     private ScGoodsSku curGoods = null;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
@@ -90,6 +96,23 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             barcode = args.getString(EXTRA_KEY_BARCODE, null);
         }
         super.createViewInner(rootView, container, savedInstanceState);
+
+        btnSweep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
+                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
+                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
+            }
+        });
+
+        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
+        }
 
         queryByBarcode(barcode);
     }

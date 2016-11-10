@@ -240,6 +240,12 @@ public class CreateInvIoOrderFragment extends BaseFragment {
      * 签收
      */
     public void submit() {
+        final List<InvIoGoodsEntity> goodsList = goodsAdapter.getEntityList();
+        if (goodsList == null || goodsList.size() < 1) {
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
+            return;
+        }
+
         showConfirmDialog("确定要提交单据吗？",
                 "确定", new DialogInterface.OnClickListener() {
 
@@ -247,7 +253,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                        doCreateTask();
+                        doCreateTask(goodsList);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -261,14 +267,8 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     /**
      * 创建订单
      */
-    private void doCreateTask() {
+    private void doCreateTask(List<InvIoGoodsEntity> goodsList) {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-
-        List<InvIoGoodsEntity> goodsList = goodsAdapter.getEntityList();
-        if (goodsList == null || goodsList.size() < 1) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
-            return;
-        }
 
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             showProgressDialog(ProgressDialog.STATUS_ERROR,

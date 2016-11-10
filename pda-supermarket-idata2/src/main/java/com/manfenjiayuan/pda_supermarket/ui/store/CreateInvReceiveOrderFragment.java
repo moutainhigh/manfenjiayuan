@@ -130,12 +130,16 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            invSendOrder = (InvSendOrder) args.getSerializable("sendOrder");
-//        }
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+        }
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
 
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override

@@ -71,6 +71,11 @@
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
 
+    <!--sms-->
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
     <application
         android:name=".AppContext"
         android:allowBackup="true"
@@ -133,6 +138,13 @@
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustResize"/>
+
+        <activity
+            android:name="com.mfh.framework.core.qrcode.ScanActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
 
         <receiver android:name="com.bingshanguxue.pda.alarm.KeepAlarmLiveReceiver">
             <intent-filter>

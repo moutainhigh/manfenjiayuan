@@ -13,7 +13,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
+        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -42,6 +42,7 @@
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
+                app:softKeyboardEnabled="true"
                 app:editInputType="numberDecimal"
                 app:editTextHint="请输入价格"
                 app:startText="价格:"/>
@@ -50,6 +51,7 @@
                 android:id="@+id/label_sign_quantity"
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
+                app:softKeyboardEnabled="true"
                 android:layout_height="52dp"
                 app:editInputType="numberDecimal"
                 app:editTextHint="请输入数量"
@@ -58,19 +60,38 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <!--结算-->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_submit"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_fab_confirm"
-        app:backgroundTint="@color/mfh_positive_default"
-        app:borderWidth="0dp"
-        app:elevation="0dp"
-        app:pressedTranslationZ="0dp"
-        app:rippleColor="@color/material_green_800"/>
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/spacing_double">
+
+        <!--扫描-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_scan"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_fab_scan"
+            app:backgroundTint="@color/mfh_positive_default"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            android:layout_marginEnd="@dimen/spacing_double"
+            app:rippleColor="@color/material_green_800"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_submit"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_fab_confirm"
+            app:backgroundTint="@color/mfh_positive_default"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            app:rippleColor="@color/material_green_800"/>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

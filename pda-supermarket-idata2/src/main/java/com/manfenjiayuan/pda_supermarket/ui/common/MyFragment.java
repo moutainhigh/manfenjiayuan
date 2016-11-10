@@ -12,11 +12,13 @@ import android.widget.Button;
 
 import com.bingshanguxue.vector_uikit.ProfileView;
 import com.bingshanguxue.vector_uikit.SettingsItem;
+import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.business.ui.HybridActivity;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -52,6 +54,9 @@ public class MyFragment extends BaseFragment {
     @Bind(R.id.profileView)
     ProfileView mProfileView;
 
+
+    @Bind(R.id.item_camerasweep)
+    ToggleSettingItem itemCameraSweep;
     @Bind(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
     @Bind(R.id.item_upgrade)
@@ -76,7 +81,6 @@ public class MyFragment extends BaseFragment {
         return R.layout.fragment_my;
     }
 
-
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
 
@@ -89,6 +93,15 @@ public class MyFragment extends BaseFragment {
                         getActivity().onBackPressed();
                     }
                 });
+
+        itemCameraSweep.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean on) {
+                if (SharedPreferencesManagerImpl.isCameraSweepEnabled() != on){
+                    SharedPreferencesManagerImpl.setCameraSweepEnabled(on);
+                }
+            }
+        });
 
         refresh(true);
     }
@@ -245,7 +258,7 @@ public class MyFragment extends BaseFragment {
         mProfileView.setAvatarUrl(MfhLoginService.get().getHeadimage());
         mProfileView.setPrimaryText(MfhLoginService.get().getHumanName());
         mProfileView.setSecondaryText(MfhLoginService.get().getTelephone());
-
+        itemCameraSweep.setChecked(SharedPreferencesManagerImpl.isCameraSweepEnabled());
         terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
 
         AppInfo appInfo = AnalysisAgent.getAppInfo(AppContext.getAppContext());
@@ -257,7 +270,6 @@ public class MyFragment extends BaseFragment {
         getuiItem.setSubTitle(String.format("%s-%s",
                 PushManager.getInstance().getClientid(AppContext.getAppContext()),
                 IMConfig.getPushClientId()));
-
 
     }
 

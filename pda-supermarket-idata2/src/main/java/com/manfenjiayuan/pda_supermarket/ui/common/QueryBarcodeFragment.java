@@ -30,8 +30,6 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment {
     public Toolbar mToolbar;
     @Bind(R.id.scanBar)
     public ScanBar mScanBar;
-    @Bind(R.id.fab_cancel)
-    public FloatingActionButton fabCancel;
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
@@ -131,13 +129,6 @@ public abstract class QueryBarcodeFragment extends PDAScanFragment {
         }
 
         // TODO: 7/30/16 执行查询动作
-    }
-
-
-    @OnClick(R.id.fab_cancel)
-    public void cancel() {
-        fabCancel.setEnabled(false);
-        // TODO: 7/30/16 具体提交代码
     }
 
     @OnClick(R.id.fab_submit)

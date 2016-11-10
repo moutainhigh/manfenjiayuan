@@ -3,7 +3,7 @@ package com.manfenjiayuan.pda_supermarket;
 
 import android.os.Environment;
 
-import com.bingshanguxue.pda.utils.SharedPreferencesHelper;
+import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
@@ -39,12 +39,12 @@ public class AppContext extends MfhApplication {
             if (BizConfig.RELEASE){
 //            ZLogger.d("正式版本");
                 ZLogger.LOG_ENABLED = true;
-                SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
+                SharedPreferencesManagerImpl.PREF_NAME_PREFIX = SharedPreferencesManagerImpl.RELEASE_PREFIX;
             }
             else{
 //            ZLogger.d("测试版本");
                 ZLogger.LOG_ENABLED = true;
-                SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
+                SharedPreferencesManagerImpl.PREF_NAME_PREFIX = SharedPreferencesManagerImpl.DEV_PREFIX;
             }
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());

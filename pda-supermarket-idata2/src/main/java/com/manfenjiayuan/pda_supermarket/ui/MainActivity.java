@@ -413,52 +413,52 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             }
 
             Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_INVENTORY_CHECK);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_DISTRIBUTION) == 0) {
             Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_DISTRIBUTION);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_RECEIVEORDER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_BIND_GOODS_2_TAGS) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_BIND_GOODS_2_TAGS);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_LOSSORDER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_RETURNORDER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_INV_CONVERT) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_CONVERT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_IN) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_IN);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_PRINT_TAGS) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_PRINT_PRICETAGS);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_CASHIER) == 0) {
             Bundle extras = new Bundle();
-                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CASHIER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_BUY_PREPARE) == 0) {
@@ -479,17 +479,17 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_INSTOCK_SCORDER) == 0) {
             Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INSTOCK_SCORDER);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_TUOTOU) == 0) {
             Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_RIDER_INSTOCK);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_EMBRACE) == 0) {
             Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_RIDER_SEND);
             PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_ONLINE_ORDER) == 0) {
@@ -535,7 +535,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      */
     private void selectOffice() {
         Bundle extras = new Bundle();
-//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_OFFICE_LIST);
         extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
         Intent intent = new Intent(this, PrimaryActivity.class);
@@ -606,8 +606,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             if (count > 1) {
                 DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
             }
-        }
-        else if (eventId == AffairEvent.EVENT_ID_BUYER_PREPAREABLE) {
+        } else if (eventId == AffairEvent.EVENT_ID_BUYER_PREPAREABLE) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
             ZLogger.df("买手抢单未读消息个数为：" + count);
             menuAdapter.setBadgeNumber(HomeMenu.OPTION_ID_BUY_PREPARE, count);

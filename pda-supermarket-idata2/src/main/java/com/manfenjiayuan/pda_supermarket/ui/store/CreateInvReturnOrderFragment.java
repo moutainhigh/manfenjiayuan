@@ -104,7 +104,15 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+        }
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -202,7 +210,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     }
 
-    private void doSubmitStuff(){
+    private void doSubmitStuff() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
         List<InvReturnGoodsEntity> goodsList = goodsAdapter.getEntityList();
@@ -349,7 +357,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
             case ARCode.ARC_INVCOMPANY_LIST: {
                 if (resultCode == Activity.RESULT_OK) {
                     CompanyInfo companyInfo = (CompanyInfo) data.getSerializableExtra("companyInfo");
-                    if (companyInfo != null){
+                    if (companyInfo != null) {
                         changeSendCompany(companyInfo);
                     }
                 }
