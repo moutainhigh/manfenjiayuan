@@ -100,14 +100,27 @@
         android:theme="@style/AppBaseTheme_Light">
 
         <!-- 引导页 -->
+        <!--android:launchMode="singleTop"-->
+        <!--android:screenOrientation="landscape"-->
         <activity
             android:name=".ui.activity.SplashActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape">
+            android:clearTaskOnLaunch="true"
+            android:launchMode="singleTask"
+            android:resumeWhilePausing="true"
+            android:screenOrientation="nosensor"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity
@@ -307,12 +320,15 @@
 
 
         <service
-            android:name="com.gprinter.service.GpPrintService" android:enabled="true"
-            android:exported="true" android:label="GpPrintService" >
+            android:name="com.gprinter.service.GpPrintService"
+            android:enabled="true"
+            android:exported="true"
+            android:label="GpPrintService">
             <intent-filter>
-                <action android:name="com.gprinter.aidl.GpPrintService" />
-            </intent-filter> </service>
-        <service android:name="com.gprinter.service.AllService" >
+                <action android:name="com.gprinter.aidl.GpPrintService"/>
+            </intent-filter>
+        </service>
+        <service android:name="com.gprinter.service.AllService">
         </service>
 
     </application>
