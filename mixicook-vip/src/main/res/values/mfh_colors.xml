@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="mfh_colorPrimary">@color/material_green_500</color>
+    <color name="mfh_colorPrimary">#0AB14B</color>
     <color name="mfh_colorPrimaryGrey">@color/material_grey_500</color>
     <color name="mfh_colorPrimaryDark">@color/material_green_700</color>
     <color name="mfh_colorAccent">#FF4081</color>
@@ -13,7 +13,7 @@
     <!--灰色蒙板-->
     <color name="mfhtheme_maskPrimary">#F4F5F9</color>
 
-    <color name="mfh_toolbar_background">@color/material_green_500</color>
+    <color name="mfh_toolbar_background">#0AB14B</color>
     <color name="mfh_splash_startColor">#64ffffff</color>
     <color name="mfh_splash_endColor">#64e5e5e5</color>
 

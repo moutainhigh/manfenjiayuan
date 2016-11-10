@@ -157,7 +157,7 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:background="@null"
-                    android:layout_margin="@dimen/spacing_normal"
+                    android:layout_marginStart="@dimen/spacing_normal"
                     android:src="@mipmap/ic_sweep_circle"/>
 
                 <ImageButton
@@ -165,7 +165,8 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:background="@null"
-                    android:layout_margin="@dimen/spacing_normal"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    android:layout_marginEnd="@dimen/spacing_normal"
                     android:src="@mipmap/ic_vippay_circle"/>
 
             </LinearLayout>
@@ -191,7 +192,7 @@
                     app:bottomTextColor="@color/black_35"
                     app:bottomTextSize="14sp"
                     app:topText="￥ 0.00"
-                    app:topTextColor="#FF4081"
+                    app:topTextColor="#FF9402"
                     app:topTextSize="26sp"/>
 
                 <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
@@ -215,7 +216,7 @@
                     app:bottomTextColor="@color/black_35"
                     app:bottomTextSize="14sp"
                     app:topText="￥ 0.00"
-                    app:topTextColor="@color/mfh_colorPrimary"
+                    app:topTextColor="#0AB14B"
                     app:topTextSize="26sp"/>
 
             </LinearLayout>
