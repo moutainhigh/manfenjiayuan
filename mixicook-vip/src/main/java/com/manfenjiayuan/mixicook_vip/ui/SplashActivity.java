@@ -166,7 +166,6 @@ public class SplashActivity extends InitActivity {
         }
     }
 
-
     /**
      *  初始化完成
      */
