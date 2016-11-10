@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Nexus6P 1440*2560（560dpi）-->
+    <!--=1440*(2392+168)-->
+    <!--411*731=411*(683+48)-->
+    <!--米2 1280*720(xhdpi,320dpi)-->
+
 
     <dimen name="textsize_default">16sp</dimen>
 

@@ -27,7 +27,7 @@ import com.mfh.framework.uikit.dialog.DialogHelper;
  * Created by bingshanguxue on 4/13/16.
  */
 public class UIHelper {
-    public static final int ACTIVITY_REQUEST_CODE_ZXING_QRCODE = 0X1001;
+    public static final int ACTIVITY_REQUEST_CODE_ZXING_QRCODE  = 0X1001;
     public static final int PERMISSIONS_REQUEST_READ_CONTACTS   = 0X1020;//读取联系人
     public static final int PERMISSIONS_REQUEST_CALL_PHONE      = 0X1021;//拨打电话
     public static final int PERMISSIONS_REQUEST_CAMERA          = 0X1022;//拍照

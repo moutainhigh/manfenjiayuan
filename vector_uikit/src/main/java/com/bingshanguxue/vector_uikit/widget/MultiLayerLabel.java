@@ -13,6 +13,7 @@ import com.bingshanguxue.vector_uikit.R;
 import com.mfh.framework.core.utils.DensityUtil;
 
 /**
+ * slice
  * 垂直分布的文字
  */
 public class MultiLayerLabel extends RelativeLayout {
@@ -26,7 +27,7 @@ public class MultiLayerLabel extends RelativeLayout {
 
 	public MultiLayerLabel(Context context, AttributeSet attrs) {
 		super(context, attrs);
-        View.inflate(context, R.layout.view_multi_layer_label, this);
+        View.inflate(context, R.layout.widget_multilayerlabel, this);
         tvTop = (TextView) this.findViewById(R.id.tv_top);
         tvBottom = (TextView) this.findViewById(R.id.tv_bottom);
 
