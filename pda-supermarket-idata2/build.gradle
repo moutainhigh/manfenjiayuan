@@ -124,6 +124,6 @@ dependencies {
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
-    compile 'com.getui:sdk:2.9.3.0'
+    compile rootProject.ext.dependencies["getui"]
     compile rootProject.ext.dependencies["support-v4"]
 }

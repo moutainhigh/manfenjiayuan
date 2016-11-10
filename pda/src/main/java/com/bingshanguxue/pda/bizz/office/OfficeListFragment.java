@@ -81,7 +81,7 @@ public class OfficeListFragment extends BaseListFragment<Office> {
 //            abilityItem = args.getInt(EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
 //        }
 
-        mToolbar.setTitle("选择网店");
+        mToolbar.setTitle("选择网点");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -92,7 +92,6 @@ public class OfficeListFragment extends BaseListFragment<Office> {
                 });
 
         initRecyclerView();
-
 
         reload();
     }

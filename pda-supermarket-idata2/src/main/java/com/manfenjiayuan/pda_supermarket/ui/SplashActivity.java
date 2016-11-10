@@ -121,8 +121,8 @@ public class SplashActivity extends InitActivity {
         String cid = PushManager.getInstance().getClientid(AppContext.getAppContext());
         ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
         PushManager.getInstance().initialize(this.getApplicationContext());
-
     }
+
     /**
      *  初始化完成
      */
