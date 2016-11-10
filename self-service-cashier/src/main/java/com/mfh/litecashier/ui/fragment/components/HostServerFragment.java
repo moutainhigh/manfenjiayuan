@@ -33,7 +33,6 @@ import butterknife.Bind;
 public class HostServerFragment extends BaseProgressFragment {
     public static String EXTRA_KEY_HOSTSERVER= "hostServer";
 
-
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recyclerView)
@@ -53,7 +52,7 @@ public class HostServerFragment extends BaseProgressFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_hostname;
+        return R.layout.fragment_hostserver;
     }
 
     @Override

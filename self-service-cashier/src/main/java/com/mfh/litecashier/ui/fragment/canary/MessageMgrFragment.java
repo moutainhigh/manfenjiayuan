@@ -20,8 +20,6 @@ import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -325,66 +323,6 @@ public class MessageMgrFragment extends BaseListFragment<EmbMsg> {
      * 加载数据
      * */
     private void load(PageInfo pageInfo) {
-        String barcode = insvOrderBarcode != null ? insvOrderBarcode.getInputString() : "";
-
-        StringBuilder sbWhere = new StringBuilder();
-        sbWhere.append(String.format("barcode like '%%%s%%'", barcode));
-
-        String tenantStr = spinnerTenant != null ? spinnerTenant.getSelectedItem().toString() : "";
-        if (tenantStr.equals("当前租户")){
-            sbWhere.append(String.format(" and tenantId = '%d'", MfhLoginService.get().getSpid()));
-        }
-
-        String orderStatusCaption = spinnerStatus != null ? spinnerStatus.getSelectedItem().toString() : "";
-        switch (orderStatusCaption){
-            case "出售中":{
-                sbWhere.append(String.format(" and status = '%d'", 1));
-            }
-            break;
-            case "已下架":{
-                sbWhere.append(String.format(" and status = '%d'", 0));
-            }
-            break;
-            default:{
-            }
-            break;
-        }
-
-        String cateTypeCaption = spinnerCatetype != null ? spinnerCatetype.getSelectedItem().toString() : "";
-        switch (cateTypeCaption){
-            case "普通商品":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_NORMAL));
-            }
-            break;
-            case "商品套餐":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_PACKAGE));
-            }
-            break;
-            case "生鲜":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_FRESH));
-            }
-            break;
-            case "香烟":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_SMOKE));
-            }
-            break;
-            case "烘培":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_BAKING));
-            }
-            break;
-            case "水果":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_FRUIT));
-            }
-            break;
-            case "水台":{
-                sbWhere.append(String.format(" and cateType = '%d'", CateApi.BACKEND_CATE_BTYPE_WARTER));
-            }
-            break;
-            default:{
-            }
-            break;
-        }
-
         List<EmbMsg> entities  = EmbMsgService.getInstance().queryAll(pageInfo);
 
         if (entities == null || entities.size() < 1) {

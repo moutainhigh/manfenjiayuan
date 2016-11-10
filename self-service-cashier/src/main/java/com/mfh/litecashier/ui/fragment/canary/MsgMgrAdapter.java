@@ -1,7 +1,6 @@
 package com.mfh.litecashier.ui.fragment.canary;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -10,11 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.constants.IMTechType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
-import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -184,47 +181,6 @@ public class MsgMgrAdapter
         }
     }
 
-    @Override
-    public void removeEntity(final int position) {
-        if (entityList == null || position < 0 || position >= entityList.size()) {
-//                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
-            return;
-        }
-
-        final EmbMsg entity = entityList.get(position);
-        if (entity == null) {
-            return;
-        }
-
-        if (confirmDialog == null) {
-            confirmDialog = new CommonDialog(mContext);
-        }
-
-        confirmDialog.setMessage(String.format("<p>商品条码：%s\n</p>",
-                entity.getId()) + "<p>[删除商品]: 删除后会可能会影响收银。\n</p>");
-        confirmDialog.setPositiveButton("删除商品", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
-                entityList.remove(position);
-                notifyItemRemoved(position);
-
-                PosProductService.get().deleteById(String.valueOf(entity.getId()));
-            }
-        });
-        confirmDialog.setNegativeButton("点错了", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EmbMsgService.getInstance().setAllUnRead(IMBizType.TENANT_SKU_UPDATE);
-                dialog.dismiss();
-            }
-        });
-        confirmDialog.show();
-    }
 
     @Override
     public void setEntityList(List<EmbMsg> entityList) {
