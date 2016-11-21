@@ -37,7 +37,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -279,7 +279,7 @@ public class AlipayDialog extends CommonDialog {
         orderInfo.put("body", mQuickPayInfo.getBody());
         orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
-        orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
+        orderInfo.put("terminal_id", SharedPrefesManagerFactory.getTerminalId());
         orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
 //        Human member = GlobalInstance.getInstance().getMfMemberInfo();
 //        if (member != null) {
@@ -374,7 +374,7 @@ public class AlipayDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        ZLogger.df(String.format("支付宝条码支付：支付金额:%.2f, 授权码：%s, 业务类型：%s",
+        ZLogger.df(String.format("支付宝条码支付：金额:%.2f, 授权码：%s, 业务类型：%s",
                 mQuickPayInfo.getAmount(), authCode, mQuickPayInfo.getBizType()));
         JSONObject jsonStr = generateOrderInfo(mQuickPayInfo.getAmount(), authCode);
 
@@ -574,6 +574,7 @@ public class AlipayDialog extends CommonDialog {
                            DialogClickListener callback) {
         initialize(quickPayInfo, isCancelAbled, true, callback);
     }
+
     public void initialize(QuickPayInfo quickPayInfo, boolean isCancelAbled, boolean isRefreshEnabled,
                            DialogClickListener callback) {
         this.mQuickPayInfo = quickPayInfo;
@@ -676,10 +677,10 @@ public class AlipayDialog extends CommonDialog {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             Double amount = Double.valueOf(retValue.getValue());
                             if (amount >= 0.01) {
-                                if (mQuickPayInfo != null){
+                                if (mQuickPayInfo != null) {
                                     mQuickPayInfo.setMinAmount(amount);
                                     mQuickPayInfo.setAmount(amount);
-                                    tvHandleAmount.setText(String.format(Locale.getDefault(),"%.2f", mQuickPayInfo.getAmount()));
+                                    tvHandleAmount.setText(String.format(Locale.getDefault(), "%.2f", mQuickPayInfo.getAmount()));
                                 }
                                 enterStandardMode();
                             } else {
@@ -739,7 +740,7 @@ public class AlipayDialog extends CommonDialog {
                                         "判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
                                         isNeedLock, amount));
                                 if (isNeedLock && amount >= 0.01) {
-                                    if (mQuickPayInfo != null){
+                                    if (mQuickPayInfo != null) {
                                         mQuickPayInfo.setMinAmount(amount);
                                         mQuickPayInfo.setAmount(amount);
                                         tvHandleAmount.setText(String.format(Locale.getDefault(),
@@ -747,7 +748,7 @@ public class AlipayDialog extends CommonDialog {
                                     }
                                     enterStandardMode();
                                 } else {
-                                   dismiss();
+                                    dismiss();
                                 }
                             } else {
                                 ZLogger.df("判断是否需要锁定POS机:" + result);

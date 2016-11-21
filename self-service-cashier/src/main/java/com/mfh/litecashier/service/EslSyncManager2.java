@@ -11,10 +11,10 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.century.GreenTagsApi;
 
@@ -70,8 +70,8 @@ public class EslSyncManager2 extends EslSyncManager{
     public synchronized void sync() {
         retrySyncFlag = 0;
 
-        if (!SharedPreferencesHelper
-                .getBoolean(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, false)){
+        if (!SharedPreferencesUltimate
+                .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_ESL_ENABLED, false)){
             uploadFinished("请在设置中打开同步商品库到电子价签同步开关。");
             return;
         }
@@ -225,7 +225,7 @@ public class EslSyncManager2 extends EslSyncManager{
 
                 // 保存批量上传订单时间
                 String cursor = TimeUtil.format(newCursor, TimeCursor.InnerFormat);
-                SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+                SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                         GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, cursor);
 
                 ZLogger.df(String.format("ESLPushGoodsInfoExPack 保存价签同步时间：%s", cursor));

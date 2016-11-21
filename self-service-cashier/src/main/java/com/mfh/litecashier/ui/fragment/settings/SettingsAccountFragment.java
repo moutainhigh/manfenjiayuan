@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import butterknife.Bind;
 
@@ -43,12 +43,12 @@ public class SettingsAccountFragment extends BaseFragment {
                 + String.format("\n营业员: %s", MfhLoginService.get().getHumanName());
         tvCurOfficeId.setText(oficeInfo);
 
-        tvAccountSyncInterval.setText(String.format("账号同步间隔：%ds", SharedPreferencesHelper.getSyncCompanyHumanInterval()));
-        accountSyncSwitchCompat.setChecked(SharedPreferencesHelper.isSyncCompanyHumanEnabled());
+        tvAccountSyncInterval.setText(String.format("账号同步间隔：%ds", SharedPreferencesUltimate.getSyncCompanyHumanInterval()));
+        accountSyncSwitchCompat.setChecked(SharedPreferencesUltimate.isSyncCompanyHumanEnabled());
         accountSyncSwitchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferencesHelper.setSyncCompanyHumanEnabled(isChecked);
+                SharedPreferencesUltimate.setSyncCompanyHumanEnabled(isChecked);
             }
         });
     }

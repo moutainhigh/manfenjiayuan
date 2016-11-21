@@ -9,25 +9,25 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanManager;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.QueryBarcodeFragment;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvSkuLabelApi;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     public static InvLabelFragment newInstance(Bundle args) {
         InvLabelFragment fragment = new InvLabelFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -107,10 +107,9 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
 
@@ -120,20 +119,19 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
 
     /**
      * 查询商品
-     * */
+     */
     @Override
     public void sendQueryReq(String barcode) {
         super.sendQueryReq(barcode);
 
-        if (StringUtils.isEmpty(barcode)){
+        if (StringUtils.isEmpty(barcode)) {
             onQueryError("条码无效");
             return;
         }
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             onQueryError(getString(R.string.toast_network_error));
-        }
-        else{
+        } else {
             // TODO: 7/30/16 执行查询动作
             mScGoodsSkuPresenter.getByBarcode(barcode);
         }
@@ -143,7 +141,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     public void submit() {
         super.submit();
 
-        if (curGoods == null ) {
+        if (curGoods == null) {
             onSubmitError("商品无效");
             return;
         }
@@ -201,11 +199,11 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
 
     /**
      * 刷新信息
-     * */
-    private void refreshPackage(ScGoodsSku goods){
+     */
+    private void refreshPackage(ScGoodsSku goods) {
         refresh();
         curGoods = goods;
-        if (curGoods == null){
+        if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelShortName.setTvSubTitle("");
@@ -215,8 +213,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             labelProdLevel.setTvSubTitle("");
 
             btnSubmit.setEnabled(false);
-        }
-        else {
+        } else {
             labelBarcode.setTvSubTitle(curGoods.getBarcode());
             labelProductName.setTvSubTitle(curGoods.getSkuName());
             labelShortName.setTvSubTitle(curGoods.getShortName());

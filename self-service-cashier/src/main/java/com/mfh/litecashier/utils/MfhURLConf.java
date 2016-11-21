@@ -92,7 +92,7 @@ public class MfhURLConf {
 //        sb.append(String.format("t=%s", String.valueOf(new Date().getTime())));
 
 //        sb.append("&");
-//        sb.append(String.format("JSESSIONID=%s", SharedPreferencesManager.getLastSessionId()));
+//        sb.append(String.format("JSESSIONID=%s", SharedPrefesManagerFactory.getLastSessionId()));
 
         //添加新参数
         if(params != null){

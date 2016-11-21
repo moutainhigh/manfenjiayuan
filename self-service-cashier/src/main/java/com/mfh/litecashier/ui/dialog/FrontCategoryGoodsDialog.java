@@ -20,7 +20,7 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
 import com.mfh.litecashier.R;
@@ -91,7 +91,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etValue);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etValue);

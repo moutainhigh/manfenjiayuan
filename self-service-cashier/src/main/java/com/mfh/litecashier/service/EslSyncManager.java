@@ -8,7 +8,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
 
 import org.century.GreenTagsApi;
@@ -45,7 +45,7 @@ public class EslSyncManager {
      * 获取价签同步开始游标
      */
     public String getEslStartCursor() {
-        String startCursor = SharedPreferencesManager.getText(GreenTagsApi.PREF_GREENTAGS,
+        String startCursor = SharedPrefesManagerFactory.getString(GreenTagsApi.PREF_GREENTAGS,
                 GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR);
         ZLogger.df(String.format("最后一次价签同步的更新时间(%s)。", startCursor));
 

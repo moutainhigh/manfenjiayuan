@@ -20,7 +20,7 @@ import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
@@ -124,7 +124,7 @@ public class CashierHelper {
         String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
         ZLogger.d(String.format("订单过期时间(%s)保留最近30天数据。", expireCursor));
 
-        String lastUpdateCursor = SharedPreferencesHelper.getPosOrderLastUpdate();
+        String lastUpdateCursor = SharedPreferencesUltimate.getPosOrderLastUpdate();
         ZLogger.d(String.format("last posorder upload datetime(%s)。", lastUpdateCursor));
 
         if (!StringUtils.isEmpty(lastUpdateCursor)) {
@@ -211,7 +211,7 @@ public class CashierHelper {
      * 获取指定长度的设备终端编号,左对齐，不足右补空格(0)
      */
     public static String getTerminalId(int length) {
-        String terminalId = SharedPreferencesManager.getTerminalId();
+        String terminalId = SharedPrefesManagerFactory.getTerminalId();
 
         StringBuilder sb = new StringBuilder();
         sb.append(terminalId);
@@ -248,7 +248,7 @@ public class CashierHelper {
      * 更新客显信息
      */
     public static void broadcastCashierOrderInfo(int cmdType, CashierOrderInfo cashierOrderInfo) {
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
+        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
             ZLogger.d("PAD客显功能未打开");
             return;
         }

@@ -1,7 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.service;
 
 import com.bingshanguxue.pda.DataSyncManager;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
+import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.pda_supermarket.AppContext;
@@ -22,7 +22,6 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -285,13 +284,13 @@ public class DataSyncManagerImpl extends DataSyncManager {
 
                     //更新游标
                     if (cussor != null) {
-                        SharedPreferencesManagerImpl.setSyncProductsStartcursor(TimeCursor.InnerFormat.format(cussor));
+                        SharedPrefesManagerUltimate.setSyncProductsStartcursor(TimeCursor.InnerFormat.format(cussor));
                     }
 
                     ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 结束", rs.getReturnNum(),
                             rs.getTotalNum(), mPageInfo.getPageNo(),
                             mPageInfo.getTotalPage(),
-                            SharedPreferencesManagerImpl.getSyncProductsStartcursor()));
+                            SharedPrefesManagerUltimate.getSyncProductsStartcursor()));
 
                 } catch (Throwable ex) {
                     ZLogger.ef(String.format("保存商品库失败: %s", ex.toString()));
@@ -360,7 +359,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
                                         "下一次需要全量同步商品库", posNum, skuNum));
 
                                 //初始化游标并设置下次需要全量更新
-                                SharedPreferencesManagerImpl.setSyncProductsStartcursor("");
+                                SharedPrefesManagerUltimate.setSyncProductsStartcursor("");
 
                                 //删除无效的数据
                                 PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
@@ -411,7 +410,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
 
         mPosSkuPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        String lastCursor = SharedPreferencesManagerImpl.getSyncProductsStartcursor();
+        String lastCursor = SharedPrefesManagerUltimate.getSyncProductSkuCursor();
 
         //从第一页开始请求，每页最多50条记录
         downloadProductSku(lastCursor, mPosSkuPageInfo);
@@ -483,8 +482,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
 
                 //更新游标
                 if (cursor != null) {
-                    SharedPreferencesManagerImpl.setSyncProductsStartcursor(
-                            TimeUtil.format(cursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+                    SharedPrefesManagerUltimate.setSyncProductSkuStartcursor(cursor);
                 }
                 ZLogger.df(String.format("同步 %d/%d 个箱规", retSize, rs.getTotalNum()));
 
@@ -505,7 +503,7 @@ public class DataSyncManagerImpl extends DataSyncManager {
                 pageInfo.moveToNext();
                 downloadProductSku(lastCursor, pageInfo);
             } else {
-                ZLogger.df("同步规格码表品结束:" + SharedPreferencesManagerImpl.getSyncProductsStartcursor());
+                ZLogger.df("同步规格码表品结束:" + SharedPrefesManagerUltimate.getSyncProductsStartcursor());
 
                 nextStep();
             }

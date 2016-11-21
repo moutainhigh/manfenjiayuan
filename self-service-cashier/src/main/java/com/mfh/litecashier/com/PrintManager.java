@@ -17,7 +17,7 @@ import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.bean.wrapper.FreshScheduleGoods;
 
@@ -284,7 +284,7 @@ public class PrintManager {
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
         esc.addText(String.format("下单时间：%s \n",
                 TimeUtil.format(posOrderEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
-        esc.addText(String.format("机器设备号:%s\n", SharedPreferencesManager.getTerminalId()));
+        esc.addText(String.format("机器设备号:%s\n", SharedPrefesManagerFactory.getTerminalId()));
         esc.addText(String.format("收银时间:%s/%s \n",
                 MfhLoginService.get().getLoginName(), MfhLoginService.get().getTelephone()));
         esc.addPrintAndLineFeed();
@@ -440,7 +440,7 @@ public class PrintManager {
 //        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
 //        /**打印 机器设备号＋订单号*/
 //        esc.addText(String.format("%s NO.%s \n",
-//                SharedPreferencesManager.getTerminalId(), firstOrderEntity.getBarCode()));
+//                SharedPrefesManagerFactory.getTerminalId(), firstOrderEntity.getBarCode()));
 //        /**打印 订购日期*/
 //        esc.addText(String.format("%s \n",
 //                TimeUtil.format(firstOrderEntity.getCreatedDate(),
@@ -611,7 +611,7 @@ public class PrintManager {
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
         /**打印 机器设备号＋订单号*/
-        esc.addText(String.format("设备编号：%s \n", SharedPreferencesManager.getTerminalId()));
+        esc.addText(String.format("设备编号：%s \n", SharedPrefesManagerFactory.getTerminalId()));
         /**打印 日期*/
         esc.addText(String.format("订单日期：%s \n", TimeUtil.format(new Date(),
                 TimeCursor.FORMAT_YYYYMMDDHHMM)));

@@ -36,7 +36,6 @@ import butterknife.OnClick;
 public class AcceptableSendOrdersFragment extends BaseListFragment<ScOrder>
         implements IScOrderView {
 
-
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.goods_list)

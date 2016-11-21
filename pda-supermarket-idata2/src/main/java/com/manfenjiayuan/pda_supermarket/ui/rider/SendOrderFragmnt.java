@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
@@ -36,6 +35,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
@@ -161,7 +161,7 @@ public class SendOrderFragmnt extends PDAScanFragment implements IScOrderView {
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
             btnSweep.setVisibility(View.VISIBLE);
         }
         else{
@@ -234,8 +234,14 @@ public class SendOrderFragmnt extends PDAScanFragment implements IScOrderView {
     private void refresh(ScOrder scOrder, boolean hintEnabled, boolean isDelay) {
         mScOrder = scOrder;
 
-        if (mScOrder == null && hintEnabled){
+        if (mScOrder == null){
+            if (hintEnabled){
                 DialogUtil.showHint("未找到订单");
+            }
+            btnSubmit.setEnabled(false);
+        }
+        else{
+            btnSubmit.setEnabled(true);
         }
 
         if (isDelay){

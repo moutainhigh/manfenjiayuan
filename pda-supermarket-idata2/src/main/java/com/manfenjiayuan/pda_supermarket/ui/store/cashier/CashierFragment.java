@@ -16,10 +16,10 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.ARCode;
-import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -40,6 +40,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -77,6 +78,8 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
     private CashierSwipAdapter productAdapter;
     @Bind(R.id.fab_submit)
     FloatingActionButton btnSubmit;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
     /**
      * POS唯一订单号，由POS机本地生成的12位字符串
@@ -173,6 +176,11 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
             }
         });
 
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
+            btnSweep.setVisibility(View.VISIBLE);
+        } else {
+            btnSweep.setVisibility(View.GONE);
+        }
         initCashierRecyclerView();
 
         reload();
@@ -602,7 +610,7 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
 
                     @Override
                     public void onNext(Double value) {
-                        entity.setFinalPrice(Double.valueOf(value));
+                        entity.setFinalPrice(value);
                         entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
                         CashierShopcartService.getInstance().saveOrUpdate(entity);
 

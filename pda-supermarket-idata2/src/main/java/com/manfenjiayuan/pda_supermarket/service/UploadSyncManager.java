@@ -2,7 +2,7 @@ package com.manfenjiayuan.pda_supermarket.service;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
+import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.PosOrderService;
@@ -11,7 +11,6 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.PosOrderApi;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -142,7 +141,7 @@ public class UploadSyncManager extends OrderSyncManager {
     public synchronized void uploadPosOrders() {
         try{
             mOrderPageInfo = new PageInfo(1, MAX_SYNC_ORDER_PAGESIZE);
-            orderStartCursor = getPosOrderStartCursor();
+            orderStartCursor = decorateStartCursor(SharedPrefesManagerUltimate.getPosOrderLastUpdate());
             //上传未同步并且已完成的订单
             orderSqlWhere = String.format("updatedDate >= '%s' and sellerId = '%d' " +
                             "and status = '%d' and isActive = '%d' and syncStatus = '%d'",
@@ -214,8 +213,7 @@ public class UploadSyncManager extends OrderSyncManager {
                     @Override
                     public void processResult(IResponseData rspData) {
                         // 保存批量上传订单时间
-                        SharedPreferencesManagerImpl.setSyncProductsStartcursor(
-                                TimeUtil.format(finalNewCursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+                        SharedPrefesManagerUltimate.setPosOrderLastUpdate(finalNewCursor);
 
                         //继续上传订单
                         if (mOrderPageInfo.hasNextPage()){
@@ -282,7 +280,7 @@ public class UploadSyncManager extends OrderSyncManager {
                         PosOrderService.get().saveOrUpdate(orderEntity);
 
                         onNext(String.format("上传收银订单数据完成。%s",
-                                SharedPreferencesManagerImpl.getSyncProductsStartcursor()
+                                SharedPrefesManagerUltimate.getPosOrderLastUpdate()
                         ));
                     }
 
@@ -318,7 +316,7 @@ public class UploadSyncManager extends OrderSyncManager {
         }
         else{
             onNext(String.format("上传收银订单数据完成。%s",
-                    SharedPreferencesManagerImpl.getSyncProductsStartcursor()
+                    SharedPrefesManagerUltimate.getPosOrderLastUpdate()
             ));
         }
     }

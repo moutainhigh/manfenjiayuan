@@ -20,7 +20,7 @@ import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
@@ -116,7 +116,7 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
     public void onResume() {
         super.onResume();
 
-//        if (SharedPreferencesHelper.isSyncEnabled(SharedPreferencesHelper.PREF_KEY_SYNC_PURCHASESEND_ORDER_ENABLED) || !readCache())
+//        if (SharedPreferencesUltimate.isSyncEnabled(SharedPreferencesUltimate.PREF_KEY_SYNC_PURCHASESEND_ORDER_ENABLED) || !readCache())
         //先加载数据
     }
 

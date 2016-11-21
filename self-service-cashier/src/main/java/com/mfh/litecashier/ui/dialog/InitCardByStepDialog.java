@@ -13,13 +13,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -30,9 +32,9 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
@@ -57,14 +59,14 @@ public class InitCardByStepDialog extends CommonDialog {
     private TextView tvTitle;
     private ImageButton btnClose;
     private AvatarView ivHeader;
-    private TextView tvUsername, tvMobile;
-    private EditText etCardNumber, etCardId;
+    private TextView tvUsername;
+    private TextLabelView labelPhone;
+    private EditLabelView labelCardNumber, labelCardId;
     private Button btnSubmit;
 
     private ProgressBar progressBar;
 
     private Human mHuman = null;//会员信息
-    //确认对话框
     private CommonDialog confirmDialog = null;
 
     public interface OnInitCardListener{
@@ -87,9 +89,9 @@ public class InitCardByStepDialog extends CommonDialog {
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         ivHeader = (AvatarView) rootView.findViewById(R.id.iv_header);
         tvUsername = (TextView) rootView.findViewById(R.id.tv_username);
-        tvMobile = (TextView) rootView.findViewById(R.id.tv_mobile);
-        etCardNumber = (EditText) rootView.findViewById(R.id.et_card_number);
-        etCardId = (EditText) rootView.findViewById(R.id.et_card_id);
+        labelPhone = (TextLabelView) rootView.findViewById(R.id.label_phone);
+        labelCardNumber = (EditLabelView) rootView.findViewById(R.id.label_cardnumber);
+        labelCardId = (EditLabelView) rootView.findViewById(R.id.label_cardid);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
@@ -98,93 +100,60 @@ public class InitCardByStepDialog extends CommonDialog {
         ivHeader.setBorderWidth(3);
         ivHeader.setBorderColor(Color.parseColor("#e8e8e8"));
 
-        etCardNumber.setOnTouchListener(new View.OnTouchListener() {
+        labelCardNumber.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
 //                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
                         showCardNumberKeyboard();
                     } else {
-                        DeviceUtils.hideSoftInput(getContext(), etCardNumber);
+                        DeviceUtils.hideSoftInput(getContext(), labelCardNumber);
                     }
                 }
-                etCardNumber.requestFocus();
+                labelCardNumber.requestFocus();
 //                etInput.setSelection(etInput.length());
                 //返回true,不再继续传递事件
                 return true;
             }
         });
-        etCardNumber.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d(String.format("setOnKeyListener(etBarCode): keyCode=%d, action=%d", keyCode, event.getAction()));
-
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-//                        etCardId.requestFocus();
-                        fourthStep();
+        labelCardNumber.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            fourthStep();
+                        }
                     }
-                    return true;
-                }
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-            }
-        });
-//        etCardNumber.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                if (etCardNumber.length() > 0){
-//                    fourthStep();
-//                }
-//            }
-//        });
-        etCardId.setOnTouchListener(new View.OnTouchListener() {
+                });
+        labelCardId.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
 //                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
                         showCardIdKeyboard();
                     } else {
-                        DeviceUtils.hideSoftInput(getContext(), etCardId);
+                        DeviceUtils.hideSoftInput(getContext(), labelCardId);
                     }
                 }
-                etCardId.requestFocus();
+                labelCardId.requestFocusEnd();
 //                etInput.setSelection(etInput.length());
                 //返回true,不再继续传递事件
                 return true;
             }
         });
-        etCardId.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode
-                    , KeyEvent event) {
-                ZLogger.d(String.format("keyCode=%d, action=%d",
-                        keyCode, event.getAction()));
-
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        submit();
+        labelCardId.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
                     }
-                    return true;
-                }
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-            }
-        });
+                });
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -267,7 +236,7 @@ public class InitCardByStepDialog extends CommonDialog {
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
-                        etCardNumber.setText(value);
+                        labelCardNumber.setInput(value);
                         fourthStep();
                     }
 
@@ -302,7 +271,7 @@ public class InitCardByStepDialog extends CommonDialog {
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
-                        etCardId.setText(value);
+                        labelCardId.setInput(value);
                         submit();
                     }
 
@@ -332,11 +301,11 @@ public class InitCardByStepDialog extends CommonDialog {
      * 第三步，输入卡面号
      */
     private void thirdStep() {
-        etCardNumber.getText().clear();
-        etCardNumber.setEnabled(true);
-        etCardNumber.requestFocus();
-        etCardId.getText().clear();
-        etCardId.setEnabled(false);
+        labelCardNumber.clearInput();
+        labelCardNumber.setEnabled(true);
+        labelCardNumber.requestFocusEnd();
+        labelCardId.clearInput();
+        labelCardId.setEnabled(false);
 
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
@@ -346,11 +315,11 @@ public class InitCardByStepDialog extends CommonDialog {
      * 第四步，扫描卡芯片号
      */
     private void fourthStep() {
-//        etCardNumber.getText().clear();
-//        etCardNumber.setEnabled(true);
-        etCardId.getText().clear();
-        etCardId.setEnabled(true);
-        etCardId.requestFocus();
+//        labelCardNumber.getText().clear();
+//        labelCardNumber.setEnabled(true);
+        labelCardId.clearInput();
+        labelCardId.setEnabled(true);
+        labelCardId.requestFocusEnd();
 
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
@@ -364,12 +333,12 @@ public class InitCardByStepDialog extends CommonDialog {
         if (human == null) {
             ivHeader.setAvatarUrl(null);
             tvUsername.setText("");
-            tvMobile.setText("");
+            labelPhone.setEndText("");
         }
         else{
             ivHeader.setAvatarUrl(human.getHeadimageUrl());
             tvUsername.setText(human.getName());
-            tvMobile.setText(human.getMobile());
+            labelPhone.setEndText(human.getMobile());
         }
     }
 
@@ -428,7 +397,7 @@ public class InitCardByStepDialog extends CommonDialog {
             return;
         }
 
-        String cardNumber = this.etCardNumber.getText().toString();
+        String cardNumber = this.labelCardNumber.getInput();
         if (StringUtils.isEmpty(cardNumber)) {
             DialogUtil.showHint("请输入卡面号");
 //            btnSubmit.setEnabled(true);
@@ -443,40 +412,11 @@ public class InitCardByStepDialog extends CommonDialog {
         }
 
 
-        String cardId = this.etCardId.getText().toString();
-        if (StringUtils.isEmpty(cardId)) {
-            DialogUtil.showHint("请重新读取磁卡信息");
+        String cardId = this.labelCardId.getInput();
+        String cardId2 = MUtils.parseCardId(cardId);
+        if (StringUtils.isEmpty(cardId2)) {
+            DialogUtil.showHint("请重新刷卡获取芯片号");
             fourthStep();
-            return;
-        }
-        if (cardId.length() != 8) {
-            DialogUtil.showHint("芯片号错误,请重新刷卡");
-            fourthStep();
-            return;
-        }
-
-        //十六进制：466CAF31
-        ZLogger.d("cardId:" + cardId);
-        //十进制：1181527857
-        String cardId2;
-        try {
-            cardId2 = String.valueOf(Long.parseLong(cardId, 16));
-            ZLogger.d("cardId:" + cardId2);
-
-//            if (!StringUtils.isEmpty(cardId)){
-//                String token = cardId.substring(6, 8) +
-//                        cardId.substring(4, 6) + cardId.substring(2, 4) + cardId.substring(0, 2);
-//                ZLogger.d("token:" + token);
-////                ZLogger.d("token.decode:" + decode(rfidId));
-//                ZLogger.d("token.long:" + String.valueOf(Long.parseLong(token, 16)));
-//            }
-        } catch (Exception e) {
-            ZLogger.e(e.toString());
-
-            DialogUtil.showHint("请重新读取磁卡信息");
-            etCardId.getText().clear();
-            etCardId.requestFocus();
-            btnSubmit.setEnabled(true);
             return;
         }
 

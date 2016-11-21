@@ -14,7 +14,7 @@ import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.mvp.MvpFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -98,7 +98,7 @@ public class PurchaseSendFragment2 extends MvpFragment<IInvSendOrderView, InvSen
     public void onResume() {
         super.onResume();
 
-//        if (SharedPreferencesHelper.isSyncEnabled(SharedPreferencesHelper.PREF_KEY_SYNC_PURCHASESEND_ORDER_ENABLED) || !readCache())
+//        if (SharedPreferencesUltimate.isSyncEnabled(SharedPreferencesUltimate.PREF_KEY_SYNC_PURCHASESEND_ORDER_ENABLED) || !readCache())
         //先加载数据
     }
 

@@ -21,7 +21,7 @@ import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -308,7 +308,7 @@ public class PrintManagerImpl extends PrintManager {
 
 
             /**打印 机器设备号＋订单号*/
-            esc.addText(String.format("%s NO.%s \n", SharedPreferencesManager.getTerminalId(),
+            esc.addText(String.format("%s NO.%s \n", SharedPrefesManagerFactory.getTerminalId(),
                     MUtils.getOrderBarCode()));
             /**打印 订购日期*/
             esc.addText(String.format("%s \n", DATE_FORMAT.format(new Date())));
@@ -428,7 +428,7 @@ public class PrintManagerImpl extends PrintManager {
 //        esc.addPrintAndLineFeed();
 
             /**打印 机器设备号＋订单号*/
-            esc.addText(String.format("%s NO.%s \n", SharedPreferencesManager.getTerminalId(),
+            esc.addText(String.format("%s NO.%s \n", SharedPrefesManagerFactory.getTerminalId(),
                     MUtils.getOrderBarCode()));
             /**打印 订购日期*/
             esc.addText(String.format("%s \n", DATE_FORMAT.format(new Date())));
@@ -644,7 +644,7 @@ public class PrintManagerImpl extends PrintManager {
 //        esc.addText(String.format("上班时间：%s \n", TimeCursor.InnerFormat.format(handOverBill.getStartDate())));
         esc.addText(String.format("交班时间：%s \n",
                 TimeCursor.InnerFormat.format(handOverBill.getEndDate())));
-        esc.addText(String.format("设备编号：%s \n", SharedPreferencesManager.getTerminalId()));
+        esc.addText(String.format("设备编号：%s \n", SharedPrefesManagerFactory.getTerminalId()));
         esc.addText("--------------------------------\n");//32个
 //        esc.addPrintAndLineFeed();
 
@@ -840,7 +840,7 @@ public class PrintManagerImpl extends PrintManager {
                 (dailysettleEntity.getDailysettleDate() != null
                         ? TimeCursor.InnerFormat.format(dailysettleEntity.getDailysettleDate())
                         : "")));
-        esc.addText(String.format("设备编号：%s \n", SharedPreferencesManager.getTerminalId()));
+        esc.addText(String.format("设备编号：%s \n", SharedPrefesManagerFactory.getTerminalId()));
         esc.addText("--------------------------------\n");//32个
 //        esc.addPrintAndLineFeed();
 

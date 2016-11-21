@@ -54,10 +54,10 @@ import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -75,8 +75,9 @@ import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
+import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.service.EslSyncManager2;
+import com.mfh.litecashier.service.GoodsSyncManager;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
@@ -104,7 +105,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -635,7 +636,7 @@ public class MainActivity extends CashierActivity
         btnSync.startSync();
 
         //设置需要更新商品中心,商品后台类目
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
@@ -645,7 +646,8 @@ public class MainActivity extends CashierActivity
 
         //同步数据
         ZLogger.d("点击同步按钮，准备同步数据...");
-        DataSyncManagerImpl.get().sync();
+        DataSyncManager.get().sync();
+        GoodsSyncManager.get().sync();
     }
 
     /**
@@ -665,7 +667,8 @@ public class MainActivity extends CashierActivity
                     true, false);
         }
         btnSync.startSync();
-        DataSyncManagerImpl.get().sync();
+        DataSyncManager.get().sync();
+        GoodsSyncManager.get().sync();
 
         /**
          * @param isManual  用户手动点击检查，非用户点击操作请传false
@@ -733,7 +736,7 @@ public class MainActivity extends CashierActivity
             UploadSyncManager.getInstance().sync();
 
             //设置需要更新商品中心,商品后台类目
-            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
+            SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
 
             //清除缓存数据
             ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
@@ -755,7 +758,7 @@ public class MainActivity extends CashierActivity
             if (count > 1) {
 //                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
                 btnSync.startSync();
-                DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+                GoodsSyncManager.get().sync(GoodsSyncManager.POSPRODUCTS|GoodsSyncManager.POSPRODUCTS_SKU);
             } else {
                 btnSync.setBadgeEnabled(true);
             }
@@ -801,11 +804,24 @@ public class MainActivity extends CashierActivity
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
+    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
+        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
             btnSync.startSync();
-        } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+            hideProgressDialog();
+            btnSync.stopSync();
+        }
+    }
+
+    /**
+     * 在主线程接收CashierEvent事件，必须是public void
+     */
+    public void onEventMainThread(GoodsSyncManager.GoodsSyncEvent event) {
+        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == GoodsSyncManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
+            btnSync.startSync();
+        } else if (event.getEventId() == GoodsSyncManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
             btnSync.stopSync();
             //同步数据结束后开始同步订单
@@ -1314,7 +1330,7 @@ public class MainActivity extends CashierActivity
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()
                             || inlvBarcode.isSoftKeyboardEnabled()) {
                         showBarcodeKeyboard();
                     }
@@ -2071,9 +2087,9 @@ public class MainActivity extends CashierActivity
     private void redirectToLogin() {
         // 重置数据更新标志，避免登录其他账号导致数据重叠。
         //设置需要更新前台类目
-//        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
+//        SharedPreferencesUltimate.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
-//        SharedPreferencesHelper.setSyncEnabled(SharedPreferencesHelper.PREF_KEY_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
+//        SharedPreferencesUltimate.setSyncEnabled(SharedPreferencesUltimate.PREF_KEY_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
 
 //        MobclickAgent.onProfileSignOff();
 //        AppHelper.resetMemberAccountData();

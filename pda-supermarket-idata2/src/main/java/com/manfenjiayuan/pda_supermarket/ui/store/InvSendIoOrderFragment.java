@@ -20,6 +20,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -50,6 +51,8 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
     TextLabelView labelStatus;
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
 
 
     private InvSendIoOrderItemBrief mInvSendIoOrderItemBrief = null;
@@ -92,6 +95,7 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
         }
 
         if (mScanBar != null) {
+            mScanBar.setHint("请扫描订单条码");
 //            mScanBar.setSoftKeyboardEnabled(true);
             mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
                 @Override
@@ -108,6 +112,13 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
             });
         } else {
             ZLogger.d("mScanBar is null");
+        }
+
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
+            btnSweep.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSweep.setVisibility(View.GONE);
         }
     }
 
@@ -148,6 +159,12 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
     }
 
 
+    @OnClick(R.id.fab_scan)
+    @Override
+    protected void zxingSweep() {
+        super.zxingSweep();
+    }
+
     @Override
     protected void onScanCode(String code) {
         if (!isAcceptBarcodeEnabled) {
@@ -161,7 +178,7 @@ public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendI
     @Override
     public void onIInvSendIoOrderViewProcess() {
         isAcceptBarcodeEnabled = false;
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "加载订单...", false);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
     }
 
     @Override

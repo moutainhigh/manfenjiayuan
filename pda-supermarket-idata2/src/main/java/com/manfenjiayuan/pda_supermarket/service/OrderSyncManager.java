@@ -3,7 +3,6 @@ package com.manfenjiayuan.pda_supermarket.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.OrderPayInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierAgent;
@@ -46,33 +45,6 @@ public abstract class OrderSyncManager {
     /**
      * 获取订单同步时间游标
      * */
-    public static String getPosOrderStartCursor() {
-        String lastSyncCursor = SharedPreferencesManagerImpl.getSyncProductsStartcursor();
-        ZLogger.df(String.format("上次订单同步时间游标(%s)。", lastSyncCursor));
-
-        //与当前时间相比，取最小当时间
-        if (!StringUtils.isEmpty(lastSyncCursor)) {
-            //得到指定模范的时间
-            try {
-                Date lastSyncDate = TimeCursor.InnerFormat.parse(lastSyncCursor);
-                Date rightNow = new Date();
-                if (lastSyncDate.compareTo(rightNow) > 0) {
-                    lastSyncCursor = TimeCursor.InnerFormat.format(rightNow);
-//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
-                    ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", lastSyncCursor));
-                }
-            } catch (ParseException e) {
-//            e.printStackTrace();
-                ZLogger.ef(e.toString());
-            }
-        }
-
-        return lastSyncCursor;
-    }
-
-    /**
-     * 获取订单同步时间游标
-     * */
     public static String getPosOrderStartCursor2() {
         Date startDate = null;
         String sqlWhere = String.format("sellerId = '%d' " +
@@ -86,19 +58,27 @@ public abstract class OrderSyncManager {
             PosOrderEntity orderEntity = orderEntities.get(0);
             startDate = orderEntity.getUpdatedDate();
         }
-        String startCursor = TimeUtil.format(startDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
-        ZLogger.df(String.format("上次订单同步时间游标(%s)。",startCursor));
+        String lastCursor = TimeUtil.format(startDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+
+        return decorateStartCursor(lastCursor);
+    }
+
+    public static String decorateStartCursor(String lastCursor){
+        if (StringUtils.isEmpty(lastCursor)){
+            return null;
+        }
+        ZLogger.df(String.format("上次订单同步时间游标(%s)。",lastCursor));
 
         //与当前时间相比，取最小当时间
-        if (!StringUtils.isEmpty(startCursor)) {
+        if (!StringUtils.isEmpty(lastCursor)) {
             //得到指定模范的时间
             try {
-                Date d1 = TimeCursor.InnerFormat.parse(startCursor);
+                Date d1 = TimeCursor.InnerFormat.parse(lastCursor);
                 Date rightNow = new Date();
                 if (d1.compareTo(rightNow) > 0) {
-                    startCursor = TimeCursor.InnerFormat.format(rightNow);
+                    lastCursor = TimeCursor.InnerFormat.format(rightNow);
 //                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
-                    ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", lastCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();
@@ -106,7 +86,7 @@ public abstract class OrderSyncManager {
             }
         }
 
-        return startCursor;
+        return lastCursor;
     }
 
     /**

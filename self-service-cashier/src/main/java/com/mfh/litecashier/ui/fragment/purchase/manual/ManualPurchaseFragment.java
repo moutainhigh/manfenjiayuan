@@ -49,7 +49,7 @@ import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.PurchasePresenter;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
+import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
@@ -693,9 +693,9 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         categoryRecyclerView.setAdapter(categoryListAdapter);
     }
 
-    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
+    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
+        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
             //刷新供应商
             readCategoryInfoCache();
         }
@@ -744,7 +744,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
         //加载后台类目树
         if (!readCategoryInfoCache()) {
-            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_BACKEND_CATEGORYINFO);
+            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
         }
     }
 

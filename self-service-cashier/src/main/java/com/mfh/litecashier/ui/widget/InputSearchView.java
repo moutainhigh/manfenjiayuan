@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.mfh.framework.core.utils.DeviceUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.R;
 
 import butterknife.Bind;
@@ -100,7 +100,7 @@ public class InputSearchView extends LinearLayout {
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP){
                     //打开or关闭系统软键盘
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled() || softKeyboardEnabled){
+                    if (softKeyboardEnabled || SharedPrefesManagerFactory.isSoftInputEnabled()){
                         DeviceUtils.showSoftInput(getContext(), etInput);
                     }else{
                         DeviceUtils.hideSoftInput(getContext(), etInput);

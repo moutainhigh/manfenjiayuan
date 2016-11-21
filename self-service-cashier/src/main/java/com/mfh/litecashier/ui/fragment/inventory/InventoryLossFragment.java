@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -37,7 +37,7 @@ import com.mfh.litecashier.event.StockLossEvent;
 import com.mfh.litecashier.ui.adapter.StockLossGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.StockLossOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
@@ -265,7 +265,7 @@ public class InventoryLossFragment extends BaseFragment {
     public void onEventMainThread(StockLossEvent event) {
         ZLogger.d(String.format("InventoryLossFragment: StockLossEvent(%d)", event.getEventId()));
         if (event.getEventId() == StockLossEvent.EVENT_ID_RELOAD_DATA) {
-            if (SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_STOCKLOSS_ORDER_ENABLED, true)
+            if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_STOCKLOSS_ORDER_ENABLED, true)
                     || !readInvLossOrderCache()) {
                 reloadInvLossOrder();
             }
@@ -275,7 +275,7 @@ public class InventoryLossFragment extends BaseFragment {
     /**
      * 读取报损订单缓存
      * 如果没有缓存则重新加载订单列表
-     * 如果有缓存则根据同步状态{@link com.mfh.litecashier.utils.SharedPreferencesHelper.PK_SYNC_STOCKLOSS_ORDER_ENABLED}决定是否需要重新加载订单列表。同步状态
+     * 如果有缓存则根据同步状态{@link SharedPreferencesUltimate.PK_SYNC_STOCKLOSS_ORDER_ENABLED}决定是否需要重新加载订单列表。同步状态
      */
     public synchronized boolean readInvLossOrderCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
@@ -396,7 +396,7 @@ public class InventoryLossFragment extends BaseFragment {
                         orderList.add(invLossOrder);
                     }
                     ACacheHelper.put(ACacheHelper.CK_STOCK_LOSS_ORDER, cacheArrays.toJSONString());
-                    SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STOCKLOSS_ORDER_ENABLED, false);
+                    SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_STOCKLOSS_ORDER_ENABLED, false);
                 } else {
                     if (orderList == null) {
                         orderList = new ArrayList<>();

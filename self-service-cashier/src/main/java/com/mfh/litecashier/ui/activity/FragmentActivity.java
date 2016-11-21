@@ -10,7 +10,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
 import com.mfh.litecashier.ui.fragment.canary.MessageMgrFragment;
-import com.mfh.litecashier.ui.fragment.components.HostServerFragment;
 import com.mfh.litecashier.ui.fragment.components.StockDetailFragment;
 import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
 
@@ -20,8 +19,6 @@ import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
  */
 public class FragmentActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "EXTRA_KEY_SERVICE_TYPE";
-
-    public static final int FT_APP_HOSTSERVER = 0x01;//选择域名
 
     public static final int FT_ADDMORE_LOCALFRONTGOODS = 0x11;//添加更多前台类目商品
     public static final int FT_STOCK_DETAIL = 0x32;
@@ -68,7 +65,6 @@ public class FragmentActivity extends BaseActivity {
     }
 
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -77,11 +73,12 @@ public class FragmentActivity extends BaseActivity {
     private void handleIntent() {
         Intent intent = this.getIntent();
         if (intent != null) {
-            int animType = intent.getIntExtra(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            animType = intent.getIntExtra(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            isFullscreenEnabled = intent.getBooleanExtra(EXTRA_KEY_FULLSCREEN, false);
             //setTheme必须放在onCreate之前执行，后面执行是无效的
-//            if (animType == ANIM_TYPE_NEW_FLOW) {
-////                this.setTheme(R.style.NewFlow);
-//            }
+            if (animType == ANIM_TYPE_NEW_FLOW) {
+                this.setTheme(R.style.NewFlow);
+            }
 
             fragmentType = intent.getIntExtra(EXTRA_KEY_SERVICE_TYPE, -1);
         }
@@ -93,21 +90,6 @@ public class FragmentActivity extends BaseActivity {
      */
     private void initFragments() {
         switch (fragmentType) {
-
-            //域名服务器
-            case FT_APP_HOSTSERVER: {
-                HostServerFragment fragment;
-                Intent intent = this.getIntent();
-                if (intent != null) {
-                    fragment = HostServerFragment.newInstance(intent.getExtras());
-                } else {
-                    fragment = HostServerFragment.newInstance(null);
-                }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
             case FT_ADDMORE_LOCALFRONTGOODS: {
                 Intent intent = this.getIntent();
                 FrontCategoryFragment fragment = FrontCategoryFragment.newInstance(intent.getExtras());

@@ -18,16 +18,15 @@ import com.manfenjiayuan.business.ui.HybridActivity;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -57,6 +56,8 @@ public class MyFragment extends BaseFragment {
 
     @Bind(R.id.item_camerasweep)
     ToggleSettingItem itemCameraSweep;
+    @Bind(R.id.item_softinput)
+    ToggleSettingItem itemSoftInput;
     @Bind(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
     @Bind(R.id.item_upgrade)
@@ -83,7 +84,6 @@ public class MyFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
         mToolbar.setTitle("我的");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
@@ -97,13 +97,21 @@ public class MyFragment extends BaseFragment {
         itemCameraSweep.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean on) {
-                if (SharedPreferencesManagerImpl.isCameraSweepEnabled() != on){
-                    SharedPreferencesManagerImpl.setCameraSweepEnabled(on);
+                if (SharedPrefesManagerFactory.isCameraSweepEnabled() != on){
+                    SharedPrefesManagerFactory.setCameraSweepEnabled(on);
+                }
+            }
+        });
+        itemSoftInput.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean on) {
+                if (SharedPrefesManagerFactory.isSoftInputEnabled() != on){
+                    SharedPrefesManagerFactory.setSoftInputEnabled(on);
                 }
             }
         });
 
-        refresh(true);
+        refresh();
     }
 
     @Override
@@ -254,12 +262,13 @@ public class MyFragment extends BaseFragment {
     /**
      * 加载用户数据
      */
-    private void refresh(boolean isAutoReload) {
+    private void refresh() {
         mProfileView.setAvatarUrl(MfhLoginService.get().getHeadimage());
         mProfileView.setPrimaryText(MfhLoginService.get().getHumanName());
         mProfileView.setSecondaryText(MfhLoginService.get().getTelephone());
-        itemCameraSweep.setChecked(SharedPreferencesManagerImpl.isCameraSweepEnabled());
-        terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
+        itemCameraSweep.setChecked(SharedPrefesManagerFactory.isCameraSweepEnabled());
+        itemSoftInput.setChecked(SharedPrefesManagerFactory.isSoftInputEnabled());
+        terminalSettingsItem.setSubTitle(SharedPrefesManagerFactory.getTerminalId());
 
         AppInfo appInfo = AnalysisAgent.getAppInfo(AppContext.getAppContext());
         if (appInfo != null) {

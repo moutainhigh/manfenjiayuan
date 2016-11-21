@@ -41,7 +41,7 @@ import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -53,7 +53,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.event.CommodityStockEvent;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
+import com.mfh.litecashier.service.DataSyncManager;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
@@ -337,7 +337,7 @@ public class InventoryCostFragment extends BaseProgressFragment
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()
                             || inlvBarcode.isSoftKeyboardEnabled()) {
                         showBarcodeKeyboard();
                     }
@@ -525,9 +525,9 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
+    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
+        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
             //刷新供应商
             readCategoryInfoCache();
         }
@@ -537,9 +537,8 @@ public class InventoryCostFragment extends BaseProgressFragment
      * 加载商品类目
      */
     public void loadData() {
-        //加载后台类目树
         if (!readCategoryInfoCache()) {
-            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_BACKEND_CATEGORYINFO);
+            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
         }
     }
 

@@ -25,13 +25,13 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.pay.umsips.TransType;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 
 /**
@@ -236,10 +236,10 @@ public class UmsipsDialog extends CommonDialog {
      * 刷新会员信息
      */
     private void refresh() {
-        etIp.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP, "10.139.93.98"));
-        etPort.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT, "19003"));
-        etMchtId.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID, "898320554115217"));
-        etTermId.setText(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID));
+        etIp.setText(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_IP, "10.139.93.98"));
+        etPort.setText(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_PORT, "19003"));
+        etMchtId.setText(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_MCHTID, "898320554115217"));
+        etTermId.setText(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_TERMID));
 
         String umsipsPort = SerialManager.getUmsipsPort();
         aspnDevices = new ArrayAdapter<>(getContext(),
@@ -250,8 +250,7 @@ public class UmsipsDialog extends CommonDialog {
         mPortSpinner.setSelection(aspnDevices.getPosition(umsipsPort));
         mBaudrateSpinner.setSelection(adapter.getPosition(SerialManager.getUmsipsBaudrate()));
 
-        if (SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
-                SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false)){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
             mPortSpinner.setEnabled(true);
             mBaudrateSpinner.setEnabled(true);
         }
@@ -300,10 +299,10 @@ public class UmsipsDialog extends CommonDialog {
             return;
         }
 
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_UMSIPS_IP, ip);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_UMSIPS_MCHTID, mchtId);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_UMSIPS_PORT, port);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_UMSIPS_TERMID, termId);
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_UMSIPS_IP, ip);
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_UMSIPS_MCHTID, mchtId);
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_UMSIPS_PORT, port);
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_UMSIPS_TERMID, termId);
         SerialManager.setUmsipsPort(mPortSpinner.getSelectedItem().toString());
         SerialManager.setUmsipsBaudrate(mBaudrateSpinner.getSelectedItem().toString());
 
@@ -375,11 +374,11 @@ public class UmsipsDialog extends CommonDialog {
         //公网标志位(ssl_on)	int		8	是	0-表示专线 1-表示公网
         this.transCFX.setSsl_on(0);
         //主机ip地址(ip)	String		16	是	主机ip地址
-        this.transCFX.setIp(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP, "10.139.93.98"));//upos.chinaums.com
+        this.transCFX.setIp(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_IP, "10.139.93.98"));//upos.chinaums.com
         //主机端口号(port)	int		8	是	主机端口号
-        this.transCFX.setPort(Integer.valueOf(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT, "19003")));//19003
+        this.transCFX.setPort(Integer.valueOf(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_PORT, "19003")));//19003
         //终端号(termId)	String	8	是	终端号
-        this.transCFX.setTermId(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID, "55877236"));
+        this.transCFX.setTermId(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_TERMID, "55877236"));
         //终端信息(term_info)   	String		64	否	终端信息（公网相关）
         this.transCFX.setTerm_info("");
         //终端序列号(ssl_sn)	String		39	否	终端序列号（公网相关）
@@ -389,7 +388,7 @@ public class UmsipsDialog extends CommonDialog {
         //TPDU传送协议数据单元(tpdu)    String		10	是
         this.transCFX.setTpdu("6000030000");
         //商户号(mchtId)  String	15	是	商户号
-        String mchtId = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID, "898320554115217");
+        String mchtId = SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_MCHTID, "898320554115217");
         this.transCFX.setMchtId(mchtId);
         //SN密文(authSN)	String		60	是	SN密文
         if (mchtId.equalsIgnoreCase("898320554115217")) {
@@ -433,13 +432,13 @@ public class UmsipsDialog extends CommonDialog {
     private void print() {
 //        String sb = "参数（点击可修改）：\n" +
 //                String.format("主机IP：%s\n",
-//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP)) +
+//                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_IP)) +
 //                String.format("主机端口号：%s\n",
-//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT)) +
+//                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_PORT)) +
 //                String.format("商户号：%s\n",
-//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID)) +
+//                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_MCHTID)) +
 //                String.format("终端号：%s\n",
-//                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID)) +
+//                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_TERMID)) +
 //                String.format("串口值：%s\n", SerialManager.getUmsipsPort()) +
 //                String.format("波特率：%s\n", SerialManager.getUmsipsBaudrate());
 //        tvUmsipsConfigs.setText(sb);

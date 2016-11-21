@@ -28,7 +28,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.SelectRecvOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +99,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendI
                     productAdapter.setEntityList(dataList);
                 }
                 ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED, false);
             } else {
                 if (productAdapter != null) {
                     productAdapter.appendEntityList(orderList);

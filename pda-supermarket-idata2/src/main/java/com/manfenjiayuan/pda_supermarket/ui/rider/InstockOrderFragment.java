@@ -18,7 +18,6 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
@@ -34,7 +33,7 @@ import com.manfenjiayuan.pda_supermarket.ui.PrimaryActivity;
 import com.manfenjiayuan.pda_supermarket.ui.common.ScOrderBarcodeFragment;
 import com.manfenjiayuan.pda_supermarket.ui.common.ScOrderEvent;
 import com.manfenjiayuan.pda_supermarket.ui.common.ScOrderInfoFragment;
-import com.manfenjiayuan.pda_supermarket.ui.instockPay.InstockPayFragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.instock.InstockPayFragment;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -48,6 +47,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
@@ -172,7 +172,7 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
             btnSweep.setVisibility(View.VISIBLE);
         }
         else{
@@ -273,11 +273,13 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
                     InstockTempService.get().saveOrUpdate(item);
                 }
             }
+            btnSubmit.setEnabled(true);
         }
         else{
             if (hintEnabled){
                 DialogUtil.showHint("未找到订单");
             }
+            btnSubmit.setEnabled(false);
         }
 
         if (isDelay) {
@@ -321,7 +323,7 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
      * 加载优惠券列表
      */
     public void submitStep1() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "组货中...", false);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         btnSubmit.setEnabled(false);
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {

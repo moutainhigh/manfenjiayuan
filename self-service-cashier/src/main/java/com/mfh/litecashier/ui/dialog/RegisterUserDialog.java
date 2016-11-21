@@ -30,7 +30,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -95,7 +95,7 @@ public class RegisterUserDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etName);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etName);
@@ -127,7 +127,7 @@ public class RegisterUserDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
 //                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
                         showLoginPwdKeyboard();
                     } else {
@@ -161,7 +161,7 @@ public class RegisterUserDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
 //                        DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
                         showPayPwdKeyboard();
                     } else {

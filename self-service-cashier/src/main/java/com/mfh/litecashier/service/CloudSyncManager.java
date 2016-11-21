@@ -9,7 +9,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 /**
  * 云端数据同步
@@ -20,7 +20,7 @@ public class CloudSyncManager {
     private static CloudSyncManager instance = null;
 
     /**
-     * 返回 DataSyncManagerImpl 实例
+     * 返回 DataSyncManager 实例
      *
      * @return CloudSyncManager
      */
@@ -55,8 +55,8 @@ public class CloudSyncManager {
         }
 
         final String startCursorKey = String.format("%s_%d_%s",
-                SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR, sendTenantId, cateType);
-        String startCursorValue = SharedPreferencesHelper.getText(startCursorKey, "");
+                SharedPreferencesUltimate.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR, sendTenantId, cateType);
+        String startCursorValue = SharedPreferencesUltimate.getText(startCursorKey, "");
 
 
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -69,7 +69,7 @@ public class CloudSyncManager {
                         if (rspData != null) {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             String newCursor = retValue.getValue();
-                            SharedPreferencesHelper.set(startCursorKey, newCursor);
+                            SharedPreferencesUltimate.set(startCursorKey, newCursor);
                             ZLogger.df(String.format("导入批发商商品数据成功%s:%s", startCursorKey, newCursor));
                         }
 //                        nextStep();

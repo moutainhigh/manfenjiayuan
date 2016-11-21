@@ -41,7 +41,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.ui.widget.PayProcessView;
 import com.mfh.litecashier.utils.CashierHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -433,11 +433,11 @@ public class PayByBandcardFragment extends BasePayFragment {
         this.transCFX.setSsl_on(0);
         //主机ip地址(ip)	String		16	是	主机ip地址
 //        this.transCFX.setIp("upos.chinaums.com");
-        this.transCFX.setIp(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_IP, "10.139.93.98"));//
+        this.transCFX.setIp(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_IP, "10.139.93.98"));//
         //主机端口号(port)	int		8	是	主机端口号
-        this.transCFX.setPort(Integer.valueOf(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_PORT, "19003")));//19003
+        this.transCFX.setPort(Integer.valueOf(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_PORT, "19003")));//19003
         //终端号(termId)	String	8	是	终端号
-        this.transCFX.setTermId(SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_TERMID, "55877236"));
+        this.transCFX.setTermId(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_TERMID, "55877236"));
         //终端信息(term_info)   	String		64	否	终端信息（公网相关）
         this.transCFX.setTerm_info("");
         //终端序列号(ssl_sn)	String		39	否	终端序列号（公网相关）
@@ -447,7 +447,7 @@ public class PayByBandcardFragment extends BasePayFragment {
         //TPDU传送协议数据单元(tpdu)    String		10	是
         this.transCFX.setTpdu("6000030000");
         //商户号(mchtId)  String	15	是	商户号
-        String mchtId = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_UMSIPS_MCHTID, "898320554115217");
+        String mchtId = SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_MCHTID, "898320554115217");
         this.transCFX.setMchtId(mchtId);
         //SN密文(authSN)	String		60	是	SN密文
         // TODO: 8/25/16 商户号多的情况，可能需要云端同步 

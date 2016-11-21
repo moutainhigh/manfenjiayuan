@@ -26,7 +26,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.PurchaseReturnCreateEvent;
 import com.mfh.litecashier.ui.adapter.SelectRecvOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -333,7 +333,7 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
                 }
 
                 ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PURCHASERECEIPT_ORDER_ENABLED, false);
             } else {
                 if (productAdapter != null) {
                     productAdapter.appendEntityList(dataList);

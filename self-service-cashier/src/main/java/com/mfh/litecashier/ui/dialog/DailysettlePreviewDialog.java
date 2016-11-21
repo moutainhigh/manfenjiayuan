@@ -28,7 +28,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
@@ -199,7 +199,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
                         MfhLoginService.get().getHumanName(),
                         TimeUtil.format(dailysettleDate,
                                 TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                        SharedPreferencesManager.getTerminalId()));
+                        SharedPrefesManagerFactory.getTerminalId()));
 
                 //明细：商品信息
                 sbHtml.append("<p>--------------------------------</p>\n");

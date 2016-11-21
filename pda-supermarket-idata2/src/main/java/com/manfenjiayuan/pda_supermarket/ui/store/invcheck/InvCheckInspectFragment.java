@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,11 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
-import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invcheck.Shelfnumber;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
+import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
@@ -37,6 +37,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -44,7 +45,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -66,10 +66,8 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
     List<TextLabelView> labelViews;
     @Bind(R.id.label_newquantity)
     EditLabelView labelQuantity;
-
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
-
     @Bind(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
@@ -158,43 +156,31 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
             ZLogger.d("mScanBar is null");
         }
 
-        labelQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
-
+        labelQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
         if (curOrderId == null || curOrderId.compareTo(0L) == 0) {
             DialogUtil.showHint("批次无效");
             getActivity().finish();
             return;
         }
 
-        Long lastOrderId = SharedPreferencesManagerImpl.getLastStocktakeOrderId();
+        Long lastOrderId = SharedPrefesManagerUltimate.getLastStocktakeOrderId();
         if (lastOrderId.compareTo(curOrderId) != 0) {
             //清空盘点记录
             InvCheckGoodsService.get().clear();
         }
         //保存当前盘点编号
-        SharedPreferencesManagerImpl.setLastStocktakeOrderId(curOrderId);
+        SharedPrefesManagerUltimate.setLastStocktakeOrderId(curOrderId);
 
-        btnSweep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle args = new Bundle();
-                args.putInt(PDAScanManager.ScanBarcodeEvent.KEY_EVENTID,
-                        PDAScanManager.ScanBarcodeEvent.EVENT_ID_START_ZXING);
-                EventBus.getDefault().post(new PDAScanManager.ScanBarcodeEvent(args));
-            }
-        });
-
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
             btnSweep.setVisibility(View.VISIBLE);
         }
         else{
@@ -209,7 +195,6 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
         else{
             shelvesNumberView.setText(String.format("区域号: %d", curShelfNumber.getNumber()));
         }
-
     }
 
     @Override
@@ -241,6 +226,11 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @OnClick(R.id.fab_scan)
+    @Override
+    protected void zxingSweep() {
+        super.zxingSweep();
+    }
 
     @Override
     protected void onScanCode(String code) {

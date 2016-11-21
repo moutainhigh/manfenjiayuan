@@ -24,7 +24,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
@@ -669,8 +669,7 @@ public abstract class CashierActivity extends BaseActivity {
 
 
     public void cloudSpeak(String text) {
-        if (!SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
-                SharedPreferencesManager.PK_B_TTS_ENABLED, true)) {
+        if (!SharedPrefesManagerFactory.isTtsEnabled()) {
             ZLogger.d("请在设置中开启语音播报功能");
             return;
         }

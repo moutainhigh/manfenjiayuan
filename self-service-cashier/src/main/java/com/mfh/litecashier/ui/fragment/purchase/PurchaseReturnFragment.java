@@ -33,7 +33,7 @@ import com.mfh.litecashier.event.PurchaseReturnEvent;
 import com.mfh.litecashier.ui.adapter.InvReturnOrderAdapter;
 import com.mfh.litecashier.ui.adapter.PurchaseReturnGoodsAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -123,7 +123,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
     public void onEventMainThread(PurchaseReturnEvent event) {
         ZLogger.d(String.format("PurchaseReturnFragment: PurchaseReturnEvent(%d)", event.getEventId()));
         if (event.getEventId() == PurchaseReturnEvent.EVENT_ID_RELOAD_DATA) {
-            if (SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_PURCHASERETURN_ORDER_ENABLED, true)
+            if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_PURCHASERETURN_ORDER_ENABLED, true)
                     || !readCache()) {
                 reload();
             }
@@ -287,7 +287,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
                 }
 
                 ACacheHelper.put(ACacheHelper.CK_PURCHASE_RETURN, cacheArrays.toJSONString());
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PURCHASERETURN_ORDER_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PURCHASERETURN_ORDER_ENABLED, false);
             } else {
                 if (orderListAdapter != null) {
                     orderListAdapter.appendEntityList(dataList);

@@ -32,7 +32,7 @@ import com.mfh.litecashier.bean.wrapper.HandOverBill;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.utils.AnalysisHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,9 +171,9 @@ public class HandoverFragment extends BaseProgressFragment {
         // 保存交接班时间和班次
         String cursor = TimeUtil.format(handOverBill.getEndDate(),
                 TimeCursor.FORMAT_YYYYMMDDHHMM);
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_LAST_HANDOVER_DATETIME, cursor);
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_LAST_HANDOVER_DATETIME, cursor);
 
-        SharedPreferencesHelper.setLastHandoverShiftId(handOverBill.getShiftId());
+        SharedPreferencesUltimate.setLastHandoverShiftId(handOverBill.getShiftId());
         //打印交接单单据
         PrintManagerImpl.printHandoverBill(handOverBill);
 

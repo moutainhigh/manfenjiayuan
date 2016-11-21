@@ -26,7 +26,7 @@ import com.mfh.litecashier.event.InvReturnOrderEvent;
 import com.mfh.litecashier.event.PurchaseReturnEvent;
 import com.mfh.litecashier.ui.adapter.InvReturnOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -220,7 +220,7 @@ onLoadFinished();
                 }
 
                 ACacheHelper.put(ACacheHelper.CK_PURCHASE_RETURN, cacheArrays.toJSONString());
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PURCHASERETURN_ORDER_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PURCHASERETURN_ORDER_ENABLED, false);
             } else {
                 if (orderListAdapter != null) {
                     orderListAdapter.appendEntityList(dataList);

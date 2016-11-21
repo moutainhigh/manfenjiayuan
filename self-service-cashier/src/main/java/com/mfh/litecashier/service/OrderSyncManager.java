@@ -20,7 +20,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -47,8 +47,8 @@ public abstract class OrderSyncManager {
      * 获取订单同步时间游标
      * */
     public static String getPosOrderStartCursor() {
-        String lastSyncCursor = SharedPreferencesHelper
-                .getText(SharedPreferencesHelper.PK_S_POSORDER_SYNC_STARTCURSOR);
+        String lastSyncCursor = SharedPreferencesUltimate
+                .getText(SharedPreferencesUltimate.PK_S_POSORDER_SYNC_STARTCURSOR);
         ZLogger.df(String.format("上次订单同步时间游标(%s)。", lastSyncCursor));
 
         //与当前时间相比，取最小当时间
@@ -59,7 +59,7 @@ public abstract class OrderSyncManager {
                 Date rightNow = new Date();
                 if (lastSyncDate.compareTo(rightNow) > 0) {
                     lastSyncCursor = TimeCursor.InnerFormat.format(rightNow);
-//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
+//                    SharedPreferencesUltimate.setPosOrderLastUpdate(d2);
                     ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", lastSyncCursor));
                 }
             } catch (ParseException e) {
@@ -98,7 +98,7 @@ public abstract class OrderSyncManager {
                 Date rightNow = new Date();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
-//                    SharedPreferencesHelper.setPosOrderLastUpdate(d2);
+//                    SharedPreferencesUltimate.setPosOrderLastUpdate(d2);
                     ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {

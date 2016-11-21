@@ -15,6 +15,7 @@ import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
+import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.config.UConfig;
@@ -25,8 +26,8 @@ import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DataCleanManager;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
@@ -55,12 +56,10 @@ public class AppHelper {
      */
     public static void saveAppStartupDatetime() {
         Date currentDate = new Date();
-        //保存应用启动时间
-        SharedPreferencesManager.setAppStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(currentDate));
         //设置应用当天首次启动时间
-        String appDayFirstStartupDatetime = SharedPreferencesManager.getAppDayFirstStartupDateTime();
+        String appDayFirstStartupDatetime = SharedPrefesManagerFactory.getAppDayFirstStartupDateTime();
         if (StringUtils.isEmpty(appDayFirstStartupDatetime)) {
-            SharedPreferencesManager.setAppDayFirstStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(currentDate));
+            SharedPrefesManagerFactory.setAppDayFirstStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(currentDate));
         } else {
             //比较当前启动时间和应用当天首次启动时间是否是同一天
             Date appDayFirstStartupDate = null;
@@ -70,11 +69,11 @@ public class AppHelper {
                 e.printStackTrace();
             }
             if (!TimeUtil.isSameDay(currentDate, appDayFirstStartupDate)) {
-                SharedPreferencesManager.setAppDayFirstStartupDateTime(TimeCursor.InnerFormat.format(currentDate));
+                SharedPrefesManagerFactory.setAppDayFirstStartupDateTime(TimeCursor.InnerFormat.format(currentDate));
             }
         }
         ZLogger.d(String.format("application startup datetime: %s application day first startup datetime: %s",
-                SharedPreferencesManager.getAppStartupDateTime(), SharedPreferencesManager.getAppDayFirstStartupDateTime()));
+                SharedPrefesManagerFactory.getAppStartupDateTime(), SharedPrefesManagerFactory.getAppDayFirstStartupDateTime()));
 
     }
 
@@ -84,7 +83,7 @@ public class AppHelper {
     public static Date getAppDayFirstStartupDateTime() {
         Date date = new Date();
 
-        String appDayFirstStartupDateTime = SharedPreferencesManager.getAppDayFirstStartupDateTime();
+        String appDayFirstStartupDateTime = SharedPrefesManagerFactory.getAppDayFirstStartupDateTime();
         //与当前时间相比，取最小当时间
         if (!StringUtils.isEmpty(appDayFirstStartupDateTime)) {
             //得到指定模范的时间
@@ -179,14 +178,15 @@ public class AppHelper {
         clearAppData();
 
         //删除SharedPreference
-        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP);
-        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_APP_BORN);
-        SharedPreferencesManager.clear(SharedPreferencesManager.PREF_NAME_CONFIG);
-        SharedPreferencesManager.clear(SerialManager.PREF_NAME_SERIAL);
-        SharedPreferencesManager.clear(SMScaleSyncManager2.PREF_SMSCALE);
-        SharedPreferencesManager.clear(GreenTagsApi.PREF_GREENTAGS);
-        SharedPreferencesManager.clear(AHScaleAgent.PREF_NAME);
-        SharedPreferencesManager.clear(SMScaleAgent.PREF_NAME);
+        SharedPrefesManagerFactory.clear();
+        SharedPrefesManagerFactory.clear(SharedPrefesManagerBase.PREF_NAME_APP);
+//        SharedPrefesManagerFactory.clear(SPM.d);
+
+        SharedPrefesManagerFactory.clear(SerialManager.PREF_NAME_SERIAL);
+        SharedPrefesManagerFactory.clear(SMScaleSyncManager2.PREF_SMSCALE);
+        SharedPrefesManagerFactory.clear(GreenTagsApi.PREF_GREENTAGS);
+        SharedPrefesManagerFactory.clear(AHScaleAgent.PREF_NAME);
+        SharedPrefesManagerFactory.clear(SMScaleAgent.PREF_NAME);
 
         //删除无效文件
         clearRedunantData(true);
@@ -216,9 +216,9 @@ public class AppHelper {
         PosProductSkuService.get().clear();//一品多码
         PosLocalCategoryService.get().clear();//前台类目关联商品
         ProductCatalogService.getInstance().clear();//前台类目
-        SharedPreferencesHelper.setSyncProductsCursor("");
-        SharedPreferencesHelper.setPosSkuLastUpdate("");
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+        SharedPreferencesUltimate.setSyncProductsCursor("");
+        SharedPreferencesUltimate.setPosSkuLastUpdate("");
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                 "");
 
         clearRedunantData(false);

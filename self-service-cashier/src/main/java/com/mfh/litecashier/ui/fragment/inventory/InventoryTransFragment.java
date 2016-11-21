@@ -20,7 +20,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
@@ -42,7 +42,7 @@ import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.ui.adapter.InventoryTransGoodsAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.ArrayList;
 
@@ -151,7 +151,7 @@ public class InventoryTransFragment extends BaseFragment {
                         //出库成功:1-556637
                         ZLogger.d("调拨单入库成功:" + retStr);
 
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
+                        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
                         //刷新订单列表
                         notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
 //                        Bundle args = new Bundle();
@@ -234,7 +234,7 @@ public class InventoryTransFragment extends BaseFragment {
                     @Override
                     public void onPaySucceed() {
                         //刷新数据
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
+                        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
                         //刷新订单列表
                         notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
 //                        Bundle args = new Bundle();

@@ -18,7 +18,7 @@ import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.widget.AvatarView;
 import com.mfh.litecashier.R;
@@ -169,7 +169,7 @@ public class PosRegisterDialog extends CommonDialog implements IPosRegisterView 
         this.mListener = callback;
         this.tvTitle.setText(title);
 
-        String terminalId = SharedPreferencesManager.getTerminalId();
+        String terminalId = SharedPrefesManagerFactory.getTerminalId();
         if (StringUtils.isEmpty(terminalId)) {
             this.tvSubTitle.setText("检测到您的设备还没有注册，可能会影响POS机的正常使用，请尽快注册");
             btnCreate.setText("注册");

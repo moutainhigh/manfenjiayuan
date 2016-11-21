@@ -26,7 +26,7 @@ import com.mfh.litecashier.event.InvTransOrderEvent;
 import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.ui.adapter.InvTransOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -164,12 +164,12 @@ public class InvTransOrderFragment extends BaseListFragment<InvSendIoOrder> impl
                 if (netFlag == args.getBoolean(EXTRA_KEY_NETFLAG, true)){
                     boolean isNeedReload;
                     if (netFlag){
-                        isNeedReload = SharedPreferencesHelper
-                                .getBoolean(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
+                        isNeedReload = SharedPreferencesUltimate
+                                .getBoolean(SharedPreferencesUltimate.PK_SYNC_INVTRANSORDER_IN_ENABLED, true);
                     }
                     else{
-                        isNeedReload = SharedPreferencesHelper
-                                .getBoolean(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_OUT_ENABLED, true);
+                        isNeedReload = SharedPreferencesUltimate
+                                .getBoolean(SharedPreferencesUltimate.PK_SYNC_INVTRANSORDER_OUT_ENABLED, true);
                     }
 
                     if (!isNeedReload){
@@ -247,9 +247,9 @@ public class InvTransOrderFragment extends BaseListFragment<InvSendIoOrder> impl
 
             //设置不自动加载数据，避免滑动重复刷新
             if (netFlag){
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_IN_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_INVTRANSORDER_IN_ENABLED, false);
             } else {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVTRANSORDER_OUT_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_INVTRANSORDER_OUT_ENABLED, false);
             }
 
             ZLogger.d(String.format("加载调拨单结束,pageInfo':page=%d/%d,(%d/%d)",

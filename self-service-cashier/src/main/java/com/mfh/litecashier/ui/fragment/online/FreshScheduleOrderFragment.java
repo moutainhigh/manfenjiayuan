@@ -22,7 +22,7 @@ import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -34,7 +34,7 @@ import com.mfh.litecashier.event.PurchaseSendEvent;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -132,7 +132,7 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()
                             || inlvPhonenumber.isSoftKeyboardEnabled()) {
                         showBarcodeKeyboard();
                     }
@@ -440,7 +440,7 @@ public class FreshScheduleOrderFragment extends BaseListFragment<InvSendOrder>
                     orderListAdapter.setEntityList(dataList);
                 }
                 ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PURCHASESEND_ORDER_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PURCHASESEND_ORDER_ENABLED, false);
             } else {
                 if (orderListAdapter != null) {
                     orderListAdapter.appendEntityList(dataList);

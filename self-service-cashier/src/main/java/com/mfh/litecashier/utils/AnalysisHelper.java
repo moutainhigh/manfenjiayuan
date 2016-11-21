@@ -46,8 +46,8 @@ public class AnalysisHelper {
      * */
     public static HandOverBill createHandOverBill(){
         //上一次交接班时间
-        Date lastHandoverDate = SharedPreferencesHelper.getLastHandoverDateTime();
-        int lastHandoverShiftId = SharedPreferencesHelper.getLastHandoverShiftId();
+        Date lastHandoverDate = SharedPreferencesUltimate.getLastHandoverDateTime();
+        int lastHandoverShiftId = SharedPreferencesUltimate.getLastHandoverShiftId();
         ZLogger.d(String.format(Locale.getDefault(),
                 "创建交接班订单--last shiftId：%d, datetime：%s",
                 lastHandoverShiftId, TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(lastHandoverDate)));

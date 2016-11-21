@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
 import com.mfh.litecashier.R;
 
@@ -42,8 +42,6 @@ import butterknife.OnLongClick;
  *   </declare-styleable>
  */
 public class InputNumberLabelView extends LinearLayout {
-    private static final String TAG = "InputNumberLabelView";
-
     /** 输入框小数的位数*/
     private static final int DECIMAL_DIGITS = 2;
 
@@ -72,15 +70,16 @@ public class InputNumberLabelView extends LinearLayout {
      * //Press “＋” KeyEvent.KEYCODE_NUMPAD_ADD
      */
     private int[] interceptKeys;
+    public interface OnInterceptListener{
+        void onKey(int keyCode, String text);
+    }
+    private OnInterceptListener mOnInterceptListener;
 
     private boolean clearOnClickDel;//单击删除按钮清空内容
 
     private int decimalDigits = DECIMAL_DIGITS;
 
-    public interface OnInterceptListener{
-        void onKey(int keyCode, String text);
-    }
-    private OnInterceptListener mOnInterceptListener;
+
 
     public InputNumberLabelView(Context context) {
         this(context, null);
@@ -132,7 +131,8 @@ public class InputNumberLabelView extends LinearLayout {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP){
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled() || softKeyboardEnabled){
+                    //私有属性优先
+                    if (softKeyboardEnabled || SharedPrefesManagerFactory.isSoftInputEnabled()){
                         DeviceUtils.showSoftInput(getContext(), etInput);
                     }else{
                         DeviceUtils.hideSoftInput(getContext(), etInput);

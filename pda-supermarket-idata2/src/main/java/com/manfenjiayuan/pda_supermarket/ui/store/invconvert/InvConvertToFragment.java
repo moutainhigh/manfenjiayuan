@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.PDAScanManager;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -26,14 +25,15 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -61,8 +61,6 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
     TextLabelView labelQuantity;
     @Bind(R.id.label_quantity_check)
     EditLabelView labelQuantityCheck;
-    @Bind(R.id.tv_unit)
-    TextView tvUnit;
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
     @Bind(R.id.fab_scan)
@@ -128,17 +126,16 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
             ZLogger.d("mScanBar is null");
         }
 
-        labelQuantityCheck.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
+        labelQuantityCheck.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
         btnSweep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,7 +146,7 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
             btnSweep.setVisibility(View.VISIBLE);
         }
         else{
@@ -309,7 +306,7 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
             labelProductName.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
             labelQuantityCheck.setInput("");
-            tvUnit.setText("");
+            labelQuantityCheck.setEndText("");
 
             btnSubmit.setEnabled(false);
 
@@ -319,8 +316,7 @@ public class InvConvertToFragment extends PDAScanFragment implements IInvSkuGood
             labelProductName.setTvSubTitle(curGoods.getName());
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
             labelQuantityCheck.setInput("");
-            tvUnit.setText(curGoods.getUnit());
-
+            labelQuantityCheck.setEndText(curGoods.getUnit());
             labelQuantityCheck.requestFocusEnd();
             btnSubmit.setEnabled(true);
         }

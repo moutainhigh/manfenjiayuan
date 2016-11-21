@@ -77,7 +77,7 @@ public class TextInputDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-//                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+//                    if (SharedPrefesManagerFactory.isSoftKeyboardEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etContent);
 //                    } else {
 //                        DeviceUtils.hideSoftInput(getContext(), etContent);

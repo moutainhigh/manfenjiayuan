@@ -27,7 +27,7 @@ import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.mfh.litecashier.ui.adapter.PurchaseSendOrderAdapter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
@@ -331,7 +331,7 @@ public class InvSendOrderFragment extends BaseListFragment<InvSendOrder>
                     orderListAdapter.setEntityList(dataList);
                 }
                 ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PURCHASESEND_ORDER_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PURCHASESEND_ORDER_ENABLED, false);
             } else {
                 if (orderListAdapter != null) {
                     orderListAdapter.appendEntityList(dataList);

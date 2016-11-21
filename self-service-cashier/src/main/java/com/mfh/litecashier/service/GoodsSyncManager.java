@@ -35,7 +35,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
@@ -52,23 +52,45 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * POS--商品数据同步，同步频率较高，商品档案发生变化就会触发一次同步
+ * POS--同步频率较高，商品档案发生变化就会触发一次同步
+ * <ol>
+ *     <li>同步商品档案</li>
+ *     <li>同步商品档案——一品多玛</li>
+ *     <li>同步商品档案——前台类目</li>
+ *     <li>同步商品档案——前台类目&商品档案关联表</li>
+ * </ol>
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class GoodsSyncManager extends DataSyncManager {
-    public static final int SYNC_STEP_NA = -1;
-    //收银相关：同步频率较高
-    public static final int SYNC_STEP_FRONTEND_CATEGORY = 0;//前台类目(一级类目)
-    public static final int SYNC_STEP_PRODUCTS = 1;//商品库
-    public static final int SYNC_STEP_PRODUCT_SKU = 2;//一品多码
-    public static final int SYNC_STEP_FRONTENDCATEGORY_GOODS = 3;//前台类目&商品库－关系表
+public class GoodsSyncManager extends BaseSyncManager {
+    public static final int NA = 0;
+    public static final int POSPRODUCTS = 1;//商品档案
+    public static final int POSPRODUCTS_SKU = 2;//一品多码
+    public static final int FRONTENDCATEGORY = 4;//前台类目(一级类目)
+    public static final int FRONTENDCATEGORY_GOODS = 8;//前台类目&商品库－关系表
+    public static final int LAUNCHER = 15;//应用启动
+    private int queue = NA;//默认同步所有数据
+
+    public static class GoodsSyncEvent {
+        public static final int EVENT_ID_SYNC_DATA_PROGRESS = 0X11;//同步进度
+        public static final int EVENT_FRONTEND_CATEGORY_UPDATED = 0X04;//前台类目更新
+        public static final int EVENT_PRODUCT_CATALOG_UPDATED = 0X05;//前台类目和商品库关系更新
+        public static final int EVENT_ID_SYNC_DATA_FINISHED = 0X12;//同步结束
+
+        private int eventId;
+
+        public GoodsSyncEvent(int eventId) {
+            this.eventId = eventId;
+        }
+
+        public int getEventId() {
+            return eventId;
+        }
+    }
 
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
-    private static final int MAX_SYNC_PAGESIZE = 40;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
     private PosProductNetDao posProductNetDao = new PosProductNetDao();
-
     private PageInfo mPosSkuPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
     private PosProductSkuNetDao posProductSkuNetDao = new PosProductSkuNetDao();
     private PageInfo productCateslogPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
@@ -76,8 +98,6 @@ public class GoodsSyncManager extends DataSyncManager {
     private boolean bSyncInProgress = false;//是否正在同步
     private int rollback = -1;
     private static final int MAX_ROLLBACK = 10;
-    //当前同步进度
-    private int nextStep = SYNC_STEP_NA;
 
     private static GoodsSyncManager instance = null;
 
@@ -98,28 +118,13 @@ public class GoodsSyncManager extends DataSyncManager {
     }
 
     /**
-     * 下载更新POS数据库
+     * 同步数据
      */
     public synchronized void sync() {
-        if (bSyncInProgress) {
-            rollback++;
-            ZLogger.df(String.format("正在同步POS数据..., rollback=%d/%d", rollback, MAX_ROLLBACK));
-
-            //同步异常出现无法结束，自动恢复同步
-            if (rollback > MAX_ROLLBACK) {
-                bSyncInProgress = false;
-            }
-            if (nextStep >= SYNC_STEP_NA) {
-                nextStep = SYNC_STEP_FRONTEND_CATEGORY;
-            }
-            return;
-        }
-
-        rollback = -1;
-        processStep(SYNC_STEP_FRONTEND_CATEGORY, SYNC_STEP_PRODUCTS);
+        sync(LAUNCHER);
     }
-
     public void sync(int step) {
+        queue |= step;
         if (bSyncInProgress) {
             rollback++;
             ZLogger.df(String.format("正在同步POS数据..., rollback=%d/%d", rollback, MAX_ROLLBACK));
@@ -128,67 +133,54 @@ public class GoodsSyncManager extends DataSyncManager {
             if (rollback > MAX_ROLLBACK) {
                 bSyncInProgress = false;
             }
-            if (nextStep > step) {
-                nextStep = step;
-            }
             return;
         }
 
-        rollback = -1;
-        processStep(step, SYNC_STEP_NA);
+        processQueue();
     }
 
     /**
-     * 下一步
-     */
-    private void nextStep() {
-        ZLogger.d(String.format("nextStep ＝ %d", nextStep));
-        processStep(nextStep, nextStep + 1);
-    }
+     * 同步
+     * */
+    private void processQueue() {
+        ZLogger.d(String.format("queue ＝ %d", queue));
 
-    private void processStep(int step, int nextStep) {
-        ZLogger.d(String.format("step ＝ %d， nextStep ＝ %d", step, nextStep));
-        this.nextStep = nextStep;
+        rollback = -1;
         this.bSyncInProgress = true;
 
-        switch (step) {
-            case SYNC_STEP_FRONTEND_CATEGORY: {
-                getTopFrontId();
-            }
-            break;
-            case SYNC_STEP_PRODUCTS: {
-                startSyncProducts();
-            }
-            break;
-            case SYNC_STEP_PRODUCT_SKU: {
-                startSyncProductSku();
-            }
-            break;
-            case SYNC_STEP_FRONTENDCATEGORY_GOODS: {
-                downLoadProductCatalog();
-            }
-            break;
-            default: {
-                ZLogger.df("同步POS数据结束");
-                bSyncInProgress = false;
-                EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
-            }
-            break;
+        if ((queue & POSPRODUCTS) == POSPRODUCTS){
+            queue ^= POSPRODUCTS;
+            startSyncProducts();
+        }
+        else if ((queue & POSPRODUCTS_SKU) == POSPRODUCTS_SKU){
+            queue ^= POSPRODUCTS_SKU;
+            startSyncProductSku();
+        }
+        else if ((queue & FRONTENDCATEGORY) == FRONTENDCATEGORY){
+            queue ^= FRONTENDCATEGORY;
+            getTopFrontId();
+        }
+        else if ((queue & FRONTENDCATEGORY_GOODS) == FRONTENDCATEGORY_GOODS){
+            queue ^= FRONTENDCATEGORY_GOODS;
+            downLoadProductCatalog();
+        }
+        else{
+            ZLogger.df("同步数据结束");
+            bSyncInProgress = false;
+            EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
         }
     }
 
-    private void networkError() {
-        ZLogger.df("网络未连接，暂停同步POS数据。");
+    /**
+     * 结果更新
+     * */
+    private void onUpdate(int eventId, String message){
+        if (StringUtils.isEmpty(message)){
+            ZLogger.df(message);
+        }
         bSyncInProgress = false;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
+        EventBus.getDefault().post(new GoodsSyncEvent(eventId));
     }
-
-    private void sessionError() {
-        ZLogger.df("会话已失效，暂停同步POS数据。");
-        bSyncInProgress = false;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
-    }
-
 
     /**
      * 同步商品库
@@ -201,11 +193,11 @@ public class GoodsSyncManager extends DataSyncManager {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 if (!MfhLoginService.get().haveLogined()) {
-                    sessionError();
+                    onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
                     return;
                 }
 
-                String startCursor = DataSyncManager.getPosLastUpdateCursor();
+                String startCursor = getPosLastUpdateCursor();
                 if (StringUtils.isEmpty(startCursor)) {
                     ZLogger.df("同步商品库：全量更新，重置游标，删除旧数据");
                     PosProductService.get().deactiveAll();
@@ -226,7 +218,7 @@ public class GoodsSyncManager extends DataSyncManager {
                     @Override
                     public void onError(Throwable e) {
                         ZLogger.ef(e.toString());
-                        sessionError();
+                        onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
                     }
 
                     @Override
@@ -241,7 +233,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
     private void downloadProducts(final String lastCursor, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            networkError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步POS数据.");
             return;
         }
 
@@ -268,7 +260,7 @@ public class GoodsSyncManager extends DataSyncManager {
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
 
-                nextStep();
+                processQueue();
             }
         }, "/scGoodsSku/downLoadPosProduct");
     }
@@ -279,7 +271,7 @@ public class GoodsSyncManager extends DataSyncManager {
     private void savePosProducts(final RspQueryResult<PosGoods> rs, final PageInfo pageInfo,
                                  final String startCursor) {
         if (rs == null) {
-            nextStep();
+            processQueue();
             return;
         }
 
@@ -307,10 +299,10 @@ public class GoodsSyncManager extends DataSyncManager {
                     }
 
                     //更新游标
-                    SharedPreferencesHelper.setSyncProductsCursor(cussor);
+                    SharedPreferencesUltimate.setSyncProductsCursor(cussor);
                     ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 结束", rs.getReturnNum(),
                             rs.getTotalNum(), mPageInfo.getPageNo(),
-                            mPageInfo.getTotalPage(), SharedPreferencesHelper.getSyncProductsCursor()));
+                            mPageInfo.getTotalPage(), SharedPreferencesUltimate.getSyncProductsCursor()));
 
                 } catch (Throwable ex) {
                     ZLogger.ef(String.format("保存商品库失败: %s", ex.toString()));
@@ -330,7 +322,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        sessionError();
+                        onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
                     }
 
                     @Override
@@ -353,7 +345,7 @@ public class GoodsSyncManager extends DataSyncManager {
      */
     private void countNetSyncAbleSkuNum() {
         if (!MfhLoginService.get().haveLogined()) {
-            sessionError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
             return;
         }
 
@@ -379,7 +371,7 @@ public class GoodsSyncManager extends DataSyncManager {
                                         "下一次需要全量同步商品库", posNum, skuNum));
 
                                 //初始化游标并设置下次需要全量更新
-                                SharedPreferencesHelper.setSyncProductsCursor("");
+                                SharedPreferencesUltimate.setSyncProductsCursor("");
 
                                 //删除无效的数据
                                 PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
@@ -393,12 +385,11 @@ public class GoodsSyncManager extends DataSyncManager {
                                 ZLogger.df(String.format("pos本地商品数目(%d)和后台商品数目(%d)一致",
                                         posNum, skuNum));
                             }
-
-                            nextStep();
                         } catch (Exception e) {
                             ZLogger.ef(String.format("查询指定网点可同步sku总数:%s", e.toString()));
-                            nextStep();
                         }
+
+                        processQueue();
                     }
 
                     @Override
@@ -407,7 +398,8 @@ public class GoodsSyncManager extends DataSyncManager {
                         ZLogger.df("查询指定网点可同步sku总数失败：" + errMsg);
 //                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_NOT_LOGIN,
 //                                null, "Validate--会话过期，自动重登录");
-                        nextStep();
+
+                        processQueue();
                     }
                 }
                 , String.class
@@ -422,7 +414,7 @@ public class GoodsSyncManager extends DataSyncManager {
      */
     private void startSyncProductSku() {
         if (!MfhLoginService.get().haveLogined()) {
-            sessionError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
             return;
         }
 
@@ -430,7 +422,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
         mPosSkuPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        String lastCursor = SharedPreferencesHelper.getSyncProductSkuCursor();
+        String lastCursor = SharedPreferencesUltimate.getSyncProductSkuCursor();
 
         //从第一页开始请求，每页最多50条记录
         downloadProductSku(lastCursor, mPosSkuPageInfo);
@@ -439,7 +431,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
     private void downloadProductSku(final String lastCursor, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            networkError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步POS数据.");
             return;
         }
 
@@ -463,7 +455,7 @@ public class GoodsSyncManager extends DataSyncManager {
                 super.processFailure(t, errMsg);
 
                 //同步账号数据
-                nextStep();
+                processQueue();
             }
         }, "/scProductSkuBarcodes/findShopOtherBarcodes");
     }
@@ -502,7 +494,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
                 //更新游标
                 if (cursor != null) {
-                    SharedPreferencesHelper.setPosSkuLastUpdate(cursor);
+                    SharedPreferencesUltimate.setPosSkuLastUpdate(cursor);
                 }
                 ZLogger.df(String.format("同步 %d/%d 个箱规", retSize, rs.getTotalNum()));
 
@@ -523,17 +515,16 @@ public class GoodsSyncManager extends DataSyncManager {
                 pageInfo.moveToNext();
                 downloadProductSku(lastCursor, pageInfo);
             } else {
-                ZLogger.df("同步规格码表品结束:" + SharedPreferencesHelper.getSyncProductSkuCursor());
+                ZLogger.df("同步规格码表品结束:" + SharedPreferencesUltimate.getSyncProductSkuCursor());
 
-                nextStep();
+                processQueue();
             }
         }
     }
 
-
     private void getTopFrontId() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            networkError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步POS数据.");
             return;
         }
 
@@ -555,7 +546,7 @@ public class GoodsSyncManager extends DataSyncManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.df("加载前台根类目 失败, " + errMsg);
-                        nextStep();
+                        processQueue();
                     }
                 }
                 , CategoryInfo.class
@@ -570,7 +561,7 @@ public class GoodsSyncManager extends DataSyncManager {
      */
     private void createCategoryInfo() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            networkError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步POS数据.");
             return;
         }
 
@@ -581,7 +572,7 @@ public class GoodsSyncManager extends DataSyncManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.df("创建前台类目失败, " + errMsg);
-                        nextStep();
+                        processQueue();
                     }
 
                     @Override
@@ -593,7 +584,7 @@ public class GoodsSyncManager extends DataSyncManager {
                                 String result = retValue.getValue();
                                 Long code = Long.valueOf(result);
                                 ZLogger.df("新建前台类目成功:" + code);
-                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_L_CATETYPE_POS_ID, code);
+                                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_L_CATETYPE_POS_ID, code);
 
                                 CategoryInfo categoryInfo = new CategoryInfo();
                                 categoryInfo.setId(code);
@@ -604,7 +595,7 @@ public class GoodsSyncManager extends DataSyncManager {
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }
-                        nextStep();
+                        processQueue();
                     }
                 }
                 , String.class
@@ -619,11 +610,9 @@ public class GoodsSyncManager extends DataSyncManager {
     private void getCodeValue(CategoryInfo categoryInfo) {
         if (categoryInfo == null) {
             createCategoryInfo();
-//            SharedPreferencesHelper.set(SharedPreferencesHelper.PK_L_CATETYPE_POS_ID, 0L);
-//            nextStep();
             return;
         }
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_L_CATETYPE_POS_ID, categoryInfo.getId());
+        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_L_CATETYPE_POS_ID, categoryInfo.getId());
         PosLocalCategoryService.get().deactiveAll();
 
         NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<CategoryInfo,
@@ -655,19 +644,20 @@ public class GoodsSyncManager extends DataSyncManager {
                                     PosLocalCategoryEntity.CLOUD_DEACTIVE));
                             ZLogger.d(String.format("删除无效的数据，本地类目数量:%d",
                                     PosLocalCategoryService.get().getCount()));
+                            // TODO: 21/11/2016 删除类目对应的商品
                         }
 
-                        //通知刷新数据
+                        //通知刷新前台类目数据
                         EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
 
-                        nextStep();
+                        processQueue();
                     }
 
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.df("加载前台根目录子类目 失败, " + errMsg);
-                        nextStep();
+                        processQueue();
                     }
                 }
                 , CategoryInfo.class
@@ -686,11 +676,11 @@ public class GoodsSyncManager extends DataSyncManager {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 if (!MfhLoginService.get().haveLogined()) {
-                    sessionError();
+                    onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
                     return;
                 }
 
-                String startCursor = DataSyncManager.getProductCatalogStartCursor();
+                String startCursor = getProductCatalogStartCursor();
                 if (StringUtils.isEmpty(startCursor)) {
                     // 全量更新，锁定商品
                     ProductCatalogService.getInstance().deactiveAll();
@@ -710,7 +700,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        sessionError();
+                        onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
                     }
 
                     @Override
@@ -727,7 +717,7 @@ public class GoodsSyncManager extends DataSyncManager {
 
     private void downLoadProductCatalog2(final String startCusror, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            networkError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步POS数据.");
             return;
         }
 
@@ -742,7 +732,7 @@ public class GoodsSyncManager extends DataSyncManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.df("同步商品和类目关系表失败:" + errMsg);
-                        nextStep();
+                        processQueue();
                     }
                 }, ProductCatalog.class, CashierApp.getAppContext());
 
@@ -786,12 +776,12 @@ public class GoodsSyncManager extends DataSyncManager {
 
                 //更新游标
                 if (cursor != null) {
-                    SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+                    SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                             TimeCursor.InnerFormat.format(cursor));
                 }
                 ZLogger.df(String.format("保存 %d/%d 个商品类目关系表（%s）",
                         retSize, rs.getTotalNum(),
-                        SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR)));
+                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR)));
             } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
                 ZLogger.ef(String.format("保存商品类目关系表失败: %s", ex.toString()));
@@ -820,7 +810,7 @@ public class GoodsSyncManager extends DataSyncManager {
      */
     private void countProductCatalogSyncAbleNum() {
         if (!MfhLoginService.get().haveLogined()) {
-            sessionError();
+            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步POS数据.");
             return;
         }
 
@@ -831,36 +821,29 @@ public class GoodsSyncManager extends DataSyncManager {
                     public void processResult(IResponseData rspData) {
 //                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"701"}}
                         try {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            int skuNum = Integer.valueOf(retValue.getValue());
+                            int skuNum = 0;
+                            if (rspData != null){
+                                RspValue<String> retValue = (RspValue<String>) rspData;
+                                skuNum = Integer.valueOf(retValue.getValue());
+                            }
                             ZLogger.df(String.format("计算有多少可同步的商品类目关系:%d", skuNum));
 
+                            //删除无效的数据
+                            ProductCatalogService.getInstance()
+                                    .deleteBy(String.format("isCloudActive = '%d'", 0));
                             int count = ProductCatalogService.getInstance().getCount();
-                            if (count == skuNum) {
-                                ZLogger.df(String.format("计算有多少可同步的商品类目关系结束,云端(%d)和本地数量(%d)一致。",
-                                        skuNum, count));
-                            } else {
-                                ZLogger.df(String.format("计算有多少可同步的商品类目关系结束,云端(%d)和本地数量(%d)不一致，下次需要全量更新",
-                                        skuNum, count));
 
-                                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+                            ZLogger.df(String.format("商品类目关系表,（云端／本地）= (%d／%d)", skuNum, count));
+                            if (count != skuNum) {
+                                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                                         "");
-
-                                //删除无效的数据
-                                ProductCatalogService.getInstance()
-                                        .deleteBy(String.format("isCloudActive = '%d'", 0));
-                                ZLogger.d(String.format("删除无效的数据，本地类目数量:%d",
-                                        ProductCatalogService.getInstance().getCount()));
                             }
 
                             EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED));
-
-
-                            nextStep();
                         } catch (Exception e) {
                             ZLogger.ef(String.format("计算有多少可同步的商品类目关系失败:%s", e.toString()));
-                            nextStep();
                         }
+                        processQueue();
                     }
 
                     @Override
@@ -869,7 +852,7 @@ public class GoodsSyncManager extends DataSyncManager {
                         ZLogger.df("计算有多少可同步的商品类目关系失败：" + errMsg);
 //                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_NOT_LOGIN,
 //                                null, "Validate--会话过期，自动重登录");
-                        nextStep();
+                        processQueue();
                     }
                 }
                 , String.class
@@ -879,20 +862,122 @@ public class GoodsSyncManager extends DataSyncManager {
         ProductCatalogApi.countProductCatalogSyncAbleNum(responseCallback);
     }
 
-    public static class GoodsSyncEvent {
-        public static final int EVENT_FRONTEND_CATEGORY_UPDATED = 0X04;//前台类目更新
-        public static final int EVENT_PRODUCT_CATALOG_UPDATED = 0X05;//前台类目和商品库关系更新
-        public static final int EVENT_ID_SYNC_DATA_PROGRESS = 0X11;//同步进度
-        public static final int EVENT_ID_SYNC_DATA_FINISHED = 0X12;//同步结束
 
-        private int eventId;
-
-        public GoodsSyncEvent(int eventId) {
-            this.eventId = eventId;
-        }
-
-        public int getEventId() {
-            return eventId;
-        }
-    }
+//    /**
+//     * 下载前台类目
+//     */
+//    private void downloadFrontendCategory() {
+//        if (!MfhLoginService.get().haveLogined()) {
+//            sessionError();
+//            return;
+//        }
+//
+//        ZLogger.d("准备开始同步前台类目...");
+//        frontCatalogPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
+//        PosLocalCategoryService.get().deactiveAll();
+//        //从第一页开始请求，每页最多50条记录
+//        downloadFrontendCategory2(frontCatalogPageInfo);
+//        frontCatalogPageInfo.setPageNo(1);
+//    }
+//
+//    public void downloadFrontendCategory2(PageInfo pageInfo) {
+//        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+//            networkError();
+//            return;
+//        }
+//
+//        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+//                new NetProcessor.QueryRsProcessor<CategoryInfo>(pageInfo) {
+//                    @Override
+//                    public void processQueryResult(RspQueryResult<CategoryInfo> rs) {
+//                        saveFrontendCategory(pageInfo, rs);
+//                    }
+//
+//                    @Override
+//                    protected void processFailure(Throwable t, String errMsg) {
+//                        super.processFailure(t, errMsg);
+//                        ZLogger.df("加载前台类目数据失败:" + errMsg);
+//                        nextStep();
+//                    }
+//                }, CategoryInfo.class, CashierApp.getAppContext());
+//
+//        ScCategoryInfoApi.list(CateApi.DOMAIN_TYPE_PROD, CateApi.PLAT,
+//                CateApi.CATE_POSITION_FRONT, 1, MfhLoginService.get().getSpid(), pageInfo, queryRsCallBack);
+//    }
+//
+//    /**
+//     * 保存前台类目
+//     */
+//    private void saveFrontendCategory(final PageInfo pageInfo,
+//                                      final RspQueryResult<CategoryInfo> rspQueryResult) {
+//        Observable.create(new Observable.OnSubscribe<String>() {
+//            @Override
+//            public void call(Subscriber<? super String> subscriber) {
+//                try {
+//                    frontCatalogPageInfo = pageInfo;
+//
+//                    //保存前台类目数据
+//                    if (rspQueryResult != null) {
+//                        int retSize = rspQueryResult.getReturnNum();
+//                        ZLogger.df(String.format("保存 %d/%d 个前台类目数据", retSize, rspQueryResult.getTotalNum()));
+//                        for (EntityWrapper<CategoryInfo> wrapper : rspQueryResult.getRowDatas()) {
+//                            CategoryInfo categoryInfo = wrapper.getBean();
+//                            PosLocalCategoryService.get().saveOrUpdate(categoryInfo);
+//                        }
+//                    }
+//
+//                    //若还有继续发起请求
+//                    if (pageInfo.hasNextPage()) {
+//                        pageInfo.moveToNext();
+//                        downloadFrontendCategory2(pageInfo);
+//                    } else {
+//                        int count = PosLocalCategoryService.get().getCount();
+//                        int cloudNum = pageInfo.getTotalCount();
+//                        if (count == cloudNum) {
+//                            ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)一致。",
+//                                    cloudNum, count));
+//                        } else {
+//                            ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)不一致",
+//                                    cloudNum, count));
+//
+//                            //删除无效的数据
+//                            PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
+//                                    PosLocalCategoryEntity.CLOUD_DEACTIVE));
+//                            ZLogger.d(String.format("删除无效的数据，本地类目数量:%d",
+//                                    PosLocalCategoryService.get().getCount()));
+//                        }
+//
+//                        //通知刷新数据
+//                        EventBus.getDefault().post(new DataSyncManager.DataSyncEvent(DataSyncManager.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+//
+//                        nextStep();
+//                    }
+//
+//                } catch (Throwable ex) {
+//                    ZLogger.ef(String.format("保存前台类目数据失败: %s", ex.toString()));
+//                }
+//
+//                subscriber.onNext(null);
+//                subscriber.onCompleted();
+//            }
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<String>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                    }
+//
+//                    @Override
+//                    public void onNext(String startCursor) {
+//
+//                    }
+//
+//                });
+//    }
 }

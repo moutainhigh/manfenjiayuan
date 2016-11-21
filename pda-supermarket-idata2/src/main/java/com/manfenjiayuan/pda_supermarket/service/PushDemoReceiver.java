@@ -23,7 +23,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.tencent.bugly.beta.Beta;
 
@@ -102,9 +102,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
             case PushConsts.THIRDPART_FEEDBACK:
                 ZLogger.df(String.format("action:%d, %s",
                         PushConsts.THIRDPART_FEEDBACK, retrieveGetuiInfo(AppContext.getAppContext())));
-
                 break;
-
             case PushConsts.GET_SDKONLINESTATE: {
                 ZLogger.df(String.format("action:%d, %s",
                         PushConsts.GET_SDKONLINESTATE, retrieveGetuiInfo(AppContext.getAppContext())));
@@ -254,7 +252,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_BUYER_PREPAREABLE));
 
             //程序退到后台，显示通知
-            if (MfhLoginService.get().haveLogined() && SharedPreferencesManager.getNotificationAcceptEnabled()) {
+            if (MfhLoginService.get().haveLogined() && SharedPrefesManagerFactory.getNotificationAcceptEnabled()) {
                 // && !PushUtil.isForeground(context)){
 //                    UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_NOTIFY_TAKE_ORDER, extras);
 //                    Notification notification = PushUtil.generateNotification(context, "接单通知", bodyObj.getString("content"));

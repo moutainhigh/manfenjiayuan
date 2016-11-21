@@ -27,12 +27,12 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
@@ -136,7 +136,7 @@ public class PayByCashFragment extends BasePayFragment {
                 inlvPaidMoney.requestFocusEnd();
 
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()
                             || inlvPaidMoney.isSoftKeyboardEnabled()) {
                         showBarcodeKeyboard();
                     }
@@ -181,7 +181,7 @@ public class PayByCashFragment extends BasePayFragment {
     protected void submitOrder() {
         super.submitOrder();
         //混合支付aas
-        if (!SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)
+        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)
                 && rechargeAmount < 0) {
             ZLogger.df("收取金额不足");
 //            DialogUtil.showHint("收取金额不足");
@@ -237,7 +237,7 @@ public class PayByCashFragment extends BasePayFragment {
                 tvCharge.setTextColor(AppHelper.getOkTextColor());
             } else {
                 //混合支付
-                if (SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)) {
+                if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)) {
                     tvCharge.setText(R.string.default_amount);
                     tvCharge.setTextColor(Color.parseColor("#000000"));
                 } else {

@@ -17,9 +17,9 @@ import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -103,16 +103,16 @@ public class SMScaleSyncManager2 extends FTPManager {
      * 初始化
      */
     public static void initialize() {
-        FTP_HOST = SharedPreferencesManager
-                .getText(PREF_SMSCALE, PK_S_SMSCALE_HOST, "");
-        FTP_PORT = SharedPreferencesManager
+        FTP_HOST = SharedPrefesManagerFactory
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_HOST, "");
+        FTP_PORT = SharedPrefesManagerFactory
                 .getInt(PREF_SMSCALE, PK_I_SMSCALE_PORT, 21);
-        FTP_USER = SharedPreferencesManager
-                .getText(PREF_SMSCALE, PK_S_SMSCALE_USERNAME, "");
-        FTP_PASS = SharedPreferencesManager
-                .getText(PREF_SMSCALE, PK_S_SMSCALE_PASSWORD, "");
-        ENCODING_CHARSET = SharedPreferencesManager
-                .getText(PREF_SMSCALE, PK_S_SMSCALE_ENCODING, "");
+        FTP_USER = SharedPrefesManagerFactory
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_USERNAME, "");
+        FTP_PASS = SharedPrefesManagerFactory
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_PASSWORD, "");
+        ENCODING_CHARSET = SharedPrefesManagerFactory
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_ENCODING, "");
     }
 
     /**
@@ -140,7 +140,7 @@ public class SMScaleSyncManager2 extends FTPManager {
      * 获取电子秤同步开始游标
      */
     public String getScaleStartCursor() {
-        String startCursor = SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
+        String startCursor = SharedPrefesManagerFactory.getString(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR);
         ZLogger.df(String.format("最后一次电子秤同步的更新时间(%s)。", startCursor));
 
@@ -193,8 +193,8 @@ public class SMScaleSyncManager2 extends FTPManager {
      * 上传POS商品库
      */
     public synchronized void sync() {
-        if (!SharedPreferencesHelper
-                .getBoolean(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, false)){
+        if (!SharedPreferencesUltimate
+                .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, false)){
             syncFailed("请在设置中打开同步商品库到电子秤同步开关。");
             return;
         }
@@ -440,7 +440,7 @@ public class SMScaleSyncManager2 extends FTPManager {
 
         public void completed() {
             String currentCursor = TimeUtil.format(cursor, TimeCursor.InnerFormat);
-            SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+            SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                     SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, currentCursor);
             ZLogger.df(String.format("保存商品同步电子秤游标:%s", currentCursor));
 

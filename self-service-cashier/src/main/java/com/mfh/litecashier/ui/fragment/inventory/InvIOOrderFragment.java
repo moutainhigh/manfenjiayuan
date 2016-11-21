@@ -28,7 +28,7 @@ import com.mfh.litecashier.event.InvIOOrderEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.ui.adapter.InvIOOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import net.tsz.afinal.core.AsyncTask;
 
@@ -179,9 +179,9 @@ public class InvIOOrderFragment extends BaseFragment {
                 if (orderType == args.getInt(EXTRA_KEY_ORDER_TYPE)) {
                     boolean isNeedReload = true;
                     if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
-                        isNeedReload = SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_INVIOORDER_IN_ENABLED, true);
+                        isNeedReload = SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_INVIOORDER_IN_ENABLED, true);
                     } else if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
-                        isNeedReload = SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_INVIOORDER_OUT_ENABLED, true);
+                        isNeedReload = SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_INVIOORDER_OUT_ENABLED, true);
                     }
 
                     if (!isNeedReload) {
@@ -308,9 +308,9 @@ public class InvIOOrderFragment extends BaseFragment {
 //                    (orderList == null ? 0 : orderList.size()), mPageInfo.getTotalCount()));
 
             if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVIOORDER_IN_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_INVIOORDER_IN_ENABLED, false);
             } else if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_INVIOORDER_OUT_ENABLED, false);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_INVIOORDER_OUT_ENABLED, false);
             }
             onLoadFinished();
         }

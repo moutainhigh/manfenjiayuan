@@ -9,7 +9,7 @@ import com.gprinter.command.EscCommand;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -131,31 +131,31 @@ public class SerialManager {
 
 
     public static String getPrinterPort() {
-        return SharedPreferencesManager.getText(
+        return SharedPrefesManagerFactory.getString(
                 PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, GPrinterAgent.PORT_DEF);
     }
 
     public static void setPrinterPort(String port){
-        SharedPreferencesManager.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, port);
+        SharedPrefesManagerFactory.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, port);
     }
 
     public static String getUmsipsPort() {
-        return SharedPreferencesManager.getText(
+        return SharedPrefesManagerFactory.getString(
                 PREF_NAME_SERIAL, PK_UMSIPS_PORT, PORT_UMSIPS);
     }
 
     public static void setUmsipsPort(String port){
         ZLogger.df(String.format("setUMSIPSPort(%s):%s", PREF_NAME_SERIAL, port));
-        SharedPreferencesManager.set(PREF_NAME_SERIAL, PK_UMSIPS_PORT, port);
+        SharedPrefesManagerFactory.set(PREF_NAME_SERIAL, PK_UMSIPS_PORT, port);
     }
 
     public static String getUmsipsBaudrate() {
-        return SharedPreferencesManager.getText(
+        return SharedPrefesManagerFactory.getString(
                 PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, BAUDRATE_UMSIPS);
     }
 
     public static void setUmsipsBaudrate(String baudrate){
-        SharedPreferencesManager.set(
+        SharedPrefesManagerFactory.set(
                 PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, baudrate);
     }
 

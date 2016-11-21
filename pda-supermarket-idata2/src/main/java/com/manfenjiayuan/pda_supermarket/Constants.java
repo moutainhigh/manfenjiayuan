@@ -15,5 +15,4 @@ public class Constants {
     public static final String BA_HANDLE_AMOUNT_CHANGED_WX      = "BA_HANDLE_AMOUNT_CHANGED_WX";//微信
     public static final String BA_HANDLE_AMOUNT_CHANGED_VIP     = "BA_HANDLE_AMOUNT_CHANGED_MFCARD";//会员
     public static final String BA_HANDLE_SCANBARCODE     = "BA_HANDLE_SCANBARCODE";//扫描条码
-
 }

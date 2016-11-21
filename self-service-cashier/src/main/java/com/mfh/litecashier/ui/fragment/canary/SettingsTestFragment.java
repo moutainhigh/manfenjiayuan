@@ -14,12 +14,12 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -62,8 +62,8 @@ public class SettingsTestFragment extends BaseFragment {
                     toggleItemRelease.setSubTitle("开发测试");
                 }
 
-                if (SharedPreferencesManager.isReleaseVersion() != isChecked) {
-                    SharedPreferencesManager.setReleaseVersion(isChecked);
+                if (SharedPrefesManagerFactory.isReleaseVersion() != isChecked) {
+                    SharedPrefesManagerFactory.setReleaseVersion(isChecked);
                     showConfirmDialog("需要重启应用才能生效？",
                             "立即重启", new DialogInterface.OnClickListener() {
 
@@ -85,13 +85,13 @@ public class SettingsTestFragment extends BaseFragment {
         toggleItemCustomerScreen.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, isChecked);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, isChecked);
             }
         });
         toggleHybridPayment.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PREF_KEY_HYBRID_PAYMENT_ENABLED, isChecked);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PREF_KEY_HYBRID_PAYMENT_ENABLED, isChecked);
             }
         });
 
@@ -125,7 +125,7 @@ public class SettingsTestFragment extends BaseFragment {
      * 刷新页面信息
      */
     private void refresh() {
-        if (SharedPreferencesManager.isReleaseVersion()) {
+        if (SharedPrefesManagerFactory.isReleaseVersion()) {
             toggleItemRelease.setChecked(true);
             toggleItemRelease.setSubTitle("正式发布");
         } else {
@@ -133,8 +133,8 @@ public class SettingsTestFragment extends BaseFragment {
             toggleItemRelease.setSubTitle("开发测试");
         }
 
-        toggleItemCustomerScreen.setChecked(SharedPreferencesHelper
-                .getBoolean(SharedPreferencesHelper.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false));
+        toggleItemCustomerScreen.setChecked(SharedPreferencesUltimate
+                .getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false));
 
         Resources resources = this.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height",

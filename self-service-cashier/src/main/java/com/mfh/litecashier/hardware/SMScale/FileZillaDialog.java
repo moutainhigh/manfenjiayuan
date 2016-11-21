@@ -23,7 +23,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.Encoding;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.utils.IpInputFilter;
 import com.mfh.litecashier.R;
@@ -107,7 +107,7 @@ public class FileZillaDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etIp);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etIp);
@@ -167,7 +167,7 @@ public class FileZillaDialog extends CommonDialog {
                     tvSmscaleCursor.setText("");
                 }
                 else{
-                    tvSmscaleCursor.setText(SharedPreferencesManager.getText(SMScaleSyncManager2.PREF_SMSCALE,
+                    tvSmscaleCursor.setText(SharedPrefesManagerFactory.getString(SMScaleSyncManager2.PREF_SMSCALE,
                             SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, ""));
                 }
             }
@@ -290,20 +290,20 @@ public class FileZillaDialog extends CommonDialog {
             return;
         }
 
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+        SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_HOST, host);
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+        SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_I_SMSCALE_PORT, Integer.parseInt(port));
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+        SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_USERNAME, username);
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+        SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_PASSWORD, password);
 
         String encoding = mEncodingSpinner.getSelectedItem().toString();
-        SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+        SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_ENCODING, encoding);
         if (mSwitchSyncMode.isChecked()) {
-            SharedPreferencesManager.set(SMScaleSyncManager2.PREF_SMSCALE,
+            SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                     SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
         }
 

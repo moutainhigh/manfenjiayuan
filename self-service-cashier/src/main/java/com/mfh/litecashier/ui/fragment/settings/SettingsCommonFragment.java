@@ -20,8 +20,8 @@ import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
@@ -31,12 +31,12 @@ import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
+import com.mfh.litecashier.service.GoodsSyncManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.tencent.bugly.beta.Beta;
 
 import org.century.GreenTagsApi;
@@ -174,37 +174,34 @@ public class SettingsCommonFragment extends BaseFragment {
         tsiSoftKeyboard.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesManager.setSoftKeyboardEnabled(isChecked);
+                SharedPrefesManagerFactory.setSoftInputEnabled(isChecked);
             }
         });
         ttsToggleItem.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_CONFIG,
-                        SharedPreferencesManager.PK_B_TTS_ENABLED, isChecked);
+                SharedPrefesManagerFactory.setTtsEnabled(isChecked);
             }
         });
         toggleSmscaleFtp.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
             }
         });
         toggleGreenTags.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesHelper.set(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, isChecked);
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_B_SYNC_ESL_ENABLED, isChecked);
             }
         });
 
         toggleSuperPermission.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                boolean isSuperPermissionGranted = SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
-                        SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false);
+                boolean isSuperPermissionGranted = SharedPrefesManagerFactory.isSuperPermissionGranted();
                 if (isSuperPermissionGranted != isChecked) {
-                    SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
-                            SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, isChecked);
+                    SharedPrefesManagerFactory.setSuperPermissionGranted(isChecked);
                     reload();
                 }
             }
@@ -257,10 +254,10 @@ public class SettingsCommonFragment extends BaseFragment {
                         showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
 
                         // 强制同步
-                        SharedPreferencesHelper.setSyncProductsCursor("");
-                        SharedPreferencesHelper.setPosSkuLastUpdate("");
+                        SharedPreferencesUltimate.setSyncProductsCursor("");
+                        SharedPreferencesUltimate.setPosSkuLastUpdate("");
 
-                        DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+                        GoodsSyncManager.get().sync(GoodsSyncManager.POSPRODUCTS);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -285,9 +282,9 @@ public class SettingsCommonFragment extends BaseFragment {
 //
 //                        //清空米西生鲜商品档案同步游标
 //                        String cursorKey1 = String.format("%s_%d_%s",
-//                                SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
+//                                SharedPreferencesUltimate.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
 //                                135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
-//                        SharedPreferencesHelper.set(cursorKey1, "");
+//                        SharedPreferencesUltimate.set(cursorKey1, "");
 //                        CloudSyncManager.get().importFromChainSku();
 //                    }
 //                }, "点错了", new DialogInterface.OnClickListener() {
@@ -313,8 +310,7 @@ public class SettingsCommonFragment extends BaseFragment {
     private static int clickVersionTimes = 0;
     @OnClick(R.id.item_version)
     public void checkUpdate() {
-        if (SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
-                SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false)){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
             if ((System.currentTimeMillis() - exitTime) > 3000) {
                 Beta.checkUpgrade();
                 exitTime = System.currentTimeMillis();
@@ -334,8 +330,7 @@ public class SettingsCommonFragment extends BaseFragment {
                 clickVersionTimes = 0;
 
                 DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
-                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
-                        SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, true);
+                SharedPrefesManagerFactory.setSuperPermissionGranted(true);
                 reload();
             }
             else{
@@ -502,14 +497,14 @@ public class SettingsCommonFragment extends BaseFragment {
     private void reload() {
         try {
 
-            itemPosGoods.setSubTitle(SharedPreferencesHelper.getSyncProductsCursor());
+            itemPosGoods.setSubTitle(SharedPreferencesUltimate.getSyncProductsCursor());
 //            //米西生鲜
 //            String cursorKey1 = String.format("%s_%d_%s",
-//                    SharedPreferencesHelper.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
+//                    SharedPreferencesUltimate.PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR,
 //                    135799L, String.valueOf(CateApi.BACKEND_CATE_BTYPE_FRESH));
-//            itemMixiFresh.setSubTitle(SharedPreferencesHelper.getText(cursorKey1, ""));
+//            itemMixiFresh.setSubTitle(SharedPreferencesUltimate.getText(cursorKey1, ""));
 
-            terminalSettingsItem.setSubTitle(SharedPreferencesManager.getTerminalId());
+            terminalSettingsItem.setSubTitle(SharedPrefesManagerFactory.getTerminalId());
 
             AppInfo appInfo = AnalysisAgent.getAppInfo(CashierApp.getAppContext());
             if (appInfo != null) {
@@ -537,19 +532,16 @@ public class SettingsCommonFragment extends BaseFragment {
                     SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
             toggleSmscaleFtp.setSubTitle(String.format("%s:%d",
                     SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
-            toggleSmscaleFtp.setChecked(SharedPreferencesHelper
-                    .getBoolean(SharedPreferencesHelper.PK_B_SYNC_SMSCALE_FTP_ENABLED, false));
+            toggleSmscaleFtp.setChecked(SharedPreferencesUltimate
+                    .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, false));
             toggleGreenTags.setSubTitle(GreenTagsApi.URL);
-            toggleGreenTags.setChecked(SharedPreferencesHelper
-                    .getBoolean(SharedPreferencesHelper.PK_B_SYNC_ESL_ENABLED, false));
+            toggleGreenTags.setChecked(SharedPreferencesUltimate
+                    .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_ESL_ENABLED, false));
 
-            tsiSoftKeyboard.setChecked(SharedPreferencesManager.isSoftKeyboardEnabled());
-            ttsToggleItem.setChecked(
-                    SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_CONFIG,
-                            SharedPreferencesManager.PK_B_TTS_ENABLED, true));
+            tsiSoftKeyboard.setChecked(SharedPrefesManagerFactory.isSoftInputEnabled());
+            ttsToggleItem.setChecked(SharedPrefesManagerFactory.isTtsEnabled());
 
-            boolean isSuperPermissionGranted = SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
-                    SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false);
+            boolean isSuperPermissionGranted = SharedPrefesManagerFactory.isSuperPermissionGranted();
             if (isSuperPermissionGranted){
                 togglePrinter.setVisibility(View.VISIBLE);
                 toggleAhscale.setVisibility(View.VISIBLE);

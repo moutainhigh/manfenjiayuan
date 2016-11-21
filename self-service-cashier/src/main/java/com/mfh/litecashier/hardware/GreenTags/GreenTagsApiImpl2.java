@@ -3,7 +3,7 @@ package com.mfh.litecashier.hardware.GreenTags;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import org.century.GreenTagsApi;
 import org.century.ksoap2.KSoapHelper;
@@ -207,7 +207,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
 
             // 保存批量上传订单时间
             String cursor = TimeUtil.format(startCursor, TimeCursor.InnerFormat);
-            SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+            SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                     GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, cursor);
 
             ZLogger.df(String.format("保存价签同步时间：%s", cursor));

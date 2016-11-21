@@ -27,7 +27,7 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
@@ -196,7 +196,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                                     "<div align=\"left\">%s</div>\n" +
                                     "</font></p>",
                             MfhLoginService.get().getCurOfficeName(),
-                            SharedPreferencesManager.getTerminalId(), mPosOrderEntity.getBarCode(),
+                            SharedPrefesManagerFactory.getTerminalId(), mPosOrderEntity.getBarCode(),
                             TimeUtil.format(mPosOrderEntity.getUpdatedDate(),
                                     TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
 

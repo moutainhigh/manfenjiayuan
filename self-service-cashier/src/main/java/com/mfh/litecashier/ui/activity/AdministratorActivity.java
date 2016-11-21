@@ -503,9 +503,9 @@ public class AdministratorActivity extends BaseActivity {
     private void redirectToLogin() {
         // 重置数据更新标志，避免登录其他账号导致数据重叠。
         //设置需要更新前台类目
-//        SharedPreferencesHelper.setSyncFrontCategorySubEnabled(true);
+//        SharedPreferencesUltimate.setSyncFrontCategorySubEnabled(true);
         //设置需要更新商品中心,商品后台类目
-//        SharedPreferencesHelper.setSyncEnabled(SharedPreferencesHelper.PREF_KEY_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
+//        SharedPreferencesUltimate.setSyncEnabled(SharedPreferencesUltimate.PREF_KEY_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
 
 //        MobclickAgent.onProfileSignOff();
 //        AppHelper.resetMemberAccountData();

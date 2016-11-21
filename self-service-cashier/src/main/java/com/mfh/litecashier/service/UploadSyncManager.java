@@ -20,7 +20,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.Date;
 import java.util.List;
@@ -50,7 +50,7 @@ public class UploadSyncManager extends OrderSyncManager {
     private static UploadSyncManager instance = null;
 
     /**
-     * 返回 DataSyncManagerImpl 实例
+     * 返回 DataSyncManager 实例
      *
      * @return
      */
@@ -379,7 +379,7 @@ public class UploadSyncManager extends OrderSyncManager {
                     @Override
                     public void processResult(IResponseData rspData) {
                         // 保存批量上传订单时间
-                        SharedPreferencesHelper.setPosOrderLastUpdate(finalNewCursor);
+                        SharedPreferencesUltimate.setPosOrderLastUpdate(finalNewCursor);
 
                         //继续上传订单
                         if (mOrderPageInfo.hasNextPage()){
@@ -391,7 +391,7 @@ public class UploadSyncManager extends OrderSyncManager {
                             //按时间游标同步之后再同步一次未同步订单，避免按时间戳同步遗漏订单。
                             uploadMissingOrders();
 //                            onNext(String.format("上传收银订单数据完成。%s",
-//                                    SharedPreferencesHelper.getPosOrderLastUpdate()
+//                                    SharedPreferencesUltimate.getPosOrderLastUpdate()
 //                            ));
                         }
                     }
@@ -446,7 +446,7 @@ public class UploadSyncManager extends OrderSyncManager {
                         PosOrderService.get().saveOrUpdate(orderEntity);
 
                         onNext(String.format("上传收银订单数据完成。%s",
-                                SharedPreferencesHelper.getPosOrderLastUpdate()
+                                SharedPreferencesUltimate.getPosOrderLastUpdate()
                         ));
                     }
 
@@ -482,7 +482,7 @@ public class UploadSyncManager extends OrderSyncManager {
         }
         else{
             onNext(String.format("上传收银订单数据完成。%s",
-                    SharedPreferencesHelper.getPosOrderLastUpdate()
+                    SharedPreferencesUltimate.getPosOrderLastUpdate()
             ));
         }
     }
