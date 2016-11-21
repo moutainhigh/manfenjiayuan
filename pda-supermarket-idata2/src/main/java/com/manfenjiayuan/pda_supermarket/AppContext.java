@@ -3,14 +3,19 @@ package com.manfenjiayuan.pda_supermarket;
 
 import android.os.Environment;
 
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
+import com.bingshanguxue.skinloader.config.SkinConfig;
+import com.bingshanguxue.skinloader.loader.SkinManager;
+import com.bingshanguxue.skinloader.utils.SkinFileUtils;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by NAT.ZZN(bingshanguxue) on 2015/7/10.
@@ -21,16 +26,16 @@ public class AppContext extends MfhApplication {
     protected boolean isReleaseVersion() {
         //TODO,支持配置开发服务器&正式服务器，需要重新启动
 //        return false;
-        return SharedPreferencesManager.isReleaseVersion();
+        return SharedPrefesManagerFactory.isReleaseVersion();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-//        SharedPreferencesManager.setSoftKeyboardEnabled(true);
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);
+        ZLogger.d("进程:" + processAppName);
         // 如果app启用了远程的service，此application:onCreate会被调用2次
         // 默认的app会在以包名为默认的process name下运行，如果查到的process name不是app的process name就立即返回
         if (processAppName != null && processAppName.equalsIgnoreCase(getPackageName())) {
@@ -39,25 +44,46 @@ public class AppContext extends MfhApplication {
             if (BizConfig.RELEASE){
 //            ZLogger.d("正式版本");
                 ZLogger.LOG_ENABLED = true;
-                SharedPreferencesManagerImpl.PREF_NAME_PREFIX = SharedPreferencesManagerImpl.RELEASE_PREFIX;
             }
             else{
 //            ZLogger.d("测试版本");
                 ZLogger.LOG_ENABLED = true;
-                SharedPreferencesManagerImpl.PREF_NAME_PREFIX = SharedPreferencesManagerImpl.DEV_PREFIX;
             }
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());
 
-            if (!BizConfig.RELEASE){
-                SharedPreferencesManager.setSoftKeyboardEnabled(true);
-            }
+            initSkinLoader();
 
             debugPrint();
         }
 
+
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);
+    }
+
+    /**
+     * Must call init first
+     */
+    private void initSkinLoader() {
+        try {
+            String[] skinFiles = getAssets().list(SkinConfig.SKIN_DIR_NAME);
+            for (String fileName : skinFiles) {
+                File file = new File(SkinFileUtils.getSkinDir(this), fileName);
+                if (!file.exists()){
+                    ZLogger.d("拷贝皮肤文件:" + fileName);
+                    SkinFileUtils.copySkinAssetsToDir(this, fileName, SkinFileUtils.getSkinDir(this));
+                }
+                else{
+                    ZLogger.d("已经安装过皮肤文件:" + fileName);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
+        SkinManager.getInstance().init(this);
+        SkinManager.getInstance().loadSkin();
     }
 
     private void configBugly(){

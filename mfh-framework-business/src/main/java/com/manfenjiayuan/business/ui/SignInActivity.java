@@ -11,20 +11,32 @@ package com.manfenjiayuan.business.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 
+import com.bingshanguxue.skinloader.base.SkinBaseActivity;
 import com.manfenjiayuan.business.R;
+import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.HostServerFragment;
+import com.manfenjiayuan.business.route.Route;
+import com.manfenjiayuan.business.route.RouteActivity;
+import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
+import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.account.UserMixInfo;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -38,12 +50,13 @@ import com.mfh.framework.uikit.base.BaseActivity;
  * 登录
  * A login screen that offers login via email/password.
  */
-public class SignInActivity extends BaseActivity {
-    private RelativeLayout loginFrame;
+public class SignInActivity extends SkinBaseActivity {
+    private View rootView;
     private View loginFormView;
     private EditText etUserName;
     private EditText etPassword;
     private Button btnSignIn;
+    private ImageView ivHostServer;
 
     private View mProgressView;
 
@@ -53,30 +66,32 @@ public class SignInActivity extends BaseActivity {
     }
 
     @Override
+    protected boolean isBackKeyEnabled() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        hideSystemUI();
         super.onCreate(savedInstanceState);
+        dynamicAddView(rootView, "background", R.color.colorPrimary);
+        dynamicAddView(btnSignIn, "background", R.color.colorPrimary);
 
-        String lastUsername = MfhLoginService.get().getLastLoginName();
-        if (!StringUtils.isEmpty(lastUsername)) {
-            etUserName.setText(lastUsername);
-            etPassword.requestFocus();
-        } else {
-            etUserName.requestFocus();
-        }
+        refresh();
     }
 
     @Override
     protected void initViews() {
         super.initViews();
-        loginFrame = (RelativeLayout) findViewById(R.id.frame_login);
+        rootView = findViewById(R.id.rootview);
         loginFormView = findViewById(R.id.login_form);
         etUserName = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         mProgressView = findViewById(R.id.login_progress);
         btnSignIn = (Button) findViewById(R.id.button_sign_in);
+        ivHostServer = (ImageView) findViewById(R.id.iv_hostserver);
 
-        loginFrame.setOnClickListener(new View.OnClickListener() {
+        rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideKeyboard();
@@ -134,6 +149,28 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 attemptLogin();
+            }
+        });
+
+        findViewById(R.id.bottomview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redirect2HostServer();
+            }
+        });
+
+        findViewById(R.id.tv_retrievePwd).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(etUserName, "忘记密码", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+            }
+        });
+        findViewById(R.id.tv_signup).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(etUserName, "新用户注册", Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
             }
         });
     }
@@ -253,6 +290,67 @@ public class SignInActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Route.ARC_APP_HOSTSERVER: {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
+                    if (hostServer != null) {
+//                        AppIconManager.changeIcon(SignInActivity.this, hostServer.getActivityAlias());
 
+                        SharedPrefesManagerBase.setHostServer(hostServer);
+                        MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
+                        MobileApi.DOMAIN = hostServer.getHost();
+//                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
+                        MfhApi.register();
+                        IMApi.register();
+                        refresh();
+                    }
+                }
+            }
+            break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void refresh() {
+//        dynamicAddView(rootFrame, "background", R.color.colorPrimaryDark);
+
+        String lastUsername = MfhLoginService.get().getLastLoginName();
+        if (!StringUtils.isEmpty(lastUsername)) {
+            etUserName.setText(lastUsername);
+            etPassword.requestFocus();
+        } else {
+            etUserName.requestFocus();
+        }
+
+        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+        if (hostServer == null) {
+            ivHostServer.setImageResource(R.mipmap.ic_launcher);
+        } else {
+            ivHostServer.setImageResource(hostServer.getTextLogoResId());
+        }
+    }
+
+    public void redirect2HostServer() {
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putBoolean(BaseActivity.EXTRA_KEY_FULLSCREEN, true);
+        extras.putInt(RouteActivity.EXTRA_KEY_FRAGMENT_TYPE, RouteActivity.FT_APP_HOSTSERVER);
+        extras.putInt(HostServerFragment.EXTRA_KEY_MODE, 1);
+
+        Intent intent = new Intent(this, RouteActivity.class);
+        intent.putExtras(extras);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(intent, Route.ARC_APP_HOSTSERVER);
+    }
+
+//    @Override
+//    public void onThemeUpdate() {
+//        super.onThemeUpdate();
+//        refresh();
+//    }
 }
 

@@ -3,17 +3,20 @@ package com.mfh.litecashier;
 import android.content.ComponentCallbacks2;
 import android.os.Environment;
 
+import com.bingshanguxue.skinloader.config.SkinConfig;
+import com.bingshanguxue.skinloader.loader.SkinManager;
+import com.bingshanguxue.skinloader.utils.SkinFileUtils;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.tencent.bugly.Bugly;
@@ -21,6 +24,7 @@ import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
 
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -32,7 +36,7 @@ public class CashierApp extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
 //        return false;
-        return SharedPreferencesManager.isReleaseVersion();
+        return SharedPrefesManagerFactory.isReleaseVersion();
     }
 
     @Override
@@ -47,22 +51,6 @@ public class CashierApp extends MfhApplication {
 
         mRefWatcher = LeakCanary.install(this);
 
-        configBugly();
-
-        if (BizConfig.RELEASE) {
-//            ZLogger.d("正式版本");
-            ZLogger.LOG_ENABLED = true;
-            SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.RELEASE_PREFIX;
-//            Constants.CACHE_NAME = "ACache_Release";
-        } else {
-//            ZLogger.d("测试版本");
-            ZLogger.LOG_ENABLED = true;
-            SharedPreferencesHelper.PREF_NAME_PREFIX = SharedPreferencesHelper.DEV_PREFIX;
-            ACacheHelper.CACHE_NAME = "ACache_Dev";
-
-            debugPrint();
-        }
-
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);
 
@@ -71,8 +59,26 @@ public class CashierApp extends MfhApplication {
         // 如果app启用了远程的service，此application:onCreate会被调用2次
         // 默认的app会在以包名为默认的process name下运行，如果查到的process name不是app的process name就立即返回
         if (processAppName != null && processAppName.equalsIgnoreCase(getPackageName())) {
+            configBugly();
+
+            if (BizConfig.RELEASE) {
+//            ZLogger.d("正式版本");
+                ZLogger.LOG_ENABLED = true;
+                SharedPreferencesUltimate.PREF_NAME_PREFIX = SharedPreferencesUltimate.RELEASE_PREFIX;
+//            Constants.CACHE_NAME = "ACache_Release";
+            } else {
+//            ZLogger.d("测试版本");
+                ZLogger.LOG_ENABLED = true;
+                SharedPreferencesUltimate.PREF_NAME_PREFIX = SharedPreferencesUltimate.DEV_PREFIX;
+                ACacheHelper.CACHE_NAME = "ACache_Dev";
+
+                debugPrint();
+            }
+
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());
+
+            initSkinLoader();
         }
 
         ZLogger.d(String.format("initialize finished(%s)", processAppName));
@@ -188,8 +194,25 @@ public class CashierApp extends MfhApplication {
      * 注意： appid 必须和下载的SDK保持一致，否则会出现10407错误
      */
     private void initIflytek() {
-
         SpeechUtility.createUtility(getApplicationContext(), SpeechConstant.APPID + "=57982371");
-
     }
+
+    /**
+     * Must call init first
+     */
+    private void initSkinLoader() {
+        try {
+            String[] skinFiles = getAssets().list(SkinConfig.SKIN_DIR_NAME);
+            for (String fileName : skinFiles) {
+                File file = new File(SkinFileUtils.getSkinDir(this), fileName);
+                if (!file.exists())
+                    SkinFileUtils.copySkinAssetsToDir(this, fileName, SkinFileUtils.getSkinDir(this));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        SkinManager.getInstance().init(this);
+        SkinManager.getInstance().loadSkin();
+    }
+
 }

@@ -1,34 +1,49 @@
 package com.mfh.litecashier.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.igexin.sdk.PushManager;
-import com.manfenjiayuan.business.bean.wrapper.HostServer;
+import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.HostServerFragment;
+import com.manfenjiayuan.business.route.Route;
+import com.manfenjiayuan.business.route.RouteActivity;
+import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
+import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
+import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
-import com.mfh.litecashier.ui.fragment.components.HostServerFragment;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.Bind;
 import rx.Observable;
@@ -47,13 +62,14 @@ import rx.schedulers.Schedulers;
  * Created by Nat.ZZN(bingshanguxue) on 2015/9/13.
  */
 public class SplashActivity extends InitActivity {
-
+    @Bind(R.id.loadingImageView)
+    LoadingImageView loadingImageView;
     @Bind(R.id.tv_version)
     TextView tvVersion;
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.activity_splash;
+        return R.layout.activity_splash_style02;
     }
 
     @Override
@@ -63,16 +79,11 @@ public class SplashActivity extends InitActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
         ZLogger.d("adb 000019");
-        // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
-//        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
-        ZLogger.df("initializing getui sdk...");
-        PushManager.getInstance().initialize(CashierApp.getAppContext());
-//        PushManager.getInstance().stopService(this);
+        loadingImageView.setBackgroundResource(R.drawable.loading_anim);
+        loadingImageView.toggle(true);
 
         AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
         if (appInfo != null) {
@@ -94,6 +105,20 @@ public class SplashActivity extends InitActivity {
         super.initPrimary();
         ZLogger.df("set database version.");
         DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 16);
+
+//        String hostServerData = SharedPrefesManagerBase.getText(SharedPrefesManagerBase.PK_S_HOSTSERVER, null);
+//        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData),
+//                HostServer.class);
+//        if (hostServer == null){
+//            hostServer = new HostServer(1L,
+//                    "米西厨房", "admin.mixicook.com",
+//                    "http://admin.mixicook.com/pmc",
+//                    "http://mobile.mixicook.com/mfhmobile/mobile/api",
+//                    R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_hybridlogo_mixicook,
+//                    AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin");
+//            SharedPrefesManagerBase.set(SharedPrefesManagerBase.PK_S_HOSTSERVER,
+//                    JSONObject.toJSONString(hostServer));
+//        }
     }
 
     @Override
@@ -102,11 +127,23 @@ public class SplashActivity extends InitActivity {
     }
 
     @Override
+    public void doAsyncTask() {
+        if (!requestPermissions()) {
+            return;
+        }
+
+        // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
+//        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
+        setupGetui();
+
+        super.doAsyncTask();
+    }
+
+    @Override
     protected void initComleted() {
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-
                 AppHelper.saveAppStartupDatetime();
                 AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
 
@@ -114,13 +151,10 @@ public class SplashActivity extends InitActivity {
                 ZLogger.df(String.format("应用程序启动(%s-%d）",
                         appInfo.getVersionName(), appInfo.getVersionCode()));
 
-                if (SharedPreferencesManager.isAppFirstStart()) {
-//                    SharedPreferencesHelper.setSyncProductsCursor("");
-//                    SharedPreferencesHelper.setPosOrderLastUpdate("");
-//                    SharedPreferencesManager.setTerminalId("");
-//                    SharedPreferencesManager.setSoftKeyboardEnabled(false);
-
-                    SharedPreferencesManager.setAppFirstStart(false);
+                if (SharedPrefesManagerFactory.isAppFirstStart()) {
+                    //保存应用启动时间
+                    SharedPrefesManagerFactory.setAppStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(new Date()));
+                    SharedPrefesManagerFactory.setAppFirstStart(false);
                 }
 
                 CashierShopcartService.getInstance().clear();//购物车－收银
@@ -156,16 +190,23 @@ public class SplashActivity extends InitActivity {
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        String hostServerData = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_S_HOSTSERVER, null);
-                        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData), HostServer.class);
+                        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
                         if (hostServer == null) {
                             redirect2HostServer();
+                            return;
+                        }
+
+                        ZLogger.d("进入租户\n" + JSON.toJSONString(hostServer));
+                        MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
+                        MobileApi.DOMAIN = hostServer.getHost();
+//                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
+                        MfhApi.register();
+                        IMApi.register();
+
+                        if (aBoolean) {
+                            redirectToMain(true);
                         } else {
-                            if (aBoolean) {
-                                redirectToMain(true);
-                            } else {
-                                redirectToLogin();
-                            }
+                            redirectToLogin();
                         }
                     }
                 });
@@ -180,17 +221,19 @@ public class SplashActivity extends InitActivity {
                 }
             }
             break;
-            case Constants.ARC_APP_HOSTSERVER: {
+            case Route.ARC_APP_HOSTSERVER: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
                     if (hostServer == null) {
                         finish();
                     }
 
-                    SharedPreferencesHelper.set(SharedPreferencesHelper.PK_S_HOSTSERVER,
-                            JSONObject.toJSONString(hostServer));
+//                    AppIconManager.changeIcon(SplashActivity.this, hostServer.getActivityAlias());
+
+                    SharedPrefesManagerBase.setHostServer(hostServer);
                     MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
-                    IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
+                    MobileApi.DOMAIN = hostServer.getHost();
+//                    IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
                     MfhApi.register();
                     IMApi.register();
 
@@ -206,18 +249,98 @@ public class SplashActivity extends InitActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * 设置个推
+     */
+    private void setupGetui() {
+        String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
+        ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
+        PushManager.getInstance().initialize(this.getApplicationContext());
+    }
+
+    /**
+     * 权限申请
+     */
+    private boolean requestPermissions() {
+        ArrayList<String> expectPermissions = new ArrayList<>();
+        //Constant
+        expectPermissions.add(Manifest.permission.CAMERA);
+        expectPermissions.add(Manifest.permission.READ_CONTACTS);
+        //Location
+        expectPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        expectPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        //MicroPhone:录音
+        expectPermissions.add(Manifest.permission.RECORD_AUDIO);
+        //Phone:拨打电话
+        expectPermissions.add(Manifest.permission.CALL_PHONE);
+        expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
+        //SMS:短信
+        expectPermissions.add(Manifest.permission.RECEIVE_SMS);
+        //Storage:文件存储
+        expectPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+
+        List<String> lackPermissions = new ArrayList<>();
+        for (String permission : expectPermissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                ZLogger.d(getString(R.string.permission_not_granted, permission));
+                lackPermissions.add(permission);
+            }
+        }
+
+        int size = lackPermissions.size();
+        if (size > 0) {
+            String[] permissions = new String[size];
+            for (int i = 0; i < size; i++) {
+                permissions[i] = lackPermissions.get(i);
+            }
+            // Camera permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, permissions, Route.ARC_PERMISSIONS);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == Route.ARC_PERMISSIONS) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            ZLogger.i("Received response for permissions request.");
+
+            // Check if the only required permission has been granted
+            boolean isGrannted = PermissionUtil.verifyPermissions(grantResults);
+            ZLogger.d("isGrannted=" + isGrannted);
+            if (isGrannted) {
+                doAsyncTask();
+            } else {
+//                MANAGE_APP_PERMISSIONS
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
+//                startActivity(intent);
+                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
+            }
+            // END_INCLUDE(permission_result)
+
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
     private void redirect2HostServer() {
         ZLogger.d("准备跳转到域名选择页面");
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE,
-                FragmentActivity.FT_APP_HOSTSERVER);
-//        extras.putInt(HostServerFragment.EXTRA_KEY_LAUNCHMODE, 0);
+        extras.putBoolean(BaseActivity.EXTRA_KEY_FULLSCREEN, true);
+        extras.putInt(RouteActivity.EXTRA_KEY_FRAGMENT_TYPE, RouteActivity.FT_APP_HOSTSERVER);
+        extras.putInt(HostServerFragment.EXTRA_KEY_MODE, 0);
 
-        Intent intent = new Intent(SplashActivity.this, FragmentActivity.class);
+        Intent intent = new Intent(this, RouteActivity.class);
         intent.putExtras(extras);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, Constants.ARC_APP_HOSTSERVER);
+        startActivityForResult(intent, Route.ARC_APP_HOSTSERVER);
     }
 
     /**
@@ -251,5 +374,4 @@ public class SplashActivity extends InitActivity {
             finish();
         }
     }
-
 }

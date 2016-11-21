@@ -9,7 +9,6 @@ package com.mfh.litecashier;
  * TCK  (TEMP_CACHE_KEY)<br>
  */
 public class Constants {
-    public static final int ARC_APP_HOSTSERVER           = 0x01;//选择域名
     public static final int ARC_MFPAY                           = 0x06;//支付
     public static final int ARC_NATIVE_LOGIN                    = 0x02;//登录
     public static final int ARC_CASHIER_PREPAREGOODS            = 0x03;//拣货单组货

@@ -12,15 +12,23 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.bean.wrapper.HostServer;
+import com.bingshanguxue.skinloader.base.SkinBaseActivity;
+import com.manfenjiayuan.business.AppIconManager;
+import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.HostServerFragment;
+import com.manfenjiayuan.business.route.Route;
+import com.manfenjiayuan.business.route.RouteActivity;
+import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.account.UserMixInfo;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -29,31 +37,33 @@ import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.fragment.components.HostServerFragment;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+
 
 /**
  * 登录
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class SignInActivity extends BaseActivity {
+public class SignInActivity extends SkinBaseActivity {
 
     public static final String EXTRA_KEY_LOGINMODE = "loginMode";
     public static final int LOGIN_MODE_SPLASH = 0;
 
+    @Bind(R.id.rootview)
+    View rootView;
     @Bind(R.id.et_username)
     EditText etUserName;
     @Bind(R.id.et_password)
     EditText etPassword;
     @Bind(R.id.button_signin)
     Button btnSignin;
-    @Bind(R.id.btn_hostserver)
-    Button btnHostserver;
+    @Bind(R.id.bottomview)
+    LinearLayout bottomView;
+    @Bind(R.id.iv_hostserver)
+    ImageView ivHostServer;
     @Bind(R.id.animProgressBar)
     ProgressBar progressBar;
 
@@ -110,6 +120,7 @@ public class SignInActivity extends BaseActivity {
                         event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP && curStep == STEP_NA) {
                         etPassword.requestFocus();
+                        etPassword.setSelection(etPassword.length());
                     }
                     return true;
                 }
@@ -132,6 +143,8 @@ public class SignInActivity extends BaseActivity {
             }
         });
 
+        dynamicAddView(rootView, "background", R.color.colorPrimary);
+        dynamicAddView(btnSignin, "background", R.color.colorPrimary);
 
         refresh();
     }
@@ -141,7 +154,7 @@ public class SignInActivity extends BaseActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    @OnClick(R.id.frame_login)
+    @OnClick(R.id.rootview)
     public void hideKeyboard() {
         DeviceUtils.hideSoftInputEver(this);
     }
@@ -206,14 +219,16 @@ public class SignInActivity extends BaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constants.ARC_APP_HOSTSERVER: {
+            case Route.ARC_APP_HOSTSERVER: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
                     if (hostServer != null) {
-                        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_S_HOSTSERVER,
-                                JSONObject.toJSONString(hostServer));
+//                        AppIconManager.changeIcon(SignInActivity.this, hostServer.getActivityAlias());
+
+                        SharedPrefesManagerBase.setHostServer(hostServer);
                         MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
-                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
+                        MobileApi.DOMAIN = hostServer.getHost();
+//                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
                         MfhApi.register();
                         IMApi.register();
                         refresh();
@@ -227,6 +242,8 @@ public class SignInActivity extends BaseActivity {
     }
 
     private void refresh(){
+//        dynamicAddView(rootFrame, "background", R.color.colorPrimaryDark);
+
         String lastUsername = MfhLoginService.get().getLastLoginName();
         if (!StringUtils.isEmpty(lastUsername)){
             etUserName.setText(lastUsername);
@@ -236,13 +253,12 @@ public class SignInActivity extends BaseActivity {
             etUserName.requestFocus();
         }
 
-        String hostServerData = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_S_HOSTSERVER, null);
-        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData), HostServer.class);
+        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
         if (hostServer == null){
-            btnHostserver.setText("选择租户");
+            ivHostServer.setImageResource(R.mipmap.ic_launcher);
         }
         else{
-            btnHostserver.setText(String.format("%s(点击切换)", hostServer.getName()));
+            ivHostServer.setImageResource(hostServer.getTextLogoResId());
         }
     }
 
@@ -314,17 +330,17 @@ public class SignInActivity extends BaseActivity {
 //        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
 //    }
 
-    @OnClick(R.id.btn_hostserver)
+    @OnClick(R.id.bottomview)
     public void redirect2HostServer(){
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE,
-                FragmentActivity.FT_APP_HOSTSERVER);
-//        extras.putInt(HostServerFragment.EXTRA_KEY_LAUNCHMODE, 0);
+        extras.putBoolean(BaseActivity.EXTRA_KEY_FULLSCREEN, true);
+        extras.putInt(RouteActivity.EXTRA_KEY_FRAGMENT_TYPE, RouteActivity.FT_APP_HOSTSERVER);
+        extras.putInt(HostServerFragment.EXTRA_KEY_MODE, 0);
 
-        Intent intent = new Intent(SignInActivity.this, FragmentActivity.class);
+        Intent intent = new Intent(this, RouteActivity.class);
         intent.putExtras(extras);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, Constants.ARC_APP_HOSTSERVER);
+        startActivityForResult(intent, Route.ARC_APP_HOSTSERVER);
     }
 }

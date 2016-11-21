@@ -1,18 +1,16 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:layout_width="match_parent"
+                                                 android:background="@mipmap/bg_fragment_hostserver"
                                                  android:layout_height="match_parent">
 
-    <include layout="@layout/appbar"/>
-
+    <!--<include layout="@layout/appbar"/>-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mfh_background_light"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:padding="@dimen/spacing_4x"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
 
