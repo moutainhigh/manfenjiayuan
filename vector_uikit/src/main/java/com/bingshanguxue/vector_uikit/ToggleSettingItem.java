@@ -78,7 +78,7 @@ public class ToggleSettingItem extends RelativeLayout {
 
             this.tvSubTitle.setText(a.getString(R.styleable.ToggleSettingItem_subText));
             this.tvSubTitle.setTextColor(a.getColor(R.styleable.ToggleSettingItem_subTextColor, Color.BLACK));
-            int sbuTextSizeInPx = a.getDimensionPixelSize(R.styleable.SettingsItem_subTextSize, 12);
+            int sbuTextSizeInPx = a.getDimensionPixelSize(R.styleable.ToggleSettingItem_subTextSize, 12);
             int sbuTextSizeInSp = DensityUtil.px2sp(getContext(), sbuTextSizeInPx);
             this.tvSubTitle.setTextSize(sbuTextSizeInSp);
             this.tvSubTitle.setGravity(a.getInteger(R.styleable.ToggleSettingItem_subTextGravity,

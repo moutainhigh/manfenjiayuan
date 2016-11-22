@@ -342,13 +342,8 @@ public class ValidateManager {
                             validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
                                     null, "设备注册失败，需要重新注册");
                         } else {
-                            if (!BizConfig.RELEASE){
-                                validateUpdate(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
-                                        null, "测试注册设备功能");
-                            }
                             nextStep();
                         }
-
                     }
 
                 });

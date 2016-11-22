@@ -678,10 +678,6 @@ public abstract class CashierActivity extends BaseActivity {
             return;
         }
 
-        if (!BizConfig.RELEASE) {
-            text = "1";
-        }
-
         if (mTts == null) {
             initSpeechSynthesizer();
         }

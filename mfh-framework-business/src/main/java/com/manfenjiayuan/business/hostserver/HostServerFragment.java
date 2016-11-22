@@ -20,6 +20,7 @@ import com.manfenjiayuan.business.R;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 
 import java.io.File;
@@ -186,6 +187,13 @@ public class HostServerFragment extends BaseProgressFragment {
                     "http://qianwj.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_qianwj,
                     AppIconManager.ACTIVITY_ALIAS_CASHIER_QIANWJ, "qianwj.skin"));
+            if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+                functionalList.add(new HostServer(4L,
+                        "米西厨房-测试", "dev.mixicook.com",
+                        "http://dev.mixicook.com/pmc",
+                        R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_mixicook,
+                        AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin"));
+            }
         }
 
         return functionalList;

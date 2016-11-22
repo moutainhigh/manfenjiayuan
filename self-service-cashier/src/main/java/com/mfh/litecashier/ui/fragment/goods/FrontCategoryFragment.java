@@ -297,8 +297,7 @@ public class FrontCategoryFragment extends BaseFragment {
 
                     @Override
                     public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
-                        ZLogger.df("导入商品到本店仓储成功");
+                        ZLogger.df("导入商品到本店仓储成功，等待后台发送1101消息");
                         add2Category(productIds);
                     }
                 }
@@ -310,7 +309,7 @@ public class FrontCategoryFragment extends BaseFragment {
     }
 
     /**
-     * 导入类目
+     * 导入前台类目
      * */
     private void add2Category(String productIds){
         NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
@@ -325,16 +324,9 @@ public class FrontCategoryFragment extends BaseFragment {
 
                     @Override
                     public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
 //                        {"code":"0","msg":"操作成功!","version":"1","data":""}
-                        ZLogger.df("导入前台类目商品成功");
+                        ZLogger.df("导入商品到前台类目成功，等待后台发送1105消息");
                         hideProgressDialog();
-//                        if (rspData == null) {
-//                            return;
-//                        }
-
-//                        DataSyncManager.get().sync();
-
                         getActivity().setResult(Activity.RESULT_OK);
                         getActivity().finish();
                     }

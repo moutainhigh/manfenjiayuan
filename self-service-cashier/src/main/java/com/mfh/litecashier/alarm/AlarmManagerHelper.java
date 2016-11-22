@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.ZIntent;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -34,26 +33,15 @@ public class AlarmManagerHelper {
     public static void triggleNextDailysettle(int type){
         Calendar trigger = Calendar.getInstance();
         //锁定后，10分钟后自动重试，多台POS可以自动解锁
-        if (BizConfig.RELEASE){
-            if (type == 0){
-                trigger.add(Calendar.HOUR_OF_DAY, 6);
-            }
-            if (type == 1){
-                trigger.add(Calendar.HOUR_OF_DAY, 1);
-            }
-            //失败或异常情况，正常解锁后，6小时后自动重试
-            else{
-                trigger.add(Calendar.MINUTE, 10);
-            }
+        if (type == 0){
+            trigger.add(Calendar.HOUR_OF_DAY, 6);
         }
+        if (type == 1){
+            trigger.add(Calendar.HOUR_OF_DAY, 1);
+        }
+        //失败或异常情况，正常解锁后，6小时后自动重试
         else{
-            if (type == 1){
-                trigger.add(Calendar.SECOND, 10);
-            }
-            //失败或异常情况，正常解锁后，6小时后自动重试
-            else{
-                trigger.add(Calendar.SECOND, 20);
-            }
+            trigger.add(Calendar.MINUTE, 10);
         }
 
         registerDailysettle(CashierApp.getAppContext(), trigger);
@@ -110,15 +98,11 @@ public class AlarmManagerHelper {
     public static void registerBuglyUpgrade(Context context) {
         Calendar trigger = Calendar.getInstance();
 
-        if (BizConfig.RELEASE) {
-            //第二天凌晨2点钟
+        //第二天凌晨2点钟
 //            trigger.add(Calendar.DAY_OF_MONTH, 1);
-            trigger.add(Calendar.HOUR_OF_DAY, 1);
-            trigger.set(Calendar.MINUTE, 0);
-            trigger.set(Calendar.SECOND, 0);
-        } else {
-            trigger.add(Calendar.SECOND, 10);
-        }
+        trigger.add(Calendar.HOUR_OF_DAY, 1);
+        trigger.set(Calendar.MINUTE, 0);
+        trigger.set(Calendar.SECOND, 0);
 
         Calendar rightNow = Calendar.getInstance();
         ZLogger.d(String.format("trigger : %s",
