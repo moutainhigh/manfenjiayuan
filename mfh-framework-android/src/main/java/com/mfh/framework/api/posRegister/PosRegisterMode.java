@@ -12,7 +12,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
@@ -39,7 +39,7 @@ public class PosRegisterMode {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             String retStr = retValue.getValue();
                             ZLogger.df("get terminal id success:" + retStr);
-                            SharedPreferencesManager.setTerminalId(retStr);
+                            SharedPrefesManagerFactory.setTerminalId(retStr);
                             if (listener != null) {
                                 listener.onSuccess(retStr);
                             }
@@ -86,7 +86,7 @@ public class PosRegisterMode {
                             if (!StringUtils.isEmpty(retStr)) {
                                 String[] retA = retStr.split(",");
                                 if (retA.length > 1) {
-                                    SharedPreferencesManager.setTerminalId(retA[0]);
+                                    SharedPrefesManagerFactory.setTerminalId(retA[0]);
 
                                     // TODO: 8/22/16 修改本地系统时间
                                     ZLogger.d(String.format("当前系统时间1: %s",

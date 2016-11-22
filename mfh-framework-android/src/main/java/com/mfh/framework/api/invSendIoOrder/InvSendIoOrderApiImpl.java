@@ -1,5 +1,6 @@
 package com.mfh.framework.api.invSendIoOrder;
 
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -46,7 +47,7 @@ public class InvSendIoOrderApiImpl extends InvSendIoOrderApi{
         params.put("checkOk", String.valueOf(checkOk));
         params.put("jsonStr", jsonStr);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_INVSENDIOORDER_CREATE_RECORDER, params, responseCallback);
+        AfinalFactory.postDefault(URL_CREATE_RECORDER, params, responseCallback);
     }
 
     /**
@@ -76,7 +77,7 @@ public class InvSendIoOrderApiImpl extends InvSendIoOrderApi{
 
     /**
      * 获取一个收发单详情
-     * {@link com.mfh.framework.api.InvOrderApi#URL_INVSENDIOORDER_GETBYID InvOrderApi}
+     * {@link InvOrderApi#URL_INVSENDIOORDER_GETBYID InvOrderApi}
      */
     public static void getInvSendIoOrderById(Long id, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();

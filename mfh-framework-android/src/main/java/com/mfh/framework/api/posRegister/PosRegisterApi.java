@@ -19,12 +19,21 @@ public class PosRegisterApi {
      * <b>设备注册接口</b><br>
      * 传递唯一序列号如网卡序列号，后台返回一个整形编号<br>
      * /posRegister/create?jsonStr={"serialNo":"2222"}
-     * */
+     */
     private static String URL_CREATE = URL_POS_REGISTER + "create";
 
     private static String URL_UPDATE = URL_POS_REGISTER + "update";
 
     public static String URL_LIST = URL_POS_REGISTER + "list";
+
+    public static void register() {
+
+        URL_POS_REGISTER = MfhApi.URL_BASE_SERVER + "/posRegister/";
+
+        URL_CREATE = URL_POS_REGISTER + "create";
+        URL_UPDATE = URL_POS_REGISTER + "update";
+        URL_LIST = URL_POS_REGISTER + "list";
+    }
 
     /**
      * 设备注册
@@ -48,7 +57,7 @@ public class PosRegisterApi {
 
     public static void list(PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (pageInfo != null){
+        if (pageInfo != null) {
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }

@@ -6,6 +6,7 @@ import com.manfenjiayuan.im.IMConstants;
 import com.manfenjiayuan.im.bean.BizMsgParamWithSession;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.ApiParams;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.database.dao.BaseNetDao;
@@ -60,8 +61,8 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
         //使用post，因为消息有中文
         final String picUrl = params.getNormalValue("picUrl");
         params.remove("picUrl");
-        params.put(MfhApi.PARAM_KEY_CHANNEL_ID, String.valueOf(MfhApi.CHANNEL_ID));
-        params.put(MfhApi.PARAM_KEY_QUEUE_NAME, MfhApi.PARAM_VALUE_QUEUE_NAME_DEF);
+        params.put(ApiParams.PARAM_KEY_CHANNEL_ID, String.valueOf(MfhApi.CHANNEL_ID));
+        params.put(ApiParams.PARAM_KEY_QUEUENAME, MfhApi.PARAM_VALUE_QUEUE_NAME_DEF);
         AfinalFactory.postDefault(IMApi.URL_MOBILE_MESSAGE, params, call);
     }
 

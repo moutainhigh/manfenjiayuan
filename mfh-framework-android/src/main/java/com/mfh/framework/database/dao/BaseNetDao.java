@@ -38,7 +38,6 @@ import java.util.Map;
  * @author zhangyz created on 2014-3-9
  */
 public abstract class BaseNetDao<T extends IObject, PK> extends ComnDao<T, PK> implements IAsyncDao<T, PK> {
-    private static String serverUrl = null;
     protected DaoUrl daoUrl = new DaoUrl();//请求的相对url，相当于表名
     private transient Map<String, String> urlCache = new HashMap<>();//url临时缓存
     private DateFormat dateFormat = null;//默认是，包含时分秒，JSON.DEFFAULT_DATE_FORMAT
@@ -68,9 +67,6 @@ public abstract class BaseNetDao<T extends IObject, PK> extends ComnDao<T, PK> i
      * @author zhangyz created on 2014-3-10
      */
     protected void init() {
-        if (serverUrl == null) {
-            serverUrl = MfhApi.URL_BASE_SERVER;
-        }
         initUrlInfo(daoUrl);
     }
     
@@ -98,8 +94,9 @@ public abstract class BaseNetDao<T extends IObject, PK> extends ComnDao<T, PK> i
      * @author zhangyz created on 2014-3-10
      */
     protected String getFullUrl(DaoUrl.DaoType accessType, String... factUrl) {
-        if (factUrl != null && factUrl.length > 0)
-            return serverUrl + factUrl[0];//+ this.daoUrl.getTableName()
+        if (factUrl != null && factUrl.length > 0){
+            return MfhApi.URL_BASE_SERVER + factUrl[0];//+ this.daoUrl.getTableName()
+        }
 
         String key = accessType.toString();
         String retUrl = urlCache.get(key);
@@ -117,7 +114,7 @@ public abstract class BaseNetDao<T extends IObject, PK> extends ComnDao<T, PK> i
                         retUrl = daoUrl.getUpdateUrl();
                     else if (accessType.equals(DaoUrl.DaoType.multiDelete))
                         retUrl = daoUrl.getDeleteUrl();
-                    retUrl = serverUrl + retUrl;
+                    retUrl = MfhApi.URL_BASE_SERVER + retUrl;
                     urlCache.put(key, retUrl);
                 }
             }

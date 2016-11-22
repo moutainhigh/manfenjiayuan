@@ -11,7 +11,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.ApiParams;
 import com.mfh.framework.api.account.Office;
 import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.api.account.UserApi;
@@ -578,14 +578,15 @@ public class MfhLoginService implements IService {
     public UserMixInfo doLogin(String name, String pwd) {
         try {
             Object ret = AfinalFactory.getHttp(false).postSync(UserApi.URL_LOGIN,
-                    new AjaxParams(MfhApi.PARAM_KEY_USERNAME, name,
-                            MfhApi.PARAM_KEY_PASSWORD, pwd,
+                    new AjaxParams(ApiParams.PARAM_KEY_USERNAME, name,
+                            ApiParams.PARAM_KEY_PASSWORD, pwd,
                             "needMenu", true,
-                            MfhApi.PARAM_KEY_LOGIN_TYPE, MfhApi.PARAM_VALUE_LOGIN_TYPE_PMC));
+                            ApiParams.PARAM_KEY_LOGIN_TYPE, ApiParams.PARAM_VALUE_LOGIN_TYPE_PMC));
 
             //解析
             JsonParser parser = new JsonParser();
-            ResponseBody resp = parser.parser(ret.toString(), UserMixInfo.class, JsonParser.defaultFormat);
+            ResponseBody resp = parser.parser(ret.toString(), UserMixInfo.class,
+                    JsonParser.defaultFormat);
 
             if (!resp.isSuccess()) {
                 //401/unau###
@@ -646,13 +647,13 @@ public class MfhLoginService implements IService {
 
         AjaxParams params = new AjaxParams();
         params.put("needMenu", "true");
-        params.put(MfhApi.PARAM_KEY_USERNAME, name);
-        params.put(MfhApi.PARAM_KEY_PASSWORD, pwd);
+        params.put(ApiParams.PARAM_KEY_USERNAME, name);
+        params.put(ApiParams.PARAM_KEY_PASSWORD, pwd);
         if (!TextUtils.isEmpty(loginKind)) {
-            params.put(MfhApi.PARAM_KEY_LOGIN_KIND, loginKind);
+            params.put(ApiParams.PARAM_KEY_LOGIN_KIND, loginKind);
         }
         if (!TextUtils.isEmpty(loginType)) {
-            params.put(MfhApi.PARAM_KEY_LOGIN_TYPE, loginType);
+            params.put(ApiParams.PARAM_KEY_LOGIN_TYPE, loginType);
         }
 
         //先记录登录用户名和密码，用于登录失败时重登录

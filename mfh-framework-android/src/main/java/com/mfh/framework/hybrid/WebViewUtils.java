@@ -8,14 +8,14 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebView;
 
-
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.mobile.MobileApi;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.URLHelper;
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.MfhApi;
 
 import java.io.File;
 import java.util.Date;
@@ -49,7 +49,7 @@ public class WebViewUtils {
         if(sessionId != null){
             StringBuilder sbCookie = new StringBuilder();
             sbCookie.append(String.format("JSESSIONID=%s", sessionId));
-            sbCookie.append(String.format(";domain=%s", MfhApi.DOMAIN));
+            sbCookie.append(String.format(";domain=%s", MobileApi.DOMAIN));
             sbCookie.append(String.format(";path=%s", "/"));
             String cookieValue = sbCookie.toString();
 

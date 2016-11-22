@@ -32,6 +32,13 @@ public class EmbWxUserRegisterApi {
      */
     private static String URL_DOAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "doAuthenBysms";
 
+    public static void register() {
+        URL_EMB_WXUSER_REGISTER = MfhApi.URL_BASE_SERVER + "/embWxUserRegister/";
+        URL_BEGINAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "beginAuthenBysms";
+        URL_RETRYAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "retryAuthenBysms";
+        URL_DOAUTHENBYSMS = URL_EMB_WXUSER_REGISTER + "doAuthenBysms";
+    }
+
     /**
      * 首次对某个临时用户发送手机短信验证码
      *

@@ -22,7 +22,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -311,7 +311,7 @@ public class BaseHybridActivity extends BaseActivity {
             ZLogger.d(String.format("url=%s\ncookie=",
                     url, CookieManager.getInstance().getCookie(url)));
 
-            if (url.equalsIgnoreCase(H5Api.URL_NATIVIE_REDIRECT_AUTH)) {
+            if (url.equalsIgnoreCase(MobileApi.URL_NATIVIE_REDIRECT_AUTH)) {
                 setResult(RESULT_OK);
                 finish();
                 return false;

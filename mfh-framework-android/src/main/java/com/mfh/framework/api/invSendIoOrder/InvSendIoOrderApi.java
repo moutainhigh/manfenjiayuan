@@ -24,7 +24,7 @@ public class InvSendIoOrderApi {
      * receiveNetId、tenantId可以从采购单中拷贝，没有采购单则可以置空，若置空后台也会自动根据当前登录用户的部门和租户进行填充。
      * items是发货单明细，字段与采购单明细字段基本一致，从采购单中拷贝即可，其中giveCount是赠送数量。没有采购单时需要从头选择商品。
      */
-    static String URL_INVSENDIOORDER_CREATE_RECORDER = URL_INVSENDIOORDER + "createRecOrder";
+    static String URL_CREATE_RECORDER = URL_INVSENDIOORDER + "createRecOrder";
 
 
     /**
@@ -43,7 +43,7 @@ public class InvSendIoOrderApi {
 
     /**
      * 获查询一个收发单（收货单或发货单）及其明细的详情一个收发单详情
-     *  /invSendIoOrder/getById?id=&barcode=
+     * /invSendIoOrder/getById?id=&barcode=
      */
     static String URL_INVSENDIOORDER_GETBYID = URL_INVSENDIOORDER + "getById";
 
@@ -76,5 +76,18 @@ public class InvSendIoOrderApi {
      * /invSendOrder/doPay?orderId=19&accountPassword=
      */
     static String URL_INVSENDIOORDER_DOPAY = URL_INVSENDIOORDER + "doPay";
+
+    public static void register() {
+        URL_INVSENDIOORDER = MfhApi.URL_BASE_SERVER + "/invSendIoOrder/";
+        URL_INVSENDIOORDER_CREATE = URL_INVSENDIOORDER + "create";
+        URL_CREATE_RECORDER = URL_INVSENDIOORDER + "createRecOrder";
+        URL_CREATE_BACKORDER = URL_INVSENDIOORDER + "createBackOrder";
+        URL_INVSENDIOORDER_CREATE_TRANSORDER = URL_INVSENDIOORDER + "createTransOrder";
+        URL_INVSENDIOORDER_GETBYID = URL_INVSENDIOORDER + "getById";
+        URL_LIST = URL_INVSENDIOORDER + "list";
+        URL_INVSENDIOORDER_DOCONFIRM = URL_INVSENDIOORDER + "doConfirm";
+        URL_INVSENDIOORDER_DORECEIVE = URL_INVSENDIOORDER + "doReceive";
+        URL_INVSENDIOORDER_DOPAY = URL_INVSENDIOORDER + "doPay";
+    }
 
 }

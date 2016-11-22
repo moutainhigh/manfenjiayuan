@@ -25,7 +25,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.utils.IpInputFilter;
 
@@ -126,7 +126,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etIp);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etIp);
@@ -161,7 +161,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etPort);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etPort);
@@ -180,7 +180,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
                     tvEslCursor.setText("");
                 }
                 else{
-                    tvEslCursor.setText(SharedPreferencesManager.getText(GreenTagsApi.PREF_GREENTAGS,
+                    tvEslCursor.setText(SharedPrefesManagerFactory.getString(GreenTagsApi.PREF_GREENTAGS,
                             GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, ""));
                 }
             }
@@ -283,23 +283,23 @@ public class GreenTagsSettingsDialog extends CommonDialog {
             return;
         }
 
-        SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+        SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                 GreenTagsApi.PK_S_GREENTAGS_IP, ip);
-        SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+        SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                 GreenTagsApi.PK_I_GREENTAGS_PORT, Integer.parseInt(port));
 
         String soapVersion = mSoapSpinner.getSelectedItem().toString();
         switch (soapVersion) {
             case "SOAP 1.0":
-                SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+                SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                         GreenTagsApi.PK_I_GREENTAGS_SOAPVERSION, SoapEnvelope.VER10);
                 break;
             case "SOAP 1.1":
-                SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+                SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                         GreenTagsApi.PK_I_GREENTAGS_SOAPVERSION, SoapEnvelope.VER11);
                 break;
             case "SOAP 1.2":
-                SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+                SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                         GreenTagsApi.PK_I_GREENTAGS_SOAPVERSION, SoapEnvelope.VER12);
                 break;
             default:
@@ -307,7 +307,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
         }
 
         if (mSwitchSyncMode.isChecked()) {
-            SharedPreferencesManager.set(GreenTagsApi.PREF_GREENTAGS,
+            SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                     GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
         }
 

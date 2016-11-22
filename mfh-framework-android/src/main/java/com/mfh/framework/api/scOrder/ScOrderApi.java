@@ -1,5 +1,6 @@
 package com.mfh.framework.api.scOrder;
 
+import com.mfh.framework.api.ApiParams;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -8,13 +9,11 @@ import com.mfh.framework.network.NetFactory;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
-import static com.mfh.framework.api.MfhApi.PARAM_KEY_JSESSIONID;
-
 /**
  * 商城订单
  * Created by bingshanguxue on 9/22/16.
  */
-public class ScOrderApi {
+public class ScOrderApi implements ApiParams {
     public static String URL_SCORDER = MfhApi.URL_BASE_SERVER + "/scOrder/";
 
     /**
@@ -25,33 +24,33 @@ public class ScOrderApi {
     /**
      * 新增商城订单
      * /scOrder/saveOrder
-     * */
+     */
     private static String URL_SAVEORDER = URL_SCORDER + "saveOrder";
     /**
      * 查询满分小伙伴服务
-     * */
-    private static String URL_COUNT_SERVICEMFHPARTER= URL_SCORDER + "countServiceMfhPartner";
+     */
+    private static String URL_COUNT_SERVICEMFHPARTER = URL_SCORDER + "countServiceMfhPartner";
     /**
      * 查询订单
      * /scOrder/getByCode?barcode=9903000000273899
-     * */
+     */
     private static String URL_GETBYCODE = URL_SCORDER + "getByCode";
     /**
      * 根据条码或订单编号查询订单,可以同时指定status进行验证。needDetail=true代表返回订单明细详情等。
      * /scOrder/getByBarcode?barcode=&status=0
-     * */
+     */
     static String URL_GETBYBARCODE = URL_SCORDER + "getByBarcode";
     /**
      * 获取网点的配送规则
      * /scOrder/getTransFeeRule?netId
-     * */
+     */
     private static String URL_GETTRANSFREERULE = URL_SCORDER + "getTransFeeRule";
 
 
     /**
      * 当前登录买手可以抢单去组货（也就是拣货）的订单列表，若需要明确指定网点，则可以传递netId参数
      * /scOrder/findPrepareAbleOrders?rows=20&page=1
-     * */
+     */
     static String URL_FINDPREPAREABLEORDERS = URL_SCORDER + "findPrepareAbleOrders";
     /**
      * 当前登录的小伙伴即买手收到消息后点击接单，id为订单编号
@@ -63,13 +62,13 @@ public class ScOrderApi {
     /**
      * 买手在线下POS设备上将组货到的商品明细称重，获取实际数量，然后调整订单。其中id是线上订单id。bcount是实际称重的数量，skuId是产品编号
      * /scOrder/updateCommitInfoWhenPrepaired?id=&jsonStr=[{skuId:11, bcount:10}, {skuId:12, bcount:10}]
-     * */
+     */
     private static String URL_UPDATECOMMITINFO_WHENPREPAIRED = URL_SCORDER + "updateCommitInfoWhenPrepaired";
     /**
      * 替换{@link #URL_UPDATECOMMITINFO_WHENPREPAIRED}接口，
      * 支持：“增加“妥投”,扫描订单条码,可以显示订单商品,点击打勾按钮,即可完成妥投。⽀支持单品的退 单,删除单品后,订单价格会发⽣生变化”，也使用这个接口updateCommitInfo，退单时这个明细的数量为0即可。
      * /scOrder/updateCommitInfo?id=&jsonStr=[{skuId:11, bcount:10}, {skuId:12, bcount:10}]
-     * */
+     */
     static String URL_UPDATECOMMITINFO = URL_SCORDER + "updateCommitInfo";
 
     /**
@@ -126,8 +125,8 @@ public class ScOrderApi {
      * 查询服务中的订单列表
      * 使用场景
      * <ol>
-     *     买手或骑手查询手中服务中的订单列表,可以指定某个发货点.其中roleType=0代表买手，roleType=1代表骑手
-     *     <li>/scOrder/findServicingOrders?netId=136076&roleType=0|1&rows=20&page=1</li>
+     * 买手或骑手查询手中服务中的订单列表,可以指定某个发货点.其中roleType=0代表买手，roleType=1代表骑手
+     * <li>/scOrder/findServicingOrders?netId=136076&roleType=0|1&rows=20&page=1</li>
      * </ol>
      * /scOrder/arriveToEndCustom?orderIds=12,22
      */
@@ -137,12 +136,12 @@ public class ScOrderApi {
      * 查询已服务完毕的订单列表
      * 使用场景
      * <ol>
-     *     骑手查询已服务完毕的订单列表,可以指定某个发货点;其中roleType=0代表买手，roleType=1代表骑手
-     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=1&rows=20&page=1</li>
-     *     买手查询已配送的订单列表
-     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=3,6&rows=20&page=1</li>
-     *     另外买手查询已完成(也就是已服务完毕)的订单列表
-     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=12&rows=20&page=1</li>
+     * 骑手查询已服务完毕的订单列表,可以指定某个发货点;其中roleType=0代表买手，roleType=1代表骑手
+     * <li>/scOrder/findServicedOrders?netId=136076&roleType=1&rows=20&page=1</li>
+     * 买手查询已配送的订单列表
+     * <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=3,6&rows=20&page=1</li>
+     * 另外买手查询已完成(也就是已服务完毕)的订单列表
+     * <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=12&rows=20&page=1</li>
      * </ol>
      * /scOrder/arriveToEndCustom?orderIds=12,22
      */
@@ -152,18 +151,43 @@ public class ScOrderApi {
      * 查询已服务完毕的订单列表
      * 使用场景
      * <ol>
-     *     骑手查询已服务完毕的订单列表,可以指定某个发货点;其中roleType=0代表买手，roleType=1代表骑手
-     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=1&rows=20&page=1</li>
-     *     买手查询已配送的订单列表
-     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=3,6&rows=20&page=1</li>
-     *     另外买手查询已完成(也就是已服务完毕)的订单列表
-     *     <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=12&rows=20&page=1</li>
+     * 骑手查询已服务完毕的订单列表,可以指定某个发货点;其中roleType=0代表买手，roleType=1代表骑手
+     * <li>/scOrder/findServicedOrders?netId=136076&roleType=1&rows=20&page=1</li>
+     * 买手查询已配送的订单列表
+     * <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=3,6&rows=20&page=1</li>
+     * 另外买手查询已完成(也就是已服务完毕)的订单列表
+     * <li>/scOrder/findServicedOrders?netId=136076&roleType=0&status=12&rows=20&page=1</li>
      * </ol>
      * /scOrder/arriveToEndCustom?orderIds=12,22
      */
     static String URL_FIND_CANCELORDERS = URL_SCORDER + "findCancelOrders";
 
 
+    public static void register() {
+        URL_SCORDER = MfhApi.URL_BASE_SERVER + "/scOrder/";
+        URL_SENDORDER = URL_SCORDER + "sendOrder";
+        URL_SAVEORDER = URL_SCORDER + "saveOrder";
+        URL_COUNT_SERVICEMFHPARTER = URL_SCORDER + "countServiceMfhPartner";
+        URL_GETBYCODE = URL_SCORDER + "getByCode";
+        URL_GETBYBARCODE = URL_SCORDER + "getByBarcode";
+        URL_GETTRANSFREERULE = URL_SCORDER + "getTransFeeRule";
+        URL_FINDPREPAREABLEORDERS = URL_SCORDER + "findPrepareAbleOrders";
+        URL_ACCEPTORDER_WHENORDERED = URL_SCORDER + "acceptOrderWhenOrdered";
+        URL_UPDATECOMMITINFO_WHENPREPAIRED = URL_SCORDER + "updateCommitInfoWhenPrepaired";
+        URL_UPDATECOMMITINFO = URL_SCORDER + "updateCommitInfo";
+        URL_PREPAREORDER = URL_SCORDER + "prepareOrder";
+        URL_FINDSENDABLEORDERS = URL_SCORDER + "findSendAbleOrders";
+        URL_SEND_TOENDCUSTOM = URL_SCORDER + "sendToEndCustom";
+        URL_FINDACCEPTABLE_SENDORDERS = URL_SCORDER + "findAcceptAbleSendOrders";
+        URL_ACCEPTTRANS_TOENDCUSTOM = URL_SCORDER + "acceptTransToEndCustom";
+        URL_CHECK_ODDAMOUNT = URL_SCORDER + "checkOddAmount";
+        URL_CHECKANDRETURN_ODDAMOUNT = URL_SCORDER + "checkAndReturnOddAmount";
+        URL_ARRIVE_TOENDCUSTOM = URL_SCORDER + "arriveToEndCustom";
+        URL_FIND_SERVICINGORDERS = URL_SCORDER + "findServicingOrders";
+
+        URL_FIND_SERVICEDORDERS = URL_SCORDER + "findServicedOrders";
+        URL_FIND_CANCELORDERS = URL_SCORDER + "findCancelOrders";
+    }
 
     /**
      * 发货
@@ -179,13 +203,14 @@ public class ScOrderApi {
 
     /**
      * 新增商城订单
-     * @param order 订单信息
-     * @param items 订单明细
+     *
+     * @param order   订单信息
+     * @param items   订单明细
      * @param cartIds 购物车编号
      * @param ruleIds 促销规则
-     * */
+     */
     public static void saveOrder(String order, String items, String cartIds, String ruleIds,
-                                 AjaxCallBack<? extends Object> responseCallback){
+                                 AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("order", order);
         params.put("items", items);
@@ -198,8 +223,8 @@ public class ScOrderApi {
 
     /**
      * 查询满分小伙伴服务
-     * */
-    public static void countServiceMfhPartner(AjaxCallBack<? extends Object> responseCallback){
+     */
+    public static void countServiceMfhPartner(AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
@@ -221,11 +246,12 @@ public class ScOrderApi {
     /**
      * 获取网点的配送规则
      * /scOrder/getTransFeeRule?netId
+     *
      * @param netId 网点编号，为空的时候后台取默认的配置
-     * */
+     */
     public static void getTransFeeRule(Long netId, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (netId != null){
+        if (netId != null) {
             params.put("netId", String.valueOf(netId));
         }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());

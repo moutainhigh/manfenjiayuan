@@ -19,12 +19,12 @@ public class ProductCatalogApi {
 
     /**
      * /anon/sc/productCatalog/delete?id=  删除关系接口
-     * */
+     */
     public static String URL_DELETE = URL_PRODUCT_CATALOG + "delete";
     /**
      * 同步前台类目商品关系列表
-     *  /anon/sc/productCatalog/downLoadProductCatalog?tenantId=134342&startCursor=2015-01-01 10:00:00&page=1&rows=20
-     * */
+     * /anon/sc/productCatalog/downLoadProductCatalog?tenantId=134342&startCursor=2015-01-01 10:00:00&page=1&rows=20
+     */
     public static String URL_DOWNLOAD_PRODUCTCATALOG = URL_PRODUCT_CATALOG + "downLoadProductCatalog";
 
 
@@ -32,24 +32,28 @@ public class ProductCatalogApi {
      * 计算有多少可同步的商品类目关系
      * 同步完downLoadProductCatalog，校验pos和云端数据一致.不一致，下次同步会自动全量同步
      * /anon/sc/productCatalog/countProductCatalogSyncAbleNum
-     * */
+     */
     public static String URL_COUNTPRODUCTCATALOG_SYNCABLENUM = URL_PRODUCT_CATALOG + "countProductCatalogSyncAbleNum";
 
     /**
      * 把几个商品添加到指定前台类目中：  /anon/sc/productCatalog/addToCatalog?groupIds=3397&productIds=20551&catalogType=1
-     其中groupIds为建好的前台类目，productIds为商品的spuId（不是skuId）
-     spuId就是productId
+     * 其中groupIds为建好的前台类目，productIds为商品的spuId（不是skuId）
+     * spuId就是productId
      */
     public static String URL_ADD2CATEGORY = URL_PRODUCT_CATALOG + "addToCatalog";
 
 
-    public static void register(){
+    public static void register() {
         URL_PRODUCT_CATALOG = MfhApi.URL_BASE_SERVER + "/anon/sc/productCatalog/";
+        URL_DELETE = URL_PRODUCT_CATALOG + "delete";
+        URL_DOWNLOAD_PRODUCTCATALOG = URL_PRODUCT_CATALOG + "downLoadProductCatalog";
+        URL_COUNTPRODUCTCATALOG_SYNCABLENUM = URL_PRODUCT_CATALOG + "countProductCatalogSyncAbleNum";
+        URL_ADD2CATEGORY = URL_PRODUCT_CATALOG + "addToCatalog";
     }
 
     /**
      * 删除前台类目和商品关系表
-     * */
+     */
     public static void delete(Long id, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("id", String.valueOf(id));
@@ -61,11 +65,11 @@ public class ProductCatalogApi {
 
     /**
      * 同步前台类目和商品关系表
-     * */
+     */
     public static void downLoadProductCatalog(String startCursor, PageInfo pageInfo,
                                               AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(startCursor)){
+        if (!StringUtils.isEmpty(startCursor)) {
             params.put("startCursor", startCursor);
         }
 
@@ -81,7 +85,7 @@ public class ProductCatalogApi {
 
     /**
      * 计算有多少可同步的商品类目关系
-     * */
+     */
     public static void countProductCatalogSyncAbleNum(AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
 
@@ -92,11 +96,12 @@ public class ProductCatalogApi {
 
     /**
      * 把几个商品添加到指定前台类目中：
-     * @param groupIds 前台类目
+     *
+     * @param groupIds   前台类目
      * @param productIds 商品的spuId（不是skuId）
-     * */
+     */
     public static void add2Category(String groupIds, String productIds,
-                                            AjaxCallBack<? extends Object> responseCallback) {
+                                    AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("groupIds", groupIds);
         params.put("productIds", productIds);

@@ -4,9 +4,9 @@ import android.content.SharedPreferences;
 
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesBase;
+import com.mfh.framework.prefs.SharedPrefesUltimate;
 
 /**
  * Created by bingshanguxue on 16/3/2.
@@ -22,12 +22,12 @@ public class IMConfig {
     public static final String PREF_KEY_MSGBRIDGE_CLIENTID = "clientid";
 
     public static String getPushClientId(){
-        return SharedPreferencesUtil.get(MfhApplication.getAppContext(),
+        return SharedPrefesBase.getString(MfhApplication.getAppContext(),
                 PREF_NAME_MSG_BRIDGE, PREF_KEY_MSGBRIDGE_CLIENTID, null);
     }
 
     public static void savePushClientId(String clientId){
-        SharedPreferencesUtil.set(MfhApplication.getAppContext(),
+        SharedPrefesBase.set(MfhApplication.getAppContext(),
                 PREF_NAME_MSG_BRIDGE, PREF_KEY_MSGBRIDGE_CLIENTID, clientId);
     }
 
@@ -41,11 +41,7 @@ public class IMConfig {
      * 清理所有配置
      */
     public static void clearSessionConfig() {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
-        if (editor != null) {
-            editor.clear();
-            editor.commit();
-        }
+        SharedPrefesUltimate.clear(SP_NAME_SSESSION);
     }
 
     /**
@@ -53,7 +49,7 @@ public class IMConfig {
      * @return
      */
     public static int getMaxSessionNum() {
-        return SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getInt("maxSessionNum", 200);
+        return SharedPrefesUltimate.getInt(SP_NAME_SSESSION, "maxSessionNum", 200);
     }
 
     /**
@@ -61,9 +57,7 @@ public class IMConfig {
      * @param sessionNum
      */
     public static void setMaxSessionNum(int sessionNum) {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
-        editor.putInt("maxSessionNum", sessionNum);
-        editor.commit();
+        SharedPrefesUltimate.set(SP_NAME_SSESSION, "maxSessionNum", sessionNum);
     }
 
     /**
@@ -71,7 +65,7 @@ public class IMConfig {
      * @return
      */
     public static int getMaxMsgNumOneSession() {
-        return SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getInt("maxMsgNumOneSession", 1000);
+        return SharedPrefesUltimate.getInt(SP_NAME_SSESSION, "maxMsgNumOneSession", 1000);
     }
 
     /**
@@ -79,9 +73,7 @@ public class IMConfig {
      * @param sessionNum
      */
     public static void setMaxMsgNumOneSession(int sessionNum) {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
-        editor.putInt("maxMsgNumOneSession", sessionNum);
-        editor.commit();
+        SharedPrefesUltimate.set(SP_NAME_SSESSION, "maxMsgNumOneSession", sessionNum);
     }
 
     /**
@@ -89,14 +81,14 @@ public class IMConfig {
      * @return
      */
     public static Long getLastUpdate() {
-         return SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getLong(PREF_KEY_LAST_UPDATE, -1);
+         return SharedPrefesUltimate.getLong(SP_NAME_SSESSION, PREF_KEY_LAST_UPDATE, -1L);
     }
 
     /**
      * 清理会话游标
      */
     public void clearLastUpdate() {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
+        SharedPreferences.Editor editor = SharedPrefesUltimate.getDefaultEditor(SP_NAME_SSESSION);
         editor.remove(PREF_KEY_LAST_UPDATE);
         editor.commit();
     }
@@ -106,7 +98,7 @@ public class IMConfig {
      * @param updateTime
      */
     public static void saveLastUpdate(Long updateTime) {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
+        SharedPreferences.Editor editor = SharedPrefesUltimate.getDefaultEditor(SP_NAME_SSESSION);
         editor.putLong(PREF_KEY_LAST_UPDATE, updateTime);
         editor.commit();
     }
@@ -116,7 +108,7 @@ public class IMConfig {
      * @return
      */
     public Long getMaxId(Long sessionId) {
-        return SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getLong("maxMsgId_" + sessionId.toString(), -1);
+        return SharedPrefesUltimate.getLong(SP_NAME_SSESSION, "maxMsgId_" + sessionId.toString(), -1L);
     }
 
     /**
@@ -124,7 +116,7 @@ public class IMConfig {
      * @param maxMsgId
      */
     public static void saveMaxId(Long sessionId, Long maxMsgId) {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
+        SharedPreferences.Editor editor = SharedPrefesUltimate.getDefaultEditor(SP_NAME_SSESSION);
         editor.putLong("maxMsgId_" + sessionId.toString(), maxMsgId);
         editor.commit();
     }
@@ -135,7 +127,8 @@ public class IMConfig {
      * @return
      */
     public static String getMaxCreateTime(Long sessionId) {
-        String maxCreateTime = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getString("maxCreateTime_" + sessionId, "0000-00-00 00:00:00");
+        String maxCreateTime = SharedPrefesUltimate.getString(SP_NAME_SSESSION,
+                "maxCreateTime_" + sessionId, "0000-00-00 00:00:00");
         if (StringUtils.isEmpty(maxCreateTime))
             return "0000-00-00 00:00:00";
         else
@@ -149,7 +142,7 @@ public class IMConfig {
      */
     public static void saveMaxCreateTime(Long sessionId, String createTiem) {
         ZLogger.d(String.format("sessionId=%s, createTime=%s", String.valueOf(sessionId), createTiem));
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
+        SharedPreferences.Editor editor = SharedPrefesUltimate.getDefaultEditor(SP_NAME_SSESSION);
         editor.putString("maxCreateTime_" + sessionId, createTiem);
         editor.commit();
     }
@@ -160,7 +153,7 @@ public class IMConfig {
      * @param lastUpdate
      */
     public void saveMaxMsgLastUpdateDate(Long sessionId, String lastUpdate) {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
+        SharedPreferences.Editor editor = SharedPrefesUltimate.getDefaultEditor(SP_NAME_SSESSION);
         editor.putString("maxMsgLastUpdateDate_" + sessionId, lastUpdate);
         editor.commit();
     }
@@ -171,17 +164,17 @@ public class IMConfig {
      * @return
      */
     public static String getMaxMsgLastUpdateDate(Long sessionId) {
-        return SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getString("maxMsgLastUpdateDate_" + sessionId, "");
+        return SharedPrefesUltimate.getString(SP_NAME_SSESSION, "maxMsgLastUpdateDate_" + sessionId, "");
     }
 
     public static void setMaxMsgUpdateDate(String updateDate) {
-        SharedPreferences.Editor editor = SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).edit();
+        SharedPreferences.Editor editor = SharedPrefesUltimate.getDefaultEditor(SP_NAME_SSESSION);
         editor.putString(PREF_KEY_MAX_UPDATE, updateDate);
         editor.commit();
     }
 
     public static String getMaxMsgUpdateDate() {
-        return SharedPreferencesManager.getPreferences(SP_NAME_SSESSION).getString(PREF_KEY_MAX_UPDATE, "");
+        return SharedPrefesUltimate.getString(SP_NAME_SSESSION, PREF_KEY_MAX_UPDATE, "");
     }
 
 }

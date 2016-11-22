@@ -11,7 +11,7 @@ import android.support.v4.app.ActivityCompat;
 
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.SharedPreferencesUtil;
+import com.mfh.framework.prefs.SharedPrefesBase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -125,8 +125,8 @@ public class MfLocationManagerProxy {
      * 保存最后一次定位信息
      * */
     public static void saveLastLocationInfo(Context context, double latitude, double longitude){
-        SharedPreferencesUtil.set(context, PREF_NAME, KEY_LASTUPDATE_LATITUDE, String.valueOf(latitude));
-        SharedPreferencesUtil.set(context, PREF_NAME, KEY_LASTUPDATE_LONGITUDE, String.valueOf(longitude));
+        SharedPrefesBase.set(context, PREF_NAME, KEY_LASTUPDATE_LATITUDE, String.valueOf(latitude));
+        SharedPrefesBase.set(context, PREF_NAME, KEY_LASTUPDATE_LONGITUDE, String.valueOf(longitude));
     }
 
     /**
@@ -169,10 +169,10 @@ public class MfLocationManagerProxy {
         return sbInfo.toString();
     }
     public static String getLastLatitude(Context context){
-        return SharedPreferencesUtil.get(context, PREF_NAME, KEY_LASTUPDATE_LATITUDE, "0");
+        return SharedPrefesBase.getString(context, PREF_NAME, KEY_LASTUPDATE_LATITUDE, "0");
     }
     public static String getLastLongitude(Context context){
-        return SharedPreferencesUtil.get(context, PREF_NAME, KEY_LASTUPDATE_LONGITUDE, "0");
+        return SharedPrefesBase.getString(context, PREF_NAME, KEY_LASTUPDATE_LONGITUDE, "0");
     }
 
 }

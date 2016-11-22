@@ -10,7 +10,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.SystemUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
@@ -37,7 +37,7 @@ public class ClientLogMode {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             String retStr = retValue.getValue();
                             ZLogger.df("get terminal id success:" + retStr);
-                            SharedPreferencesManager.setTerminalId(retStr);
+                            SharedPrefesManagerFactory.setTerminalId(retStr);
                             if (listener != null) {
                                 listener.onSuccess(retStr);
                             }

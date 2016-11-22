@@ -22,6 +22,11 @@ public class InvComProviderApi {
      * */
     public static String URL_FIND_MYPROVIDERS = URL_INV_COMPROVIDER + "findMyProviders";
 
+    public static void register(){
+        URL_INV_COMPROVIDER = MfhApi.URL_BASE_SERVER + "/invCompProvider/";
+
+        URL_FIND_MYPROVIDERS = URL_INV_COMPROVIDER + "findMyProviders";
+    }
     /**
     * 查询批发商租户
      * @param status 状态: {@link #STATUS_ONLINE 上线}

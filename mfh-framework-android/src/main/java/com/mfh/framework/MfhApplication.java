@@ -19,20 +19,19 @@ import com.mfh.comn.config.ConfigsParseHelper;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.DeviceUuidFactory;
-import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.EncryptUtil;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.PhoneUtils;
-import com.mfh.framework.core.utils.SharedPreferencesUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +50,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+
 
 /**
  * Created by bingshanguxue on 15/11/13.
@@ -143,24 +143,22 @@ public class MfhApplication extends Application {
      * @return
      */
     public static String getAppId() {
-        String appid = SharedPreferencesUtil.get(getAppContext(),
-                SharedPreferencesManager.PREF_NAME_APP, SharedPreferencesManager.PREF_KEY_APP_UNIQUE_ID, null);
+        String appid = SharedPrefesManagerFactory.getAppUniqueId();
 
         if (StringUtils.isEmpty(appid)) {
             appid = UUID.randomUUID().toString();
-
-            SharedPreferencesUtil.set(getAppContext(),
-                    SharedPreferencesManager.PREF_NAME_APP, SharedPreferencesManager.PREF_KEY_APP_UNIQUE_ID, appid);
+            SharedPrefesManagerFactory.setAppUniqueId(appid);
         }
         return appid;
     }
+
+
 
     /**
      * 获取UserAgent,登录时填入Header
      */
     public static String getUserAgent() {
-        String userAgent = SharedPreferencesUtil.get(getAppContext(),
-                SharedPreferencesManager.PREF_NAME_APP, SharedPreferencesManager.PREF_KEY_APP_USERAGENT, null);
+        String userAgent = SharedPrefesManagerFactory.getAppUserAgent();
 
         if (StringUtils.isEmpty(userAgent)) {
             StringBuilder ua = new StringBuilder();
@@ -177,8 +175,7 @@ public class MfhApplication extends Application {
             ua.append("/" + getAppId());//客户端唯一标识
             userAgent = ua.toString();
 
-            SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
-                    SharedPreferencesManager.PREF_KEY_APP_USERAGENT, userAgent);
+            SharedPrefesManagerFactory.setAppUserAgent(userAgent);
         }
         return userAgent;
     }
@@ -445,7 +442,11 @@ public class MfhApplication extends Application {
         }
 
         ZLogger.d(String.format("1px=%ddip", DensityUtil.px2dip(getAppContext(), 1)));
-        ZLogger.d(String.format("1dip=%dpx", DensityUtil.dip2px(getAppContext(), 1)));
+        ZLogger.d(String.format("1dip=%dpx", DensityUtil.dip2px(getAppContext(), 1.0f)));
+        ZLogger.d(String.format("1dp=%dpx", DensityUtil.dp2px(getAppContext(), 1)));
+        ZLogger.d(String.format("1sp=%dpx", DensityUtil.sp2px(getAppContext(), 1.0f)));
+        ZLogger.d(String.format("1sp=%dpx", DensityUtil.sp2px(getAppContext(), 1)));
+        ZLogger.d(String.format("1px=%dsp", DensityUtil.px2sp(getAppContext(), 1)));
 
         try {
             //获取NavigationBar的高度

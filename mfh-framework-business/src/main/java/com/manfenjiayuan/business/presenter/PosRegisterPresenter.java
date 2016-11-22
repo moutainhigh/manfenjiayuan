@@ -5,7 +5,7 @@ import com.manfenjiayuan.im.IMConfig;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.posRegister.PosRegisterMode;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
 
@@ -85,7 +85,7 @@ public class PosRegisterPresenter {
     }
 
     public void register(boolean coverEnabled) {
-        String teminalId = SharedPreferencesManager.getTerminalId();
+        String teminalId = SharedPrefesManagerFactory.getTerminalId();
         if (StringUtils.isEmpty(teminalId) || coverEnabled){
             create();
         }

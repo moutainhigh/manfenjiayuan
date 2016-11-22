@@ -1,7 +1,7 @@
 package com.mfh.framework.api.invSendIoOrder;
 
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 
 import java.io.Serializable;
 import java.util.Date;

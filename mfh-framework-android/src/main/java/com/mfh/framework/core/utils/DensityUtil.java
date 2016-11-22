@@ -3,6 +3,7 @@ package com.mfh.framework.core.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 /**
  *  dp*ppi/160 = px。比如1dp x 320ppi/160 = 2px。
@@ -12,12 +13,12 @@ public class DensityUtil {
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素) ,
      * @param context
-     * @param dpValue
+     * @param dipValue
      * @return
      */
-    public static int dip2px(Context context, float dpValue) {
+    public static int dip2px(Context context, float dipValue) {
         final float density = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * density + 0.5f);
+        return (int) (dipValue * density + 0.5f);
     }
 
     /**
@@ -35,13 +36,23 @@ public class DensityUtil {
      *  sp 与 px 的换算公式：sp*ppi/160 = px
      **/
     public static int px2sp(Context context, float pxValue) {
-        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int)(pxValue / fontScale + 0.5F);
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int)(pxValue / scaledDensity + 0.5F);
     }
 
     public static int sp2px(Context context, float spValue) {
-        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int)(spValue * fontScale + 0.5F);
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int)(spValue * scaledDensity + 0.5F);
+    }
+
+    public static int dp2px(Context context, int dp){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
+    }
+
+    public static int sp2px(Context context, int sp){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                context.getResources().getDisplayMetrics());
     }
 
 //    public static int getDialogW(Context aty) {

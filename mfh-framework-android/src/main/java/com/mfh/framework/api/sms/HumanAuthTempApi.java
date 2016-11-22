@@ -33,6 +33,14 @@ public class HumanAuthTempApi {
      */
     public static String URL_LOGINBYSMS = MfhApi.URL_BASE_SERVER + "/loginBySms";
 
+    public static void register() {
+        URL_HUMANAUTHTEMP = MfhApi.URL_BASE_SERVER + "/humanAuthTemp/";
+
+        URL_BEGINAUTHENBYSMS = URL_HUMANAUTHTEMP + "beginAuthenBysms";
+        URL_RETRYAUTHENBYSMS = URL_HUMANAUTHTEMP + "retryAuthenBysms";
+        URL_LOGINBYSMS = MfhApi.URL_BASE_SERVER + "/loginBySms";
+    }
+
 
     /**
      * 首次对某个临时用户发送手机短信验证码

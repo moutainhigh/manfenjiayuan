@@ -35,6 +35,15 @@ public class StockApi {
      */
     static String URL_RECEIVEORDER_STOCKINITEMS = URL_STOCK + "receiveOrder/stockInItems";
 
+    public static void register() {
+        URL_STOCK = MfhApi.URL_BASE_SERVER + "/stock/";
+        URL_RECEIVEBATCH_FINDCOMPANY_BYHUMANID = URL_STOCK + "receiveBatch/findFdCompanyByHumanId";
+        URL_RECEIVEBATCH_CREATEANDFEE = URL_STOCK + "receiveBatch/createAndFee";
+        URL_RECEIVEBATCH_SAVEHUMANFDCOMPANY = URL_STOCK + "receiveBatch/saveHumanFdCompany";
+        URL_RECEIVEBATCH_COMNQUERY = URL_STOCK + "receiveBatch/comnQuery";
+        URL_RECEIVEORDER_FINDHUMANINFO_BYMOBILE = URL_STOCK + "receiveOrder/findHumanInfoByMobile";
+        URL_RECEIVEORDER_STOCKINITEMS = URL_STOCK + "receiveOrder/stockInItems";
+    }
 
 
 }

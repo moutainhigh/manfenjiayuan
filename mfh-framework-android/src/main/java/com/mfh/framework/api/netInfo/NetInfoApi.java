@@ -24,6 +24,11 @@ public class NetInfoApi{
      * */
     private static String URL_FINDSERVICEDNETS_FORUSERPOS = URL_NETINFO + "findServicedNetsForUserPos";
 
+    public static void register(){
+        URL_NETINFO = MfhApi.URL_BASE_SERVER + "/netInfo/";
+URL_FINDSERVICEDNETS_FORUSERPOS = URL_NETINFO + "findServicedNetsForUserPos";
+    }
+
     /**
      * 根据经纬度查询网点
      *

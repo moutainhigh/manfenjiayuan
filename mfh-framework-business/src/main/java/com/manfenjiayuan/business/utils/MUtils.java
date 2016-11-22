@@ -4,7 +4,7 @@ package com.manfenjiayuan.business.utils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +58,7 @@ public class MUtils {
      * */
     public static String genNewBarcode(int bizType) {
         return String.format("%d_%s_%d_%s", MfhLoginService.get().getCurOfficeId(),
-                SharedPreferencesManager.getTerminalId(), bizType, TimeUtil.genTimeStamp());
+                SharedPrefesManagerFactory.getTerminalId(), bizType, TimeUtil.genTimeStamp());
     }
 
     /**
@@ -69,7 +69,7 @@ public class MUtils {
     public static String genDateBarcode(int bizType, Date date, String dateFormat) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
 //        return String.format("%d_%s_%d_%s", MfhLoginService.get().getCurOfficeId(),
-//                SharedPreferencesManager.getTerminalId(), bizType,
+//                SharedPrefesManagerFactory.getTerminalId(), bizType,
 //                simpleDateFormat.format(date));
         return String.format("%d_%d_%s", MfhLoginService.get().getCurOfficeId(), bizType,
                 simpleDateFormat.format(date));
@@ -186,10 +186,15 @@ public class MUtils {
         if (StringUtils.isEmpty(rawData)) {
             return null;
         }
+
+        if (rawData.length() != 8){
+            return null;
+        }
+
         try {
             return String.valueOf(Long.parseLong(rawData, 16));
         } catch (Exception e) {
-            ZLogger.e(String.format("parseCardId failed, %s", e.toString()));
+            ZLogger.e(e.toString());
             return null;
         }
     }
@@ -203,10 +208,13 @@ public class MUtils {
             return null;
         }
 
-        //这样判断不严谨，会错误的把其他0处理掉
+        //长度15位
+        if (paycode.length() != 15){
+            return null;
+        }
+            //这样判断不严谨，会错误的把其他0处理掉
 //        int index = paycode.lastIndexOf("0");
 //        String humanId2 = humanId.substring(index + 1, humanId.length());
-
         String humanId = paycode;
         while (humanId.startsWith("0")) {
             humanId = humanId.substring(1, humanId.length());

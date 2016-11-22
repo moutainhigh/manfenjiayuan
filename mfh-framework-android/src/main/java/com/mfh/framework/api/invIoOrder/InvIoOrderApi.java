@@ -19,12 +19,16 @@ public class InvIoOrderApi {
     public static String URL_INVIOORDER = MfhApi.URL_BASE_SERVER + "/invIoOrder/";
 
 
-    /**出入库类型：0-入库 1-出库 2-直接设置*/
+    /**
+     * 出入库类型：0-入库 1-出库 2-直接设置
+     */
     public static final int ORDER_TYPE_IN = 0;
     public static final int ORDER_TYPE_OUT = 1;
     public static final int ORDER_TYPE_SET = 2;
 
-    /**商品的仓储类型，0-代表是零售 1-是批发*/
+    /**
+     * 商品的仓储类型，0-代表是零售 1-是批发
+     */
     public static final int STORE_TYPE_RETAIL = 0;
     public static final int STORE_TYPE_WHOLESALE = 1;
 
@@ -45,6 +49,14 @@ public class InvIoOrderApi {
      */
     private static String URL_COMMIT_ORDER = URL_INVIOORDER + "commitOrder";
 
+
+    public static void register() {
+        URL_INVIOORDER = MfhApi.URL_BASE_SERVER + "/invIoOrder/";
+        URL_LIST = URL_INVIOORDER + "list";
+
+        URL_CREATE_IOORDER = URL_INVIOORDER + "createIoOrder";
+        URL_COMMIT_ORDER = URL_INVIOORDER + "commitOrder";
+    }
 
     /**
      * 查询出入库批次流水：出库/入库单
@@ -67,7 +79,7 @@ public class InvIoOrderApi {
      *
      * @param orderType 出入库类型, 0|1|2  0-入库 1-出库 2-直接设置
      * @param storeType 商品的仓储类型，0-代表是零售 1-是批发
-     * @param items 明细
+     * @param items     明细
      */
     public static void createIoOrder(int orderType, int storeType,
                                      JSONArray items, AjaxCallBack<? extends Object> responseCallback) {
@@ -85,15 +97,15 @@ public class InvIoOrderApi {
     /**
      * 查询批次流水：出库/入库单
      *
-     * @param orderId 订单编号
+     * @param orderId      订单编号
      * @param transHumanId 司机（可空）
-     * @param vehicle 车辆
+     * @param vehicle      车辆
      */
     public static void commitOrder(String orderId, Long transHumanId, String vehicle,
                                    AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("orderId", orderId);
-        if (transHumanId != null){
+        if (transHumanId != null) {
             params.put("transHumanId", String.valueOf(transHumanId));
         }
         params.put("vehicle", vehicle);

@@ -40,6 +40,15 @@ public class ResApi {
      */
     private static String URL_REMOTE_UPLOAD = URL_REMOTE + "download";
 
+    public static void register() {
+        URL_REMOTE = MfhApi.URL_BASE_SERVER + "/res/remote/";
+        URL_REMOTESAVE = MfhApi.URL_BASE_SERVER + "/res/remotesave/";
+        URL_REMOTESAVE_UPLOAD = URL_REMOTESAVE + "upload";
+        URL_REMOTESAVE_DELETE = URL_REMOTESAVE + "delete";
+
+        URL_REMOTE_UPLOAD = URL_REMOTE + "download";
+    }
+
     /**
      * 图片上传修改
      * 采用multipart/form-data或post方式提交图片。

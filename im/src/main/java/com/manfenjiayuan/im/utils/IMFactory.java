@@ -1,20 +1,22 @@
 package com.manfenjiayuan.im.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.bean.DestInfo;
 import com.manfenjiayuan.im.bean.FromInfo;
 import com.manfenjiayuan.im.bean.MsgBean;
-import com.manfenjiayuan.im.constants.IMChannelType;
 import com.manfenjiayuan.im.bean.MsgParameter;
 import com.manfenjiayuan.im.bean.PhysicalPoint;
 import com.manfenjiayuan.im.constants.IMBizType;
+import com.manfenjiayuan.im.constants.IMChannelType;
 import com.manfenjiayuan.im.constants.IMTechType;
 import com.manfenjiayuan.im.param.RegisterParam;
 import com.manfenjiayuan.im.param.TextParam;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.mobile.MobileApi;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by bingshanguxue on 16/3/4.
@@ -49,8 +51,11 @@ public class IMFactory {
 		msgBean.setType(IMTechType.JSON);
 		msgBean.setBizType(IMBizType.REGISTER);
 		msgBean.setBody(param);
-
 		msgParameter.setMsgBean(msgBean);
+
+		Map<String, String> meta = new HashMap<>();
+		meta.put("realmUrl", MobileApi.DOMAIN);
+		msgParameter.setMeta(meta);
 
 		return msgParameter;
 	}

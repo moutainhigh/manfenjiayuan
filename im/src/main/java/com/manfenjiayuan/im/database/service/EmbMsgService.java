@@ -8,31 +8,30 @@ import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.IMConstants;
-import com.manfenjiayuan.im.bean.MsgParameter;
-import com.manfenjiayuan.im.constants.IMBizType;
-import com.manfenjiayuan.im.utils.IMFactory;
 import com.manfenjiayuan.im.IMHelper;
 import com.manfenjiayuan.im.bean.BizMsgParamWithSession;
 import com.manfenjiayuan.im.bean.MsgBean;
+import com.manfenjiayuan.im.bean.MsgParameter;
 import com.manfenjiayuan.im.bean.MsgParameterWrapper;
+import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.dao.EmbMsgDao;
 import com.manfenjiayuan.im.database.dao.EmbMsgNetDao;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.param.WxParam;
+import com.manfenjiayuan.im.utils.IMFactory;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.ApiParams;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetProcessor;
 
 import net.tsz.afinal.db.table.KeyValue;
 import net.tsz.afinal.http.AjaxParams;
 
-import java.security.Key;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -255,7 +254,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 //        String jsonStr = String.valueOf();
         MsgParameter msgParameter = IMFactory.createMsgParam(IMConfig.getPushClientId(),
                 guid, wxParam.getContent(), sessionId);
-        params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
+        params.put(IMApi.PARAM_KEY_JSONSTR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);
     }
@@ -273,7 +272,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 //        String jsonStr = String.valueOf();
         MsgParameter msgParameter = IMFactory.chatMessage(IMConfig.getPushClientId(),
                 fromGuid, wxParam.getContent(), toGuid, null, null);
-        params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
+        params.put(IMApi.PARAM_KEY_JSONSTR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);
     }
@@ -293,7 +292,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
         MsgParameter msgParameter = IMFactory.textMessageParameter(bizType, content,
                 fromGuid, IMConfig.getPushClientId(),
                 toGuid, channelId, toChannelPointId);
-        params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
+        params.put(IMApi.PARAM_KEY_JSONSTR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);
     }
@@ -313,7 +312,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
         MsgParameter msgParameter = IMFactory.textMessageParameter(bizType, body,
                 fromGuid, IMConfig.getPushClientId(),
                 toGuid, channelId, toChannelPointId);
-        params.put(IMApi.PARAM_KEY_JSON_STR, msgParameter.toString());
+        params.put(IMApi.PARAM_KEY_JSONSTR, msgParameter.toString());
 
         netDao.sendMessage(params, processor);
     }
@@ -328,10 +327,10 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
     public void sendMessage(Long guid, Long cpid, Long sessionId, Long sourceid, final Context context,
                             NetProcessor.ComnProcessor processor ) {
         AjaxParams netParam = new AjaxParams();
-        netParam.put(IMApi.PARAM_KEY_SOURCE_ID, sourceid.toString());
-        netParam.put(IMApi.PARAM_KEY_SESSION_ID, Long.toString(sessionId));
-        netParam.put(IMApi.PARAM_KEY_CHANNEL_POINT_ID, String.valueOf(cpid));
-        netParam.put(IMApi.PARAM_KEY_GUID, String.valueOf(guid));
+        netParam.put(ApiParams.PARAM_KEY_SOURCE_ID, sourceid.toString());
+        netParam.put(ApiParams.PARAM_KEY_SESSION_ID, Long.toString(sessionId));
+        netParam.put(ApiParams.PARAM_KEY_CHANNEL_POINT_ID, String.valueOf(cpid));
+        netParam.put(ApiParams.PARAM_KEY_GUID, String.valueOf(guid));
         netDao.sendMessage(netParam, processor);
     }
 

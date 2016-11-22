@@ -8,8 +8,6 @@ import com.mfh.framework.network.NetFactory;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
-import static com.mfh.framework.api.H5Api.URL_STOCK_OUT;
-
 /**
  * Created by bingshanguxue on 17/10/2016.
  */
@@ -65,7 +63,7 @@ public class PmcStockApiImpl extends PmcStockApi {
         }
         params.put("stockIds", MfhLoginService.get().getStockIds());//stockIds:针对哪些仓库，逗号分隔
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-//        fh.addHeader("Cookie", SharedPreferencesManager.getLastSessionId());
+//        fh.addHeader("Cookie", SharedPrefesManagerFactory.getLastSessionId());
         AfinalFactory.postDefault(URL_STOCK_FIND_STOCKOUT, params, responseCallback);
     }
 

@@ -10,7 +10,7 @@ public class CateApi {
 
     //
     public final static Long FRONT_CATEGORY_ID_LAUNDRY = 3543L;//洗衣
-    public final static Long FRONT_CATEGORY_ID_POS = 3407L;//POS
+    public final static Long FRONT_CATEGORY_ID_POS = 3407L;//POS类目--勿删除
 
 
     /**

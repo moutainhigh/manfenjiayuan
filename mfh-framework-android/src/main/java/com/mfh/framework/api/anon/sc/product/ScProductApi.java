@@ -17,8 +17,13 @@ public class ScProductApi {
 
     /**
      * /anon/sc/product/findProductByFrontCatalog?frontCataLogId=
-     * */
+     */
     private static String URL_FINDPRODUCT_BYFRONTCATALOG = URL_ANON_SC_PRODUCT + "findProductByFrontCatalog";
+
+    public static void register() {
+        URL_ANON_SC_PRODUCT = MfhApi.URL_BASE_SERVER + "/anon/sc/product/";
+        URL_FINDPRODUCT_BYFRONTCATALOG = URL_ANON_SC_PRODUCT + "findProductByFrontCatalog";
+    }
 
     /**
      * 查询前台类目商品商品
@@ -27,6 +32,7 @@ public class ScProductApi {
      * 适用场景
      * <li>门店导入前台类目商品查询时调用</li>
      * </ol>
+     *
      * @param frontCataLogId 前台类目编号
      */
     static void findProductByFrontCatalog(Long frontCataLogId, PageInfo pageInfo,
@@ -35,7 +41,7 @@ public class ScProductApi {
         if (frontCataLogId != null) {
             params.put("frontCataLogId", String.valueOf(frontCataLogId));
         }
-        if (pageInfo != null){
+        if (pageInfo != null) {
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }

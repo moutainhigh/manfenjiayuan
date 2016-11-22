@@ -51,5 +51,19 @@ public class InvSendOrderApi {
      */
     static String URL_INVSENDORDER_CREATE_PLANORDER= URL_INVSENDORDER + "createPlanOrder";
 
+    public static void register(){
+        URL_INVSENDORDER = MfhApi.URL_BASE_SERVER + "/invSendOrder/";
+
+        URL_INVSENDORDER_ASK_SENDORDER = URL_INVSENDORDER + "askSendOrder";
+
+
+        URL_INVSENDORDER_LIST = URL_INVSENDORDER + "list";
+        URL_INVSENDORDER_GETBYID = URL_INVSENDORDER + "getById";
+        URL_INVSENDORDER_DORECEIVE = URL_INVSENDORDER + "doReceive";
+        URL_INVSENDORDER_CANCEL= URL_INVSENDORDER + "cancelOrder";
+        URL_INVSENDORDER_RECEIVEPLANORDERONNET= URL_INVSENDORDER + "receivePlanOrderOnNet";
+        URL_INVSENDORDER_CREATE_PLANORDER= URL_INVSENDORDER + "createPlanOrder";
+    }
+
 
 }

@@ -51,6 +51,10 @@ public class ScStoreRackApi {
 
     public static void register(){
         URL_ANON_SC_STORERACK = MfhApi.URL_BASE_SERVER + "/anon/sc/storeRack/";
+        URL_GETBYSHOPID_MUST= URL_ANON_SC_STORERACK + "getByShopIdMust";
+        URL_GETBYID= URL_ANON_SC_STORERACK + "getById";
+        URL_GET_BYSHOPMUST= URL_ANON_SC_STORERACK + "getByShopMust";
+        URL_FIND_BYSHOPMUST= URL_ANON_SC_STORERACK + "findByShopMust";
     }
 
     /**

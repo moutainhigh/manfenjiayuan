@@ -9,6 +9,7 @@ import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
 /**
+ * 账号
  * Created by bingshanguxue on 8/30/16.
  */
 public class CompanyHumanApi {
@@ -26,6 +27,13 @@ public class CompanyHumanApi {
      */
     public static String URL_LISTWORKERBEANINFO_OFCOMPANY = URL_COMPANYHUMAN + "listWorkerBeanInfoOfCompany";
 
+    public static void register() {
+        URL_COMPANYHUMAN = MfhApi.URL_BASE_SERVER + "/companyHuman/";
+
+        URL_FINDCOMPUSER_PWDINFO = URL_COMPANYHUMAN + "findCompUserPwdInfo";
+        URL_LISTWORKERBEANINFO_OFCOMPANY = URL_COMPANYHUMAN + "listWorkerBeanInfoOfCompany";
+    }
+
 
     /**
      * 查询子账号
@@ -33,7 +41,7 @@ public class CompanyHumanApi {
     public static void findCompUserPwdInfo(PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        if (pageInfo != null){
+        if (pageInfo != null) {
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
@@ -46,7 +54,7 @@ public class CompanyHumanApi {
      */
     public static void listWorkerBeanInfoOfCompany(PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (pageInfo != null){
+        if (pageInfo != null) {
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }

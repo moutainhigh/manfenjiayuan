@@ -55,6 +55,16 @@ public class ScCategoryInfoApi {
      */
     private static String URL_GET_TOPFRONTID = URL_SC_CATEGORYINFO + "getTopFrontId";
 
+    public static void register() {
+        URL_SC_CATEGORYINFO = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/";
+        URL_COMNQUERY = URL_SC_CATEGORYINFO + "comnQuery";
+        URL_GETCODEVALUE = URL_SC_CATEGORYINFO + "getCodeValue";
+        URL_CREATE = URL_SC_CATEGORYINFO + "create";
+        URL_DELETE = URL_SC_CATEGORYINFO + "delete";
+        URL_UPDATE = URL_SC_CATEGORYINFO + "update";
+        URL_LIST = URL_SC_CATEGORYINFO + "list";
+        URL_GET_TOPFRONTID = URL_SC_CATEGORYINFO + "getTopFrontId";
+    }
 
     /**
      * private String cateInfo; //类目介绍
@@ -106,8 +116,9 @@ public class ScCategoryInfoApi {
 
     /**
      * 删除类目
+     *
      * @param id 类目编号
-     * */
+     */
     public static void delete(Long id, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("id", String.valueOf(id));
@@ -117,9 +128,9 @@ public class ScCategoryInfoApi {
 
     /**
      * 查询类目列表
-     * */
+     */
     public static void list(int domain, int cateType, int catePosition,
-                                    int deep, Long tenantId, PageInfo pageInfo,
+                            int deep, Long tenantId, PageInfo pageInfo,
                             AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("kind", "code");
@@ -127,7 +138,7 @@ public class ScCategoryInfoApi {
         params.put("cateType", String.valueOf(cateType));
         params.put("catePosition", String.valueOf(catePosition));
         params.put("deep", String.valueOf(deep));//层级
-        if (tenantId != null){
+        if (tenantId != null) {
             params.put("tenantId", String.valueOf(tenantId));
         }
         if (pageInfo != null) {
@@ -139,7 +150,7 @@ public class ScCategoryInfoApi {
 
     /**
      * 修改类目
-     * */
+     */
     public static void update(String jsonStr,
                               AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
@@ -150,7 +161,7 @@ public class ScCategoryInfoApi {
 
     /**
      * 查询前台类目根目录
-     * */
+     */
     public static void getTopFrontId(Integer cateType, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("cateType", String.valueOf(cateType));
@@ -164,7 +175,7 @@ public class ScCategoryInfoApi {
     /**
      * 返回一级公共子目录
      * /scCategoryInfo/getCodeValue?parentId=6585&page=1&rows=20
-     * */
+     */
     public static void getCodeValue(Long parentId, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("parentId", String.valueOf(parentId));

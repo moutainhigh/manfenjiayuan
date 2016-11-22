@@ -25,4 +25,13 @@ public class PayOrderApi {
      * 打款明细：/payOrder/list?status=2&sellOffice=136076&bizType=2001
      */
     public static String URL_LIST = URL_PAYORDER + "list";
+
+    public static void register() {
+        URL_PAYORDER = MfhApi.URL_BASE_SERVER + "/payOrder/";
+
+        URL_PREPAY = URL_PAYORDER + "prepay";
+        URL_PREPAY_FORAPP = URL_PAYORDER + "prepayForApp";
+        URL_CREATE = URL_PAYORDER + "create";
+        URL_LIST = URL_PAYORDER + "list";
+    }
 }

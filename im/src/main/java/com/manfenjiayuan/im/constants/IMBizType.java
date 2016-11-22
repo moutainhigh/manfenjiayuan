@@ -23,12 +23,37 @@ public class IMBizType {
     public final static int MFPARGER_RECEIVE_ORDER    = 1003;//订单创建时通知小伙伴接单,其中对应的tagOne为订单编号
     public final static int EVALUATE_ORDER            = 1004;//订单送达客户通知客户评价,其中对应的tagOne为订单编号
     //1100~1200 POS机&客显
-    public final static int TENANT_SKU_UPDATE           = 1101;//网点sku信息更新
+    /**
+     * 同步商品档案、一品多码关系
+     * <ol>
+     *     <li>商品档案——增加、删除、修改</li>
+     *     <li>前台类目商品——修改零售价</li>
+     *     <li>一品多码表——增加、删除、修改</li>
+     * </ol>
+     * */
+    public final static int TENANT_SKU_UPDATE           = 1101;
     public final static int NEW_PURCHASE_ORDER          = 1102;//新的生鲜预订单
     public final static int LOCK_POS_CLIENT_NOTIFY      = 1103;//现金超过授权额度，要求锁定pos机
     public final static int PRE_LOCK_POS_CLIENT_NOTIFY  = 1104;//现金授权额度将要用完，即将锁定pos机
-    public final static int CUSTOMER_DISPLAY_PAYORDER   = 1105;//收银机推送订单到客显设备
-    public final static int REMOTE_CONTROL_CMD   = 1106;//远程控制指令
+    /**
+     * 同步前台类目和商品关系信息
+     * <ol>
+     *     <li>前台类目——增加、删除</li>
+     *     <li>前台类目商品——增加、删除、售罄/补货</li>
+     * </ol>
+     * */
+    public final static int FRONGCATEGORY_GOODS_UPDATE   = 1105;//前台类目商品——删除，售罄/补货
+    /**
+     * 同步前台类目本身信息
+     * <ol>
+     *     <li>前台类目——增加、删除、修改</li>
+     * </ol>
+     * */
+    public final static int FRONTCATEGORY_UPDATE   = 1106;//前台类目——增删改，同步类目，
+
+    public final static int CUSTOMER_DISPLAY_PAYORDER   = 1107;//收银机推送订单到客显设备
+    public final static int REMOTE_CONTROL_CMD   = 1108;//远程控制指令
+
 
     public static String name(int value) {
         switch (value) {

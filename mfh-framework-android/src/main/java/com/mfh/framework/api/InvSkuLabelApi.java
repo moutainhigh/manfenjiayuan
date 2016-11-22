@@ -12,14 +12,21 @@ import net.tsz.afinal.http.AjaxParams;
 public class InvSkuLabelApi {
 
     static String URL_INVSKULABEL = MfhApi.URL_BASE_SERVER + "/invSkuLabel/";
-    /**创建待打印价签*/
+    /**
+     * 创建待打印价签
+     */
     private static String URL_CREATE = URL_INVSKULABEL + "create";
+
+    public static void register() {
+        URL_INVSKULABEL = MfhApi.URL_BASE_SERVER + "/invSkuLabel/";
+        URL_CREATE = URL_INVSKULABEL + "create";
+    }
 
     /**
      * 搜索小区
-     * */
+     */
     public static void create(String jsonStr,
-                                        AjaxCallBack<? extends Object> responseCallback){
+                              AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("jsonStr", jsonStr);
 

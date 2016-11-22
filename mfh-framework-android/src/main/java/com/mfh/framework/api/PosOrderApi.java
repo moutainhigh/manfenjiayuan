@@ -19,9 +19,14 @@ public class PosOrderApi {
      */
     private static String URL_BATCHINORDERS = URL_POSORDER + "batchInOrders";
 
+    public static void register() {
+        URL_POSORDER = MfhApi.URL_BASE_SERVER + "/posOrder/";
+        URL_BATCHINORDERS = URL_POSORDER + "batchInOrders";
+    }
+
     /**
      * 提交收银订单
-     * */
+     */
     public static void batchInOrders(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());

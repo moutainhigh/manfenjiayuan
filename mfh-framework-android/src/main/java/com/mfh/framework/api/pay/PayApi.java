@@ -48,6 +48,14 @@ public class PayApi {
     public static String URL_WXBARPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/query";
     public static String URL_WXBARPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/cancelOrder";
 
+    public static void register(){
+        URL_ALIPAY_BARPAY = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/barPay";
+        URL_ALIPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/query";
+        URL_ALIPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toAlipayBarTradePay/cancelOrder";
+        URL_WXBARPAY_PAY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/barPay";
+        URL_WXBARPAY_QUERY = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/query";
+        URL_WXBARPAY_CANCEL = MfhApi.URL_BASE_SERVER + "/toWxpayBarTradePay/cancelOrder";
+    }
     /**
      * 支付宝条码支付
      *

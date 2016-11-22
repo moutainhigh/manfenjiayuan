@@ -17,20 +17,28 @@ public class ShoppingCartApi {
 
     /**
      * 把一个商品及其选择的规格选项加入到当前登录用户的购物车
-     * */
+     */
     static String URL_ADD2CART = URL_SHOPPING_CART + "addToCart";
     /**
      * 购物车列表
-     * */
+     */
     public static String URL_LIST = URL_SHOPPING_CART + "list";
     /**
      * 修改购物项数量
-     * */
-    static String URL_ADJUST_CART= URL_SHOPPING_CART + "adjustCart";
+     */
+    static String URL_ADJUST_CART = URL_SHOPPING_CART + "adjustCart";
     /**
      * 查询购物车中商品数量
      * /shoppingCart/staticShopCart?shopIds=
-     * */
-    static String URL_STATICSHOPCART= URL_SHOPPING_CART + "staticShopCart";
+     */
+    static String URL_STATICSHOPCART = URL_SHOPPING_CART + "staticShopCart";
+
+    public static void register() {
+        URL_SHOPPING_CART = MfhApi.URL_BASE_SERVER + "/shoppingCart/";
+        URL_ADD2CART = URL_SHOPPING_CART + "addToCart";
+        URL_LIST = URL_SHOPPING_CART + "list";
+        URL_ADJUST_CART = URL_SHOPPING_CART + "adjustCart";
+        URL_STATICSHOPCART = URL_SHOPPING_CART + "staticShopCart";
+    }
 
 }

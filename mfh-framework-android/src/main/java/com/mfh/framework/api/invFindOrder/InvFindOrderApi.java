@@ -24,6 +24,11 @@ public class InvFindOrderApi {
      */
     private static String URL_GETBYID = URL_INVFINDORDER + "getById";
 
+    public static void register(){
+        URL_INVFINDORDER = MfhApi.URL_BASE_SERVER + "/invFindOrder/";
+
+        URL_GETBYID = URL_INVFINDORDER + "getById";
+    }
 
     /**
      * 根据拣货单编号或条码检索一个拣货单及其所有明细

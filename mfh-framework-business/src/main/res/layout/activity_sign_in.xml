@@ -1,71 +1,102 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/frame_login"
+                android:id="@+id/rootview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/mf_login_background"
+                android:background="@color/mfh_colorPrimary"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_vertical_margin">
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
+        android:id="@+id/bottomview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_hostserver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@mipmap/ic_launcher"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/white_35"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-
-            <!--android:imeActionId="@+id/login"-->
-            <!--android:imeActionLabel="@string/action_sign_in_short"-->
-            <!--android:imeOptions="actionUnspecified"-->
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_corner_white"
+                android:divider="@drawable/divider_horizontal_line"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_micro"
+                android:showDividers="middle">
 
+                <!--android:imeActionId="@+id/login"-->
+                <!--android:imeActionLabel="@string/action_sign_in_short"-->
+                <!--android:imeOptions="actionUnspecified"-->
+                <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
+                <!--</android.support.design.widget.TextInputLayout>-->
+                <!--android:background="?android:editTextBackground"-->
                 <EditText
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?android:editTextBackground"
+                    android:background="@null"
                     android:hint="@string/hint_login_account"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true"
+                    android:minHeight="?android:attr/actionBarSize"
+                    android:paddingBottom="@dimen/spacing_micro"
+                    android:paddingEnd="@dimen/spacing_micro"
+                    android:paddingStart="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_micro"
                     android:textColor="@color/material_black"
-                    android:textColorHint="@color/colorPrimary"
-                    android:textSize="20sp"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <!--android:imeActionId="@+id/login"-->
-            <!--android:imeActionLabel="@string/action_sign_in_short"-->
-            <!--android:imeOptions="actionUnspecified"-->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    android:textColorHint="@color/material_black_hint"
+                    android:textSize="16sp"/>
 
                 <EditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?android:editTextBackground"
+                    android:background="@null"
                     android:hint="@string/hint_login_password"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true"
+                    android:minHeight="?android:attr/actionBarSize"
+                    android:paddingBottom="@dimen/spacing_micro"
+                    android:paddingEnd="@dimen/spacing_micro"
+                    android:paddingStart="@dimen/spacing_normal"
+                    android:paddingTop="@dimen/spacing_micro"
                     android:textColor="@color/material_black"
-                    android:textColorHint="@color/colorPrimary"
-                    android:textSize="20sp"/>
-
-            </android.support.design.widget.TextInputLayout>
+                    android:textColorHint="@color/material_black_hint"
+                    android:textSize="16sp"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/button_sign_in"
@@ -73,44 +104,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/btn_corner_green"
+                android:background="@color/mfh_colorPrimary"
                 android:padding="@dimen/spacing_micro"
                 android:text="登录"
                 android:textColor="@color/material_white"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:divider="@drawable/divider_vertical_line"
-                android:dividerPadding="8dp"
-                android:gravity="center_horizontal"
-                android:showDividers="middle">
-
-                <TextView
-                    android:id="@+id/tv_retrievePwd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="@string/button_login_retrieve_pwd"
-                    android:textColor="@color/white_60"
-                    android:textSize="18sp"/>
-
-                <TextView
-                    android:id="@+id/tv_signup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="@string/button_login_signup"
-                    android:textColor="@color/white_60"
-                    android:textSize="18sp"/>
-            </LinearLayout>
-
-
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:divider="@drawable/divider_vertical_line"
+            android:dividerPadding="8dp"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/tv_retrievePwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/button_login_retrieve_pwd"
+                android:textColor="@color/white_60"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tv_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/button_login_signup"
+                android:textColor="@color/white_60"
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <!-- Login progress -->
     <ProgressBar
@@ -121,13 +152,4 @@
         android:layout_centerInParent="true"
         android:visibility="gone"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/spacing_double"
-        android:layout_marginTop="32dp"
-        android:contentDescription="@null"
-        android:src="@mipmap/mf_logo_small_white"/>
 </RelativeLayout>

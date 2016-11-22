@@ -1,4 +1,4 @@
-package com.mfh.framework.api;
+package com.mfh.framework.api.mobile;
 
 import com.mfh.framework.BizConfig;
 
@@ -6,11 +6,11 @@ import com.mfh.framework.BizConfig;
  * H5页面
  * Created by bingshanguxue on 4/19/16.
  */
-public class H5Api {
-    public static String BASE_URL_APP = "http://devmobile.manfenjiayuan.cn";
-    public static String BASE_URL_RESOURCE = "http://devresource.manfenjiayuan.cn/user/";
+public class MobileApi {
+    public static String BASE_URL_APP = "http://mobile.manfenjiayuan.cn";
+    public static String BASE_URL_RESOURCE = "http://resource.manfenjiayuan.cn/user/";
     //    scheme://host.domain:port/path/filename
-    public static String DOMAIN = "devmobile.manfenjiayuan.cn";
+    public static String DOMAIN = "mobile.manfenjiayuan.cn";
 
     static{
         if(BizConfig.RELEASE){

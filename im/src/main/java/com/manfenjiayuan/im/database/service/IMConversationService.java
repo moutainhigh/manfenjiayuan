@@ -25,6 +25,7 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.ApiParams;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
@@ -215,19 +216,19 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
         AjaxParams params = new AjaxParams();
         //个人账号：guid + type(0)
         //客服账号：createguid(在管家会话里，创建人就是粉丝) + type(0)
-        params.put(IMApi.PARAM_KEY_CREATE_GUID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        params.put(ApiParams.PARAM_KEY_CREATE_GUID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
         //createguid, 在管家会话里，参与成员
 //        params.put("guid", SharedPreferencesHelper.getUserGuid());
 
 //        其中type代表非客服类会话类型，包括： 0、两人会话； 2：群组会话
-        params.put(IMApi.PARAM_KEY_TYPE, "101");
+        params.put(ApiParams.PARAM_KEY_TYPE, "101");
 //        bind代表要查询客服类会话并且其中的客户类型为:0:未绑定； 1:已绑定；  2:未关联
 //
         //params.put("isgroup", "1");
-        params.put(IMApi.PARAM_KEY_BIND, "1");
+        params.put(ApiParams.PARAM_KEY_BIND, "1");
 
         //params.put("subdisid", SharedPreferencesHelper.getUserSubdisId());
-        params.put(IMApi.PARAM_KEY_LASTUPDATE, lastCursor);
+        params.put(ApiParams.PARAM_KEY_LASTUPDATE, lastCursor);
         //params.put("tenantId", getContext().getSharedPreferences("login", Activity.MODE_PRIVATE).getString("app.spid", null));
         queryByNetDao(params, pageInfoParam, lastCursor, IMApi.URL_SESSION_LIST);
     }
@@ -438,12 +439,12 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
             if (StringUtils.isBlank(subdisIds))
                 throw new RuntimeException("所辖小区为空!");
             if (msgMode == IMConstants.MSG_MODE_APART) {
-                params.put(IMApi.PARAM_KEY_GUID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
-                params.put(IMApi.PARAM_KEY_SUBDIS_ID, subdisIds);
+                params.put(ApiParams.PARAM_KEY_GUID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
+                params.put(ApiParams.PARAM_KEY_SUBDIS_ID, subdisIds);
             } else if (msgMode == IMConstants.MSG_MODE_TAX) {
-                params.put(IMApi.PARAM_KEY_BUREAD_UID, subdisIds);
+                params.put(ApiParams.PARAM_KEY_BUREAD_UID, subdisIds);
             } else {
-                params.put(IMApi.PARAM_KEY_SUBDIS_ID, subdisIds);
+                params.put(ApiParams.PARAM_KEY_SUBDIS_ID, subdisIds);
             }
             PageInfo pageInfoParam = new PageInfo(1, 100);//要求第一页从1开始
             netDao.query(params, new NetProcessor.QueryRsProcessor<BizSessionWithMsgParam>(pageInfoParam) {

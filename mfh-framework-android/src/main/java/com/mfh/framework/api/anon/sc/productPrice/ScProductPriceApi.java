@@ -28,6 +28,12 @@ public class ScProductPriceApi {
     private static String URL_FIND_PRODUCTSKU= URL_ANON_SC_PRODUCTPRICE + "findProductSku";
 
 
+    public static void register(){
+        URL_ANON_SC_PRODUCTPRICE = MfhApi.URL_BASE_SERVER + "/anon/sc/productPrice/";
+        URL_FINDPUBSKUS_BYFRONTCATALOG= URL_ANON_SC_PRODUCTPRICE + "findPubSkusByFrontCatalog";
+        URL_FIND_PRODUCTSKU= URL_ANON_SC_PRODUCTPRICE + "findProductSku";
+    }
+
     /**
      * 根据前台类目查找有效的商品列表
      * <p/>

@@ -2,7 +2,7 @@ package org.century;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import org.ksoap2.SoapEnvelope;
 
@@ -234,11 +234,11 @@ public class GreenTagsApi {
      * 初始化
      */
     public static void initialize() {
-        LOCAL_SERVER_IP = SharedPreferencesManager
-                .getText(PREF_GREENTAGS, PK_S_GREENTAGS_IP, "");
-        LOCAL_PORT = SharedPreferencesManager
+        LOCAL_SERVER_IP = SharedPrefesManagerFactory
+                .getString(PREF_GREENTAGS, PK_S_GREENTAGS_IP, "");
+        LOCAL_PORT = SharedPrefesManagerFactory
                 .getInt(PREF_GREENTAGS, PK_I_GREENTAGS_PORT, 3128);
-        SOAP_VERSION = SharedPreferencesManager
+        SOAP_VERSION = SharedPrefesManagerFactory
                 .getInt(PREF_GREENTAGS, PK_I_GREENTAGS_SOAPVERSION, SoapEnvelope.VER11);
         URL = String.format("http://%s:%d/EslCoreService", LOCAL_SERVER_IP, LOCAL_PORT);
     }

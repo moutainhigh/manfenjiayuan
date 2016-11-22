@@ -85,13 +85,31 @@ public class ScGoodsSkuApi {
      * 其中sendTenantId是平台上的某个批发商，目前只能写死是米西配送。
      * startCursor是游标，同步一次后pos机本地记录一下后台返回的最大日期值，下次从这个值作为参数传递
      * /scGoodsSku/importFromChainSku?sendTenantId=134651&cateType=2&startCursor=2015-01-01 10:00:00
-     * */
+     */
     static String URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
 
     /**
      * 批量查询商品信息
-     * */
+     */
     static String URL_FINDONLINEGOODSLIST = URL_SCGOODSSKU + "findOnlineGoodsList";
+
+    public static void register() {
+        URL_SCGOODSSKU = MfhApi.URL_BASE_SERVER + "/scGoodsSku/";
+        URL_DOWNLOAD_POS_PRODUCT = URL_SCGOODSSKU + "downLoadPosProduct";
+        URL_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
+        URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
+        URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
+        URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
+                + "checkWithBuyInfoByBarcode";
+        URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
+        URL_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
+        URL_STOREIN = URL_SCGOODSSKU + "storeIn";
+        URL_GETGOODS_BYBARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
+        URL_LIST = URL_SCGOODSSKU + "list";
+        URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
+
+        URL_FINDONLINEGOODSLIST = URL_SCGOODSSKU + "findOnlineGoodsList";
+    }
 
 
 }

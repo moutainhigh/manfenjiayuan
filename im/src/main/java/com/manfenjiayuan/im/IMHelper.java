@@ -32,7 +32,7 @@ public class IMHelper {
 
 //    private static SharedPreferences spSession = null;
 //    public static void restore(){
-//        spSession = SharedPreferencesUtil.getPreferences(ComnApplication.getAppContext(),
+//        spSession = SharedPrefesBase.getPreferences(ComnApplication.getAppContext(),
 //                SharedPreferencesHelper.getLoginUsername() + "." + SP_NAME_SUFFIX);
 //    }
 //    public static void clear(){

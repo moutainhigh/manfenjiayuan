@@ -22,21 +22,26 @@ public class ClientLogApi {
 
     /**
      * 创建日志
-     * */
+     */
     private static String URL_CREATE = URL_CLIENTLOG + "create";
-
     /**
      * 日志列表
-     * */
+     */
     private static String URL_LIST = URL_CLIENTLOG + "list";
 
 
+    public static void register() {
+        URL_CLIENTLOG = MfhApi.URL_BASE_SERVER + "/clientLog/";
+        URL_CREATE = URL_CLIENTLOG + "create";
+        URL_LIST = URL_CLIENTLOG + "list";
+    }
+
     /**
      * 创建日志
-     * */
+     */
     public static void create(ClientLog clientLog, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (clientLog != null){
+        if (clientLog != null) {
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("stackInformation", clientLog.getStackInformation());
@@ -51,12 +56,13 @@ public class ClientLogApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_CREATE, params, responseCallback);
     }
+
     /**
      * 日志列表
-     * */
+     */
     public static void list(PageInfo pageInfo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        if (pageInfo != null){
+        if (pageInfo != null) {
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
