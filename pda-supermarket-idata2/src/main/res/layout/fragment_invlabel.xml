@@ -5,16 +5,12 @@
                                                  android:fitsSystemWindows="true"
                                                  android:orientation="vertical">
 
-    <include
-        android:id="@+id/appbar"
-        layout="@layout/appbar_scan_barcode"/>
-
+    <include layout="@layout/appbar_scan_barcode"/>
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -28,14 +24,18 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="商品名称:"/>
+                app:startText="商品名称:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_barcode"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="商品条码:"/>
+                app:startText="商品条码:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <!--规格-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
@@ -43,7 +43,9 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="规格:"/>
+                app:startText="规格:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <!--价格&单位-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
@@ -51,7 +53,9 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="零售价:"/>
+                app:startText="零售价:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <!--商品积分-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
@@ -59,21 +63,27 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="商品积分:"/>
+                app:startText="商品积分:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
             <!--产地-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_prodArea"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="产地:"/>
+                app:startText="产地:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
             <!--等级-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_prodLevel"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="等级:"/>
+                app:startText="等级:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -83,29 +93,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
         android:gravity="end|center_vertical"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/spacing_double">
+        android:orientation="horizontal">
 
         <!--扫描-->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_scan"
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:layout_marginEnd="@dimen/spacing_double"
             android:src="@mipmap/ic_fab_scan"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:pressedTranslationZ="0dp"
-            android:layout_marginEnd="@dimen/spacing_double"
             app:rippleColor="@color/material_green_800"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_submit"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@mipmap/ic_fab_confirm"
-            android:visibility="gone"
+            android:src="@mipmap/ic_fab_submit"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"
             app:elevation="0dp"

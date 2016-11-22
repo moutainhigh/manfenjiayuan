@@ -19,7 +19,7 @@ import com.mfh.framework.api.account.Human;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 /**
@@ -83,7 +83,7 @@ public class CommitInvIoOrderDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()){
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
                         DeviceUtils.showSoftInput(getContext(), etVehicle);
                     }
                     else{
@@ -100,7 +100,7 @@ public class CommitInvIoOrderDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled()){
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
                         DeviceUtils.showSoftInput(getContext(), etPhonenumber);
                     }
                     else{

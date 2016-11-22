@@ -11,7 +11,6 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -19,10 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingTop="@dimen/spacing_double"
-            android:paddingStart="@dimen/spacing_double"
+            android:paddingBottom="@dimen/spacing_8x"
             android:paddingEnd="@dimen/spacing_double"
-            android:paddingBottom="@dimen/spacing_8x">
+            android:paddingStart="@dimen/spacing_double"
+            android:paddingTop="@dimen/spacing_double">
 
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_barcode"
@@ -31,8 +30,9 @@
                 android:layout_height="44dp"
                 app:endTextSize="16sp"
                 app:startText="商品条码:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_name"
@@ -46,8 +46,9 @@
                 app:endTextVisible="true"
                 app:softKeyboardEnabled="true"
                 app:startText="商品名称:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_shortName"
@@ -61,8 +62,9 @@
                 app:endTextVisible="true"
                 app:softKeyboardEnabled="true"
                 app:startText="规格:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_packageNum"
@@ -76,8 +78,9 @@
                 app:endTextVisible="true"
                 app:softKeyboardEnabled="true"
                 app:startText="箱规:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,7 +89,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="108dp"
+                    android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="end|center_vertical"
                     android:text="销售方式:"
@@ -112,7 +115,7 @@
                 android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="108dp"
+                    android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="end|center_vertical"
                     android:text="单位:"
@@ -142,8 +145,9 @@
                 app:endTextVisible="true"
                 app:softKeyboardEnabled="true"
                 app:startText="产地:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_prodLevel"
@@ -156,8 +160,9 @@
                 app:endTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="等级:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/labell_guaPeriod"
@@ -170,8 +175,9 @@
                 app:endTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="保质期:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
             <!--初始库存，根节点下的quantity-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_quantity"
@@ -184,8 +190,9 @@
                 app:endTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="初始库存:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
             <!--初始成本价是tenantSku节点下的buyPrice-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_buyprice"
@@ -198,8 +205,9 @@
                 app:endTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="初始成本价:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <!--售价（对于批发商就是批发价，对于零售商就是零售价）是tenantSku节点下的costPrice-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -213,8 +221,9 @@
                 app:endTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="零售价:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
             <!--建议零售价是tenantSku节点下的hintPrice（仅批发商才有）-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -228,8 +237,9 @@
                 app:endTextSize="16sp"
                 app:endTextVisible="true"
                 app:startText="建议零售价:"
+                app:startTextGravity="end"
                 app:startTextSize="16sp"
-                app:startTextWidth="108dp"/>
+                app:startTextWidth="90dp"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -238,27 +248,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:gravity="end|center_vertical"
-        android:layout_margin="@dimen/spacing_double">
+        android:layout_margin="@dimen/spacing_double"
+        android:gravity="end|center_vertical">
 
         <!--扫描-->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_scan"
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:layout_marginEnd="@dimen/spacing_double"
             android:src="@mipmap/ic_fab_scan"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:pressedTranslationZ="0dp"
-            android:layout_marginEnd="@dimen/spacing_double"
             app:rippleColor="@color/material_green_800"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_submit"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@mipmap/ic_fab_confirm"
+            android:src="@mipmap/ic_fab_submit"
             android:visibility="gone"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"

@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store.pay;
+package com.manfenjiayuan.pda_supermarket.ui.pay;
 
 import android.os.Bundle;
 

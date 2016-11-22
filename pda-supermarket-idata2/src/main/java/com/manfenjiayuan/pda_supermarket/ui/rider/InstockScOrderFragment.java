@@ -78,33 +78,7 @@ public class InstockScOrderFragment extends BaseFragment {
             animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
         }
 
-        mToolbar.setTitle("骑手订单");
-        if (animType == ANIM_TYPE_NEW_FLOW) {
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
-        } else {
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-        }
-        mToolbar.setNavigationOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getActivity().onBackPressed();
-                    }
-                });
-//        // Set an OnMenuItemClickListener to handle menu item clicks
-//        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                // Handle the menu item
-//                int id = item.getItemId();
-//                if (id == R.id.action_submit) {
-//                    submit();
-//                }
-//                return true;
-//            }
-//        });
-//        // Inflate a menu to be displayed in the toolbar
-//        mToolbar.inflateMenu(R.menu.menu_inv_recv);
+        setupToolbar();
         mScanBar.setVisibility(View.GONE);
         initTabs();
 
@@ -138,6 +112,39 @@ public class InstockScOrderFragment extends BaseFragment {
         return isResponseBackPressed();
     }
 
+
+    /**
+     * 设置toolbar
+     * */
+    private void setupToolbar(){
+        mToolbar.setTitle("骑手订单");
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+//        // Set an OnMenuItemClickListener to handle menu item clicks
+//        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                // Handle the menu item
+//                int id = item.getItemId();
+//                if (id == R.id.action_submit) {
+//                    submit();
+//                }
+//                return true;
+//            }
+//        });
+//        // Inflate a menu to be displayed in the toolbar
+//        mToolbar.inflateMenu(R.menu.menu_inv_recv);
+    }
 
     private void initTabs() {
         mTabStrip.setOnClickTabListener(null);

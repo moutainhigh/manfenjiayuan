@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store.pay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.instock;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,12 +25,16 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.EmptyEntity;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
+import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pay.PayApi;
+import com.mfh.framework.api.scOrder.ScOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -103,6 +109,12 @@ public class PayByAlipayFragment extends BasePayFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
 
@@ -157,6 +169,7 @@ public class PayByAlipayFragment extends BasePayFragment {
             payCountDownTimer.cancel();
             payCountDownTimer = null;
         }
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -192,17 +205,16 @@ public class PayByAlipayFragment extends BasePayFragment {
     }
 
     private void initBarCodeInput() {
-        etBarCode.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submitOrder();
-            }
-
-            @Override
-            public void onScan() {
-
-            }
-        });
+        etBarCode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submitOrder();
+                        }
+                    }
+                });
     }
 
     /**
@@ -220,7 +232,7 @@ public class PayByAlipayFragment extends BasePayFragment {
                 Bundle extras = intent.getExtras();
                 ZLogger.d(String.format("onReceive.action=%s\nextras:%s",
                         action, StringUtils.decodeBundle(extras)));
-                if (StringUtils.isEmpty(action) || extras == null){
+                if (StringUtils.isEmpty(action) || extras == null) {
                     return;
                 }
 
@@ -231,10 +243,9 @@ public class PayByAlipayFragment extends BasePayFragment {
                         etBarCode.requestFocusEnd();
                         calculateCharge();
                     }
-                }
-                else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())){
+                } else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())) {
                     int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
-                    if (payType == wayType){
+                    if (payType == wayType) {
                         onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
                     }
                 }
@@ -242,6 +253,26 @@ public class PayByAlipayFragment extends BasePayFragment {
         };
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
+    }
+
+    public void onEventMainThread(PayEvent event) {
+        int action = event.getAction();
+        Bundle extras = event.getArgs();
+        ZLogger.d(String.format("PayEvent:%d\n%s",
+                action, StringUtils.decodeBundle(extras)));
+        if (extras == null){
+            return;
+        }
+
+        switch (event.getAction()) {
+            case PayEvent.EVENT_ID_SCAN_PAYCODE: {
+                int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
+                if (payType == wayType){
+                    onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
+                }
+            }
+            break;
+        }
     }
 
     /**
@@ -300,7 +331,7 @@ public class PayByAlipayFragment extends BasePayFragment {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
                             case "0": {
-                                onBarpayFinished(lastPaidAmount, "支付成功", AppHelper.getOkTextColor());
+                                submitStep2();
                             }
                             break;
                             //下单成功等待用户输入密码
@@ -365,7 +396,7 @@ public class PayByAlipayFragment extends BasePayFragment {
                             //业务处理成功
                             // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
                             case "0":
-                                onBarpayFinished(paidAmount, "支付成功", AppHelper.getOkTextColor());
+                                submitStep2();
                                 break;
                             //{"code":"-1","msg":"Success","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
@@ -459,50 +490,6 @@ public class PayByAlipayFragment extends BasePayFragment {
         PayApi.cancelAliBarpay(outTradeNo, payRespCallback);
     }
 
-    /**
-     * 支付宝支付--退款(应用场景暂时未确定)
-     */
-    private void refund(final Double paidAmount) {
-        NetCallBack.NetTaskCallBack payRespCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        try {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":{"val":"40513"}}
-//                        java.lang.ClassCastException: java.lang.Integer cannot be cast to com.alibaba.fastjson.JSONObject
-//                            RspBean<String> retValue = (RspBean<String>) rspData;
-//                            String wrapper = retValue.getValue();
-
-//                            if (wrapper != null){
-//                                listView.setAdapter(new ExpressCompanyAdapter(getContext(), wrapper.getOptions()));
-//                            }
-
-                            ZLogger.d("退款结果:");
-                        } catch (Exception ex) {
-                            ZLogger.e("退款失败: " + ex.toString());
-                        } finally {
-                            onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, "",
-                                    AppHelper.getErrorTextColor(), true);
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-
-                        ZLogger.d("退款失败:" + errMsg);
-                        onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, errMsg,
-                                AppHelper.getErrorTextColor(), false);
-                    }
-                }
-                , String.class
-                , AppContext.getAppContext()) {
-        };
-
-        CashierApiImpl.refundAlipayOrder(payRespCallback);
-    }
-
 
     /**
      * 正在取消支付订单
@@ -526,7 +513,7 @@ public class PayByAlipayFragment extends BasePayFragment {
     /**
      * 支付成功
      */
-    private void onBarpayFinished(final Double paidAmount, String msg, int color) {
+    private void onBarpayFinished(String msg, int color) {
         tvProcess.setText(msg);
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);
@@ -537,18 +524,16 @@ public class PayByAlipayFragment extends BasePayFragment {
         payCountDownTimer.cancel();
         payTimerRunning = false;
 
-        etBarCode.setInput("");//清空授权码
+        etBarCode.clearInput();//清空授权码
+
+        hideProgressDialog();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
-                Bundle args = new Bundle();
-                args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                        PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
-                                PosOrderPayEntity.PAY_STATUS_FINISH,
-                                paidAmount, paidAmount, 0D));
-                EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
+                EventBus.getDefault()
+                        .post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, null));
 
                 llPayInfo.setVisibility(View.VISIBLE);
                 llPayLoading.setVisibility(View.GONE);
@@ -557,7 +542,6 @@ public class PayByAlipayFragment extends BasePayFragment {
 
                 bPayProcessing = false;
                 isAcceptBarcodeEnabled = true;        //验证参数
-
             }
         }, 500);
     }
@@ -631,5 +615,44 @@ public class PayByAlipayFragment extends BasePayFragment {
 //            btnCancelAliBarPay.setVisibility(View.VISIBLE);
         }
     }
+
+    /**
+     * 补差额
+     */
+    private void submitStep2() {
+        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
+            onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED,
+                    getString(R.string.toast_network_error),
+                    AppHelper.getErrorTextColor(), false);
+            return;
+        }
+
+        ScOrderApiImpl.checkAndReturnOddAmount(orderId, WayType.ALI_F2F, checkAndReturnOddAmountRC);
+    }
+
+    NetCallBack.NetTaskCallBack checkAndReturnOddAmountRC = new NetCallBack.NetTaskCallBack<String,
+            NetProcessor.Processor<String>>(
+            new NetProcessor.Processor<String>() {
+                @Override
+                public void processResult(IResponseData rspData) {
+//                    {"code":"0","msg":"操作成功!","version":"1","data":null}
+                    if (rspData != null) {
+                        RspValue<String> retValue = (RspValue<String>) rspData;
+                        String retStr = retValue.getValue();
+                    }
+
+                    onBarpayFinished("支付成功", AppHelper.getOkTextColor());
+                }
+
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED,
+                            errMsg, AppHelper.getErrorTextColor(), false);
+                }
+            }
+            , String.class
+            , AppContext.getAppContext()) {
+    };
 
 }

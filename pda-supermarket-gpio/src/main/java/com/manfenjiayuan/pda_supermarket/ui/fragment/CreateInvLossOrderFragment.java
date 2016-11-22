@@ -22,7 +22,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.StoreType;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;

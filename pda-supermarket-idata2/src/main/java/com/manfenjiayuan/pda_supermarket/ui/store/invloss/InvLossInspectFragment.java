@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store;
+package com.manfenjiayuan.pda_supermarket.ui.store.invloss;
 
 
 import android.content.DialogInterface;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,7 +15,6 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -23,12 +23,13 @@ import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -122,21 +123,16 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
         } else {
             ZLogger.d("mScanBar is null");
         }
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-
+        labelSignQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
 
         btnSweep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,21 +144,26 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
             btnSweep.setVisibility(View.VISIBLE);
         }
         else{
             btnSweep.setVisibility(View.GONE);
         }
 
+        String barcode = null;
         Bundle args = getArguments();
         if (args != null) {
-            String barcode = args.getString(EXTRA_KEY_BARCODE, null);
-
-//            eqvBarcode.setInputString(barcode);
-            queryByBarcode(barcode);
+            barcode = args.getString(EXTRA_KEY_BARCODE, null);
         }
 
+
+        if (!StringUtils.isEmpty(barcode)){
+            queryByBarcode(barcode);
+        }
+        else{
+            refresh(null);
+        }
     }
     @Override
     protected void onScanCode(String code) {
@@ -243,13 +244,13 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
     public void onSubmitSuccess() {
 //        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
         hideProgressDialog();
-        refreshPackage(null);
+        refresh(null);
     }
 
     /**
      * 刷新信息
      * */
-    private void refreshPackage(InvLossGoodsEntity goods){
+    private void refresh(InvLossGoodsEntity goods){
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -284,7 +285,7 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
-        refreshPackage(null);
+        refresh(null);
     }
 
     @Override
@@ -388,9 +389,8 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
             entity.setUpdatedDate(new Date());
 
             InvLossGoodsService.get().saveOrUpdate(entity);
-
         }
-        refreshPackage(entity);
+        refresh(entity);
     }
 
 
@@ -419,7 +419,7 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
 
             InvLossGoodsService.get().saveOrUpdate(entity);
         }
-        refreshPackage(entity);
+        refresh(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;

@@ -4,10 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
 import java.util.Collections;
@@ -47,25 +48,25 @@ public class InvLossOrderGoodsAdapter extends SwipAdapter<InvLossGoodsEntity,
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         InvLossGoodsEntity entity = entityList.get(position);
 
-        holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
-        holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
-        holder.tvQuantity.setText(String.format("数量：%.2f", entity.getQuantityCheck()));
+        holder.tvName.setEndText(entity.getProductName());
+        holder.tvBarcode.setEndText(entity.getBarcode());
+        holder.tvQuantity.setEndText(MUtils.formatDouble(entity.getQuantityCheck(), ""));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 //        @Bind(R.id.tv_name)
-        TextView tvName;
+TextLabelView tvName;
 //        @Bind(R.id.tv_barcode)
-        TextView tvBarcode;
+TextLabelView tvBarcode;
 //        @Bind(R.id.tv_quantity)
-        TextView tvQuantity;
+TextLabelView tvQuantity;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvBarcode = (TextView) itemView.findViewById(R.id.tv_barcode);
-            tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
+            tvName = (TextLabelView) itemView.findViewById(R.id.tv_name);
+            tvBarcode = (TextLabelView) itemView.findViewById(R.id.tv_barcode);
+            tvQuantity = (TextLabelView) itemView.findViewById(R.id.tv_quantity);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

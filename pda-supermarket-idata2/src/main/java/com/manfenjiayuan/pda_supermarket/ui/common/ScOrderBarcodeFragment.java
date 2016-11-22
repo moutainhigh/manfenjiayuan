@@ -14,6 +14,7 @@ import com.google.zxing.WriterException;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scOrder.ScOrder;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -46,7 +47,7 @@ public class ScOrderBarcodeFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_invfind_barcode;
+        return R.layout.fragment_scorder_barcode;
     }
 
     @Override
@@ -58,7 +59,6 @@ public class ScOrderBarcodeFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
         refresh(mScOrder);
     }
 
@@ -80,12 +80,15 @@ public class ScOrderBarcodeFragment extends BaseFragment {
             tvBarcode.setText(barcode);
             ivCode128.setImageBitmap(QrCodeUtils
                     .Create2DCode(barcode,
-                            BarcodeFormat.CODE_128, 600, 200,
+                            BarcodeFormat.CODE_128,
+                            DensityUtil.getWindowWidth(getActivity()) - DensityUtil.dip2px(getActivity(), 32),
+                            DensityUtil.dip2px(getActivity(), 100),
                             null));
             Drawable logo = ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher);
             ivQRCode.setImageBitmap(QrCodeUtils
-                    .Create2DCode(barcode,
-                            BarcodeFormat.QR_CODE, 400, 400,
+                    .Create2DCode(barcode, BarcodeFormat.QR_CODE,
+                            DensityUtil.dip2px(getActivity(), 130),
+                            DensityUtil.dip2px(getActivity(), 130),
                             null));
         } catch (WriterException e) {
             e.printStackTrace();

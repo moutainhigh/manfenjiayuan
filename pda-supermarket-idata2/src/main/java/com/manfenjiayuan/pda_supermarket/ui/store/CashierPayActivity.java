@@ -8,9 +8,9 @@ import android.view.WindowManager;
 
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayActionEvent;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayStep1Fragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayStep2Fragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.PayStep1Fragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.PayStep2Fragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.core.utils.DialogUtil;

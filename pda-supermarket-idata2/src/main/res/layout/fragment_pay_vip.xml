@@ -28,7 +28,7 @@
 
     </LinearLayout>
 
-    <com.manfenjiayuan.pda_supermarket.ui.store.pay.PayProcessView
+    <com.manfenjiayuan.pda_supermarket.ui.pay.PayProcessView
         android:id="@+id/payProcessView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

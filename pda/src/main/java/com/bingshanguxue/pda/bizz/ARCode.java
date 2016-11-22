@@ -7,8 +7,6 @@ package com.bingshanguxue.pda.bizz;
  * </p>
  */
 public class ARCode {
-    public static final int ARC_ANDROID_SETTINGS = 0x101;//系统设置
-
     public static final int ARC_DISTRIBUTION_SIGN = 0x03;//商品签收
     public static final int ARC_DISTRIBUTION_INSPECT = 0x04;//商品验货
     public static final int ARC_NATIVE_LOGIN = 0x05;//登录

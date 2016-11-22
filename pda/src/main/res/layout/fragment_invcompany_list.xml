@@ -7,10 +7,12 @@
     <include layout="@layout/appbar"/>
 
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
+        android:orientation="vertical"
+        android:divider="@drawable/divider_horizontal_line"
+        android:showDividers="middle"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--批发商速记码-->
         <com.bingshanguxue.vector_uikit.widget.ScanBar
@@ -21,32 +23,35 @@
             app:hint="请扫描商品条码"
             app:editInputType="barcode"/>
 
-        <!--空视图-->
-        <TextView
-            android:id="@+id/empty_view"
-            style="@style/mfh_textview_text"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/scanBar"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:text="暂无数据"/>
+            android:layout_height="match_parent">
+            <!--空视图-->
+            <TextView
+                android:id="@+id/empty_view"
+                style="@style/mfh_textview_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:text="暂无数据"/>
 
-        <!--订单列表-->
-        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-            android:id="@+id/goods_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/scanBar"/>
+            <!--订单列表-->
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
-        <ProgressBar
-            android:id="@+id/animProgress"
-            style="@style/loading"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_centerInParent="true"
-            android:visibility="gone"/>
-    </RelativeLayout>
+            <ProgressBar
+                android:id="@+id/animProgress"
+                style="@style/loading"
+                android:layout_width="30dip"
+                android:layout_height="30dip"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+
 
 
 </android.support.design.widget.CoordinatorLayout>

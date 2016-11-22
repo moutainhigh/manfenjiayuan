@@ -19,7 +19,6 @@
             android:id="@+id/tab_page"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/material_white"
             app:allowWidthFull="true"
             app:slidingBlock="@drawable/slidingblock_white_greenline"/>
 
@@ -29,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/material_white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     </LinearLayout>
 
@@ -58,8 +56,7 @@
             android:id="@+id/fab_submit"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@mipmap/ic_fab_confirm"
-            android:visibility="gone"
+            android:src="@mipmap/ic_fab_submit"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"
             app:elevation="0dp"

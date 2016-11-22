@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store.pay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.order;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

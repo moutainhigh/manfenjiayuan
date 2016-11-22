@@ -5,11 +5,11 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
@@ -56,24 +56,24 @@ public class InvRecvGoodsAdapter extends SwipAdapter<InvRecvGoodsEntity,
         try {
             InvRecvGoodsEntity entity = entityList.get(position);
 
-            holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
-            holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
-            holder.tvQuantity.setText(MUtils.formatDouble("签收数量:", "",
+            holder.tvName.setEndText(entity.getProductName());
+            holder.tvBarcode.setEndText(entity.getBarcode());
+            holder.tvQuantity.setEndText(MUtils.formatDouble(null, null,
                     entity.getReceiveQuantity(), "无", "/", entity.getUnit()));
-            holder.tvAmount.setText(MUtils.formatDouble("实付金额:", "",
+            holder.tvAmount.setEndText(MUtils.formatDouble(null, null,
                     entity.getReceiveAmount(), "无", null, null));
-            holder.tvPrice.setText(MUtils.formatDouble("收货价格:", "",
+            holder.tvPrice.setEndText(MUtils.formatDouble(null, null,
                     entity.getReceivePrice(), "无", "/", entity.getUnit()));
 
             if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_OK) {
-                holder.tvQuantity.setTextColor(Color.parseColor("#2E7D32"));
+                holder.tvQuantity.setEndTextColor(Color.parseColor("#2E7D32"));
             } else if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_CONFLICT) {
                 //冲突
-                holder.tvQuantity.setTextColor(Color.parseColor("#FFC107"));
+                holder.tvQuantity.setEndTextColor(Color.parseColor("#FFC107"));
             } else if (entity.getInspectStatus() == InvRecvGoodsEntity.INSPECT_STATUS_REJECT) {
-                holder.tvQuantity.setTextColor(Color.parseColor("#F44336"));
+                holder.tvQuantity.setEndTextColor(Color.parseColor("#F44336"));
             } else {
-                holder.tvQuantity.setTextColor(Color.parseColor("#000000"));
+                holder.tvQuantity.setEndTextColor(Color.parseColor("#000000"));
             }
         } catch (Exception e) {
             ZLogger.e(e.toString());
@@ -82,24 +82,24 @@ public class InvRecvGoodsAdapter extends SwipAdapter<InvRecvGoodsEntity,
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 //        @BindView(R2.id.tv_name)
-        private TextView tvName;
+        private TextLabelView tvName;
 //        @BindView(R2.id.tv_barcode)
-private TextView tvBarcode;
+private TextLabelView tvBarcode;
 //        @BindView(R2.id.tv_quantity)
-private TextView tvQuantity;
+private TextLabelView tvQuantity;
 //        @BindView(R2.id.tv_price)
-private TextView tvPrice;
+private TextLabelView tvPrice;
 //        @BindView(R2.id.tv_amount)
-private TextView tvAmount;
+private TextLabelView tvAmount;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
-            tvName = (TextView)itemView.findViewById(R.id.tv_name);
-            tvBarcode = (TextView)itemView.findViewById(R.id.tv_barcode);
-            tvQuantity = (TextView)itemView.findViewById(R.id.tv_quantity);
-            tvPrice = (TextView)itemView.findViewById(R.id.tv_price);
-            tvAmount = (TextView)itemView.findViewById(R.id.tv_amount);
+            tvName = (TextLabelView)itemView.findViewById(R.id.tv_name);
+            tvBarcode = (TextLabelView)itemView.findViewById(R.id.tv_barcode);
+            tvQuantity = (TextLabelView)itemView.findViewById(R.id.tv_quantity);
+            tvPrice = (TextLabelView)itemView.findViewById(R.id.tv_price);
+            tvAmount = (TextLabelView)itemView.findViewById(R.id.tv_amount);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -33,7 +33,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.invCompProvider.MyProvider;

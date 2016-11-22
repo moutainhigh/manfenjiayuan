@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +17,9 @@ import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invcheck.Shelfnumber;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
+import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
@@ -28,14 +31,12 @@ import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.PrimaryActivity;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.manfenjiayuan.pda_wholesaler.utils.DataSyncService;
-import com.manfenjiayuan.pda_wholesaler.utils.SharedPreferencesHelper;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.UIHelper;
-import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
@@ -152,31 +153,29 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IInvSkuG
             ZLogger.d("mScanBar is null");
         }
 
-        labelQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
-
+        labelQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
         if (curOrderId == null || curOrderId.compareTo(0L) == 0) {
             DialogUtil.showHint("批次无效");
             getActivity().finish();
             return;
         }
 
-        Long lastOrderId = SharedPreferencesHelper.getLastStocktakeOrderId();
+        Long lastOrderId = SharedPrefesManagerUltimate.getLastStocktakeOrderId();
         if (lastOrderId.compareTo(curOrderId) != 0) {
             //清空盘点记录
             InvCheckGoodsService.get().clear();
         }
         //保存当前盘点编号
-        SharedPreferencesHelper.setLastStocktakeOrderId(curOrderId);
+        SharedPrefesManagerUltimate.setLastStocktakeOrderId(curOrderId);
 
         mScanBar.reset();
 

@@ -16,7 +16,7 @@ import com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invOrder.StockApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetWorkUtil;

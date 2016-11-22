@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,9 +25,8 @@ import com.bingshanguxue.pda.bizz.FragmentActivity;
 import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.utils.ACacheHelper;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.presenter.ScProductPricePresenter;
@@ -43,6 +43,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -93,8 +94,6 @@ public class InvRecvInspectFragment extends PDAScanFragment
     //    @BindView(R2.id.fab_submit)
     public FloatingActionButton btnSubmit;
     public FloatingActionButton btnSweep;
-
-
 
     public Long tenantId;
     private InvRecvGoodsEntity curGoods = null;
@@ -164,10 +163,9 @@ public class InvRecvInspectFragment extends PDAScanFragment
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
     }
@@ -198,20 +196,17 @@ public class InvRecvInspectFragment extends PDAScanFragment
             }
         });
 
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelReceiveQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelReceiveAmount.requestFocusEnd();
-            }
+        labelReceiveQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelReceiveAmount.requestFocusEnd();
+                        }
+                    }
+                });
 
-            @Override
-            public void onScan() {
-                refresh(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
         labelReceiveQuantity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -229,20 +224,16 @@ public class InvRecvInspectFragment extends PDAScanFragment
 
             }
         });
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelReceiveAmount.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
+        labelReceiveAmount.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
         labelReceiveAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -261,14 +252,17 @@ public class InvRecvInspectFragment extends PDAScanFragment
             }
         });
 
+        String barcode = null;
         Bundle args = getArguments();
         if (args != null) {
-            String barcode = args.getString(EXTRA_KEY_BARCODE, null);
+            barcode = args.getString(EXTRA_KEY_BARCODE, null);
             tenantId = args.getLong(EXTRA_KEY_TENANTID);
+        }
 
-            if (!StringUtils.isEmpty(barcode)) {
-                queryByBarcode(barcode);
-            }
+        if (!StringUtils.isEmpty(barcode)) {
+            queryByBarcode(barcode);
+        } else {
+            refresh(null);
         }
     }
 
@@ -286,7 +280,6 @@ public class InvRecvInspectFragment extends PDAScanFragment
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 
     private Double calculateReceivePrice() {
@@ -328,6 +321,11 @@ public class InvRecvInspectFragment extends PDAScanFragment
 
         onSubmitProcess();
 
+        if (curGoods == null) {
+            onSubmitError("请扫描商品");
+            return;
+        }
+
         String quantityStr = labelReceiveQuantity.getInput();
         if (StringUtils.isEmpty(quantityStr)) {
             onSubmitError("请输入签收数量");
@@ -341,7 +339,7 @@ public class InvRecvInspectFragment extends PDAScanFragment
         }
 
         Double quantityCheck = Double.valueOf(quantityStr);
-        if (curGoods != null && curGoods.getReceiveQuantity() > 0) {
+        if (curGoods.getReceiveQuantity() > 0) {
             quantityCheckConfirmDialog(curGoods, Double.valueOf(amount), quantityCheck);
         } else {
             InvRecvGoodsService.get().inspect(curGoods, Double.valueOf(amount), quantityCheck);
@@ -508,9 +506,9 @@ public class InvRecvInspectFragment extends PDAScanFragment
     @Override
     public void onScProcuctPriceViewSuccess(PageInfo pageInfo, List<ProductSku> dataList) {
         if (dataList != null && dataList.size() > 0) {
-            if (dataList.size() > 1){
+            if (dataList.size() > 1) {
                 JSONArray cacheArrays = new JSONArray();
-                for (ProductSku sku : dataList){
+                for (ProductSku sku : dataList) {
                     cacheArrays.add(sku);
                 }
                 ACacheHelper.put(ACacheHelper.INVRECV_INSPECT_GOODS_TEMPDATA, cacheArrays.toJSONString());
@@ -527,8 +525,7 @@ public class InvRecvInspectFragment extends PDAScanFragment
                 Intent intent = new Intent(getActivity(), FragmentActivity.class);
                 intent.putExtras(extras);
                 startActivityForResult(intent, ARCode.ARC_INSPECT_PRODUCTSKU);
-            }
-            else{
+            } else {
                 saveProductSku(dataList.get(0));
             }
         } else {

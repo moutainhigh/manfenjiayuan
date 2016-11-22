@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.PDAScanManager;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -26,8 +25,9 @@ import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
@@ -54,8 +54,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     TextLabelView labelQuantity;
     @Bind(R.id.label_quantity_check)
     EditLabelView labelQuantityCheck;
-    @Bind(R.id.tv_unit)
-    TextView tvUnit;
     @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
     @Bind(R.id.fab_scan)
@@ -123,17 +121,16 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
         } else {
             ZLogger.d("mScanBar is null");
         }
-        labelQuantityCheck.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
+        labelQuantityCheck.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
         btnSweep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,10 +141,9 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
         btnSubmit.setEnabled(false);
@@ -174,6 +170,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
     }
 
     private static final int REQUEST_CODE_INV_CONVERT_TO = 1;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -264,7 +261,7 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             labelProductName.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
             labelQuantityCheck.setInput("");
-            tvUnit.setText("");
+            labelQuantityCheck.setEndText("");
 
             btnSubmit.setEnabled(false);
 
@@ -274,11 +271,10 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
             labelProductName.setTvSubTitle(curGoods.getName());
             labelQuantity.setTvSubTitle(MUtils.formatDouble(curGoods.getQuantity(), "暂无数据"));
             labelQuantityCheck.setInput("");
-            tvUnit.setText(curGoods.getUnit());
+            labelQuantityCheck.setEndText(curGoods.getUnit());
+            labelQuantityCheck.requestFocusEnd();
 
             btnSubmit.setEnabled(true);
-
-            labelQuantityCheck.requestFocusEnd();
         }
     }
 
@@ -289,7 +285,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
 
     @Override
     public void onIInvSkuGoodsViewError(String errorMsg) {
-
         showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
 
         refresh(null);
@@ -297,7 +292,6 @@ public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGo
 
     @Override
     public void onIInvSkuGoodsViewSuccess(InvSkuGoods invSkuGoods) {
-
         hideProgressDialog();
 
         refresh(invSkuGoods);

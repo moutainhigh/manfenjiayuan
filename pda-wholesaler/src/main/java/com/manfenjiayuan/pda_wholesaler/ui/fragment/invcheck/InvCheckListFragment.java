@@ -13,14 +13,14 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.bizz.invcheck.InvCheckOrderAdapter;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.manfenjiayuan.business.bean.InvCheckOrder;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
 import com.manfenjiayuan.pda_wholesaler.AppContext;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.network.NetCallBack;

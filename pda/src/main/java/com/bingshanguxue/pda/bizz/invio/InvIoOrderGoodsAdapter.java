@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 
@@ -32,6 +32,7 @@ public class InvIoOrderGoodsAdapter extends SwipAdapter<InvIoGoodsEntity,
 
 
         void onItemLongClick(View view, int position);
+
         void onDataSetChanged();
     }
 
@@ -51,31 +52,30 @@ public class InvIoOrderGoodsAdapter extends SwipAdapter<InvIoGoodsEntity,
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         InvIoGoodsEntity entity = entityList.get(position);
 
-        holder.tvName.setText(String.format("商品名称：%s", entity.getProductName()));
-        holder.tvBarcode.setText(String.format("商品条码：%s", entity.getBarcode()));
-        holder.tvPrice.setText(MUtils.formatDouble("价格:", "",
-                entity.getPrice(), "无", null, null));
-        holder.tvQuantity.setText(MUtils.formatDouble("数量:", "",
+        holder.tvName.setEndText(entity.getProductName());
+        holder.tvBarcode.setEndText(entity.getBarcode());
+        holder.tvPrice.setEndText(MUtils.formatDouble(entity.getPrice(), "无"));
+        holder.tvQuantity.setEndText(MUtils.formatDouble(null, null,
                 entity.getQuantityCheck(), "无", "/", entity.getUnit()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.tv_name)
-        TextView tvName;
-//        @Bind(R.id.tv_barcode)
-        TextView tvBarcode;
-//        @Bind(R.id.tv_price)
-        TextView tvPrice;
-//        @Bind(R.id.tv_quantity)
-        TextView tvQuantity;
+        //        @Bind(R.id.tv_name)
+        TextLabelView tvName;
+        //        @Bind(R.id.tv_barcode)
+        TextLabelView tvBarcode;
+        //        @Bind(R.id.tv_price)
+        TextLabelView tvPrice;
+        //        @Bind(R.id.tv_quantity)
+        TextLabelView tvQuantity;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvBarcode = (TextView) itemView.findViewById(R.id.tv_barcode);
-            tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
-            tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
+            tvName = (TextLabelView) itemView.findViewById(R.id.tv_name);
+            tvBarcode = (TextLabelView) itemView.findViewById(R.id.tv_barcode);
+            tvPrice = (TextLabelView) itemView.findViewById(R.id.tv_price);
+            tvQuantity = (TextLabelView) itemView.findViewById(R.id.tv_quantity);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -126,7 +126,7 @@ public class InvIoOrderGoodsAdapter extends SwipAdapter<InvIoGoodsEntity,
 //        super.removeEntity(position);
 
         InvIoGoodsEntity entity = getEntity(position);
-        if (entity == null){
+        if (entity == null) {
             return;
         }
 

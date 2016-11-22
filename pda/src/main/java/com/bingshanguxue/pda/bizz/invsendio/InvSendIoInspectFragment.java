@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,7 +16,6 @@ import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvSendIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -30,6 +30,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -130,7 +131,7 @@ public class InvSendIoInspectFragment extends PDAScanFragment
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
             btnSweep.setVisibility(View.VISIBLE);
         }
         else{
@@ -172,34 +173,26 @@ public class InvSendIoInspectFragment extends PDAScanFragment
         } else {
             ZLogger.d("mScanBar is null");
         }
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelSignQuantity.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
+        labelPrice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelSignQuantity.requestFocusEnd();
+                        }
+                    }
+                });
+        labelSignQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
 
         Bundle args = getArguments();
         if (args != null) {

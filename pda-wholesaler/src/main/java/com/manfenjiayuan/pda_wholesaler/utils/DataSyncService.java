@@ -12,7 +12,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;

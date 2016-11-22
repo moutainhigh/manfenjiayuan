@@ -20,7 +20,7 @@
         android:protectionLevel="normal"/>
     <!-- 个推SDK权限配置结束 -->
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <!-- 使用网络功能所需权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -34,6 +34,7 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <uses-permission android:name="android.permission.CAMERA"/>
+
     <uses-feature android:name="android.hardware.camera"/>
     <!-- 使用照相机权限 -->
     <uses-feature android:name="android.hardware.camera.autofocus"/>
@@ -76,6 +77,9 @@
     <uses-permission android:name="android.permission.WRITE_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
+    <!--kill掉launcher-->
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+
     <application
         android:name=".AppContext"
         android:allowBackup="true"
@@ -94,18 +98,55 @@
             </intent-filter>
         </activity>
 
+        <!--<activity-alias-->
+            <!--android:name=".ui.SplashActivity-mixicook"-->
+            <!--android:enabled="true"-->
+            <!--android:icon="@mipmap/ic_launcher_mixicook"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:targetActivity=".ui.SplashActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        <!--</activity-alias>-->
+        <!--<activity-alias-->
+            <!--android:name=".ui.SplashActivity-lanlj"-->
+            <!--android:enabled="false"-->
+            <!--android:icon="@mipmap/ic_launcher_lanlj"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:targetActivity=".ui.SplashActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        <!--</activity-alias>-->
+        <!--<activity-alias-->
+            <!--android:name=".ui.SplashActivity-qianwj"-->
+            <!--android:enabled="false"-->
+            <!--android:icon="@mipmap/ic_launcher_qianwj"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:targetActivity=".ui.SplashActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        <!--</activity-alias>-->
+
         <!-- android:windowSoftInputMode="adjustResize" -->
         <activity
             android:name="com.manfenjiayuan.business.ui.SignInActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
+
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
+
+
         <activity
             android:name=".ui.store.CashierPayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -134,6 +175,12 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.bingshanguxue.pda.bizz.FragmentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden|adjustResize"/>
+        <activity
+            android:name="com.manfenjiayuan.business.route.RouteActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="standard"
             android:screenOrientation="portrait"

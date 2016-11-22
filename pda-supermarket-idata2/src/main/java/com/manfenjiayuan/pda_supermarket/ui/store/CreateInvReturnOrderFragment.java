@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.Toolbar;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -20,21 +20,20 @@ import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -138,11 +137,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         mProviderView.setEnabled(false);
         initRecyclerView();
 
-//        Bundle args = getArguments();
-//        if (args != null) {
-////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
-//        }
-
         if (companyInfo == null) {
             selectInvCompProvider();
         }
@@ -191,6 +185,19 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
      * 签收
      */
     public void submit() {
+        final List<InvReturnGoodsEntity> goodsList = goodsAdapter.getEntityList();
+        if (goodsList == null || goodsList.size() < 1) {
+            DialogUtil.showHint("您还没有添加商品");
+            hideProgressDialog();
+            return;
+        }
+
+        if (companyInfo == null) {
+            hideProgressDialog();
+            selectInvCompProvider();
+            return;
+        }
+
         showConfirmDialog("确定要提交退货单吗？",
                 "退货", new DialogInterface.OnClickListener() {
 
@@ -198,7 +205,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                        doSubmitStuff();
+                        doSubmitStuff(goodsList);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -210,21 +217,8 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
     }
 
-    private void doSubmitStuff() {
+    private void doSubmitStuff(List<InvReturnGoodsEntity> goodsList) {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-
-        List<InvReturnGoodsEntity> goodsList = goodsAdapter.getEntityList();
-        if (goodsList == null || goodsList.size() < 1) {
-            DialogUtil.showHint("商品不能为空");
-            hideProgressDialog();
-            return;
-        }
-
-        if (companyInfo == null) {
-            hideProgressDialog();
-            selectInvCompProvider();
-            return;
-        }
 
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
@@ -303,8 +297,8 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
         //signficantly smoother scrolling
         addressRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
+//        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         addressRecyclerView.setEmptyView(emptyView);
 
@@ -378,7 +372,6 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
      */
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
-
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INV_COMPANYLIST);

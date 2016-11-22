@@ -18,7 +18,6 @@ import com.bingshanguxue.pda.ValidateManager;
 import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.company.CompanyListFragment;
-import com.bingshanguxue.pda.bizz.goods.ScSkuGoodsStoreInFragment;
 import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
@@ -56,6 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 
@@ -67,7 +67,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    //    @Bind(R.id.address_view)
+    @Bind(R.id.address_view)
     NaviAddressView addressView;
     @Bind(R.id.menu_option)
     RecyclerView menuRecyclerView;
@@ -96,7 +96,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     protected void initToolBar() {
         super.initToolBar();
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
         // Set an OnMenuItemClickListener to handle menu item clicks
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -123,19 +123,18 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 return true;
             }
         });
-        addressView = new NaviAddressView(this);
-        addressView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MfhLoginService.get().haveLogined()) {
-                    selectOffice();
-                } else {
-                    DialogUtil.showHint("请先登录");
-//                    redirectToLogin();
-                }
-            }
-        });
-        toolbar.addView(addressView);
+//        addressView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (MfhLoginService.get().haveLogined()) {
+//                    selectOffice();
+//                } else {
+//                    DialogUtil.showHint("请先登录");
+////                    redirectToLogin();
+//                }
+//            }
+//        });
+//        toolbar.addView(addressView);
 
         // Inflate a menu to be displayed in the toolbar
         toolbar.inflateMenu(R.menu.menu_main);
@@ -260,6 +259,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         isWaitForExit = true;
         UploadSyncManager.getInstance().sync();
     }
+
 
     /**
      * 初始化快捷菜单
@@ -395,11 +395,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_GOODS);
 //            PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STORE_IN) == 0) {
-            Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_STORE_IN);
-            extras.putInt(ScSkuGoodsStoreInFragment.EXTRA_STORE_TYPE, StoreType.SUPERMARKET);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2StoreIn(MainActivity.this, StoreType.SUPERMARKET);
         } else if (id.compareTo(HomeMenu.OPTION_ID_PACKAGE) == 0) {
             Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -530,12 +526,17 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         }
     }
 
+
     /**
      * 选择网点
      */
-    private void selectOffice() {
+    @OnClick(R.id.address_view)
+    public void selectOffice() {
+        if (!MfhLoginService.get().haveLogined()) {
+            DialogUtil.showHint("请先登录");
+        }
         Bundle extras = new Bundle();
-                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_OFFICE_LIST);
         extras.putInt(CompanyListFragment.EXTRA_KEY_ABILITY_ITEM, AbilityItem.TENANT);
         Intent intent = new Intent(this, PrimaryActivity.class);
@@ -619,9 +620,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      */
     public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
-//            btnSync.startSync();
-        } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
 //            btnSync.stopSync();
             //同步数据结束后开始同步订单

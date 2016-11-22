@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store.pay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.order;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,6 +22,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.StringUtils;
@@ -59,14 +61,14 @@ public class PayByCashFragment extends BasePayFragment {
 
         initPaidMoneyInput();
         onInitializeMode();
+
+        //TODO,主动去请求当前价格
+        EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_WAYTYPE_UPDATED, null));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        //TODO,主动去请求当前价格
-        EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_WAYTYPE_UPDATED, null));
     }
 
     @Override
@@ -98,17 +100,16 @@ public class PayByCashFragment extends BasePayFragment {
     }
 
     private void initPaidMoneyInput() {
-        inlvPaidMoney.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submitOrder();
-            }
-
-            @Override
-            public void onScan() {
-
-            }
-        });
+        inlvPaidMoney.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submitOrder();
+                        }
+                    }
+                });
         inlvPaidMoney.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -134,11 +135,16 @@ public class PayByCashFragment extends BasePayFragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                ZLogger.d("onReceive.action=" + intent.getAction());
-                if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED)) {
-                    Bundle extras = intent.getExtras();
-                    ZLogger.d(StringUtils.decodeBundle(extras));
-                    if (extras != null && extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
+                String action = intent.getAction();
+                Bundle extras = intent.getExtras();
+                ZLogger.d(String.format("onReceive.action=%s\n%s",
+                        action, StringUtils.decodeBundle(extras)));
+                if (StringUtils.isEmpty(action) || extras == null){
+                    return;
+                }
+
+                if (action.equals(Constants.BA_HANDLE_AMOUNT_CHANGED)) {
+                    if (extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
                         handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
                         inlvPaidMoney.setInput("");
                         onActiveMode();

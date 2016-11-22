@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,16 +138,16 @@ public class BindGoods2ShelvesFragment extends PDAScanFragment implements IInvSk
 
         initProgressDialog("正在同步数据", "同步成功", "同步失败");
 
-        labelTagNo.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelTagNo.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-            }
-        });
+        labelTagNo.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelTagNo.requestFocusEnd();
+                        }
+                    }
+                });
     }
 
     @Override

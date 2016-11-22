@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -64,15 +65,12 @@ public class InvCheckHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if (holder.getItemViewType() == ITEM_TYPE_PRODUCT) {
             InvCheckGoodsEntity entity = entityList.get(position);
 
-            ((ProductViewHolder) holder).tvName.setText(entity.getName());
-            ((ProductViewHolder) holder).tvBarcode.setText(String.format("商品条码：%s",
-                    entity.getBarcode()));
+            ((ProductViewHolder) holder).tvName.setEndText(entity.getName());
+            ((ProductViewHolder) holder).tvBarcode.setEndText(entity.getBarcode());
             ((ProductViewHolder) holder).tvQuantity.setText(String.format("盘点数：%.2f",
                     entity.getQuantityCheck()));
-            ((ProductViewHolder) holder).tvShelfNumber.setText(String.format("区域编号：%d",
-                    entity.getShelfNumber()));
-            ((ProductViewHolder) holder).tvCreateDate.setText(String.format("盘点时间：%s",
-                    TimeCursor.InnerFormat.format(entity.getCreatedDate())));
+            ((ProductViewHolder) holder).tvShelfNumber.setEndText(String.valueOf(entity.getShelfNumber()));
+            ((ProductViewHolder) holder).tvCreateDate.setEndText(TimeCursor.InnerFormat.format(entity.getCreatedDate()));
 
             ((ProductViewHolder) holder).tvSyncStatus.setText(String.format("[%s]",
                     L2CSyncStatus.translate(entity.getSyncStatus())));
@@ -106,30 +104,30 @@ public class InvCheckHistoryAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 //        @Bind(R.id.tv_name)
-        TextView tvName;
+TextLabelView tvName;
 //        @Bind(R.id.tv_sync_status)
         TextView tvSyncStatus;
 //        @Bind(R.id.tv_update_hint)
         TextView tvUpdateHint;
 //        @Bind(R.id.tv_barcode)
-        TextView tvBarcode;
+TextLabelView tvBarcode;
 //        @Bind(R.id.tv_quantity)
         TextView tvQuantity;
 //        @Bind(R.id.tv_shelfnumber)
-        TextView tvShelfNumber;
+TextLabelView tvShelfNumber;
 //        @Bind(R.id.tv_createDate)
-        TextView tvCreateDate;
+TextLabelView tvCreateDate;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
+            tvName = (TextLabelView) itemView.findViewById(R.id.tv_name);
             tvSyncStatus = (TextView) itemView.findViewById(R.id.tv_sync_status);
             tvUpdateHint = (TextView) itemView.findViewById(R.id.tv_update_hint);
-            tvBarcode = (TextView) itemView.findViewById(R.id.tv_barcode);
+            tvBarcode = (TextLabelView) itemView.findViewById(R.id.tv_barcode);
             tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
-            tvShelfNumber = (TextView) itemView.findViewById(R.id.tv_shelfnumber);
-            tvCreateDate = (TextView) itemView.findViewById(R.id.tv_createDate);
+            tvShelfNumber = (TextLabelView) itemView.findViewById(R.id.tv_shelfnumber);
+            tvCreateDate = (TextLabelView) itemView.findViewById(R.id.tv_createDate);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

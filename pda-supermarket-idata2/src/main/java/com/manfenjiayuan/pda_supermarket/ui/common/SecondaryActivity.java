@@ -12,7 +12,7 @@ import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
 import com.bingshanguxue.pda.bizz.invreturn.InvReturnGoodsInspectFragment;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.store.InvLossInspectFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossInspectFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.InvSendIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invcheck.InvCheckHistoryFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invcheck.InvCheckInspectFragment;

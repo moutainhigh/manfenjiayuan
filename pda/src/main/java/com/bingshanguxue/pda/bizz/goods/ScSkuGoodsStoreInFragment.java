@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,9 +18,8 @@ import com.bingshanguxue.pda.DataSyncManager;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -39,6 +39,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
@@ -212,136 +213,107 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
             spinnerUnit.setAdapter(unitAdapter0);
             spinnerUnit.setSelection(0);
 
-            labelName.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelShortName.requestFocusEnd();
-                }
 
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelShortName.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelPackageNum.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelPackageNum.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelProdArea.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelProdArea.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelProdLevel.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelProdLevel.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelGuaPeriod.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelGuaPeriod.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelQuantity.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelBuyprice.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelBuyprice.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelCostprice.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelCostprice.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-                    labelHintPrice.requestFocusEnd();
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
-            labelHintPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-                @Override
-                public void onKeycodeEnterClick(String text) {
-
-                }
-
-                @Override
-                public void onScan() {
-//                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-                }
-            });
+            labelName.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelShortName.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelShortName.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelPackageNum.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelPackageNum.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelProdArea.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelProdArea.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelProdLevel.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelProdLevel.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelGuaPeriod.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelGuaPeriod.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelQuantity.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelBuyprice.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelBuyprice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelCostprice.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelCostprice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelHintPrice.requestFocusEnd();
+                            }
+                        }
+                    });
+            labelHintPrice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                    new EditLabelView.OnInterceptListener() {
+                        @Override
+                        public void onKey(int keyCode, String text) {
+                            //Press “Enter”
+                            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                                labelHintPrice.requestFocusEnd();
+                            }
+                        }
+                    });
 
             if (StoreType.WHOLESALER.equals(storeType)) {
                 labelCostprice.setStartText("批发价");
@@ -366,7 +338,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
                 }
             });
 
-            if (SharedPreferencesManagerImpl.isCameraSweepEnabled()) {
+            if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
                 btnSweep.setVisibility(View.VISIBLE);
             } else {
                 btnSweep.setVisibility(View.GONE);

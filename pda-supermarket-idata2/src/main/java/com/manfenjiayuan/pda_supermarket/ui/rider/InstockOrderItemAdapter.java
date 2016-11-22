@@ -92,7 +92,7 @@ public class InstockOrderItemAdapter
                 // - replace the contents of the view with that element
                 holder.tvName.setText(entity.getProductName());
                 //计件：整数；记重：3位小数
-                if (entity.getPriceType() == PriceType.WEIGHT) {
+                if (PriceType.WEIGHT.equals(entity.getPriceType())) {
                     holder.tvBcount.setText(String.format("%.3f", entity.getBcount()));
                 } else {
                     holder.tvBcount.setText(String.format("%.2f", entity.getBcount()));

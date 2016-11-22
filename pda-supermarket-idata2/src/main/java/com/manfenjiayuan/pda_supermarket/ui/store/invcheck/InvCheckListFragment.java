@@ -1,6 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.ui.store.invcheck;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,31 +12,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.pda.bizz.invcheck.InvCheckOrderAdapter;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.manfenjiayuan.business.bean.InvCheckOrder;
+import com.manfenjiayuan.business.presenter.InvCheckOrderPresenter;
+import com.manfenjiayuan.business.view.IInvCheckOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
-import com.bingshanguxue.pda.bizz.invcheck.InvCheckOrderAdapter;
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
+import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
-import net.tsz.afinal.core.AsyncTask;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -44,16 +38,9 @@ import butterknife.OnClick;
  * 库存－－库存盘点
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvCheckListFragment extends BaseFragment {
+public class InvCheckListFragment extends BaseListFragment<InvCheckOrder> implements IInvCheckOrderView {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
-    private static final int STATE_NONE = 0;
-    private static final int STATE_REFRESH = 1;
-    private static final int STATE_LOADMORE = 2;
-    private static final int STATE_NOMORE = 3;
-    private static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
-    private static int mState = STATE_NONE;
     @Bind(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @Bind(R.id.order_list)
@@ -63,13 +50,7 @@ public class InvCheckListFragment extends BaseFragment {
     View emptyView;
     private InvCheckOrderAdapter orderListAdapter;
 
-    private boolean isLoadingMore;
-
-    private boolean bSyncInProgress = false;//是否正在同步
-    private static final int MAX_PAGE = 10;
-    private static final int MAX_SYNC_PAGESIZE = 15;
-    private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-    private List<InvCheckOrder> orderList = new ArrayList<>();
+    private InvCheckOrderPresenter mInvCheckOrderPresenter;
 
     public static InvCheckListFragment newInstance(Bundle args) {
         InvCheckListFragment fragment = new InvCheckListFragment();
@@ -86,11 +67,35 @@ public class InvCheckListFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mInvCheckOrderPresenter = new InvCheckOrderPresenter(this);
+    }
+
+    @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         if (args != null) {
-            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_DEFAULT);
         }
+        setupToolbar();
+        setupSwipeRefresh();
+        initOrderRecyclerView();
+
+        reload();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_inv_check, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * 设置toolbar
+     */
+    private void setupToolbar() {
         mToolbar.setTitle("盘点批次");
 
         if (animType == ANIM_TYPE_NEW_FLOW) {
@@ -112,25 +117,13 @@ public class InvCheckListFragment extends BaseFragment {
                 // Handle the menu item
                 int id = item.getItemId();
                 if (id == R.id.action_sync) {
-                    reloadInvCheckOrder();
+                    reload();
                 }
                 return true;
             }
         });
         // Inflate a menu to be displayed in the toolbar
         mToolbar.inflateMenu(R.menu.menu_inv_check);
-
-        setupSwipeRefresh();
-        initOrderRecyclerView();
-
-        reloadInvCheckOrder();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_inv_check, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -144,8 +137,8 @@ public class InvCheckListFragment extends BaseFragment {
         //signficantly smoother scrolling
         orderRecyclerView.setHasFixedSize(true);
         //添加分割线
-        orderRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST, 8));
+//        orderRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST, 8));
         //设置列表为空时显示的视图
         orderRecyclerView.setEmptyView(emptyView);
         orderRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -218,32 +211,12 @@ public class InvCheckListFragment extends BaseFragment {
         orderRecyclerView.setAdapter(orderListAdapter);
     }
 
-
-    /**
-     * 开始加载
-     */
-    private void onLoadStart() {
-        isLoadingMore = true;
-        bSyncInProgress = true;
-        setRefreshing(true);
-    }
-
-    /**
-     * 加载完成
-     */
-    private void onLoadFinished() {
-        bSyncInProgress = false;
-        isLoadingMore = false;
-        setRefreshing(false);
-    }
-
     /**
      * 加载盘点订单列表列表
      */
     @OnClick({R.id.empty_view})
-    public synchronized void reloadInvCheckOrder() {
+    public void reload() {
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载盘点订单列表。");
             DialogUtil.showHint(R.string.toast_network_error);
             onLoadFinished();
             return;
@@ -253,14 +226,8 @@ public class InvCheckListFragment extends BaseFragment {
 
         //初始化
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        if (orderList == null) {
-            orderList = new ArrayList<>();
-        } else {
-            orderList.clear();
-        }
-
         //从第一页开始请求，每页最多50条记录
-        load(mPageInfo);
+        mInvCheckOrderPresenter.list(mPageInfo);
         mPageInfo.setPageNo(1);
     }
 
@@ -283,90 +250,57 @@ public class InvCheckListFragment extends BaseFragment {
 
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
-
-            onLoadStart();
-            load(mPageInfo);
+            mInvCheckOrderPresenter.list(mPageInfo);
         } else {
             ZLogger.d("加载类目商品，已经是最后一页。");
             onLoadFinished();
         }
     }
 
-    private void load(PageInfo pageInfo) {
-        NetCallBack.QueryRsCallBack queryOrderListCallback = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<InvCheckOrder>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<InvCheckOrder> rs) {
-                //此处在主线程中执行。
-                new OrderQueryAsyncTask(pageInfo).execute(rs);
-            }
-
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.e("加载盘点订单列表失败:" + errMsg);
-
-                onLoadFinished();
-            }
-        }, InvCheckOrder.class, AppContext.getAppContext());
-
-        InvOrderApiImpl.queryInvCheckOrderList(pageInfo, queryOrderListCallback);
+    @Override
+    public void onIInvCheckOrderViewProcess() {
+        onLoadStart();
     }
 
+    @Override
+    public void onIInvCheckOrderViewError(String errorMsg) {
+        onLoadFinished();
+    }
 
-    public class OrderQueryAsyncTask extends AsyncTask<RspQueryResult<InvCheckOrder>, Integer, Long> {
-        private PageInfo pageInfo;
+    @Override
+    public void onIInvCheckOrderViewSuccess(PageInfo pageInfo, List<InvCheckOrder> dataList) {
+        try {
+            mPageInfo = pageInfo;
 
-        public OrderQueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<InvCheckOrder>... params) {
-            try {
-                mPageInfo = pageInfo;
-
-                //第一页，缓存数据
-                if (mPageInfo.getPageNo() == 1) {
-                    if (orderList == null) {
-                        orderList = new ArrayList<>();
-                    } else {
-                        orderList.clear();
+            //第一页，缓存数据
+            if (mPageInfo.getPageNo() == 1) {
+                if (orderListAdapter != null) {
+                    orderListAdapter.setEntityList(dataList);
+                }
+            } else {
+                if (dataList != null && dataList.size() > 0) {
+                    if (orderListAdapter != null) {
+                        orderListAdapter.appendEntityList(dataList);
                     }
                 }
+            }
 
-                RspQueryResult<InvCheckOrder> rs = params[0];
-                if (rs != null) {
-                    for (EntityWrapper<InvCheckOrder> wrapper : rs.getRowDatas()) {
-                        InvCheckOrder invCheckOrder = wrapper.getBean();
-                        Map<String, String> caption = wrapper.getCaption();
-                        if (caption != null) {
-                            invCheckOrder.setStatusCaption(caption.get("status"));
-                            invCheckOrder.setStoreTypeCaption(caption.get("storeType"));
-                            invCheckOrder.setNetCaption(caption.get("netId"));
-                        }
-                        orderList.add(wrapper.getBean());
-                    }
-                }
-            } catch (Throwable ex) {
+            ZLogger.d(String.format("加载商品采购订单结束,pageInfo':page=%d/%d(%d/%d)",
+                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
+                    orderListAdapter.getItemCount(), mPageInfo.getTotalCount()));
+
+        } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
-                ZLogger.e(String.format("保存盘点订单列表列表失败: %s", ex.toString()));
-            }
-            return -1L;
-//        return null;
+            ZLogger.ef(String.format("加载商品采购订单失败: %s", ex.toString()));
         }
+        onLoadFinished();
 
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-//            ZLogger.d(String.format("pageInfo':page=%d,rows=%d(%d)", pageInfo.getPageNo(), pageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size())));
-
-            if (orderListAdapter != null) {
-                orderListAdapter.setEntityList(orderList);
-            }
-            onLoadFinished();
-        }
     }
 
+    @Override
+    public void onIInvCheckOrderViewSuccess(ScOrder data) {
+
+    }
 
     /**
      * 设置刷新
@@ -383,7 +317,7 @@ public class InvCheckListFragment extends BaseFragment {
                         return;
                     }
 
-                    reloadInvCheckOrder();
+                    reload();
                 }
             });
         }

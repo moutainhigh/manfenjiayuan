@@ -1,15 +1,15 @@
-package com.manfenjiayuan.pda_supermarket.ui.store.pay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.order;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,6 +32,7 @@ import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfoImpl;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.ui.pay.BasePayStepFragment;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
@@ -95,8 +96,8 @@ public class PayStep2Fragment extends BasePayStepFragment {
     @Bind(R.id.empty_view)
     ImageView emptyView;
     private PayCouponAdapter couponAdapter;
-    @Bind(R.id.button_submit)
-    Button btnSubmit;
+    @Bind(R.id.fab_submit)
+    FloatingActionButton btnSubmit;
 
     private NumberInputDialog mEnterPasswordDialog = null;
 
@@ -149,7 +150,6 @@ public class PayStep2Fragment extends BasePayStepFragment {
                 });
         ivMemberHeader.setBorderWidth(3);
         ivMemberHeader.setBorderColor(Color.parseColor("#e8e8e8"));
-
         initCouponRecyclerView();
 
         if (cashierOrderInfo == null) {
@@ -433,7 +433,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
                 jsonstr.toJSONString(), responseCallback);
     }
 
-    @OnClick(R.id.button_submit)
+    @OnClick(R.id.fab_submit)
     public void submitOrder() {
         btnSubmit.setEnabled(false);
 

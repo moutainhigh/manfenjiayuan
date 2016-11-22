@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,7 +16,6 @@ import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvReturnGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvReturnGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -31,6 +31,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -66,7 +67,8 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
     //    @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
     //    @Bind(R.id.fab_submit)
-    public FloatingActionButton btnSubmit;    public FloatingActionButton btnSweep;
+    public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSweep;
 
 
     private InvReturnGoodsEntity curGoods = null;
@@ -125,10 +127,9 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
     }
@@ -166,35 +167,26 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
         } else {
             ZLogger.d("mScanBar is null");
         }
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelSignQuantity.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-
+        labelPrice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelSignQuantity.requestFocusEnd();
+                        }
+                    }
+                });
+        labelSignQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
         queryCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,13 +194,17 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
             }
         });
 
+        String barcode = null;
         Bundle args = getArguments();
         if (args != null) {
-            String barcode = args.getString(EXTRA_KEY_BARCODE, null);
+            barcode = args.getString(EXTRA_KEY_BARCODE, null);
+        }
 
-            if (!StringUtils.isEmpty(barcode)) {
-                queryByBarcode(barcode);
-            }
+        if (!StringUtils.isEmpty(barcode)) {
+            queryByBarcode(barcode);
+        }
+        else{
+            refresh(null);
         }
     }
 
@@ -258,7 +254,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
                     public void onNext(InvReturnGoodsEntity invReturnGoodsEntity) {
                         if (invReturnGoodsEntity != null) {
                             onQuerySuccess();
-                            refreshPackage(invReturnGoodsEntity);
+                            refresh(invReturnGoodsEntity);
                         } else {
                             queryNetGoods(barcode);
                         }
@@ -332,14 +328,14 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
     public void onSubmitSuccess() {
 //        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
         hideProgressDialog();
-        refreshPackage(null);
+        refresh(null);
 //        hideProgressDialog();
     }
 
     /**
      * 刷新信息
      */
-    private void refreshPackage(InvReturnGoodsEntity goods) {
+    private void refresh(InvReturnGoodsEntity goods) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -377,7 +373,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
     @Override
     public void onChainGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
-        refreshPackage(null);
+        refresh(null);
     }
 
     @Override
@@ -474,7 +470,7 @@ public class InvReturnGoodsInspectFragment extends PDAScanFragment implements IC
 
 //            InvReturnGoodsService.get().saveOrUpdate(entity);
         }
-        refreshPackage(entity);
+        refresh(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;

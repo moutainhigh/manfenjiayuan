@@ -20,7 +20,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -170,7 +170,7 @@ public class ValidateManager {
      * */
     private void registerPlat(){
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+            if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
                 validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
                         null, "设备注册失败，需要重新注册");
             } else {
@@ -210,7 +210,7 @@ public class ValidateManager {
                     super.processFailure(t, errMsg);
                     ZLogger.df(String.format("注册设备失败,%s", errMsg));
 
-                    if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+                    if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
                         validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
                                 null, "设备注册失败，需要重新注册");
                     } else {
@@ -231,7 +231,7 @@ public class ValidateManager {
                     ZLogger.df("注册设备成功:" + respnse);
                     String[] retA = respnse.split(",");
                     if (retA.length > 1){
-                        SharedPreferencesManager.setTerminalId(retA[0]);
+                        SharedPrefesManagerFactory.setTerminalId(retA[0]);
                         // TODO: 8/22/16 修改本地系统时间
                         ZLogger.d(String.format("当前系统时间1: %s",
                                 TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
@@ -277,7 +277,7 @@ public class ValidateManager {
 
                     @Override
                     public void onNext(String startCursor) {
-                        if (StringUtils.isEmpty(SharedPreferencesManager.getTerminalId())) {
+                        if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
                             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
                                     null, "设备注册失败，需要重新注册");
                         } else {

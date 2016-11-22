@@ -23,7 +23,7 @@ import com.manfenjiayuan.pda_supermarket.widget.compound.EditQueryView;
 import com.manfenjiayuan.pda_supermarket.widget.compound.TextLabelView;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invOrder.StockApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

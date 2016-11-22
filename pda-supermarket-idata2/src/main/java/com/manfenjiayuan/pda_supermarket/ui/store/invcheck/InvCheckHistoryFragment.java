@@ -4,18 +4,18 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.Toolbar;
 
+import com.bingshanguxue.pda.bizz.invcheck.InvCheckHistoryAdapter;
 import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.bingshanguxue.pda.bizz.invcheck.InvCheckHistoryAdapter;
 import com.manfenjiayuan.pda_supermarket.utils.DataSyncService;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -23,7 +23,6 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import butterknife.Bind;
@@ -41,7 +40,6 @@ public class InvCheckHistoryFragment extends BaseFragment {
     @Bind(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private InvCheckHistoryAdapter orderListAdapter;
-    private LinearLayoutManager linearLayoutManager;
 
     @Bind(R.id.empty_view) View emptyView;
 
@@ -128,15 +126,15 @@ public class InvCheckHistoryFragment extends BaseFragment {
     }
 
     private void initGoodsRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         orderRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
         orderRecyclerView.setHasFixedSize(true);
         //添加分割线
-        orderRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST, 8));
+//        orderRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST, 8));
         //设置列表为空时显示的视图
         orderRecyclerView.setEmptyView(emptyView);
 

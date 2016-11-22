@@ -1,63 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/rootview"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/material_white"
-              android:padding="16dp"
-              android:orientation="horizontal"
-              android:gravity="center_vertical"
-              android:baselineAligned="false">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/material_white"
+                                    app:cardCornerRadius="2dp"
+                                    app:cardElevation="5dp"
+                                    app:cardPreventCornerOverlap="true"
+                                    app:cardUseCompatPadding="true">
 
-    <LinearLayout
-        android:id="@+id/ll_name_barcode"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:id="@+id/rootview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="8dp"
-        android:orientation="vertical">
-        <TextView
+        android:padding="@dimen/spacing_normal">
+
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/tv_name"
-            style="@style/mfh_textview_text"
+            style="@style/mfh_textlabelview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="名称"
-            android:singleLine="true"/>
+            app:startText="商品名称:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
 
-        <TextView
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/tv_barcode"
-            style="@style/mfh_textview_text"
+            style="@style/mfh_textlabelview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="条码"
-            android:singleLine="true" />
+            android:layout_below="@+id/tv_name"
+            app:startText="商品条码:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
 
-
-        <TextView
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/tv_quantity"
-            style="@style/mfh_textview_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="收货数量"
-            android:gravity="center|end"
-            android:singleLine="true"/>
-        <TextView
-            android:id="@+id/tv_amount"
-            style="@style/mfh_textview_text"
+            style="@style/mfh_textlabelview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="实付金额"
-            android:singleLine="true" />
-        <TextView
-            android:id="@+id/tv_price"
-            style="@style/mfh_textview_text"
-            android:layout_width="wrap_content"
+            android:layout_below="@+id/tv_barcode"
+            app:startText="签收数量:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_amount"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="收货价格"
-            android:gravity="center|end"
-            android:singleLine="true"/>
+            android:layout_below="@+id/tv_quantity"
+            app:startText="实付金额:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
 
-
-    </LinearLayout>
-
-</LinearLayout>
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_price"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_amount"
+            app:startText="收货价格:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

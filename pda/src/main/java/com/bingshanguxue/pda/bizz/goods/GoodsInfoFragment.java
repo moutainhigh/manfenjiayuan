@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,21 +13,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.DataSyncManager;
 import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -39,26 +40,26 @@ import de.greenrobot.event.EventBus;
  */
 public class GoodsInfoFragment extends BaseFragment {
 
-//    @Bind(R.id.label_productName)
+    //    @Bind(R.id.label_productName)
     TextLabelView labelProductName;
-//    @Bind(R.id.label_barcodee)
+    //    @Bind(R.id.label_barcodee)
     TextLabelView labelBarcode;
-//    @Bind(R.id.label_buyprice)
+    //    @Bind(R.id.label_buyprice)
     TextLabelView labelBuyprice;
-//    @Bind(R.id.label_costPrice)
+    //    @Bind(R.id.label_costPrice)
     EditLabelView labelCostPrice;
-//    @Bind(R.id.label_grossProfit)
+    //    @Bind(R.id.label_grossProfit)
     TextLabelView labelGrossProfit;
-//    @Bind(R.id.label_quantity)
+    //    @Bind(R.id.label_quantity)
     TextLabelView labelQuantity;
-//    @Bind(R.id.label_upperLimit)
+    //    @Bind(R.id.label_upperLimit)
     EditLabelView labelUpperLimit;
-//    @Bind(R.id.label_sellNumber)
+    //    @Bind(R.id.label_sellNumber)
     TextLabelView labelSellNum7;
-//    @Bind(R.id.label_avgSellNum)
+    //    @Bind(R.id.label_avgSellNum)
     TextLabelView labelSellNum30;
 
-//    @Bind(R.id.fab_submit)
+    //    @Bind(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
     public FloatingActionButton btnSweep;
 
@@ -100,17 +101,17 @@ public class GoodsInfoFragment extends BaseFragment {
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
         btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
 
-        labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelUpperLimit.requestFocusEnd();
-            }
 
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
+        labelCostPrice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelUpperLimit.requestFocusEnd();
+                        }
+                    }
+                });
         labelCostPrice.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -132,19 +133,16 @@ public class GoodsInfoFragment extends BaseFragment {
                 }
             }
         });
-//        labelCostPrice.setSoftKeyboardEnabled(false);
-        labelUpperLimit.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-//                labelLowerLimit.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
+        labelUpperLimit.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,10 +160,9 @@ public class GoodsInfoFragment extends BaseFragment {
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
     }
@@ -205,7 +202,7 @@ public class GoodsInfoFragment extends BaseFragment {
         return Double.valueOf(price);
     }
 
-//    @OnClick(R.id.fab_submit)
+    //    @OnClick(R.id.fab_submit)
     public void submit() {
         btnSubmit.setEnabled(false);
         onSubmitProcess();
@@ -341,13 +338,12 @@ public class GoodsInfoFragment extends BaseFragment {
 
             labelCostPrice.setInputEnabled(isEditable);
             labelUpperLimit.setInputEnabled(isEditable);
-            if (isEditable){
+            if (isEditable) {
                 labelCostPrice.requestFocusEnd();
-//                btnSubmit.setVisibility(View.VISIBLE);
+                btnSubmit.setVisibility(View.VISIBLE);
                 btnSubmit.setEnabled(true);
-            }
-            else{
-//                btnSubmit.setVisibility(View.GONE);
+            } else {
+                btnSubmit.setVisibility(View.GONE);
                 btnSubmit.setEnabled(false);
 
             }

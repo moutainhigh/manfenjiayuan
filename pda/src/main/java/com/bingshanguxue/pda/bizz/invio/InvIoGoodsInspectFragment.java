@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,7 +16,6 @@ import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
-import com.bingshanguxue.pda.utils.SharedPreferencesManagerImpl;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
@@ -30,7 +30,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -68,7 +68,8 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     //    @Bind(R.id.label_sign_quantity)
     EditLabelView labelSignQuantity;
     //    @Bind(R.id.fab_submit)
-    public FloatingActionButton btnSubmit;    public FloatingActionButton btnSweep;
+    public FloatingActionButton btnSubmit;
+    public FloatingActionButton btnSweep;
 
 
     private InvIoGoodsEntity curGoods = null;
@@ -102,7 +103,8 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
         super.initViews(rootView);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
@@ -126,10 +128,9 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             }
         });
 
-        if (SharedPreferencesManagerImpl.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
     }
@@ -168,42 +169,37 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
         } else {
             ZLogger.d("mScanBar is null");
         }
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelSignQuantity.requestFocusEnd();
-            }
+        labelPrice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelSignQuantity.requestFocusEnd();
+                        }
+                    }
+                });
+        labelSignQuantity.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
 
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-//        labelSignQuantity.setSoftKeyboardEnabled(false);
-        labelSignQuantity.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-            }
-
-            @Override
-            public void onScan() {
-                refreshPackage(null);
-//                eqvBarcode.clear();
-//                eqvBarcode.requestFocus();
-            }
-        });
-
+        String barcode = null;
         Bundle args = getArguments();
         if (args != null) {
-            String barcode = args.getString(EXTRA_KEY_BARCODE, null);
+            barcode = args.getString(EXTRA_KEY_BARCODE, null);
+        }
 
-            if (!StringUtils.isEmpty(barcode)) {
-                queryByBarcode(barcode);
-            }
+        if (!StringUtils.isEmpty(barcode)) {
+            queryByBarcode(barcode);
+        } else {
+            refresh(null);
         }
 
     }
@@ -255,7 +251,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
                     public void onNext(InvIoGoodsEntity invIoGoodsEntity) {
                         if (invIoGoodsEntity != null) {
                             onQuerySuccess();
-                            refreshPackage(invIoGoodsEntity);
+                            refresh(invIoGoodsEntity);
                         } else {
                             queryNetGoods(barcode);
                         }
@@ -362,13 +358,13 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
 //        showProgressDialog(ProgressDialog.STATUS_DONE, "操作成功", true);
         hideProgressDialog();
 
-        refreshPackage(null);
+        refresh(null);
     }
 
     /**
      * 刷新信息
      */
-    private void refreshPackage(InvIoGoodsEntity goods) {
+    private void refresh(InvIoGoodsEntity goods) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -402,7 +398,7 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
     @Override
     public void onChainGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
-        refreshPackage(null);
+        refresh(null);
     }
 
     @Override
@@ -425,8 +421,6 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             DialogUtil.showHint("未找到商品");
         }
     }
-
-
 
 
     /**
@@ -456,11 +450,11 @@ public class InvIoGoodsInspectFragment extends PDAScanFragment
             entity.setBarcode(goods.getBarcode());
             entity.setQuantityCheck(0D);
             entity.setUpdatedDate(new Date());
-            entity.setPosId(SharedPreferencesManager.getTerminalId());
+            entity.setPosId(SharedPrefesManagerFactory.getTerminalId());
 
 //            InvIoGoodsService.get().saveOrUpdate(entity);
         }
-        refreshPackage(entity);
+        refresh(entity);
     }
 
     private CommonDialog quantityCheckConfirmDialog = null;

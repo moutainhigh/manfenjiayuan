@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                     android:layout_width="match_parent"
@@ -21,10 +20,9 @@
             style="@style/mfh_textlabelview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="44dp"
             app:endTextSingleLine="false"
             app:startText="下单时间:"
-            app:startTextWidth="100dp"/>
+            app:startTextWidth="72dp"/>
 
         <TextView
             android:id="@+id/tv_alarm"
@@ -42,10 +40,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/label_createdDate"
-            android:minHeight="44dp"
             app:endTextSingleLine="false"
             app:startText="用户:"
-            app:startTextWidth="100dp"/>
+            app:startTextWidth="72dp"/>
         <!--地址-->
         <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/label_addr"
@@ -53,10 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/label_contact"
-            android:minHeight="44dp"
             app:endTextSingleLine="false"
             app:startText="地址:"
-            app:startTextWidth="100dp"/>
+            app:startTextWidth="72dp"/>
         <!--商品数量-->
         <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/label_quantity"
@@ -64,10 +60,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/label_addr"
-            android:minHeight="44dp"
             app:endTextSingleLine="false"
             app:startText="商品数量:"
-            app:startTextWidth="100dp"/>
+            app:startTextWidth="72dp"/>
         <!--订单金额-->
         <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/label_amount"
@@ -75,10 +70,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/label_quantity"
-            android:minHeight="44dp"
             app:endTextSingleLine="false"
             app:startText="订单金额:"
-            app:startTextWidth="100dp"/>
+            app:startTextWidth="72dp"/>
         <!--配送时间-->
         <com.bingshanguxue.vector_uikit.widget.TextLabelView
             android:id="@+id/label_transDate"
@@ -86,10 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/label_amount"
-            android:minHeight="44dp"
             app:endTextSingleLine="false"
             app:startText="配送时间:"
-            app:startTextWidth="100dp"/>
+            app:startTextWidth="72dp"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
 

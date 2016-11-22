@@ -1,9 +1,10 @@
-package com.manfenjiayuan.pda_supermarket.ui.instockPay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.order;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,49 +15,63 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfoImpl;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.BasePayFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.BasePayStepFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayActionEvent;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayStep1Event;
+import com.manfenjiayuan.pda_supermarket.ui.pay.BasePayStepFragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
+import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 
 /**
- * 首页－－采购
+ * 支付
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InstockPayFragment extends BasePayStepFragment {
+public class PayStep1Fragment extends BasePayStepFragment {
 
-    private static final int TAB_VIP = 0;
-    private static final int TAB_ALIPAY = 1;
-    private static final int TAB_WX = 2;
+    private static final int TAB_CASH = 0;
+    private static final int TAB_VIP = 1;
+    private static final int TAB_ALIPAY = 2;
+    private static final int TAB_WX = 3;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
     @Bind(R.id.tv_handle_amount)
     TextView tvHandleAmount;
+    @Bind(R.id.labelTotalAmount)
+    MultiLayerLabel tvTotalAmount;
+    @Bind(R.id.labelAdjustAmount)
+    MultiLayerLabel tvAdjustAmount;
     @Bind(R.id.tabstrip_pay)
     TopSlidingTabStrip paySlidingTabStrip;
     @Bind(R.id.tab_viewpager)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
-    public static InstockPayFragment newInstance(Bundle args) {
-        InstockPayFragment fragment = new InstockPayFragment();
+    @Bind(R.id.fab_scan)
+    FloatingActionButton btnSweep;
+
+
+    public static PayStep1Fragment newInstance(Bundle args) {
+        PayStep1Fragment fragment = new PayStep1Fragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -97,16 +112,19 @@ public class InstockPayFragment extends BasePayStepFragment {
                         getActivity().onBackPressed();
                     }
                 });
-
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
+            btnSweep.setVisibility(View.VISIBLE);
+        } else {
+            btnSweep.setVisibility(View.GONE);
+        }
         initTabs();
 
         if (cashierOrderInfo == null) {
             DialogUtil.showHint("订单支付数据错误");
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
-        }
-        else{
-            refresh();
+        } else {
+            reload(cashierOrderInfo);
         }
     }
 
@@ -129,14 +147,18 @@ public class InstockPayFragment extends BasePayStepFragment {
     protected void refresh() {
         if (cashierOrderInfo != null) {
             //显示应付款
-            Double handleAmount = cashierOrderInfo.getFinalAmount();
+            Double handleAmount = CashierOrderInfoImpl.getUnpayAmount(cashierOrderInfo);
 
             ZLogger.df(String.format("刷新收银信息，应收金额:%f\n%s", handleAmount,
                     JSONObject.toJSONString(cashierOrderInfo)));
 
             tvHandleAmount.setText(String.format("%.2f", handleAmount));
+            tvTotalAmount.setTopText(String.format("%.2f", cashierOrderInfo.getRetailAmount()));
+            tvAdjustAmount.setTopText(String.format("%.2f", cashierOrderInfo.getAdjustAmount()));
         } else {
             tvHandleAmount.setText(String.format("%.2f", 0D));
+            tvTotalAmount.setTopText(String.format("%.2f", 0D));
+            tvAdjustAmount.setTopText(String.format("%.2f", 0D));
         }
 
         notifyPayInfoChanged(paySlidingTabStrip.getCurrentPosition());
@@ -144,11 +166,15 @@ public class InstockPayFragment extends BasePayStepFragment {
         activeMode(true);
     }
 
+    @OnClick(R.id.fab_scan)
+    @Override
+    protected void zxingSweep() {
+        super.zxingSweep();
+    }
 
     public void activeMode(boolean isActive) {
         mViewPager.setScrollEnabled(isActive);
         paySlidingTabStrip.setClickEnabled(isActive);
-        isAcceptBarcodeEnabled = isActive;
     }
 
     public void onEventMainThread(PayStep1Event event) {
@@ -160,7 +186,7 @@ public class InstockPayFragment extends BasePayStepFragment {
             }
             break;
             //支付处理中
-            case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS: {
                 activeMode(false);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -169,7 +195,7 @@ public class InstockPayFragment extends BasePayStepFragment {
             }
             break;
             //支付失败
-            case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED: {
                 activeMode(true);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -179,11 +205,12 @@ public class InstockPayFragment extends BasePayStepFragment {
             }
             break;
             //支付成功
-            case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED: {
                 activeMode(true);
 
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
+                PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
+                        .getSerializable(PayActionEvent.KEY_PAYMENT_INFO);
+                onUpdate(paymentInfo);
             }
             break;
         }
@@ -222,6 +249,8 @@ public class InstockPayFragment extends BasePayStepFragment {
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
 
+        mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
+                parArgs));
         mTabs.add(new ViewPageInfo("会员", "会员", PayByVipFragment.class,
                 parArgs));
         mTabs.add(new ViewPageInfo("支付宝", "支付宝", PayByAlipayFragment.class,
@@ -241,20 +270,29 @@ public class InstockPayFragment extends BasePayStepFragment {
         Intent intent = new Intent();
         Bundle extras = new Bundle();
         extras.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
-                cashierOrderInfo.getFinalAmount());
+                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
 
         if (page == TAB_ALIPAY) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_ALIPAY);
             curPayType = WayType.ALI_F2F;
             ZLogger.df("切换到‘支付宝扫码’支付");
+            btnSweep.setVisibility(View.VISIBLE);
         } else if (page == TAB_WX) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_WX);
             curPayType = WayType.WX_F2F;
             ZLogger.df("切换到‘微信扫码’支付");
-        } else {
+            btnSweep.setVisibility(View.VISIBLE);
+        } else if (page == TAB_VIP) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_VIP);
             curPayType = WayType.VIP;
+            btnSweep.setVisibility(View.VISIBLE);
             ZLogger.df("切换到‘会员’支付");
+            extras.putSerializable(BasePayFragment.EXTRA_KEY_MEMBERINFO, cashierOrderInfo.getVipMember());
+        } else {
+            ZLogger.df("切换到‘现金’支付");
+            curPayType = WayType.CASH;
+            intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED);
+            btnSweep.setVisibility(View.GONE);
         }
 
         intent.putExtras(extras);
@@ -280,21 +318,20 @@ public class InstockPayFragment extends BasePayStepFragment {
 
     @Override
     public void onPayStepFailed(PaymentInfo paymentInfo, String errMsg) {
-//        super.onPayStepFailed(paymentInfo, errMsg);
+        super.onPayStepFailed(paymentInfo, errMsg);
     }
 
     @Override
     protected void onScanCode(String code) {
-        if (!isAcceptBarcodeEnabled) {
-            return;
-        }
-//        isAcceptBarcodeEnabled = false;
-
+        ZLogger.d("扫描结果:" + code);
+//        Intent intent = new Intent(Constants.BA_HANDLE_SCANBARCODE);
+        Intent intent = new Intent();
         Bundle extras = new Bundle();
         extras.putInt(BasePayFragment.EXTRA_KEY_WAYTYPE, curPayType);
         extras.putString(BasePayFragment.EXTRA_KEY_SCANCODE, code);
-        Intent intent = new Intent(Constants.BA_HANDLE_SCANBARCODE);
+        intent.setAction(Constants.BA_HANDLE_SCANBARCODE);
         intent.putExtras(extras);
-        getContext().sendBroadcast(intent);
+//        getActivity().sendBroadcast(intent);
+        EventBus.getDefault().post(new PayEvent(PayEvent.EVENT_ID_SCAN_PAYCODE, extras));
     }
 }

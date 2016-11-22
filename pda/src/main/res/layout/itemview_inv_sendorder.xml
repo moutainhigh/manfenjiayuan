@@ -1,66 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/material_white"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="8dp">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:cardBackgroundColor="@color/material_white"
+                                    app:cardCornerRadius="2dp"
+                                    app:cardElevation="5dp"
+                                    app:cardPreventCornerOverlap="true"
+                                    app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/tv_send_companyname"
-        style="@style/mfh_textview_text"
+    <RelativeLayout
+        android:id="@+id/rootview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:gravity="center_vertical"
-        android:text="" />
+        android:padding="@dimen/spacing_normal">
 
-    <TextView
-        android:id="@+id/tv_barcode"
-        style="@style/mfh_textview_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="" />
+        <TextView
+            android:id="@+id/tv_send_companyname"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textSize="24sp"/>
 
-    <!--商品数量-->
-    <TextView
-        android:id="@+id/tv_quantity"
-        style="@style/mfh_textview_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="" />
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_barcode"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_send_companyname"
+            app:startText="订单编号:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+        <!--商品数量-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_quantity"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_barcode"
+            app:startText="商品数量:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
 
-    <!--商品金额-->
-    <TextView
-        android:id="@+id/tv_goodsFee"
-        style="@style/mfh_textview_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="" />
-    <!--发货时间-->
-    <TextView
-        android:id="@+id/tv_sendDate"
-        style="@style/mfh_textview_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="" />
+        <!--商品金额-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_goodsFee"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_quantity"
+            app:startText="商品金额:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
 
-    <!--配送员-->
-    <TextView
-        android:id="@+id/tv_transHumanName"
-        style="@style/mfh_textview_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="" />
+        <!--发货时间-->
 
-</LinearLayout>
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_sendDate"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_goodsFee"
+            app:startText="下单时间:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+
+        <!--经手人-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/tv_transHumanName"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_sendDate"
+            app:startText="经手人:"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

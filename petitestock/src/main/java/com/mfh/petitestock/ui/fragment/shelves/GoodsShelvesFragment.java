@@ -10,7 +10,7 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.impl.MerchandiseApiImpl;
+import com.mfh.framework.api.invOrder.MerchandiseApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

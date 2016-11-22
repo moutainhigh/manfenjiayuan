@@ -14,27 +14,26 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invio.InvIoGoodsInspectFragment;
 import com.bingshanguxue.pda.bizz.invio.InvIoOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvIoGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
-import com.bingshanguxue.pda.bizz.ARCode;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -108,38 +107,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
             storeType = args.getInt(EXTRA_KEY_STORE_TYPE);
         }
 
-        if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
-            mToolbar.setTitle("新建入库单");
-        } else {
-            mToolbar.setTitle("新建出库单");
-        }
-        if (animType == ANIM_TYPE_NEW_FLOW) {
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
-        } else {
-            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-        }
-        mToolbar.setNavigationOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getActivity().onBackPressed();
-                    }
-                });
-        // Set an OnMenuItemClickListener to handle menu item clicks
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_submit) {
-                    submit();
-                }
-                return true;
-            }
-        });
-        // Inflate a menu to be displayed in the toolbar
-        mToolbar.inflateMenu(R.menu.menu_inv_io);
-
+        setupToolbar();
         initRecyclerView();
     }
 
@@ -171,6 +139,40 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         return isResponseBackPressed();
     }
 
+
+    private void setupToolbar(){
+        if (orderType == InvIoOrderApi.ORDER_TYPE_IN) {
+            mToolbar.setTitle("新建入库单");
+        } else {
+            mToolbar.setTitle("新建出库单");
+        }
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
+        mToolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getActivity().onBackPressed();
+                    }
+                });
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // Handle the menu item
+                int id = item.getItemId();
+                if (id == R.id.action_submit) {
+                    submit();
+                }
+                return true;
+            }
+        });
+        // Inflate a menu to be displayed in the toolbar
+        mToolbar.inflateMenu(R.menu.menu_inv_io);
+    }
 
     private void initRecyclerView() {
         goodsAdapter = new InvIoOrderGoodsAdapter(getActivity(), null);
@@ -223,8 +225,8 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         //signficantly smoother scrolling
         goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
+//        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         goodsRecyclerView.setEmptyView(emptyView);
 
@@ -242,7 +244,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     public void submit() {
         final List<InvIoGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "您还没有添加商品", true);
             return;
         }
 

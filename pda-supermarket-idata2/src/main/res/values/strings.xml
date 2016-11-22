@@ -1,7 +1,7 @@
 <?xml version = "1.0" encoding = "utf-8"?>
 <resources>
 
-    <string name="app_name">MixiCook PDA</string>
+    <string name="app_name">Mi PDA</string>
 
     <!--按键文字-->
     <string name="button_submit">提交</string>

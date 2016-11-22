@@ -30,7 +30,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.AbilityItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;

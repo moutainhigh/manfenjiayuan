@@ -10,7 +10,6 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -28,7 +27,8 @@
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
                 app:startText="单据编号:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="90dp"
+                app:startTextGravity="end"/>
             <!--单据名称-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_orderName"
@@ -38,7 +38,8 @@
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
                 app:startText="单据编号:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="90dp"
+                app:startTextGravity="end"/>
             <!--订单金额-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_totalFee"
@@ -48,7 +49,8 @@
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
                 app:startText="订单金额:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="90dp"
+                app:startTextGravity="end"/>
             <!--商品总数-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_totalCount"
@@ -58,7 +60,8 @@
                 android:minHeight="44dp"
                 app:endTextSingleLine="false"
                 app:startText="商品总数:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="90dp"
+                app:startTextGravity="end"/>
             <!--发货方-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_sendCompanyName"
@@ -66,7 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="发货方:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="90dp"
+                app:startTextGravity="end"/>
             <!--发货方-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_status"
@@ -74,27 +78,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 app:startText="状态:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="90dp"
+                app:startTextGravity="end"/>
 
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_submit"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_fab_confirm"
-        app:backgroundTint="@color/mfh_colorPrimary"
-        app:borderWidth="0dp"
-        app:elevation="0dp"
-        android:visibility="gone"
-        app:pressedTranslationZ="0dp"
-        app:rippleColor="@color/material_green_800"/>
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <!--扫描-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_scan"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="@dimen/spacing_double"
+            android:src="@mipmap/ic_fab_scan"
+            app:backgroundTint="@color/mfh_positive_default"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            app:rippleColor="@color/material_green_800"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_submit"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_fab_submit"
+            app:backgroundTint="@color/mfh_positive_default"
+            app:borderWidth="0dp"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            app:rippleColor="@color/material_green_800"/>
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

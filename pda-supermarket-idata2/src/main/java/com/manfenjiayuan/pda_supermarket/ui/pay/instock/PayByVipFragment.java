@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.instockPay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.instock;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -6,15 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.BasePayFragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
@@ -31,6 +35,7 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.Bind;
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -49,6 +54,12 @@ public class PayByVipFragment extends BasePayFragment {
     @Override
     protected int getPayType() {
         return WayType.VIP;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -87,6 +98,12 @@ public class PayByVipFragment extends BasePayFragment {
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -146,37 +163,38 @@ public class PayByVipFragment extends BasePayFragment {
         getActivity().registerReceiver(receiver, intentFilter);
     }
 
-    /**
-     * 解析卡芯片号，十六进制转换为十进制
-     * 十六进制：466CAF31 (8位)
-     * 十进制：1181527857 (10位)
-     */
-    private String parseCardId(String rawData) {
-        if (StringUtils.isEmpty(rawData)) {
-            return null;
+    public void onEventMainThread(PayEvent event) {
+        int action = event.getAction();
+        Bundle extras = event.getArgs();
+        ZLogger.d(String.format("PayEvent:%d\n%s",
+                action, StringUtils.decodeBundle(extras)));
+        if (extras == null){
+            return;
         }
-        try {
-            return String.valueOf(Long.parseLong(rawData, 16));
-        } catch (Exception e) {
-            ZLogger.e(String.format("parseCardId failed, %s", e.toString()));
-            return null;
+
+        switch (event.getAction()) {
+            case PayEvent.EVENT_ID_SCAN_PAYCODE: {
+                int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
+                if (payType == wayType){
+                    onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
+                }
+            }
+            break;
         }
     }
 
 
     private void initBarCodeInput() {
-        etBarCode.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submitOrder();
-            }
-
-            @Override
-            public void onScan() {
-
-            }
-        });
-
+        etBarCode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submitOrder();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -211,27 +229,9 @@ public class PayByVipFragment extends BasePayFragment {
      * @param barcode 扫描的会员付款码，长度为15(000000000712878)
      */
     private void submitStep1(String barcode) {
-        if (StringUtils.isEmpty(barcode)) {
-            submmitFailed("参数无效");
-            return;
-        }
-        ZLogger.df(String.format("扫描会员付款码: <%s>", barcode));
-//        if (codeA.length() == 15) {
-//            validateVipHumanId(codeA);
-//        } else {
-//            validateFailed("参数无效");
-//        }
-
-        //这样判断不严谨，会错误的把其他0处理掉
-//        int index = barcode.lastIndexOf("0");
-//        String humanId2 = humanId.substring(index + 1, humanId.length());
-        String humanId = barcode;
-        while (humanId.startsWith("0")) {
-            humanId = humanId.substring(1, humanId.length());
-        }
-        ZLogger.df(String.format("会员身份编号: <%s>", humanId));
+        String humanId = MUtils.parseMfPaycode(barcode);
         if (StringUtils.isEmpty(humanId)) {
-            submmitFailed("付款码无效");
+            submmitFailed("请扫描会员付款码");
             return;
         }
 

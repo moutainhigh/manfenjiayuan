@@ -36,10 +36,18 @@
                 android:id="@+id/item_camerasweep"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                android:layout_marginTop="@dimen/default_margin_top"
+                android:layout_marginTop="@dimen/spacing_double"
                 app:text="摄像头扫描"
                 app:isLogoVisible="false"
-                app:position="single"/>
+                app:position="top"/>
+            <com.bingshanguxue.vector_uikit.ToggleSettingItem
+                android:id="@+id/item_softinput"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/minimum_touch_height"
+                android:layout_marginTop="@dimen/default_margin_top"
+                app:text="系统键盘"
+                app:isLogoVisible="false"
+                app:position="bottom"/>
 
             <!--设备-->
             <com.bingshanguxue.vector_uikit.SettingsItem

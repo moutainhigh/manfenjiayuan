@@ -1,18 +1,23 @@
-package com.manfenjiayuan.pda_supermarket.ui.store.pay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.order;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -46,6 +51,12 @@ public class PayByVipFragment extends BasePayFragment {
     @Override
     protected int getPayType() {
         return WayType.VIP;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -87,6 +98,12 @@ public class PayByVipFragment extends BasePayFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public void onActiveMode() {
         super.onActiveMode();
         etBarCode.setEnabled(true);
@@ -116,7 +133,7 @@ public class PayByVipFragment extends BasePayFragment {
 
                 String action = intent.getAction();
                 Bundle extras = intent.getExtras();
-                ZLogger.d(String.format("onReceive.action=%s\nextras:%s",
+                ZLogger.d(String.format("onReceive.action=%s\n%s",
                         action, StringUtils.decodeBundle(extras)));
                 if (StringUtils.isEmpty(action) || extras == null){
                     return;
@@ -143,37 +160,38 @@ public class PayByVipFragment extends BasePayFragment {
         getActivity().registerReceiver(receiver, intentFilter);
     }
 
-    /**
-     * 解析卡芯片号，十六进制转换为十进制
-     * 十六进制：466CAF31 (8位)
-     * 十进制：1181527857 (10位)
-     */
-    private String parseCardId(String rawData) {
-        if (StringUtils.isEmpty(rawData)) {
-            return null;
+    public void onEventMainThread(PayEvent event) {
+        int action = event.getAction();
+        Bundle extras = event.getArgs();
+        ZLogger.d(String.format("PayEvent:%d\n%s",
+                action, StringUtils.decodeBundle(extras)));
+        if (extras == null){
+            return;
         }
-        try {
-            return String.valueOf(Long.parseLong(rawData, 16));
-        } catch (Exception e) {
-            ZLogger.e(String.format("parseCardId failed, %s", e.toString()));
-            return null;
+
+        switch (event.getAction()) {
+            case PayEvent.EVENT_ID_SCAN_PAYCODE: {
+                int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
+                if (payType == wayType){
+                    onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
+                }
+            }
+            break;
         }
     }
 
 
     private void initBarCodeInput() {
-        etBarCode.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submitOrder();
-            }
-
-            @Override
-            public void onScan() {
-
-            }
-        });
-
+        etBarCode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submitOrder();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -185,25 +203,51 @@ public class PayByVipFragment extends BasePayFragment {
 
         onDeactiveMode();
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询用户信息", true);
-        String codeA = etBarCode.getInput();
-        if (StringUtils.isEmpty(codeA)) {
-            validateFailed("参数无效");
+
+        String humanId = MUtils.parseMfPaycode(etBarCode.getInput());
+        if (StringUtils.isEmpty(humanId)) {
+            validateFailed("请扫描会员付款码");
             return;
         }
-        ZLogger.d("codeA=" + codeA);
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             validateFailed(getString(R.string.toast_network_error));
             return;
         }
-
-        //长度为15(000000000712878)，微信付款码
-        if (codeA.length() == 15) {
-            validateVipHumanId(codeA);
-        } else {
-            validateFailed("参数无效");
-        }
+        UserApiImpl.findHumanByHumanId(humanId, findMemberResponseCallback);
     }
+
+    /**
+     * 验证会员付款码
+     */
+    private NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
+            NetProcessor.Processor<Human>>(
+            new NetProcessor.Processor<Human>() {
+                @Override
+                public void processResult(final IResponseData rspData) {
+                    Human memInfo = null;
+                    if (rspData != null) {
+                        RspBean<Human> retValue = (RspBean<Human>) rspData;
+                        memInfo = retValue.getValue();
+                    }
+
+                    if (memInfo == null) {
+                        validateFailed("未查询到结果");
+                    } else {
+                        validateSuccess(1, null, memInfo);
+                    }
+                }
+
+                @Override
+                protected void processFailure(Throwable t, String errMsg) {
+                    super.processFailure(t, errMsg);
+                    validateFailed(errMsg);
+                }
+            }
+            , Human.class
+            , AppContext.getAppContext()) {
+    };
+
 
     /**
      * 验证失败
@@ -237,132 +281,8 @@ public class PayByVipFragment extends BasePayFragment {
         etBarCode.clearInput();
     }
 
-    /**
-     * 验证会员卡芯片号
-     */
-    private void validateVipCard(String cardId) {
-        final String cardId2 = parseCardId(cardId);
-        if (StringUtils.isEmpty(cardId2)) {
-            validateFailed("芯片号无效");
-            return;
-        }
-
-        NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-                NetProcessor.Processor<Human>>(
-                new NetProcessor.Processor<Human>() {
-                    @Override
-                    public void processResult(final IResponseData rspData) {
-                        Human memInfo = null;
-                        if (rspData != null) {
-                            RspBean<Human> retValue = (RspBean<Human>) rspData;
-                            memInfo = retValue.getValue();
-                        }
-
-                        if (memInfo == null) {
-                            validateFailed("未查询到结果");
-                        } else {
-                            validateSuccess(0, cardId2, memInfo);
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        validateFailed(errMsg);
-                    }
-                }
-                , Human.class
-                , AppContext.getAppContext()) {
-        };
 
 
-        //加载用户信息
-        UserApiImpl.findHumanByCard(cardId2, findMemberResponseCallback);
-    }
-
-    /**
-     * 验证会员卡手机号
-     */
-    private void validateVipPhonenumber(String phoneNumber) {
-        NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-                NetProcessor.Processor<Human>>(
-                new NetProcessor.Processor<Human>() {
-                    @Override
-                    public void processResult(final IResponseData rspData) {
-                        Human memInfo = null;
-                        if (rspData != null) {
-                            RspBean<Human> retValue = (RspBean<Human>) rspData;
-                            memInfo = retValue.getValue();
-                        }
-
-                        if (memInfo == null) {
-                            validateFailed("未查询到结果");
-                        } else {
-                            validateSuccess(2, null, memInfo);
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        validateFailed(errMsg);
-                    }
-                }
-                , Human.class
-                , AppContext.getAppContext()) {
-        };
-
-        UserApiImpl.findHumanByCard(phoneNumber, findMemberResponseCallback);
-    }
-
-    /**
-     * 验证会员付款码
-     */
-    private void validateVipHumanId(String humanId) {
-        //这样判断不严谨，会错误的把其他0处理掉
-        int index = humanId.lastIndexOf("0");
-//        String humanId2 = humanId.substring(index + 1, humanId.length());
-        String humanId3 = humanId;
-        while (humanId3.startsWith("0")) {
-            humanId3 = humanId3.substring(1, humanId3.length());
-        }
-        ZLogger.df(String.format("验证会员微信付款码: <%s> --> <%s>",
-                humanId, humanId3));
-        if (StringUtils.isEmpty(humanId3)) {
-            validateFailed("付款码无效");
-            return;
-        }
-
-        NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-                NetProcessor.Processor<Human>>(
-                new NetProcessor.Processor<Human>() {
-                    @Override
-                    public void processResult(final IResponseData rspData) {
-                        Human memInfo = null;
-                        if (rspData != null) {
-                            RspBean<Human> retValue = (RspBean<Human>) rspData;
-                            memInfo = retValue.getValue();
-                        }
-
-                        if (memInfo == null) {
-                            validateFailed("未查询到结果");
-                        } else {
-                            validateSuccess(1, null, memInfo);
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        validateFailed(errMsg);
-                    }
-                }
-                , Human.class
-                , AppContext.getAppContext()) {
-        };
-
-        UserApiImpl.findHumanByHumanId(humanId3, findMemberResponseCallback);
-    }
 
 
 }

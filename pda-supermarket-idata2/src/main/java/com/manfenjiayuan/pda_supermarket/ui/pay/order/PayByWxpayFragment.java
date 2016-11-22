@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.instockPay;
+package com.manfenjiayuan.pda_supermarket.ui.pay.order;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,16 +25,14 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.EmptyEntity;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.BasePayFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayActionEvent;
-import com.manfenjiayuan.pda_supermarket.ui.store.pay.PayStep1Event;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pay.PayApi;
-import com.mfh.framework.api.scOrder.ScOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -45,7 +45,7 @@ import de.greenrobot.event.EventBus;
 
 
 /**
- * Created by bingshanguxue on 15/8/31.
+ * Created by kun on 15/8/31.
  */
 public class PayByWxpayFragment extends BasePayFragment {
 
@@ -82,17 +82,11 @@ public class PayByWxpayFragment extends BasePayFragment {
         return WayType.WX_F2F;
     }
 
-//    @Override
-//    protected void handleIntent() {
-//        //for Fragment.instantiate
-//        Bundle args = getArguments();
-//        if (args != null) {
-//            subject = args.getString(EXTRA_KEY_SUBJECT, "");
-//            body = args.getString(EXTRA_KEY_BODY, "");
-//            orderId = args.getString(EXTRA_KEY_ORDER_ID, "");
-//            bizType = args.getString(EXTRA_KEY_BIZ_TYPE, "");
-//        }
-//    }
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
@@ -141,6 +135,7 @@ public class PayByWxpayFragment extends BasePayFragment {
             payCountDownTimer.cancel();
             payCountDownTimer = null;
         }
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -167,17 +162,16 @@ public class PayByWxpayFragment extends BasePayFragment {
     }
 
     private void initBarCodeInput() {
-        etBarCode.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submitOrder();
-            }
-
-            @Override
-            public void onScan() {
-
-            }
-        });
+        etBarCode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submitOrder();
+                        }
+                    }
+                });
     }
 
     /**
@@ -193,7 +187,7 @@ public class PayByWxpayFragment extends BasePayFragment {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 Bundle extras = intent.getExtras();
-                ZLogger.d(String.format("onReceive.action=%s\nextras:%s",
+                ZLogger.d(String.format("onReceive.action=%s\n%s",
                         action, StringUtils.decodeBundle(extras)));
                 if (StringUtils.isEmpty(action) || extras == null){
                     return;
@@ -217,6 +211,28 @@ public class PayByWxpayFragment extends BasePayFragment {
         };
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
+    }
+
+
+    public void onEventMainThread(PayEvent event) {
+        int action = event.getAction();
+        Bundle extras = event.getArgs();
+        ZLogger.d(String.format("PayEvent:%d\n%s",
+                action, StringUtils.decodeBundle(extras)));
+        if (extras == null){
+            return;
+        }
+
+        switch (event.getAction()) {
+            case PayEvent.EVENT_ID_SCAN_PAYCODE: {
+
+                int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
+                if (payType == wayType){
+                    onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
+                }
+            }
+            break;
+        }
     }
 
 
@@ -273,7 +289,8 @@ public class PayByWxpayFragment extends BasePayFragment {
                         switch (rspBody.getRetCode()) {
                             //10000--业务处理成功（订单支付成功）
                             case "0": {
-                                submitStep2();
+                                onBarpayFinished(lastPaidAmount, "支付成功",
+                                        AppHelper.getOkTextColor());
                             }
                             break;
                             //{"code":"1","msg":"支付等待:需要用户输入支付密码","version":"1","data":""}
@@ -337,7 +354,7 @@ public class PayByWxpayFragment extends BasePayFragment {
                         // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
                         switch (rspBody.getRetCode()) {
                             case "0":
-                                submitStep2();
+                                onBarpayFinished(paidAmount, "支付成功", AppHelper.getOkTextColor());
                                 break;
                             //{"code":"-1","msg":"继续查询","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
@@ -447,7 +464,7 @@ public class PayByWxpayFragment extends BasePayFragment {
     /**
      * 支付成功
      */
-    private void onBarpayFinished(String msg, int color) {
+    private void onBarpayFinished(final Double paidAmount, String msg, int color) {
         tvProcess.setText(msg);
         tvProcess.setTextColor(color);
         progressBar.setVisibility(View.GONE);
@@ -463,7 +480,13 @@ public class PayByWxpayFragment extends BasePayFragment {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, null));
+
+                Bundle args = new Bundle();
+                args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
+                        PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                                PosOrderPayEntity.PAY_STATUS_FINISH,
+                                paidAmount, paidAmount, 0D));
+                EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
 
                 llPayInfo.setVisibility(View.VISIBLE);
                 llPayLoading.setVisibility(View.GONE);
@@ -508,7 +531,7 @@ public class PayByWxpayFragment extends BasePayFragment {
         payCountDownTimer.cancel();
         payTimerRunning = false;
 
-        etBarCode.clearInput();//清空授权码
+        etBarCode.setInput("");//清空授权码
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -553,41 +576,4 @@ public class PayByWxpayFragment extends BasePayFragment {
 //            btnCancelAliBarPay.setVisibility(View.VISIBLE);
         }
     }
-
-    /**
-     * 补差额
-     */
-    private void submitStep2() {
-        if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
-            onBarpayFailed(getString(R.string.toast_network_error),
-                    AppHelper.getErrorTextColor(), false);
-            return;
-        }
-
-        ScOrderApiImpl.checkAndReturnOddAmount(orderId, WayType.WX_F2F, checkAndReturnOddAmountRC);
-    }
-
-    NetCallBack.NetTaskCallBack checkAndReturnOddAmountRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-//                    {"code":"0","msg":"操作成功!","version":"1","data":null}
-                    if (rspData != null) {
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        String retStr = retValue.getValue();
-                    }
-
-                    onBarpayFinished("支付成功", AppHelper.getOkTextColor());
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    onBarpayFailed(errMsg, AppHelper.getErrorTextColor(), false);
-                }
-            }
-            , String.class
-            , AppContext.getAppContext()) {
-    };
 }

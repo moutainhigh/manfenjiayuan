@@ -20,8 +20,8 @@ android {
 
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 36
-        versionName "0.1.7"
+        versionCode 41
+        versionName "0.1.8"
         multiDexEnabled true
 
         ndk {
@@ -109,7 +109,6 @@ android {
         android.buildTypes.release.signingConfig = null
     }
 
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -126,4 +125,5 @@ dependencies {
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
     compile rootProject.ext.dependencies["getui"]
     compile rootProject.ext.dependencies["support-v4"]
+    compile project(':skinloader')
 }

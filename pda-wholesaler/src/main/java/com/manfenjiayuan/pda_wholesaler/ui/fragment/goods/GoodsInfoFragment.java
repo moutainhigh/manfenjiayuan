@@ -3,6 +3,7 @@ package com.manfenjiayuan.pda_wholesaler.ui.fragment.goods;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -83,30 +84,26 @@ public class GoodsInfoFragment extends BaseFragment {
         labelRackNo = (EditLabelView) rootView.findViewById(R.id.label_rackno);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
 
-        labelCostPrice.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelRackNo.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
-//        labelCostPrice.setSoftKeyboardEnabled(false);
-        labelRackNo.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                submit();
-//                labelLowerLimit.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-                refresh(null);
-            }
-        });
+        labelCostPrice.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelRackNo.requestFocusEnd();
+                        }
+                    }
+                });
+        labelRackNo.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
+                    }
+                });
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override

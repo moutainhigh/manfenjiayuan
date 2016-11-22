@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
-import com.manfenjiayuan.business.bean.InvCheckOrder;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
@@ -53,35 +54,34 @@ public class InvCheckOrderAdapter extends RegularAdapter<InvCheckOrder, InvCheck
 //        }
 
         holder.tvOrderName.setText(entity.getOrderName());
-        holder.tvCreateDate.setText(String.format("盘点时间：%s",
-                TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+        holder.tvCreateDate.setEndText(TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM));
         if (entity.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_PROCESSING)) {
-            holder.tvOrderStatus.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+            holder.tvOrderStatus.setEndTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
-        holder.tvNet.setText(String.format("网点: %s", entity.getNetCaption()));
-        holder.tvOrderStatus.setText(String.format("状态: %s", entity.getStatusCaption()));
+        holder.tvNet.setEndText(entity.getNetCaption());
+        holder.tvOrderStatus.setEndText(entity.getStatusCaption());
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-//        @Bind(R.id.rootview)
+        //        @Bind(R.id.rootview)
 //        View rootView;
 //        @Bind(R.id.tv_orderName)
         TextView tvOrderName;
-//        @Bind(R.id.tv_createDate)
-        TextView tvCreateDate;
-//        @Bind(R.id.tv_net)
-        TextView tvNet;
-//        @Bind(R.id.tv_orderstatus)
-        TextView tvOrderStatus;
+        //        @Bind(R.id.tv_createDate)
+        TextLabelView tvCreateDate;
+        //        @Bind(R.id.tv_net)
+        TextLabelView tvNet;
+        //        @Bind(R.id.tv_orderstatus)
+        TextLabelView tvOrderStatus;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
 
             tvOrderName = (TextView) itemView.findViewById(R.id.tv_orderName);
-            tvCreateDate = (TextView) itemView.findViewById(R.id.tv_createDate);
-            tvNet = (TextView) itemView.findViewById(R.id.tv_net);
-            tvOrderStatus = (TextView) itemView.findViewById(R.id.tv_orderstatus);
+            tvCreateDate = (TextLabelView) itemView.findViewById(R.id.tv_createDate);
+            tvNet = (TextLabelView) itemView.findViewById(R.id.tv_net);
+            tvOrderStatus = (TextLabelView) itemView.findViewById(R.id.tv_orderstatus);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

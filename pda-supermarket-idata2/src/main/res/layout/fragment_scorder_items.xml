@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/material_white"
+        android:padding="@dimen/spacing_normal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <include
@@ -22,8 +22,8 @@
             android:id="@+id/empty_view"
             style="@style/mfh_textview_text"
             android:layout_width="match_parent"
-            android:layout_below="@+id/ll_procuct_header"
             android:layout_height="match_parent"
+            android:layout_below="@+id/ll_procuct_header"
             android:gravity="center"
             android:text="@string/label_no_data"/>
 
@@ -31,9 +31,9 @@
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/googs_list"
             android:layout_width="match_parent"
-            android:layout_below="@+id/ll_procuct_header"
             android:layout_height="match_parent"
-            android:padding="@dimen/spacing_normal"/>
+            android:layout_below="@+id/ll_procuct_header"/>
+
         <ProgressBar
             android:id="@+id/animProgress"
             style="@style/loading"

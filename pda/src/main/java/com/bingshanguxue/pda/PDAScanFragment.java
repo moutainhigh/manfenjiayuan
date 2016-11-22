@@ -65,6 +65,7 @@ public abstract class PDAScanFragment extends BaseFragment {
             ZLogger.d(String.format("扫描标准商品条码:%s", barcode));
             onScanCode(barcode);
         }
+        // TODO: 18/11/2016 会员支付码
     }
 
     public void onEventMainThread(PDAScanManager.ScanBarcodeEvent event) {

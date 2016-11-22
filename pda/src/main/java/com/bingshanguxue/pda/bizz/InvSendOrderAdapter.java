@@ -7,9 +7,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
@@ -51,11 +52,11 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
         InvSendOrder entity = entityList.get(position);
 
         holder.tvSendCompanyName.setText(entity.getSendCompanyName());
-        holder.tvBarCode.setText(String.format("订单号：%s", entity.getName()));
-        holder.tvQuantity.setText(MUtils.formatDouble("商品数量", ":", entity.getAskTotalCount(), "0", "", "件"));
-        holder.tvGoodsFee.setText(MUtils.formatDouble("商品金额", ":", entity.getGoodsFee(), "0", "", ""));
-        holder.tvSendDate.setText(String.format("下单时间: %s", TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
-        holder.tvTransHumanName.setText(String.format("经手人: %s", entity.getContact()));
+        holder.tvBarCode.setEndText(entity.getName());
+        holder.tvQuantity.setEndText(MUtils.formatDouble(null, null, entity.getAskTotalCount(), "0", "", "件"));
+        holder.tvGoodsFee.setEndText(MUtils.formatDouble(null, null, entity.getGoodsFee(), "0", "", ""));
+        holder.tvSendDate.setEndText(TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM));
+        holder.tvTransHumanName.setEndText(entity.getContact());
     }
 
 
@@ -66,28 +67,28 @@ public class InvSendOrderAdapter extends RegularAdapter<InvSendOrder, InvSendOrd
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 //        @Bind(R.id.tv_send_companyname)
-        TextView tvSendCompanyName;
+TextView tvSendCompanyName;
 //        @Bind(R.id.tv_barcode)
-        TextView tvBarCode;
+TextLabelView tvBarCode;
 //        @Bind(R.id.tv_quantity)
-        TextView tvQuantity;
+TextLabelView tvQuantity;
 //        @Bind(R.id.tv_sendDate)
-        TextView tvSendDate;
+TextLabelView tvSendDate;
 //        @Bind(R.id.tv_goodsFee)
-        TextView tvGoodsFee;
+TextLabelView tvGoodsFee;
 //        @Bind(R.id.tv_transHumanName)
-        TextView tvTransHumanName;
+TextLabelView tvTransHumanName;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
 //            ButterKnife.bind(this, itemView);
 
             tvSendCompanyName = (TextView) itemView.findViewById(R.id.tv_send_companyname);
-            tvBarCode = (TextView) itemView.findViewById(R.id.tv_barcode);
-            tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
-            tvSendDate = (TextView) itemView.findViewById(R.id.tv_sendDate);
-            tvGoodsFee = (TextView) itemView.findViewById(R.id.tv_goodsFee);
-            tvTransHumanName = (TextView) itemView.findViewById(R.id.tv_transHumanName);
+            tvBarCode = (TextLabelView) itemView.findViewById(R.id.tv_barcode);
+            tvQuantity = (TextLabelView) itemView.findViewById(R.id.tv_quantity);
+            tvSendDate = (TextLabelView) itemView.findViewById(R.id.tv_sendDate);
+            tvGoodsFee = (TextLabelView) itemView.findViewById(R.id.tv_goodsFee);
+            tvTransHumanName = (TextLabelView) itemView.findViewById(R.id.tv_transHumanName);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                app:endSrcVisible="true"
                 app:hint="请选择批发商"
                 app:textColor="@color/material_white"/>
         </android.support.v7.widget.Toolbar>
@@ -34,15 +35,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/button_submit"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/material_white">
+        android:background="@color/material_white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--空视图-->
         <ImageView
             android:id="@+id/empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
             android:contentDescription="@null"
+            android:scaleType="centerInside"
             android:src="@mipmap/emptyimage_no_goods"/>
 
         <!--订单列表-->

@@ -12,7 +12,6 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -26,14 +25,18 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="商品条码:"/>
+                app:startText="商品条码:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_productName"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="商品名称:"/>
+                app:startText="商品名称:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_price"
@@ -42,14 +45,18 @@
                 android:layout_height="52dp"
                 app:editInputType="numberDecimal"
                 app:editTextHint="请输入退货价格"
-                app:startText="退货价格:"/>
+                app:startText="退货价格:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_totalcount"
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="单据数量:"/>
+                app:startText="单据数量:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
@@ -57,9 +64,11 @@
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                app:editTextHint="请输入退货数量"
                 app:editInputType="numberDecimal"
-                app:startText="退货数量:"/>
+                app:editTextHint="请输入退货数量"
+                app:startText="退货数量:"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
 
 
         </LinearLayout>
@@ -69,29 +78,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/spacing_double"
         android:gravity="end|center_vertical"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/spacing_double">
+        android:orientation="horizontal">
 
         <!--扫描-->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_scan"
             android:layout_width="64dp"
             android:layout_height="64dp"
+            android:layout_marginEnd="@dimen/spacing_double"
             android:src="@mipmap/ic_fab_scan"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:pressedTranslationZ="0dp"
-            android:layout_marginEnd="@dimen/spacing_double"
             app:rippleColor="@color/material_green_800"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_submit"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@mipmap/ic_fab_confirm"
-            android:visibility="gone"
+            android:src="@mipmap/ic_fab_submit"
             app:backgroundTint="@color/mfh_positive_default"
             app:borderWidth="0dp"
             app:elevation="0dp"

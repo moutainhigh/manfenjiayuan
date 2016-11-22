@@ -259,13 +259,11 @@ public class AcceptPrepareOrdersFragment extends BaseFragment implements IScOrde
         refresh(data);
     }
 
-
-//    /**
-//     * 拣货-抢单
-//     */
-//    @OnClick(R.id.fab_submit)
-//    public void submit() {
-//        btnSubmit.setEnabled(false);
+    /**
+     * 抢单
+     */
+    @OnClick(R.id.fab_submit)
+    public void submitStep1() {
 //        showConfirmDialog("确定要抢单吗？",
 //                "确定", new DialogInterface.OnClickListener() {
 //
@@ -283,13 +281,6 @@ public class AcceptPrepareOrdersFragment extends BaseFragment implements IScOrde
 //                        btnSubmit.setEnabled(true);
 //                    }
 //                });
-//    }
-
-    /**
-     * 抢单
-     */
-    @OnClick(R.id.fab_submit)
-    public void submitStep1() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "抢单中...", false);
 
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {

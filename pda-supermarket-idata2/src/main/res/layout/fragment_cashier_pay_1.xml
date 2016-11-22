@@ -63,26 +63,46 @@
     </LinearLayout>
 
     <!--支付-->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/material_white"
-        android:divider="@drawable/divider_horizontal_line_primary"
-        android:orientation="vertical"
-        android:showDividers="middle">
-        <!--导航-->
-        <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
-            android:id="@+id/tabstrip_pay"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            app:allowWidthFull="true"
-            app:slidingBlock="@drawable/slidingblock_white_greenline"/>
-        <!--内容区-->
-        <com.mfh.framework.uikit.widget.CustomViewPager
-            android:id="@+id/tab_viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:background="@color/material_white"
+            android:divider="@drawable/divider_horizontal_line_primary"
+            android:orientation="vertical"
+            android:showDividers="middle">
+            <!--导航-->
+            <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
+                android:id="@+id/tabstrip_pay"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:allowWidthFull="true"
+                app:slidingBlock="@drawable/slidingblock_white_greenline"/>
+            <!--内容区-->
+            <com.mfh.framework.uikit.widget.CustomViewPager
+                android:id="@+id/tab_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+        <!--扫描-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_scan"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_fab_scan"
+            app:backgroundTint="@color/mfh_positive_default"
+            app:borderWidth="0dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            android:layout_margin="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_double"
+            app:rippleColor="@color/material_green_800"/>
+    </RelativeLayout>
 
 </LinearLayout>
 

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.DataSyncManager;
+import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.InvSendOrderListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvGoodsAdapter;
 import com.bingshanguxue.pda.bizz.invrecv.InvRecvInspectFragment;
@@ -23,10 +24,10 @@ import com.bingshanguxue.pda.database.entity.InvRecvGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvRecvGoodsService;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.bingshanguxue.pda.dialog.InvSendIoOrderPayDialog;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.bingshanguxue.pda.bizz.ARCode;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.bean.PageInfo;
@@ -34,10 +35,10 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
@@ -49,10 +50,8 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -361,7 +360,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
 
         List<InvRecvGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            onReceiveOrderInterrupted("商品不能为空");
+            onReceiveOrderInterrupted("您还没有添加商品");
             return;
         }
 
@@ -630,8 +629,8 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         //signficantly smoother scrolling
         addressRecyclerView.setHasFixedSize(true);
         //添加分割线
-        addressRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
+//        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         addressRecyclerView.setEmptyView(emptyView);
 

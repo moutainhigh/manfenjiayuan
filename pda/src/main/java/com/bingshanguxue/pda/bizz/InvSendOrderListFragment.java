@@ -12,18 +12,17 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.InvOrderApi;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invOrder.InvOrderApi;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
@@ -125,8 +124,8 @@ public class InvSendOrderListFragment extends BaseListFragment<InvSendOrder>
         //signficantly smoother scrolling
         mRecyclerView.setHasFixedSize(true);
         //添加分割线
-        mRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
+//        mRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         mRecyclerView.setEmptyView(emptyView);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
