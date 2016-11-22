@@ -21,7 +21,7 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 
 
 /**

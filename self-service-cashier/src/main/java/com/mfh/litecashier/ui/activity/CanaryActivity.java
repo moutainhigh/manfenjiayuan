@@ -157,8 +157,6 @@ public class CanaryActivity extends BaseActivity {
                 "流水", R.mipmap.ic_admin_menu_orderflow));
         functionalList.add(new ResMenu(ResMenu.CANARY_MENU_MESSAGE_MGR,
                 "消息管理器", R.mipmap.ic_admin_menu_settings));
-        functionalList.add(new ResMenu(ResMenu.CANARY_MENU_CANARY,
-                "设置", R.mipmap.ic_admin_menu_settings));
 
         return functionalList;
     }
@@ -176,8 +174,6 @@ public class CanaryActivity extends BaseActivity {
             ActivityRoute.redirect2CanaryOrderflow(this);
         } else if (id.compareTo(ResMenu.CANARY_MENU_MESSAGE_MGR) == 0) {
             ActivityRoute.redirect2MsgMgr(this);
-        } else if (id.compareTo(ResMenu.CANARY_MENU_CANARY) == 0) {
-            ActivityRoute.redirect2CanarySettings(this);
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }

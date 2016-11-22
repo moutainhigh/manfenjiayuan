@@ -1,7 +1,6 @@
 package com.mfh.litecashier.ui.fragment.canary;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +25,6 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.SettingsGoodsAdapter;
-import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
@@ -34,7 +32,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 设置－－POS机本地商品库
@@ -68,13 +65,6 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_settings_goods;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -143,8 +133,6 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
         if (orderRecyclerView != null) {
             orderRecyclerView.removeOnScrollListener(orderListScrollListener);
         }
-
-        EventBus.getDefault().unregister(this);
     }
 
     private void initOrderBarcodeView() {
@@ -234,17 +222,6 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
             }
         }
     };
-
-    /**
-     * 在主线程接收CashierEvent事件，必须是public void
-     */
-    public void onEventMainThread(SettingsFragment.SettingsGoodsEvent event) {
-        ZLogger.d(String.format("SettingsGoodsFragment: SettingsGoodsEvent(%d)", event.getEventId()));
-        if (event.getEventId() == SettingsFragment.SettingsGoodsEvent.EVENT_ID_RELOAD_DATA) {
-            refresh();
-            reload();
-        }
-    }
 
     private void refresh(){
         spinnerTenant.setSelection(0);

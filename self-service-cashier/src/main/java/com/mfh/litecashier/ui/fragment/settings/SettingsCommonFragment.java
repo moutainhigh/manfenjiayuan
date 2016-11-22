@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
@@ -18,16 +16,12 @@ import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.PrintManager;
-import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
@@ -42,7 +36,6 @@ import com.tencent.bugly.beta.Beta;
 import org.century.GreenTagsApi;
 import org.century.GreenTagsSettingsDialog;
 
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
@@ -85,8 +78,6 @@ public class SettingsCommonFragment extends BaseFragment {
     ToggleSettingItem toggleSmscaleFtp;
     @Bind(R.id.item_greentags_webservice)
     ToggleSettingItem toggleGreenTags;
-    @Bind(R.id.toggle_superPermission)
-    ToggleSettingItem toggleSuperPermission;
 
 
     private SetPortDialog setPortDialog = null;
@@ -196,16 +187,6 @@ public class SettingsCommonFragment extends BaseFragment {
             }
         });
 
-        toggleSuperPermission.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                boolean isSuperPermissionGranted = SharedPrefesManagerFactory.isSuperPermissionGranted();
-                if (isSuperPermissionGranted != isChecked) {
-                    SharedPrefesManagerFactory.setSuperPermissionGranted(isChecked);
-                    reload();
-                }
-            }
-        });
         reload();
     }
 
@@ -331,6 +312,8 @@ public class SettingsCommonFragment extends BaseFragment {
 
                 DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
                 SharedPrefesManagerFactory.setSuperPermissionGranted(true);
+                EventBus.getDefault().post(new SettingsFragment.SettingsEvent(SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
+
                 reload();
             }
             else{
@@ -546,15 +529,12 @@ public class SettingsCommonFragment extends BaseFragment {
                 togglePrinter.setVisibility(View.VISIBLE);
                 toggleAhscale.setVisibility(View.VISIBLE);
                 toggleSmscale.setVisibility(View.VISIBLE);
-                toggleSuperPermission.setVisibility(View.VISIBLE);
             }
             else{
                 togglePrinter.setVisibility(View.GONE);
                 toggleAhscale.setVisibility(View.GONE);
                 toggleSmscale.setVisibility(View.GONE);
-                toggleSuperPermission.setVisibility(View.GONE);
             }
-            toggleSuperPermission.setChecked(isSuperPermissionGranted);
 
             //        ActivityManager am =  (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
             //        ACache cache = ACache.get(CashierApp.getAppContext(), Constants.CACHE_NAME);
@@ -566,17 +546,6 @@ public class SettingsCommonFragment extends BaseFragment {
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
-    }
-
-    @OnClick(R.id.button_test)
-    public void test(){
-        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
-                MfhLoginService.get().getSpid(), BizType.POS, PosOrderEntity.ORDER_STATUS_FINISH);
-        List<PosOrderEntity> entities =  PosOrderService.get().queryAllDesc(sqlOrder, null);
-        if (entities != null && entities.size() > 0){
-            PrintManager.printPosOrder(entities.get(0), true);
-        }
-        PrintManagerImpl.printTest();
     }
 
 }

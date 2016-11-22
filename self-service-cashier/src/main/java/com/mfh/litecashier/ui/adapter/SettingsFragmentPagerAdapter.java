@@ -69,6 +69,10 @@ public class SettingsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         addFragment(viewPageInfo);
     }
 
+    public void addTab(ViewPageInfo viewPageInfo) {
+        addFragment(viewPageInfo);
+    }
+
     public void addAllTab(ArrayList<ViewPageInfo> mTabs) {
         for (ViewPageInfo viewPageInfo : mTabs) {
             addFragment(viewPageInfo);

@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.canary;
+package com.mfh.litecashier.ui.fragment.settings;
 
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.igexin.sdk.PushManager;
@@ -14,23 +16,32 @@ import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
+import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.com.PrintManager;
+import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
- * 设置－－通用
+ * 设置－－开发者选项
  * Created by kun on 15/8/31.
  */
-public class SettingsTestFragment extends BaseFragment {
+public class DeveloperOptionsFragment extends BaseFragment {
 
 
+    @Bind(R.id.toggle_superPermission)
+    ToggleSettingItem toggleSuperPermission;
     @Bind(R.id.item_factoryreset)
     SettingsItem itemFactoryReset;
     @Bind(R.id.toggleItem_release)
@@ -47,12 +58,21 @@ public class SettingsTestFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_settings_test;
+        return R.layout.fragment_developer_options;
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-
+        toggleSuperPermission.init(new ToggleSettingItem.OnViewListener() {
+            @Override
+            public void onToggleChanged(boolean isChecked) {
+                boolean isSuperPermissionGranted = SharedPrefesManagerFactory.isSuperPermissionGranted();
+                if (isSuperPermissionGranted != isChecked) {
+                    SharedPrefesManagerFactory.setSuperPermissionGranted(isChecked);
+                    EventBus.getDefault().post(new SettingsFragment.SettingsEvent(SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
+                }
+            }
+        });
         toggleItemRelease.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
@@ -125,6 +145,8 @@ public class SettingsTestFragment extends BaseFragment {
      * 刷新页面信息
      */
     private void refresh() {
+        toggleSuperPermission.setChecked(SharedPrefesManagerFactory.isSuperPermissionGranted());
+
         if (SharedPrefesManagerFactory.isReleaseVersion()) {
             toggleItemRelease.setChecked(true);
             toggleItemRelease.setSubTitle("正式发布");
@@ -187,11 +209,23 @@ public class SettingsTestFragment extends BaseFragment {
     }
 
     @OnClick(R.id.button_upload_log)
-    public void uploadLog(){
+    public void uploadLog() {
         RemoteControlClient.getInstance().uploadLogFileStep1();
     }
+
     @OnClick(R.id.button_upload_crash)
-    public void uploadCrash(){
+    public void uploadCrash() {
         RemoteControlClient.getInstance().uploadCrashFileStep1();
+    }
+
+    @OnClick(R.id.button_test)
+    public void test() {
+        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
+                MfhLoginService.get().getSpid(), BizType.POS, PosOrderEntity.ORDER_STATUS_FINISH);
+        List<PosOrderEntity> entities = PosOrderService.get().queryAllDesc(sqlOrder, null);
+        if (entities != null && entities.size() > 0) {
+            PrintManager.printPosOrder(entities.get(0), true);
+        }
+        PrintManagerImpl.printTest();
     }
 }

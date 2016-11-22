@@ -14,7 +14,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.canary.OrderFlowFragment;
 import com.mfh.litecashier.ui.fragment.canary.SettingsGoodsFragment;
-import com.mfh.litecashier.ui.fragment.canary.SettingsTestFragment;
 import com.mfh.litecashier.ui.fragment.goods.BackendCategoryFragment;
 import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
 import com.mfh.litecashier.ui.fragment.online.OnlineFragment;
@@ -151,7 +150,6 @@ public class SimpleActivity extends BaseActivity {
             case FT_PURCHASE_MANUAL_SHOPCART:
             case FT_CANARY_GOODS:
             case FT_CANARY_ORDERFLOW:
-            case FT_CANARY_CANARY:
             case FT_GOODS_LIST:{
                 getMenuInflater().inflate(R.menu.menu_empty, menu);
             }
@@ -280,15 +278,6 @@ public class SimpleActivity extends BaseActivity {
             case FT_CANARY_ORDERFLOW: {
                 toolbar.setTitle("流水");
                 OrderFlowFragment fragment = new OrderFlowFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_CANARY_CANARY: {
-                toolbar.setTitle("测试");
-                SettingsTestFragment fragment = new SettingsTestFragment();
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)

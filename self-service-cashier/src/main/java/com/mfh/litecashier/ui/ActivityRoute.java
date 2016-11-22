@@ -108,16 +108,6 @@ public class ActivityRoute {
     }
 
     /**
-     * 设置
-     */
-    public static void redirect2CanarySettings(Context context) {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_CANARY_CANARY);
-        UIHelper.startActivity(context, SimpleActivity.class, extras);
-    }
-
-    /**
      * 消息管理器
      */
     public static void redirect2MsgMgr(Context context) {
