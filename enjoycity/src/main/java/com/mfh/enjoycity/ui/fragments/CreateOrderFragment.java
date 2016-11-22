@@ -26,6 +26,7 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.enjoycity.AppHelper;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.adapter.CreateOrderAdapter;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.enjoycity.database.ShoppingCartEntity;
 import com.mfh.enjoycity.ui.MfPayActivity;
@@ -38,8 +39,7 @@ import com.mfh.enjoycity.utils.OrderHelper;
 import com.mfh.enjoycity.utils.ShopcartHelper;
 import com.mfh.enjoycity.wxapi.WXHelper;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.H5Api;
-import com.mfh.framework.api.impl.PayApiImpl;
+import com.mfh.framework.api.invOrder.PayApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scOrder.ScOrderApi;
 import com.mfh.framework.api.shoppingCart.CartPack;
@@ -124,7 +124,7 @@ public class CreateOrderFragment extends BaseFragment {
                     //删除购物车中商品信息
                     OrderHelper.getInstance().clearOrderProducts();
                     //跳转至订单页面
-                    String url = URLHelper.append(H5Api.URL_ME_ORDER_MALL, null);
+                    String url = URLHelper.append(MobileApi.URL_ME_ORDER_MALL, null);
                     HybridActivity.actionStart(getActivity(), url, true, false, -1);
 
                     getActivity().setResult(Activity.RESULT_OK);
@@ -179,8 +179,8 @@ public class CreateOrderFragment extends BaseFragment {
             AppHelper.resetMemberAccountData();
 
             //TODO,判断当前页是否需要切换登录页面
-            String authUrl = URLHelper.append(H5Api.URL_AUTH_INDEX,
-                    "redirect=" + H5Api.URL_NATIVIE_REDIRECT_AUTH);
+            String authUrl = URLHelper.append(MobileApi.URL_AUTH_INDEX,
+                    "redirect=" + MobileApi.URL_NATIVIE_REDIRECT_AUTH);
             startActivityForResult(HybridActivity.loginIntent(getActivity(), authUrl),
                     Constants.ACTIVITY_REQUEST_LOGIN_H5);
             return;

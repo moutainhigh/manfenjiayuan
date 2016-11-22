@@ -22,7 +22,7 @@ import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.wxapi.WXHelper;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -214,7 +214,7 @@ public class MfOrderShareActivity extends BaseActivity {
 //                                    result.add(rs.getRowEntity(i));
 //                                }
 
-                                shareLink = URLHelper.append(H5Api.URL_MARKET_COUPON,
+                                shareLink = URLHelper.append(MobileApi.URL_MARKET_COUPON,
                                         String.format("id=%d&shareid=%d", rs.getRowEntity(0),
                                                 MfhLoginService.get().getCurrentGuId()));
                                 shareView.setVisibility(View.VISIBLE);

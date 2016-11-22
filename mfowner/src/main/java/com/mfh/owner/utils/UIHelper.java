@@ -10,14 +10,14 @@ import android.text.ClipboardManager;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.mobile.MobileApi;
+import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.compound.SettingsItem;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.DialogHelper;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.owner.R;
 import com.mfh.owner.ui.activity.NativeWebViewActivity;
 import com.mfh.owner.ui.web.ComnJBH5Activity;
@@ -320,7 +320,7 @@ public class UIHelper {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //满分家园的链接在当前应用的webview打开，其他的链接启动浏览器打开
-                if (url.contains(MfhApi.DOMAIN)) {
+                if (url.contains(MobileApi.DOMAIN)) {
                     NativeWebViewActivity.actionStart(context, url);
                 } else {
                     openBrowser(context, url);

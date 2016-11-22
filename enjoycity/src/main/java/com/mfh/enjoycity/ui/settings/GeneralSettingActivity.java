@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.utils.UIHelper;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
@@ -62,13 +62,13 @@ public class GeneralSettingActivity extends BaseActivity {
         switchItems.get(0).init(new ToggleSettingItem.SettingItemLisener() {
             @Override
             public void onToggleChanged(boolean on) {
-                SharedPreferencesManager.setLocationAcceptEnabled(on);
+                SharedPrefesManagerFactory.setLocationAcceptEnabled(on);
             }
         });
         switchItems.get(1).init(new ToggleSettingItem.SettingItemLisener() {
             @Override
             public void onToggleChanged(boolean on) {
-                SharedPreferencesManager.setNotificationAcceptEnabled(on);
+                SharedPrefesManagerFactory.setNotificationAcceptEnabled(on);
             }
         });
 
@@ -82,8 +82,8 @@ public class GeneralSettingActivity extends BaseActivity {
     }
 
     private void refresh() {
-        switchItems.get(0).setChecked(SharedPreferencesManager.getLocationAcceptEnabled());
-        switchItems.get(1).setChecked(SharedPreferencesManager.getNotificationAcceptEnabled());
+        switchItems.get(0).setChecked(SharedPrefesManagerFactory.getLocationAcceptEnabled());
+        switchItems.get(1).setChecked(SharedPrefesManagerFactory.getNotificationAcceptEnabled());
     }
 
     /**

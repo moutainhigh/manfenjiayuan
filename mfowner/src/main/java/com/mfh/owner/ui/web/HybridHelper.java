@@ -2,9 +2,9 @@ package com.mfh.owner.ui.web;
 
 import android.content.Context;
 
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.hybrid.WebViewUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.api.MfhApi;
 
 /**
  * Created by bingshanguxue on 16/2/25.
@@ -18,7 +18,7 @@ public class HybridHelper {
         if(sessionId != null){
             StringBuilder sbCookie = new StringBuilder();
             sbCookie.append(String.format("JSESSIONID=%s", sessionId));
-            sbCookie.append(String.format(";domain=%s", MfhApi.DOMAIN));
+            sbCookie.append(String.format(";domain=%s", MobileApi.DOMAIN));
             sbCookie.append(String.format(";path=%s", "/"));
             String cookieValue = sbCookie.toString();
 

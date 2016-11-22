@@ -19,7 +19,7 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <com.mfh.framework.uikit.widget.AvatarView
+            <com.bingshanguxue.vector_uikit.widget.AvatarView
                 android:id="@+id/iv_subHeader"
                 android:layout_width="56dp"
                 android:layout_height="56dp"

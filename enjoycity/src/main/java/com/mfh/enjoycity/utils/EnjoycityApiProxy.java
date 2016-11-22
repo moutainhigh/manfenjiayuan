@@ -6,14 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.enjoycity.AppContext;
-import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.scOrder.ScOrderApi;
-import com.mfh.framework.core.utils.SharedPreferencesUtil;
-import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesBase;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
@@ -208,7 +204,7 @@ public class EnjoycityApiProxy {
 
                         int count = Integer.valueOf(retValue.getValue());
 //                        SharedPreferencesHelper.getPreferences(Constants.PREF_NAME_APP_BIZ).edit().putInt(Constants.PREF_KEY_PARTER_COUNT, count).commit();
-                        SharedPreferencesUtil.set(AppContext.getAppContext(), Constants.PREF_NAME_APP_BIZ, Constants.PREF_KEY_PARTER_COUNT, count);
+                        SharedPrefesBase.set(AppContext.getAppContext(), Constants.PREF_NAME_APP_BIZ, Constants.PREF_KEY_PARTER_COUNT, count);
 
                         MfhApplication.getAppContext().sendBroadcast(new Intent(Constants.BROADCAST_ACTION_PARTER_REFRESH));
                     }

@@ -11,7 +11,7 @@ import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.enjoycity.AppContext;
 import com.mfh.enjoycity.R;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.UIHelper;
@@ -35,7 +35,7 @@ public class StartActivity extends InitActivity {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.activity_splash;
+        return R.layout.activity_splash_style01;
     }
 
     @Override
@@ -68,16 +68,16 @@ public class StartActivity extends InitActivity {
          *
          首次启动(由于应用程序{@link com.mfh.litecashier.CashierApp}可能会被多次执行在不同的进程中，所以这里在启动页调用，)
          */
-        if(SharedPreferencesManager.isAppFirstStart()){
+        if(SharedPrefesManagerFactory.isAppFirstStart()){
             ZLogger.d(String.format("Initialize--application first running: %s-%s(%s)",
                     AppContext.getVersionName(), AppContext.getVersionCode(),
                     AppContext.getProcessName(AppContext.getAppContext(), android.os.Process.myPid())));
-            SharedPreferencesManager.setTerminalId("");
-            SharedPreferencesManager.setSoftKeyboardEnabled(false);
+            SharedPrefesManagerFactory.setTerminalId("");
+            SharedPrefesManagerFactory.setSoftInputEnabled(false);
 //            SharedPreferencesHelper.setPosOrderSyncInterval(15 * 60);//15分钟同步一次
 //            SharedPreferencesHelper.setSyncIntervalCompanyHuman(30 * 60);//30分钟同步一次
 
-            SharedPreferencesManager.setAppFirstStart(false);
+            SharedPrefesManagerFactory.setAppFirstStart(false);
         }else{
             ZLogger.d(String.format("Initialize--application running: %s-%s(%s)",
                     AppContext.getVersionName(), AppContext.getVersionCode(),

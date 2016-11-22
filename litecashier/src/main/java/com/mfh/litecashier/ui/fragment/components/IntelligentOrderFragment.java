@@ -32,7 +32,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.InvOrderApi;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invOrder.StockApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;

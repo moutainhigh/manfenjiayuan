@@ -15,7 +15,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.StringUtils;
 import com.bingshanguxue.vector_uikit.SettingsItem;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 
 import java.util.List;
 
@@ -72,7 +72,7 @@ public class CarponActivity extends BaseActivity {
                 break;
                 case R.id.item_help:{
 
-                    StaticWebActivity.actionStart(CarponActivity.this, H5Api.URL_APP_DESCRIPTION);
+                    StaticWebActivity.actionStart(CarponActivity.this, MobileApi.URL_APP_DESCRIPTION);
                 }
                 break;
             }

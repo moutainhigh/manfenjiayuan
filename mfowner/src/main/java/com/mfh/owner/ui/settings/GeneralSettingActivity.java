@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.compound.SettingsItem;
 import com.mfh.framework.uikit.compound.ToggleSettingItem;
@@ -73,13 +73,13 @@ public class GeneralSettingActivity extends BaseActivity {
         switchItems.get(0).init(R.string.label_settings_location, ToggleSettingItem.SeperateLineType.SEPERATE_LINE_MULTI_TOP, new ToggleSettingItem.SettingItemLisener() {
             @Override
             public void onToggleChanged(boolean on) {
-                SharedPreferencesManager.setLocationAcceptEnabled(on);
+                SharedPrefesManagerFactory.setLocationAcceptEnabled(on);
             }
         });
         switchItems.get(1).init(R.string.label_settings_notification, ToggleSettingItem.SeperateLineType.SEPERATE_LINE_MULTI_BOTTOM, new ToggleSettingItem.SettingItemLisener() {
             @Override
             public void onToggleChanged(boolean on) {
-                SharedPreferencesManager.setNotificationAcceptEnabled(on);
+                SharedPrefesManagerFactory.setNotificationAcceptEnabled(on);
             }
         });
 
@@ -95,8 +95,8 @@ public class GeneralSettingActivity extends BaseActivity {
     }
 
     private void refresh(){
-        switchItems.get(0).setChecked(SharedPreferencesManager.getLocationAcceptEnabled());
-        switchItems.get(1).setChecked(SharedPreferencesManager.getNotificationAcceptEnabled());
+        switchItems.get(0).setChecked(SharedPrefesManagerFactory.getLocationAcceptEnabled());
+        switchItems.get(1).setChecked(SharedPrefesManagerFactory.getNotificationAcceptEnabled());
     }
 
     /**

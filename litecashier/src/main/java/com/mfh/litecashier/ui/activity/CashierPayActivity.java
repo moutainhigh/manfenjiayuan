@@ -38,7 +38,7 @@ import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.PayCouponAdapter;
 import com.mfh.litecashier.ui.adapter.TopFragmentPagerAdapter;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.invOrder.CashierApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.litecashier.bean.CouponRule;
 import com.mfh.litecashier.bean.Human;

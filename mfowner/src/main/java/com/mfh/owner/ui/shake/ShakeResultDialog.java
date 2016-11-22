@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.mfh.framework.core.utils.DensityUtil;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.owner.R;
 
 /**

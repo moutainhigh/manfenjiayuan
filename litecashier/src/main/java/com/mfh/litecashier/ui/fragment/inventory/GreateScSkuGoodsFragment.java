@@ -20,7 +20,7 @@ import com.manfenjiayuan.business.bean.CompanyInfo;
 import com.manfenjiayuan.business.bean.ScGoodsSku;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.invOrder.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

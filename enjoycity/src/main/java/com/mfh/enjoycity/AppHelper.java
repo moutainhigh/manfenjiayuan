@@ -23,7 +23,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DataCleanManager;
-import com.mfh.framework.core.utils.SharedPreferencesUtil;
+import com.mfh.framework.prefs.SharedPrefesBase;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
 
@@ -50,7 +50,7 @@ public class AppHelper {
 //            IMConversationService.get().clearMsgs();
 //            AnonymousAddressService.get().clear();
             //清空小伙伴信息
-            SharedPreferencesUtil.set(AppContext.getAppContext(), Constants.PREF_NAME_APP_BIZ, Constants.PREF_KEY_PARTER_COUNT, 0);
+            SharedPrefesBase.set(AppContext.getAppContext(), Constants.PREF_NAME_APP_BIZ, Constants.PREF_KEY_PARTER_COUNT, 0);
             //清空购物车，订单信息
             ShoppingCartService.get().clear();
             ShopcartHelper.getInstance().reset();

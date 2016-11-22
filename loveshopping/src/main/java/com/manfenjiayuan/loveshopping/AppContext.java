@@ -3,7 +3,7 @@ package com.manfenjiayuan.loveshopping;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * Created by bingshanguxue on 2015/7/10.
@@ -12,7 +12,7 @@ public class AppContext extends MfhApplication {
 
     @Override
     protected boolean isReleaseVersion() {
-        return SharedPreferencesManager.isReleaseVersion();
+        return SharedPrefesManagerFactory.isReleaseVersion();
     }
 
     @Override

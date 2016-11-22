@@ -46,7 +46,6 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     //进度对话框
     private ProgressDialog mProgressDialog = null;
-
     //确认对话框
     private CommonDialog confirmDialog = null;
 

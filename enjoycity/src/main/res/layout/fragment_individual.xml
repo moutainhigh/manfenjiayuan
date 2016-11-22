@@ -53,7 +53,7 @@
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical">
 
-                    <com.mfh.framework.uikit.widget.AvatarView
+                    <com.bingshanguxue.vector_uikit.widget.AvatarView
                         android:id="@+id/iv_header"
                         android:layout_width="56dp"
                         android:layout_height="56dp"

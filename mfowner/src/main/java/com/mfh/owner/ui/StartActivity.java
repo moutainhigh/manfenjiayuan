@@ -9,7 +9,7 @@ import android.os.Handler;
 
 import com.igexin.sdk.PushManager;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.owner.AppHelper;
 import com.mfh.owner.R;
@@ -52,11 +52,11 @@ public class StartActivity extends InitActivity {
 
         //首次启动
 
-        if(SharedPreferencesManager.isAppFirstStart()){
+        if(SharedPrefesManagerFactory.isAppFirstStart()){
             //清空旧缓存
             AppHelper.clearAppCache();
 
-            SharedPreferencesManager.setAppFirstStart(false);
+            SharedPrefesManagerFactory.setAppFirstStart(false);
         }
     }
 

@@ -12,7 +12,7 @@ import com.mfh.buyers.R;
 import com.mfh.buyers.fragments.BaseFragment;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.impl.UserApiImpl;
+import com.mfh.framework.api.invOrder.UserApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.core.utils.StringUtils;

@@ -19,7 +19,7 @@ import com.mfh.enjoycity.view.HomeViewPageFragmentAdapter;
 import com.mfh.enjoycity.view.NoShopView;
 import com.mfh.enjoycity.widget.WebviewViewPager;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -222,7 +222,7 @@ public class HomeFragment extends BaseFragment {
 
                 Bundle args = new Bundle();
                 args.putString(ShopHomeWebFragment.EXTRA_KEY_REDIRECT_URL,
-                        URLHelper.append(H5Api.URL_HOME_SHOP, String.format("shopId=%d", entity.getId())));
+                        URLHelper.append(MobileApi.URL_HOME_SHOP, String.format("shopId=%d", entity.getId())));
                 args.putLong(ShopHomeWebFragment.EXTRA_KEY_SHOP_ID, entity.getId());
                 args.putInt(ShopHomeWebFragment.EXTRA_KEY_SHOP_POSITION, i);
                 viewPagerAdapter.addTab(entity.getShopName(), entity.getShopName(), ShopHomeWebFragment.class,
@@ -266,7 +266,7 @@ public class HomeFragment extends BaseFragment {
 
                 Bundle args = new Bundle();
                 args.putString(ShopHomeWebFragment.EXTRA_KEY_REDIRECT_URL,
-                        URLHelper.append(H5Api.URL_HOME_SHOP, String.format("shopId=%d", entity.getId())));
+                        URLHelper.append(MobileApi.URL_HOME_SHOP, String.format("shopId=%d", entity.getId())));
                 args.putLong(ShopHomeWebFragment.EXTRA_KEY_SHOP_ID, entity.getId());
                 args.putInt(ShopHomeWebFragment.EXTRA_KEY_SHOP_POSITION, i);
                 viewPagerAdapter.addTab(entity.getShopName(), entity.getShopName(), ShopHomeWebFragment.class,

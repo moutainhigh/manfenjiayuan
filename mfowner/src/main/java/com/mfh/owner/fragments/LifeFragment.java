@@ -31,7 +31,7 @@ import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -780,7 +780,7 @@ public class LifeFragment extends BaseFragment implements
      */
     private void setShakeEnabled(boolean enabled) {
         if (enabled) {
-            if (SharedPreferencesManager.getLocationAcceptEnabled()) {
+            if (SharedPrefesManagerFactory.getLocationAcceptEnabled()) {
                 LocationClient.startGPSMonitor(getContext(), locationListener);
             }
 

@@ -46,7 +46,7 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.location.LocationClient;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.owner.R;
@@ -250,7 +250,7 @@ public class ShareLocationActivity extends BaseActivity
      * 初始化定位
      * */
     private void initLocation(){
-        if(SharedPreferencesManager.getLocationAcceptEnabled()){
+        if(SharedPrefesManagerFactory.getLocationAcceptEnabled()){
             aMapLocManager = LocationManagerProxy.getInstance(this);
             /*
              * mAMapLocManager.setGpsEnable(false);//

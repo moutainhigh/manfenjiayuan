@@ -3,7 +3,7 @@ package com.mfh.enjoycity.ui;
 
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.ui.web.BrowserFragment;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 
 /**
  * 生活·分类Tab
@@ -12,15 +12,15 @@ public enum MessageTab {
 
 	//鲜奶
 	SYSTEM(0, "系统消息", R.drawable.material_favorite_pressed,
-            BrowserFragment.class, H5Api.URL_ME_SERVER),
+            BrowserFragment.class, MobileApi.URL_ME_SERVER),
 
 	//蔬菜
 	SELF(1, "我的账单", R.drawable.material_favorite_pressed,
-            BrowserFragment.class, H5Api.URL_ME_SERVER),
+            BrowserFragment.class, MobileApi.URL_ME_SERVER),
 
     //水果
     RECEIPT(2, "退款消息", R.drawable.material_favorite_pressed,
-            BrowserFragment.class, H5Api.URL_ME_SERVER);
+            BrowserFragment.class, MobileApi.URL_ME_SERVER);
 
 
 	private int idx;

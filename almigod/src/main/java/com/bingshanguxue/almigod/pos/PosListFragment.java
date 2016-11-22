@@ -208,7 +208,7 @@ public class PosListFragment extends BaseListFragment<CompanyInfo>
             return;
         }
 
-        if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
+        if (mPageInfo.hasNextPage()) {
             mPageInfo.moveToNext();
 
             mInvCompanyPresenter.list(mPageInfo);

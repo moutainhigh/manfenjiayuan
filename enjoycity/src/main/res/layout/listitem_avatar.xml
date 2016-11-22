@@ -25,7 +25,7 @@
             android:gravity="left"
             android:layout_weight="1" />
 
-        <com.mfh.framework.uikit.widget.AvatarView
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
             android:id="@+id/iv_header"
             android:layout_width="48dp"
             android:layout_height="48dp"

@@ -28,4 +28,5 @@ dependencies {
     compile project(':mfh-framework-android')
     compile project(path: ':im')
     compile project(path: ':vector_uikit')
+    compile project(':skinloader')
 }

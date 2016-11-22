@@ -18,7 +18,7 @@ import android.webkit.WebView;
 import com.manfenjiayuan.loveshopping.R;
 import com.manfenjiayuan.loveshopping.activity.SelectAddressActivity;
 import com.manfenjiayuan.loveshopping.eventbus.CommunityEvent;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -34,7 +34,6 @@ import com.mfh.framework.hybrid.WebViewDelegate;
 import com.mfh.framework.hybrid.WebViewJavascriptBridge;
 import com.mfh.framework.hybrid.WebViewUtils;
 import com.mfh.framework.api.account.Subdis;
-import com.mfh.framework.api.MfhApi;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -121,7 +120,7 @@ public class H5HomeFragment extends BaseFragment implements
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments() != null) {
-            pageUrl = getArguments().getString(ARG_URL, URLHelper.append(H5Api.URL_HOME_SHOP, "shopId=133123"));
+            pageUrl = getArguments().getString(ARG_URL, URLHelper.append(MobileApi.URL_HOME_SHOP, "shopId=133123"));
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
@@ -496,7 +495,7 @@ public class H5HomeFragment extends BaseFragment implements
                     String resultText = bundle.getString("result", "");
 //                Bitmap barcode =  (Bitmap)bundle.getParcelable("bitmap");//扫描截图
 
-                    if (StringUtils.isUrl(resultText) && resultText.contains(MfhApi.DOMAIN)) {
+                    if (StringUtils.isUrl(resultText) && resultText.contains(MobileApi.DOMAIN)) {
                         DialogUtil.showHint(resultText);
                     } else {
                         DialogUtil.showHint(String.format("非法的URL： %s", resultText));

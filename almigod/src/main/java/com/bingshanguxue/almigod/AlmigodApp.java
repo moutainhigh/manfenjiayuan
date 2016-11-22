@@ -7,6 +7,7 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
@@ -18,8 +19,8 @@ import com.tencent.bugly.beta.Beta;
 public class AlmigodApp extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
-        return false;
-//        return SharedPreferencesManager.isReleaseVersion();
+//        return false;
+        return SharedPrefesManagerFactory.isReleaseVersion();
     }
 
     @Override
@@ -65,7 +66,7 @@ public class AlmigodApp extends MfhApplication {
     public void onLowMemory() {
         super.onLowMemory();
         //do release operation
-        ZLogger.d("onLowMemory");
+        ZLogger.w("onLowMemory");
 
 //        AppHelper.clearCacheData();
     }
@@ -73,7 +74,7 @@ public class AlmigodApp extends MfhApplication {
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        ZLogger.d("onTrimMemory:" + level);
+        ZLogger.w("onTrimMemory:" + level);
 
         if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
 //            AppHelper.clearCacheData();

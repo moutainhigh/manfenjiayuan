@@ -17,7 +17,7 @@ import com.manfenjiayuan.im.param.WxParam;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * 个推启动与接受数据
@@ -86,7 +86,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
             EmbMsg msg = msgService.getDao().getEntityById(id);
 
             //程序退到后台，显示通知
-            if(SharedPreferencesManager.getNotificationAcceptEnabled() && !PushUtil.isForeground(context)){
+            if(SharedPrefesManagerFactory.getNotificationAcceptEnabled() && !PushUtil.isForeground(context)){
                 //TODO
 //                Intent intent1 = new Intent(MsgConstants.ACTION_RECEIVE_MSG_BACK);
 //                context.sendBroadcast(intent1);

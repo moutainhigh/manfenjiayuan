@@ -10,7 +10,7 @@ import com.mfh.comn.upgrade.DbVersion;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.InitActivity;
 
 import butterknife.Bind;
@@ -26,7 +26,7 @@ public class SplashActivity extends InitActivity {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.activity_splash;
+        return R.layout.activity_splash_style01;
     }
 
     @Override
@@ -58,11 +58,11 @@ public class SplashActivity extends InitActivity {
     @Override
     protected void initComleted() {
         //首次启动
-        if(SharedPreferencesManager.isAppFirstStart()){
+        if(SharedPrefesManagerFactory.isAppFirstStart()){
             //清空旧缓存
 //            AppHelper.clearAppCache();
-            SharedPreferencesManager.setTerminalId("");
-            SharedPreferencesManager.setAppFirstStart(false);
+            SharedPrefesManagerFactory.setTerminalId("");
+            SharedPrefesManagerFactory.setAppFirstStart(false);
         }
 
 //        AppHelper.clearOldPosOrder(7);

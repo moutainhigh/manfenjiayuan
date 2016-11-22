@@ -18,7 +18,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.ExpressCompanyAdapter;
 import com.mfh.litecashier.bean.HumanCompanyOption;
 import com.mfh.litecashier.bean.ReceiveOrderCompanyWrapper;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.invOrder.CashierApiImpl;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;

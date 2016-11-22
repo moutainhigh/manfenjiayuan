@@ -23,7 +23,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.api.CateApi;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.api.impl.ScGoodsSkuApiImpl;
+import com.mfh.framework.api.invOrder.ScGoodsSkuApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

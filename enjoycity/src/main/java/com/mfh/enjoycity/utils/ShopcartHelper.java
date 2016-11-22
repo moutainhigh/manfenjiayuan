@@ -8,7 +8,7 @@ import com.mfh.enjoycity.database.ReceiveAddressEntity;
 import com.mfh.enjoycity.database.ReceiveAddressService;
 import com.mfh.enjoycity.database.ShoppingCartEntity;
 import com.mfh.enjoycity.database.ShoppingCartService;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.util.Date;
@@ -90,7 +90,7 @@ public class ShopcartHelper {
      * */
     public void setOrderAddr(){
         if (MfhLoginService.get().haveLogined()){
-            String id = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+            String id = SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ)
                     .getString(Constants.PREF_KEY_LOGIN_ADDR_ID, null);
             if (id != null){
                 ReceiveAddressService dbService = ReceiveAddressService.get();
@@ -107,7 +107,7 @@ public class ShopcartHelper {
                 }
             }
         }else{
-            String id = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+            String id = SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ)
                     .getString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, null);
             if (id != null){
                 AnonymousAddressService dbService = AnonymousAddressService.get();
@@ -138,10 +138,10 @@ public class ShopcartHelper {
         receiver = "";
         telephone = "";
 
-        SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+        SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ)
                 .edit().putString(Constants.PREF_KEY_LOGIN_ADDR_ID, null)
                 .commit();
-        SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+        SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ)
                 .edit().putString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, null)
                 .commit();
     }
@@ -164,7 +164,7 @@ public class ShopcartHelper {
             receiver = entity.getReceiver();
             telephone = entity.getTelephone();
 
-            SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+            SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ)
                     .edit()
                     .putString(Constants.PREF_KEY_LOGIN_ADDR_ID, id)
                     .commit();
@@ -187,7 +187,7 @@ public class ShopcartHelper {
             receiver = "";
             telephone = "";
 
-            SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+            SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ)
                     .edit()
                     .putString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, id)
                     .commit();
@@ -196,7 +196,7 @@ public class ShopcartHelper {
 
     public boolean bSelectAddress(){
         if (MfhLoginService.get().haveLogined()){
-            String id = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ).getString(Constants.PREF_KEY_LOGIN_ADDR_ID, null);
+            String id = SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ).getString(Constants.PREF_KEY_LOGIN_ADDR_ID, null);
             if (id != null){
                 ReceiveAddressService dbService = ReceiveAddressService.get();
                 ReceiveAddressEntity entity = dbService.getDao().query(id);
@@ -205,7 +205,7 @@ public class ShopcartHelper {
                 }
             }
         }else{
-            String id = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ).getString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, null);
+            String id = SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ).getString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, null);
             if (id != null){
                 AnonymousAddressService dbService = AnonymousAddressService.get();
                 AnonymousAddressEntity entity = dbService.getDao().query(id);

@@ -37,6 +37,7 @@ import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.EnjoycityApiProxy;
 import com.mfh.enjoycity.view.FloatShopcartView;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.recyclerview.GridItemDecoration;
 import com.mfh.framework.MfhApplication;
@@ -44,7 +45,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.api.H5Api;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.network.URLHelper;
@@ -321,7 +321,7 @@ public class OfenBuyActivity extends BaseActivity {
             AppHelper.resetMemberAccountData();
 
             //TODO,判断当前页是否需要切换登录页面
-            String authUrl = URLHelper.append(H5Api.URL_AUTH_INDEX, "redirect=" + H5Api.URL_NATIVIE_REDIRECT_AUTH);
+            String authUrl = URLHelper.append(MobileApi.URL_AUTH_INDEX, "redirect=" + MobileApi.URL_NATIVIE_REDIRECT_AUTH);
             startActivityForResult(HybridActivity.loginIntent(OfenBuyActivity.this, authUrl), Constants.ACTIVITY_REQUEST_LOGIN_H5);
             return;
         }

@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.mfh.enjoycity.R;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 
@@ -81,11 +81,11 @@ public class AboutActivity extends BaseActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.item_app_description: {
-                    StaticWebActivity.actionStart(AboutActivity.this, H5Api.URL_APP_DESCRIPTION);
+                    StaticWebActivity.actionStart(AboutActivity.this, MobileApi.URL_APP_DESCRIPTION);
                 }
                 break;
                 case R.id.item_licience: {
-                    StaticWebActivity.actionStart(AboutActivity.this, H5Api.URL_LICENSE);
+                    StaticWebActivity.actionStart(AboutActivity.this, MobileApi.URL_LICENSE);
                 }
                 break;
             }

@@ -11,7 +11,7 @@ import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 /**
@@ -92,7 +92,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 extras.putString("content", bodyObj.getString("content"));
 
                 //程序退到后台，显示通知
-                if(MfhLoginService.get().haveLogined() && SharedPreferencesManager.getNotificationAcceptEnabled()){// && !PushUtil.isForeground(context)){
+                if(MfhLoginService.get().haveLogined() && SharedPrefesManagerFactory.getNotificationAcceptEnabled()){// && !PushUtil.isForeground(context)){
 //                    com.mfh.comna.api.helper.UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_NOTIFY_TAKE_ORDER, extras);
 //                    Notification notification = PushUtil.generateNotification(context, "接单通知", bodyObj.getString("content"));
 //                    PushUtil.showNotification(context, 0, notification);

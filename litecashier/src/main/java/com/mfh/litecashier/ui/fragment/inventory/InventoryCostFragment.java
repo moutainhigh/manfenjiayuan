@@ -35,7 +35,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.api.constant.IsPrivate;
-import com.mfh.framework.api.impl.StockApiImpl;
+import com.mfh.framework.api.invOrder.StockApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;

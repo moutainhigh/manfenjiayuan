@@ -9,13 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.ui.activity.NativeWebViewActivity;
-import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.api.H5Api;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
@@ -58,7 +57,7 @@ public class UIHelper {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //满分家园的链接在当前应用的webview打开，其他的链接启动浏览器打开
-                if (url.contains(MfhApi.DOMAIN)) {
+                if (url.contains(MobileApi.DOMAIN)) {
                     NativeWebViewActivity.actionStart(context, url);
                 } else {
                     com.mfh.framework.uikit.UIHelper.openBrowser(context, url);
@@ -113,7 +112,7 @@ public class UIHelper {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String url = URLHelper.append(H5Api.URL_STOCK_OUT,
+                String url = URLHelper.append(MobileApi.URL_STOCK_OUT,
                         String.format("queryCon=%s",text));
                 HybridActivity.actionStart(context, url, true, false, 0);
                 dialog.dismiss();
@@ -266,7 +265,7 @@ public class UIHelper {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
-                String url = URLHelper.append(H5Api.URL_MARKET_ORDER_DETAIL_MALL,
+                String url = URLHelper.append(MobileApi.URL_MARKET_ORDER_DETAIL_MALL,
                         String.format("orderid=%s", orderIds));
                 HybridActivity.actionStart(context, url, true, false, 0);
             }
@@ -293,7 +292,7 @@ public class UIHelper {
                 dialog.dismiss();
 //                DialogUtil.showHint("跳转至订单详情");
 
-                String url =URLHelper.append(H5Api.URL_EVALUATE_ORDER,
+                String url =URLHelper.append(MobileApi.URL_EVALUATE_ORDER,
                         String.format("orderids=%s", orderIds));
 
                 HybridActivity.actionStart(context, url, true, false, 0);

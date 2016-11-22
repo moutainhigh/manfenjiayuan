@@ -18,7 +18,7 @@ public class HybridHelper {
         if(sessionId != null){
             StringBuilder sbCookie = new StringBuilder();
             sbCookie.append(String.format("JSESSIONID=%s", sessionId));
-            sbCookie.append(String.format(";domain=%s", MfhApi.DOMAIN));
+            sbCookie.append(String.format(";domain=%s", H5Api.DOMAIN));
             sbCookie.append(String.format(";path=%s", "/"));
             String cookieValue = sbCookie.toString();
 

@@ -42,14 +42,14 @@ import com.mfh.enjoycity.view.FloatParterView;
 import com.mfh.enjoycity.view.FloatShopcartView;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.api.account.Subdis;
 import com.mfh.framework.api.subdist.SubdistApi;
 import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -118,7 +118,7 @@ public class MainActivity extends BaseActivity {
                         redirectToLogin();
                     }
                 } else if (id == R.id.action_order) {
-                    HybridActivity.actionStart(MainActivity.this, H5Api.URL_ME_PACKAGES, false, 0);
+                    HybridActivity.actionStart(MainActivity.this, MobileApi.URL_ME_PACKAGES, false, 0);
                 }
                 return true;
             }
@@ -447,7 +447,7 @@ public class MainActivity extends BaseActivity {
         AppHelper.resetMemberAccountData();
 
         //TODO,判断当前页是否需要切换登录页面
-        String authUrl = URLHelper.append(H5Api.URL_AUTH_INDEX, "redirect=" + H5Api.URL_NATIVIE_REDIRECT_AUTH);
+        String authUrl = URLHelper.append(MobileApi.URL_AUTH_INDEX, "redirect=" + MobileApi.URL_NATIVIE_REDIRECT_AUTH);
         startActivityForResult(HybridActivity.loginIntent(MainActivity.this, authUrl), Constants.ACTIVITY_REQUEST_LOGIN_H5);
 //        canRedirectToLogin = true;
     }
@@ -528,7 +528,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.fab_mfparter)
     public void redirectToOrder() {
         toggleFloatView(false);
-        String url = URLHelper.append(H5Api.URL_ME_ORDER_MALL, null);
+        String url = URLHelper.append(MobileApi.URL_ME_ORDER_MALL, null);
         HybridActivity.actionStart(MainActivity.this, url, true, false, 0);
     }
 
@@ -640,7 +640,7 @@ public class MainActivity extends BaseActivity {
      * 更新小伙伴信息
      */
     private void refreshFloatParterView() {
-        int count = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ).getInt(Constants.PREF_KEY_PARTER_COUNT, 0);
+        int count = SharedPrefesManagerFactory.getPreferences(Constants.PREF_NAME_APP_BIZ).getInt(Constants.PREF_KEY_PARTER_COUNT, 0);
         ZLogger.d("refreshFloatParterView count: " + count);
 
         if (count > 0) {

@@ -12,15 +12,15 @@ import android.view.ViewGroup;
 import com.manfenjiayuan.loveshopping.AdvertisementPagerAdapter;
 import com.manfenjiayuan.loveshopping.AutoScrollViewPager;
 import com.manfenjiayuan.loveshopping.R;
-import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.qrcode.ScanActivity;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.uikit.UIHelper;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.viewpagertransformer.DepthPageTransformer;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
-import com.mfh.framework.uikit.UIHelper;
-import com.mfh.framework.api.MfhApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +163,7 @@ public class HomeFragment extends BaseFragment implements
                     String resultText = bundle.getString("result", "");
 //                Bitmap barcode =  (Bitmap)bundle.getParcelable("bitmap");//扫描截图
 
-                    if (StringUtils.isUrl(resultText) && resultText.contains(MfhApi.DOMAIN)) {
+                    if (StringUtils.isUrl(resultText) && resultText.contains(MobileApi.DOMAIN)) {
                         DialogUtil.showHint(resultText);
                     } else {
                         DialogUtil.showHint(String.format("非法的URL： %s", resultText));

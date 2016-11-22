@@ -29,7 +29,7 @@ import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.invOrder.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.ServiceFactory;
 import com.mfh.framework.core.utils.DialogUtil;

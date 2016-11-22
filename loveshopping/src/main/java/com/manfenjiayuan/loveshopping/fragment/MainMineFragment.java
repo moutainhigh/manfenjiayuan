@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import com.manfenjiayuan.loveshopping.R;
 import com.manfenjiayuan.loveshopping.activity.HybridActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.api.H5Api;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.network.URLHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -91,7 +91,7 @@ public class MainMineFragment extends BaseFragment implements
 
     @OnClick(R.id.label_balance)
     public void showBalance() {
-        String url = URLHelper.append(H5Api.URL_ME_WALLET,
+        String url = URLHelper.append(MobileApi.URL_ME_WALLET,
                 String.format("humanid=%d",
                         MfhLoginService.get().getCurrentGuId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
@@ -100,7 +100,7 @@ public class MainMineFragment extends BaseFragment implements
 
     @OnClick(R.id.label_collection)
     public void showCollection() {
-        String url = URLHelper.append(H5Api.URL_ME_FAVOR_COLLECTION,
+        String url = URLHelper.append(MobileApi.URL_ME_FAVOR_COLLECTION,
                 String.format("humanid=%d", MfhLoginService.get().getCurrentGuId()));
         HybridActivity.actionStart(getActivity(), url, true, false, -1);
     }
@@ -108,7 +108,7 @@ public class MainMineFragment extends BaseFragment implements
     //待支付
     @OnClick(R.id.button_pending_payment)
     public void showPendingPayment() {
-//        redirectToJBWebForResult(URLHelper.append(H5Api.URL_ME_ORDER_MALL,
+//        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
 //                String.format("status=%s&humanid=%d", "1",
 //                        MfhLoginService.get().getCurrentGuId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
@@ -116,14 +116,14 @@ public class MainMineFragment extends BaseFragment implements
 
     @OnClick(R.id.button_pending_receipt)
     public void showPendingReceipt() {
-//        redirectToJBWebForResult(URLHelper.append(H5Api.URL_ME_ORDER_MALL,
+//        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
 //                String.format("status=%s&humanid=%d", "2", MfhLoginService.get().getCurrentGuId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
     }
 
     @OnClick(R.id.button_pending_evaluation)
     public void showPendingEvaluation() {
-//        redirectToJBWebForResult(URLHelper.append(H5Api.URL_ME_ORDER_MALL,
+//        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
 //                String.format("status=%s&humanid=%d", "3", MfhLoginService.get().getCurrentGuId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
     }
@@ -131,7 +131,7 @@ public class MainMineFragment extends BaseFragment implements
     //跳转至订单
     @OnClick(R.id.item_1_0)
     public void showOrder() {
-//        redirectToJBWebForResult(URLHelper.append(H5Api.URL_ME_ORDER_MALL,
+//        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
 //                String.format("humanid=%d", MfhLoginService.get().getCurrentGuId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
     }//跳转至购物车
@@ -147,7 +147,7 @@ public class MainMineFragment extends BaseFragment implements
 
     @OnClick(R.id.item_2_0)
     public void showWallet() {
-        String url = URLHelper.append(H5Api.URL_ME_WALLET,
+        String url = URLHelper.append(MobileApi.URL_ME_WALLET,
                 String.format("humanid=%d",
                         MfhLoginService.get().getCurrentGuId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
@@ -157,7 +157,7 @@ public class MainMineFragment extends BaseFragment implements
     @OnClick(R.id.item_2_1)
     public void showCardpack() {
         HybridActivity.actionStart(getActivity(),
-                URLHelper.append(H5Api.URL_ME_CARDPACK,
+                URLHelper.append(MobileApi.URL_ME_CARDPACK,
                         String.format("humanid=%d",
                                 MfhLoginService.get().getCurrentGuId())), true, false, -1);
     }//跳转至包裹
@@ -165,14 +165,14 @@ public class MainMineFragment extends BaseFragment implements
     @OnClick(R.id.item_2_2)
     public void showParcel() {
         HybridActivity.actionStart(getActivity(),
-                URLHelper.append(H5Api.URL_ME_PARCEL,
+                URLHelper.append(MobileApi.URL_ME_PARCEL,
                         String.format("humanid=%d",
                                 MfhLoginService.get().getCurrentGuId())), true, false, -1);
     }//满分小伙伴
 
     @OnClick(R.id.item_3_0)
     public void showMfParter() {
-        String url = URLHelper.append(H5Api.URL_ME_MFHPARTER,
+        String url = URLHelper.append(MobileApi.URL_ME_MFHPARTER,
                 String.format("humanid=%d", MfhLoginService.get().getCurrentGuId()));
 
 //        redirectToJBWebForResult(url, true, 0, Constants.ACTIVITY_REQUEST_SUBDIS_SELECT);
@@ -182,7 +182,7 @@ public class MainMineFragment extends BaseFragment implements
 
     @OnClick(R.id.item_4_0)
     public void showFeedback() {
-        String url = URLHelper.append(H5Api.URL_FEEDBACK,
+        String url = URLHelper.append(MobileApi.URL_FEEDBACK,
                 String.format("humanid=%d&channelid=%s",
                         MfhLoginService.get().getCurrentGuId(),
                         MfhApi.CHANNEL_ID));

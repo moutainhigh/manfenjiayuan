@@ -122,7 +122,7 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
                             try {
                                 while ((line = reader.readLine()) != null) {
 //                            sb.append(line + "/n");
-//                                Log.d("Nat: makeRequestWithRetries.request.Params.line", line);
+//                                Log.d("Nat: makeRequestWithRetries.request.ApiParams.line", line);
                                     requestParams.append(line);
                                 }
                             } catch (IOException e) {
@@ -138,11 +138,11 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
                         }
 //                        byte[] paramsArray = EntityUtils.toByteArray(entity);
 //                        String paramsStr = EntityUtils.toString(entity, "UTF-8");
-//                        Log.d("Nat: makeRequestWithRetries.request.Params(2)", paramsStr);
-//                        Log.d("Nat: makeRequestWithRetries.request.Params(3)", EntityUtils.toString(entity));
+//                        Log.d("Nat: makeRequestWithRetries.request.ApiParams(2)", paramsStr);
+//                        Log.d("Nat: makeRequestWithRetries.request.ApiParams(3)", EntityUtils.toString(entity));
                     }
 
-//                    Log.d("Nat: makeRequestWithRetries.request.Params(RAW)", requestParams.toString());
+//                    Log.d("Nat: makeRequestWithRetries.request.ApiParams(RAW)", requestParams.toString());
                 }
 
                 //执行网络请求

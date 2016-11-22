@@ -2,7 +2,7 @@ package com.mfh.enjoycity.ui;
 
 
 import com.mfh.enjoycity.ui.web.BrowserFragment;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 
 /**
  * 生活·分类Tab
@@ -10,21 +10,21 @@ import com.mfh.framework.api.H5Api;
 public enum ShopTab {
 
 	//美团
-	MILK(0, "美团", BrowserFragment.class, H5Api.URL_MEITUAN),
+	MILK(0, "美团", BrowserFragment.class, MobileApi.URL_MEITUAN),
 	//小米
-	VEGETABLES(1, "小米", BrowserFragment.class, H5Api.URL_XIAOMI),
+	VEGETABLES(1, "小米", BrowserFragment.class, MobileApi.URL_XIAOMI),
     //淘宝
-    FRUIT(2, "淘宝", BrowserFragment.class, H5Api.URL_TAOBAO),
+    FRUIT(2, "淘宝", BrowserFragment.class, MobileApi.URL_TAOBAO),
 	//赶集
-	FLOWERS(3, "赶集", BrowserFragment.class, H5Api.URL_GANJI),
+	FLOWERS(3, "赶集", BrowserFragment.class, MobileApi.URL_GANJI),
 	//途牛
-	BAKERY(4, "途牛", BrowserFragment.class, H5Api.URL_TUNIU),
+	BAKERY(4, "途牛", BrowserFragment.class, MobileApi.URL_TUNIU),
 	//唯品会
-	TEST1(5, "唯品会", BrowserFragment.class, H5Api.URL_M_VIP),
+	TEST1(5, "唯品会", BrowserFragment.class, MobileApi.URL_M_VIP),
 //	//一号店
 //	TEST2(6, "一号店", BrowserFragment.class, MobileURLConf.URL_YHD),
 	//天猫
-	TEST3(6, "天猫", BrowserFragment.class, H5Api.URL_TMALL);
+	TEST3(6, "天猫", BrowserFragment.class, MobileApi.URL_TMALL);
 
 	private int idx;
     private String name;

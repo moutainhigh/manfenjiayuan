@@ -19,7 +19,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.uikit.compound.SettingsItem;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.framework.uikit.widget.ReboundScrollView;

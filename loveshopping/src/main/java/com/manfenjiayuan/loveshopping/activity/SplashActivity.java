@@ -13,7 +13,7 @@ public class SplashActivity extends InitActivity {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.activity_splash;
+        return R.layout.activity_splash_style01;
     }
 
     @Override

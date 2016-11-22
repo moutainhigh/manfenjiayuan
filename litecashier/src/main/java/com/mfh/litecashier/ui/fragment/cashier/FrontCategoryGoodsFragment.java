@@ -15,7 +15,7 @@ import com.manfenjiayuan.business.bean.ScGoodsSku;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.ScGoodsSkuApiImpl;
+import com.mfh.framework.api.invOrder.ScGoodsSkuApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.NetWorkUtil;
 import com.mfh.framework.net.NetCallBack;

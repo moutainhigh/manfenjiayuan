@@ -5,7 +5,7 @@
     android:background="@drawable/dialog_bg_corner_gray"
     android:padding="10dp">
 
-    <com.mfh.framework.uikit.widget.AvatarView
+    <com.bingshanguxue.vector_uikit.widget.AvatarView
         android:id="@+id/iv_bitmap"
         android:layout_width="50dp"
         android:layout_height="50dp"

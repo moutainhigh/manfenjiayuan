@@ -23,7 +23,7 @@ import com.manfenjiayuan.business.ui.HybridActivity;
 import com.mfh.enjoycity.utils.Constants;
 import com.mfh.enjoycity.utils.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.api.H5Api;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.network.URLHelper;
 
 import butterknife.Bind;
@@ -222,7 +222,7 @@ public class  UserActivity extends BaseActivity {
         AppHelper.resetMemberAccountData();
 
         //TODO,判断当前页是否需要切换登录页面
-        String authUrl = URLHelper.append(H5Api.URL_AUTH_INDEX, "redirect=" + H5Api.URL_NATIVIE_REDIRECT_AUTH);
+        String authUrl = URLHelper.append(MobileApi.URL_AUTH_INDEX, "redirect=" + MobileApi.URL_NATIVIE_REDIRECT_AUTH);
         startActivityForResult(HybridActivity.loginIntent(UserActivity.this, authUrl), Constants.ACTIVITY_REQUEST_LOGIN_H5);
 //        canRedirectToLogin = true;
     }

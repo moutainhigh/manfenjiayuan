@@ -31,7 +31,7 @@ import com.mfh.framework.net.NetCallBack;
 import com.mfh.framework.net.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.impl.CashierApiImpl;
+import com.mfh.framework.api.invOrder.CashierApiImpl;
 import com.mfh.litecashier.bean.ActivateAccountResult;
 import com.mfh.litecashier.bean.Human;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
