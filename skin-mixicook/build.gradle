@@ -1,0 +1,92 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+
+    signingConfigs {
+        debug {
+        }
+        release {
+        }
+    }
+
+
+    defaultConfig {
+        applicationId "com.bingshanguxue.skin_mixicook"
+        minSdkVersion 17
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        debug {
+//            buildConfigField "boolean", "LOG_DEBUG", "true"//是否输出LOG信息
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+        /**
+         * By default, Android Studio configures the release build type to enable code
+         * shrinking, using minifyEnabled, and specifies the Proguard settings file.
+         */
+        release {
+//            buildConfigField "boolean", "LOG_DEBUG", "false"//是否输出LOG信息
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    /**
+     * The productFlavors {} block is where you can configure multiple product
+     * flavors. This allows you to create different versions of your app that can
+     * override defaultConfig {} with their own settings. Product flavors are
+     * optional, and the build system does not create them by default. This example
+     * creates a free and paid product flavor. Each product flavor then specifies
+     * its own application ID, so that they can exist on the Google Play Store, or
+     * an Android device, simultaneously.
+     */
+    productFlavors {
+        bingshanguxue {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "bingshanguxue"]
+        }
+        manfenjiayuan {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "manfenjiayuan"]
+        }
+    }
+
+    File propFile = file('signing.properties');
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+        if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+            android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+            android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+            android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+            android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+        } else {
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+}
