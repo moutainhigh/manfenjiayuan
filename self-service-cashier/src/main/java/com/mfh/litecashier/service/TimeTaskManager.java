@@ -3,7 +3,6 @@ package com.mfh.litecashier.service;
 import android.os.Handler;
 import android.os.Message;
 
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
 import java.util.Timer;
@@ -24,7 +23,7 @@ public class TimeTaskManager {
     private static TimeTaskManager instance = null;
 
     /**
-     * 返回 DataSyncManagerImpl 实例
+     * 返回 DataSyncManager 实例
      *
      * @return
      */
@@ -44,27 +43,11 @@ public class TimeTaskManager {
      * 同步订单
      */
     private static Timer syncPosOrderTimer = new Timer();
-    private TimerTask syncPosOrderTask = new TimerTask() {
-        @Override
-        public void run() {
-            Message message = new Message();
-            message.what = MSG_WHAT_SYNC_POSORDER;
-            handler.sendMessage(message);
-        }
-    };
 
     /**
      * 同步商品
      */
     private static Timer syncGoodsTimer = new Timer();
-    private TimerTask syncGoodsTask = new TimerTask() {
-        @Override
-        public void run() {
-            Message message = new Message();
-            message.what = MSG_WHAT_SYNC_POSGOODS;
-            handler.sendMessage(message);
-        }
-    };
 
 
     static Handler handler = new Handler() {
@@ -79,7 +62,7 @@ public class TimeTaskManager {
                 break;
                 case MSG_WHAT_SYNC_POSGOODS: {
                     ZLogger.df("定时任务激活：同步商品库");
-                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+                    DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS | DataDownloadManager.POSPRODUCTS_SKU);
                 }
                 break;
             }
@@ -102,14 +85,22 @@ public class TimeTaskManager {
             syncGoodsTimer = new Timer();
         }
 
-        if (BizConfig.RELEASE) {
-            syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * MINUTE);
-            syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 6 * HOUR);
-        } else {
-            syncPosOrderTimer.schedule(syncPosOrderTask, 10 * SECOND, 10 * MINUTE);
-            syncGoodsTimer.schedule(syncGoodsTask, 10 * SECOND, 10 * MINUTE);
-        }
-
+        syncPosOrderTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = MSG_WHAT_SYNC_POSORDER;
+                handler.sendMessage(message);
+            }
+        }, 10 * SECOND, 10 * MINUTE);
+        syncGoodsTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = MSG_WHAT_SYNC_POSGOODS;
+                handler.sendMessage(message);
+            }
+        }, 10 * SECOND, 6 * HOUR);
     }
 
     public void cancel() {

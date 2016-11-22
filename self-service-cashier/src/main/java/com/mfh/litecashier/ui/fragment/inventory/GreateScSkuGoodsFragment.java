@@ -16,10 +16,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.cashier.CashierApiImpl;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -27,12 +30,8 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
-import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 
 import butterknife.Bind;
@@ -461,8 +460,6 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
                      * */
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
-
-                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class

@@ -17,7 +17,7 @@
         android:textSize="@dimen/textsize_normal"/>
 
     <!--头像-->
-    <com.mfh.framework.uikit.widget.AvatarView
+    <com.bingshanguxue.vector_uikit.widget.AvatarView
         android:id="@+id/iv_vip_header"
         android:layout_width="60dp"
         android:layout_height="60dp"

@@ -3,7 +3,7 @@ package com.mfh.litecashier.service;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -11,13 +11,14 @@ import java.util.Date;
 /**
  * Created by bingshanguxue on 8/30/16.
  */
-public class DataSyncManager {
+public class BaseSyncManager {
+    public static final int MAX_SYNC_PAGESIZE = 40;
 
     /**
      * 获取POS商品库同步时间
      */
     public static String getPosLastUpdateCursor() {
-        String startCursor = SharedPreferencesHelper.getSyncProductsCursor();
+        String startCursor = SharedPreferencesUltimate.getSyncProductsCursor();
         ZLogger.df(String.format("上次商品更新时间(%s)。", startCursor));
 
 //        //得到指定模范的时间
@@ -42,7 +43,7 @@ public class DataSyncManager {
      * 获取商品和类目关系表开始游标
      */
     public static String getProductCatalogStartCursor() {
-        String startCursor = SharedPreferencesHelper.getText(SharedPreferencesHelper.PK_SYNC_PRODUCTCATALOG_STARTCURSOR);
+        String startCursor = SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR);
         ZLogger.df(String.format("上次商品和类目关系表更新游标(%s)。", startCursor));
 
 //        //得到指定模范的时间

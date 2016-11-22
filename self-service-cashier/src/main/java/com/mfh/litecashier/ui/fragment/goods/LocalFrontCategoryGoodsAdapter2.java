@@ -117,7 +117,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
         @Bind(R.id.tv_costprice)
         TextView tvCostPrice;
         @Bind(R.id.overlay)
-        TextView overlayView;
+        View overlayView;
 
         public GoodsViewHolder(final View itemView) {
             super(itemView);

@@ -17,7 +17,9 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrderApi;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrderApiImpl;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -30,7 +32,7 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.bean.InvCheckOrder;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
 import com.mfh.litecashier.bean.InvCheckOrderItem;
 import com.mfh.litecashier.bean.ReceivableOrderDetail;
 import com.mfh.litecashier.event.StockCheckEvent;
@@ -39,7 +41,7 @@ import com.mfh.litecashier.ui.adapter.StockCheckOrderAdapter;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.utils.ACacheHelper;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
@@ -309,7 +311,7 @@ public class InventoryCheckFragment extends BaseFragment {
     public void onEventMainThread(StockCheckEvent event) {
         ZLogger.d(String.format("InventoryCheckFragment: StockCheckEvent(%d)", event.getEventId()));
         if (event.getEventId() == StockCheckEvent.EVENT_ID_RELOAD_DATA) {
-            if (SharedPreferencesHelper.getBoolean(SharedPreferencesHelper.PK_SYNC_STOCKCHECK_ORDER_ENABLED, true) || !readInvCheckOrderCache()){
+            if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_STOCKCHECK_ORDER_ENABLED, true) || !readInvCheckOrderCache()){
                 reloadInvCheckOrder();
             }
         }
@@ -319,7 +321,7 @@ public class InventoryCheckFragment extends BaseFragment {
     /**
      * 读取盘点订单缓存
      * 如果没有缓存则重新加载订单列表
-     * 如果有缓存则根据同步状态{@link com.mfh.litecashier.utils.SharedPreferencesHelper.PK_SYNC_STOCKLOSS_ORDER_ENABLED}决定是否需要重新加载订单列表。同步状态
+     * 如果有缓存则根据同步状态{@link SharedPreferencesUltimate.PK_SYNC_STOCKLOSS_ORDER_ENABLED}决定是否需要重新加载订单列表。同步状态
      */
     public synchronized boolean readInvCheckOrderCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
@@ -355,7 +357,7 @@ public class InventoryCheckFragment extends BaseFragment {
         } else {
             orderList.clear();
         }
-        InvOrderApiImpl.queryInvCheckOrderList(new PageInfo(1, MAX_SYNC_PAGESIZE), queryOrderListCallback);
+        InvCheckOrderApiImpl.list(new PageInfo(1, MAX_SYNC_PAGESIZE), queryOrderListCallback);
     }
 
     private NetCallBack.QueryRsCallBack queryOrderListCallback = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<InvCheckOrder>(new PageInfo(-1, 30)) {
@@ -434,7 +436,7 @@ public class InventoryCheckFragment extends BaseFragment {
                     }
                     ACacheHelper
                             .put(ACacheHelper.CK_STOCK_CHECK_ORDER, cacheArrays.toJSONString());
-                    SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_STOCKCHECK_ORDER_ENABLED, false);
+                    SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_STOCKCHECK_ORDER_ENABLED, false);
                 } else {
                     if (orderList == null) {
                         orderList = new ArrayList<>();
@@ -575,7 +577,7 @@ public class InventoryCheckFragment extends BaseFragment {
             }
         }, InvCheckOrderItem.class, CashierApp.getAppContext());
 
-        AfinalFactory.postDefault(InvOrderApiImpl.URL_INVCHECKORDERITEM_LIST, params, queryRsCallBack);
+        AfinalFactory.postDefault(InvCheckOrderApi.URL_INVCHECKORDERITEM_LIST, params, queryRsCallBack);
     }
 
     public class ProductQueryAsyncTask extends AsyncTask<RspQueryResult<InvCheckOrderItem>, Integer, Long> {

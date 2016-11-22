@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 /**
  * 事务
- * Created by kun on 15/9/23.
+ * Created by bingshanguxue on 15/9/23.
  */
 public class AffairEvent {
     public static final int EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER = 0X03;//预定订单更新

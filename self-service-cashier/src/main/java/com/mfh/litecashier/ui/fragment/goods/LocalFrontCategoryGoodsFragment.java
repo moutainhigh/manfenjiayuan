@@ -214,6 +214,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             public void onLongClickGoods(int position, LocalFrontCategoryGoods goods) {
                 modifyGoods(position, goods);
             }
+
             @Override
             public void onClickAction() {
                 addMoreGoods();
@@ -233,18 +234,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             return;
         }
 
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载类目商品。");
-            onLoadFinished();
-            return;
-        }
-
-        onLoadStart();
-//        this.entityList.clear();
-//        if (adapter != null) {
-//            adapter.setEntityList(null);
-//        }
-
         mPageInfo.reset();
         mPageInfo.setPageNo(1);
         //从第一页开始请求，每页最多50条记录
@@ -259,16 +248,10 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //            onLoadFinished();
             return;
         }
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载类目商品。");
-            onLoadFinished();
-            return;
-        }
 
         if (mPageInfo.hasNextPage()) {
             mPageInfo.moveToNext();
 
-            onLoadStart();
             load(mPageInfo);
         } else {
             ZLogger.d("加载类目商品，已经是最后一页。");
@@ -276,7 +259,12 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         }
     }
 
+    /**
+     * 分页查询数据
+     */
     private void load(final PageInfo pageInfo) {
+        onLoadStart();
+
         Observable.create(new Observable.OnSubscribe<List<LocalFrontCategoryGoods>>() {
             @Override
             public void call(Subscriber<? super List<LocalFrontCategoryGoods>> subscriber) {
@@ -285,46 +273,43 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                 try {
                     String sqlWhere = String.format("paramValueId = '%d'", categoryId);
                     List<ProductCatalogEntity> entities = ProductCatalogService.getInstance().queryAll(sqlWhere, pageInfo);
-                    if (entities == null || entities.size() < 1) {
-                        ZLogger.d("没有找到该类目关联的商品。");
-                        onLoadFinished();
-                        return;
-                    }
-                    ZLogger.d(String.format("共找到%d条类目商品关系(%d/%d-%d)", entities.size(),
-                            pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
+                    if (entities != null || entities.size() > 0) {
+                        ZLogger.d(String.format("共找到%d条类目商品关系(%d/%d-%d)", entities.size(),
+                                pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
-                    for (ProductCatalogEntity entity : entities) {
+                        for (ProductCatalogEntity entity : entities) {
 //                        String sqlWhere2 = String.format("productId = '%d' and status = '%d'",
 //                                entity.getCataItemId(), 1);
-                        String sqlWhere2 = String.format("productId = '%d'", entity.getCataItemId());
+                            String sqlWhere2 = String.format("productId = '%d'", entity.getCataItemId());
 
-                        List<PosProductEntity> productEntities1 = PosProductService.get()
-                                .queryAllByDesc(sqlWhere2);
-                        if (productEntities1 != null && productEntities1.size() > 0) {
-                            ZLogger.d(String.format("找到%d个商品，spuId=%d",
-                                    productEntities1.size(), entity.getCataItemId()));
-                            PosProductEntity entity1 = productEntities1.get(0);
-                            LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
-                            goods.setType(0);
-                            goods.setId(entity1.getId());
-                            goods.setProSkuId(entity1.getProSkuId());
-                            goods.setProductId(entity1.getProductId());
-                            goods.setBarcode(entity1.getBarcode());
-                            goods.setName(entity1.getName());
-                            goods.setProviderId(entity1.getProviderId());
-                            goods.setCostPrice(entity1.getCostPrice());
-                            goods.setUnit(entity1.getUnit());
-                            goods.setPriceType(entity1.getPriceType());
-                            goods.setProdLineId(entity1.getProdLineId());
-                            goods.setStatus(entity1.getStatus());
-                            productEntities.add(goods);
-                        } else {
-                            ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
+                            List<PosProductEntity> productEntities1 = PosProductService.get()
+                                    .queryAllByDesc(sqlWhere2);
+                            if (productEntities1 != null && productEntities1.size() > 0) {
+                                ZLogger.d(String.format("找到%d个商品，spuId=%d",
+                                        productEntities1.size(), entity.getCataItemId()));
+
+                                PosProductEntity entity1 = productEntities1.get(0);
+                                LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
+                                goods.setType(0);
+                                goods.setId(entity1.getId());
+                                goods.setProSkuId(entity1.getProSkuId());
+                                goods.setProductId(entity1.getProductId());
+                                goods.setBarcode(entity1.getBarcode());
+                                goods.setName(entity1.getName());
+                                goods.setProviderId(entity1.getProviderId());
+                                goods.setCostPrice(entity1.getCostPrice());
+                                goods.setUnit(entity1.getUnit());
+                                goods.setPriceType(entity1.getPriceType());
+                                goods.setProdLineId(entity1.getProdLineId());
+                                goods.setStatus(entity1.getStatus());
+                                productEntities.add(goods);
+                            } else {
+                                ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
+                            }
                         }
                     }
-
                 } catch (Throwable ex) {
-                    ZLogger.ef(String.format("保存商品库失败: %s", ex.toString()));
+                    ZLogger.ef(String.format("加载类目商品失败: %s", ex.toString()));
                 }
 
                 subscriber.onNext(productEntities);
@@ -348,7 +333,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                         if (mPageInfo.getPageNo() == 1) {
                             entityList.clear();
                         }
-                        if (localFrontCategoryGoodses != null){
+                        if (localFrontCategoryGoodses != null) {
                             entityList.addAll(localFrontCategoryGoodses);
                         }
                         ZLogger.d(String.format("类目 %d 共有 %d 个商品", categoryId, entityList.size()));
@@ -481,7 +466,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             barcodeInputDialog.setCancelable(true);
             barcodeInputDialog.setCanceledOnTouchOutside(true);
         }
-        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE,"导入商品", "商品条码", "确定",
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "导入商品", "商品条码", "确定",
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
@@ -598,7 +583,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 //                            return;
 //                        }
 
-//                        DataSyncManagerImpl.get().sync();
+//                        DataSyncManager.get().sync();
                     }
                 }
                 , String.class
@@ -645,10 +630,9 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                     }
 
                 });
-        if (goods.getStatus() == 1){
+        if (goods.getStatus() == 1) {
             mFrontCategoryGoodsDialog.setAction3("售罄");
-        }
-        else{
+        } else {
             mFrontCategoryGoodsDialog.setAction3("补货");
         }
         if (!mFrontCategoryGoodsDialog.isShowing()) {
@@ -735,24 +719,28 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                     public void processResult(IResponseData rspData) {
                         //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
                         //{"code":"0","msg":"更新成功!","version":"1","data":""}
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        String retStr = retValue.getValue();
-                        ZLogger.d("删除商品成功:" + retStr);
+                        try {
+                            RspValue<String> retValue = (RspValue<String>) rspData;
+                            String retStr = retValue.getValue();
+                            ZLogger.d("删除商品成功:" + retStr);
 
-                        //删除商品后台不推送消息，所以这里直接本地修改，下次同步数据时再去更新。
-                        ProductCatalogService.getInstance()
-                                .deleteById(String.valueOf(finalCatalogEntity.getId()));
-                        adapter.notifyItemRemoved(position);
-//                        reload();
-
+                            //删除商品后台不推送消息，所以这里直接本地假删除，下次同步数据时再去更新。
+                            ProductCatalogService.getInstance()
+                                    .deleteById(String.valueOf(finalCatalogEntity.getId()));
+//                            adapter.notifyDataSetChanged();
+//                            adapter.notifyItemRemoved(position);
+                            reload();
+                        } catch (Exception e) {
+                            ZLogger.e(e.toString());
+                        }
                         hideProgressDialog();
+
                     }
 
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         ZLogger.df("删除商品失败：" + errMsg);
-//                        数据回滚
                         hideProgressDialog();
                     }
                 }
@@ -761,7 +749,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         };
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(getString(R.string.toast_network_error));
+            DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
         ProductCatalogApi.delete(catalogEntity.getId(), responseCallback);
@@ -779,26 +767,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
-//        //查询商品所属前台类目
-//        ProductCatalogEntity catalogEntity = null;
-//        String sqlWhere = String.format("cataItemId = '%d'", goods.getProductId());
-//        List<ProductCatalogEntity> catalogs = ProductCatalogService.getInstance().queryAllBy(sqlWhere);
-//        if (catalogs != null && catalogs.size() > 0) {
-//            catalogEntity = catalogs.get(0);
-//        }
-//        if (catalogEntity == null) {
-//            ZLogger.d("删除商品失败，没有找到商品对应的类目关系");
-//            return;
-//        }
-
-
         int newStatus = 0;
-        if (goods.getStatus() == 0){
+        if (goods.getStatus() == 0) {
             newStatus = 1;
         }
 
-        //删除该前台类目下的商品
-//        final ProductCatalogEntity finalCatalogEntity = catalogEntity;
         final int finalNewStatus = newStatus;
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(

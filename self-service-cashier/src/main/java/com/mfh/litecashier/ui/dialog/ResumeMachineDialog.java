@@ -23,7 +23,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.litecashier.R;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 
 
 /**

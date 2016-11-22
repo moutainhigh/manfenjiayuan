@@ -21,21 +21,20 @@ import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
 
 
 /**
@@ -107,7 +106,8 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
         etName.setOnKeyListener(new EditText.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("setOnKeyListener(etQuery):keyCode=%d, action=%d", keyCode, event.getAction()));
+                ZLogger.d(String.format("setOnKeyListener(etQuery):keyCode=%d, action=%d",
+                        keyCode, event.getAction()));
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     //按下回车键后会执行两次，
                     // 猜测一，输入框会自动捕获回车按键，自动切换焦点到下一个控件；
@@ -241,18 +241,17 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
 //                            String result = retValue.getValue();
 //                            Long code = Long.valueOf(result);
 
+                            //本地先假修改，后台数据更新后再去同步
                             mCategoryEntity.setName(queryText);
                             PosLocalCategoryService.get().saveOrUpdate(mCategoryEntity);
                             DialogUtil.showHint("修改成功");
-                            dismiss();
                             if (listener != null){
                                 listener.onComplete();
                             }
-
-                            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_FRONTEND_CATEGORY);
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }
+                        dismiss();
                     }
                 }
                 , String.class
@@ -303,18 +302,17 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
 //                            String result = retValue.getValue();
 //                            Long code = Long.valueOf(result);
 
+                            //本地假删除
                             PosLocalCategoryService.get().deleteById(String.valueOf(mCategoryEntity.getId()));
                             DialogUtil.showHint("删除成功");
-                            dismiss();
 
                             if (listener != null){
                                 listener.onComplete();
                             }
-
-                            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_FRONTEND_CATEGORY);
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }
+                        dismiss();
                     }
                 }
                 , String.class

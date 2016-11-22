@@ -27,11 +27,11 @@ import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.scGoodsSku.GoodsSupplyInfo;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.mfh.framework.api.scGoodsSku.GoodsSupplyInfo;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -49,7 +49,7 @@ import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.PurchasePresenter;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
@@ -693,9 +693,9 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         categoryRecyclerView.setAdapter(categoryListAdapter);
     }
 
-    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
-        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
+    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
+        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED) {
             //刷新供应商
             readCategoryInfoCache();
         }
@@ -744,7 +744,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
 
         //加载后台类目树
         if (!readCategoryInfoCache()) {
-            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
+            DataDownloadManager.get().sync(DataDownloadManager.BACKENDCATEGORYINFO);
         }
     }
 

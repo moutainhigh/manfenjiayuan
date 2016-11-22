@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">米西厨房</string>
+    <string name="app_name">米宝收银端</string>
 
     <!--提示文字-->
     <string name="hint_login_account">账号</string>

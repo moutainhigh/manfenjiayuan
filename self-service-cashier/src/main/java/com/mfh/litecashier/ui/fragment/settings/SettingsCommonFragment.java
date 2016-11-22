@@ -31,7 +31,7 @@ import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
-import com.mfh.litecashier.service.GoodsSyncManager;
+import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
@@ -257,7 +257,7 @@ public class SettingsCommonFragment extends BaseFragment {
                         SharedPreferencesUltimate.setSyncProductsCursor("");
                         SharedPreferencesUltimate.setPosSkuLastUpdate("");
 
-                        GoodsSyncManager.get().sync(GoodsSyncManager.POSPRODUCTS);
+                        DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 

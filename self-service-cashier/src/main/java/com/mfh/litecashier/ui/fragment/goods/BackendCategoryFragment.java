@@ -149,7 +149,7 @@ public class BackendCategoryFragment extends BaseFragment {
      */
     private void reload() {
 //        if (!readCategoryInfoCache()) {
-//            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_BACKEND_CATEGORYINFO);
+//            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
 //        }
 
         List<CategoryOption> categoryOptions = new ArrayList<>();

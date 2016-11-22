@@ -43,8 +43,6 @@ public class CashierApp extends MfhApplication {
     public void onCreate() {
         initIflytek();
 
-//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
-
         super.onCreate();
 
         SMScaleSyncManager2.FOLDER_PATH_SMSCALE = getPackageName() + File.separator + "smscale";
@@ -71,9 +69,9 @@ public class CashierApp extends MfhApplication {
                 ZLogger.LOG_ENABLED = true;
                 SharedPreferencesUltimate.PREF_NAME_PREFIX = SharedPreferencesUltimate.DEV_PREFIX;
                 ACacheHelper.CACHE_NAME = "ACache_Dev";
-
-                debugPrint();
             }
+
+            debugPrint();
 
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());

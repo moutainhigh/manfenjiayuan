@@ -41,10 +41,10 @@ import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -53,7 +53,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.event.CommodityStockEvent;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
@@ -525,9 +525,9 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
-        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_REFRESH_BACKEND_CATEGORYINFO) {
+    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
+        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED) {
             //刷新供应商
             readCategoryInfoCache();
         }
@@ -538,7 +538,7 @@ public class InventoryCostFragment extends BaseProgressFragment
      */
     public void loadData() {
         if (!readCategoryInfoCache()) {
-            DataSyncManager.get().sync(DataSyncManager.SYNC_STEP_BACKEND_CATEGORYINFO);
+            DataDownloadManager.get().sync(DataDownloadManager.BACKENDCATEGORYINFO);
         }
     }
 

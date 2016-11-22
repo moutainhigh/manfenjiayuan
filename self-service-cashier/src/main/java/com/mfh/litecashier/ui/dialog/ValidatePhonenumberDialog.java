@@ -12,13 +12,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -27,9 +27,9 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -51,7 +51,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
     private View rootView;
     private TextView tvTitle, tvTip;
     private ImageButton btnClose;
-    private EditText etPhoneNumber, etVerifyCode;
+    private EditLabelView etPhoneNumber, etVerifyCode;
     private Button btnVerifyCode, btnSubmit;
 
     private ProgressBar progressBar;
@@ -77,9 +77,9 @@ public class ValidatePhonenumberDialog extends CommonDialog {
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         tvTip = (TextView) rootView.findViewById(R.id.tv_tip);
-        etPhoneNumber = (EditText) rootView.findViewById(R.id.et_phoneNumber);
+        etPhoneNumber = (EditLabelView) rootView.findViewById(R.id.et_phoneNumber);
         btnVerifyCode = (Button) rootView.findViewById(R.id.button_get_verifycode);
-        etVerifyCode = (EditText) rootView.findViewById(R.id.et_verifyCode);
+        etVerifyCode = (EditLabelView) rootView.findViewById(R.id.et_verifyCode);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
@@ -103,22 +103,16 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                 return true;
             }
         });
-        etPhoneNumber.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d(String.format("setOnKeyListener(etBarCode): keyCode=%d, action=%d", keyCode, event.getAction()));
-
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        getVerifyCode();
+        etPhoneNumber.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            getVerifyCode();
+                        }
                     }
-                    return true;
-                }
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-            }
-        });
+                });
 
         etVerifyCode.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -137,22 +131,17 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                 return true;
             }
         });
-        etVerifyCode.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                ZLogger.d(String.format("setOnKeyListener(etBarCode): keyCode=%d, action=%d", keyCode, event.getAction()));
 
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        submit();
+        etVerifyCode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            submit();
+                        }
                     }
-                    return true;
-                }
-                return (keyCode == KeyEvent.KEYCODE_TAB
-                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-            }
-        });
+                });
 //        etVerifyCode.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -249,7 +238,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
      */
     private void firstStep() {
 //        etPhoneNumber.setEnabled(true);
-        etPhoneNumber.getText().clear();
+        etPhoneNumber.clearInput();
         etPhoneNumber.requestFocus();
 
         btnVerifyCode.setText("获取验证码");
@@ -261,7 +250,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
         }
 
         etVerifyCode.setEnabled(false);
-        etVerifyCode.getText().clear();
+        etVerifyCode.clearInput();
 
         btnSubmit.setEnabled(false);
         progressBar.setVisibility(View.GONE);
@@ -282,7 +271,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
 //        btnVerifyCode.setText("获取验证码");
 
         etVerifyCode.requestFocus();
-        etVerifyCode.getText().clear();
+        etVerifyCode.clearInput();
         etVerifyCode.setEnabled(true);
 
         btnSubmit.setEnabled(true);
@@ -305,7 +294,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
-                        etPhoneNumber.setText(value);
+                        etPhoneNumber.setInput(value);
                         getVerifyCode();
                     }
 
@@ -340,7 +329,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
-                        etVerifyCode.setText(value);
+                        etVerifyCode.setInput(value);
                         submit();
                     }
 
@@ -370,7 +359,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
      */
     private void getVerifyCode() {
         btnVerifyCode.setEnabled(false);
-        final String phoneNumber = etPhoneNumber.getText().toString();
+        final String phoneNumber = etPhoneNumber.getInput();
         if (StringUtils.isEmpty(phoneNumber)) {
             DialogUtil.showHint("请输入手机号");
             btnVerifyCode.setEnabled(true);
@@ -431,14 +420,14 @@ public class ValidatePhonenumberDialog extends CommonDialog {
     private void submit() {
         btnSubmit.setEnabled(false);
         etVerifyCode.setEnabled(false);
-        final String phoneNumber = etPhoneNumber.getText().toString();
+        final String phoneNumber = etPhoneNumber.getInput();
         if (StringUtils.isEmpty(phoneNumber)) {
             DialogUtil.showHint("请输入手机号");
             firstStep();
             return;
         }
 
-        String verifyCode = etVerifyCode.getText().toString();
+        String verifyCode = etVerifyCode.getInput();
         if (StringUtils.isEmpty(verifyCode)) {
             DialogUtil.showHint("请输入验证码");
             secondStep();

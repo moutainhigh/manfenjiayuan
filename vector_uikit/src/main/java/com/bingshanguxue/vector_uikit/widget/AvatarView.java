@@ -1,4 +1,4 @@
-package com.mfh.framework.uikit.widget;
+package com.bingshanguxue.vector_uikit.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

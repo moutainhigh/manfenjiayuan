@@ -57,10 +57,10 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 313
+        versionCode 318
 
         // Defines a user-friendly version name for your app.
-        versionName "1.22.1"
+        versionName "1.22.2"
 
         multiDexEnabled true
 
@@ -188,12 +188,12 @@ android {
  * only specifies dependencies required to build the module itself.
  */
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile rootProject.ext.dependencies["cardview-v7"]
     debugCompile rootProject.ext.dependencies["leakcanary"]
     releaseCompile rootProject.ext.dependencies["leakcanary-release"]
-//    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile project(':im')
+    //    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+//    compile project(':im')
     compile project(':cashier')
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]

@@ -1,29 +1,38 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:skin="http://schemas.android.com/android/skin"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/frame_login"
+                android:id="@+id/rootview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/mf_login_background"
-                android:padding="@dimen/activity_horizontal_margin">
+                android:background="@color/mfh_colorPrimary"
+                android:padding="@dimen/spacing_normal"
+                skin:enable="true">
 
-    <Button
-        android:id="@+id/btn_hostserver"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/bottomview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:padding="@dimen/spacing_micro"
-        android:background="@null"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/spacing_normal"
         android:gravity="center"
-        android:minHeight="?android:attr/actionBarSize"
-        android:text="切换租户"
-        android:textColor="@color/white_60"
-        android:textSize="@dimen/textsize_normal"/>
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_hostserver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_textlogo_mixicook"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
         <LinearLayout
             android:id="@+id/login_form"
@@ -33,39 +42,37 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:contentDescription="@null"
-                android:src="@mipmap/ic_login_title"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@color/transparent"
+                android:background="@drawable/btn_corner_white"
+                android:divider="@drawable/divider_horizontal_line"
                 android:orientation="vertical"
-                android:padding="0dp">
+                android:padding="@dimen/spacing_micro"
+                android:showDividers="middle">
 
                 <EditText
                     android:id="@+id/et_username"
                     style="@style/mfh_edittext_normal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:hint="@string/hint_login_account"
                     android:inputType="text|none"
-                    android:minHeight="?android:attr/actionBarSize"/>
+                    android:minHeight="?android:attr/actionBarSize"
+                    android:padding="@dimen/spacing_micro"/>
 
                 <EditText
                     android:id="@+id/et_password"
                     style="@style/mfh_edittext_normal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:background="@null"
                     android:hint="@string/hint_login_password"
                     android:inputType="textPassword"
-                    android:minHeight="?android:attr/actionBarSize"/>
+                    android:minHeight="?android:attr/actionBarSize"
+                    android:padding="@dimen/spacing_micro"/>
             </LinearLayout>
 
             <Button
@@ -73,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/btn_corner_orange"
+                android:background="@color/mfh_colorPrimary"
                 android:gravity="center"
                 android:minHeight="?android:attr/actionBarSize"
                 android:text="@string/button_login_signin"
@@ -98,7 +105,7 @@
                 android:padding="@dimen/spacing_normal"
                 android:text="@string/button_login_retrieve_pwd"
                 android:textColor="@color/white_60"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tv_signup"
@@ -107,7 +114,7 @@
                 android:padding="@dimen/spacing_normal"
                 android:text="@string/button_login_signup"
                 android:textColor="@color/white_60"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -119,14 +126,5 @@
         android:layout_centerInParent="true"
         android:visibility="gone"
         tools:ignore="InconsistentLayout"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/spacing_normal"
-        android:contentDescription="@null"
-        android:src="@mipmap/mf_logo_small_white"/>
 
 </RelativeLayout>

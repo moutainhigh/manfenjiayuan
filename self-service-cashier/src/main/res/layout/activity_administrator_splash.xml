@@ -17,7 +17,7 @@
         android:padding="@dimen/spacing_normal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.mfh.framework.uikit.widget.AvatarView
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
             android:id="@+id/iv_avatar"
             android:layout_width="64dp"
             android:layout_height="64dp"

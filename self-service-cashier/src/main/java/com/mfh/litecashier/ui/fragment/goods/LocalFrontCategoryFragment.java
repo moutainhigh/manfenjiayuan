@@ -14,9 +14,9 @@ import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
@@ -29,10 +29,10 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.service.DataSyncManagerImpl;
+import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
-import com.mfh.litecashier.utils.SharedPreferencesHelper;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,11 +116,11 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
-        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
+    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
+        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
             reload();
-        } else if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
+        } else if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
             notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
         }
     }
@@ -136,7 +136,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(index);
                 if (viewPageInfo != null) {
                     ZLogger.d(StringUtils.decodeBundle(viewPageInfo.args));
-                    changeName(viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID));
+                    updateCategoryInfo(viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID));
                 } else {
                     ZLogger.d("no tabs");
                 }
@@ -203,13 +203,6 @@ public class LocalFrontCategoryFragment extends BaseFragment {
         catch (Exception e){
             ZLogger.ef(e.toString());
         }
-
-//        if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
-//        notifyDataChanged(0);
-//    }
-//        else {
-//            mCategoryGoodsViewPager.setCurrentItem(0, false);
-//        }
     }
 
 
@@ -219,7 +212,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     @OnClick(R.id.ib_add)
     public void addCategory() {
         ZLogger.d("新增类目");
-        final Long parentId = SharedPreferencesHelper.getLong(SharedPreferencesHelper.PK_L_CATETYPE_POS_ID, 0L);
+        final Long parentId = SharedPreferencesUltimate.getLong(SharedPreferencesUltimate.PK_L_CATETYPE_POS_ID, 0L);
         if (parentId.equals(0L)) {
             DialogUtil.showHint("请先创建根目录");
             return;
@@ -281,7 +274,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                             Long code = Long.valueOf(result);
                             ZLogger.df("新建前台类目成功:" + code);
 
-                            DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_FRONTEND_CATEGORY);
+                            DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
                         }
 
                     } catch (Exception e) {
@@ -295,9 +288,9 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     };
 
     /**
-     * 修改类目名称
+     * 修改类目名称/删除类目
      */
-    private void changeName(Long id) {
+    private void updateCategoryInfo(Long id) {
         if (id == null) {
             return;
         }
@@ -318,6 +311,9 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             @Override
             public void onComplete() {
                 reload();
+
+                //删除或修改类目成功客户端主动去同步数据
+                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
             }
         });
 
@@ -325,5 +321,4 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             mModifyLocalCategoryDialog.show();
         }
     }
-
 }

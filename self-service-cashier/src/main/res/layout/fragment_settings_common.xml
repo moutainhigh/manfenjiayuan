@@ -1,9 +1,9 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/material_white"
-              android:orientation="vertical">
+                                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@color/material_white"
+                                            android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,27 +16,29 @@
             android:id="@+id/item_posgoods"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:src="@mipmap/ic_goods_warehouse"
             app:position="top"
+            app:src="@mipmap/ic_goods_warehouse"
+            app:textSize="16sp"
             app:subText=""
             app:text="商品库"/>
         <!--&lt;!&ndash;米西生鲜&ndash;&gt;-->
         <!--<com.bingshanguxue.vector_uikit.SettingsItem-->
-            <!--android:id="@+id/item_mixi_fresh"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="48dp"-->
-            <!--app:src="@mipmap/ic_fresh"-->
-            <!--app:position="center"-->
-            <!--app:subText=""-->
-            <!--app:text="米西生鲜"/>-->
+        <!--android:id="@+id/item_mixi_fresh"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="48dp"-->
+        <!--app:src="@mipmap/ic_fresh"-->
+        <!--app:position="center"-->
+        <!--app:subText=""-->
+        <!--app:text="米西生鲜"/>-->
 
         <!--设备-->
         <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_terminal"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:src="@mipmap/ic_terminal"
             app:position="bottom"
+            app:textSize="16sp"
+            app:src="@mipmap/ic_terminal"
             app:subText=""
             app:text="设备编号"/>
 
@@ -46,42 +48,43 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="@dimen/spacing_double"
-            app:text="LED客显"
+            app:position="top"
             app:src="@mipmap/ic_rs232"
-            app:position="top"/>
+            app:text="LED客显"/>
 
         <!--打印机-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_printer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:text="打印机(Gprinter)"
+            app:position="center"
             app:src="@mipmap/ic_rs232"
-            app:position="center"/>
+            app:text="打印机(Gprinter)"/>
 
         <!--爱华电子秤-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_ahscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            app:position="center"
             app:src="@mipmap/ic_rs232"
-            app:text="爱华电子秤 (ACS-P215)"
-            app:position="center"/>
+            app:text="爱华电子秤 (ACS-P215)"/>
 
         <!--寺冈电子秤-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_smscale_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            app:position="center"
             app:src="@mipmap/ic_rs232"
-            app:text="寺冈电子秤 (DS781)"
-            app:position="center"/>
+            app:text="寺冈电子秤 (DS781)"/>
         <!--银联-->
         <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_umsips_rs232"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             app:position="bottom"
+            app:textSize="16sp"
             app:src="@mipmap/ic_rs232"
             app:subText=""
             app:text="银联"/>
@@ -92,27 +95,27 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="@dimen/spacing_double"
+            app:position="top"
             app:src="@mipmap/ic_ftp"
-            app:text="FileZilla (寺冈电子秤)"
-            app:position="top"/>
+            app:text="FileZilla (寺冈电子秤)"/>
 
         <!--绿泰电子价签-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/item_greentags_webservice"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            app:position="center"
             app:src="@mipmap/ic_tag"
-            app:text="绿泰电子价签"
-            app:position="center"/>
+            app:text="绿泰电子价签"/>
 
         <!--系统键盘-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggleItem_softkeyboard"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:text="系统键盘"
+            app:position="center"
             app:src="@mipmap/ic_keyboard"
-            app:position="center"/>
+            app:text="系统键盘"/>
 
 
         <!--内存-->
@@ -120,8 +123,9 @@
             android:id="@+id/item_momory"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:src="@mipmap/ic_memory"
             app:position="center"
+            app:src="@mipmap/ic_memory"
+            app:textSize="16sp"
             app:subText="吃饱了别忘记减肥噢"
             app:text="内存"/>
 
@@ -131,38 +135,40 @@
             android:id="@+id/toggleItem_tts"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:text="语音播报"
+            app:position="center"
             app:src="@mipmap/ic_voice"
             app:subText="语音技术由科大讯飞提供"
-            app:position="center"/>
+            app:text="语音播报"/>
 
         <!--版本-->
         <com.bingshanguxue.vector_uikit.SettingsItem
             android:id="@+id/item_version"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:src="@mipmap/ic_upgrade"
             app:position="bottom"
+            app:src="@mipmap/ic_upgrade"
+            app:textSize="16sp"
             app:subText=""
             app:text="应用版本"/>
 
-        <!--语音播报-->
+        <!--超级权限-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
             android:id="@+id/toggle_superPermission"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            app:text="超级权限"
+            android:layout_marginTop="@dimen/spacing_double"
+            app:position="top"
             app:src="@mipmap/ic_voice"
             app:subText="常在河边走,哪有不湿手"
-            app:position="center"/>
+            app:text="超级权限"/>
 
 
         <Button
             android:id="@+id/button_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="测试"/>
+            android:text="测试"
+            android:textSize="18sp"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

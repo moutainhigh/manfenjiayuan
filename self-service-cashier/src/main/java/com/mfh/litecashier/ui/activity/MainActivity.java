@@ -75,9 +75,8 @@ import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
-import com.mfh.litecashier.service.DataSyncManager;
+import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.service.EslSyncManager2;
-import com.mfh.litecashier.service.GoodsSyncManager;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
@@ -234,7 +233,7 @@ public class MainActivity extends CashierActivity
         //刷新挂单
         refreshFloatHangup();
 
-        reload(true);
+        reload();
         ValidateManager.get().batchValidate();
 
         //打开秤的串口
@@ -646,29 +645,19 @@ public class MainActivity extends CashierActivity
 
         //同步数据
         ZLogger.d("点击同步按钮，准备同步数据...");
-        DataSyncManager.get().sync();
-        GoodsSyncManager.get().sync();
+        DataDownloadManager.get().manualSync();
     }
 
     /**
      * 数据同步
-     *
-     * @param isSlient true:后台同步数据；false:显示进度对话框。
      */
-    private void dataSync(boolean isSlient) {
-        //账号发生改变
+    private void dataSync() {
         if (MfhLoginService.get().isCompanyOrOfficeChanged()) {
             AppHelper.clearAppData();
         }
 
-//        AppHelper.clearCache();
-        if (!isSlient) {
-            showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在同步数据...",
-                    true, false);
-        }
         btnSync.startSync();
-        DataSyncManager.get().sync();
-        GoodsSyncManager.get().sync();
+        DataDownloadManager.get().launcherSync();
 
         /**
          * @param isManual  用户手动点击检查，非用户点击操作请传false
@@ -709,7 +698,7 @@ public class MainActivity extends CashierActivity
     /**
      * 重新加载数据
      */
-    private void reload(boolean isSlient) {
+    private void reload() {
         try {
             if (inlvBarcode != null) {
                 inlvBarcode.clear();
@@ -742,7 +731,7 @@ public class MainActivity extends CashierActivity
             ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
 
             ZLogger.d("重新加载数据，准备同步数据...");
-            dataSync(isSlient);
+            dataSync();
         } catch (Exception e) {
             ZLogger.ef(e.toString());
         }
@@ -758,14 +747,14 @@ public class MainActivity extends CashierActivity
             if (count > 1) {
 //                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
                 btnSync.startSync();
-                GoodsSyncManager.get().sync(GoodsSyncManager.POSPRODUCTS|GoodsSyncManager.POSPRODUCTS_SKU);
+                btnSync.setBadgeEnabled(false);
+                DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS| DataDownloadManager.POSPRODUCTS_SKU);
             } else {
                 btnSync.setBadgeEnabled(true);
             }
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
-            menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER,
-                    count);
+            menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
             ZLogger.d("生鲜预定订单未读消息个数为：" + count);
             if (count > 0) {
                 cloudSpeak("您有新订单,请注意查收");
@@ -792,7 +781,7 @@ public class MainActivity extends CashierActivity
                 alipayDialog.dismiss();
             }
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
-            reload(true);
+            reload();
             ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
         } else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
             LocalFrontCategoryGoods goods = (LocalFrontCategoryGoods) bundle.getSerializable("goods");
@@ -804,32 +793,19 @@ public class MainActivity extends CashierActivity
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataSyncManager.DataSyncEvent event) {
-        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
-            btnSync.startSync();
-        } else if (event.getEventId() == DataSyncManager.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
-            hideProgressDialog();
-            btnSync.stopSync();
-        }
-    }
-
-    /**
-     * 在主线程接收CashierEvent事件，必须是public void
-     */
-    public void onEventMainThread(GoodsSyncManager.GoodsSyncEvent event) {
+    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
         ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == GoodsSyncManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
+        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
             btnSync.startSync();
-        } else if (event.getEventId() == GoodsSyncManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
-            hideProgressDialog();
-            btnSync.stopSync();
-            //同步数据结束后开始同步订单
-            UploadSyncManager.getInstance().sync();
-
+            btnSync.setBadgeEnabled(false);
+        }
+        else if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_POSPRODUCTS_UPDATED) {
 //            CloudSyncManager.get().importFromChainSku();
             EslSyncManager2.getInstance().sync();
             SMScaleSyncManager2.getInstance().sync();
+        } else if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+            hideProgressDialog();
+            btnSync.stopSync();
         }
     }
 
@@ -868,7 +844,7 @@ public class MainActivity extends CashierActivity
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED: {
                 ZLogger.d("重登录成功，准备同步数据...");
-                dataSync(true);
+                dataSync();
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER: {
@@ -1103,7 +1079,7 @@ public class MainActivity extends CashierActivity
             case Constants.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
-                    reload(true);
+                    reload();
                     ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
                 }
             }

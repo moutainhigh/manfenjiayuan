@@ -147,31 +147,19 @@ public class PushDemoReceiver extends BroadcastReceiver {
 
         //SKU更新
         if (IMBizType.TENANT_SKU_UPDATE == bizType){
-            Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
-
-            //保留最近一个小时的消息
-            if (createTime == null){
-                ZLogger.df("消息无效: time＝null");
-                return;
-            }
-
-            Calendar msgTrigger = Calendar.getInstance();
-            msgTrigger.setTime(createTime);
-
-            Calendar minTrigger = Calendar.getInstance();
-            minTrigger.add(Calendar.HOUR_OF_DAY, -1);
-            if (minTrigger.after(msgTrigger)) {
-                ZLogger.df(String.format("消息过期--当前时间:%s,消息创建时间:%s",
-                        TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                        TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-                return;
-            }
-
-            ZLogger.df(String.format("SKU更新--当前时间:%s,消息创建时间:%s",
-                    TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                    TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
+        }
+        else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType){
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
+            if (count > 0){
+                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY_GOODS);
+            }
+        }
+        else if (IMBizType.FRONTCATEGORY_UPDATE == bizType){
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
+            if (count > 0){
+                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
+            }
         }
         //新的采购订单
         else if (IMBizType.NEW_PURCHASE_ORDER == bizType){

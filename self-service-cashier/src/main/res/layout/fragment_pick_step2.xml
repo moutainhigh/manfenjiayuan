@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mfh_background_light"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--会员信息-->
@@ -90,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@color/material_white"
             android:orientation="vertical"
             android:paddingEnd="@dimen/spacing_4x"
             android:paddingStart="@dimen/spacing_4x">

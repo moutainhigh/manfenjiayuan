@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.impl.InvOrderApiImpl;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;

@@ -30,7 +30,7 @@
 #不优化输入的类文件
 -dontoptimize
 #指定代码的压缩级别,n 表示proguard对代码进行迭代优化的次数，Android一般为5
--optimizationpasses 5
+-optimizationpasses 6
 
 #预校验
 -dontpreverify
