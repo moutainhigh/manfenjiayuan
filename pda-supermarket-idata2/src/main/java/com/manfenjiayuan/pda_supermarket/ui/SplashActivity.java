@@ -2,6 +2,7 @@ package com.manfenjiayuan.pda_supermarket.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -134,6 +135,9 @@ public class SplashActivity extends InitActivity {
                 if (resultCode == Activity.RESULT_OK) {
                     doAsyncTask();
                 }
+                else {
+                    finish();
+                }
             }
             break;
             case Route.ARC_APP_HOSTSERVER: {
@@ -229,10 +233,27 @@ public class SplashActivity extends InitActivity {
                 doAsyncTask();
             } else {
 //                MANAGE_APP_PERMISSIONS
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
+
+                showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
+                        "立刻开启", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
 //                startActivity(intent);
-                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
+                                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
+                            }
+                        }, "残忍拒绝", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
             }
             // END_INCLUDE(permission_result)
 

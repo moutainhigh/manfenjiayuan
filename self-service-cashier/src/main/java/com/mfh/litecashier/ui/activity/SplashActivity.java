@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.mobile.MobileApi;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.system.PermissionUtil;
@@ -215,6 +217,18 @@ public class SplashActivity extends InitActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case Route.ARC_ANDROID_SETTINGS: {
+                if (data != null){
+                    ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
+                }
+                if (resultCode == Activity.RESULT_OK) {
+                    doAsyncTask();
+                }
+                else{
+                    finish();
+                }
+            }
+            break;
             case Constants.ARC_NATIVE_LOGIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     redirectToMain(false);
@@ -317,10 +331,28 @@ public class SplashActivity extends InitActivity {
                 doAsyncTask();
             } else {
 //                MANAGE_APP_PERMISSIONS
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
+
+                showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
+                        "立刻开启", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
 //                startActivity(intent);
-                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
+                                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
+                            }
+                        }, "残忍拒绝", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
             }
             // END_INCLUDE(permission_result)
 

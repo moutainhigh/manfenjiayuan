@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,17 +16,18 @@ import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
 import com.igexin.sdk.PushManager;
+import com.manfenjiayuan.business.route.Route;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.utils.AppHelper;
+import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.upgrade.DbVersion;
-import com.mfh.framework.Constants;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.UIHelper;
@@ -33,6 +35,7 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -58,7 +61,7 @@ public class SplashActivity extends InitActivity {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.activity_splash;
+        return R.layout.activity_splash_style01;
     }
 
     @Override
@@ -142,7 +145,7 @@ public class SplashActivity extends InitActivity {
             }
             // Camera permission has not been granted yet. Request it directly.
             ActivityCompat.requestPermissions(this,
-                    permissions, Constants.REQUEST_CODE_PERMISSIONS);
+                    permissions, Route.ARC_PERMISSIONS);
             return false;
         }
 
@@ -152,13 +155,11 @@ public class SplashActivity extends InitActivity {
     @Override
     protected void initComleted() {
         //首次启动
-        if(SharedPreferencesManager.isAppFirstStart()){
-            SharedPreferencesManager.setTerminalId("");
-            SharedPreferencesManager.setAppFirstStart(false);
+        if(SharedPrefesManagerFactory.isAppFirstStart()){
+            SharedPrefesManagerFactory.setAppStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(new Date()));
+            SharedPrefesManagerFactory.setAppFirstStart(false);
         }
-
-//        AppHelper.clearOldPosOrder(15);
-
+        
         if (MfhLoginService.get().haveLogined()) {
             redirect2Main();
         } else {
@@ -203,12 +204,15 @@ public class SplashActivity extends InitActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case ARCode.ARC_ANDROID_SETTINGS: {
+            case Route.ARC_ANDROID_SETTINGS: {
                 if (data != null){
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
                 if (resultCode == Activity.RESULT_OK) {
                     doAsyncTask();
+                }
+                else{
+                    finish();
                 }
             }
             break;
@@ -230,7 +234,7 @@ public class SplashActivity extends InitActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
 
-        if (requestCode == Constants.REQUEST_CODE_PERMISSIONS) {
+        if (requestCode == Route.ARC_PERMISSIONS) {
             // BEGIN_INCLUDE(permission_result)
             // Received permission result for camera permission.
             ZLogger.i("Received response for permissions request.");
@@ -242,11 +246,28 @@ public class SplashActivity extends InitActivity {
                 doAsyncTask();
             }
             else{
-//                MANAGE_APP_PERMISSIONS
-                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
+                showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
+                        "立刻开启", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
 //                startActivity(intent);
-                startActivityForResult(intent, ARCode.ARC_ANDROID_SETTINGS);
+                                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
+                            }
+                        }, "残忍拒绝", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+//                MANAGE_APP_PERMISSIONS
             }
             // END_INCLUDE(permission_result)
 
@@ -263,6 +284,4 @@ public class SplashActivity extends InitActivity {
         ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
         PushManager.getInstance().initialize(this.getApplicationContext());
     }
-
-
 }
