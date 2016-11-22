@@ -34,14 +34,18 @@ public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
 
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    public static final String EXTRA_KEY_ANIM_TYPE = "animationType";
 
-    //窗口动画
+    //窗口动画    p
+    public static final String EXTRA_KEY_ANIM_TYPE = "animationType";
     public static final int ANIM_TYPE_NEW_NONE = -1;//默认动画
     public static final int ANIM_TYPE_NEW_FLOW = 0;//新流程，底部弹出
     protected int animType = ANIM_TYPE_NEW_NONE;
     protected int activityCloseEnterAnimation;
     protected int activityCloseExitAnimation;
+
+    //是否全屏显示
+    public static final String EXTRA_KEY_FULLSCREEN = "isFullscreen";
+    protected boolean isFullscreenEnabled = false;
 
     //定位时间间隔
     private static final int LOCATION_INTERVAL = 2;//by seconds
@@ -59,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
      * 是否全屏显示
      */
     protected boolean isFullscreenEnabled() {
-        return false;
+        return isFullscreenEnabled;
     }
 
     /**
