@@ -1,6 +1,6 @@
 package com.mfh.framework.update;
 
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.network.NetFactory;
 
 /**
@@ -35,7 +35,7 @@ public class UpdateConfig {
 
 
     public static boolean isUpdateAutoPopup() {
-        return SharedPreferencesManager.getBoolean(PREF_APPUPDATE, PK_B_UPDATE_AUTOPOPUP, false);
+        return SharedPrefesManagerFactory.getBoolean(PREF_APPUPDATE, PK_B_UPDATE_AUTOPOPUP, false);
     }
 
     public void setUpdateAutoPopup(boolean updateAutoPopup) {

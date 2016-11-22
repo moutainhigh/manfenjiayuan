@@ -3,9 +3,8 @@ package com.bingshanguxue.vector_uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-
+import com.bingshanguxue.vector_uikit.R;
 import com.bumptech.glide.Glide;
-import com.mfh.framework.R;
 import com.mfh.framework.core.utils.StringUtils;
 
 public class AvatarView extends CircleImageView {

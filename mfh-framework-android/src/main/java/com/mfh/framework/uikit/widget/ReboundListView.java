@@ -10,7 +10,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ListView;
 
 /**
- * Created by Nat.ZZN on 2015/4/29.
+ * Created by bingshanguxue on 2015/4/29.
  */
 public class ReboundListView extends ListView implements GestureDetector.OnGestureListener {
 

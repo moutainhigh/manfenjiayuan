@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="_blank"></string>
     <string name="ok">确定</string>
     <string name="delete">删除</string>
     <string name="cancel">取消</string>

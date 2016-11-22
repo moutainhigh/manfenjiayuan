@@ -1,73 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ActionBarStyle" parent="android:Widget.Holo.ActionBar">
-        <item name="android:background">#383838</item>
-        <item name="android:titleTextStyle">@style/ActionBarStyle.TitleText</item>
-        <item name="android:subtitleTextStyle">@style/ActionBarStyle.SubTitleText</item>
-    </style>
-
-    <style name="ActionBarStyle.TitleText" parent="">
-        <item name="android:textColor">#cccccc</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="ActionBarStyle.SubTitleText">
-        <item name="android:textColor">#aaaaaa</item>
-        <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="ActionBarStyle.Tab" parent="android:Widget.Holo.Light.ActionBar.TabView">
-        <item name="android:background">@drawable/action_bar_tab_bg</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="ActionBarStyle.TabBar" parent="android:Widget.Holo.ActionBar.TabBar">
-        <item name="android:background">#f0f0f0</item>
-        <item name="android:showDividers">none</item>
-    </style>
-
-    <style name="ActionBarStyle.TabText" parent="android:Widget.Holo.ActionBar.TabText">
-        <item name="android:textColor">@color/action_bar_tab_text</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:typeface">serif</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
-    <!--android:Widget.Holo.Light.Button-->
-    <style name="ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/comn_button_default</item>
-        <item name="android:minHeight">45dp</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
-    </style>
-
-    <style name="ButtonFlatStyle" parent="ButtonStyle">
-        <item name="android:background">@drawable/comn_button_flat</item>
-    </style>
-
-    <style name="ButtonWarningStyle" parent="ButtonStyle">
-        <item name="android:background">@drawable/comn_button_warning</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-    <style name="ButtonAcceptStyle" parent="ButtonStyle">
-        <item name="android:background">@drawable/comn_button_accept</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-    <style name="ButtonTelephone" parent="ButtonStyle">
-        <item name="android:background">#ffffb25c</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
-    <style name="ButtonMessage" parent="ButtonStyle">
-        <item name="android:background">#ffff874b</item>
-        <item name="android:textColor">#ffffff</item>
-    </style>
-
     <!-- ============================================================================= -->
 
     <style name="BodyContainerStyle">
@@ -179,6 +112,8 @@
 
     <style name="dialog_common" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
+        <item name="android:editTextBackground">@drawable/bg_input_rectange</item>
+
     </style>
 
     <style name="dialog_title" parent="@style/fullline_view">

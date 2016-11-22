@@ -9,6 +9,11 @@
     <attr name="startTextColor" format="reference|color"/>
     <attr name="startTextSize" format="dimension"/>
     <attr name="startTextWidth" format="dimension"/>
+    <attr name="startTextGravity">
+        <enum name="start" value="0"/>
+        <enum name="center" value="1"/>
+        <enum name="end" value="2"/>
+    </attr>
 
     <attr name="endText" format="string|reference"/>
     <attr name="endTextColor" format="reference|color"/>
@@ -20,6 +25,7 @@
     <attr name="editTextColor" format="reference|color"/>
     <attr name="editTextSize" format="dimension"/>
     <attr name="editTextHint" format="string|reference"/>
+    <attr name="editBackground" format="reference|color"/>
     <attr name="editTextColorHint" format="reference|color"/>
 
 
@@ -35,6 +41,10 @@
     <!--图片-->
     <attr name="src" format="reference"/>
     <attr name="logoSrc" format="reference"/>
+    <attr name="startSrc" format="reference"/>
+    <attr name="startSrcVisible" format="boolean"/>
+    <attr name="endSrc" format="reference"/>
+    <attr name="endSrcVisible" format="boolean"/>
 
     
     <!--自定义输入类型 {@link com.bingshanguxue.vector_uikit#EditInputType }-->
@@ -48,6 +58,7 @@
         <!--价格，*\d［0-9].\d{2}-->
         <enum name="weight" value="4"/>
         <enum name="textPassword" value="5"/>
+        <enum name="phone" value="6"/>
     </attr>
 
     <declare-styleable name="SettingsItem">
@@ -109,6 +120,7 @@
         <attr name="startTextColor"/>
         <attr name="startTextSize"/>
         <attr name="startTextWidth"/>
+        <attr name="startTextGravity"/>
 
         <attr name="endText"/>
         <attr name="endTextColor"/>
@@ -121,12 +133,14 @@
         <attr name="startTextColor"/>
         <attr name="startTextSize"/>
         <attr name="startTextWidth"/>
+        <attr name="startTextGravity"/>
 
         <attr name="editTextColor"/>
         <attr name="editTextSize"/>
         <attr name="editTextHint"/>
         <attr name="editTextColorHint"/>
         <attr name="editInputType"/>
+        <attr name="editBackground"/>
         <attr name="softKeyboardEnabled"/>
 
         <attr name="endText"/>
@@ -166,6 +180,10 @@
         <attr name="textSize"/>
         <attr name="hint"/>
         <attr name="textColorHint"/>
+        <attr name="startSrc"/>
+        <attr name="startSrcVisible"/>
+        <attr name="endSrc"/>
+        <attr name="endSrcVisible"/>
     </declare-styleable>
 
     <!--条码搜索控件-->
@@ -179,6 +197,21 @@
         <attr name="editInputType"/>
         <attr name="action1Enabled" format="boolean"/>
         <attr name="softKeyboardEnabled"/>
+    </declare-styleable>
+    <!--圆角ImageView-->
+    <declare-styleable name="RoundedImageView">
+        <attr name="corner_radius" format="dimension"/>
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+        <attr name="mutate_background" format="boolean"/>
+        <attr name="oval" format="boolean"/>
+        <attr name="android:scaleType"/>
+    </declare-styleable>
+    <!--圆形ImageView-->
+    <declare-styleable name="CircleImageView">
+        <attr name="borderWidth"/>
+        <attr name="borderColor"/>
+        <attr name="border_overlay" format="boolean"/>
     </declare-styleable>
 
 

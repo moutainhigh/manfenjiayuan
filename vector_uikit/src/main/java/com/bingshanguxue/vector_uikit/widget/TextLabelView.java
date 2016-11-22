@@ -3,6 +3,7 @@ package com.bingshanguxue.vector_uikit.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -51,6 +52,16 @@ public class TextLabelView extends LinearLayout {
 		stLayoutParams.width = startTextWidth;
 //		ZLogger.d(String.format("startText, %s=%d", leftText, startTextWidth));
 		tvStartText.setLayoutParams(stLayoutParams);
+		int startTextGravity = ta.getInteger(R.styleable.TextLabelView_startTextGravity,0);
+		if (startTextGravity == 0){
+			this.tvStartText.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+		}
+		else if (startTextGravity == 1){
+			this.tvStartText.setGravity(Gravity.CENTER);
+		}
+		else if (startTextGravity == 2){
+			this.tvStartText.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+		}
 
 		tvEndText.setText(ta.getString(R.styleable.TextLabelView_endText));
 		tvEndText.setTextSize(endTextSizeInSp);
@@ -69,6 +80,10 @@ public class TextLabelView extends LinearLayout {
 
 	public void setEndText(String text, int color) {
 		this.tvEndText.setText(text);
+		this.tvEndText.setTextColor(color);
+	}
+
+	public void setEndTextColor(int color){
 		this.tvEndText.setTextColor(color);
 	}
 

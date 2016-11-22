@@ -20,7 +20,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 
 /**
@@ -34,7 +34,6 @@ public class ScanBar extends LinearLayout {
     private ImageView ivAction1;
 
     private boolean softKeyboardEnabled = false;//是否支持软键盘,默认不支持软键盘
-    private int[] interceptKeyCodes;
 
     public interface OnScanBarListener {
         void onKeycodeEnterClick(String text);
@@ -114,7 +113,7 @@ public class ScanBar extends LinearLayout {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPreferencesManager.isSoftKeyboardEnabled() || softKeyboardEnabled) {
+                    if (softKeyboardEnabled || SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etInput);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etInput);
@@ -218,5 +217,10 @@ public class ScanBar extends LinearLayout {
     public void addTextChangedListener(TextWatcher watcher) {
         etInput.addTextChangedListener(watcher);
     }
+
+    public void setHint(String hint){
+        etInput.setHint(hint);
+    }
+
 
 }

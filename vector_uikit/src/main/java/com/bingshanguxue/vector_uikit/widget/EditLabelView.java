@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.bingshanguxue.vector_uikit.R;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 
 /**
@@ -32,19 +34,11 @@ public class EditLabelView extends LinearLayout {
     private TextView tvEndText;
 
     private boolean softKeyboardEnabled = false;//是否支持软键盘,默认不支持软键盘
-    private int[] interceptKeyCodes;
-
-    public interface OnViewListener {
-        void onKeycodeEnterClick(String text);
-
-        void onScan();
+    private int[] interceptKeys;
+    public interface OnInterceptListener{
+        void onKey(int keyCode, String text);
     }
-
-    private OnViewListener onViewListener;
-
-    public void setOnViewListener(OnViewListener onViewListener) {
-        this.onViewListener = onViewListener;
-    }
+    private OnInterceptListener mOnInterceptListener;
 
     public EditLabelView(Context context) {
         this(context, null);
@@ -61,28 +55,32 @@ public class EditLabelView extends LinearLayout {
         try {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.EditLabelView);
             tvStartText.setText(ta.getString(R.styleable.EditLabelView_startText));
-            //像素
             int textSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextSize, 16);
             int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
-            int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 16);
-            int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);
-            int endTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextSize, 16);
-            int endTextSizeInSp = DensityUtil.px2sp(getContext(), endTextSizeInPx);
-            //px
-            int startTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextWidth, 80);//px
-
-//            ZLogger.d(String.format("textSize=%dpx =%dsp\nstartTextWidth=%d",
-//                    textSizeInPx, textSizeInSp,
-//                    startTextWidth));
             tvStartText.setTextSize(textSizeInSp);
 //        tvStartText.setTextSize(DensityUtil.sp2px(context, leftTextSize));
             tvStartText.setTextColor(ta.getColor(R.styleable.EditLabelView_startTextColor, 0x59000000));
 
             ViewGroup.LayoutParams stLayoutParams = tvStartText.getLayoutParams();
+            int startTextWidth = ta.getDimensionPixelSize(R.styleable.EditLabelView_startTextWidth, 80);//px
             stLayoutParams.width = startTextWidth;
             tvStartText.setLayoutParams(stLayoutParams);
 
+            int startTextGravity = ta.getInteger(R.styleable.EditLabelView_startTextGravity,0);
+            if (startTextGravity == 0){
+                this.tvStartText.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+            }
+            else if (startTextGravity == 1){
+                this.tvStartText.setGravity(Gravity.CENTER);
+            }
+            else if (startTextGravity == 2){
+                this.tvStartText.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+            }
+
+
             etInput.setHint(ta.getString(R.styleable.EditLabelView_editTextHint));
+            int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 16);
+            int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);
             etInput.setTextSize(editTextSizeInSp);
             etInput.setTextColor(ta.getColor(R.styleable.EditLabelView_editTextColor, 0xFF000000));
             etInput.setHintTextColor(ta.getColor(R.styleable.EditLabelView_editTextColorHint, 0x26000000));
@@ -98,9 +96,14 @@ public class EditLabelView extends LinearLayout {
                 //相当于在.xml文件中设置inputType="numberDecimal
                 etInput.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
             }
+            else if (inputType == EditInputType.PHONE) {
+                //相当于在.xml文件中设置inputType="phone
+                etInput.setInputType(InputType.TYPE_CLASS_PHONE);
+            }
             else {
                 etInput.setInputType(InputType.TYPE_CLASS_TEXT);
             }
+//            etInput.setBackgroundResource(ta.getResourceId(R.styleable.EditLabelView_editBackground, andriod.R.));
 //            ZLogger.d(String.format("inputType=%d", etInput.getInputType()));
 
             softKeyboardEnabled = ta.getBoolean(R.styleable.EditLabelView_softKeyboardEnabled, false);
@@ -110,6 +113,8 @@ public class EditLabelView extends LinearLayout {
                 tvEndText.setVisibility(GONE);
             }
             tvEndText.setText(ta.getString(R.styleable.EditLabelView_endText));
+            int endTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_endTextSize, 16);
+            int endTextSizeInSp = DensityUtil.px2sp(getContext(), endTextSizeInPx);
             tvEndText.setTextSize(endTextSizeInSp);
             tvEndText.setTextColor(ta.getColor(R.styleable.EditLabelView_endTextColor, 0xFF000000));
 
@@ -117,24 +122,13 @@ public class EditLabelView extends LinearLayout {
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
-
-//        etInput.setInputType(InputType.TYPE_NULL);
-
-//        etInput.setFocusableInTouchMode(false);
-//        etInput.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!softKeyboardEnabled) {
-//                    DeviceUtils.hideSoftInput(getContext(), v);
-//                }
-//            }
-//        });
-        //
+        etInput.setFocusable(true);
+        etInput.setFocusableInTouchMode(true);//不自动获取EditText的焦点
         etInput.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (softKeyboardEnabled) {
+                    if (softKeyboardEnabled || SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etInput);
                     } else {
                         DeviceUtils.hideSoftInput(getContext(), etInput);
@@ -148,40 +142,32 @@ public class EditLabelView extends LinearLayout {
         etInput.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                ZLogger.d(String.format("(%s):%d", etInput.getClass().getSimpleName(),
-                        event.getKeyCode()));
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER
-                        || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        DeviceUtils.hideSoftInput(getContext(), v);
-
-                        if (onViewListener != null) {
-                            onViewListener.onKeycodeEnterClick(etInput.getText().toString());
+                //intercept keys
+                if (mOnInterceptListener != null && interceptKeys != null && interceptKeys.length > 0){
+                    for (int interceptKey : interceptKeys){
+                        if (interceptKey == keyCode){
+                            if (event.getAction() == MotionEvent.ACTION_UP){
+                                mOnInterceptListener.onKey(keyCode, etInput.getText().toString());
+                            }
+                            return true;
                         }
                     }
-
-                    return true;
-                }
-                //Press “F5”，盘点机，F5对"Scan"扫描按钮
-                if (keyCode == KeyEvent.KEYCODE_F5) {
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        if (onViewListener != null) {
-                            onViewListener.onScan();
-                        }
-                    }
-
-                    return true;
                 }
 
-//                return (keyCode == KeyEvent.KEYCODE_TAB
-//                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
-//                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
-                return false;
+                return (keyCode == KeyEvent.KEYCODE_TAB
+                        || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
+                        || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
             }
         });
     }
 
+    /**
+     * 拦截按键
+     * */
+    public void registerIntercept(int[] interceptKeys, OnInterceptListener onInterceptListener){
+        this.interceptKeys = interceptKeys;
+        this.mOnInterceptListener = onInterceptListener;
+    }
 
     /**
      * 光标定位到最后
@@ -230,6 +216,10 @@ public class EditLabelView extends LinearLayout {
 
     public void addTextChangedListener(TextWatcher watcher) {
         etInput.addTextChangedListener(watcher);
+    }
+
+    public void setOnTouchListener(OnTouchListener onTouchListener){
+       etInput.setOnTouchListener(onTouchListener);
     }
 
 }

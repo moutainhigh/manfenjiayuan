@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--窗口背景色-->
+    <color name="windowBackground">#fbf9fc</color>
+
     <color name="mfh_colorPrimary">@color/material_green_500</color>
     <color name="mfh_colorPrimaryGrey">@color/material_grey_500</color>
     <color name="mfh_colorPrimaryDark">@color/material_green_700</color>
@@ -19,9 +22,9 @@
 
     <!--分割线-->
     <color name="mfh_divider_light">#dddddd</color>
-    <!--页面背景色-->
-    <color name="mfh_background_light">#fbf9fc</color>
+
     <color name="mfh_toolbar_background">#34343A</color>
+    <color name="mfh_statusBarColor">#34343A</color>
     <color name="mfh_splash_startColor">#64ffffff</color>
     <color name="mfh_splash_endColor">#64e5e5e5</color>
     <color name="mfh_positive_default">#009b4f</color>

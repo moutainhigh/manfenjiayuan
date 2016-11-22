@@ -36,7 +36,8 @@ public class DialogHelper {
         return dialog;
     }
 
-    public static AlertDialog.Builder getConfirmDialog(Context context, String message, DialogInterface.OnClickListener onClickListener) {
+    public static AlertDialog.Builder getConfirmDialog(Context context, String message,
+                                                       DialogInterface.OnClickListener onClickListener) {
         AlertDialog.Builder builder = getDialog(context);
         builder.setMessage(Html.fromHtml(message));
         builder.setPositiveButton(context.getString(R.string.dialog_button_ok), onClickListener);
@@ -46,7 +47,8 @@ public class DialogHelper {
     }
 
     public static AlertDialog.Builder getConfirmDialog(Context context, String message,
-                                                       String positiveText, DialogInterface.OnClickListener positiveClickListener) {
+                                                       String positiveText,
+                                                       DialogInterface.OnClickListener positiveClickListener) {
         AlertDialog.Builder builder = getDialog(context);
         builder.setMessage(Html.fromHtml(message));
         builder.setPositiveButton(positiveText, positiveClickListener);
@@ -71,8 +73,9 @@ public class DialogHelper {
         }
         View view = View.inflate(context,R.layout.activity_wait,null);
         TextView textView = (TextView) view.findViewById(R.id.tv_meaasge);
-        if (meaasge != null)
+        if (meaasge != null){
             textView.setText(meaasge);
+        }
         dialog.show();
         dialog.setContentView(view);
         dialog.setCancelable(false);

@@ -50,7 +50,7 @@ public class ProgressView extends LinearLayout {
     }
 
 	private void init() {
-		View.inflate(getContext(), R.layout.loading_text_view, this);
+		View.inflate(getContext(), R.layout.view_progress_view, this);
 
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
         tvProcess = (TextView) rootView.findViewById(R.id.tv_process);

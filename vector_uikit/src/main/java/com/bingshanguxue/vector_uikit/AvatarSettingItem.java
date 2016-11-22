@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mfh.framework.core.utils.BitmapUtils;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 
 /***
  * 自定义View（组合原有安卓控件或者布局）

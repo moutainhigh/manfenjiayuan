@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.mfh.framework.R;
+import com.bingshanguxue.vector_uikit.R;
 import com.mfh.framework.uikit.widget.RoundedDrawable;
 
 
@@ -68,7 +68,7 @@ public class RoundedImageView extends ImageView {
         }
 
         mCornerRadius = a.getDimensionPixelSize(R.styleable.RoundedImageView_corner_radius, -1);
-        mBorderWidth = a.getDimensionPixelSize(R.styleable.RoundedImageView_border_width, -1);
+        mBorderWidth = a.getDimensionPixelSize(R.styleable.RoundedImageView_borderWidth, -1);
 
         // don't allow negative values for radius and border
         if (mCornerRadius < 0) {
@@ -78,7 +78,7 @@ public class RoundedImageView extends ImageView {
             mBorderWidth = DEFAULT_BORDER_WIDTH;
         }
 
-        mBorderColor = a.getColorStateList(R.styleable.RoundedImageView_border_color);
+        mBorderColor = a.getColorStateList(R.styleable.RoundedImageView_borderColor);
         if (mBorderColor == null) {
             mBorderColor = ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
         }

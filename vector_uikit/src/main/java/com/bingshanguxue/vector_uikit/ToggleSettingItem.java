@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
+
 
 /***
  * 自定义View（组合原有安卓控件或者布局）
@@ -66,15 +68,19 @@ public class ToggleSettingItem extends RelativeLayout {
             } else {
                 this.ivLogo.setVisibility(View.GONE);
             }
-
             this.ivLogo.setImageResource(a.getResourceId(R.styleable.ToggleSettingItem_src, 0));
 
             this.tvTitle.setText(a.getString(R.styleable.ToggleSettingItem_text));
             this.tvTitle.setTextColor(a.getColor(R.styleable.ToggleSettingItem_textColor, Color.BLACK));
-            this.tvTitle.setTextSize(a.getDimension(R.styleable.ToggleSettingItem_textSize, 16));
+            int textSizeInPx = a.getDimensionPixelSize(R.styleable.ToggleSettingItem_textSize, 16);
+            int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+            this.tvTitle.setTextSize(textSizeInSp);
+
             this.tvSubTitle.setText(a.getString(R.styleable.ToggleSettingItem_subText));
             this.tvSubTitle.setTextColor(a.getColor(R.styleable.ToggleSettingItem_subTextColor, Color.BLACK));
-            this.tvSubTitle.setTextSize(a.getDimension(R.styleable.ToggleSettingItem_subTextSize, 12));
+            int sbuTextSizeInPx = a.getDimensionPixelSize(R.styleable.SettingsItem_subTextSize, 12);
+            int sbuTextSizeInSp = DensityUtil.px2sp(getContext(), sbuTextSizeInPx);
+            this.tvSubTitle.setTextSize(sbuTextSizeInSp);
             this.tvSubTitle.setGravity(a.getInteger(R.styleable.ToggleSettingItem_subTextGravity,
                     Gravity.CENTER_VERTICAL | Gravity.END));
             int subTextMaxLines = a.getInt(R.styleable.ToggleSettingItem_subTextMaxLines, 1);

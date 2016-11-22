@@ -19,7 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.mfh.framework.R;
+import com.bingshanguxue.vector_uikit.R;
 
 
 public class CircleImageView extends ImageView {
@@ -72,9 +72,9 @@ public class CircleImageView extends ImageView {
 
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0);
 
-		mBorderWidth = a.getDimensionPixelSize(R.styleable.RoundedImageView_border_width,
+		mBorderWidth = a.getDimensionPixelSize(R.styleable.CircleImageView_borderWidth,
 				DEFAULT_BORDER_WIDTH);
-		mBorderColor = a.getColor(R.styleable.RoundedImageView_border_color, DEFAULT_BORDER_COLOR);
+		mBorderColor = a.getColor(R.styleable.CircleImageView_borderColor, DEFAULT_BORDER_COLOR);
 		mBorderOverlay = a.getBoolean(R.styleable.CircleImageView_border_overlay,
 				DEFAULT_BORDER_OVERLAY);
 

@@ -20,7 +20,7 @@
             android:layout_marginLeft="@dimen/global_dialog_padding"
             android:layout_marginRight="@dimen/global_dialog_padding"
             android:layout_toLeftOf="@+id/rb_select"
-            android:text="" />
+            android:text="egggg" />
 
         <RadioButton
             android:id="@+id/rb_select"
