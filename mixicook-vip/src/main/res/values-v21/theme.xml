@@ -2,6 +2,8 @@
 
     <!-- application theme 日间模式 -->
     <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
+        <item name="android:statusBarColor">@color/material_green_500</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -26,14 +28,6 @@
 
 
     <style name="AppBaseTheme_Light.NewFlow">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!--<item name="android:windowContentOverlay">@null</item>-->
-        <!--<item name="android:windowNoTitle">true</item>-->
-        <!--<item name="android:windowIsFloating">true</item>-->
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
-        <item name="android:statusBarColor">@color/material_green_500</item>
         <item name="android:windowAnimationStyle">@style/anim_bottom_in</item>
 
     </style>
@@ -45,8 +39,6 @@
         <!--<item name="android:windowNoTitle">true</item>-->
         <!--<item name="android:windowIsFloating">true</item>-->
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
-        <item name="android:statusBarColor">@color/material_green_500</item>
     </style>
 
     <!-- 夜间模式 -->

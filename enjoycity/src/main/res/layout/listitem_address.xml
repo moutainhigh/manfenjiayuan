@@ -58,7 +58,7 @@
         android:id="@+id/iv_arrow"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@drawable/icon_arrow_right"
+        android:src="@mipmap/icon_arrow_right"
         android:contentDescription=""
         android:layout_marginStart="12dp"
         android:visibility="gone"/>

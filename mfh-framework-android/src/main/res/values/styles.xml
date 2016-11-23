@@ -12,12 +12,6 @@
         <item name="android:paddingBottom">5dp</item>
     </style>
 
-    <style name="NewsMarkStyle">
-        <item name="android:background">@drawable/mark_circle_red</item>
-        <item name="android:layout_width">12dp</item>
-        <item name="android:layout_height">12dp</item>
-    </style>
-
     <style name="ButtonLinkedStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -113,7 +107,6 @@
     <style name="dialog_common" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
         <item name="android:editTextBackground">@drawable/bg_input_rectange</item>
-
     </style>
 
     <style name="dialog_title" parent="@style/fullline_view">
@@ -339,7 +332,8 @@
     <!--<item name="android:windowExitAnimation">@anim/zoom_out</item>-->
     <!--</style>-->
 
-    <style name="GridPasswordView" />
+    <style name="GridPasswordView"/>
+
     <style name="GridPasswordView.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -348,9 +342,11 @@
         <item name="android:layout_weight">1</item>
         <item name="android:singleLine">true</item>
     </style>
+
     <style name="GridPasswordView.EditText" parent="GridPasswordView.TextView">
         <item name="android:cursorVisible">false</item>
     </style>
+
     <style name="GridPasswordView.Divider">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>

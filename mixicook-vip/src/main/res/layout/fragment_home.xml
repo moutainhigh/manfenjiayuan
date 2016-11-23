@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:layout_width="match_parent"
                                                  android:id="@+id/rootview"
+                                                 android:layout_width="match_parent"
                                                  android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
@@ -24,6 +24,8 @@
                 android:id="@+id/address_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:endSrcVisible="true"
+                app:startSrcVisible="true"
                 app:text="请选择收货地址"
                 app:textColor="@color/black_35"
                 app:textColorHint="@color/black_35"
@@ -37,7 +39,6 @@
         android:id="@+id/nestedScrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -48,15 +49,15 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/bannerRackList"
                 android:layout_width="match_parent"
-                android:nestedScrollingEnabled="false"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
 
             <!--android:background="@color/material_white"-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/homeRackList"
-                android:nestedScrollingEnabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:paddingBottom="@dimen/spacing_8x"/>
 
         </LinearLayout>
@@ -65,23 +66,23 @@
 
     <!--app:srcCompat="@mipmap/btn_cart_dark"-->
     <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab_cart"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@mipmap/ic_fab_cart"-->
-        <!--app:backgroundTint="@color/material_black"-->
-        <!--app:borderWidth="0dp"-->
-        <!--app:layout_anchor="@+id/nestedScrollView2"-->
-        <!--app:layout_anchorGravity="bottom|end"/>-->
+    <!--android:id="@+id/fab_cart"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="@dimen/fab_margin"-->
+    <!--android:src="@mipmap/ic_fab_cart"-->
+    <!--app:backgroundTint="@color/material_black"-->
+    <!--app:borderWidth="0dp"-->
+    <!--app:layout_anchor="@+id/nestedScrollView2"-->
+    <!--app:layout_anchorGravity="bottom|end"/>-->
 
     <com.manfenjiayuan.mixicook_vip.widget.FloatView
         android:id="@+id/float_cart"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        app:layout_anchorGravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/nestedScrollView2"
-        android:layout_margin="@dimen/fab_margin"/>
+        app:layout_anchorGravity="bottom|end"/>
 
     <include
         android:id="@+id/noAddressView"

@@ -4,7 +4,11 @@
 
     <item>
         <shape android:shape="oval">
-            <solid android:color="#ffff4036"/>
+            <solid android:color="@color/mfh_circleBadge"/>
+
+            <size
+                android:width="12dp"
+                android:height="12dp"/>
         </shape>
     </item>
 

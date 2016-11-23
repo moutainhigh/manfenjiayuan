@@ -34,7 +34,7 @@
             android:id="@+id/bottom_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bottom_tab_bg"
+            android:background="@drawable/bg_topline"
             android:paddingTop="2dp"/>
 
     </LinearLayout>

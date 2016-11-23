@@ -42,7 +42,7 @@ public class BadgeViewButton extends LinearLayout {
             tvButtonText.setText(a.getString(R.styleable.BadgeViewButton_text));
             tvButtonText.setTextColor(a.getColor(R.styleable.BadgeViewButton_textColor, Color.BLACK));
             tvButtonText.setTextSize(a.getDimension(R.styleable.BadgeViewButton_textSize, 16));
-            ivButtonImage.setImageResource(a.getResourceId(R.styleable.BadgeViewButton_src, R.drawable.material_clothes));
+            ivButtonImage.setImageResource(a.getResourceId(R.styleable.BadgeViewButton_src, R.mipmap.ic_image_error));
 
             boolean isTextVisible = a.getBoolean(R.styleable.BadgeViewButton_textVisible, true);
             if (isTextVisible){

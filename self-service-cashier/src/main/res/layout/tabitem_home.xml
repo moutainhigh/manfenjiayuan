@@ -30,7 +30,7 @@
             android:layout_alignParentTop="true"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_oval_red_24"/>
+            android:src="@drawable/bg_circlebadge"/>
 
         <!--<TextView-->
         <!--style="@style/HighlightNumberStyle"-->

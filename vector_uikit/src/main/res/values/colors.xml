@@ -10,6 +10,8 @@
     <color name="mfh_colorAccent">#FF4081</color>
 
 
+    <color name="mfh_circleBadge">#ffff4036</color>
+
     <!--满分家园颜色基础档案，所有应用都应遵循该规范，除特殊情况需要可以自定义颜色-->
     <color name="mfh_black">#35363B</color>
 

@@ -65,7 +65,7 @@
                 android:layout_marginEnd="@dimen/default_margin_right"
                 android:contentDescription="@null"
                 android:scaleType="centerInside"
-                android:src="@drawable/icon_arrow_right"/>
+                android:src="@mipmap/icon_arrow_right"/>
         </LinearLayout>
 
         <View

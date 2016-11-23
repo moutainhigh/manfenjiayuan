@@ -37,7 +37,7 @@
             android:layout_alignParentEnd="true"
             android:textColor="#fe5000"
             android:gravity="center|end"
-            android:drawableEnd="@drawable/icon_arrow_right"
+            android:drawableEnd="@mipmap/icon_arrow_right"
             android:drawablePadding="4dp"
             android:layout_centerVertical="true"/>
 

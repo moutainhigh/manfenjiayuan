@@ -19,6 +19,7 @@
             app:position="top"
             app:src="@mipmap/ic_goods_warehouse"
             app:subText=""
+            app:subTextSize="12sp"
             app:text="商品库"
             app:textSize="16sp"/>
         <!--&lt;!&ndash;米西生鲜&ndash;&gt;-->
@@ -39,6 +40,7 @@
             app:position="bottom"
             app:src="@mipmap/ic_terminal"
             app:subText=""
+            app:subTextSize="12sp"
             app:text="设备编号"
             app:textSize="16sp"/>
 
@@ -50,6 +52,7 @@
             android:layout_marginTop="@dimen/spacing_double"
             app:position="top"
             app:src="@mipmap/ic_rs232"
+            app:subTextSize="12sp"
             app:text="LED客显"
             app:textSize="16sp"/>
 
@@ -60,6 +63,7 @@
             android:layout_height="48dp"
             app:position="center"
             app:src="@mipmap/ic_rs232"
+            app:subTextSize="12sp"
             app:text="打印机(Gprinter)"
             app:textSize="16sp"/>
 
@@ -70,6 +74,7 @@
             android:layout_height="48dp"
             app:position="center"
             app:src="@mipmap/ic_rs232"
+            app:subTextSize="12sp"
             app:text="爱华电子秤 (ACS-P215)"
             app:textSize="16sp"/>
 
@@ -80,6 +85,7 @@
             android:layout_height="48dp"
             app:position="center"
             app:src="@mipmap/ic_rs232"
+            app:subTextSize="12sp"
             app:text="寺冈电子秤 (DS781)"
             app:textSize="16sp"/>
         <!--银联-->
@@ -90,6 +96,7 @@
             app:position="bottom"
             app:src="@mipmap/ic_rs232"
             app:subText=""
+            app:subTextSize="12sp"
             app:text="银联"
             app:textSize="16sp"/>
 
@@ -101,6 +108,7 @@
             android:layout_marginTop="@dimen/spacing_double"
             app:position="top"
             app:src="@mipmap/ic_ftp"
+            app:subTextSize="12sp"
             app:text="FileZilla (寺冈电子秤)"
             app:textSize="16sp"/>
 
@@ -111,6 +119,7 @@
             android:layout_height="48dp"
             app:position="center"
             app:src="@mipmap/ic_tag"
+            app:subTextSize="12sp"
             app:text="绿泰电子价签"
             app:textSize="16sp"/>
 
@@ -121,6 +130,7 @@
             android:layout_height="48dp"
             app:position="center"
             app:src="@mipmap/ic_keyboard"
+            app:subTextSize="12sp"
             app:text="系统键盘"
             app:textSize="16sp"/>
 
@@ -158,6 +168,7 @@
             app:position="bottom"
             app:src="@mipmap/ic_upgrade"
             app:subText=""
+            app:subTextSize="12sp"
             app:text="应用版本"
             app:textSize="16sp"/>
 

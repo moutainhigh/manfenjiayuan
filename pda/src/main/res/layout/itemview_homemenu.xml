@@ -23,5 +23,5 @@
         android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        android:src="@mipmap/ic_oval_red_24"/>
+        android:src="@drawable/bg_circlebadge"/>
 </RelativeLayout>

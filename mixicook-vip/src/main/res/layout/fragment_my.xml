@@ -44,7 +44,7 @@
             <!--android:orientation="vertical"-->
             <!--app:layout_collapseMode="pin">-->
 
-            <!--<com.mfh.framework.uikit.widget.AvatarView-->
+            <!--<com.bingshanguxue.vector_uikit.widget.AvatarView-->
             <!--android:id="@+id/iv_header"-->
             <!--android:layout_width="56dp"-->
             <!--android:layout_height="56dp"-->
@@ -118,7 +118,6 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mfh_background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -136,7 +135,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_double">
 
-                <com.mfh.framework.uikit.widget.AvatarView
+                <com.bingshanguxue.vector_uikit.widget.AvatarView
                     android:id="@+id/iv_header"
                     android:layout_width="64dp"
                     android:layout_height="64dp"

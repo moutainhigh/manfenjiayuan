@@ -13,7 +13,6 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mfh_background_light"
         android:paddingBottom="@dimen/spacing_double"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -160,6 +159,7 @@
             android:layout_weight="2"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_micro"
             android:textSize="14sp"/>
 
         <Button

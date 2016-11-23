@@ -72,7 +72,7 @@
             android:textColor="@color/black_70"
             android:textSize="12sp"
             android:layout_marginStart="8dp"
-            android:drawableEnd="@drawable/icon_arrow_right"
+            android:drawableEnd="@mipmap/icon_arrow_right"
             android:gravity="end"
             android:drawablePadding="4dp"/>
     </LinearLayout>

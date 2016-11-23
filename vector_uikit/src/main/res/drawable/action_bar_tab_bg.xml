@@ -3,6 +3,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:drawable="@drawable/action_bar_tab_selected"
-        android:state_selected="true"/>
+          android:state_selected="true"/>
 
 </selector>

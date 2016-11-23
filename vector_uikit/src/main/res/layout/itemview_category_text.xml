@@ -28,6 +28,6 @@
         android:padding="4dp"
         android:scaleType="centerCrop"
         android:visibility="invisible"
-        android:src="@drawable/icon_arrow_right"/>
+        android:src="@mipmap/icon_arrow_right"/>
 
 </LinearLayout>
