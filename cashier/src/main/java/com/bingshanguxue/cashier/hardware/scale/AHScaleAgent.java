@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.hardware.scale;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * 爱华电子计价秤(ACS-P215)
@@ -30,12 +30,12 @@ public class AHScaleAgent {
 
 
     public static String getPort(){
-        return SharedPreferencesManager.getText(PREF_NAME,
+        return SharedPrefesManagerFactory.getString(PREF_NAME,
                 PK_ACS_P215_PORT, AHScaleAgent.PORT_ACS_P215_DEF);
     }
 
     public static void setPort(String port){
-        SharedPreferencesManager.set(PREF_NAME,
+        SharedPrefesManagerFactory.set(PREF_NAME,
                 PK_ACS_P215_PORT, port);
     }
 
@@ -44,12 +44,12 @@ public class AHScaleAgent {
     }
 
     public static boolean isEnabled(){
-        return SharedPreferencesManager.getBoolean(PREF_NAME,
+        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
                 PK_ACS_P215_ENABLED, ENABLED_DEF);
     }
 
     public static void setEnabled(boolean enabled){
-        SharedPreferencesManager.set(PREF_NAME,
+        SharedPrefesManagerFactory.set(PREF_NAME,
                 PK_ACS_P215_ENABLED, enabled);
     }
 

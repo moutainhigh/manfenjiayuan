@@ -4,7 +4,7 @@ import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
 import com.mfh.framework.core.utils.DataConvertUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -39,12 +39,12 @@ public class GPrinterAgent {
 
 
     public static String getPort(){
-        return SharedPreferencesManager.getText(PREF_NAME,
+        return SharedPrefesManagerFactory.getString(PREF_NAME,
                 PK_GPRINTER_PORT, GPrinterAgent.PORT_DEF);
     }
 
     public static void setPort(String port){
-        SharedPreferencesManager.set(PREF_NAME,
+        SharedPrefesManagerFactory.set(PREF_NAME,
                 PK_GPRINTER_PORT, port);
     }
 
@@ -53,12 +53,12 @@ public class GPrinterAgent {
     }
 
     public static boolean isEnabled(){
-        return SharedPreferencesManager.getBoolean(PREF_NAME,
+        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
                 PK_GPRINTER_ENABLED, ENABLED_DEF);
     }
 
     public static void setEnabled(boolean enabled){
-        SharedPreferencesManager.set(PREF_NAME,
+        SharedPrefesManagerFactory.set(PREF_NAME,
                 PK_GPRINTER_ENABLED, enabled);
     }
 

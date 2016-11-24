@@ -13,7 +13,7 @@ import com.manfenjiayuan.cashierdisplay.bean.CashierOrderInfo;
 import com.manfenjiayuan.cashierdisplay.ui.adapter.OrderItemsAdapter;
 import com.manfenjiayuan.cashierdisplay.ui.view.LineItemDecoration;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 
 import butterknife.Bind;
 

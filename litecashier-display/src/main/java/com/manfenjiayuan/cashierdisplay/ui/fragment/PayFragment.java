@@ -16,7 +16,7 @@ import com.manfenjiayuan.cashierdisplay.ui.view.LineItemDecoration;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.uikit.widget.AvatarView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 
 import butterknife.Bind;
 

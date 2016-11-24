@@ -54,7 +54,6 @@ import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.pay.AppPrePayRsp;
 import com.mfh.framework.api.pay.PayApi;
-import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.framework.api.payOrder.PayOrderApiImpl;
 import com.mfh.framework.api.pmcstock.PmcStockApiImpl;

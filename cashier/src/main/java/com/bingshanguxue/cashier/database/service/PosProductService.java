@@ -164,7 +164,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         entity.setProcateId(posGoods.getProcateId());
         entity.setCateType(posGoods.getCateType());
         entity.setProdLineId(posGoods.getProdLineId());
-        entity.setIsCloudActive(1);
+        entity.setIsCloudActive(1);//默认有效，即商品和云端数据是同步到
 
         // TODO: 8/2/16 用不到，影响效率，暂时忽略。
 //                    //设置商品名称的拼音和排序字母

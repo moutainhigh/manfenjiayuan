@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * 寺冈电子秤（DIGI-DS781）
@@ -21,12 +21,12 @@ public class SMScaleAgent {
 
 
     public static String getPort() {
-        return SharedPreferencesManager.getText(
+        return SharedPrefesManagerFactory.getString(
                 PREF_NAME, PK_SCALE_PORT, PORT_SCALE_DS781_DEF);
     }
 
     public static void setPort(String port) {
-        SharedPreferencesManager.set(PREF_NAME, PK_SCALE_PORT, port);
+        SharedPrefesManagerFactory.set(PREF_NAME, PK_SCALE_PORT, port);
     }
 
     public static String getBaudrate(){
@@ -34,12 +34,12 @@ public class SMScaleAgent {
     }
 
     public static boolean isEnabled(){
-        return SharedPreferencesManager.getBoolean(PREF_NAME,
+        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
                 PK_SMSCALE_ENABLED, ENABLED_DEF);
     }
 
     public static void setEnabled(boolean enabled){
-        SharedPreferencesManager.set(PREF_NAME,
+        SharedPrefesManagerFactory.set(PREF_NAME,
                 PK_SMSCALE_ENABLED, enabled);
     }
 

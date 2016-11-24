@@ -10,7 +10,7 @@ import com.bingshanguxue.cashier.CashierFactory;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
 
@@ -123,7 +123,7 @@ public abstract class BasePayFragment extends BaseFragment {
         orderInfo.put("body", body);
         orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
-        orderInfo.put("terminal_id", SharedPreferencesManager.getTerminalId());
+        orderInfo.put("terminal_id", SharedPrefesManagerFactory.getTerminalId());
         orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID
 
         return orderInfo;

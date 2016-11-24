@@ -12,7 +12,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 public class AppContext extends MfhApplication {
     @Override
     protected boolean isReleaseVersion() {
-//        return SharedPreferencesManager.isReleaseVersion();
+//        return SharedPrefesManagerFactory.isReleaseVersion();
         return false;
     }
 

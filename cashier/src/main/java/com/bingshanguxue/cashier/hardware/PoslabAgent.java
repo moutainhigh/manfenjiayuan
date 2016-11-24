@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.hardware;
 
 import com.bingshanguxue.cashier.hardware.printer.CommandConstants;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import de.greenrobot.event.EventBus;
 
@@ -40,12 +40,12 @@ public class PoslabAgent {
     }
 
     public static boolean isEnabled(){
-        return SharedPreferencesManager.getBoolean(PREF_NAME,
+        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
                 PK_DISPLAY_ENABLED, ENABLED_DEF);
     }
 
     public static void setEnabled(boolean enabled){
-        SharedPreferencesManager.set(PREF_NAME,
+        SharedPrefesManagerFactory.set(PREF_NAME,
                 PK_DISPLAY_ENABLED, enabled);
     }
 

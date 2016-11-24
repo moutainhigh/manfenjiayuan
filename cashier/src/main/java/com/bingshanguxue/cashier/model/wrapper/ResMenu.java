@@ -40,7 +40,6 @@ public class ResMenu implements Serializable{
     //金丝雀
     public static final Long CANARY_MENU_GOODS    = 71L;//商品
     public static final Long CANARY_MENU_ORDERFLOW= 72L;//流水
-    public static final Long CANARY_MENU_CANARY= 73L;//金丝雀
     public static final Long CANARY_MENU_MESSAGE_MGR= 74L;//消息管理器
 
     private Long id;//编号

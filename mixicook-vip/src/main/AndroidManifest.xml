@@ -4,11 +4,6 @@
 
     <!-- BEGIN_INCLUDE(manifest) -->
 
-    <!-- Note that all required permissions are declared here in the Android manifest.
-     On Android M and above, use of these permissions is only requested at run time. -->
-    <!-- 相机/本地图库功能 -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-
 
     <!-- The following permissions are only requested if the device is on M or above.
      On older platforms these permissions are not requested and will not be available. -->
@@ -44,6 +39,10 @@
     <!-- 使用拨打电话权限 -->
     <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
     <!-- <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> -->
+    <!-- Note that all required permissions are declared here in the Android manifest.
+     On Android M and above, use of these permissions is only requested at run time. -->
+    <!-- 相机/本地图库功能 -->
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera"/>
     <!-- 使用照相机权限 -->
     <uses-feature android:name="android.hardware.camera.autofocus"/>
@@ -93,7 +92,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppBaseTheme_Light.Transparent">
+        android:theme="@style/AppBaseTheme_Light">
 
         <!-- 引导页 -->
         <activity

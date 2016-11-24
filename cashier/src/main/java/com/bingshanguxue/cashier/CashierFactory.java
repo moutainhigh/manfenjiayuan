@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * Created by bingshanguxue on 7/7/16.
@@ -37,7 +37,7 @@ public class CashierFactory {
      * */
     public static String genTradeNo(Long orderId, boolean timeStampEnabled){
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s_%d", SharedPreferencesManager.getTerminalId(),
+        sb.append(String.format("%s_%d", SharedPrefesManagerFactory.getTerminalId(),
                 orderId));
         if (timeStampEnabled){
             sb.append("_").append(System.currentTimeMillis());
@@ -54,7 +54,7 @@ public class CashierFactory {
      * */
     public static String genTradeNo(Integer bizType, Integer payType, Long orderId, boolean timeStampEnabled){
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s_%d_%d_%d", SharedPreferencesManager.getTerminalId(),
+        sb.append(String.format("%s_%d_%d_%d", SharedPrefesManagerFactory.getTerminalId(),
                 bizType, payType, orderId));
         if (timeStampEnabled){
             sb.append("_").append(System.currentTimeMillis());

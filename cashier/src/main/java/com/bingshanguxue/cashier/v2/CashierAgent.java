@@ -14,7 +14,7 @@ import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import java.util.ArrayList;
@@ -194,7 +194,7 @@ public class CashierAgent {
             orderEntity.setSellOffice(MfhLoginService.get().getCurOfficeId());
             orderEntity.setSellerId(MfhLoginService.get().getSpid());// 需要登录
             orderEntity.setCreatedBy(String.valueOf(MfhLoginService.get().getCurrentGuId()));
-            orderEntity.setPosId(SharedPreferencesManager.getTerminalId());//设备编号
+            orderEntity.setPosId(SharedPrefesManagerFactory.getTerminalId());//设备编号
             orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);//订单状态
             orderEntity.setCreatedDate(new Date());
             orderEntity.setUpdatedDate(new Date());

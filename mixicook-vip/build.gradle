@@ -23,10 +23,13 @@ android {
         minSdkVersion 21
 //        rootProject.ext.android.minSdkVersion
         rootProject.ext.android.targetSdkVersion
-        versionCode 6
+        versionCode 7
         versionName "1.0.3"
 
         multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
 
         ndk {
             //设置支持的SO库架构
@@ -116,6 +119,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
     testCompile 'junit:junit:4.12'
     compile rootProject.ext.dependencies["appcompat-v7"]
     compile rootProject.ext.dependencies["cardview-v7"]

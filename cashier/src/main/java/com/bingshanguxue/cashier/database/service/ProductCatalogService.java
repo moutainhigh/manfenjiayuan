@@ -138,13 +138,13 @@ public class ProductCatalogService extends BaseService<ProductCatalogEntity, Str
             return;
         }
 
-        ProductCatalogEntity entity = getDao().getEntityById(String.valueOf(goods.getId()));
+        ProductCatalogEntity entity = getEntityById(String.valueOf(goods.getId()));
         if (entity == null){
             entity = new ProductCatalogEntity();
             entity.setId(goods.getId());
         }
 
-        entity.setIsCloudActive(1);
+        entity.setIsCloudActive(1);//有效
         entity.setCataItemId(goods.getCataItemId());
         entity.setParamValueId(goods.getParamValueId());
         saveOrUpdate(entity);
