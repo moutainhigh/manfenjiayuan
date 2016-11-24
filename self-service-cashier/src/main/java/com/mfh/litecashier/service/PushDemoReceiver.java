@@ -147,7 +147,10 @@ public class PushDemoReceiver extends BroadcastReceiver {
 
         //SKU更新
         if (IMBizType.TENANT_SKU_UPDATE == bizType){
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
+            if (count > 0){
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
+            }
         }
         else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType){
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
@@ -158,7 +161,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
         else if (IMBizType.FRONTCATEGORY_UPDATE == bizType){
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
             if (count > 0){
-                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
+                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY|DataDownloadManager.FRONTENDCATEGORY_GOODS);
             }
         }
         //新的采购订单

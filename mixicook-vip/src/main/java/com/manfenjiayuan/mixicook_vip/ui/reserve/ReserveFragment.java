@@ -10,27 +10,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.category.CategoryQueryInfo;
-import com.mfh.framework.api.category.CategoryOption;
-import com.mfh.framework.api.category.ScCategoryInfoApi;
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.model.PosCategory;
 import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
-import com.manfenjiayuan.mixicook_vip.utils.SharedPreferencesHelper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspListBean;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CateApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.category.CategoryOption;
+import com.mfh.framework.api.category.CategoryQueryInfo;
+import com.mfh.framework.api.category.ScCategoryInfoApi;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
@@ -219,8 +218,6 @@ public class ReserveFragment extends BaseProgressFragment
             return true;
         }
 
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_FRONTEND_CATEGORYINFO_FRESH_ENABLED, true);
-
         return false;
     }
 
@@ -331,10 +328,6 @@ public class ReserveFragment extends BaseProgressFragment
         }
         ACache.get(AppContext.getAppContext(), ACacheHelper.CACHE_NAME)
                 .put(ACacheHelper.CK_FRONTEND_CATEGORY_FRESH, cacheArrays.toJSONString());
-
-        //设置下次不需要自动更新商品类目，可以在收银页面点击同步按钮修改
-        SharedPreferencesHelper.set(SharedPreferencesHelper.PK_SYNC_FRONTEND_CATEGORYINFO_FRESH_ENABLED, false);
-
     }
 
     /**

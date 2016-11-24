@@ -110,6 +110,7 @@
         <!-- 引导页 -->
         <activity
             android:name=".ui.activity.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="landscape">
             <intent-filter>
@@ -119,70 +120,70 @@
             </intent-filter>
         </activity>
         <!--<activity-->
-            <!--android:name=".ui.activity.SplashActivity"-->
-            <!--android:clearTaskOnLaunch="true"-->
-            <!--android:launchMode="singleTask"-->
-            <!--android:resumeWhilePausing="true"-->
-            <!--android:screenOrientation="landscape"-->
-            <!--android:stateNotNeeded="true"-->
-            <!--android:windowSoftInputMode="adjustPan">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
+        <!--android:name=".ui.activity.SplashActivity"-->
+        <!--android:clearTaskOnLaunch="true"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:resumeWhilePausing="true"-->
+        <!--android:screenOrientation="landscape"-->
+        <!--android:stateNotNeeded="true"-->
+        <!--android:windowSoftInputMode="adjustPan">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
 
-                <!--&lt;!&ndash;<category android:name="android.intent.category.LAUNCHER"/>&ndash;&gt;-->
-            <!--</intent-filter>-->
-            <!--&lt;!&ndash;<intent-filter>&ndash;&gt;-->
-                <!--&lt;!&ndash;<action android:name="android.intent.action.MAIN"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<category android:name="android.intent.category.LAUNCHER"/>&ndash;&gt;-->
+        <!--</intent-filter>-->
+        <!--&lt;!&ndash;<intent-filter>&ndash;&gt;-->
+        <!--&lt;!&ndash;<action android:name="android.intent.action.MAIN"/>&ndash;&gt;-->
 
-                <!--&lt;!&ndash;<category android:name="android.intent.category.MONKEY"/>&ndash;&gt;-->
-                <!--&lt;!&ndash;<category android:name="android.intent.category.HOME"/>&ndash;&gt;-->
-                <!--&lt;!&ndash;<category android:name="android.intent.category.DEFAULT"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;</intent-filter>&ndash;&gt;-->
+        <!--&lt;!&ndash;<category android:name="android.intent.category.MONKEY"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<category android:name="android.intent.category.HOME"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;<category android:name="android.intent.category.DEFAULT"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</intent-filter>&ndash;&gt;-->
         <!--</activity>-->
         <!--<activity-alias-->
-            <!--android:name=".ui.activity.SplashActivity-mixicook"-->
-            <!--android:enabled="true"-->
-            <!--android:icon="@mipmap/ic_launcher_mixicook"-->
-            <!--android:label="@string/app_name"-->
-            <!--android:targetActivity=".ui.activity.SplashActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+        <!--android:name=".ui.activity.SplashActivity-mixicook"-->
+        <!--android:enabled="true"-->
+        <!--android:icon="@mipmap/ic_launcher_mixicook"-->
+        <!--android:label="@string/app_name"-->
+        <!--android:targetActivity=".ui.activity.SplashActivity">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
+        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+        <!--</intent-filter>-->
         <!--</activity-alias>-->
         <!--<activity-alias-->
-            <!--android:name=".ui.activity.SplashActivity-lanlj"-->
-            <!--android:enabled="false"-->
-            <!--android:icon="@mipmap/ic_launcher_lanlj"-->
-            <!--android:label="@string/app_name"-->
-            <!--android:targetActivity=".ui.activity.SplashActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+        <!--android:name=".ui.activity.SplashActivity-lanlj"-->
+        <!--android:enabled="false"-->
+        <!--android:icon="@mipmap/ic_launcher_lanlj"-->
+        <!--android:label="@string/app_name"-->
+        <!--android:targetActivity=".ui.activity.SplashActivity">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
+        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+        <!--</intent-filter>-->
         <!--</activity-alias>-->
         <!--<activity-alias-->
-            <!--android:name=".ui.activity.SplashActivity-qianwj"-->
-            <!--android:enabled="false"-->
-            <!--android:icon="@mipmap/ic_launcher_qianwj"-->
-            <!--android:label="@string/app_name"-->
-            <!--android:targetActivity=".ui.activity.SplashActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+        <!--android:name=".ui.activity.SplashActivity-qianwj"-->
+        <!--android:enabled="false"-->
+        <!--android:icon="@mipmap/ic_launcher_qianwj"-->
+        <!--android:label="@string/app_name"-->
+        <!--android:targetActivity=".ui.activity.SplashActivity">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN"/>-->
+        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+        <!--</intent-filter>-->
         <!--</activity-alias>-->
 
         <activity
             android:name=".ui.activity.SignInActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".ui.activity.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize|touchscreen"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize|touchscreen"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:theme="@style/AppBaseTheme_Light.Transparent"
@@ -203,7 +204,7 @@
 
         <activity
             android:name=".ui.activity.AdministratorActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/DialogActivity"/>
@@ -215,19 +216,19 @@
             android:theme="@style/DialogActivity"/>
         <activity
             android:name=".ui.activity.CashierPayActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/DialogActivity"/>
         <activity
             android:name=".ui.prepare.PrepareActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/DialogActivity"/>
         <activity
             android:name=".ui.activity.SimpleDialogActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/DialogActivity"/>
@@ -235,7 +236,7 @@
         <!-- android:theme="@style/AppBaseTheme_Light.Transparent" -->
         <activity
             android:name=".ui.activity.SimpleActivity"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="landscape"

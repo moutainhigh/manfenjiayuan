@@ -3,11 +3,12 @@ package com.manfenjiayuan.mixicook_vip.database;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.abs.MfhEntity;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 
 /**
  *
  * <ol>
- *     采购订单购物车商品明细，对应{@link com.mfh.framework.api.InvOrderApi#URL_INVSENDORDER_ASK_SENDORDER}
+ *     采购订单购物车商品明细，对应{@link InvOrderApi#URL_INVSENDORDER_ASK_SENDORDER}
  *     <li>生鲜采购</li>
  * </ol>
  * Created by <bingshanguxue> on 16-06-02

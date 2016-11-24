@@ -19,7 +19,6 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.api.invCheckOrder.InvCheckOrderApi;
 import com.mfh.framework.api.invCheckOrder.InvCheckOrderApiImpl;
-import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.uikit.base.BaseFragment;

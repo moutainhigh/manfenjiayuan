@@ -23,10 +23,9 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
@@ -240,16 +239,10 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                             case "-1":
                                 showProgressDialog(ProgressDialog.STATUS_DONE, "支付异常", true);
 
-                                if (!BizConfig.RELEASE){
-                                    entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
-                                    PosOrderPayService.get().saveOrUpdate(entity);
+                                entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
+                                PosOrderPayService.get().saveOrUpdate(entity);
 
-                                    autoFixOrder(entity.getOrderId());
-                                }
-                                else{
-                                    entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_EXCEPTION);
-                                    PosOrderPayService.get().saveOrUpdate(entity);
-                                }
+                                autoFixOrder(entity.getOrderId());
                                 break;
                             //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
                             //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
@@ -259,16 +252,10 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                             default:
                                 showProgressDialog(ProgressDialog.STATUS_ERROR, "支付失败", true);
 
-                                if (!BizConfig.RELEASE){
-                                    entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
-                                    PosOrderPayService.get().saveOrUpdate(entity);
+                                entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
+                                PosOrderPayService.get().saveOrUpdate(entity);
 
-                                    autoFixOrder(entity.getOrderId());
-                                }
-                                else{
-                                    entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FAILED);
-                                    PosOrderPayService.get().saveOrUpdate(entity);
-                                }
+                                autoFixOrder(entity.getOrderId());
                                 break;
                         }
                     }

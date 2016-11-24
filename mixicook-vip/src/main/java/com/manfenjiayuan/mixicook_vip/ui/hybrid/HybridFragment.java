@@ -19,7 +19,7 @@ import android.webkit.WebViewClient;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.api.mobile.Mixicook;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -152,7 +152,7 @@ public class HybridFragment extends BaseFragment {
                     String resultText = bundle.getString("result", "");
 //                Bitmap barcode =  (Bitmap)bundle.getParcelable("bitmap");//扫描截图
 
-                    if (StringUtils.isUrl(resultText) && resultText.contains(MfhApi.DOMAIN)) {
+                    if (StringUtils.isUrl(resultText) && resultText.contains(MobileApi.DOMAIN)) {
                         DialogUtil.showHint(resultText);
                     } else {
                         DialogUtil.showHint(String.format("非法的URL： %s", resultText));

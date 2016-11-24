@@ -18,13 +18,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.model.OrderPayWay;
 import com.bingshanguxue.cashier.model.PayOrder;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
@@ -34,7 +34,6 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
-import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -500,13 +499,8 @@ public class CashQuotaFragment extends BaseProgressFragment {
         quickPayInfo.setPayType(WayType.ALI_F2F);
         quickPayInfo.setSubject("提交营业现金");
         quickPayInfo.setBody("为了不影响您使用POS设备，请及时提交营业现金！");
-        if (!BizConfig.RELEASE) {
-            quickPayInfo.setAmount(100D);
-            quickPayInfo.setMinAmount(0.01D);
-        } else {
-            quickPayInfo.setAmount(0.01D);
-            quickPayInfo.setMinAmount(0.01D);
-        }
+        quickPayInfo.setAmount(100D);
+        quickPayInfo.setMinAmount(0.01D);
 
         ZLogger.df(String.format(">>>准备提交营业现金: %s", JSONObject.toJSONString(quickPayInfo)));
 

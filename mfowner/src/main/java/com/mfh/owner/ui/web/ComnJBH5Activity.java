@@ -35,7 +35,6 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
-import com.mfh.framework.api.pay.PayApiImpl;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.core.camera.CameraSessionUtil;
 import com.mfh.framework.anlaysis.logger.ZLogger;

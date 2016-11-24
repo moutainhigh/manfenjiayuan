@@ -208,12 +208,8 @@ public class SplashActivity extends InitActivity {
                 if (data != null){
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
-                if (resultCode == Activity.RESULT_OK) {
-                    doAsyncTask();
-                }
-                else{
-                    finish();
-                }
+                //设置页面返回后，重新检测权限是否开启
+                doAsyncTask();
             }
             break;
             case ARCode.ARC_SIGNIN: {
@@ -252,7 +248,6 @@ public class SplashActivity extends InitActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-
 
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面

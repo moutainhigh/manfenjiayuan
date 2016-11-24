@@ -8,6 +8,7 @@ import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.view.ICashierView;
 
@@ -153,7 +154,7 @@ public class CashierPresenter {
                 "余额查询", R.mipmap.ic_service_balance));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SETTINGS,
                 "设置", R.mipmap.ic_service_settings));
-        if (!BizConfig.RELEASE) {
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted() && !BizConfig.RELEASE) {
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
                     "注册", R.mipmap.ic_service_register_vip));
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_GOODS_LIST,

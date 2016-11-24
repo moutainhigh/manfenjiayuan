@@ -32,13 +32,13 @@ public class LocationHeaderView extends FrameLayout{
 
     public LocationHeaderView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        rootView = LayoutInflater.from(context).inflate(R.layout.listview_header_conversation, this, true);
+        rootView = LayoutInflater.from(context).inflate(R.layout.location_headerview, this, true);
         this.initAndSetUpView();
     }
 
     public LocationHeaderView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        rootView = LayoutInflater.from(context).inflate(R.layout.listview_header_conversation, this, true);
+        rootView = LayoutInflater.from(context).inflate(R.layout.location_headerview, this, true);
         this.initAndSetUpView();
     }
 

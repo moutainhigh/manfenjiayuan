@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.skinloader.base.SkinBaseActivity;
-import com.manfenjiayuan.business.AppIconManager;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
 import com.manfenjiayuan.business.route.Route;

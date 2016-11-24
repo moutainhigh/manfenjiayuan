@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.R;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.reciaddr.Reciaddr;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;

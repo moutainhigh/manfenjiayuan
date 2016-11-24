@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.ui.InputTextFragment;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 
 import butterknife.Bind;
@@ -76,13 +75,13 @@ public class GeneralSettingsFragment extends BaseFragment {
         itemLocation.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean on) {
-                SharedPreferencesManager.setLocationAcceptEnabled(on);
+                SharedPrefesManagerFactory.setLocationAcceptEnabled(on);
             }
         });
         itemNotification.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean on) {
-                SharedPreferencesManager.setNotificationAcceptEnabled(on);
+                SharedPrefesManagerFactory.setNotificationAcceptEnabled(on);
             }
         });
 
@@ -90,8 +89,8 @@ public class GeneralSettingsFragment extends BaseFragment {
     }
 
     private void refresh() {
-        itemLocation.setChecked(SharedPreferencesManager.getLocationAcceptEnabled());
-        itemNotification.setChecked(SharedPreferencesManager.getNotificationAcceptEnabled());
+        itemLocation.setChecked(SharedPrefesManagerFactory.getLocationAcceptEnabled());
+        itemNotification.setChecked(SharedPrefesManagerFactory.getNotificationAcceptEnabled());
     }
 
     /**

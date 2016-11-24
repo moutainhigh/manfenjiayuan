@@ -1,8 +1,5 @@
 package com.mfh.framework.api.commonuseraccount;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -10,8 +7,6 @@ import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-
-import static com.mfh.framework.api.commonuseraccount.CommonUserAccountApi.URL_ACTIVATEACCOUNT;
 
 
 /**

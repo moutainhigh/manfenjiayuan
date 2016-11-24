@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,27 +125,26 @@ public class AddAddressFragment extends BaseFragment {
         // Inflate a menu to be displayed in the toolbar
         toolbar.inflateMenu(R.menu.menu_submit);
 
-
-        labelAddress.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelReceiveName.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-            }
-        });
-        labelReceiveName.setOnViewListener(new EditLabelView.OnViewListener() {
-            @Override
-            public void onKeycodeEnterClick(String text) {
-                labelReceiveMobile.requestFocusEnd();
-            }
-
-            @Override
-            public void onScan() {
-            }
-        });
+        labelAddress.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelReceiveName.requestFocusEnd();
+                        }
+                    }
+                });
+        labelReceiveName.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
+                new EditLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            labelReceiveMobile.requestFocusEnd();
+                        }
+                    }
+                });
     }
 
     @Override

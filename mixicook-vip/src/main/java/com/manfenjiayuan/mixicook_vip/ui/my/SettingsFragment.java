@@ -18,7 +18,7 @@ import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.api.mobile.Mixicook;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.helper.SharedPreferencesManager;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -205,8 +205,7 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
     private static int clickVersionTimes = 0;
     @OnClick(R.id.item_version)
     public void checkUpdate() {
-        if (SharedPreferencesManager.getBoolean(SharedPreferencesManager.PREF_NAME_APP,
-                SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, false)){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
             if ((System.currentTimeMillis() - exitTime) > 3000) {
                 Beta.checkUpgrade();
                 exitTime = System.currentTimeMillis();
@@ -226,8 +225,7 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
                 clickVersionTimes = 0;
 
                 DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
-                SharedPreferencesManager.set(SharedPreferencesManager.PREF_NAME_APP,
-                        SharedPreferencesManager.PK_B_SUPER_PERMISSION_GRANTED, true);
+                SharedPrefesManagerFactory.setSuperPermissionGranted(true);
                 refresh(true);
             }
             else{

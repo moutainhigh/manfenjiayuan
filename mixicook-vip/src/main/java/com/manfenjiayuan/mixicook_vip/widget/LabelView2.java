@@ -72,7 +72,7 @@ public class LabelView2 extends RelativeLayout {
 
             this.ivStart.setImageResource(ta.getResourceId(R.styleable.LabelView2_src, 0));
             this.ivEnd.setImageResource(ta.getResourceId(R.styleable.LabelView2_endSrc,
-                    R.drawable.icon_arrow_right));
+                    R.mipmap.icon_arrow_right));
             boolean isIvEndVisible = ta.getBoolean(R.styleable.LabelView2_endSrcVisible, true);
             if (isIvEndVisible) {
                 ivEnd.setVisibility(View.VISIBLE);

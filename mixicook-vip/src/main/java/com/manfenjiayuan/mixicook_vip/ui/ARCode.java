@@ -7,8 +7,6 @@ package com.manfenjiayuan.mixicook_vip.ui;
  * </p>
  */
 public class ARCode {
-    public static final int ARC_ANDROID_SETTINGS = 0x101;//系统设置
-
     public static final int ARC_ADDRESS_LIST = 0x01;//我的收货地址
     public static final int ARC_ADD_ADDRESS = 0x02;//添加收货地址
     public static final int ARC_MGR_ADDRESS = 0x03;//管理收货地址

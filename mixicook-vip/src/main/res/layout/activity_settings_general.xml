@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
+                app:textSize="14sp"
                 app:text="@string/label_settings_location"
                 app:isLogoVisible="false"
                 app:position="top"/>
@@ -30,6 +31,7 @@
                 android:id="@+id/item_notification"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
+                app:textSize="14sp"
                 app:text="@string/label_settings_notification"
                 app:position="center"
                 app:isLogoVisible="false"
@@ -44,7 +46,6 @@
                 app:isLogoVisible="false"
                 app:position="bottom"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
-                app:src="@drawable/material_housekeeping"
                 app:text="@string/label_settings_clearcache"
                 app:subText="@string/label_settings_clearcache_description"/>
         </LinearLayout>

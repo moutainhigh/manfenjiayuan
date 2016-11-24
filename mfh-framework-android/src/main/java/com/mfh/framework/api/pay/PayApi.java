@@ -8,8 +8,6 @@ import com.mfh.framework.network.NetFactory;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
-import static com.mfh.framework.api.payOrder.PayOrderApi.URL_PAYORDER;
-
 /**
  * 支付API
  * Created by bingshanguxue on 4/21/16.

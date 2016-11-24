@@ -221,12 +221,7 @@ public class SplashActivity extends InitActivity {
                 if (data != null){
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
-                if (resultCode == Activity.RESULT_OK) {
-                    doAsyncTask();
-                }
-                else{
-                    finish();
-                }
+                doAsyncTask();
             }
             break;
             case Constants.ARC_NATIVE_LOGIN: {

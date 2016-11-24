@@ -742,16 +742,9 @@ public class MainActivity extends CashierActivity
         Bundle bundle = event.getArgs();
         ZLogger.d(String.format("AffairEvent(%d)", eventId));
         if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
-            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
-            ZLogger.d("SKU更新未读消息个数为：" + count);
-            if (count > 1) {
-//                EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
-                btnSync.startSync();
-                btnSync.setBadgeEnabled(false);
-                DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS| DataDownloadManager.POSPRODUCTS_SKU);
-            } else {
-                btnSync.setBadgeEnabled(true);
-            }
+            btnSync.startSync();
+            btnSync.setBadgeEnabled(false);
+            DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS| DataDownloadManager.POSPRODUCTS_SKU);
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
             menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
@@ -2105,7 +2098,7 @@ public class MainActivity extends CashierActivity
 
         });
 
-        if (BizConfig.RELEASE && !alipayDialog.isShowing()) {
+        if (!alipayDialog.isShowing()) {
             alipayDialog.show();
         }
     }

@@ -28,10 +28,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
+                app:isLogoVisible="false"
                 app:position="top"
                 app:textSize="14sp"
                 app:subTextSize="12sp"
-                app:src="@drawable/material_housekeeping"
                 app:text="昵称"/>
 
             <com.bingshanguxue.vector_uikit.SettingsItem
@@ -39,10 +39,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
+                app:isLogoVisible="false"
+
                 app:position="bottom"
                 app:textSize="14sp"
                 app:subTextSize="12sp"
-                app:src="@drawable/material_housekeeping"
                 app:text="性别"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
