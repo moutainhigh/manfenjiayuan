@@ -38,7 +38,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -48,21 +48,21 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 16/01/05.
  */
 public class PurchaseReceiptFragment extends BaseFragment {
-    @Bind(R.id.tab_order)
+    @BindView(R.id.tab_order)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.viewpager_order)
+    @BindView(R.id.viewpager_order)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
-    @Bind(R.id.order_goods_list)
+    @BindView(R.id.order_goods_list)
     RecyclerView goodsRecyclerView;
     private PurchaseReceiptGoodsAdapter goodsListAdapter;
 
-    @Bind(R.id.tv_goods_quantity)
+    @BindView(R.id.tv_goods_quantity)
     TextView tvGoodsQunatity;
-    @Bind(R.id.tv_total_amount)
+    @BindView(R.id.tv_total_amount)
     TextView tvTotalAmount;
-    @Bind(R.id.button_pay)
+    @BindView(R.id.button_pay)
     Button btnPay;
 
     private InvSendIoOrder curOrder;

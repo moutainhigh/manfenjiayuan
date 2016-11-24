@@ -31,7 +31,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -39,14 +39,14 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvCheckListFragment extends BaseListFragment<InvCheckOrder> implements IInvCheckOrderView {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
     private InvCheckOrderAdapter orderListAdapter;
 

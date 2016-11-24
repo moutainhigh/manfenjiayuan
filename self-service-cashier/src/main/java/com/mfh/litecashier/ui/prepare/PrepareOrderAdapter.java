@@ -15,7 +15,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -39,17 +39,17 @@ public class PrepareOrderAdapter
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class CashierViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_price)
+        @BindView(R.id.tv_price)
         TextView tvPrice;
-        @Bind(R.id.tv_bcount)
+        @BindView(R.id.tv_bcount)
         TextView tvBecount;
-        @Bind(R.id.tv_quantitycheck)
+        @BindView(R.id.tv_quantitycheck)
         TextView tvQuantityCheck;
-        @Bind(R.id.tv_amountcheck)
+        @BindView(R.id.tv_amountcheck)
         TextView tvAmountCheck;
-        @Bind(R.id.tv_diff)
+        @BindView(R.id.tv_diff)
         TextView tvDiff;
 
         public CashierViewHolder(final View itemView) {

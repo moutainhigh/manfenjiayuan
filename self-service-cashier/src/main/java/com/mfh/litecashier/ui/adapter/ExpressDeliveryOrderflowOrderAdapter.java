@@ -14,7 +14,7 @@ import com.mfh.litecashier.bean.ReceiveBatchItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -81,13 +81,13 @@ public class ExpressDeliveryOrderflowOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_company)
+        @BindView(R.id.tv_company)
         TextView tvCompany;
-        @Bind(R.id.tv_courier)
+        @BindView(R.id.tv_courier)
         TextView tvCourier;
-        @Bind(R.id.tv_receiveDate)
+        @BindView(R.id.tv_receiveDate)
         TextView tvReceiveDate;
 
         public ProductViewHolder(final View itemView) {

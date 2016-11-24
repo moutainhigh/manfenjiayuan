@@ -38,7 +38,7 @@ import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -56,21 +56,21 @@ public class PayStep1Fragment extends BasePayStepFragment {
 //    private static final int TAB_CREDIT     = 6;
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.tv_handle_amount)
+    @BindView(R.id.tv_handle_amount)
     TextView tvHandleAmount;
-    @Bind(R.id.labelTotalAmount)
+    @BindView(R.id.labelTotalAmount)
     MultiLayerLabel tvTotalAmount;
-    @Bind(R.id.labelAdjustAmount)
+    @BindView(R.id.labelAdjustAmount)
     MultiLayerLabel tvAdjustAmount;
-    @Bind(R.id.tabstrip_pay)
+    @BindView(R.id.tabstrip_pay)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.tab_viewpager)
+    @BindView(R.id.tab_viewpager)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
-    @Bind(R.id.fab_give)
+    @BindView(R.id.fab_give)
     FloatingActionButton fabGive;
 
 

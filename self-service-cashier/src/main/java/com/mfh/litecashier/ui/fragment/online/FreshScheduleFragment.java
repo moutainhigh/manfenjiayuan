@@ -47,7 +47,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
@@ -61,25 +61,25 @@ import rx.schedulers.Schedulers;
  * Created by bingshanguxue on 15/8/31.
  */
 public class FreshScheduleFragment extends BaseFragment implements IInvSendOrderView {
-    @Bind(R.id.tab_order)
+    @BindView(R.id.tab_order)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.viewpager_order)
+    @BindView(R.id.viewpager_order)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
-    @Bind(R.id.animProgressBar)
+    @BindView(R.id.animProgressBar)
     ProgressBar progressBar;
-    @Bind(R.id.order_goods_list)
+    @BindView(R.id.order_goods_list)
     RecyclerView goodsRecyclerView;
     private FreshScheduleGoodsAdapter goodsListAdapter;
 
-    @Bind(R.id.tv_goods_quantity)
+    @BindView(R.id.tv_goods_quantity)
     TextView tvGoodsQunatity;
-    @Bind(R.id.tv_total_amount)
+    @BindView(R.id.tv_total_amount)
     TextView tvTotalAmount;
-    @Bind(R.id.button_cancel)
+    @BindView(R.id.button_cancel)
     Button btnCancel;
-    @Bind(R.id.button_confirm)
+    @BindView(R.id.button_confirm)
     Button btnConfirm;
 
     private InvSendOrder curOrder;

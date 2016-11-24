@@ -28,7 +28,7 @@ import com.mfh.litecashier.ui.widget.InputSearchView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -39,26 +39,26 @@ import butterknife.OnClick;
  */
 public class MessageMgrFragment extends BaseListFragment<EmbMsg> {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
     private LinearLayoutManager linearLayoutManager;
     private MsgMgrAdapter orderListAdapter;
 
-    @Bind(R.id.spinner_tenant)
+    @BindView(R.id.spinner_tenant)
     Spinner spinnerTenant;
-    @Bind(R.id.spinner_catetype)
+    @BindView(R.id.spinner_catetype)
     Spinner spinnerCatetype;
-    @Bind(R.id.spinner_status)
+    @BindView(R.id.spinner_status)
     Spinner spinnerStatus;
-    @Bind(R.id.tv_brief)
+    @BindView(R.id.tv_brief)
     TextView tvBrief;
-    @Bind(R.id.insv_order_barcode)
+    @BindView(R.id.insv_order_barcode)
     InputSearchView insvOrderBarcode;
 
 

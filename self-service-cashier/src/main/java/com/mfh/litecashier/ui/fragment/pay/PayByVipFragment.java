@@ -33,7 +33,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -41,7 +41,7 @@ import de.greenrobot.event.EventBus;
  * Created by bingshanguxue on 15/8/31.
  */
 public class PayByVipFragment extends BasePayFragment {
-    @Bind(R.id.et_barcode)
+    @BindView(R.id.et_barcode)
     EditText etBarCode;
 
     @Override

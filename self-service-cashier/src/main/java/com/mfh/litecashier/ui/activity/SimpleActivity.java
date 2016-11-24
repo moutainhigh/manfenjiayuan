@@ -23,7 +23,8 @@ import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseShopcartFragment;
 import com.mfh.litecashier.ui.fragment.settings.SettingsFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 服务
@@ -46,7 +47,7 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_CANARY_ORDERFLOW = 0x21;//流水
     public static final int FT_CANARY_CANARY = 0x23;//金丝雀
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     MenuItem standardShopcartMenu = null;

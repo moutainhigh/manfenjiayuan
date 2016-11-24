@@ -20,7 +20,7 @@ import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -32,19 +32,19 @@ public class PurchaseGoodsDetailFragment extends BaseFragment {
     public static final String EXTRA_KEY_BARCODE    = "barcode";
     public static final String EXTRA_KEY_IMAGE_URL  = "imageUrl";
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
 
-    @Bind(R.id.iv_header)
+    @BindView(R.id.iv_header)
     ImageView ivHeader;
-    @Bind(R.id.tv_product_name)
+    @BindView(R.id.tv_product_name)
     TextView tvProductName;
-    @Bind(R.id.tv_barcode)
+    @BindView(R.id.tv_barcode)
     TextView tvBarcode;
 
-    @Bind(R.id.tab_page)
+    @BindView(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-    @Bind(R.id.viewpager_pagecontent)
+    @BindView(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 

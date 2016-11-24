@@ -39,7 +39,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -59,34 +59,34 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
 
     public static final String EXTRY_KEY_BARCODE = "barcode";
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvTitle;
-    @Bind(R.id.button_footer_positive)
+    @BindView(R.id.button_footer_positive)
     Button btnSubmit;
 
-    @Bind(R.id.label_barcode)
+    @BindView(R.id.label_barcode)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_name)
+    @BindView(R.id.label_name)
     EditLabelView labelName;
-    @Bind(R.id.label_shortName)
+    @BindView(R.id.label_shortName)
     EditLabelView labelShortName;
-    @Bind(R.id.label_packageNum)
+    @BindView(R.id.label_packageNum)
     EditLabelView labelPackageNum;
-    @Bind(R.id.spinner_price_type)
+    @BindView(R.id.spinner_price_type)
     Spinner spinnerPriceType;
-    @Bind(R.id.spinner_unit)
+    @BindView(R.id.spinner_unit)
     Spinner spinnerUnit;
-    @Bind(R.id.label_prodArea)
+    @BindView(R.id.label_prodArea)
     EditLabelView labelProdArea;
-    @Bind(R.id.label_prodLevel)
+    @BindView(R.id.label_prodLevel)
     EditLabelView labelProdLevel;
-    @Bind(R.id.label_guaPeriod)
+    @BindView(R.id.label_guaPeriod)
     EditLabelView labelGuaPeriod;
-    @Bind(R.id.label_quantity)
+    @BindView(R.id.label_quantity)
     EditLabelView labelQuantity;
-    @Bind(R.id.label_buyprice)
+    @BindView(R.id.label_buyprice)
     EditLabelView labelBuyprice;
-    @Bind(R.id.label_costprice)
+    @BindView(R.id.label_costprice)
     EditLabelView labelCostprice;
 
     private String barcode;

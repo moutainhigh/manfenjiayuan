@@ -31,7 +31,7 @@ import com.mfh.litecashier.ui.widget.InputSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -44,14 +44,14 @@ import static com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenan
 public class SelectCompanyInfoFragment extends BaseFragment
         implements ICompanyInfoView {
 
-    @Bind(R.id.inlv_shortCode)
+    @BindView(R.id.inlv_shortCode)
     InputSearchView labelShortcode;
-    @Bind(R.id.company_list)
+    @BindView(R.id.company_list)
     RecyclerViewEmptySupport mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
 
     private SelectPlatformProviderAdapter productAdapter;

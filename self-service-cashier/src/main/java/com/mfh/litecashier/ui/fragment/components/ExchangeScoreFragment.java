@@ -27,7 +27,7 @@ import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -35,13 +35,13 @@ import butterknife.OnClick;
  * Created by bingshanguxue on 15/12/15.
  */
 public class ExchangeScoreFragment extends BaseProgressFragment {
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
-    @Bind(R.id.tv_score)
+    @BindView(R.id.tv_score)
     TextView tvScore;
-    @Bind(R.id.et_pay_code)
+    @BindView(R.id.et_pay_code)
     EditText etPayCode;
-    @Bind(R.id.button_exchange)
+    @BindView(R.id.button_exchange)
     Button btnExchange;
 
     private NumberInputDialog scoreDialog = null;

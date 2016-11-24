@@ -12,7 +12,7 @@ import com.mfh.framework.api.invIoOrder.InvIoOrder;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -72,15 +72,15 @@ public class InvIOOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_order_name)
+        @BindView(R.id.tv_order_name)
         TextView tvOrderName;
-        @Bind(R.id.tv_net_name)
+        @BindView(R.id.tv_net_name)
         TextView tvNetName;
-        @Bind(R.id.tv_biztype)
+        @BindView(R.id.tv_biztype)
         TextView tvBizType;
-        @Bind(R.id.tv_order_status)
+        @BindView(R.id.tv_order_status)
         TextView tvOrderStatus;
 
         public ProductViewHolder(final View itemView) {

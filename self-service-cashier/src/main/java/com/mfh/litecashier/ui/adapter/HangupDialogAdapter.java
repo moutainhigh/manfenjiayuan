@@ -14,7 +14,7 @@ import com.mfh.litecashier.bean.wrapper.HangupOrder;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -55,9 +55,9 @@ public class HangupDialogAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
 
         public ProductViewHolder(final View itemView) {

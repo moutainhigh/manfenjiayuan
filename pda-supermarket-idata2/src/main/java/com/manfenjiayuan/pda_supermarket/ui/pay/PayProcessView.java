@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -22,15 +22,15 @@ import butterknife.OnClick;
  * Created by bingshanguxue on 4/8/16.
  */
 public class PayProcessView extends RelativeLayout{
-    @Bind(R.id.tv_countdown)
+    @BindView(R.id.tv_countdown)
     TextView tvCountdown;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
-    @Bind(R.id.tv_process)
+    @BindView(R.id.tv_process)
     TextView tvProcess;
-    @Bind(R.id.fab_cancel)
+    @BindView(R.id.fab_cancel)
     FloatingActionButton fabCancel;
-    @Bind(R.id.fab_refresh)
+    @BindView(R.id.fab_refresh)
     FloatingActionButton fabRefresh;
 
     private View rootView;

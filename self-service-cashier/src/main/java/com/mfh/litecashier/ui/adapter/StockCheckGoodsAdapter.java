@@ -13,7 +13,7 @@ import com.mfh.litecashier.bean.InvCheckOrderItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -58,21 +58,21 @@ public class StockCheckGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_description)
+        @BindView(R.id.tv_description)
         TextView tvDescription;
-        @Bind(R.id.tv_check_quantity)
+        @BindView(R.id.tv_check_quantity)
         TextView tvCheckQuantity;
-        @Bind(R.id.tv_system_inventory)
+        @BindView(R.id.tv_system_inventory)
         TextView tvSystemInventory;
-        @Bind(R.id.tv_loss_quantity)
+        @BindView(R.id.tv_loss_quantity)
         TextView tvLossQuantity;
-        @Bind(R.id.tv_costprice)
+        @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
-        @Bind(R.id.tv_loss_amount)
+        @BindView(R.id.tv_loss_amount)
         TextView tvLossAmount;
 
         public ProductViewHolder(final View itemView) {

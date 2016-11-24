@@ -37,7 +37,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -48,22 +48,22 @@ import de.greenrobot.event.EventBus;
 public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
         implements IInvSendIoOrderView {
 
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private InvReturnOrderAdapter orderListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
-    @Bind(R.id.order_goods_list)
+    @BindView(R.id.order_goods_list)
     RecyclerView goodsRecyclerView;
     private PurchaseReturnGoodsAdapter goodsListAdapter;
 
-    @Bind(R.id.tv_goods_quantity)
+    @BindView(R.id.tv_goods_quantity)
     TextView tvGoodsQunatity;
-    @Bind(R.id.tv_total_amount)
+    @BindView(R.id.tv_total_amount)
     TextView tvTotalAmount;
 
     private InvSendIoOrder curOrder;

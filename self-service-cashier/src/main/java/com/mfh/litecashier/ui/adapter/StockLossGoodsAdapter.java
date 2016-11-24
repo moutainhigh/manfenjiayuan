@@ -12,7 +12,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.bean.InvLossOrderItem;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -59,17 +59,17 @@ public class StockLossGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_description)
+        @BindView(R.id.tv_description)
         TextView tvDescription;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.tv_buyprice)
+        @BindView(R.id.tv_buyprice)
         TextView tvBuyPrice;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
 
         public ProductViewHolder(final View itemView) {

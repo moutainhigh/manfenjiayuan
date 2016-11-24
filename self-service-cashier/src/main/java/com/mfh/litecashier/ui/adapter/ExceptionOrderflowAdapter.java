@@ -30,7 +30,7 @@ import com.mfh.litecashier.utils.CashierHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -191,21 +191,21 @@ public class ExceptionOrderflowAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_badge)
+        @BindView(R.id.tv_badge)
         TextView tvBadge;
-        @Bind(R.id.tv_id)
+        @BindView(R.id.tv_id)
         TextView tvId;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_updatedate)
+        @BindView(R.id.tv_updatedate)
         TextView tvUpdateDate;
-        @Bind(R.id.tv_office)
+        @BindView(R.id.tv_office)
         TextView tvOffice;
-        @Bind(R.id.tv_tenant)
+        @BindView(R.id.tv_tenant)
         TextView tvTenant;
 
         public ProductViewHolder(final View itemView) {

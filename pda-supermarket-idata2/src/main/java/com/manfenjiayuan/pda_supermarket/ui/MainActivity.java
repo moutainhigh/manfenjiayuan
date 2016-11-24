@@ -54,7 +54,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -65,11 +65,11 @@ import de.greenrobot.event.EventBus;
  */
 public class MainActivity extends IData95Activity implements IPosRegisterView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.address_view)
+    @BindView(R.id.address_view)
     NaviAddressView addressView;
-    @Bind(R.id.menu_option)
+    @BindView(R.id.menu_option)
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private HomeAdapter menuAdapter;

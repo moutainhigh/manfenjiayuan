@@ -36,7 +36,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -49,11 +49,11 @@ public class FrontCategoryFragment extends BaseFragment {
     public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.tab_category_goods)
+    @BindView(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
-    @Bind(R.id.viewpager_category_goods)
+    @BindView(R.id.viewpager_category_goods)
     ViewPager mCategoryGoodsViewPager;
     private TopFragmentPagerAdapter categoryGoodsPagerAdapter;
 

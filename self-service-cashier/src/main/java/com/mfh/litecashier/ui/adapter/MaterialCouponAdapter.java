@@ -20,7 +20,7 @@ import com.mfh.litecashier.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -91,17 +91,17 @@ public class MaterialCouponAdapter
     }
 
     public class CouponViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_coupon_amount)
+        @BindView(R.id.tv_coupon_amount)
         TextView tvAmount;
-        @Bind(R.id.tv_coupon_title)
+        @BindView(R.id.tv_coupon_title)
         TextView tvTitle;
-        @Bind(R.id.tv_coupon_description)
+        @BindView(R.id.tv_coupon_description)
         TextView tvDescription;
-        @Bind(R.id.tv_coupon_valid_date)
+        @BindView(R.id.tv_coupon_valid_date)
         TextView tvValidDate;
-        @Bind(R.id.ib_ratio)
+        @BindView(R.id.ib_ratio)
         ImageButton ibRatio;
 
         public CouponViewHolder(final View itemView) {

@@ -14,7 +14,7 @@ import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -72,11 +72,11 @@ public class PayHistoryAdapter
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.tv_payInfo)
+        @BindView(R.id.tv_payInfo)
         TextView tvPayInfo;
-        @Bind(R.id.tv_paystatus)
+        @BindView(R.id.tv_paystatus)
         TextView tvPayStatus;
-        @Bind(R.id.tv_updatedate)
+        @BindView(R.id.tv_updatedate)
         TextView tvUpdateDate;
 
         public ProductViewHolder(final View itemView) {

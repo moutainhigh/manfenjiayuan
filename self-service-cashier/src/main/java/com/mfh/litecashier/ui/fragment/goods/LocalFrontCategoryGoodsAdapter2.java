@@ -15,7 +15,7 @@ import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -112,11 +112,11 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
     }
 
     public class GoodsViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_costprice)
+        @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
-        @Bind(R.id.overlay)
+        @BindView(R.id.overlay)
         View overlayView;
 
         public GoodsViewHolder(final View itemView) {
@@ -150,7 +150,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
     }
 
     public class ActionViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.ib_action)
+        @BindView(R.id.ib_action)
         ImageButton ibAction;
 
         public ActionViewHolder(final View itemView) {

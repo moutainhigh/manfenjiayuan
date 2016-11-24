@@ -11,7 +11,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -87,11 +87,11 @@ public class BackendCategoryGoodsAdapter
 //    }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_costprice)
+        @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
 
         public MenuOptioinViewHolder(final View itemView) {

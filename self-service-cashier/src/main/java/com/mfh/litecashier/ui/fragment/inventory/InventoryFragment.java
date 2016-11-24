@@ -18,7 +18,7 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -26,9 +26,9 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InventoryFragment extends BaseFragment {
-    @Bind(R.id.tab_page)
+    @BindView(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-    @Bind(R.id.viewpager_pagecontent)
+    @BindView(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
 
     private TopFragmentPagerAdapter viewPagerAdapter;

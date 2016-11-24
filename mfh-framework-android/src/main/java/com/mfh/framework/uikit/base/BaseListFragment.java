@@ -49,6 +49,8 @@ public abstract class BaseListFragment<T> extends Fragment {
     //确认对话框
     private CommonDialog confirmDialog = null;
 
+//    private Unbinder unbinder;
+
 
     protected int getLayoutResId() {
         return 0;

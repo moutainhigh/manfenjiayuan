@@ -25,7 +25,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -37,15 +37,15 @@ public class SendAbleOrdersFragment extends BaseListFragment<ScOrder>
         implements IScOrderView {
 
 
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     private ScOrderAdapter orderAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
 
 

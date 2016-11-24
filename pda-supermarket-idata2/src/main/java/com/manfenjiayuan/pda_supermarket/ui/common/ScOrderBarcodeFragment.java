@@ -18,7 +18,7 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -27,11 +27,11 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class ScOrderBarcodeFragment extends BaseFragment {
-    @Bind(R.id.iv_code_128)
+    @BindView(R.id.iv_code_128)
     ImageView ivCode128;
-    @Bind(R.id.tv_barcode)
+    @BindView(R.id.tv_barcode)
     TextView tvBarcode;
-    @Bind(R.id.iv_qr_code)
+    @BindView(R.id.iv_qr_code)
     ImageView ivQRCode;
 
     private ScOrder mScOrder = null;

@@ -26,7 +26,7 @@ import com.mfh.litecashier.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -138,31 +138,31 @@ public class SettingsGoodsAdapter
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         //        @Bind(R.id.rootview)
 //        View rootView;
-        @Bind(R.id.tv_badge)
+        @BindView(R.id.tv_badge)
         TextView tvBadge;
-        @Bind(R.id.tv_id)
+        @BindView(R.id.tv_id)
         TextView tvId;
-        @Bind(R.id.tv_spu_id)
+        @BindView(R.id.tv_spu_id)
         TextView tvSpuId;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_sku_id)
+        @BindView(R.id.tv_sku_id)
         TextView tvSkuId;
-        @Bind(R.id.tv_costprice)
+        @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
-        @Bind(R.id.tv_packageNum)
+        @BindView(R.id.tv_packageNum)
         TextView tvPackageNum;
-        @Bind(R.id.tv_tenant_id)
+        @BindView(R.id.tv_tenant_id)
         TextView tvTenantId;
-        @Bind(R.id.tv_stock_quantity)
+        @BindView(R.id.tv_stock_quantity)
         TextView tvStockQuantity;
-        @Bind(R.id.tv_provider_id)
+        @BindView(R.id.tv_provider_id)
         TextView tvProviderId;
-        @Bind(R.id.tv_procateId)
+        @BindView(R.id.tv_procateId)
         TextView tvProcateId;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_updatedate)
+        @BindView(R.id.tv_updatedate)
         TextView tvUpdateDate;
 
         public ProductViewHolder(final View itemView) {

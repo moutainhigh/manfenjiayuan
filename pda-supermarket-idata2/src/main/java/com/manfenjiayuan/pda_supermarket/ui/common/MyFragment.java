@@ -34,7 +34,7 @@ import com.tencent.bugly.beta.Beta;
 
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
@@ -47,24 +47,21 @@ import butterknife.OnLongClick;
  */
 public class MyFragment extends BaseFragment {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-
-    @Bind(R.id.profileView)
+    @BindView(R.id.profileView)
     ProfileView mProfileView;
-
-
-    @Bind(R.id.item_camerasweep)
+    @BindView(R.id.item_camerasweep)
     ToggleSettingItem itemCameraSweep;
-    @Bind(R.id.item_softinput)
+    @BindView(R.id.item_softinput)
     ToggleSettingItem itemSoftInput;
-    @Bind(R.id.item_terminal)
+    @BindView(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
-    @Bind(R.id.item_upgrade)
+    @BindView(R.id.item_upgrade)
     SettingsItem upgradeItem;
-    @Bind(R.id.item_gettui)
+    @BindView(R.id.item_gettui)
     SettingsItem getuiItem;
-    @Bind(R.id.button_logout)
+    @BindView(R.id.button_logout)
     Button btnLogout;
 
 

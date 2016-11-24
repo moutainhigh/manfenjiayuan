@@ -11,7 +11,7 @@ import com.mfh.litecashier.bean.ReceiveOrderHumanInfo;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -23,7 +23,7 @@ public class ReceiveOrderAddressAdapter extends ArrayAdapter<ReceiveOrderHumanIn
     static class ViewHolder {
 //        @Bind(R.id.iv_marker)
 //        ImageView ivMarker;
-        @Bind(R.id.tv_address)
+        @BindView(R.id.tv_address)
         TextView tvAddress;
 
         public ViewHolder(View view) {

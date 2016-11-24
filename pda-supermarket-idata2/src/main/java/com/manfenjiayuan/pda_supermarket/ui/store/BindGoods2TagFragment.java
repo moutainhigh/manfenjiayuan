@@ -38,7 +38,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -49,25 +49,23 @@ import de.greenrobot.event.EventBus;
  */
 public class BindGoods2TagFragment extends PDAScanFragment implements IInvSkuGoodsView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
-
-    @Bind(R.id.label_barcodee)
+    @BindView(R.id.label_barcodee)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_productName)
+    @BindView(R.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_quantity)
+    @BindView(R.id.label_quantity)
     TextLabelView labelQuantity;
-    @Bind(R.id.label_costPrice)
+    @BindView(R.id.label_costPrice)
     TextLabelView labelCostPrice;
-    @Bind(R.id.label_tagno)
+    @BindView(R.id.label_tagno)
     EditLabelView labelTagNo;
-
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     FloatingActionButton btnBind;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
     private InvSkuGoods curGoods = null;

@@ -34,7 +34,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -45,28 +45,28 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
 
     public static final String EXTRA_KEY_PURCHASE_GOODS = "purchase_goods";
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvTitle;
 
-    @Bind(R.id.tv_barcode)
+    @BindView(R.id.tv_barcode)
     TextView tvBarcode;
-    @Bind(R.id.et_productName)
+    @BindView(R.id.et_productName)
     EditText etProductName;
-    @Bind(R.id.et_shortName)
+    @BindView(R.id.et_shortName)
     EditText etShortName;
-    @Bind(R.id.spinner_price_type)
+    @BindView(R.id.spinner_price_type)
     Spinner spinnerPriceType;
-    @Bind(R.id.spinner_unit)
+    @BindView(R.id.spinner_unit)
     Spinner spinnerUnit;
 
     /*供应商*/
     private CompanyInfo curInvCompProvider = null;//当前私有供应商
     private SelectInvCompanyInfoDialog selectInvCompProviderDialog;
-    @Bind(R.id.et_buyprice)
+    @BindView(R.id.et_buyprice)
     EditText etBuyPrice;
-    @Bind(R.id.et_quantity)
+    @BindView(R.id.et_quantity)
     EditText etQuantity;
-    @Bind(R.id.et_costprice)
+    @BindView(R.id.et_costprice)
     EditText etCostPrice;
 
     private ScGoodsSku purchaseGoods;
@@ -307,7 +307,7 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
     /**
      * 选择供应商
      */
-    @Bind(R.id.label_invcomp_provider)
+    @BindView(R.id.label_invcomp_provider)
     OptionalLabel labelInvcompProvider;
 
     @OnClick(R.id.label_invcomp_provider)
@@ -335,7 +335,7 @@ public class GreateScSkuGoodsFragment extends BaseProgressFragment {
         }
     }
 
-    @Bind(R.id.button_footer_positive)
+    @BindView(R.id.button_footer_positive)
     Button btnSubmit;
 
     /**

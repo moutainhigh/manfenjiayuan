@@ -39,7 +39,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -49,17 +49,17 @@ import butterknife.OnClick;
  */
 public class CreateInvReturnOrderFragment extends PDAScanFragment {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.providerView)
+    @BindView(R.id.providerView)
     NaviAddressView mProviderView;
-    @Bind(R.id.office_list)
+    @BindView(R.id.office_list)
     RecyclerViewEmptySupport addressRecyclerView;
     private InvReturnOrderGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     /*供应商*/

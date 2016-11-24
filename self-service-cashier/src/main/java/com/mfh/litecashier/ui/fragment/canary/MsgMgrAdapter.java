@@ -22,7 +22,7 @@ import com.mfh.litecashier.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -119,20 +119,19 @@ public class MsgMgrAdapter
     public class ProductViewHolder extends RecyclerView.ViewHolder {
         //        @Bind(R.id.rootview)
 //        View rootView;
-        @Bind(R.id.tv_badge)
+        @BindView(R.id.tv_badge)
         TextView tvBadge;
-        @Bind(R.id.tv_id)
+        @BindView(R.id.tv_id)
         TextView tvId;
-        @Bind(R.id.tv_from)
+        @BindView(R.id.tv_from)
         TextView tvFrom;
-        @Bind(R.id.tv_to)
+        @BindView(R.id.tv_to)
         TextView tvTo;
-        @Bind(R.id.tv_body)
+        @BindView(R.id.tv_body)
         TextView tvBody;
-
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_updatedate)
+        @BindView(R.id.tv_updatedate)
         TextView tvUpdateDate;
 
         public ProductViewHolder(final View itemView) {

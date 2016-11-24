@@ -31,7 +31,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -40,7 +40,7 @@ import de.greenrobot.event.EventBus;
  * Created by bingshanguxue on 15/8/31.
  */
 public class PayByVipFragment extends BasePayFragment {
-    @Bind(R.id.et_barCode)
+    @BindView(R.id.et_barCode)
     EditLabelView etBarCode;
 
     @Override

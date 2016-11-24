@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -57,13 +57,13 @@ public class QueryGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_price)
+        @BindView(R.id.tv_price)
         TextView tvPrice;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvCount;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
 
         public ProductViewHolder(final View itemView) {

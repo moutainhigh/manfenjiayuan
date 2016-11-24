@@ -15,7 +15,7 @@ import com.bingshanguxue.cashier.model.OrderPayWay;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -68,11 +68,11 @@ public class CashQuotaAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_date)
+        @BindView(R.id.tv_date)
         TextView tvDate;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
-        @Bind(R.id.tv_biztype)
+        @BindView(R.id.tv_biztype)
         TextView tvBizType;
 
         public ProductViewHolder(final View itemView) {

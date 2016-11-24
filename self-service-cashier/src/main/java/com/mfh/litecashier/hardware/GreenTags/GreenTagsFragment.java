@@ -11,7 +11,7 @@ import com.mfh.litecashier.R;
 
 import org.century.CenturyFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -21,11 +21,11 @@ import butterknife.OnClick;
  */
 public class GreenTagsFragment extends CenturyFragment {
 
-    @Bind(R.id.et_goodsnumber)
+    @BindView(R.id.et_goodsnumber)
     EditText etGoodsNumber;
-    @Bind(R.id.et_goodscode)
+    @BindView(R.id.et_goodscode)
     EditText etGoodsCode;
-    @Bind(R.id.et_tagNo)
+    @BindView(R.id.et_tagNo)
     EditText etTagNo;
 
     static String[] SOAP_VERSIONS = new String[]{"SOAP 1.0", "SOAP 1.1", "SOAP 1.2"};

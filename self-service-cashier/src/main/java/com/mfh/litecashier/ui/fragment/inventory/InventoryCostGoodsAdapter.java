@@ -15,7 +15,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -71,21 +71,21 @@ public class InventoryCostGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_upperLimit)
+        @BindView(R.id.tv_upperLimit)
         TextView tvUpperLimit;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.tv_monthlysales)
+        @BindView(R.id.tv_monthlysales)
         TextView tvMonthlySales;
-        @Bind(R.id.tv_buyprice)
+        @BindView(R.id.tv_buyprice)
         TextView tvBuyPrice;
-        @Bind(R.id.tv_costprice)
+        @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
 
         public ProductViewHolder(final View itemView) {

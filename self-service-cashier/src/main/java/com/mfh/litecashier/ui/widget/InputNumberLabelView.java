@@ -23,7 +23,7 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
 import com.mfh.litecashier.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
@@ -45,11 +45,11 @@ public class InputNumberLabelView extends LinearLayout {
     /** 输入框小数的位数*/
     private static final int DECIMAL_DIGITS = 2;
 
-    @Bind(R.id.tv_label_title)
+    @BindView(R.id.tv_label_title)
     TextView tvTitle;
-    @Bind(R.id.et_label_input)
+    @BindView(R.id.et_label_input)
     EditText etInput;
-    @Bind(R.id.ib_label_action1)
+    @BindView(R.id.ib_label_action1)
     ImageButton ibAction1;
 
 

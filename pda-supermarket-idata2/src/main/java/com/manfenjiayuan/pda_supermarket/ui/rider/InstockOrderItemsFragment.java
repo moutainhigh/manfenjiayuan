@@ -19,7 +19,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -29,14 +29,14 @@ import de.greenrobot.event.EventBus;
  */
 public class InstockOrderItemsFragment extends BaseFragment {
 
-    @Bind(R.id.googs_list)
+    @BindView(R.id.googs_list)
     RecyclerViewEmptySupport chainRecyclerView;
     private ItemTouchHelper itemTouchHelper;
     private InstockOrderItemAdapter goodsAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private ScOrder mScOrder;

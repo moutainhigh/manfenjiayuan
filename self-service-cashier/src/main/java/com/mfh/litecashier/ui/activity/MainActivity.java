@@ -108,7 +108,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
@@ -126,36 +126,36 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends CashierActivity
         implements ICashierView, IScOrderView {
 
-    @Bind(R.id.slideMenu)
+    @BindView(R.id.slideMenu)
     RecyclerView menuRecyclerView;
     private CashierMenuAdapter menuAdapter;
-    @Bind(R.id.button_sync)
+    @BindView(R.id.button_sync)
     SyncButton btnSync;
-    @Bind(R.id.tv_last_amount)
+    @BindView(R.id.tv_last_amount)
     TextView tvLastAmount;
-    @Bind(R.id.tv_last_quantity)
+    @BindView(R.id.tv_last_quantity)
     TextView tvLastQuantity;
-    @Bind(R.id.tv_last_discount)
+    @BindView(R.id.tv_last_discount)
     TextView tvLastDiscount;
-    @Bind(R.id.tv_last_charge)
+    @BindView(R.id.tv_last_charge)
     TextView tvLastCharge;
-    @Bind(R.id.label_quantity)
+    @BindView(R.id.label_quantity)
     MultiLayerLabel labelQuantity;
-    @Bind(R.id.label_amount)
+    @BindView(R.id.label_amount)
     MultiLayerLabel labelAmount;
-    @Bind(R.id.inlv_barcode)
+    @BindView(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
-    @Bind(R.id.product_list)
+    @BindView(R.id.product_list)
     RecyclerView productRecyclerView;
     private ItemTouchHelper itemTouchHelper;
     private CashierSwipAdapter productAdapter;
-    @Bind(R.id.fab_pick)
+    @BindView(R.id.fab_pick)
     ImageButton btnPick;
-    @Bind(R.id.fab_settle)
+    @BindView(R.id.fab_settle)
     ImageButton btnSettle;
-    @Bind(R.id.float_hangup)
+    @BindView(R.id.float_hangup)
     TextView fabHangup;
-    @Bind(R.id.fab_orderDiscount)
+    @BindView(R.id.fab_orderDiscount)
     TextView fabOrderDiscount;
 
 

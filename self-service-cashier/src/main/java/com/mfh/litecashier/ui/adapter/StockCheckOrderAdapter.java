@@ -16,7 +16,7 @@ import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -71,13 +71,13 @@ public class StockCheckOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_orderName)
+        @BindView(R.id.tv_orderName)
         TextView tvOrderName;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_orderstatus)
+        @BindView(R.id.tv_orderstatus)
         TextView tvOrderStatus;
 
         public ProductViewHolder(final View itemView) {

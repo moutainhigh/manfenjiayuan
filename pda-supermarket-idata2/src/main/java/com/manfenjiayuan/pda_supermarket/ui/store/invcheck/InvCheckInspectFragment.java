@@ -43,7 +43,8 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.OnClick;
 
 
@@ -55,20 +56,20 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
 
     public static final String EXTRA_KEY_ORDER_ID = "orderId";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     public Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
 
-    @Bind(R.id.shelvesNumberView)
+    @BindView(R.id.shelvesNumberView)
     NaviAddressView shelvesNumberView;
-    @Bind({R.id.label_barcodee, R.id.label_productName, R.id.label_spec, R.id.label_quantity})
+    @BindViews({R.id.label_barcodee, R.id.label_productName, R.id.label_spec, R.id.label_quantity})
     List<TextLabelView> labelViews;
-    @Bind(R.id.label_newquantity)
+    @BindView(R.id.label_newquantity)
     EditLabelView labelQuantity;
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
     private Long curOrderId;//当前盘点批次编号

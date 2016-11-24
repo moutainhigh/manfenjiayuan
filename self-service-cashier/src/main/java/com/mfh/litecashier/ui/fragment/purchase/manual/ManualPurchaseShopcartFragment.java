@@ -41,7 +41,7 @@ import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -50,20 +50,20 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class ManualPurchaseShopcartFragment extends BaseFragment {
-    @Bind(R.id.tv_order_quantity)
+    @BindView(R.id.tv_order_quantity)
     TextView tvOrderQuantity;
-    @Bind(R.id.tv_goods_quantity)
+    @BindView(R.id.tv_goods_quantity)
     TextView tvGoodsQunatity;
-    @Bind(R.id.tv_total_amount)
+    @BindView(R.id.tv_total_amount)
     TextView tvTotalAmount;
-    @Bind(R.id.button_submit)
+    @BindView(R.id.button_submit)
     TextView btnSubmit;
 
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerView orderRecyclerView;
     private ManualPurchaseShopcartOrderAdapter orderAdapter;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerView goodsRecyclerView;
     private ManualPurchaseShopcartGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;

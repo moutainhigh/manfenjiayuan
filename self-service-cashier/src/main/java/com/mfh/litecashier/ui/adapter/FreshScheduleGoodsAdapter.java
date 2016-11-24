@@ -17,7 +17,7 @@ import com.mfh.litecashier.bean.wrapper.FreshScheduleGoods;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -78,17 +78,17 @@ public class FreshScheduleGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_unit)
+        @BindView(R.id.tv_unit)
         TextView tvUnit;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.numberPickerView)
+        @BindView(R.id.numberPickerView)
         NumberPickerView mNumberPickerView;
 
         public ProductViewHolder(final View itemView) {

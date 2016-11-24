@@ -17,7 +17,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -77,11 +77,11 @@ public class GoodsSalesAdapter extends SwipAdapter<ProductAggDate, GoodsSalesAda
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.progressBar)
+        @BindView(R.id.progressBar)
         ProgressBar progressBar;
 
         public ProductViewHolder(final View itemView) {

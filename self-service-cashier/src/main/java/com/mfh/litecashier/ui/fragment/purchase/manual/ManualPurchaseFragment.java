@@ -69,7 +69,7 @@ import com.mfh.litecashier.utils.CashierHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -80,37 +80,37 @@ import de.greenrobot.event.EventBus;
 public class ManualPurchaseFragment extends BaseProgressFragment
         implements IPurchaseView, IIntelligentPurchaseView {
 
-    @Bind(R.id.inlv_barcode)
+    @BindView(R.id.inlv_barcode)
     InputSearchView inlvBarcode;
-    @Bind(R.id.inlv_productname)
+    @BindView(R.id.inlv_productname)
     InputSearchView inlvProductName;
-    @Bind(R.id.button_toggle_conditions)
+    @BindView(R.id.button_toggle_conditions)
     Button btnToggleConditions;
-    @Bind(R.id.frame_option_conditions)
+    @BindView(R.id.frame_option_conditions)
     LinearLayout frameOptionConditions;
-    @Bind(R.id.spinner_price_type)
+    @BindView(R.id.spinner_price_type)
     Spinner spinnerPriceType;
 
-    @Bind(R.id.label_platform_provider)
+    @BindView(R.id.label_platform_provider)
     OptionalLabel labelPlatformProvider;
     private SelectInvCompanyInfoDialog selectPlatformProviderDialog;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private ManualPurchaseGoodsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
 
-    @Bind(R.id.button_category_back)
+    @BindView(R.id.button_category_back)
     TextView btnCategoryBack;
-    @Bind(R.id.tv_category_title)
+    @BindView(R.id.tv_category_title)
     TextView tvCategoryTitle;
-    @Bind(R.id.category_list)
+    @BindView(R.id.category_list)
     RecyclerView categoryRecyclerView;
     private CommodityCategoryAdapter categoryListAdapter;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
-    @Bind(R.id.fab_shopcart)
+    @BindView(R.id.fab_shopcart)
     FloatingActionButton fabShopcart;
 
     private List<CategoryOption> rootOptions = new ArrayList<>();

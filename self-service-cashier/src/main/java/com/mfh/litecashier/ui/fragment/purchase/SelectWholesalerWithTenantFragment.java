@@ -19,7 +19,7 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -30,11 +30,11 @@ import de.greenrobot.event.EventBus;
 public class SelectWholesalerWithTenantFragment extends BaseFragment {
     public static final String EXTRA_KEY_BARCODE = "barcode";
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
 
-    @Bind(R.id.slidingTab)TopSlidingTabStrip mSlidingTabStrip;
-    @Bind(R.id.viewpager)
+    @BindView(R.id.slidingTab)TopSlidingTabStrip mSlidingTabStrip;
+    @BindView(R.id.viewpager)
     CustomViewPager mViewPager;
 
     private TopFragmentPagerAdapter viewPagerAdapter;

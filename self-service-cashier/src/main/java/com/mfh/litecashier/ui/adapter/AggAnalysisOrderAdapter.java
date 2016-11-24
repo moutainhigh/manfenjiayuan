@@ -14,7 +14,7 @@ import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -63,15 +63,15 @@ public class AggAnalysisOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_index)
+        @BindView(R.id.tv_index)
         TextView tvIndex;
-        @Bind(R.id.tv_biztype)
+        @BindView(R.id.tv_biztype)
         TextView tvBizType;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
-        @Bind(R.id.tv_gross_margin)
+        @BindView(R.id.tv_gross_margin)
         TextView tvGrossMargin;
 
         public ProductViewHolder(final View itemView) {

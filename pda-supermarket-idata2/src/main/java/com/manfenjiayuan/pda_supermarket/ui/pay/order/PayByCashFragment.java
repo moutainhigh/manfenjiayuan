@@ -27,7 +27,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.StringUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -35,9 +35,9 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
 public class PayByCashFragment extends BasePayFragment {
-    @Bind(R.id.label_paidmoney)
+    @BindView(R.id.label_paidmoney)
     EditLabelView inlvPaidMoney;
-    @Bind(R.id.tv_charge)
+    @BindView(R.id.tv_charge)
     FontFitTextView tvCharge;
 
     @Override

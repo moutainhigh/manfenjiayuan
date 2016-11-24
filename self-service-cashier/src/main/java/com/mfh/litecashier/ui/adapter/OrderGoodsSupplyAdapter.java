@@ -12,7 +12,7 @@ import com.mfh.framework.api.scGoodsSku.GoodsSupplyInfo;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -54,13 +54,13 @@ public class OrderGoodsSupplyAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_packageNum)
+        @BindView(R.id.tv_packageNum)
         TextView tvPackageNum;
-        @Bind(R.id.tv_startnum)
+        @BindView(R.id.tv_startnum)
         TextView tvStartnum;
-        @Bind(R.id.tv_buyprice)
+        @BindView(R.id.tv_buyprice)
         TextView tvBuyprice;
 
         public ProductViewHolder(final View itemView) {

@@ -1,5 +1,7 @@
 include ':mfh-framework-all', ':mfh-framework-android', ':im', ':mfh-framework-business'
-include ':vector_user', ':vector_uikit'
+include ':almigod', ':launcher'
+include ':skinloader', 'skin-mixicook', ':skin-lanlj', ':skin-qianwj'
+include ':vector_uikit'
 include ':pda', ':pda-wholesaler', ':pda-supermarket-idata2'
 include ':cashier', ':self-service-cashier', ':litecashier-display'
 include ':enjoycity', ':mfowner', ':mixicook-vip', ':loveshopping'

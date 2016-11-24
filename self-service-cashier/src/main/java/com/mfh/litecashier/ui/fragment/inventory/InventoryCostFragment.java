@@ -66,7 +66,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -77,32 +77,38 @@ import de.greenrobot.event.EventBus;
 public class InventoryCostFragment extends BaseProgressFragment
         implements IScGoodsSkuView {
 
-    @Bind(R.id.inlv_barcode)
+    @BindView(R.id.inlv_barcode)
     InputSearchView inlvBarcode;
-    @Bind(R.id.inlv_productname)
+    @BindView(R.id.inlv_productname)
     InputSearchView inlvProductName;
 
-    @Bind(R.id.button_toggle_conditions)
+    @BindView(R.id.button_toggle_conditions)
     Button btnToggleConditions;
-    @Bind(R.id.frame_option_conditions)
+    @BindView(R.id.frame_option_conditions)
     LinearLayout frameOptionConditions;
-    @Bind(R.id.spinner_price_type)
+    @BindView(R.id.spinner_price_type)
     Spinner spinnerPriceType;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private InventoryCostGoodsAdapter goodsListAdapter;
     private LinearLayoutManager linearLayoutManager;
 
-    @Bind(R.id.button_category_back)
+    @BindView(R.id.button_category_back)
     TextView btnCategoryBack;
-    @Bind(R.id.tv_category_title)
+    @BindView(R.id.tv_category_title)
     TextView tvCategoryTitle;
-    @Bind(R.id.category_list)
+    @BindView(R.id.category_list)
     RecyclerView categoryRecyclerView;
     private CommodityCategoryAdapter categoryListAdapter;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
+    @BindView(R.id.orderLabel_quantity)
+    MOrderLabelView orderLabelQuantity;
+
+    @BindView(R.id.orderLabel_monthlysales)
+    MOrderLabelView orderLabelMonthlysales;
+
 
     private List<CategoryOption> rootOptions = new ArrayList<>();
     //使用ArrayMap替代HashMap,提高效率
@@ -242,8 +248,6 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    @Bind(R.id.orderLabel_quantity)
-    MOrderLabelView orderLabelQuantity;
 
     /**
      * 按当前库存降序排列
@@ -265,8 +269,6 @@ public class InventoryCostFragment extends BaseProgressFragment
         loadGoodsList();
     }
 
-    @Bind(R.id.orderLabel_monthlysales)
-    MOrderLabelView orderLabelMonthlysales;
 
     /**
      * 按当前库存降序排列

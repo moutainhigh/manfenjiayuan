@@ -63,7 +63,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -75,28 +75,28 @@ public class PayStep2Fragment extends BasePayStepFragment {
     public static final String EXTRA_KEY_PAY_SUBTYPE = "paySubType";//0:会员卡，1:付款码，2:手机号
     public static final String EXTRA_KEY_VIP_CARID = "vipCardId";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.iv_vip_header)
+    @BindView(R.id.iv_vip_header)
     AvatarView ivMemberHeader;
-    @Bind(R.id.tv_vip_brief)
+    @BindView(R.id.tv_vip_brief)
     TextView tvVipBrief;
-    @Bind(R.id.labelHandleAmount)
+    @BindView(R.id.labelHandleAmount)
     MultiLayerLabel tvHandleAmount;
-    @Bind(R.id.labelRuleDiscount)
+    @BindView(R.id.labelRuleDiscount)
     MultiLayerLabel tvRuleDiscount;
-    @Bind(R.id.labelCouponDiscount)
+    @BindView(R.id.labelCouponDiscount)
     MultiLayerLabel tvCouponAmount;
-    @Bind(R.id.labelScore)
+    @BindView(R.id.labelScore)
     MultiLayerLabel tvScore;
-    @Bind(R.id.labelDealPayAmount)
+    @BindView(R.id.labelDealPayAmount)
     MultiLayerLabel tvDealPayAmount;
-    @Bind(R.id.coupon_list)
+    @BindView(R.id.coupon_list)
     RecyclerViewEmptySupport couponRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     ImageView emptyView;
     private PayCouponAdapter couponAdapter;
-    @Bind(R.id.button_submit)
+    @BindView(R.id.button_submit)
     Button btnSubmit;
 
     private EnterPasswordDialog mEnterPasswordDialog = null;

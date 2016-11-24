@@ -14,7 +14,7 @@ import com.mfh.litecashier.bean.PosOrderItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -71,15 +71,15 @@ public class StockOrderflowOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_contact)
+        @BindView(R.id.tv_contact)
         TextView tvContact;
-        @Bind(R.id.tv_address)
+        @BindView(R.id.tv_address)
         TextView tvAddress;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
 
         public ProductViewHolder(final View itemView) {

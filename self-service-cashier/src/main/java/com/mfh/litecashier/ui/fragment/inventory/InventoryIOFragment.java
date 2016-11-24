@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -58,25 +58,25 @@ import de.greenrobot.event.EventBus;
  */
 public class InventoryIOFragment extends BaseFragment {
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private InvIOGoodsAdapter goodsListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.frame_bottom)
+    @BindView(R.id.frame_bottom)
     LinearLayout frameBottom;
-    @Bind(R.id.tv_goods_quantity)
+    @BindView(R.id.tv_goods_quantity)
     TextView tvGoodsQunatity;
-    @Bind(R.id.tv_total_amount)
+    @BindView(R.id.tv_total_amount)
     TextView tvTotalAmount;
 
-    @Bind(R.id.tab_order)
+    @BindView(R.id.tab_order)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.viewpager_order)
+    @BindView(R.id.viewpager_order)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
-    @Bind(R.id.button_create_bill)
+    @BindView(R.id.button_create_bill)
     Button btnCreateBill;
 
     private boolean isLoadingMore;

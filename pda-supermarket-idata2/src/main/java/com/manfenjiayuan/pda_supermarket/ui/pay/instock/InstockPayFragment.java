@@ -34,7 +34,7 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -49,17 +49,16 @@ public class InstockPayFragment extends BasePayStepFragment {
     private static final int TAB_ALIPAY = 1;
     private static final int TAB_WX = 2;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @Bind(R.id.tv_handle_amount)
+    @BindView(R.id.tv_handle_amount)
     TextView tvHandleAmount;
-    @Bind(R.id.tabstrip_pay)
+    @BindView(R.id.tabstrip_pay)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.tab_viewpager)
+    @BindView(R.id.tab_viewpager)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
     public static InstockPayFragment newInstance(Bundle args) {
@@ -116,8 +115,7 @@ public class InstockPayFragment extends BasePayStepFragment {
             DialogUtil.showHint("订单支付数据错误");
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
-        }
-        else{
+        } else {
             refresh();
         }
     }
@@ -177,7 +175,7 @@ public class InstockPayFragment extends BasePayStepFragment {
             }
             break;
             //支付处理中
-            case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS: {
                 activeMode(false);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -186,7 +184,7 @@ public class InstockPayFragment extends BasePayStepFragment {
             }
             break;
             //支付失败
-            case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED: {
                 activeMode(true);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -196,7 +194,7 @@ public class InstockPayFragment extends BasePayStepFragment {
             }
             break;
             //支付成功
-            case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED: {
                 activeMode(true);
 
                 getActivity().setResult(Activity.RESULT_OK);

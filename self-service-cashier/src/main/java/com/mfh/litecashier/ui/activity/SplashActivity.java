@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -64,9 +64,9 @@ import rx.schedulers.Schedulers;
  * Created by Nat.ZZN(bingshanguxue) on 2015/9/13.
  */
 public class SplashActivity extends InitActivity {
-    @Bind(R.id.loadingImageView)
+    @BindView(R.id.loadingImageView)
     LoadingImageView loadingImageView;
-    @Bind(R.id.tv_version)
+    @BindView(R.id.tv_version)
     TextView tvVersion;
 
     @Override

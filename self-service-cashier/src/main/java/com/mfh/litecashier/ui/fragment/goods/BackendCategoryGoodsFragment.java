@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
@@ -43,11 +43,11 @@ import rx.schedulers.Schedulers;
 public class BackendCategoryGoodsFragment extends BaseListFragment<ScGoodsSkuWrapper>
         implements IScGoodsSkuView {
 
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private LinearLayoutManager linearLayoutManager;

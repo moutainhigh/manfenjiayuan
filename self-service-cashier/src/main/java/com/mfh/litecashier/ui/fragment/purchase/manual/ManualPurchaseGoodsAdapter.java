@@ -21,7 +21,7 @@ import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -85,19 +85,19 @@ public class ManualPurchaseGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_description)
+        @BindView(R.id.tv_description)
         TextView tvDescription;
-        @Bind(R.id.tv_purchaseprice)
+        @BindView(R.id.tv_purchaseprice)
         TextView tvPurchasePrice;
-        @Bind(R.id.tv_avgSellNum)
+        @BindView(R.id.tv_avgSellNum)
         TextView tvAvgSellNum;
-        @Bind(R.id.tv_stock_quantity)
+        @BindView(R.id.tv_stock_quantity)
         TextView tvStockQuantity;
-        @Bind(R.id.numberPickerView)
+        @BindView(R.id.numberPickerView)
         NumberPickerView mNumberPickerView;
 
         public ProductViewHolder(final View itemView) {

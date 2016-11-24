@@ -21,7 +21,7 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -30,9 +30,9 @@ import de.greenrobot.event.EventBus;
  */
 public class OrderFlowFragment extends BaseFragment {
 
-    @Bind(R.id.tab_page)
+    @BindView(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-    @Bind(R.id.viewpager_pagecontent)
+    @BindView(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
 
     private TopFragmentPagerAdapter viewPagerAdapter;

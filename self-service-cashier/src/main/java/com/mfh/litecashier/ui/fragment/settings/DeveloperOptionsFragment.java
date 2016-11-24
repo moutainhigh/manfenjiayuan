@@ -29,7 +29,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -40,20 +40,20 @@ import de.greenrobot.event.EventBus;
 public class DeveloperOptionsFragment extends BaseFragment {
 
 
-    @Bind(R.id.toggle_superPermission)
+    @BindView(R.id.toggle_superPermission)
     ToggleSettingItem toggleSuperPermission;
-    @Bind(R.id.item_factoryreset)
+    @BindView(R.id.item_factoryreset)
     SettingsItem itemFactoryReset;
-    @Bind(R.id.toggleItem_release)
+    @BindView(R.id.toggleItem_release)
     ToggleSettingItem toggleItemRelease;
-    @Bind(R.id.toggleItem_customer_screen)
+    @BindView(R.id.toggleItem_customer_screen)
     ToggleSettingItem toggleItemCustomerScreen;
-    @Bind(R.id.toggleItem_hybrid_payment)
+    @BindView(R.id.toggleItem_hybrid_payment)
     ToggleSettingItem toggleHybridPayment;
-    @Bind(R.id.toggleItem_getui)
+    @BindView(R.id.toggleItem_getui)
     ToggleSettingItem toggleGettui;
 
-    @Bind(R.id.tv_display)
+    @BindView(R.id.tv_display)
     TextView tvDisplay;
 
     @Override

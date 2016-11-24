@@ -37,7 +37,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -46,34 +46,34 @@ import butterknife.OnClick;
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class HandoverFragment extends BaseProgressFragment {
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
-    @Bind(R.id.tv_officename)
+    @BindView(R.id.tv_officename)
     TextView tvOfficeName;
-    @Bind(R.id.tv_humanName)
+    @BindView(R.id.tv_humanName)
     TextView tvHumanName;
-    @Bind(R.id.tv_handover_datetime)
+    @BindView(R.id.tv_handover_datetime)
     TextView tvHandoverDateTime;
-    @Bind(R.id.tv_amount)
+    @BindView(R.id.tv_amount)
     TextView tvAmount;
-    @Bind(R.id.tv_income)
+    @BindView(R.id.tv_income)
     TextView tvIncome;
-    @Bind(R.id.tv_cash)
+    @BindView(R.id.tv_cash)
     TextView tvCash;
 
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport aggRecyclerView;
     private AnalysisOrderAdapter aggListAdapter;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
-    @Bind(R.id.paytype_order_list)
+    @BindView(R.id.paytype_order_list)
     RecyclerViewEmptySupport accRecyclerView;
     private AnalysisOrderAdapter accListAdapter;
-    @Bind(R.id.paytype_empty_view)
+    @BindView(R.id.paytype_empty_view)
     TextView payTypeEmptyView;
 
-    @Bind(R.id.button_footer_positive)
+    @BindView(R.id.button_footer_positive)
     Button btnSubmit;
 
     private HandOverBill handOverBill = null;

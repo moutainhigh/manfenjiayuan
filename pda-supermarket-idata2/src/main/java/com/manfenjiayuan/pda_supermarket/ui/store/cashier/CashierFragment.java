@@ -47,7 +47,7 @@ import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
@@ -62,23 +62,21 @@ import rx.schedulers.Schedulers;
  */
 public class CashierFragment extends PDAScanFragment implements ICashierView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
-
-    @Bind(R.id.label_quantity)
+    @BindView(R.id.label_quantity)
     MultiLayerLabel labelQuantity;
-    @Bind(R.id.label_amount)
+    @BindView(R.id.label_amount)
     MultiLayerLabel labelAmount;
-
-    @Bind(R.id.product_list)
+    @BindView(R.id.product_list)
     RecyclerView productRecyclerView;
     private ItemTouchHelper itemTouchHelper;
     private CashierSwipAdapter productAdapter;
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     FloatingActionButton btnSubmit;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
     /**

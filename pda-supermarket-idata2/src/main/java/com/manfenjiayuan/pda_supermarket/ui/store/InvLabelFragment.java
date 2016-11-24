@@ -32,7 +32,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -44,21 +44,21 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
 
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
 
-    @Bind(R.id.label_barcode)
+    @BindView(R.id.label_barcode)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_productName)
+    @BindView(R.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_shortname)
+    @BindView(R.id.label_shortname)
     TextLabelView labelShortName;
-    @Bind(R.id.label_costPrice)
+    @BindView(R.id.label_costPrice)
     TextLabelView labelCostPrice;
-    @Bind(R.id.label_costScore)
+    @BindView(R.id.label_costScore)
     TextLabelView labelCostScore;
-    @Bind(R.id.label_prodArea)
+    @BindView(R.id.label_prodArea)
     TextLabelView labelProdArea;
-    @Bind(R.id.label_prodLevel)
+    @BindView(R.id.label_prodLevel)
     TextLabelView labelProdLevel;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
     private ScGoodsSku curGoods = null;

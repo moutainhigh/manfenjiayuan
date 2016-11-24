@@ -4,6 +4,8 @@
  * Android-specific build options.
  */
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
 
 def releaseTime() {
     return new Date().format("MMdd", TimeZone.getTimeZone("UTC"))
@@ -198,4 +200,6 @@ dependencies {
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile rootProject.ext.dependencies["butterknife"]
+    apt rootProject.ext.dependencies["butterknife-compiler"]
 }

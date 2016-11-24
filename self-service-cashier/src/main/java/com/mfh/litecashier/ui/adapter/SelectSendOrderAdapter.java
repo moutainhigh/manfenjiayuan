@@ -14,7 +14,7 @@ import com.mfh.framework.api.invSendOrder.InvSendOrder;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -63,15 +63,15 @@ public class SelectSendOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_provider_name)
+        @BindView(R.id.tv_provider_name)
         TextView tvProviderName;
-        @Bind(R.id.tv_status)
+        @BindView(R.id.tv_status)
         TextView tvStatus;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
 
         public ProductViewHolder(final View itemView) {

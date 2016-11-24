@@ -39,7 +39,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -63,23 +63,22 @@ import de.greenrobot.event.EventBus;
  */
 public class PayByAlipayFragment extends BasePayFragment {
 
-    @Bind(R.id.et_barCode)
+    @BindView(R.id.et_barCode)
     EditLabelView etBarCode;//扫码枪扫描到的用户手机钱包中的付款条码
-    @Bind(R.id.ll_pay_info)
+    @BindView(R.id.ll_pay_info)
     LinearLayout llPayInfo;
 
-    @Bind(R.id.ll_pay_loading)
+    @BindView(R.id.ll_pay_loading)
     LinearLayout llPayLoading;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
-    @Bind(R.id.tv_process)
+    @BindView(R.id.tv_process)
     TextView tvProcess;
-    @Bind(R.id.tv_countdown)
+    @BindView(R.id.tv_countdown)
     TextView tvCountdown;
-
-    @Bind(R.id.button_query_orderstatus)
+    @BindView(R.id.button_query_orderstatus)
     Button btnQueryOrderStatus;
-    @Bind(R.id.button_cancel_order)
+    @BindView(R.id.button_cancel_order)
     Button btnCancelAliBarPay;
 
     private Double lastPaidAmount = 0D;//上一次支付金额,支付异常时查询订单状态

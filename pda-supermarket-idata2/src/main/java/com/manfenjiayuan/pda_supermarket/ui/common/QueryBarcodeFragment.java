@@ -16,7 +16,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -26,11 +26,11 @@ import butterknife.OnClick;
  */
 public abstract class QueryBarcodeFragment extends PDAScanFragment {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     public Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
     @Override

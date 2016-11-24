@@ -25,7 +25,7 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -34,14 +34,14 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InvCheckHistoryFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private InvCheckHistoryAdapter orderListAdapter;
 
-    @Bind(R.id.empty_view) View emptyView;
+    @BindView(R.id.empty_view) View emptyView;
 
     public static InvCheckHistoryFragment newInstance(Bundle args) {
         InvCheckHistoryFragment fragment = new InvCheckHistoryFragment();

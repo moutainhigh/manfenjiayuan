@@ -39,7 +39,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -53,14 +53,14 @@ public class CreateInvIoOrderFragment extends BaseFragment {
     //仓储类型
     public static final String EXTRA_KEY_STORE_TYPE = "storeType";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.office_list)
+    @BindView(R.id.office_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private InvIoOrderGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
 

@@ -18,7 +18,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -28,26 +28,26 @@ import de.greenrobot.event.EventBus;
  */
 public class ScOrderInfoFragment extends BaseFragment {
 
-    @Bind(R.id.label_barcode)
+    @BindView(R.id.label_barcode)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_receiveName)
+    @BindView(R.id.label_receiveName)
     TextLabelView labelReceiveName;
-    @Bind(R.id.label_receivePhone)
+    @BindView(R.id.label_receivePhone)
     TextLabelView labelReceivePhone;
-    @Bind(R.id.label_addr)
+    @BindView(R.id.label_addr)
     TextLabelView labelAddr;
-    @Bind(R.id.label_bcount)
+    @BindView(R.id.label_bcount)
     TextLabelView labelBcount;
-    @Bind(R.id.label_amout)
+    @BindView(R.id.label_amout)
     TextLabelView labelAmount;
 
-    @Bind(R.id.label_commitAmount)
+    @BindView(R.id.label_commitAmount)
     TextLabelView labelCommitAmount;
-    @Bind(R.id.label_diffAmount)
+    @BindView(R.id.label_diffAmount)
     TextLabelView labelDiffAmount;
-    @Bind(R.id.label_refundAmount)
+    @BindView(R.id.label_refundAmount)
     TextLabelView labelRefundAmount;
-    @Bind(R.id.label_payAmount)
+    @BindView(R.id.label_payAmount)
     TextLabelView labelPayAmount;
 
 

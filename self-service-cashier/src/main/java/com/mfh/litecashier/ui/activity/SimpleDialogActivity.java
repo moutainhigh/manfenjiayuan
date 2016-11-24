@@ -24,7 +24,8 @@ import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 对话框
@@ -57,7 +58,7 @@ public class SimpleDialogActivity extends BaseActivity {
 
     public static final String EXTRA_KEY_TITLE = "title";
 
-    @Bind(R.id.fragment_container)
+    @BindView(R.id.fragment_container)
     FrameLayout frameLayout;
 
     public static void actionStart(Context context, Bundle extras) {

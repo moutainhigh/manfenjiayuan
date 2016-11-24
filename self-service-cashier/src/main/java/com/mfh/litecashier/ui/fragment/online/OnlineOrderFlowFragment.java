@@ -28,7 +28,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -38,15 +38,15 @@ import de.greenrobot.event.EventBus;
  */
 public class OnlineOrderFlowFragment extends BaseFragment {
 
-    @Bind(R.id.tab_order)
+    @BindView(R.id.tab_order)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.viewpager_order)
+    @BindView(R.id.viewpager_order)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
-    @Bind(R.id.fab_print)
+    @BindView(R.id.fab_print)
     FloatingActionButton fabPrint;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerView goodsRecyclerView;
     private StoreOrderflowGoodsAdapter goodsListAdapter;
 

@@ -42,7 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -59,22 +59,22 @@ public class OrderFlowFragment extends BaseFragment {
     private static final int STATE_NOMORE = 3;
     private static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
     private static int mState = STATE_NONE;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
     private LinearLayoutManager linearLayoutManager;
     private ExceptionOrderflowAdapter orderListAdapter;
 
-    @Bind(R.id.spinner_tenant)
+    @BindView(R.id.spinner_tenant)
     Spinner spinnerTenant;
-    @Bind(R.id.spinner_status)
+    @BindView(R.id.spinner_status)
     Spinner spinnerStatus;
-    @Bind(R.id.inlv_order_id)
+    @BindView(R.id.inlv_order_id)
     InputSearchView insvOrderId;
-    @Bind(R.id.insv_order_barcode)
+    @BindView(R.id.insv_order_barcode)
     InputSearchView insvOrderBarcode;
 
     private boolean isLoadingMore;

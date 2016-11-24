@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -66,10 +66,9 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == ITEM_TYPE.ITEM_TYPE_RULE.ordinal()){
+        if (viewType == ITEM_TYPE.ITEM_TYPE_RULE.ordinal()) {
             return new RuleViewHolder(mLayoutInflater.inflate(R.layout.itemview_pay_rule, parent, false));
-        }
-        else if (viewType == ITEM_TYPE.ITEM_TYPE_COUPON.ordinal()){
+        } else if (viewType == ITEM_TYPE.ITEM_TYPE_COUPON.ordinal()) {
             return new CouponViewHolder(mLayoutInflater.inflate(R.layout.itemview_pay_coupon, parent, false));
         }
         return null;
@@ -79,64 +78,59 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         CouponRule entity = entityList.get(position);
 
-        if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_RULE.ordinal()){
+        if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_RULE.ordinal()) {
             //执行类型 营销类：4-折扣 5-减金额 6-返金额 7-赠送其他商品 8-赠送购买商品 9-送卡券 10-多倍积分
-            if (entity.getRuleExecType() == 4){
-                ((RuleViewHolder)holder).rootView.setBackgroundResource(R.mipmap.bg_vip);
-                ((RuleViewHolder)holder).frameVip.setVisibility(View.VISIBLE);
-                ((RuleViewHolder)holder).frameCommon.setVisibility(View.GONE);
-                ((RuleViewHolder)holder).tvScore.setText(String.format("%.0f", Math.abs(vipScore)));
-                ((RuleViewHolder)holder).tvDiscount.setText(String.format("%.1f", entity.getDiscount()));
+            if (entity.getRuleExecType() == 4) {
+                ((RuleViewHolder) holder).rootView.setBackgroundResource(R.mipmap.bg_vip);
+                ((RuleViewHolder) holder).frameVip.setVisibility(View.VISIBLE);
+                ((RuleViewHolder) holder).frameCommon.setVisibility(View.GONE);
+                ((RuleViewHolder) holder).tvScore.setText(String.format("%.0f", Math.abs(vipScore)));
+                ((RuleViewHolder) holder).tvDiscount.setText(String.format("%.1f", entity.getDiscount()));
 
 //                ((RuleViewHolder)holder).tvScore.setText(Html.fromHtml(String.format("<font color=#fcc419>%.0f\n</font><font color=#FF009B4E>-获取积分</font>", vipScore)));
 //                ((RuleViewHolder)holder).tvDiscount.setText(Html.fromHtml(String.format("<font color=#fcc419>%.0f\n</font><font color=#FF009B4E>-会员折扣</font>", entity.getDiscount())));
+            } else if (entity.getRuleExecType() == 5) {
+                ((RuleViewHolder) holder).rootView.setBackgroundResource(R.mipmap.bg_rule_reduce);
+                ((RuleViewHolder) holder).frameVip.setVisibility(View.GONE);
+                ((RuleViewHolder) holder).frameCommon.setVisibility(View.VISIBLE);
+                ((RuleViewHolder) holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
+                ((RuleViewHolder) holder).tvTitle.setText(entity.getTitle());
+                ((RuleViewHolder) holder).tvDescription.setText(entity.getSubTitle());
+            } else if (entity.getRuleExecType() == 6) {
+                ((RuleViewHolder) holder).rootView.setBackgroundResource(R.mipmap.bg_rule_return);
+                ((RuleViewHolder) holder).frameVip.setVisibility(View.GONE);
+                ((RuleViewHolder) holder).frameCommon.setVisibility(View.VISIBLE);
+                ((RuleViewHolder) holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
+                ((RuleViewHolder) holder).tvTitle.setText(entity.getTitle());
+                ((RuleViewHolder) holder).tvDescription.setText(entity.getSubTitle());
+            } else if (entity.getRuleExecType() == 7) {
+                ((RuleViewHolder) holder).rootView.setBackgroundResource(R.mipmap.bg_rule_present);
+                ((RuleViewHolder) holder).frameVip.setVisibility(View.GONE);
+                ((RuleViewHolder) holder).frameCommon.setVisibility(View.VISIBLE);
+                ((RuleViewHolder) holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
+                ((RuleViewHolder) holder).tvTitle.setText(entity.getTitle());
+                ((RuleViewHolder) holder).tvDescription.setText(entity.getSubTitle());
+            } else {
+                ((RuleViewHolder) holder).rootView.setBackgroundResource(R.mipmap.bg_rule_present);
+                ((RuleViewHolder) holder).frameVip.setVisibility(View.GONE);
+                ((RuleViewHolder) holder).frameCommon.setVisibility(View.VISIBLE);
+                ((RuleViewHolder) holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
+                ((RuleViewHolder) holder).tvTitle.setText(entity.getTitle());
+                ((RuleViewHolder) holder).tvDescription.setText(entity.getSubTitle());
             }
-            else if (entity.getRuleExecType() == 5){
-                ((RuleViewHolder)holder).rootView.setBackgroundResource(R.mipmap.bg_rule_reduce);
-                ((RuleViewHolder)holder).frameVip.setVisibility(View.GONE);
-                ((RuleViewHolder)holder).frameCommon.setVisibility(View.VISIBLE);
-                ((RuleViewHolder)holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
-                ((RuleViewHolder)holder).tvTitle.setText(entity.getTitle());
-                ((RuleViewHolder)holder).tvDescription.setText(entity.getSubTitle());
-            }
-            else if (entity.getRuleExecType() == 6){
-                ((RuleViewHolder)holder).rootView.setBackgroundResource(R.mipmap.bg_rule_return);
-                ((RuleViewHolder)holder).frameVip.setVisibility(View.GONE);
-                ((RuleViewHolder)holder).frameCommon.setVisibility(View.VISIBLE);
-                ((RuleViewHolder)holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
-                ((RuleViewHolder)holder).tvTitle.setText(entity.getTitle());
-                ((RuleViewHolder)holder).tvDescription.setText(entity.getSubTitle());
-            }
-            else if (entity.getRuleExecType() == 7){
-                ((RuleViewHolder)holder).rootView.setBackgroundResource(R.mipmap.bg_rule_present);
-                ((RuleViewHolder)holder).frameVip.setVisibility(View.GONE);
-                ((RuleViewHolder)holder).frameCommon.setVisibility(View.VISIBLE);
-                ((RuleViewHolder)holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
-                ((RuleViewHolder)holder).tvTitle.setText(entity.getTitle());
-                ((RuleViewHolder)holder).tvDescription.setText(entity.getSubTitle());
-            }
-            else{
-                ((RuleViewHolder)holder).rootView.setBackgroundResource(R.mipmap.bg_rule_present);
-                ((RuleViewHolder)holder).frameVip.setVisibility(View.GONE);
-                ((RuleViewHolder)holder).frameCommon.setVisibility(View.VISIBLE);
-                ((RuleViewHolder)holder).tvExecNum.setText(String.format("%.1f", entity.getDiscount()));
-                ((RuleViewHolder)holder).tvTitle.setText(entity.getTitle());
-                ((RuleViewHolder)holder).tvDescription.setText(entity.getSubTitle());
-            }
-        }
-        else if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_COUPON.ordinal()){
+        } else if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_COUPON.ordinal()) {
             //"¥%.1f",优惠券金额不会有小数
-            ((CouponViewHolder)holder).tvAmount.setText(String.format("%.1f", entity.getDiscount()));
-            ((CouponViewHolder)holder).tvTitle.setText(entity.getTitle());
-            ((CouponViewHolder)holder).tvDescription.setText(entity.getSubTitle());
-            ((CouponViewHolder)holder).tvValidDate.setText("");
+            ((CouponViewHolder) holder).tvAmount.setText(String.format("%.1f", entity.getDiscount()));
+            ((CouponViewHolder) holder).tvTitle.setText(entity.getTitle());
+            ((CouponViewHolder) holder).tvDescription.setText(entity.getSubTitle());
+            ((CouponViewHolder) holder).tvValidDate.setText("");
 
             if (entity.isSelected()) {
 //                holder.ibRatio.setSelected(true);
-                ((CouponViewHolder)holder).ibRatio.setVisibility(View.VISIBLE);
+                ((CouponViewHolder) holder).ibRatio.setVisibility(View.VISIBLE);
             } else {
 //                holder.ibRatio.setSelected(false);
-                ((CouponViewHolder)holder).ibRatio.setVisibility(View.GONE);
+                ((CouponViewHolder) holder).ibRatio.setVisibility(View.GONE);
             }
         }
     }
@@ -163,7 +157,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         CouponRule entity = entityList.get(position);
-        if (ObjectsCompact.equals(entity.getType(), CouponRule.TYPE_RULE)){
+        if (ObjectsCompact.equals(entity.getType(), CouponRule.TYPE_RULE)) {
             return ITEM_TYPE.ITEM_TYPE_RULE.ordinal();
         }
         return ITEM_TYPE.ITEM_TYPE_COUPON.ordinal();
@@ -175,21 +169,21 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public class RuleViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.frame_common)
+        @BindView(R.id.frame_common)
         RelativeLayout frameCommon;
-        @Bind(R.id.tv_exec_num)
+        @BindView(R.id.tv_exec_num)
         TextView tvExecNum;
-        @Bind(R.id.tv_coupon_title)
+        @BindView(R.id.tv_coupon_title)
         TextView tvTitle;
-        @Bind(R.id.tv_coupon_description)
+        @BindView(R.id.tv_coupon_description)
         TextView tvDescription;
-        @Bind(R.id.frame_vip)
+        @BindView(R.id.frame_vip)
         LinearLayout frameVip;
-        @Bind(R.id.tv_score)
+        @BindView(R.id.tv_score)
         TextView tvScore;
-        @Bind(R.id.tv_discount)
+        @BindView(R.id.tv_discount)
         TextView tvDiscount;
 
         public RuleViewHolder(final View itemView) {
@@ -199,17 +193,17 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public class CouponViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_coupon_amount)
+        @BindView(R.id.tv_coupon_amount)
         TextView tvAmount;
-        @Bind(R.id.tv_coupon_title)
+        @BindView(R.id.tv_coupon_title)
         TextView tvTitle;
-        @Bind(R.id.tv_coupon_description)
+        @BindView(R.id.tv_coupon_description)
         TextView tvDescription;
-        @Bind(R.id.tv_coupon_valid_date)
+        @BindView(R.id.tv_coupon_valid_date)
         TextView tvValidDate;
-        @Bind(R.id.ib_ratio)
+        @BindView(R.id.ib_ratio)
         ImageButton ibRatio;
 
         public CouponViewHolder(final View itemView) {
@@ -226,7 +220,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
 
                     CouponRule entity = entityList.get(position);
-                    if (ObjectsCompact.equals(entity.getType(), CouponRule.TYPE_COUPON)){
+                    if (ObjectsCompact.equals(entity.getType(), CouponRule.TYPE_COUPON)) {
                         if (entity.isSelected()) {
                             entity.setSelected(false);
                         } else {
@@ -295,28 +289,28 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     /**
      * 保存卡券和促销规则
-     * */
-    public List<CouponRule> merge(List<OrderMarketRules> orderMarketRulesList){
+     */
+    public List<CouponRule> merge(List<OrderMarketRules> orderMarketRulesList) {
         List<CouponRule> couponRules = new ArrayList<>();
 
         //遍历拆分订单
-        if (orderMarketRulesList == null || orderMarketRulesList.size() <= 0){
+        if (orderMarketRulesList == null || orderMarketRulesList.size() <= 0) {
             ZLogger.d("orderMarketRulesList无效");
             return null;
         }
-        for (OrderMarketRules orderMarketRules : orderMarketRulesList){
+        for (OrderMarketRules orderMarketRules : orderMarketRulesList) {
             //遍历卡券和促销规则
             Long splitOrderId = orderMarketRules.getSplitOrderId();
             Double finalAmount = orderMarketRules.getFinalAmount();
             List<MarketRules> marketRulesList = orderMarketRules.getResults();
             if (splitOrderId == null ||
-                    marketRulesList == null || marketRulesList.size() <= 0){
+                    marketRulesList == null || marketRulesList.size() <= 0) {
                 ZLogger.d("marketRulesList无效");
                 continue;
             }
-            for (MarketRules marketRules : marketRulesList){
+            for (MarketRules marketRules : marketRulesList) {
                 //保存卡券和促销规则
-                if (marketRules == null){
+                if (marketRules == null) {
                     ZLogger.d("marketRules无效");
                     continue;
                 }
@@ -330,8 +324,8 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //                }
 
                 List<CoupBean> coupBeans = marketRules.getCoupBeans();
-                if (coupBeans != null && coupBeans.size() > 0){
-                    for (CoupBean coup : coupBeans){
+                if (coupBeans != null && coupBeans.size() > 0) {
+                    for (CoupBean coup : coupBeans) {
                         mergeCoupon(couponRules, coup, splitOrderId, finalAmount);
                     }
                 }
@@ -342,7 +336,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void mergeRule(List<CouponRule> source, RuleBean rule,
-                           Long splitOrderId, Double finalAmount){
+                           Long splitOrderId, Double finalAmount) {
         CouponRule entity = new CouponRule();
         entity.setId(rule.getId());
         entity.setType(CouponRule.TYPE_RULE);
@@ -356,18 +350,18 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         entity.setSplitOrderId(splitOrderId);
 
         List<Long> spilitOrderIds = new ArrayList<>();
-        if (!spilitOrderIds.contains(splitOrderId)){
+        if (!spilitOrderIds.contains(splitOrderId)) {
             spilitOrderIds.add(splitOrderId);
         }
 
-        if (source != null && source.size() > 0){
-            for (CouponRule couponRule : source){
+        if (source != null && source.size() > 0) {
+            for (CouponRule couponRule : source) {
                 //删除重复的记录
                 if (CouponRule.TYPE_RULE.equals(couponRule.getType()) &&
-                        rule.getId().equals(couponRule.getId())){
+                        rule.getId().equals(couponRule.getId())) {
                     spilitOrderIds.addAll(couponRule.getSplitOrderIds());
 
-                    if (finalAmount.compareTo(couponRule.getAmount()) > 0){
+                    if (finalAmount.compareTo(couponRule.getAmount()) > 0) {
                         entity.setAmount(couponRule.getAmount());
                         entity.setSplitOrderId(couponRule.getSplitOrderId());
                     }
@@ -380,7 +374,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         entity.setSplitOrderIds(spilitOrderIds);
 
-        if (source != null){
+        if (source != null) {
             source.add(entity);
         }
 
@@ -388,7 +382,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private void mergeCoupon(List<CouponRule> source, CoupBean coupon,
-                             Long splitOrderId, Double finalAmount){
+                             Long splitOrderId, Double finalAmount) {
         CouponRule entity = new CouponRule();
         entity.setId(coupon.getId());
         entity.setType(CouponRule.TYPE_COUPON);
@@ -401,19 +395,19 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         entity.setSplitOrderId(splitOrderId);
 
         List<Long> spilitOrderIds = new ArrayList<>();
-        if (!spilitOrderIds.contains(splitOrderId)){
+        if (!spilitOrderIds.contains(splitOrderId)) {
             spilitOrderIds.add(splitOrderId);
         }
 
-        if (source != null && source.size() > 0){
-            for (CouponRule couponRule : source){
+        if (source != null && source.size() > 0) {
+            for (CouponRule couponRule : source) {
                 //删除重复的记录
                 if (CouponRule.TYPE_COUPON.equals(couponRule.getType()) &&
                         coupon.getId().equals(couponRule.getId()) &&
-                        coupon.getMyCouponsId().equals(couponRule.getCouponsId())){
+                        coupon.getMyCouponsId().equals(couponRule.getCouponsId())) {
                     spilitOrderIds.addAll(couponRule.getSplitOrderIds());
 
-                    if (finalAmount.compareTo(couponRule.getAmount()) > 0){
+                    if (finalAmount.compareTo(couponRule.getAmount()) > 0) {
                         entity.setAmount(couponRule.getAmount());
                         entity.setSplitOrderId(couponRule.getSplitOrderId());
                     }
@@ -425,7 +419,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         entity.setSplitOrderIds(spilitOrderIds);
 
-        if (source != null){
+        if (source != null) {
             source.add(entity);
         }
         ZLogger.df(JSON.toJSONString(entity));
@@ -434,15 +428,15 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     /**
      * 按订单拆分，获取选中的优惠券
-     * */
+     */
     public Map<Long, List<CouponRule>> getSelectSplitCoupons() {
-        Map<Long, List<CouponRule>> selectCouponsMap= new HashMap<>();
+        Map<Long, List<CouponRule>> selectCouponsMap = new HashMap<>();
 
         if (entityList != null && entityList.size() > 0) {
-            for (CouponRule couponRule : entityList){
+            for (CouponRule couponRule : entityList) {
                 Long splitOrderId = couponRule.getSplitOrderId();
                 List<CouponRule> temp = selectCouponsMap.get(splitOrderId);
-                if (temp == null){
+                if (temp == null) {
                     temp = new ArrayList<>();
                 }
                 temp.add(couponRule);
@@ -465,7 +459,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return selectCouponsMap;
     }
 
-    public void setVipScore(Double score){
+    public void setVipScore(Double score) {
         this.vipScore = score;
         notifyDataSetChanged();
     }

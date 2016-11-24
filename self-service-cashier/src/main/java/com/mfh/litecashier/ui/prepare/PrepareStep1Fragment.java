@@ -35,7 +35,7 @@ import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -44,14 +44,14 @@ import de.greenrobot.event.EventBus;
  */
 public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.label_quantity)
+    @BindView(R.id.label_quantity)
     MultiLayerLabel labelQuantity;
-    @Bind(R.id.label_amount)
+    @BindView(R.id.label_amount)
     MultiLayerLabel labelAmount;
-    @Bind(R.id.inlv_barcode)
+    @BindView(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
 
     private String tradeNo;

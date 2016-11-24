@@ -15,7 +15,7 @@ import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -56,9 +56,9 @@ public class CompanyHumanAdapter
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_username)
+        @BindView(R.id.tv_username)
         TextView tvName;
 
         public MenuOptioinViewHolder(final View itemView) {

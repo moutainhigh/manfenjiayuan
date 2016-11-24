@@ -34,7 +34,7 @@ import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -42,9 +42,9 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
 public class PayByCashFragment extends BasePayFragment {
-    @Bind(R.id.inlv_paidmoney)
+    @BindView(R.id.inlv_paidmoney)
     InputNumberLabelView inlvPaidMoney;
-    @Bind(R.id.tv_charge)
+    @BindView(R.id.tv_charge)
     FontFitTextView tvCharge;
 
     private NumberInputDialog barcodeInputDialog = null;

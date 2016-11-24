@@ -44,7 +44,7 @@ import com.mfh.litecashier.utils.AppHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -55,14 +55,14 @@ import de.greenrobot.event.EventBus;
  */
 public class AdministratorActivity extends BaseActivity {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.iv_avatar)
+    @BindView(R.id.iv_avatar)
     AvatarView mAvatarView;
-    @Bind(R.id.tv_username)
+    @BindView(R.id.tv_username)
     TextView tvUsername;
 
-    @Bind(R.id.menulist)
+    @BindView(R.id.menulist)
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private AdministratorMenuAdapter menuAdapter;

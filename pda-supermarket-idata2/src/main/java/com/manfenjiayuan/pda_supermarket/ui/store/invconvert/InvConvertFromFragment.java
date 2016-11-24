@@ -30,7 +30,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -41,22 +41,22 @@ import de.greenrobot.event.EventBus;
  */
 public class InvConvertFromFragment extends PDAScanFragment implements IInvSkuGoodsView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     public Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
 
-    @Bind(R.id.label_barcodee)
+    @BindView(R.id.label_barcodee)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_productName)
+    @BindView(R.id.label_productName)
     TextLabelView labelProductName;
-    @Bind(R.id.label_quantity)
+    @BindView(R.id.label_quantity)
     TextLabelView labelQuantity;
-    @Bind(R.id.label_quantity_check)
+    @BindView(R.id.label_quantity_check)
     EditLabelView labelQuantityCheck;
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
 

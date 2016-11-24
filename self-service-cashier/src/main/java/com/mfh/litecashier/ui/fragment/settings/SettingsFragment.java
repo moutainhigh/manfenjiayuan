@@ -18,7 +18,7 @@ import com.mfh.litecashier.ui.widget.ViewPageInfo;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -27,9 +27,9 @@ import de.greenrobot.event.EventBus;
  */
 public class SettingsFragment extends BaseFragment {
 
-    @Bind(R.id.left_settings_tab)
+    @BindView(R.id.left_settings_tab)
     SideSlidingTabStrip slidingTabStrip;
-    @Bind(R.id.settings_viewpager)
+    @BindView(R.id.settings_viewpager)
     CustomViewPager mViewPager;
 
     private SettingsFragmentPagerAdapter viewPagerAdapter;

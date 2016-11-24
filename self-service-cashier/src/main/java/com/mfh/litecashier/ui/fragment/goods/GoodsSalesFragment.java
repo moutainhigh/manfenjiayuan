@@ -26,8 +26,7 @@ import com.mfh.litecashier.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-
+import butterknife.BindView;
 
 
 /**
@@ -38,16 +37,16 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
     public static final String EXTRA_KEY_PROSKUID = "proSkuId";
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport salesRecyclerView;
     private GoodsSalesAdapter goodsAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private Long proSkuId = null;

@@ -22,7 +22,7 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -71,17 +71,17 @@ import butterknife.Bind;
  */
 public class BuyScOrderFragment extends BaseFragment {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
-    @Bind(R.id.tab_page)
+    @BindView(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-    @Bind(R.id.viewpager_pagecontent)
+    @BindView(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
 
     public static BuyScOrderFragment newInstance(Bundle args) {

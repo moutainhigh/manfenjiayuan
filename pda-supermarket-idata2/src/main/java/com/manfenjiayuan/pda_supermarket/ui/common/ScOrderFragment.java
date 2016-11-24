@@ -25,7 +25,7 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 
@@ -37,11 +37,11 @@ public class ScOrderFragment extends BaseFragment implements IScOrderView {
 
     public static final String EXTRA_KEY_SCORDER = "scOrder";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.tab_page)
+    @BindView(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
-    @Bind(R.id.viewpager_pagecontent)
+    @BindView(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 

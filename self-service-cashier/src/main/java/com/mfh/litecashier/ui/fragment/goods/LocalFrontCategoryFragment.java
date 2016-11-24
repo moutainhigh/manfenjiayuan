@@ -37,7 +37,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -46,9 +46,9 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class LocalFrontCategoryFragment extends BaseFragment {
-    @Bind(R.id.tab_category_goods)
+    @BindView(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
-    @Bind(R.id.viewpager_category_goods)
+    @BindView(R.id.viewpager_category_goods)
     ViewPager mCategoryGoodsViewPager;
     private TopFragmentPagerAdapter categoryGoodsPagerAdapter;
 

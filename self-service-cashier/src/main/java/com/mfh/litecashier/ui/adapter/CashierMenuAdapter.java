@@ -12,7 +12,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -57,9 +57,9 @@ public class CashierMenuAdapter
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_buttonImage)
+        @BindView(R.id.iv_buttonImage)
         ImageView buttonImage;
-        @Bind(R.id.iv_badge)
+        @BindView(R.id.iv_badge)
         ImageView ivBadge;
 
         public MenuOptioinViewHolder(final View itemView) {

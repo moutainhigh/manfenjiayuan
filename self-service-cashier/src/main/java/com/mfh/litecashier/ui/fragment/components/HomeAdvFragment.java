@@ -13,14 +13,15 @@ import com.mfh.litecashier.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * Created by bingshanguxue on 8/9/16.
  */
 public class HomeAdvFragment extends BaseFragment{
 
-    @Bind(R.id.viewpager_adv)
+    @BindView(R.id.viewpager_adv)
     AdvertisementViewPager advertiseViewPager;
     private AdvLocalPicAdapter mPictureAdvPagerAdapter;
 

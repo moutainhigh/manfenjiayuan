@@ -45,7 +45,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -54,30 +54,30 @@ import de.greenrobot.event.EventBus;
  * Created by kun on 15/8/31.
  */
 public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBatchItem> {
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
     private LinearLayoutManager linearLayoutManager;
     private ExpressDeliveryOrderflowOrderAdapter orderListAdapter;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerView goodsRecyclerView;
     private ExpressDeliveryOrderflowGoodsAdapter goodsListAdapter;
 
-    @Bind(R.id.frame_bottom)
+    @BindView(R.id.frame_bottom)
     LinearLayout frameBottom;
-    @Bind(R.id.tv_quantity)
+    @BindView(R.id.tv_quantity)
     TextView tvQuantity;
-    @Bind(R.id.tv_soft_fee)
+    @BindView(R.id.tv_soft_fee)
     TextView tvSoftFee;
-    @Bind(R.id.tv_sms_fee)
+    @BindView(R.id.tv_sms_fee)
     TextView tvSmsFee;
-    @Bind(R.id.tv_storage_fee)
+    @BindView(R.id.tv_storage_fee)
     TextView tvStorageFee;
-    @Bind(R.id.tv_batch_income)
+    @BindView(R.id.tv_batch_income)
     TextView tvBatchIncome;
 
     private ReceiveBatchItem curOrder;

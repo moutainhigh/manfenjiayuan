@@ -16,14 +16,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 /**
@@ -58,6 +59,9 @@ public class BaseActivity extends AppCompatActivity {
     //确认对话框
     private CommonDialog confirmDialog = null;
 
+    private Unbinder unbinder;
+
+
 
     /**
      * 是否全屏显示
@@ -83,7 +87,7 @@ public class BaseActivity extends AppCompatActivity {
      * 初始化视图控件
      */
     protected void initViews() {
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     /**
@@ -178,7 +182,8 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
+//        ButterKnife.unbind(this);
         hideProgressDialog();
 
         DeviceUtils.hideSoftInput(this);

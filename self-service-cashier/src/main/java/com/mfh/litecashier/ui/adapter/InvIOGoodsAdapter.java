@@ -13,7 +13,7 @@ import com.mfh.litecashier.bean.InvIoOrderItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -61,17 +61,17 @@ public class InvIOGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_description)
+        @BindView(R.id.tv_description)
         TextView tvDescription;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvQuantity;
-        @Bind(R.id.tv_buyprice)
+        @BindView(R.id.tv_buyprice)
         TextView tvBuyPrice;
-        @Bind(R.id.tv_order_type)
+        @BindView(R.id.tv_order_type)
         TextView tvOrderType;
 
         public ProductViewHolder(final View itemView) {

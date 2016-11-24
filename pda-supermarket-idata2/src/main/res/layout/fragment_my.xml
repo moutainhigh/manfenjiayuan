@@ -37,12 +37,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/spacing_double"
+                app:textSize="14sp"
                 app:text="摄像头扫描"
                 app:isLogoVisible="false"
                 app:position="top"/>
             <com.bingshanguxue.vector_uikit.ToggleSettingItem
                 android:id="@+id/item_softinput"
                 android:layout_width="match_parent"
+                app:textSize="14sp"
                 android:layout_height="@dimen/minimum_touch_height"
                 android:layout_marginTop="@dimen/default_margin_top"
                 app:text="系统键盘"

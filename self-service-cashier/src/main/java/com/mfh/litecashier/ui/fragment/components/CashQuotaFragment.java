@@ -48,7 +48,7 @@ import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -64,31 +64,31 @@ public class CashQuotaFragment extends BaseProgressFragment {
 //    public static final String EXTRA_KEY_CANCELABLE = "cancelable";
 //    public static final String EXTRA_KEY_DATETIME = "datetime";
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
-    @Bind(R.id.button_header_reload)
+    @BindView(R.id.button_header_reload)
     ImageButton btnReload;
-    @Bind(R.id.button_header_close)
+    @BindView(R.id.button_header_close)
     ImageButton btnClose;
 
 
-    @Bind(R.id.label_quota)
+    @BindView(R.id.label_quota)
     MultiLayerLabel tvQuota;
-    @Bind(R.id.label_out)
+    @BindView(R.id.label_out)
     MultiLayerLabel tvOut;
-    @Bind(R.id.label_left)
+    @BindView(R.id.label_left)
     MultiLayerLabel tvLeft;
 
-    @Bind(R.id.spinner_biztype)
+    @BindView(R.id.spinner_biztype)
     Spinner spinnerBiztype;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport aggRecyclerView;
     private LinearLayoutManager mRLayoutManager;
     private CashQuotaAdapter aggListAdapter;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
-    @Bind(R.id.fab_print)
+    @BindView(R.id.fab_print)
     FloatingActionButton fabPrint;
 
     private AlipayDialog alipayDialog = null;

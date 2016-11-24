@@ -12,7 +12,7 @@ import com.mfh.litecashier.bean.StockOutItem;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -59,15 +59,15 @@ public class ExpressDeliveryOrderflowGoodsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_receiverName)
+        @BindView(R.id.tv_receiverName)
         TextView tvReceiverName;
-        @Bind(R.id.tv_receiverPhone)
+        @BindView(R.id.tv_receiverPhone)
         TextView tvReceiverPhone;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarcode;
-        @Bind(R.id.tv_status)
+        @BindView(R.id.tv_status)
         TextView tvStatus;
-        @Bind(R.id.tv_deliveryDate)
+        @BindView(R.id.tv_deliveryDate)
         TextView tvDeliveryDate;
 
         public ProductViewHolder(final View itemView) {

@@ -24,7 +24,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindViews;
 
 
 /**
@@ -33,7 +33,7 @@ import butterknife.Bind;
  */
 public class PackageFragment extends QueryBarcodeFragment {
 
-    @Bind({R.id.label_receiveName, R.id.label_receivePhone, R.id.label_itemTypeName,
+    @BindViews({R.id.label_receiveName, R.id.label_receivePhone, R.id.label_itemTypeName,
             R.id.label_createdDate, R.id.label_transportName, R.id.label_transHumanInfo})
     List<TextLabelView> labelViews;
 

@@ -27,7 +27,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 
@@ -41,7 +41,7 @@ public class SMScaleFragmenet extends BaseFragment {
     //Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator +
     private static final String ADDRESS_FILE = "bingshanguxue/smscale.csv";
 
-    @Bind(R.id.tv_url)
+    @BindView(R.id.tv_url)
     TextView tvUrl;
 
     public SMScaleFragmenet() {

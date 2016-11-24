@@ -12,7 +12,7 @@ import com.mfh.litecashier.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -59,9 +59,9 @@ public class SelectPlatformProviderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_provider_name)
+        @BindView(R.id.tv_provider_name)
         TextView tvProviderName;
 
         public ProductViewHolder(final View itemView) {

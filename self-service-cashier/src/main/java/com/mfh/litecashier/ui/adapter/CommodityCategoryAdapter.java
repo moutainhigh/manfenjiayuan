@@ -13,7 +13,7 @@ import com.mfh.framework.api.category.CategoryOption;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -65,9 +65,9 @@ public class CommodityCategoryAdapter
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.iv_arrow)
+        @BindView(R.id.iv_arrow)
         ImageView ivArrow;
 
         public CategoryViewHolder(final View itemView) {

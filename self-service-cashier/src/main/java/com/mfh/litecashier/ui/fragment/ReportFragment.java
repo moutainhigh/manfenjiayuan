@@ -19,7 +19,7 @@ import com.mfh.framework.hybrid.WebViewJavascriptBridge;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.MfhURLConf;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -29,9 +29,9 @@ import butterknife.Bind;
 public class ReportFragment extends BaseFragment {
     public static final String EXTRA_KEY_ROOT_URL = "extra_key_root_url";
 
-    @Bind(R.id.webview)
+    @BindView(R.id.webview)
     HybridWebView mWebView;
-    @Bind(R.id.error_view)
+    @BindView(R.id.error_view)
     EmptyLayout emptyView;
 
     public static final int STATE_NONE = 0;
@@ -40,7 +40,7 @@ public class ReportFragment extends BaseFragment {
     public static final int STATE_NOMORE = 3;
     public static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
     public static int mState = STATE_NONE;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     private WebViewJavascriptBridge bridge;

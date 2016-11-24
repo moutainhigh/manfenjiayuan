@@ -41,7 +41,7 @@ import com.mfh.litecashier.ui.adapter.PayHistoryAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -53,9 +53,9 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
     public static final String EXTRA_KEY_ORDER_ID = "orderId";
     public static final String EXTRA_KEY_EDITABLE = "editable";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.product_list)
+    @BindView(R.id.product_list)
     RecyclerView mRecyclerView;
     private PayHistoryAdapter productAdapter;
 

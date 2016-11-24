@@ -16,7 +16,7 @@ import com.mfh.litecashier.bean.StockOutItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -64,19 +64,19 @@ public class StockOutAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_phone)
+        @BindView(R.id.tv_phone)
         TextView tvPhone;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_transport)
+        @BindView(R.id.tv_transport)
         TextView tvTransport;
-        @Bind(R.id.tv_barcode)
+        @BindView(R.id.tv_barcode)
         TextView tvBarCode;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_payStatus)
+        @BindView(R.id.tv_payStatus)
         TextView tvPayStatus;
-        @Bind(R.id.button_toggle_item)
+        @BindView(R.id.button_toggle_item)
         ImageButton btnToggle;
 
         public ProductViewHolder(final View itemView) {

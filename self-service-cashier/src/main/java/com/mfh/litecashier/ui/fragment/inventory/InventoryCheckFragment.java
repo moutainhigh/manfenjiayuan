@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -58,23 +58,23 @@ import de.greenrobot.event.EventBus;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class InventoryCheckFragment extends BaseFragment {
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private StockCheckGoodsAdapter goodsListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView goodsEmptyView;
-    @Bind(R.id.frame_bottom)
+    @BindView(R.id.frame_bottom)
     LinearLayout frameBottom;
-    @Bind(R.id.tv_check_quantity)
+    @BindView(R.id.tv_check_quantity)
     TextView tvCheckQuntity;
-    @Bind(R.id.tv_system_inventory)
+    @BindView(R.id.tv_system_inventory)
     TextView tvSystemInventory;
-    @Bind(R.id.tv_loss_quantity)
+    @BindView(R.id.tv_loss_quantity)
     TextView tvLossQuantity;
-    @Bind(R.id.tv_loss_amount)
+    @BindView(R.id.tv_loss_amount)
     TextView tvLossAmount;
-    @Bind(R.id.button_submit)
+    @BindView(R.id.button_submit)
     Button btnSubmit;
 
     public static final int STATE_NONE = 0;
@@ -83,14 +83,14 @@ public class InventoryCheckFragment extends BaseFragment {
     public static final int STATE_NOMORE = 3;
     public static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
     public static int mState = STATE_NONE;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    @Bind(R.id.order_empty_view)
+    @BindView(R.id.order_empty_view)
     TextView orderEmptyView;
     private StockCheckOrderAdapter orderListAdapter;
-    @Bind(R.id.button_create)
+    @BindView(R.id.button_create)
     Button btnCreate;
 
     private List<InvCheckOrder> orderList = new ArrayList<>();

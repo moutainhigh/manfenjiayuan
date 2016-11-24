@@ -38,7 +38,7 @@ import org.century.GreenTagsSettingsDialog;
 
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -48,35 +48,35 @@ import de.greenrobot.event.EventBus;
  */
 public class SettingsCommonFragment extends BaseFragment {
 
-    @Bind(R.id.item_posgoods)
+    @BindView(R.id.item_posgoods)
     SettingsItem itemPosGoods;
 //    @Bind(R.id.item_mixi_fresh)
 //    SettingsItem itemMixiFresh;
-    @Bind(R.id.item_terminal)
+    @BindView(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
-    @Bind(R.id.item_version)
+    @BindView(R.id.item_version)
     SettingsItem versonSettingsItem;
-    @Bind(R.id.item_momory)
+    @BindView(R.id.item_momory)
     SettingsItem memorySettingsItem;
 
-    @Bind(R.id.toggleItem_leddisplay)
+    @BindView(R.id.toggleItem_leddisplay)
     ToggleSettingItem tsiLedDisplay;
-    @Bind(R.id.toggleItem_printer)
+    @BindView(R.id.toggleItem_printer)
     ToggleSettingItem togglePrinter;
-    @Bind(R.id.toggleItem_softkeyboard)
+    @BindView(R.id.toggleItem_softkeyboard)
     ToggleSettingItem tsiSoftKeyboard;
-    @Bind(R.id.toggleItem_tts)
+    @BindView(R.id.toggleItem_tts)
     ToggleSettingItem ttsToggleItem;
 
-    @Bind(R.id.item_ahscale_rs232)
+    @BindView(R.id.item_ahscale_rs232)
     ToggleSettingItem toggleAhscale;
-    @Bind(R.id.item_smscale_rs232)
+    @BindView(R.id.item_smscale_rs232)
     ToggleSettingItem toggleSmscale;
-    @Bind(R.id.item_umsips_rs232)
+    @BindView(R.id.item_umsips_rs232)
     SettingsItem umsipsRs232SettingsItem;
-    @Bind(R.id.item_smscale_ftp)
+    @BindView(R.id.item_smscale_ftp)
     ToggleSettingItem toggleSmscaleFtp;
-    @Bind(R.id.item_greentags_webservice)
+    @BindView(R.id.item_greentags_webservice)
     ToggleSettingItem toggleGreenTags;
 
 

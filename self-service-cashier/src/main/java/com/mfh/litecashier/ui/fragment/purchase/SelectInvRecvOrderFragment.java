@@ -30,7 +30,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -44,18 +44,18 @@ public class SelectInvRecvOrderFragment extends BaseListFragment<InvSendIoOrder>
     public static final String EXTRA_KEY_CACHEKEY = "cacheKey";
     public static final String EK_SENDTENANTID = "sendTenantId";
 
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvTitle;
 
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport mRecyclerView;
     private SelectRecvOrderAdapter productAdapter;
     private LinearLayoutManager linearLayoutManager;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
     private String status;

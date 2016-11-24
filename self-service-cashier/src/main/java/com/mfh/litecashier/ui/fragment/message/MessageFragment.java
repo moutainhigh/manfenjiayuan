@@ -42,7 +42,7 @@ import com.mfh.litecashier.ui.widget.LeftTabStrip;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -51,33 +51,33 @@ import butterknife.OnClick;
  */
 public class MessageFragment extends BaseFragment {
 
-    @Bind(R.id.message_list)
+    @BindView(R.id.message_list)
     RecyclerView messageRecyclerView;
     private ChatMessageAdapter chatMessageAdapter;
 
-    @Bind(R.id.right_tab)
+    @BindView(R.id.right_tab)
     LeftTabStrip rightTabStrip;
 
-    @Bind(R.id.et_message)
+    @BindView(R.id.et_message)
     EditText etMessage;
-    @Bind(R.id.et_query) EditText etQuery;
+    @BindView(R.id.et_query) EditText etQuery;
 
-    @Bind(R.id.ib_emoji)
+    @BindView(R.id.ib_emoji)
     ImageButton ibEmoji;
-    @Bind(R.id.ib_goods)
+    @BindView(R.id.ib_goods)
     ImageButton ibGoods;
-    @Bind(R.id.ib_coupon)
+    @BindView(R.id.ib_coupon)
     ImageButton ibCoupon;
-    @Bind(R.id.button_send)
+    @BindView(R.id.button_send)
     Button buttonSend;
-    @Bind(R.id.frame_coupon)
+    @BindView(R.id.frame_coupon)
     FrameLayout frameCoupon;
-    @Bind(R.id.coupon_list)
+    @BindView(R.id.coupon_list)
     RecyclerViewEmptySupport couponRecyclerView;
     private GridLayoutManager couponLayoutManager;
-    @Bind(R.id.no_coupon_view)
+    @BindView(R.id.no_coupon_view)
     TextView noCouponView;
-    @Bind(R.id.emoji_viewpager)
+    @BindView(R.id.emoji_viewpager)
     AdvertisementViewPager emojiViewPager;
     private MaterialEmojiPageAdapter emojiPageAdapter;
 

@@ -38,7 +38,7 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -51,19 +51,19 @@ public class SignInActivity extends SkinBaseActivity {
     public static final String EXTRA_KEY_LOGINMODE = "loginMode";
     public static final int LOGIN_MODE_SPLASH = 0;
 
-    @Bind(R.id.rootview)
+    @BindView(R.id.rootview)
     View rootView;
-    @Bind(R.id.et_username)
+    @BindView(R.id.et_username)
     EditText etUserName;
-    @Bind(R.id.et_password)
+    @BindView(R.id.et_password)
     EditText etPassword;
-    @Bind(R.id.button_signin)
+    @BindView(R.id.button_signin)
     Button btnSignin;
-    @Bind(R.id.bottomview)
+    @BindView(R.id.bottomview)
     LinearLayout bottomView;
-    @Bind(R.id.iv_hostserver)
+    @BindView(R.id.iv_hostserver)
     ImageView ivHostServer;
-    @Bind(R.id.animProgressBar)
+    @BindView(R.id.animProgressBar)
     ProgressBar progressBar;
 
     private int loginMode = LOGIN_MODE_SPLASH;

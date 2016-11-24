@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -55,13 +55,13 @@ public class InvIOOrderFragment extends BaseFragment {
     private static final int STATE_NOMORE = 3;
     private static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
     private static int mState = STATE_NONE;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private InvIOOrderAdapter orderListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
     private boolean isLoadingMore;

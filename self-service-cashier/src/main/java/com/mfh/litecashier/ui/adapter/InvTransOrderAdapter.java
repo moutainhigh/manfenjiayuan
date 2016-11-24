@@ -14,7 +14,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -86,17 +86,17 @@ public class InvTransOrderAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_net_name)
+        @BindView(R.id.tv_net_name)
         TextView tvProviderName;
-        @Bind(R.id.tv_order_name)
+        @BindView(R.id.tv_order_name)
         TextView tvOrderNumber;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_transHumanName)
+        @BindView(R.id.tv_transHumanName)
         TextView tvTransHumanName;
-        @Bind(R.id.tv_status)
+        @BindView(R.id.tv_status)
         TextView tvStatus;
 
         public ProductViewHolder(final View itemView) {

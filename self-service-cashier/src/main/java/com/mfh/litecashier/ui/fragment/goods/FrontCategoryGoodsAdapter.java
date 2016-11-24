@@ -15,7 +15,7 @@ import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -81,11 +81,11 @@ public class FrontCategoryGoodsAdapter
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_price)
+        @BindView(R.id.tv_price)
         TextView tvPrice;
-        @Bind(R.id.ib_ratio)
+        @BindView(R.id.ib_ratio)
         ImageButton ibRatio;
 
         public MenuOptioinViewHolder(final View itemView) {

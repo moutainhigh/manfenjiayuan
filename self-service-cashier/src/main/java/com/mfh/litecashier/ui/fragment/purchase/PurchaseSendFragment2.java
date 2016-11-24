@@ -34,7 +34,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -43,21 +43,21 @@ import de.greenrobot.event.EventBus;
  */
 public class PurchaseSendFragment2 extends MvpFragment<IInvSendOrderView, InvSendOrderPresenter2>
         implements IInvSendOrderView {
-    @Bind(R.id.tab_order)
+    @BindView(R.id.tab_order)
     TopSlidingTabStrip paySlidingTabStrip;
-    @Bind(R.id.viewpager_order)
+    @BindView(R.id.viewpager_order)
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
 
-    @Bind(R.id.animProgressBar)
+    @BindView(R.id.animProgressBar)
     ProgressBar progressBar;
-    @Bind(R.id.order_goods_list)
+    @BindView(R.id.order_goods_list)
     RecyclerView goodsRecyclerView;
     private PurchaseSendGoodsAdapter goodsListAdapter;
 
-    @Bind(R.id.tv_goods_quantity)
+    @BindView(R.id.tv_goods_quantity)
     TextView tvGoodsQunatity;
-    @Bind(R.id.tv_total_amount)
+    @BindView(R.id.tv_total_amount)
     TextView tvTotalAmount;
 
 

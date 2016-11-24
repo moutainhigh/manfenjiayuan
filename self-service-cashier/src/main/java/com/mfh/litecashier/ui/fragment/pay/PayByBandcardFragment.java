@@ -43,7 +43,7 @@ import com.mfh.litecashier.ui.widget.PayProcessView;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -53,11 +53,11 @@ import de.greenrobot.event.EventBus;
  */
 public class PayByBandcardFragment extends BasePayFragment {
 
-    @Bind(R.id.ll_pay_info)
+    @BindView(R.id.ll_pay_info)
     RelativeLayout llPayInfo;
-    @Bind(R.id.payProcessView)
+    @BindView(R.id.payProcessView)
     PayProcessView payProcessView;
-    @Bind(R.id.fab_pay)
+    @BindView(R.id.fab_pay)
     FloatingActionButton fabPay;
 
 

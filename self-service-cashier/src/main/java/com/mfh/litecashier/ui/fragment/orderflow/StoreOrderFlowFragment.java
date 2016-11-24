@@ -33,7 +33,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -43,18 +43,18 @@ import de.greenrobot.event.EventBus;
  */
 public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
         implements IOrderflowView {
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
     private LinearLayoutManager linearLayoutManager;
     private StoreOrderflowOrderAdapter orderListAdapter;
 
-    @Bind(R.id.fab_print)
+    @BindView(R.id.fab_print)
     FloatingActionButton fabPrint;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerView goodsRecyclerView;
     private StoreOrderflowGoodsAdapter goodsListAdapter;
 

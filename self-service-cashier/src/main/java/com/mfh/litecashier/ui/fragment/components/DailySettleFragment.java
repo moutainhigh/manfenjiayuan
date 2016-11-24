@@ -47,7 +47,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -61,37 +61,37 @@ import butterknife.OnClick;
 public class DailySettleFragment extends BaseProgressFragment {
     public static final String EXTRA_KEY_DATETIME = "datetime";
 
-    @Bind(R.id.tv_header_title)
+    @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
 
-    @Bind(R.id.tv_officename)
+    @BindView(R.id.tv_officename)
     TextView tvOfficeName;
-    @Bind(R.id.tv_humanName)
+    @BindView(R.id.tv_humanName)
     TextView tvHumanName;
-    @Bind(R.id.label_date)
+    @BindView(R.id.label_date)
     OptionalLabel labelDate;
-    @Bind(R.id.tv_amount)
+    @BindView(R.id.tv_amount)
     TextView tvAmount;
-    @Bind(R.id.tv_not_cash)
+    @BindView(R.id.tv_not_cash)
     TextView tvNotCash;
-    @Bind(R.id.tv_cash)
+    @BindView(R.id.tv_cash)
     TextView tvCash;
 
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport aggRecyclerView;
     private AggAnalysisOrderAdapter aggListAdapter;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
-    @Bind(R.id.paytype_order_list)
+    @BindView(R.id.paytype_order_list)
     RecyclerViewEmptySupport accRecyclerView;
     private AnalysisOrderAdapter accListAdapter;
-    @Bind(R.id.paytype_empty_view)
+    @BindView(R.id.paytype_empty_view)
     TextView payTypeEmptyView;
 
-    @Bind(R.id.button_header_close)
+    @BindView(R.id.button_header_close)
     ImageButton btnClose;
-    @Bind(R.id.fab_print)
+    @BindView(R.id.fab_print)
     FloatingActionButton fabPrint;
 
     private String dailySettleDatetime = null;//日结日期

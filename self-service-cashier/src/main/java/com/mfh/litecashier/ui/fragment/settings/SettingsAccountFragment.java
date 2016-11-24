@@ -12,7 +12,8 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 设置－－账号
@@ -20,11 +21,11 @@ import butterknife.Bind;
  */
 public class SettingsAccountFragment extends BaseFragment {
 
-    @Bind(R.id.tv_curofficeid)
+    @BindView(R.id.tv_curofficeid)
     TextView tvCurOfficeId;
-    @Bind(R.id.text_account_sync_interval)
+    @BindView(R.id.text_account_sync_interval)
     TextView tvAccountSyncInterval;
-    @Bind(R.id.switchCompat_accountSync)
+    @BindView(R.id.switchCompat_accountSync)
     SwitchCompat accountSyncSwitchCompat;
 
 

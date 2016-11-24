@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -47,13 +47,13 @@ public class CashierSwipAdapter
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class CashierViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_finalPrice)
+        @BindView(R.id.tv_finalPrice)
         TextView tvFinalPrice;
-        @Bind(R.id.tv_quantity)
+        @BindView(R.id.tv_quantity)
         TextView tvCount;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
 
         public CashierViewHolder(final View itemView) {

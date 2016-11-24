@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -36,9 +36,9 @@ public class MOrderLabelView extends LinearLayout {
     public static final int ORDER_STATUS_ASC_SELECTED = 3;
 
 
-    @Bind(R.id.tv_label)
+    @BindView(R.id.tv_label)
     TextView tvLabel;
-    @Bind(R.id.iv_orderstatus)
+    @BindView(R.id.iv_orderstatus)
     ImageView ivOrderStatus;
 
     private int currentOrderStatus = ORDER_STATUS_DESC_NORMAL;

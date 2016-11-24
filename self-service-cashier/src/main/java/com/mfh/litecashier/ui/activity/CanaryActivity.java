@@ -23,7 +23,7 @@ import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -32,10 +32,10 @@ import butterknife.Bind;
  */
 public class CanaryActivity extends BaseActivity {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.menulist)
+    @BindView(R.id.menulist)
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private AdministratorMenuAdapter menuAdapter;

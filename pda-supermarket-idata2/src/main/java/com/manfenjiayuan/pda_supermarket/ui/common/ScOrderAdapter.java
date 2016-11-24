@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -145,19 +145,19 @@ public class ScOrderAdapter extends RegularAdapter<ScOrder, ScOrderAdapter.Produ
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.label_createdDate)
+        @BindView(R.id.label_createdDate)
         TextLabelView labelCreatedDate;
-        @Bind(R.id.tv_alarm)
+        @BindView(R.id.tv_alarm)
         TextView tvAlarm;
-        @Bind(R.id.label_contact)
+        @BindView(R.id.label_contact)
         TextLabelView labelContact;
-        @Bind(R.id.label_addr)
+        @BindView(R.id.label_addr)
         TextLabelView labelAddr;
-        @Bind(R.id.label_quantity)
+        @BindView(R.id.label_quantity)
         TextLabelView labelQuantity;
-        @Bind(R.id.label_amount)
+        @BindView(R.id.label_amount)
         TextLabelView labelAmount;
-        @Bind(R.id.label_transDate)
+        @BindView(R.id.label_transDate)
         TextLabelView labelTransDate;
 
         public ProductViewHolder(final View itemView) {

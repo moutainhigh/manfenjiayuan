@@ -19,7 +19,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -41,13 +41,13 @@ public class InputSearchView extends LinearLayout {
     public static final int INPUT_TYPE_NUMBER_DECIMAL = 1;
     public static final int INPUT_TYPE_TEXT = 2;
 
-    @Bind(R.id.et_label_input)
+    @BindView(R.id.et_label_input)
     EditText etInput;
-    @Bind(R.id.ib_del)
+    @BindView(R.id.ib_del)
     ImageButton ibDel;
-    @Bind(R.id.vertial_line)
+    @BindView(R.id.vertial_line)
     View verticalLine;
-    @Bind(R.id.ib_search)
+    @BindView(R.id.ib_search)
     ImageButton ibSearch;
 
     /**

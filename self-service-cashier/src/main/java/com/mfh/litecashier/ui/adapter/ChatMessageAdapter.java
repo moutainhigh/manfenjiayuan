@@ -19,7 +19,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -77,11 +77,11 @@ public class ChatMessageAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_formatCreateTime)
+        @BindView(R.id.tv_formatCreateTime)
         TextView tvFormatCreateTime;
-        @Bind(R.id.tv_content)
+        @BindView(R.id.tv_content)
         TextView tvContent;
 
         public ProductViewHolder(final View itemView) {

@@ -12,7 +12,7 @@ import com.mfh.litecashier.bean.wrapper.PurchaseShopcartOrder;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -60,13 +60,13 @@ public class PurchaseShopcartOrderAdapter
      }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_company_name)
+        @BindView(R.id.tv_company_name)
         TextView tvCompanyName;
-        @Bind(R.id.tv_provider_contact)
+        @BindView(R.id.tv_provider_contact)
         TextView tvProviderContact;
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
 
         public ProductViewHolder(final View itemView) {

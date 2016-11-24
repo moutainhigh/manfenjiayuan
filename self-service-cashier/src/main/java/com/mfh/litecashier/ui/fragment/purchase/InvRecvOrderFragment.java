@@ -29,7 +29,7 @@ import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -43,13 +43,13 @@ public class InvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> imple
     public static final String EXTRA_KEY_CACHEKEY = "cacheKey";
     public static final String EXTRA_KEY_ID = "id";
 
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.order_list)
+    @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
     private InvRecvOrderAdapter orderListAdapter;
     private LinearLayoutManager linearLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
     private String status;

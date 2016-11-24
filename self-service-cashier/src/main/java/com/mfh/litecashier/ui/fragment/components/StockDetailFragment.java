@@ -44,7 +44,7 @@ import com.mfh.litecashier.ui.adapter.StockOutAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -53,24 +53,24 @@ import butterknife.OnClick;
  */
 public class StockDetailFragment extends BaseFragment {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.et_query_content)
+    @BindView(R.id.et_query_content)
     EditText etQueryContent;
-    @Bind(R.id.button_query)
+    @BindView(R.id.button_query)
     Button btnQuery;
-    @Bind(R.id.button_stockOut)
+    @BindView(R.id.button_stockOut)
     Button btnStockOut;
 
-    @Bind(R.id.button_toggle)
+    @BindView(R.id.button_toggle)
     ImageButton btnToggleAll;
-    @Bind(R.id.product_list)
+    @BindView(R.id.product_list)
     RecyclerViewEmptySupport productRecyclerView;
     private LinearLayoutManager linearLayoutManager;
 
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar animProgress;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
 

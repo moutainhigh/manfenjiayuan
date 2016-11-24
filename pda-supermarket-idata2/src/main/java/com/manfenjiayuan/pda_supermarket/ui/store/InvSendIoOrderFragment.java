@@ -23,7 +23,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -33,25 +33,25 @@ import butterknife.OnClick;
  */
 public class InvSendIoOrderFragment extends PDAScanFragment implements IInvSendIoOrderView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     public Toolbar mToolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
-    @Bind(R.id.label_barcode)
+    @BindView(R.id.label_barcode)
     TextLabelView labelBarcode;
-    @Bind(R.id.label_totalFee)
+    @BindView(R.id.label_totalFee)
     TextLabelView labelTotalFee;
-    @Bind(R.id.label_totalCount)
+    @BindView(R.id.label_totalCount)
     TextLabelView labelTotalCount;
-    @Bind(R.id.label_sendCompanyName)
+    @BindView(R.id.label_sendCompanyName)
     TextLabelView labelSendCompanyName;
-    @Bind(R.id.label_orderName)
+    @BindView(R.id.label_orderName)
     TextLabelView labelOrderName;
-    @Bind(R.id.label_status)
+    @BindView(R.id.label_status)
     TextLabelView labelStatus;
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     public FloatingActionButton btnSubmit;
-    @Bind(R.id.fab_scan)
+    @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
 

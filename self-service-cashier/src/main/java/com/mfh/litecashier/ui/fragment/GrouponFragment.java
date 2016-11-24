@@ -24,7 +24,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.GrouponDetail;
 import com.mfh.litecashier.ui.dialog.ScanCardDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -35,11 +35,11 @@ import butterknife.OnClick;
 public class GrouponFragment extends BaseFragment {
     public static final String EXTRA_KEY_ROOT_URL = "extra_key_root_url";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.webview)
+    @BindView(R.id.webview)
     HybridWebView mWebView;
-    @Bind(R.id.error_view)
+    @BindView(R.id.error_view)
     EmptyLayout emptyView;
 
     public static final int STATE_NONE = 0;
@@ -48,12 +48,12 @@ public class GrouponFragment extends BaseFragment {
     public static final int STATE_NOMORE = 3;
     public static final int STATE_PRESSNONE = 4;// 正在下拉但还没有到刷新的状态
     public static int mState = STATE_NONE;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Bind(R.id.tv_title)
+    @BindView(R.id.tv_title)
     TextView tvTitle;
-    @Bind(R.id.button_groupon)
+    @BindView(R.id.button_groupon)
     Button btnSubmit;
 
     private ScanCardDialog mScanCardDialog = null;
