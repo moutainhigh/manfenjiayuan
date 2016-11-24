@@ -52,7 +52,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.framework.uikit.widget.OnTabReselectListener;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.manfenjiayuan.mixicook_vip.ui.ARCode.ARC_SETTINGS;
@@ -66,30 +66,30 @@ import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
  * @since bingshanguxue
  */
 public class MyFragment extends BaseFragment implements OnTabReselectListener {
-    @Bind(R.id.appbar)
+    @BindView(R.id.appbar)
     AppBarLayout mAppBarLayout;
 
-    @Bind(R.id.collaps_toolbar)
+    @BindView(R.id.collaps_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.iv_header)
+    @BindView(R.id.iv_header)
     AvatarView mAvatarView;
-    @Bind(R.id.tv_name)
+    @BindView(R.id.tv_name)
     TextView tvName;
-    @Bind(R.id.item_balance)
+    @BindView(R.id.item_balance)
     MultiLayerLabel itemBalance;
-    @Bind(R.id.item_redpacket)
+    @BindView(R.id.item_redpacket)
     MultiLayerLabel itemRedPacket;
-    @Bind(R.id.item_score)
+    @BindView(R.id.item_score)
     MultiLayerLabel itemScore;
-    @Bind(R.id.item_order)
+    @BindView(R.id.item_order)
     SettingsItem itemOrder;
-    @Bind(R.id.item_card)
+    @BindView(R.id.item_card)
     SettingsItem itemCard;
-    @Bind(R.id.item_store)
+    @BindView(R.id.item_store)
     SettingsItem itemStore;
-    @Bind(R.id.item_parters)
+    @BindView(R.id.item_parters)
     SettingsItem itemParters;
 
     private CollapsingToolbarLayoutState state;

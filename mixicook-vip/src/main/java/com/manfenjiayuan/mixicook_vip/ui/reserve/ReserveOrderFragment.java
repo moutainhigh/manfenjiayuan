@@ -49,7 +49,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -59,26 +59,23 @@ public class ReserveOrderFragment extends BaseFragment {
     public static final String EXTRA_KEY_ADDRESSINFO = "reciaddr";
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.address_view)
+    @BindView(R.id.address_view)
     ProfileView mAddressView;
-
-    @Bind(R.id.item_serviceTime)
+    @BindView(R.id.item_serviceTime)
     SettingsItem serviceTiemItem;
-    @Bind(R.id.item_remark)
+    @BindView(R.id.item_remark)
     SettingsItem remarkItem;
-
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private OrderGoodsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
-
-    @Bind(R.id.tv_brief)
+    @BindView(R.id.tv_brief)
     TextView tvBrief;
-    @Bind(R.id.button_confirm)
+    @BindView(R.id.button_confirm)
     Button btnConfirm;
 
     private Reciaddr curAddress = null;

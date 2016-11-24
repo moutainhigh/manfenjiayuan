@@ -15,7 +15,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -59,7 +59,7 @@ public class Card2ViewAdapter extends RegularAdapter<StoreRackCardItem, Card2Vie
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_header)
+        @BindView(R.id.iv_header)
         ImageView ivHeader;
 
         public MenuOptioinViewHolder(final View itemView) {

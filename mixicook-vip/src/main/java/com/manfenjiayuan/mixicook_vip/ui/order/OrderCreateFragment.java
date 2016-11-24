@@ -61,7 +61,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -72,31 +72,31 @@ import butterknife.OnClick;
 public class OrderCreateFragment extends BaseFragment {
     public static final String EXTRA_KEY_ORDERBRIEF = "orderBrief";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.address_view)
+    @BindView(R.id.address_view)
     LabelView2 mAddressView;
-    @Bind(R.id.tv_shop_name)
+    @BindView(R.id.tv_shop_name)
     TextView tvShopName;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private OrderGoodsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.item_serviceTime)
+    @BindView(R.id.item_serviceTime)
     SettingsItem serviceTiemItem;
-    @Bind(R.id.item_remark)
+    @BindView(R.id.item_remark)
     SettingsItem remarkItem;
-    @Bind(R.id.item_coupon)
+    @BindView(R.id.item_coupon)
     SettingsItem marketRuleView;
-    @Bind(R.id.goodsAmount_view)
+    @BindView(R.id.goodsAmount_view)
     SettingsItem mGoodsAmountView;
-    @Bind(R.id.transfee_view)
+    @BindView(R.id.transfee_view)
     LabelView2 mTransFeeView;
-    @Bind(R.id.tv_brief)
+    @BindView(R.id.tv_brief)
     TextView tvBrief;
-    @Bind(R.id.button_confirm)
+    @BindView(R.id.button_confirm)
     Button btnSubmit;
 
     private CreateOrderBrief mCreateOrderBrief;//

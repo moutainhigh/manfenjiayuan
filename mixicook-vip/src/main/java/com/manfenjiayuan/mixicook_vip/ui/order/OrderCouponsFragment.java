@@ -22,7 +22,8 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 订单优惠券
@@ -32,14 +33,14 @@ public class OrderCouponsFragment extends BaseListFragment<ShoppingCart> {
     public static final String EXTRA_KEY_MARKETRULEBRIEF = "marketRuleBrief";
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private OrderCouponsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private MarketRuleBrief mMarketRuleBrief;

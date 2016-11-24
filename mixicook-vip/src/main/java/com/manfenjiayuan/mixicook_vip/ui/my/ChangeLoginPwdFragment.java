@@ -20,7 +20,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -30,11 +30,11 @@ import butterknife.OnClick;
  * @since Framework 1.0
  */
 public class ChangeLoginPwdFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.et_old_pwd) EditText etOldPwd;
-    @Bind(R.id.et_new_pwd) EditText etNewPwd;
-    @Bind(R.id.et_new_pwd_confirm) EditText etNewConfirmPwd;
+    @BindView(R.id.et_old_pwd) EditText etOldPwd;
+    @BindView(R.id.et_new_pwd) EditText etNewPwd;
+    @BindView(R.id.et_new_pwd_confirm) EditText etNewConfirmPwd;
 
     public ChangeLoginPwdFragment() {
         super();

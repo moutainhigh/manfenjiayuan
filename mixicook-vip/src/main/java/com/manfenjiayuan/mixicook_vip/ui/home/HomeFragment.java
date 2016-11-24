@@ -85,7 +85,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import me.drakeet.multitype.Item;
@@ -98,25 +98,25 @@ import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
  */
 public class HomeFragment extends BaseFragment
         implements IReciaddrView, ICompanyInfoView, IScGoodsSkuView, IPosRegisterView {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.address_view)
+    @BindView(R.id.address_view)
     NaviAddressView mNaviAddressView;
-    @Bind(R.id.rootview)
+    @BindView(R.id.rootview)
     CoordinatorLayout rootView;
-    @Bind(R.id.bannerRackList)
+    @BindView(R.id.bannerRackList)
     RecyclerView bannerRackRecyclerView;
-    @Bind(R.id.homeRackList)
+    @BindView(R.id.homeRackList)
     RecyclerView homeRackRecyclerView;
-    @Bind(R.id.noAddressView)
+    @BindView(R.id.noAddressView)
     View mNoAddressView;
-    @Bind(R.id.noCompanyView)
+    @BindView(R.id.noCompanyView)
     View mNoCompanyView;
-    @Bind(R.id.tv_company_outofrange)
+    @BindView(R.id.tv_company_outofrange)
     TextView tvCompanyOutofRange;
 //    @Bind(R.id.fab_cart)
 //    FloatingActionButton fabCart;
-    @Bind(R.id.float_cart)
+    @BindView(R.id.float_cart)
     FloatView floatCartView;
 
     //当前收货地址，用来定位店铺

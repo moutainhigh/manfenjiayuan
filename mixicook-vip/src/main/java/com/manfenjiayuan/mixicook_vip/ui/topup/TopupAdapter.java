@@ -13,7 +13,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -65,9 +65,9 @@ public class TopupAdapter extends RegularAdapter<TopAmount, TopupAdapter.MenuOpt
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_amount)
+        @BindView(R.id.tv_amount)
         TextView tvAmount;
-        @Bind(R.id.ib_ratio)
+        @BindView(R.id.ib_ratio)
         ImageView ibRatio;
 
         public MenuOptioinViewHolder(final View itemView) {

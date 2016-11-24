@@ -21,7 +21,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -32,13 +32,13 @@ import butterknife.OnClick;
  */
 public class MessageMgrFragment extends BaseListFragment<EmbMsg> {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.swiperefreshlayout)
+    @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.recyclerview)
+    @BindView(R.id.recyclerview)
     RecyclerViewEmptySupport orderRecyclerView;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
     private LinearLayoutManager linearLayoutManager;
     private MsgMgrAdapter orderListAdapter;

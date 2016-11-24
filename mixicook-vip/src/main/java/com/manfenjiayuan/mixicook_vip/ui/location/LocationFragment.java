@@ -27,7 +27,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -36,17 +36,16 @@ import butterknife.OnClick;
  */
 public class LocationFragment extends BaseListFragment<Subdis>
         implements ICompanyInfoView {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_current_pos)
+    @BindView(R.id.tv_current_pos)
     TextView tvCurPos;
 
-    @Bind(R.id.location_list)
+    @BindView(R.id.location_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private CompanyInfoAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private boolean isLoadingMore;

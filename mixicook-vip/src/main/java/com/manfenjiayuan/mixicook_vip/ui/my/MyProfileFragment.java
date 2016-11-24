@@ -42,7 +42,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -53,13 +53,13 @@ import butterknife.OnClick;
  * @since bingshanguxue
  */
 public class MyProfileFragment extends BaseFragment implements OnTabReselectListener {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.item_avatar)
+    @BindView(R.id.item_avatar)
     AvatarSettingItem avatarItem;
-    @Bind(R.id.item_nickname)
+    @BindView(R.id.item_nickname)
     SettingsItem itemNickname;
-    @Bind(R.id.item_sex)
+    @BindView(R.id.item_sex)
     SettingsItem itemSex;
 
 
@@ -229,10 +229,7 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
     /**
      * 拍照后裁剪
      *
-     * @param data
-     *            原始图片
-     * @param output
-     *            裁剪后图片
+     * @param data 原始图片
      */
     private void startActionCrop(Uri data) {
         Intent intent = new Intent("com.android.camera.action.CROP");

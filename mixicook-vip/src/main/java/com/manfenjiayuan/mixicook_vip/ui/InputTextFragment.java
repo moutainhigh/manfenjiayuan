@@ -13,10 +13,8 @@ import android.widget.EditText;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
-import static com.mfh.framework.uikit.base.BaseActivity.ANIM_TYPE_NEW_FLOW;
-import static com.mfh.framework.uikit.base.BaseActivity.ANIM_TYPE_NEW_NONE;
 
 /**
  * 首页
@@ -29,9 +27,9 @@ public class InputTextFragment extends BaseFragment {
     public static final String EXTRA_KEY_HINT_TEXT = "hintText";
     public static final String EXTRA_KEY_RAW_TEXT = "rawText";
     public static final String EXTRA_KEY_RESULT = "result";
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.et_nickname) EditText etNickname;
+    @BindView(R.id.et_nickname) EditText etNickname;
 
     private String title, hintText, rawText;
 

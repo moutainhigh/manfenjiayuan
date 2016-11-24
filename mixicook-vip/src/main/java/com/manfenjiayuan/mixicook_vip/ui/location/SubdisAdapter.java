@@ -12,7 +12,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -59,7 +59,7 @@ public class SubdisAdapter
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
 
         public CategoryViewHolder(final View itemView) {

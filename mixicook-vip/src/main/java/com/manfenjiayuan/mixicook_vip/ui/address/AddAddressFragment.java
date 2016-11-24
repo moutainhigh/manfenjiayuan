@@ -30,7 +30,7 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -41,17 +41,17 @@ public class AddAddressFragment extends BaseFragment {
     public static final String EXTRA_KEY_MODE = "mode";
     public static final String EXTRA_KEY_ADDR = "reciaddr";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.label_subname)
+    @BindView(R.id.label_subname)
     TextLabelView labelSubName;
-    @Bind(R.id.label_address)
+    @BindView(R.id.label_address)
     EditLabelView labelAddress;
-    @Bind(R.id.label_receiveName)
+    @BindView(R.id.label_receiveName)
     EditLabelView labelReceiveName;
-    @Bind(R.id.label_receiveMobile)
+    @BindView(R.id.label_receiveMobile)
     EditLabelView labelReceiveMobile;
-    @Bind(R.id.toggle_isDefault)
+    @BindView(R.id.toggle_isDefault)
     ToggleSettingItem isDefaultItem;
 
     private int mode;

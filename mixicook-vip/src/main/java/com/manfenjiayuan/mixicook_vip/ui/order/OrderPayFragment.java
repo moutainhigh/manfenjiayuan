@@ -50,7 +50,7 @@ import net.sourceforge.simcpux.WXHelper;
 import java.util.Date;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -68,17 +68,17 @@ public class OrderPayFragment extends BaseFragment {
     private static final int PAY_ACTION_WEPAY = 4;
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_amount)
+    @BindView(R.id.tv_amount)
     TextView tvAmount;
-    @Bind(R.id.action_alipay)
+    @BindView(R.id.action_alipay)
     LabelView1 labelAlipay;
-    @Bind(R.id.action_wepay)
+    @BindView(R.id.action_wepay)
     LabelView1 labelWepay;
-    @Bind(R.id.action_mfpay)
+    @BindView(R.id.action_mfpay)
     LabelView1 labelMfpay;
-    @Bind(R.id.button_submit)
+    @BindView(R.id.button_submit)
     Button btnSubmit;
 
 //    private ScOrderPaymentDialog paymentDialog = null;
