@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
 
 def releaseTime() {
     return new Date().format("MMdd", TimeZone.getTimeZone("UTC"))
@@ -135,5 +137,7 @@ dependencies {
     compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
     compile rootProject.ext.dependencies["getui"]
+    compile rootProject.ext.dependencies["butterknife"]
+    apt rootProject.ext.dependencies["butterknife-compiler"]
     compile 'me.drakeet.multitype:multitype:2.0.0'
 }

@@ -14,12 +14,11 @@ import com.google.zxing.WriterException;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -28,13 +27,13 @@ import butterknife.OnClick;
  */
 public class QuickPayFragment extends BaseFragment {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.iv_code_128)
+    @BindView(R.id.iv_code_128)
     ImageView ivCode128;
-    @Bind(R.id.tv_barcode)
+    @BindView(R.id.tv_barcode)
     TextView tvBarcode;
-    @Bind(R.id.iv_qr_code)
+    @BindView(R.id.iv_qr_code)
     ImageView ivQRCode;
 
     @Override

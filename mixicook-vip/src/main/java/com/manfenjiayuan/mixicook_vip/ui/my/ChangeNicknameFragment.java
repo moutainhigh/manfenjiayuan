@@ -21,7 +21,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -31,9 +31,9 @@ import butterknife.OnClick;
  * @since Framework 1.0
  */
 public class ChangeNicknameFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.et_nickname) EditText etNickname;
+    @BindView(R.id.et_nickname) EditText etNickname;
 
     public ChangeNicknameFragment() {
         super();

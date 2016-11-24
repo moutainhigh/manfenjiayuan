@@ -33,7 +33,8 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 管理收货地址
@@ -41,14 +42,13 @@ import butterknife.Bind;
  */
 public class AddressMgrFragment extends BaseListFragment<Reciaddr> implements IReciaddrView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private AddressMgrAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private ReciaddrPresenter mReciaddrPresenter;

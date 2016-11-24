@@ -28,7 +28,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -37,14 +37,14 @@ import butterknife.OnClick;
  */
 public class AddressListFragment extends BaseListFragment<Reciaddr> implements IReciaddrView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private AddressListAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private ReciaddrPresenter mReciaddrPresenter;

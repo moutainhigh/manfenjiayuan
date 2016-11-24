@@ -58,7 +58,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -69,17 +69,17 @@ import de.greenrobot.event.EventBus;
  * @since Framework 1.0
  */
 public class TopupFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.profileView)
+    @BindView(R.id.profileView)
     ProfileView mProfileView;
-    @Bind(R.id.amountRecyclerView)
+    @BindView(R.id.amountRecyclerView)
     RecyclerView mRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private TopupAdapter mTopupAdapter;
-    @Bind(R.id.action_alipay)
+    @BindView(R.id.action_alipay)
     LabelView1 labelAlipay;
-    @Bind(R.id.action_wepay)
+    @BindView(R.id.action_wepay)
     LabelView1 labelWepay;
     private static final int PAY_ACTION_ALIPAY = 1;
     private static final int PAY_ACTION_WEPAY = 2;
@@ -266,7 +266,7 @@ public class TopupFragment extends BaseFragment {
         }
     }
 
-    @Bind(R.id.button_submit)
+    @BindView(R.id.button_submit)
     Button btnSubmit;
 
     @OnClick(R.id.button_submit)

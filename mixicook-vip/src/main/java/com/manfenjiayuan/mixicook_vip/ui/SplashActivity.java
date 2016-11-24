@@ -38,7 +38,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 欢迎页面
@@ -46,11 +47,11 @@ import butterknife.Bind;
  */
 public class SplashActivity extends InitActivity {
 
-    @Bind(R.id.tv_version)
+    @BindView(R.id.tv_version)
     TextView tvVersion;
 
-    public static PendingIntent generatePendingIntent(Context context){
-        Intent intent =new Intent(context, SplashActivity.class);
+    public static PendingIntent generatePendingIntent(Context context) {
+        Intent intent = new Intent(context, SplashActivity.class);
         //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FILL_IN_DATA);
@@ -78,7 +79,7 @@ public class SplashActivity extends InitActivity {
 //        PushManager.getInstance().stopService(this);
 
         AppInfo appInfo = AnalysisAgent.getAppInfo(AppContext.getAppContext());
-        if (appInfo != null){
+        if (appInfo != null) {
             tvVersion.setText(String.format("%s-%d", appInfo.getVersionName(),
                     appInfo.getVersionCode()));
         }
@@ -86,17 +87,16 @@ public class SplashActivity extends InitActivity {
 
     @Override
     public void doAsyncTask() {
-        if (!requestPermissions()){
+        if (!requestPermissions()) {
             return;
         }
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
 
-            setupGetui();
+        setupGetui();
 
         super.doAsyncTask();
-        // TODO: 07/11/2016
     }
 
     @Override
@@ -110,8 +110,8 @@ public class SplashActivity extends InitActivity {
 
     /**
      * 权限申请
-     * */
-    private boolean requestPermissions(){
+     */
+    private boolean requestPermissions() {
         ArrayList<String> expectPermissions = new ArrayList<>();
         expectPermissions.add(Manifest.permission.CAMERA);
         expectPermissions.add(Manifest.permission.READ_CONTACTS);
@@ -130,7 +130,7 @@ public class SplashActivity extends InitActivity {
 
 
         List<String> lackPermissions = new ArrayList<>();
-        for (String permission : expectPermissions){
+        for (String permission : expectPermissions) {
             if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 ZLogger.d(getString(R.string.permission_not_granted, permission));
                 lackPermissions.add(permission);
@@ -138,9 +138,9 @@ public class SplashActivity extends InitActivity {
         }
 
         int size = lackPermissions.size();
-        if (size > 0){
+        if (size > 0) {
             String[] permissions = new String[size];
-            for (int i = 0; i < size; i++){
+            for (int i = 0; i < size; i++) {
                 permissions[i] = lackPermissions.get(i);
             }
             // Camera permission has not been granted yet. Request it directly.
@@ -155,11 +155,11 @@ public class SplashActivity extends InitActivity {
     @Override
     protected void initComleted() {
         //首次启动
-        if(SharedPrefesManagerFactory.isAppFirstStart()){
+        if (SharedPrefesManagerFactory.isAppFirstStart()) {
             SharedPrefesManagerFactory.setAppStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(new Date()));
             SharedPrefesManagerFactory.setAppFirstStart(false);
         }
-        
+
         if (MfhLoginService.get().haveLogined()) {
             redirect2Main();
         } else {
@@ -168,9 +168,9 @@ public class SplashActivity extends InitActivity {
     }
 
     /**
-     *  初始化完成
+     * 初始化完成
      */
-    private void redirect2Main(){
+    private void redirect2Main() {
         ZLogger.d("应用程序初始化完成。");
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -181,8 +181,9 @@ public class SplashActivity extends InitActivity {
         }, 500);
     }
 
-    /** 跳转至登录页面
-    */
+    /**
+     * 跳转至登录页面
+     */
     private void redirect2Login() {
         ZLogger.d("初始化应用，未登录准备跳转到登录页面");
         MfhLoginService.get().clear();
@@ -205,7 +206,7 @@ public class SplashActivity extends InitActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case Route.ARC_ANDROID_SETTINGS: {
-                if (data != null){
+                if (data != null) {
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
                 //设置页面返回后，重新检测权限是否开启
@@ -238,10 +239,9 @@ public class SplashActivity extends InitActivity {
             // Check if the only required permission has been granted
             boolean isGrannted = PermissionUtil.verifyPermissions(grantResults);
             ZLogger.d("isGrannted=" + isGrannted);
-            if (isGrannted){
+            if (isGrannted) {
                 doAsyncTask();
-            }
-            else{
+            } else {
                 showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
                         "立刻开启", new DialogInterface.OnClickListener() {
 
@@ -273,8 +273,8 @@ public class SplashActivity extends InitActivity {
 
     /**
      * 设置个推
-     * */
-    private void setupGetui(){
+     */
+    private void setupGetui() {
         String cid = PushManager.getInstance().getClientid(AppContext.getAppContext());
         ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
         PushManager.getInstance().initialize(this.getApplicationContext());

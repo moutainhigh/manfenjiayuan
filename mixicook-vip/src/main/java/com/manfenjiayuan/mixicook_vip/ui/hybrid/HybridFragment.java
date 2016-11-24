@@ -33,7 +33,8 @@ import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.EmptyLayout;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * Created by bingshanguxue on 6/28/16.
@@ -42,12 +43,12 @@ public class HybridFragment extends BaseFragment {
     public static final String EXTRA_KEY_ORIGINALURL = "originalUrl";
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.webview)
+    @BindView(R.id.webview)
     HybridWebView mWebView;
-    @Bind(R.id.error_view)
+    @BindView(R.id.error_view)
     EmptyLayout emptyView;
 
     private WebViewJavascriptBridge bridge;

@@ -67,7 +67,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 
 import static com.mfh.framework.core.utils.DensityUtil.dip2px;
 
@@ -80,15 +81,15 @@ public class PoiActivity extends BaseActivity
 
     public static final long LOCATE_TIMEOUT = 12 * 1000;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.scanBar)
+    @BindView(R.id.scanBar)
     public ScanBar mScanBar;
 
     private AMapLocation aMapLocation;// 用于判断定位超时
     private Handler handler = new Handler();
 
-    @Bind(R.id.map_view)
+    @BindView(R.id.map_view)
     MapView mapView;
     private AMap aMap;
     private AMapLocationClient mAMapLocationClient;
@@ -103,12 +104,12 @@ public class PoiActivity extends BaseActivity
     private PoiSearch poiSearch;
     private PoiSearch.Query query;// Poi查询条件
 
-    @Bind(R.id.location_list)
+    @BindView(R.id.location_list)
     ListView listView;
     private LocationHeaderView headerView;
     private PoiAdapter adapter;
     private AddressBrief mAddressBrief = new AddressBrief();
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar mProgressBar;
 
     @Override

@@ -20,7 +20,7 @@ import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.manfenjiayuan.mixicook_vip.ui.InputTextFragment.EXTRA_KEY_HINT_TEXT;
@@ -34,11 +34,11 @@ import static com.manfenjiayuan.mixicook_vip.ui.InputTextFragment.EXTRA_KEY_TITL
  * @since bingshanguxue
  */
 public class CustomerServiceFragment extends BaseFragment{
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.item_call)
+    @BindView(R.id.item_call)
     SettingsItem itemCall;
-    @Bind(R.id.item_feedback)
+    @BindView(R.id.item_feedback)
     SettingsItem itemFeedback;
 
 

@@ -13,7 +13,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -73,11 +73,11 @@ public class AddressMgrAdapter
 
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_receiveName)
+        @BindView(R.id.tv_receiveName)
         TextView tvReceiveName;
-        @Bind(R.id.tv_receivePhone)
+        @BindView(R.id.tv_receivePhone)
         TextView tvReceivePhone;
-        @Bind(R.id.tv_subName)
+        @BindView(R.id.tv_subName)
         TextView tvSubName;
 
         public CategoryViewHolder(final View itemView) {

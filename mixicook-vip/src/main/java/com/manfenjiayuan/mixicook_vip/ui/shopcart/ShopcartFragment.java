@@ -55,7 +55,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -69,28 +69,27 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
     public static final String EXTRA_KEY_COMPANYINFO = "companyInfo";
 
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.address_view)
+    @BindView(R.id.address_view)
     LabelView2 mAddressView;
-    @Bind(R.id.tv_shop_name)
+    @BindView(R.id.tv_shop_name)
     TextView tvShopName;
-    @Bind(R.id.shop_checkbox)
+    @BindView(R.id.shop_checkbox)
     CheckBox shopCheckbox;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private ShopcartGoodsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
-
-    @Bind(R.id.item_transFeeRule)
+    @BindView(R.id.item_transFeeRule)
     SettingsItem transFeeRuleView;
-    @Bind(R.id.tv_brief)
+    @BindView(R.id.tv_brief)
     TextView tvBrief;
-    @Bind(R.id.button_confirm)
+    @BindView(R.id.button_confirm)
     Button btnConfirm;
-    @Bind(R.id.check_selectall)
+    @BindView(R.id.check_selectall)
     CheckBox checkAll;
 
     private Reciaddr curAddress = null;
@@ -141,8 +140,7 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
         toolbar.setTitle("购物车");
         if (animType == ANIM_TYPE_NEW_FLOW) {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
-        }
-        else{
+        } else {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         }
         toolbar.setNavigationOnClickListener(
@@ -590,10 +588,9 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
                     transFee = mTransFeeRule.getOrderTransFee();
                     transFeeRuleView.setSubTitle(spanned);
                     transFeeRuleView.setVisibility(View.VISIBLE);
-                    if (!BizConfig.RELEASE){
+                    if (!BizConfig.RELEASE) {
                         btnConfirm.setEnabled(true);
-                    }
-                    else{
+                    } else {
                         btnConfirm.setEnabled(false);
                     }
                 } else {

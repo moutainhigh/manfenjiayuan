@@ -44,7 +44,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -61,17 +61,17 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
     public static final String EXTRA_KEY_FRONTCATEGORY_ID = "frontCategoryId";
     public static final String EXTRA_KEY_CATEGORYNAME = "categoryName";
 
-    @Bind(R.id.rootview)
+    @BindView(R.id.rootview)
     CoordinatorLayout mRootView;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private CategoryGoodsAdapter goodsListAdapter;
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
-    @Bind(R.id.float_cart)
+    @BindView(R.id.float_cart)
     FloatView floatCartView;
 
     private Long netId;//店铺or网点编号

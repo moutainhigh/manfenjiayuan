@@ -13,7 +13,7 @@ import com.manfenjiayuan.mixicook_vip.R;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -23,13 +23,13 @@ import butterknife.OnClick;
  * @author bingshanguxue
  */
 public class GeneralSettingsFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.item_2_0)
+    @BindView(R.id.item_2_0)
     SettingsItem btnItem;
-    @Bind(R.id.item_location)
+    @BindView(R.id.item_location)
     ToggleSettingItem itemLocation;
-    @Bind(R.id.item_notification)
+    @BindView(R.id.item_notification)
     ToggleSettingItem itemNotification;
 
     public static GeneralSettingsFragment newInstance(Bundle args) {

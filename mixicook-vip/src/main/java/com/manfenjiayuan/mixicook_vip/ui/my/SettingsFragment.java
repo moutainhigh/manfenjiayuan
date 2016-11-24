@@ -30,7 +30,7 @@ import com.tencent.bugly.beta.Beta;
 
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -41,10 +41,10 @@ import butterknife.OnClick;
  * @since bingshanguxue
  */
 public class SettingsFragment extends BaseFragment implements OnTabReselectListener {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.item_version)
+    @BindView(R.id.item_version)
     SettingsItem itemVersion;
 
     public SettingsFragment() {

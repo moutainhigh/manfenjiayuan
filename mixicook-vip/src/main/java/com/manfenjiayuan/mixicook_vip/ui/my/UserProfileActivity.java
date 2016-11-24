@@ -36,7 +36,7 @@ import com.mfh.framework.uikit.dialog.DialogHelper;
 
 import java.io.File;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -44,14 +44,14 @@ import butterknife.OnClick;
  * 个人资料
  */
 public class UserProfileActivity extends MultimediaActivity {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.item_avatar)
+    @BindView(R.id.item_avatar)
     AvatarSettingItem avatarItem;
-    @Bind(R.id.item_nickname)
+    @BindView(R.id.item_nickname)
     SettingsItem itemNickname;
-    @Bind(R.id.item_sex)
+    @BindView(R.id.item_sex)
     SettingsItem itemSex;
 
 

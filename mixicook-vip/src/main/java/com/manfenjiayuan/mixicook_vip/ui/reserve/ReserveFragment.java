@@ -39,25 +39,26 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * Created by bingshanguxue on 6/28/16.
  */
 public class ReserveFragment extends BaseProgressFragment
         implements IChainGoodsSkuView {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.category_list)
+    @BindView(R.id.category_list)
     RecyclerView categoryRecyclerView;
     private ReserveSideCategoryAdapter categoryListAdapter;
 
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private ReserveGoodsAdapter goodsListAdapter;
     private LinearLayoutManager mRLayoutManager;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     TextView emptyView;
 
     private PosCategory mPosCategory;

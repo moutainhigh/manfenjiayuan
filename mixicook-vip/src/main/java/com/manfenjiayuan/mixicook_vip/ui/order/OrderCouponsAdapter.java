@@ -22,7 +22,7 @@ import com.mfh.framework.core.utils.ObjectsCompact;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -163,21 +163,21 @@ public class OrderCouponsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public class RuleViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.frame_common)
+        @BindView(R.id.frame_common)
         RelativeLayout frameCommon;
-        @Bind(R.id.tv_exec_num)
+        @BindView(R.id.tv_exec_num)
         TextView tvExecNum;
-        @Bind(R.id.tv_coupon_title)
+        @BindView(R.id.tv_coupon_title)
         TextView tvTitle;
-        @Bind(R.id.tv_coupon_description)
+        @BindView(R.id.tv_coupon_description)
         TextView tvDescription;
-        @Bind(R.id.frame_vip)
+        @BindView(R.id.frame_vip)
         LinearLayout frameVip;
-        @Bind(R.id.tv_score)
+        @BindView(R.id.tv_score)
         TextView tvScore;
-        @Bind(R.id.tv_discount)
+        @BindView(R.id.tv_discount)
         TextView tvDiscount;
 
         public RuleViewHolder(final View itemView) {
@@ -187,17 +187,17 @@ public class OrderCouponsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public class CouponViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.rootview)
+        @BindView(R.id.rootview)
         View rootView;
-        @Bind(R.id.tv_coupon_amount)
+        @BindView(R.id.tv_coupon_amount)
         TextView tvAmount;
-        @Bind(R.id.tv_coupon_title)
+        @BindView(R.id.tv_coupon_title)
         TextView tvTitle;
-        @Bind(R.id.tv_coupon_description)
+        @BindView(R.id.tv_coupon_description)
         TextView tvDescription;
-        @Bind(R.id.tv_coupon_valid_date)
+        @BindView(R.id.tv_coupon_valid_date)
         TextView tvValidDate;
-        @Bind(R.id.ib_ratio)
+        @BindView(R.id.ib_ratio)
         ImageButton ibRatio;
 
         public CouponViewHolder(final View itemView) {
