@@ -1524,11 +1524,7 @@ public final class SerializeWriter extends Writer {
             return false;
         }
 
-        if (ch <= 0x1F || ch == '\\' || ch == '"') {
-            return true;
-        }
-
-        return false;
+        return ch <= 0x1F || ch == '\\' || ch == '"';
     }
 
     // writeStringWithSingleQuote

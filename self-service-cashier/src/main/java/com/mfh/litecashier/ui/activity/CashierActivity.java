@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Base64;
 
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
@@ -33,7 +31,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.utils.GlobalInstance;
-import com.printer.sdk.PrinterConstants;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -140,7 +137,7 @@ public abstract class CashierActivity extends BaseActivity {
 //        }
 
 
-        if (mTts != null){
+        if (mTts != null) {
             mTts.stopSpeaking();
             // 退出时释放连接
             mTts.destroy();
@@ -233,13 +230,12 @@ public abstract class CashierActivity extends BaseActivity {
 
         if (ScaleAgent.isEnabled()) {
             if (port.equals(ScaleAgent.getPort())) {
-                if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_ACS_P215){
+                if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_ACS_P215) {
                     Double netWeight = AHScaleAgent.parseACSP215(comBean.bRec);
                     if (netWeight != null) {
                         GlobalInstance.getInstance().setNetWeight(netWeight);
                     }
-                }
-                else if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_DS_781A){
+                } else if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_DS_781A) {
                     DS781A ds781A = SMScaleAgent.parseData(comBean.bRec);
                     if (ds781A != null) {
                         GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
@@ -247,8 +243,7 @@ public abstract class CashierActivity extends BaseActivity {
                 }
 
                 lastScaleTriggle = rightNow;
-            }
-            else{
+            } else {
                 Long interval = rightNow - lastScaleTriggle;
                 ZLogger.d(String.format("interval＝%d, rightNow=%d, lastAhscaleTriggle=%d",
                         interval, rightNow, lastScaleTriggle));
@@ -283,55 +278,6 @@ public abstract class CashierActivity extends BaseActivity {
 
         setControls();
     }
-
-    /**
-     * 用于接收打印机连接状态消息的 Handler
-     * */
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case PrinterConstants.Connect.SUCCESS:
-//                    isConnected = true;
-//                    GlobalContants.ISCONNECTED = isConnected;
-//                    GlobalContants.DEVICENAME = devicesName;
-                    break;
-                case PrinterConstants.Connect.FAILED:
-//                    isConnected = false;
-                    DialogUtil.showHint("Connect Failed!");
-                    break;
-                case PrinterConstants.Connect.CLOSED:
-//                    isConnected = false;
-//                    GlobalContants.ISCONNECTED = isConnected;
-//                    GlobalContants.DEVICENAME = devicesName;
-                    DialogUtil.showHint("Connect Closed!");
-                    break;
-                case PrinterConstants.Connect.NODEVICE:
-//                    isConnected = false;
-                    DialogUtil.showHint("No devices can connect!");
-                    break;
-                case 0:
-                    DialogUtil.showHint("打印机通信正常!");
-                    break;
-                case -1:
-                    DialogUtil.showHint("打印机通信异常常，请检查蓝牙连接!");
-//                    vibrator();
-                    break;
-                case -2:
-                    DialogUtil.showHint("打印机缺纸!");
-//                    vibrator();
-                    break;
-                case -3:
-                    DialogUtil.showHint("打印机开盖!");
-//                    vibrator();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    };
-
 
     private class OpenPortRunnable implements Runnable {
         private SerialHelper serialHelper;

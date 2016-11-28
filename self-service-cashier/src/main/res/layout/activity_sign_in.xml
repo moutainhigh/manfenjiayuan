@@ -27,12 +27,21 @@
             android:src="@mipmap/ic_textlogo_mixicook"/>
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/animProgressBar"
+        style="@style/loading"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout"/>
+
     <LinearLayout
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
         android:layout_centerVertical="true"
-        android:orientation="vertical">
+        android:layout_centerHorizontal="true">
 
         <LinearLayout
             android:id="@+id/login_form"
@@ -118,14 +127,5 @@
                 android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/animProgressBar"
-        style="@style/loading"
-        android:layout_width="30dip"
-        android:layout_height="30dip"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:ignore="InconsistentLayout"/>
 
 </RelativeLayout>

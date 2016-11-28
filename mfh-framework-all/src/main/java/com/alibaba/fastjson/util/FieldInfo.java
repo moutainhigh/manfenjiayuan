@@ -1,5 +1,7 @@
 package com.alibaba.fastjson.util;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -12,27 +14,25 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 public class FieldInfo implements Comparable<FieldInfo> {
 
-    private final String   name;
-    private final Method   method;
-    private final Field    field;
+    private final String name;
+    private final Method method;
+    private final Field field;
 
-    private int            ordinal = 0;
+    private int ordinal = 0;
     private final Class<?> fieldClass;
-    private final Type     fieldType;
+    private final Type fieldType;
     private final Class<?> declaringClass;
-    private boolean        getOnly = false;
-    private int            serialzeFeatures;
-    private String         label = "";
-    
-    public FieldInfo(String name, Class<?> declaringClass, Class<?> fieldClass, Type fieldType, Field field){
+    private boolean getOnly = false;
+    private int serialzeFeatures;
+    private String label = "";
+
+    public FieldInfo(String name, Class<?> declaringClass, Class<?> fieldClass, Type fieldType, Field field) {
         this(name, declaringClass, fieldClass, fieldType, field, 0, 0);
     }
 
-    public FieldInfo(String name, Class<?> declaringClass, Class<?> fieldClass, Type fieldType, Field field, int ordinal, int serialzeFeatures){
+    public FieldInfo(String name, Class<?> declaringClass, Class<?> fieldClass, Type fieldType, Field field, int ordinal, int serialzeFeatures) {
         this.name = name;
         this.declaringClass = declaringClass;
         this.fieldClass = fieldClass;
@@ -46,27 +46,27 @@ public class FieldInfo implements Comparable<FieldInfo> {
             TypeUtils.setAccessible(field);
         }
     }
-    
-    public FieldInfo(String name, Method method, Field field){
+
+    public FieldInfo(String name, Method method, Field field) {
         this(name, method, field, null, null);
     }
-    
-    public FieldInfo(String name, Method method, Field field, int ordinal, int serialzeFeatures){
+
+    public FieldInfo(String name, Method method, Field field, int ordinal, int serialzeFeatures) {
         this(name, method, field, ordinal, serialzeFeatures, null);
     }
 
-    public FieldInfo(String name, Method method, Field field, int ordinal, int serialzeFeatures, String label){
+    public FieldInfo(String name, Method method, Field field, int ordinal, int serialzeFeatures, String label) {
         this(name, method, field, null, null, ordinal, serialzeFeatures);
         if (label != null && label.length() > 0) {
             this.label = label;
         }
     }
 
-    public FieldInfo(String name, Method method, Field field, Class<?> clazz, Type type){
+    public FieldInfo(String name, Method method, Field field, Class<?> clazz, Type type) {
         this(name, method, field, clazz, type, 0, 0);
     }
 
-    public FieldInfo(String name, Method method, Field field, Class<?> clazz, Type type, int ordinal, int serialzeFeatures){
+    public FieldInfo(String name, Method method, Field field, Class<?> clazz, Type type, int ordinal, int serialzeFeatures) {
         this.name = name;
         this.method = method;
         this.field = field;
@@ -122,8 +122,8 @@ public class FieldInfo implements Comparable<FieldInfo> {
         this.fieldType = genericFieldType;
         this.fieldClass = fieldClass;
     }
-    
-    
+
+
     public String getLabel() {
         return label;
     }
@@ -185,7 +185,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
             }
             if (changed) {
                 fieldType = new ParameterizedTypeImpl(arguments, parameterizedFieldType.getOwnerType(),
-                                                      parameterizedFieldType.getRawType());
+                        parameterizedFieldType.getRawType());
                 return fieldType;
             }
         }
@@ -312,7 +312,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
 
     public void set(Object javaObject, Object value) throws IllegalAccessException, InvocationTargetException {
         if (method != null) {
-            method.invoke(javaObject, new Object[] { value });
+            method.invoke(javaObject, new Object[]{value});
             return;
         }
 
@@ -332,7 +332,7 @@ public class FieldInfo implements Comparable<FieldInfo> {
         return getOnly;
     }
 
-    
+
     public int getSerialzeFeatures() {
         return serialzeFeatures;
     }

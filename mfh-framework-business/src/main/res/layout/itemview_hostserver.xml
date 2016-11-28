@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_normal">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/hostserver_item_height"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="@dimen/spacing_normal">
 
     <ImageView
         android:id="@+id/iv_header"
-        android:layout_width="104dp"
-        android:layout_height="104dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="@dimen/hostserver_image_width"
+        android:layout_height="@dimen/hostserver_image_height"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_launcher"/>
@@ -17,12 +17,12 @@
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/iv_header"
+        android:layout_height="wrap_content"
         android:contentDescription="@null"
+        android:layout_marginTop="@dimen/spacing_micro"
         android:gravity="center"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_launcher"
         android:textColor="@color/material_white"
-        android:textSize="14sp"/>
-</RelativeLayout>
+        android:textSize="@dimen/hostserver_textsize"/>
+</LinearLayout>

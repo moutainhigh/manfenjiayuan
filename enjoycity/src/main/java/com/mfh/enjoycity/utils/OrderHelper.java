@@ -185,7 +185,7 @@ public class OrderHelper {
                 }
 
                 String[] timeA= timeStr.split("-");
-                if (timeA != null && timeA.length >= 2){
+                if (timeA.length >= 2){
                     String startTime = String.format("%s %s", dateStr, timeA[0]);
                     String endTime = String.format("%s %s", dateStr, timeA[1]);
 
@@ -200,12 +200,10 @@ public class OrderHelper {
 
                 }else{
                     resetDeliverTime();
-                    return;
                 }
             }
             catch (Exception ex){
                 resetDeliverTime();
-                return;
             }
         }
         else{

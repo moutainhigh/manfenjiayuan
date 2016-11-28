@@ -18,7 +18,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -26,9 +26,9 @@ import butterknife.Bind;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class HomeFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.menu_option)
+    @BindView(R.id.menu_option)
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private HomeAdapter menuAdapter;

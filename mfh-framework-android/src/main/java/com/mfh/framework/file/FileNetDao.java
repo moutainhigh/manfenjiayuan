@@ -36,7 +36,7 @@ public class FileNetDao extends BaseFao {
      */
     public FileNetDao(String dirName, String fileServerUrl) {
         super(dirName);
-        if (fileServerUrl != null && fileServerUrl.length() > 0 && fileServerUrl.endsWith("/") == false)
+        if (fileServerUrl != null && fileServerUrl.length() > 0 && !fileServerUrl.endsWith("/"))
             fileServerUrl += "/";
         this.fileServerUrl = fileServerUrl;
     }
@@ -49,7 +49,7 @@ public class FileNetDao extends BaseFao {
      */
     public FileNetDao(String dirName, String fileServerUrl, String localRootPath) {
         super(dirName);
-        if (fileServerUrl != null && fileServerUrl.length() > 0 && fileServerUrl.endsWith("/") == false)
+        if (fileServerUrl != null && fileServerUrl.length() > 0 && !fileServerUrl.endsWith("/"))
             fileServerUrl += "/";
         this.fileServerUrl = fileServerUrl;
         this.localRootDir = localRootPath;
@@ -67,14 +67,14 @@ public class FileNetDao extends BaseFao {
          * 执行下载成功处理
          * @param file
          */
-        public void processFile(File file);
+        void processFile(File file);
 
         /**
          * 处理异常
          * @param fileName
          * @param e
          */
-        public void onFailure(String fileName, Throwable e);
+        void onFailure(String fileName, Throwable e);
     }
 
     @Override
@@ -106,7 +106,6 @@ public class FileNetDao extends BaseFao {
     public void processFile(String fileName, final CallBack callBack) {
         final FileNetDao that = this;
         new AsyncTask<String, Integer, File>() {
-            //需要异步执行
             @Override
             protected void onPostExecute(File fileImg) {
                 if (fileImg != null) {

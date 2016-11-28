@@ -67,10 +67,7 @@ public class FromInfo implements java.io.Serializable {
      * @author zhangyz created on 2014-10-29
      */
     public boolean haveAllFrom() {
-        if (this.guid != null)
-            return true;
-        else
-            return false;
+        return this.guid != null;
     }
     
     /**
@@ -79,10 +76,7 @@ public class FromInfo implements java.io.Serializable {
      * @author zhangyz created on 2015-3-20
      */
     public boolean haveBlank() {
-        if (guid == null && (pp == null || pp.getCpt() == null))
-            return true;
-        else
-            return false;
+        return guid == null && (pp == null || pp.getCpt() == null);
     }
 
     public static FromInfo create(String channePointId, Long guid){

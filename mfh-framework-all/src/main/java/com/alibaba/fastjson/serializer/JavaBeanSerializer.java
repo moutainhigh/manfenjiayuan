@@ -15,6 +15,11 @@
  */
 package com.alibaba.fastjson.serializer;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.util.FieldInfo;
+import com.alibaba.fastjson.util.TypeUtils;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -23,11 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.util.FieldInfo;
-import com.alibaba.fastjson.util.TypeUtils;
 
 /**
  * @author wenshao[szujobs@hotmail.com]
@@ -220,7 +220,7 @@ public class JavaBeanSerializer implements ObjectSerializer {
                     }
                 }
 
-                if (key != fieldSerializer.getName()) {
+                if (!key.equals(fieldSerializer.getName())) {
                     if (!writeAsArray) {
                         out.writeFieldName(key);
                     }
@@ -290,13 +290,7 @@ public class JavaBeanSerializer implements ObjectSerializer {
         }
 
         boolean writeAsArray;
-        if (serializer.isEnabled(SerializerFeature.BeanToArray)) {
-            writeAsArray = true;
-        } else {
-            writeAsArray = false;
-        }
-
-        return writeAsArray;
+        return serializer.isEnabled(SerializerFeature.BeanToArray);
     }
     
     public Map<String, FieldSerializer> getGetterMap() {

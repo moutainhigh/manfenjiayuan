@@ -206,10 +206,7 @@ public class IMConversationDao extends BaseDbDao<IMConversation, Long> {
         else
             return false;*/
         Long curTopSessionOrder = this.getEntityById(sessionId).getTopSessionOrder();
-        if (curTopSessionOrder != IMConversation.DEFAULT_NOT_TOP_ORDER)
-            return true;
-        else
-            return false;
+        return curTopSessionOrder != IMConversation.DEFAULT_NOT_TOP_ORDER;
     }
 
     /**
@@ -243,10 +240,7 @@ public class IMConversationDao extends BaseDbDao<IMConversation, Long> {
     public boolean getListByCpointId(String s) {
         //通过channelpointid这个字段来取值，如果能够取超过两个值，那就是已经绑定的用户了
         List<IMConversation> list = this.getFinalDb().findAllBySql(IMConversation.class, "select * from emb_session where channelpointid = '" + s + "'", null);
-        if (list.size() >= 2)
-            return true;
-        else
-            return false;
+        return list.size() >= 2;
     }
 
     public IMConversation getSessionByHumanId(Long id) {

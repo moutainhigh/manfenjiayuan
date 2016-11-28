@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_double"
         android:background="@null"
+        android:contentDescription="@null"
         android:src="@mipmap/img_address"/>
 
     <TextView

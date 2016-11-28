@@ -29,7 +29,7 @@ public class ZKXmlSerializer implements XmlSerializer {
     public ZKXmlSerializer() {
     }
 
-    private final void check(boolean close) throws IOException {
+    private void check(boolean close) throws IOException {
         if(this.pending) {
             ++this.depth;
             this.pending = false;

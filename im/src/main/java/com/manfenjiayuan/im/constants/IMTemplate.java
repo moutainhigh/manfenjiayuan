@@ -39,7 +39,7 @@ public class IMTemplate {
 	public static Map<Long, String> tempMap;
 	
 	static{
-		tempMap = new HashMap<Long, String>();
+		tempMap = new HashMap<>();
 		tempMap.put(SC_ORDER, SC_ORDER_TEMP);
 		tempMap.put(ACCOUNT_RECHARGE, ACCOUNT_RECHARGE_TEMP);
 		tempMap.put(ACCOUNT_COSUME, ACCOUNT_COSUME_TEMP);

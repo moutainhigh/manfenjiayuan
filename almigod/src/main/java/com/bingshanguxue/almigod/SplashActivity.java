@@ -13,7 +13,8 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.InitActivity;
 
-import butterknife.Bind;
+import butterknife.BindView;
+
 
 /**
  * 欢迎页面
@@ -21,7 +22,7 @@ import butterknife.Bind;
  */
 public class SplashActivity extends InitActivity {
 
-    @Bind(R.id.tv_version)
+    @BindView(R.id.tv_version)
     TextView tvVersion;
 
     @Override

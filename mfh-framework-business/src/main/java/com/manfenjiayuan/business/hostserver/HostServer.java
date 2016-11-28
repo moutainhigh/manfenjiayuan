@@ -3,11 +3,16 @@ package com.manfenjiayuan.business.hostserver;
 import java.io.Serializable;
 
 /**
+ * 租户
  * Created by bingshanguxue on 04/11/2016.
  */
 
 public class HostServer implements Serializable {
-    private Long id;
+    public static final String HOST_MIXICOOK = "admin.mixicook.com";
+    public static final String HOST_QIANWJ = "qianwj.mixicook.com";
+
+
+    private Long id;//租户编号
     private String name;
     private String host;
     private String baseServerUrl;

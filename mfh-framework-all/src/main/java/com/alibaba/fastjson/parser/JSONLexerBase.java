@@ -15,17 +15,9 @@
  */
 package com.alibaba.fastjson.parser;
 
-import static com.alibaba.fastjson.parser.JSONToken.COLON;
-import static com.alibaba.fastjson.parser.JSONToken.COMMA;
-import static com.alibaba.fastjson.parser.JSONToken.EOF;
-import static com.alibaba.fastjson.parser.JSONToken.ERROR;
-import static com.alibaba.fastjson.parser.JSONToken.LBRACE;
-import static com.alibaba.fastjson.parser.JSONToken.LBRACKET;
-import static com.alibaba.fastjson.parser.JSONToken.LITERAL_STRING;
-import static com.alibaba.fastjson.parser.JSONToken.LPAREN;
-import static com.alibaba.fastjson.parser.JSONToken.RBRACE;
-import static com.alibaba.fastjson.parser.JSONToken.RBRACKET;
-import static com.alibaba.fastjson.parser.JSONToken.RPAREN;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.util.IOUtils;
 
 import java.io.Closeable;
 import java.lang.ref.SoftReference;
@@ -38,9 +30,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.util.IOUtils;
+import static com.alibaba.fastjson.parser.JSONToken.COLON;
+import static com.alibaba.fastjson.parser.JSONToken.COMMA;
+import static com.alibaba.fastjson.parser.JSONToken.EOF;
+import static com.alibaba.fastjson.parser.JSONToken.ERROR;
+import static com.alibaba.fastjson.parser.JSONToken.LBRACE;
+import static com.alibaba.fastjson.parser.JSONToken.LBRACKET;
+import static com.alibaba.fastjson.parser.JSONToken.LITERAL_STRING;
+import static com.alibaba.fastjson.parser.JSONToken.LPAREN;
+import static com.alibaba.fastjson.parser.JSONToken.RBRACE;
+import static com.alibaba.fastjson.parser.JSONToken.RBRACKET;
+import static com.alibaba.fastjson.parser.JSONToken.RPAREN;
 
 /**
  * @author wenshao[szujobs@hotmail.com]
@@ -2549,7 +2549,6 @@ public abstract class JSONLexerBase implements JSONLexer, Closeable {
             } else {
                 throw new JSONException("scan NULL error");
             }
-            return;
         }
     }
     

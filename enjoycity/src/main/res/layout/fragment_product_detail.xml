@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"/>
 
-            <include layout="@layout/line"/>
+            <include layout="@layout/horizontal_line"/>
 
             <!--商品信息-->
             <RelativeLayout
@@ -121,7 +121,7 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/line"/>
+            <include layout="@layout/horizontal_line"/>
 
             <!--店铺信息-->
             <RelativeLayout
@@ -177,7 +177,7 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/line"/>
+            <include layout="@layout/horizontal_line"/>
 
             <!--优惠券-->
             <!--同类商品-->

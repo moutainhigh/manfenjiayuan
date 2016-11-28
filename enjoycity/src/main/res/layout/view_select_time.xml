@@ -28,7 +28,7 @@
 
     </LinearLayout>
 
-    <include layout="@layout/line"/>
+    <include layout="@layout/horizontal_line"/>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -48,7 +48,7 @@ public class AdvertisementPagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object o) {
-        return view == (View)o;
+        return view == o;
     }
 
     //java.lang.UnsupportedOperationException: Required method destroyItem was not overridden

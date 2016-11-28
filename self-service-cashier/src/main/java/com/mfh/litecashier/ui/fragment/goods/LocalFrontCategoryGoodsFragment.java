@@ -24,7 +24,6 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.sc.ProductCatalogApi;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -451,8 +450,6 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         Bundle extras = new Bundle();
         extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ADDMORE_LOCALFRONTGOODS);
         extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID_POS, categoryId);
-        extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID, CateApi.FRONT_CATEGORY_ID_POS);
-
         UIHelper.startActivity(getActivity(), FragmentActivity.class, extras);
     }
 

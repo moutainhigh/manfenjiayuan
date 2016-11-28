@@ -20,12 +20,12 @@
             android:id="@+id/tv_handle_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:ellipsize="end"
             android:gravity="center"
             android:text="0.00"
             android:textColor="#FE5000"
-            android:textSize="40px"/>
+            android:textSize="40sp"
+            android:maxLines="1"/>
 
         <TextView
             android:layout_width="wrap_content"

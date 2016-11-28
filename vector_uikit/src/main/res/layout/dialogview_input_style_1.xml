@@ -22,7 +22,6 @@
             android:hint=""
             android:inputType="numberDecimal"
             android:maxLines="2"
-            android:singleLine="false"
             android:padding="16dp"
             android:textColor="#FE5000"
             android:textColorHint="@color/black_35"

@@ -20,6 +20,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.support.v4.content.ContextCompat;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -51,7 +52,7 @@ public class SimpleDisplayer implements Displayer{
 	private void fadeInDisplay(ImageView imageView,Bitmap bitmap){
 		final TransitionDrawable td =
                 new TransitionDrawable(new Drawable[] {
-                        new ColorDrawable(android.R.color.transparent),
+                        new ColorDrawable(ContextCompat.getColor(imageView.getContext(), android.R.color.transparent)),
                         new BitmapDrawable(imageView.getResources(), bitmap)
                 });
         imageView.setImageDrawable(td);

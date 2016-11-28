@@ -20,7 +20,7 @@
         android:textColor="@color/black_50"
         android:textSize="12sp"/>
 
-    <include layout="@layout/line"/>
+    <include layout="@layout/horizontal_line"/>
 
     <ListView
         android:id="@+id/listview"
@@ -47,7 +47,7 @@
             android:text="定位失败，轻触以重试"/>
     </LinearLayout>
 
-    <include layout="@layout/line"/>
+    <include layout="@layout/horizontal_line"/>
 
     <LinearLayout
         android:id="@+id/ll_add"

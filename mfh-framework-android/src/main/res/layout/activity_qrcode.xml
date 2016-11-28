@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/space_primary"
+            android:contentDescription="@null"
             android:src="@drawable/ic_flashlight_off" />
 
     </FrameLayout>

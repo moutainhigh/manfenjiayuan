@@ -170,10 +170,7 @@ public abstract class BaseDbDao<T extends IObject, PK> extends ComnDao<T, PK> im
      */
     public boolean entityExistById(PK pkId) {
         Integer count = getFinalDb().findCountById(pojoClass, pkId);
-        if (count > 0)
-            return true;
-        else
-            return false;
+        return count > 0;
     }
 
     /**

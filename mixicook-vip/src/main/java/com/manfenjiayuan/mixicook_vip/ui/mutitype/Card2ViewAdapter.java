@@ -43,8 +43,7 @@ public class Card2ViewAdapter extends RegularAdapter<StoreRackCardItem, Card2Vie
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater.inflate(
-                R.layout.itemview_card2_adapter, null, false);
+        View v = mLayoutInflater.inflate(R.layout.itemview_card2_adapter, null, false);
 
        return new MenuOptioinViewHolder(v);
     }

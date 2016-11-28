@@ -24,6 +24,7 @@ import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
+import com.manfenjiayuan.business.route.Route;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
@@ -50,6 +51,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
+
+import static com.igexin.push.core.g.R;
 
 
 /**
@@ -201,15 +204,15 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case ARCode.ARC_NATIVE_LOGIN: {
+            case Route.ARC_NATIVE_SIGNIN: {
+                loadOffices();
+                configMenuOptions();
+
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
-                    loadOffices();
 
-                    configMenuOptions();
                     //注册到消息桥
-                    IMClient.getInstance().registerBridge();
-
+//                    IMClient.getInstance().registerBridge();
 
                     ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
 
@@ -457,7 +460,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, ARCode.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
 
 //        LoginActivity.actionStart(MainActivity.this, null);
 //        finish();

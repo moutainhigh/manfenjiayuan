@@ -58,10 +58,10 @@
             android:drawableEnd="@mipmap/ic_marker_edit"
             android:drawablePadding="4dp"
             android:gravity="center"
-            android:singleLine="true"
             android:text="数量"
             android:textColor="@color/material_black"
-            android:textSize="@dimen/textsize_normal"/>
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <LinearLayout

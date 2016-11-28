@@ -3,6 +3,9 @@ package com.bingshanguxue.almigod;
 import android.content.ComponentCallbacks2;
 import android.os.Environment;
 
+import com.bingshanguxue.skinloader.config.SkinConfig;
+import com.bingshanguxue.skinloader.loader.SkinManager;
+import com.bingshanguxue.skinloader.utils.SkinFileUtils;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
@@ -11,6 +14,9 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
+
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -26,8 +32,6 @@ public class AlmigodApp extends MfhApplication {
     @Override
     public void onCreate() {
         initIflytek();
-
-//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         super.onCreate();
 
@@ -57,6 +61,9 @@ public class AlmigodApp extends MfhApplication {
         if (processAppName != null && processAppName.equalsIgnoreCase(getPackageName())) {
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());
+
+            initSkinLoader();
+
         }
 
         ZLogger.d(String.format("initialize finished(%s)", processAppName));
@@ -176,4 +183,23 @@ public class AlmigodApp extends MfhApplication {
 //        SpeechUtility.createUtility(getApplicationContext(), SpeechConstant.APPID + "=57982371");
 
     }
+
+    /**
+     * Must call init first
+     */
+    private void initSkinLoader() {
+        try {
+            String[] skinFiles = getAssets().list(SkinConfig.SKIN_DIR_NAME);
+            for (String fileName : skinFiles) {
+                File file = new File(SkinFileUtils.getSkinDir(this), fileName);
+                if (!file.exists())
+                    SkinFileUtils.copySkinAssetsToDir(this, fileName, SkinFileUtils.getSkinDir(this));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        SkinManager.getInstance().init(this);
+        SkinManager.getInstance().loadSkin();
+    }
+
 }

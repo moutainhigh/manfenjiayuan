@@ -10,6 +10,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@drawable/btn_decrease"
+        android:contentDescription="@null"
         android:background="@null"/>
     <TextView
         android:id="@+id/tv_number"
@@ -27,6 +28,7 @@
         android:id="@+id/btn_increase"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:contentDescription="@null"
         android:src="@drawable/btn_increase"
         android:background="@null"/>
 

@@ -5,7 +5,6 @@
               android:baselineAligned="false"
               android:orientation="vertical">
 
-
     <com.mfh.framework.uikit.adv.AdvertisementViewPager
         android:id="@+id/viewpager_adv"
         android:layout_width="match_parent"

@@ -73,12 +73,12 @@
                 <!--商品信息-->
                 <include layout="@layout/view_productdetail_product"/>
 
-                <include layout="@layout/line"/>
+                <include layout="@layout/horizontal_line"/>
 
                 <!--店铺信息-->
                 <include layout="@layout/view_productdetail_shop"/>
 
-                <include layout="@layout/line"/>
+                <include layout="@layout/horizontal_line"/>
 
                 <!--优惠券-->
                 <!--优惠券-->

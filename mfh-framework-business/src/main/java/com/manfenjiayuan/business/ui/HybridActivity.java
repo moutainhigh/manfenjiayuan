@@ -510,17 +510,15 @@ public class HybridActivity extends BaseHybridActivity {
 //        thread.start();
     }
 
+    private class AlipayHandler extends Handler {
+        public static final int ALI_PAY_FLAG = 1;
+        public static final int ALI_CHECK_FLAG = 2;
 
-    private static final int ALI_PAY_FLAG = 1;
-    private static final int ALI_CHECK_FLAG = 2;
-    private Handler mHandler = new Handler() {
+        @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ALI_PAY_FLAG: {
-//                    animProgress.setVisibility(View.GONE);
-//                    emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
-
-                    parseAlipayResp((String) msg.obj);
+                    handleAlipayResult((Map<String, String>) msg.obj);
                     break;
                 }
                 case ALI_CHECK_FLAG: {
@@ -531,12 +529,13 @@ public class HybridActivity extends BaseHybridActivity {
                     break;
             }
         }
-    };
+    }
+    private AlipayHandler mAlipayHandler = new AlipayHandler();
 
     /**
      * 解析支付宝处理结果
      */
-    private void parseAlipayResp(String resp) {
+    private void handleAlipayResult(Map<String, String> resp) {
 //        PayResult payResult = new PayResult(resp);
 ////        resultStatus={9000};memo={};result={partner="2088011585033309"&seller_id="finance@manfenjiayuan.com"&out_trade_no="138761"&subject="商品名称"&body="商品详情"&total_fee="0.01"&notify_url="http://devnew.manfenjiayuan.com/pmc/pmcstock/notifyOrder"&service="mobile.securitypay.pay"&payment_type="1"&_input_charset="utf-8"&it_b_pay="30m"&return_url="m.alipay.com"&success="true"&sign_type="RSA"&sign="OoNoZHMgXQ81Irh/DnCjEhfaEuL5lIqjxCgs05+gV/oIUUqjMffmeRf4fPuXwVsC4XpjQjdNLnCLgXqfIvpAYdt3bqDXEGV1BojgEJl1bz8HCrvT8YIAgPMY/0S9qzCDwuMNcDhcTo2dilK2isUE5AD1MjYtgmtEIWG3WDJNqIA="}
 //        ZLogger.d("parseAlipayResp: " + payResult.toString());

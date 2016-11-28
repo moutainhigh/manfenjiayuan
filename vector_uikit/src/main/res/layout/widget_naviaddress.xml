@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/spacing_micro"
         android:paddingEnd="@dimen/spacing_micro"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_location"/>
 
     <TextView
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/spacing_micro"
         android:paddingEnd="@dimen/spacing_micro"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_changelocation"/>
 
 </LinearLayout>

@@ -284,16 +284,10 @@ public class TimeCursor implements Cloneable{
             return (lValue <= other.lValue);//<=,不是<
         }
         else if(type == TimeCursor.CRTYPE_DATE){
-            if( tValue.getTime() <= other.tValue.getTime())
-                return true;
-            else
-                return false;
+            return tValue.getTime() <= other.tValue.getTime();
         }
         else if((type == TimeCursor.CRTYPE_STR) || (type == TimeCursor.CRTYPE_ROWID)){
-            if(strValue.compareTo(other.strValue) <= 0)
-                return true;
-            else
-                return false;
+            return strValue.compareTo(other.strValue) <= 0;
         }
         return false;
     }
@@ -309,16 +303,10 @@ public class TimeCursor implements Cloneable{
             return (lValue > other.lValue);//不能>=
         }
         else if(type == TimeCursor.CRTYPE_DATE){
-            if(tValue.getTime() > other.tValue.getTime())
-                return true;
-            else
-                return false;
+            return tValue.getTime() > other.tValue.getTime();
         }
         else if((type == TimeCursor.CRTYPE_STR) || (type == TimeCursor.CRTYPE_ROWID)){
-            if(strValue.compareTo(other.strValue) > 0)
-                return true;
-            else
-                return false;
+            return strValue.compareTo(other.strValue) > 0;
         }
         return false;
     }

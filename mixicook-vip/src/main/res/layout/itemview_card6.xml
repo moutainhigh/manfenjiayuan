@@ -10,55 +10,59 @@ scaleType:FIT_CENTER ，将图片扩大或缩放到view大小
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="180dp"
-              android:clipToPadding="false"
-              android:orientation="horizontal"
-              android:background="@color/material_white"
-              android:divider="@drawable/divider_gridview"
-              android:showDividers="middle"
               android:layout_marginTop="@dimen/block_margin"
-              android:contentDescription="@null">
+              android:background="@color/material_white"
+              android:clipToPadding="false"
+              android:contentDescription="@null"
+              android:divider="@drawable/divider_gridview"
+              android:orientation="horizontal"
+              android:showDividers="middle">
 
     <ImageView
         android:id="@+id/iv_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:layout_weight="4"/>
+        android:layout_weight="4"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"/>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="6"
         android:divider="@drawable/divider_gridview"
-        android:showDividers="middle"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:showDividers="middle">
 
         <ImageView
             android:id="@+id/iv_top"
             android:layout_width="match_parent"
             android:layout_height="75dp"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="105dp"
-            android:orientation="horizontal"
             android:divider="@drawable/divider_gridview"
+            android:orientation="horizontal"
             android:showDividers="middle">
 
             <ImageView
                 android:id="@+id/iv_bottom_left"
                 android:layout_width="0dp"
-                android:scaleType="fitCenter"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"/>
 
             <ImageView
                 android:id="@+id/iv_bottom_right"
                 android:layout_width="0dp"
-                android:scaleType="fitCenter"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

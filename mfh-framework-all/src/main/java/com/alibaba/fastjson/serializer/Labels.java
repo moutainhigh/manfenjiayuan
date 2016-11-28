@@ -48,11 +48,7 @@ public class Labels {
             }
 
             if (includes != null) {
-                if (Arrays.binarySearch(includes, label) >= 0) {
-                    return true;
-                }
-
-                return false;
+                return Arrays.binarySearch(includes, label) >= 0;
             }
 
             return true;

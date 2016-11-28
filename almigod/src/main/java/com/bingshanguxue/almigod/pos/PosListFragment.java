@@ -23,7 +23,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -34,16 +34,16 @@ import butterknife.OnClick;
 public class PosListFragment extends BaseListFragment<CompanyInfo>
         implements IPosRegisterView {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private PosRegisterAdapter companyAdapter;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar progressBar;
 
     private PosRegisterPresenter mInvCompanyPresenter;

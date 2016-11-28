@@ -59,10 +59,7 @@ public class DefaultUConfig implements UConfig {
     private List<SingleConfiguration> compositeConfig = new ArrayList<SingleConfiguration>();
     
     private boolean isNotEmpty(List<?> collections) {
-        if (collections != null && collections.size() > 0)
-            return true;
-        else
-            return false;
+        return collections != null && collections.size() > 0;
     }
     
     /**

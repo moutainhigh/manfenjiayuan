@@ -1,7 +1,18 @@
 package com.alibaba.fastjson.parser.deserializer;
 
-import static com.alibaba.fastjson.util.ASMUtils.getDesc;
-import static com.alibaba.fastjson.util.ASMUtils.getType;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.asm.ClassWriter;
+import com.alibaba.fastjson.asm.FieldVisitor;
+import com.alibaba.fastjson.asm.Label;
+import com.alibaba.fastjson.asm.MethodVisitor;
+import com.alibaba.fastjson.asm.Opcodes;
+import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.util.ASMClassLoader;
+import com.alibaba.fastjson.util.ASMUtils;
+import com.alibaba.fastjson.util.DeserializeBeanInfo;
+import com.alibaba.fastjson.util.FieldInfo;
+import com.alibaba.fastjson.util.TypeUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,19 +32,8 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.asm.ClassWriter;
-import com.alibaba.fastjson.asm.FieldVisitor;
-import com.alibaba.fastjson.asm.Label;
-import com.alibaba.fastjson.asm.MethodVisitor;
-import com.alibaba.fastjson.asm.Opcodes;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.util.ASMClassLoader;
-import com.alibaba.fastjson.util.ASMUtils;
-import com.alibaba.fastjson.util.DeserializeBeanInfo;
-import com.alibaba.fastjson.util.FieldInfo;
-import com.alibaba.fastjson.util.TypeUtils;
+import static com.alibaba.fastjson.util.ASMUtils.getDesc;
+import static com.alibaba.fastjson.util.ASMUtils.getType;
 
 public class ASMDeserializerFactory implements Opcodes {
 
@@ -64,7 +64,7 @@ public class ASMDeserializerFactory implements Opcodes {
         classLoader = new ASMClassLoader(parentClassLoader);
     }
 
-    public final static ASMDeserializerFactory getInstance() {
+    public static ASMDeserializerFactory getInstance() {
         return instance;
     }
 

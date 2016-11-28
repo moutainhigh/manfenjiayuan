@@ -37,7 +37,6 @@
         <!--发送方-->
         <TextView
             android:id="@+id/tv_from"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"

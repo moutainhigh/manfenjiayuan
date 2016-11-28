@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:background="@null"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"/>
         <TextView
             android:id="@+id/tv_barcode"
@@ -37,6 +38,7 @@
             android:layout_below="@+id/tv_barcode"
             android:layout_marginTop="@dimen/spacing_double"
             android:background="@null"
+            android:contentDescription="@null"
             android:scaleType="centerCrop"/>
     </RelativeLayout>
 

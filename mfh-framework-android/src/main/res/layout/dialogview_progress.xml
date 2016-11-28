@@ -18,6 +18,7 @@
         android:id="@+id/iv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_process_done"/>
 
     <TextView
@@ -28,10 +29,10 @@
         android:ellipsize="marquee"
         android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
-        android:singleLine="true"
+        android:maxLines="1"
         android:text=""
         android:textColor="@color/material_white"
-        android:textSize="18sp">
+        android:textSize="16sp">
 
         <requestFocus
             android:duplicateParentState="true"

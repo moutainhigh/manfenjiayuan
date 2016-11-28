@@ -369,8 +369,7 @@ public class OrderPayFragment extends BaseFragment {
                 }
             }
             , AccountPayResponse.class
-            , MfhApplication.getAppContext())
-    {
+            , MfhApplication.getAppContext()) {
     };
 
 
@@ -408,12 +407,12 @@ public class OrderPayFragment extends BaseFragment {
                     @Override
                     public void processResult(IResponseData rspData) {
                         PreOrderRsp prePayResponse = null;
-                        if (rspData != null){
+                        if (rspData != null) {
                             RspBean<PreOrderRsp> retValue = (RspBean<PreOrderRsp>) rspData;
                             prePayResponse = retValue.getValue();
                         }
 
-                        if (prePayResponse == null){
+                        if (prePayResponse == null) {
                             notifyPayResult(-1);
                             DialogUtil.showHint("outTradeNo 不能为空");
                             return;
@@ -456,7 +455,7 @@ public class OrderPayFragment extends BaseFragment {
     }
 
     private PrePayOrderInfo genAppPayInfoWrapper(Long preOrderId, String orderIds,
-                                                 Integer btype, String token, Integer wayType){
+                                                 Integer btype, String token, Integer wayType) {
         PrePayOrderInfo prePayOrderInfo = new PrePayOrderInfo();
         prePayOrderInfo.setPreOrderId(preOrderId);
         prePayOrderInfo.setOrderIds(orderIds);
@@ -487,8 +486,8 @@ public class OrderPayFragment extends BaseFragment {
 
     /**
      * 支付宝支付
-     * */
-    private void alipay(final String orderInfo){
+     */
+    private void alipay(final String orderInfo) {
         Runnable payRunnable = new Runnable() {
 
             @Override
@@ -503,10 +502,10 @@ public class OrderPayFragment extends BaseFragment {
                 // 解析结果
 //                parseAlipayResp(result);
                 //resultStatus={6001};memo={操作已经取消。};result={}
-                Message msg = new Message();
-                msg.what = ALI_PAY_FLAG;
+                Message msg = Message.obtain();
+                msg.what = AlipayHandler.ALI_PAY_FLAG;
                 msg.obj = result;
-                mHandler.sendMessage(msg);
+                mAlipayHandler.sendMessage(msg);
             }
         };
 
@@ -514,31 +513,37 @@ public class OrderPayFragment extends BaseFragment {
         Thread payThread = new Thread(payRunnable);
         payThread.start();
     }
-    private static final int ALI_PAY_FLAG = 1;
-    private static final int ALI_CHECK_FLAG = 2;
-    private Handler mHandler = new Handler() {
+
+    private class AlipayHandler extends Handler {
+        public static final int ALI_PAY_FLAG = 1;
+        public static final int ALI_CHECK_FLAG = 2;
+
+        @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ALI_PAY_FLAG: {
-                    parseAlipayResp((Map<String, String>) msg.obj);
+                    handleAlipayResult((Map<String, String>) msg.obj);
                     break;
                 }
                 case ALI_CHECK_FLAG: {
                     DialogUtil.showHint("检查结果为：" + msg.obj);
+                    btnSubmit.setEnabled(true);
                     break;
                 }
                 default:
                     break;
             }
         }
-    };
+    }
+
+    private AlipayHandler mAlipayHandler = new AlipayHandler();
 
     /**
      * 解析支付宝处理结果
      *
      * @param resp
      */
-    private void parseAlipayResp(Map<String, String> resp) {
+    private void handleAlipayResult(Map<String, String> resp) {
         PayResult payResult = new PayResult(resp);
 //        resultStatus={9000};memo={};result={partner="2088011585033309"&seller_id="finance@manfenjiayuan.com"&out_trade_no="138761"&subject="商品名称"&body="商品详情"&total_fee="0.01"&notify_url="http://devnew.manfenjiayuan.com/pmc/pmcstock/notifyOrder"&service="mobile.securitypay.pay"&payment_type="1"&_input_charset="utf-8"&it_b_pay="30m"&return_url="m.alipay.com"&success="true"&sign_type="RSA"&sign="OoNoZHMgXQ81Irh/DnCjEhfaEuL5lIqjxCgs05+gV/oIUUqjMffmeRf4fPuXwVsC4XpjQjdNLnCLgXqfIvpAYdt3bqDXEGV1BojgEJl1bz8HCrvT8YIAgPMY/0S9qzCDwuMNcDhcTo2dilK2isUE5AD1MjYtgmtEIWG3WDJNqIA="}
         ZLogger.d("parseAlipayResp: " + payResult.toString());

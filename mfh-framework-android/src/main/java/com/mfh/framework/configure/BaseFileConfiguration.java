@@ -48,7 +48,7 @@ public abstract class BaseFileConfiguration implements SingleConfiguration{
     
     private File unionFileDir(File dir, String filePath) {
         String absDirPath = dir.getAbsolutePath();
-        if (absDirPath.endsWith("/") == false)
+        if (!absDirPath.endsWith("/"))
             absDirPath += "/";
         int index = filePath.lastIndexOf("/");
         if (index > 0) {

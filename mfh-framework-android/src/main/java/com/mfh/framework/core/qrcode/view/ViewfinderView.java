@@ -39,7 +39,6 @@ import java.util.HashSet;
  * This view is overlaid on top of the camera preview. It adds the viewfinder
  * rectangle and partial transparency outside it, as well as the laser scanner
  * animation and result points.
- *
  */
 public final class ViewfinderView extends View {
     private static final String TAG = ViewfinderView.class.getSimpleName();
@@ -119,7 +118,7 @@ public final class ViewfinderView extends View {
 
         density = context.getResources().getDisplayMetrics().density;
         //将像素转换成dp
-        ScreenRate = (int)(20 * density);
+        ScreenRate = (int) (20 * density);
 
         paint = new Paint();
         Resources resources = getResources();
@@ -143,7 +142,7 @@ public final class ViewfinderView extends View {
         }
 
         //初始化中间线滑动的最上边和最下边
-        if(!isFirst){
+        if (!isFirst) {
             isFirst = true;
             slideTop = frame.top;
             slideBottom = frame.bottom;
@@ -188,7 +187,7 @@ public final class ViewfinderView extends View {
 
             //绘制中间的线,每次刷新界面，中间的线往下移动SPEEN_DISTANCE
             slideTop += SPEEN_DISTANCE;
-            if(slideTop >= frame.bottom){
+            if (slideTop >= frame.bottom) {
                 slideTop = frame.top;
             }
             canvas.drawRect(frame.left + MIDDLE_LINE_PADDING, slideTop - MIDDLE_LINE_WIDTH / 2,
@@ -203,7 +202,7 @@ public final class ViewfinderView extends View {
             Rect bounds = new Rect();
             String hintText = getResources().getString(R.string.scan_text);
             paint.getTextBounds(hintText, 0, hintText.length(), bounds);
-            canvas.drawText(hintText, getMeasuredWidth()/2 - bounds.width()/2,
+            canvas.drawText(hintText, getMeasuredWidth() / 2 - bounds.width() / 2,
                     (frame.bottom + (float) TEXT_PADDING_TOP * density), paint);
 
 
@@ -212,7 +211,7 @@ public final class ViewfinderView extends View {
             if (currentPossible.isEmpty()) {
                 lastPossibleResultPoints = null;
             } else {
-                possibleResultPoints = new HashSet<ResultPoint>(5);
+                possibleResultPoints = new HashSet<>(5);
                 lastPossibleResultPoints = currentPossible;
                 paint.setAlpha(OPAQUE);
                 paint.setColor(resultPointColor);
@@ -245,8 +244,7 @@ public final class ViewfinderView extends View {
      * Draw a bitmap with the result points highlighted instead of the live
      * scanning display.
      *
-     * @param barcode
-     *            An image of the decoded barcode.
+     * @param barcode An image of the decoded barcode.
      */
     public void drawResultBitmap(Bitmap barcode) {
         resultBitmap = barcode;

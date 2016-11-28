@@ -32,7 +32,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Vector;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 
@@ -42,12 +42,12 @@ import butterknife.OnClick;
  */
 public class RemoteControlFragment extends BaseFragment {
 
-    @Bind(R.id.tv_pos)
+    @BindView(R.id.tv_pos)
     TextView tvPos;
-    @Bind(R.id.label_remoteControl)
+    @BindView(R.id.label_remoteControl)
     OptionalLabel labelRemotecontrol;
 
-    @Bind(R.id.fab_submit)
+    @BindView(R.id.fab_submit)
     FloatingActionButton fabSubmit;
 
     private PosRegister mPosRegister;

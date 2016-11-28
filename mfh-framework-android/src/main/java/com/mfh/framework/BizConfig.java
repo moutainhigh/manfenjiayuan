@@ -38,23 +38,21 @@ public class BizConfig {
     // 默认存放文件下载的路径
     public final static String DEFAULT_SAVE_FILE_PATH = DEFAULT_SAVE_PATH + "download" + File.separator;
 
-    private Context mContext;
     private static BizConfig instance;
 
-    public static BizConfig getInstance(Context context) {
+    public static BizConfig getInstance() {
         if (instance == null) {
             instance = new BizConfig();
-            instance.mContext = context;
         }
         return instance;
     }
 
-    public String get(String key) {
-        Properties props = get();
+    public String get(Context context, String key) {
+        Properties props = get(context);
         return (props != null) ? props.getProperty(key) : null;
     }
 
-    public Properties get() {
+    public Properties get(Context context) {
         FileInputStream fis = null;
         Properties props = new Properties();
         try {
@@ -62,7 +60,7 @@ public class BizConfig {
             // fis = activity.openFileInput(APP_CONFIG);
 
             // 读取app_config目录下的config
-            File dirConf = mContext.getDir(APP_CONFIG, Context.MODE_PRIVATE);
+            File dirConf = context.getDir(APP_CONFIG, Context.MODE_PRIVATE);
             fis = new FileInputStream(dirConf.getPath() + File.separator
                     + APP_CONFIG);
 
@@ -77,14 +75,14 @@ public class BizConfig {
         return props;
     }
 
-    private void setProps(Properties p) {
+    private void setProps(Context context, Properties p) {
         FileOutputStream fos = null;
         try {
             // 把config建在files目录下
             // fos = activity.openFileOutput(APP_CONFIG, Context.MODE_PRIVATE);
 
             // 把config建在(自定义)app_config的目录下
-            File dirConf = mContext.getDir(APP_CONFIG, Context.MODE_PRIVATE);
+            File dirConf = context.getDir(APP_CONFIG, Context.MODE_PRIVATE);
             File conf = new File(dirConf, APP_CONFIG);
             fos = new FileOutputStream(conf);
 
@@ -100,23 +98,25 @@ public class BizConfig {
         }
     }
 
-    public void set(Properties ps) {
-        Properties props = get();
+    public void set(Context context, Properties ps) {
+        Properties props = get(context);
         props.putAll(ps);
-        setProps(props);
+        setProps(context, props);
     }
 
-    public void set(String key, String value) {
-        Properties props = get();
+    public void set(Context context, String key, String value) {
+        Properties props = get(context);
         props.setProperty(key, value);
-        setProps(props);
+        setProps(context, props);
     }
 
-    public void remove(String... key) {
-        Properties props = get();
-        for (String k : key)
+    public void remove(Context context, String... key) {
+        Properties props = get(context);
+        for (String k : key){
             props.remove(k);
-        setProps(props);
+        }
+
+        setProps(context, props);
     }
 
 

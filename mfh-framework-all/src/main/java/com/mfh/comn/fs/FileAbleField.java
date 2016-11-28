@@ -1,9 +1,9 @@
 package com.mfh.comn.fs;
 
+import com.mfh.comn.annotations.NoColumn;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.mfh.comn.annotations.NoColumn;
 
 /**
  * 基类，用于支持文件存储。
@@ -27,10 +27,7 @@ public class FileAbleField implements Cloneable{//IFileAvailableBean<PK>,
     
     //@Override
     public boolean hasFileParam(){
-        if (fileParams != null && fileParams.size() > 0)
-            return true;
-        else
-            return false;
+        return fileParams != null && fileParams.size() > 0;
     }
 
     //@Override

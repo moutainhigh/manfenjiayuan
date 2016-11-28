@@ -42,7 +42,7 @@ public class ParentChildItem<T> implements Cloneable, ITreeCodeItem<T>, Serializ
 
     @Override
     public ParentChildItem<T> clone(){
-        ParentChildItem<T> ret = new ParentChildItem<T>(this.id, this.name);
+        ParentChildItem<T> ret = new ParentChildItem<>(this.id, this.name);
         ret.codeTypeId = this.codeTypeId;
         ret.pid = this.pid;
         ret.bHasChild = this.bHasChild;

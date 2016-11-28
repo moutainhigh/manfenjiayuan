@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
 
 def releaseTime() {
     return new Date().format("MMdd", TimeZone.getTimeZone("UTC"))
@@ -6,8 +8,8 @@ def releaseTime() {
 
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
 
     signingConfigs {
         debug {
@@ -19,7 +21,7 @@ android {
     defaultConfig {
         applicationId "com.bingshanguxue.almigod"
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0.1"
 
@@ -153,4 +155,6 @@ dependencies {
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile 'com.getui:sdk:2.9.0.0'
+    compile rootProject.ext.dependencies["butterknife"]
+    apt rootProject.ext.dependencies["butterknife-compiler"]
 }

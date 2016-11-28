@@ -112,7 +112,6 @@ public class MultimediaActivity extends BaseActivity {
                     // functionality that depends on this permission.
                     ZLogger.d("permission denied");
                 }
-                return;
             }
 
             // other 'case' lines to check for other

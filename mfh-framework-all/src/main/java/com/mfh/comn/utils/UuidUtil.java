@@ -19,10 +19,8 @@ public class UuidUtil {
      * @author zhangyz created on 2012-10-13
      */
     public static boolean isLocalGenId(String id, String localIdPre){
-        if (id.length() == 36 && id.startsWith(localIdPre))//注意是36位长度
-            return true;
-        else
-            return false;
+        //注意是36位长度
+        return id.length() == 36 && id.startsWith(localIdPre);
     }
     
     /**

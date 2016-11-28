@@ -135,17 +135,13 @@ public class PushUtil {
                 Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
-                Toast.makeText(context, "权限不够\n请打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "权限不够\n请打开手机设置，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_SHORT).show();
             }
             return false;
         }
         Collections.sort(usageStats, mRecentComp);
         String currentTopPackage = usageStats.get(0).getPackageName();
-        if (currentTopPackage.equals(packageName)) {
-            return true;
-        } else {
-            return false;
-        }
+        return currentTopPackage.equals(packageName);
     }
 
     /**

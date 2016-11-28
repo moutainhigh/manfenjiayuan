@@ -89,7 +89,7 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="返还差额:"
+                app:startText="订单差额:"
                 app:startTextWidth="90dp"
                 app:startTextGravity="end"/>
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
@@ -97,7 +97,7 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="退货金额:"
+                app:startText="返还金额:"
                 app:startTextWidth="90dp"
                 app:startTextGravity="end"/>
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
@@ -105,7 +105,7 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="总计退款:"
+                app:startText="补退金额:"
                 app:startTextWidth="90dp"
                 app:startTextGravity="end"/>
 

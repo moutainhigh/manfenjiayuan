@@ -12,7 +12,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -59,11 +59,11 @@ public class RemoteControlAdapter extends RegularAdapter<RemoteControl, RemoteCo
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_id)
+        @BindView(R.id.tv_id)
         TextView tvId;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_description)
+        @BindView(R.id.tv_description)
         TextView tvDescription;
 
         public MenuOptioinViewHolder(final View itemView) {

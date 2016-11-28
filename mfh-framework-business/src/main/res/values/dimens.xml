@@ -1,0 +1,10 @@
+<resources>
+
+
+    <!--租户-->
+    <dimen name="hostserver_item_height">140dp</dimen><!--padding=16dp-->
+    <dimen name="hostserver_image_width">104dp</dimen>
+    <dimen name="hostserver_image_height">104dp</dimen>
+    <dimen name="hostserver_textsize">14sp</dimen>
+
+</resources>

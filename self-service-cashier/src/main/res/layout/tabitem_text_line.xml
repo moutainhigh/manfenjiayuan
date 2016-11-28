@@ -5,11 +5,11 @@
           style="@style/viewpage_slidingTabTitle"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
+          android:background="@drawable/bg_rect_tab_item"
+          android:maxLines="1"
           android:padding="8dp"
           android:text=""
-          android:textSize="@dimen/textsize_normal"
-          android:background="@drawable/bg_rect_tab_item"
           android:textColor="@color/textcolor_black"
-          android:maxLines="1">
+          android:textSize="@dimen/textsize_normal">
 
 </TextView>

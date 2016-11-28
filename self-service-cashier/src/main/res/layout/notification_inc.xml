@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#FFFFFF">
@@ -58,19 +59,19 @@
 
                         <TextView
                             android:id="@+id/notification_name"
+                            style="@style/singleline_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            style="@style/singleline_text"
 
                             android:textStyle="bold"/>
 
                         <TextView
                             android:id="@+id/notification_version"
+                            style="@style/singleline_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingEnd="0dp"
                             android:paddingStart="10dp"
-                            style="@style/singleline_text"
 
                             android:textStyle="bold"/>
                     </LinearLayout>
@@ -88,7 +89,8 @@
                             android:singleLine="true"
                             android:textColor="#111111"
                             android:textSize="13sp"
-                            android:textStyle="normal"/>
+                            android:textStyle="normal"
+                            tools:ignore="Deprecated"/>
 
                         <TextView
                             android:id="@+id/notification_diffsize"

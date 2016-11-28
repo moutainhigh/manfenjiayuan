@@ -1,5 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
                                                  android:orientation="vertical">
@@ -61,11 +62,12 @@
                 android:id="@+id/label_rackno"
                 style="@style/mfh_editlabelview"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
                 app:editInputType="numberDecimal"
                 app:editTextHint="请输入货架编号"
                 app:startText="货架编号:"
-                app:startTextWidth="130dp"/>
+                app:startTextWidth="130dp"
+                tools:ignore="InconsistentLayout"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

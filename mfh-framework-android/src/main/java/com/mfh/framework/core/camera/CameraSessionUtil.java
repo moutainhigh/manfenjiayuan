@@ -53,7 +53,6 @@ public class CameraSessionUtil implements IService {
             }
             else{
 //                DialogUtil.showHint("No explanation needed");
-
                 ActivityCompat.requestPermissions(context,
                         new String[]{android.Manifest.permission.CAMERA},
                         UIHelper.PERMISSIONS_REQUEST_CALL_PHONE);

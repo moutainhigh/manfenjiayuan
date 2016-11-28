@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="#ffffff"
-    android:padding="5dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/material_white"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
     <ImageView
         android:id="@+id/iv_marker"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:src="@drawable/icon_checkbox"
-        android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:contentDescription="" />
+        android:layout_centerVertical="true"
+        android:contentDescription="@null"
+        android:src="@drawable/icon_checkbox"/>
 
     <TextView
-        style="@style/listitem_text_title"
         android:id="@+id/tv_title"
-        android:text=""
-        android:gravity="left"
+        style="@style/listitem_text_title"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/iv_marker"
-        android:layout_alignParentLeft="true" />
+        android:layout_toStartOf="@+id/iv_marker"
+        android:gravity="start"
+        android:text=""/>
 
     <TextView
-        style="@style/listitem_text_detail"
         android:id="@+id/tv_subtitle"
-        android:text=""
-        android:gravity="left"
+        style="@style/listitem_text_detail"
+        android:layout_alignStart="@+id/tv_title"
         android:layout_below="@+id/tv_title"
-        android:layout_toLeftOf="@+id/iv_marker"
-        android:layout_alignLeft="@+id/tv_title" />
+        android:layout_toStartOf="@+id/iv_marker"
+        android:gravity="start"
+        android:text=""/>
 
 </RelativeLayout>

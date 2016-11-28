@@ -2,8 +2,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:divider="@drawable/divider_horizontal_line_primary"
-              android:showDividers="middle"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:showDividers="middle">
 
     <!--内容区-->
     <RelativeLayout
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:background="@color/material_white">
+        android:background="@color/material_white"
+        android:orientation="horizontal">
 
         <!--订单列表-->
         <android.support.v7.widget.RecyclerView
@@ -26,19 +26,20 @@
             android:id="@+id/vertial_line"
             android:layout_width="1px"
             android:layout_height="match_parent"
-            android:background="@color/mf_dividerColorPrimary"
-            android:layout_toEndOf="@+id/order_list"/>
+            android:layout_toEndOf="@+id/order_list"
+            android:background="@color/mf_dividerColorPrimary"/>
 
         <!--商品列表-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/vertial_line"
             android:layout_margin="8dp"
+            android:layout_toEndOf="@+id/vertial_line"
             android:orientation="vertical">
 
-            <include layout="@layout/itemview_header_apply_shopcart"
+            <include
                 android:id="@+id/ll_procuct_header"
+                layout="@layout/itemview_header_apply_shopcart"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"/>
 
@@ -56,49 +57,49 @@
         android:id="@+id/frame_bottom"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal"
+        android:background="@color/mfhtheme_maskPrimary"
         android:gravity="center_vertical"
-        android:background="@color/mfhtheme_maskPrimary">
+        android:orientation="horizontal">
         <!--订单数-->
         <TextView
             android:id="@+id/tv_order_quantity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:text="订单数:3"
-            android:textSize="16sp"
-            android:textColor="@color/material_black"
             android:padding="8dp"
-            android:layout_marginStart="16dp"/>
+            android:text="订单数:3"
+            android:textColor="@color/material_black"
+            android:textSize="16sp"/>
         <!--商品数-->
         <TextView
             android:id="@+id/tv_goods_quantity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="8dp"
             android:text="商品数：-0.00"
-            android:textSize="16sp"
             android:textColor="@color/material_black"
-            android:padding="8dp"/>
+            android:textSize="16sp"/>
         <!--商品金额-->
         <TextView
             android:id="@+id/tv_total_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="8dp"
             android:text="商品金额：+0.00"
-            android:textSize="16sp"
             android:textColor="@color/mf_red"
-            android:padding="8dp"/>
+            android:textSize="16sp"/>
 
         <Button
             android:id="@+id/button_submit"
+            style="@style/mfh_button_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:text="提交"
+            android:background="@drawable/btn_rectange_green"
             android:gravity="center"
-            style="@style/mfh_button_text"
-            android:background="@drawable/btn_rectange_green"/>
+            android:text="提交"/>
     </LinearLayout>
 </LinearLayout>

@@ -155,17 +155,19 @@
                     android:id="@+id/button_sweep"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@null"
                     android:layout_marginStart="@dimen/spacing_normal"
+                    android:background="@null"
+                    android:contentDescription="@null"
                     android:src="@mipmap/ic_sweep_circle"/>
 
                 <ImageButton
                     android:id="@+id/button_vippay"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@null"
-                    android:layout_marginStart="@dimen/spacing_normal"
                     android:layout_marginEnd="@dimen/spacing_normal"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    android:background="@null"
+                    android:contentDescription="@null"
                     android:src="@mipmap/ic_vippay_circle"/>
 
             </LinearLayout>

@@ -112,10 +112,7 @@ public class StringUtils {
 
     public static boolean startsWithNum(char[] chars) {
         char c = chars[0];
-        if ('0' <= c && c <= '9') {
-            return true;
-        }
-        return false;
+        return '0' <= c && c <= '9';
     }
 
     /**
@@ -325,11 +322,7 @@ public class StringUtils {
     }
 
     public static boolean contains(String raw, String seed){
-        if (raw != null && seed != null && raw.contains(seed)){
-            return true;
-        }
-
-        return false;
+        return raw != null && seed != null && raw.contains(seed);
     }
 
 

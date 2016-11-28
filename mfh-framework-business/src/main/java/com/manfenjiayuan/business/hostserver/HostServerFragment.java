@@ -155,40 +155,40 @@ public class HostServerFragment extends BaseProgressFragment {
         List<HostServer> functionalList = new ArrayList<>();
         String packageName = MfhApplication.getAppContext().getPackageName();
         if ("com.manfenjiayuan.pda_supermarket".equals(packageName)){
-            functionalList.add(new HostServer(1L,
+            functionalList.add(new HostServer(134342L,
                     "米西厨房", "admin.mixicook.com",
                     "http://admin.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_launcher_mixicook,
                     AppIconManager.ACTIVITY_ALIAS_MIXICOOK, "mixicook.skin"));
-            functionalList.add(new HostServer(2L,
+            functionalList.add(new HostServer(137039L,
                     "满分邻居", "lanlj.mixicook.com",
                     "http://lanlj.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_lanlj, R.mipmap.ic_launcher_lanlj,
                     AppIconManager.ACTIVITY_ALIAS_LANLJ, "lanlj.skin"));
-            functionalList.add(new HostServer(3L,
+            functionalList.add(new HostServer(137143L,
                     "千万加", "qianwj.mixicook.com",
                     "http://qianwj.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_qianwj,
                     AppIconManager.ACTIVITY_ALIAS_QIANWJ, "qianwj.skin"));
         }
         else if ("com.mfh.litecashier".equals(packageName)){
-            functionalList.add(new HostServer(1L,
+            functionalList.add(new HostServer(134342L,
                     "米西厨房", "admin.mixicook.com",
                     "http://admin.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_launcher_mixicook,
                     AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin"));
-            functionalList.add(new HostServer(2L,
+            functionalList.add(new HostServer(137039L,
                     "满分邻居", "lanlj.mixicook.com",
                     "http://lanlj.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_lanlj, R.mipmap.ic_launcher_lanlj,
                     AppIconManager.ACTIVITY_ALIAS_CASHIER_LANLJ, "lanlj.skin"));
-            functionalList.add(new HostServer(3L,
+            functionalList.add(new HostServer(137143L,
                     "千万加", "qianwj.mixicook.com",
                     "http://qianwj.mixicook.com/pmc",
                     R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_qianwj,
                     AppIconManager.ACTIVITY_ALIAS_CASHIER_QIANWJ, "qianwj.skin"));
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-                functionalList.add(new HostServer(4L,
+                functionalList.add(new HostServer(134342L,
                         "米西厨房-测试", "dev.mixicook.com",
                         "http://dev.mixicook.com/pmc",
                         R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_mixicook,

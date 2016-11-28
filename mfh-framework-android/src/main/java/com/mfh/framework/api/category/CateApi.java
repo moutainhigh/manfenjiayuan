@@ -10,7 +10,7 @@ public class CateApi {
 
     //
     public final static Long FRONT_CATEGORY_ID_LAUNDRY = 3543L;//洗衣
-    public final static Long FRONT_CATEGORY_ID_POS = 3407L;//POS类目--勿删除
+    public static Long FRONT_CATEGORY_ID_POS = 3407L;//POS类目--勿删除
 
 
     /**
@@ -18,7 +18,6 @@ public class CateApi {
      * 注意：与当前登录用户的tenantId不一样
      */
     public final static String CATEGORY_TENANT_ID = NetFactory.getServerUrl("category.tenant.id");
-
 
 
     public final static int DOMAIN_TYPE_PROD = 0;//实物型产品-默认

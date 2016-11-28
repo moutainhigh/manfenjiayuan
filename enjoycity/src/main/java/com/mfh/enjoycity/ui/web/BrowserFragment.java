@@ -398,11 +398,11 @@ public class BrowserFragment extends BaseFragment {
     private class MyWebChromeClient extends WebChromeClient {
         @Override
         public boolean onConsoleMessage(ConsoleMessage cm) {
-            //Uncaught SyntaxError: Unexpected token var line:1
+            //Uncaught SyntaxError: Unexpected token var horizontal_line:1
             if(cm != null){
                 DialogUtil.showHint(cm.message());
                 ZLogger.d(cm.message()
-                        + "-- From line:"+ cm.lineNumber()
+                        + "-- From horizontal_line:"+ cm.lineNumber()
                         + " of " + cm.sourceId());
             }else{
                 ZLogger.d("null");

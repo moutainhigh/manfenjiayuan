@@ -27,7 +27,6 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -231,12 +230,6 @@ public class SignInActivity extends SkinBaseActivity {
 //                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
                         MfhApi.register();
                         IMApi.register();
-                        if (MobileApi.DOMAIN.equals(HostServer.HOST_MIXICOOK)){
-                            CateApi.FRONT_CATEGORY_ID_POS = 3407L;
-                        }
-                        else if (MobileApi.DOMAIN.equals(HostServer.HOST_QIANWJ)){
-                            CateApi.FRONT_CATEGORY_ID_POS = 20000019L;
-                        }
 
                         refresh();
                     }

@@ -40,7 +40,6 @@ public class ResourceParam extends BaseParam {
 
     @Override
     public void attachSignName(String name) {
-        return;
     }
 
     @Override

@@ -539,12 +539,8 @@ public class MfhLoginService implements IService {
             return true;
         }
 
-        ZLogger.d(String.format("checkCompanyOrOffice:(%d,%d)-(%d,%d)", lastOfficeId, lastSpid, curOfficeId, spid));
-        if (lastOfficeId.compareTo(curOfficeId) != 0 || lastSpid.compareTo(spid) != 0){
-            return true;
-        }
-
-        return false;
+        ZLogger.d(String.format("(%d,%d)-(%d,%d)", lastOfficeId, lastSpid, curOfficeId, spid));
+        return lastOfficeId.compareTo(curOfficeId) != 0 || lastSpid.compareTo(spid) != 0;
     }
 
     /**

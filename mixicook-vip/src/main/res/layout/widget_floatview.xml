@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@null"
+        android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@mipmap/ic_fab_cart"/>
 

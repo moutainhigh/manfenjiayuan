@@ -38,19 +38,19 @@ public class DateUtil {
 
     public static final SimpleDateFormat InnerFormatShort = new SimpleDateFormat(INNER_DATAFORMATSHORT, Locale.CHINA);// 内部使用的日期格式。
 
-    public static final SimpleDateFormat timeFormat() {
+    public static SimpleDateFormat timeFormat() {
         return new SimpleDateFormat(INNER_TIMEFORMAT, Locale.CHINA);// 内部使用的日期格式。
     }
 
-    public static final SimpleDateFormat innerFormat() {
+    public static SimpleDateFormat innerFormat() {
         return new SimpleDateFormat(INNER_DATAFORMAT, Locale.CHINA);// 内部使用的日期格式。
     }
 
-    public static final SimpleDateFormat innerFormatShort() {
+    public static SimpleDateFormat innerFormatShort() {
         return new SimpleDateFormat(INNER_DATAFORMATSHORT, Locale.CHINA);// 内部使用的日期格式。
     }
     
-    public static final SimpleDateFormat innerFormatShortMONTH() {
+    public static SimpleDateFormat innerFormatShortMONTH() {
         return new SimpleDateFormat(INNER_DATAFORMATSHORTMONTH, Locale.CHINA);// 内部使用的日期格式。
     }
 

@@ -85,6 +85,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                 if (!VersionUtils.IS_MORE_THAN_LOLLIPOP) {
 //                        smsMessage.save();
                 }
+
                 mServiceIntent = new Intent(context, CaptchasService.class);
                 Bundle value = new Bundle();
                 value.putSerializable("message", smsMessage);

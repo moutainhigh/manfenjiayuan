@@ -79,7 +79,7 @@
                     android:layout_gravity="center_horizontal"
                     android:padding="8dp">
 
-                    <include layout="@layout/line"/>
+                    <include layout="@layout/horizontal_line"/>
 
                     <LinearLayout
                         android:id="@+id/ll_wxpay"
@@ -103,7 +103,7 @@
                             android:src="@mipmap/icon_arrow_right"/>
                     </LinearLayout>
 
-                    <include layout="@layout/line"/>
+                    <include layout="@layout/horizontal_line"/>
 
                     <LinearLayout
                         android:id="@+id/ll_alipay"
@@ -128,7 +128,7 @@
                     </LinearLayout>
 
 
-                    <include layout="@layout/line"/>
+                    <include layout="@layout/horizontal_line"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

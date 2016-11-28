@@ -44,10 +44,7 @@ public class ResponseBody {
     }
     
     public boolean isSuccess() {
-        if (!StringUtils.isEmpty(retCode) && retCode.equalsIgnoreCase(RETCODE_SUCCESS)){
-            return true;
-        }
-        return false;
+        return !StringUtils.isEmpty(retCode) && retCode.equalsIgnoreCase(RETCODE_SUCCESS);
     }
     
     public boolean isbZipFlag() {

@@ -220,7 +220,7 @@ public class GridPasswordView extends LinearLayout implements PasswordView {
 
         @Override
         public void onDeleteClick() {
-            ZLogger.d(String.format("onDeleteClick:%d-%s", mPasswordArr.length, mPasswordArr));
+            ZLogger.d(String.format("%d-%s", mPasswordArr.length, mPasswordArr));
             responseKeycodeDel();
         }
     };

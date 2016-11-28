@@ -11,8 +11,6 @@
  */
 package com.mfh.comn.code.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.code.ICodeItem;
@@ -21,6 +19,9 @@ import com.mfh.comn.code.ISimpleCodeHouse;
 import com.mfh.comn.code.ITreeCodeItem;
 import com.mfh.comn.code.bean.Level;
 import com.mfh.comn.code.bean.ParentChildItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 直接编码库
@@ -107,11 +108,9 @@ public class DirectCodeHouse<T> extends CodeHouse<T> implements ISimpleCodeHouse
 
     public void addLevel(Level level){
         if (levels == null)
-            levels = new ArrayList<Level>();
+            levels = new ArrayList<>();
         if (!levels.contains(level))
             levels.add(level);
-        else
-            return;
     }
     
     public void addLevel(String levelName){

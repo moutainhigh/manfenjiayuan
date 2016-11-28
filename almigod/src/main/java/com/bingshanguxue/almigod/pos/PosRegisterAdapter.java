@@ -13,7 +13,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -69,19 +69,19 @@ public class PosRegisterAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_id)
+        @BindView(R.id.tv_id)
         TextView tvId;
-        @Bind(R.id.tv_channelId)
+        @BindView(R.id.tv_channelId)
         TextView tvChannelId;
-        @Bind(R.id.tv_channelPointId)
+        @BindView(R.id.tv_channelPointId)
         TextView tvChannelPointId;
-        @Bind(R.id.tv_serialNo)
+        @BindView(R.id.tv_serialNo)
         TextView tvSerialNo;
-        @Bind(R.id.tv_netId)
+        @BindView(R.id.tv_netId)
         TextView tvNetId;
-        @Bind(R.id.tv_createDate)
+        @BindView(R.id.tv_createDate)
         TextView tvCreateDate;
-        @Bind(R.id.tv_updateDate)
+        @BindView(R.id.tv_updateDate)
         TextView tvUpdateDate;
 
         public ProductViewHolder(final View itemView) {

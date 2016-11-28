@@ -53,7 +53,6 @@ import de.greenrobot.event.EventBus;
  */
 public class FrontCategoryFragment extends BaseFragment {
 
-    public static final String EXTRA_CATEGORY_ID = "categoryId";
     public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
 
 
@@ -149,7 +148,6 @@ public class FrontCategoryFragment extends BaseFragment {
     public void init(Bundle args) {
         if (args != null) {
             this.posFrontCategoryId = args.getLong(EXTRA_CATEGORY_ID_POS);
-//            this.categoryId = args.getLong(EXTRA_CATEGORY_ID);
         }
         this.cacheKey = String.format("%s_%d",
                 ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);

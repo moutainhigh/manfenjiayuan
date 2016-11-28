@@ -62,6 +62,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
+
+
 /**
  * 充值
  *
@@ -484,10 +486,11 @@ public class TopupFragment extends BaseFragment {
                     // 解析结果
 //                parseAlipayResp(result);
                     //resultStatus={6001};memo={操作已经取消。};result={}
-                    Message msg = new Message();
-                    msg.what = ALI_PAY_FLAG;
+//                    Message msg = new Message();
+                    Message msg = Message.obtain();
+                    msg.what = AlipayHandler.ALI_PAY_FLAG;
                     msg.obj = result;
-                    mHandler.sendMessage(msg);
+                    mAlipayHandler.sendMessage(msg);
                 } catch (Exception e) {
                     ZLogger.e(e.toString());
                 }
@@ -499,13 +502,15 @@ public class TopupFragment extends BaseFragment {
         payThread.start();
     }
 
-    private static final int ALI_PAY_FLAG = 1;
-    private static final int ALI_CHECK_FLAG = 2;
-    private Handler mHandler = new Handler() {
+    private class AlipayHandler extends Handler{
+        public static final int ALI_PAY_FLAG = 1;
+        public static final int ALI_CHECK_FLAG = 2;
+
+        @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ALI_PAY_FLAG: {
-                    parseAlipayResp((Map<String, String>) msg.obj);
+                    handleAlipayResult((Map<String, String>) msg.obj);
                     break;
                 }
                 case ALI_CHECK_FLAG: {
@@ -517,7 +522,9 @@ public class TopupFragment extends BaseFragment {
                     break;
             }
         }
-    };
+    }
+
+    private AlipayHandler mAlipayHandler = new AlipayHandler();
 
     /**
      * 解析支付宝处理结果
@@ -531,7 +538,7 @@ public class TopupFragment extends BaseFragment {
      *
      * @param resp
      */
-    private void parseAlipayResp(Map<String, String> resp) {
+    private void handleAlipayResult(Map<String, String> resp) {
         PayResult payResult = new PayResult(resp);
 //        resultStatus={9000};memo={};result={partner="2088011585033309"&seller_id="finance@manfenjiayuan.com"&out_trade_no="138761"&subject="商品名称"&body="商品详情"&total_fee="0.01"&notify_url="http://devnew.manfenjiayuan.com/pmc/pmcstock/notifyOrder"&service="mobile.securitypay.pay"&payment_type="1"&_input_charset="utf-8"&it_b_pay="30m"&return_url="m.alipay.com"&success="true"&sign_type="RSA"&sign="OoNoZHMgXQ81Irh/DnCjEhfaEuL5lIqjxCgs05+gV/oIUUqjMffmeRf4fPuXwVsC4XpjQjdNLnCLgXqfIvpAYdt3bqDXEGV1BojgEJl1bz8HCrvT8YIAgPMY/0S9qzCDwuMNcDhcTo2dilK2isUE5AD1MjYtgmtEIWG3WDJNqIA="}
         ZLogger.d("parseAlipayResp: " + payResult.toString());
@@ -542,7 +549,6 @@ public class TopupFragment extends BaseFragment {
         // 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
         String resultInfo = payResult.getResult();// 同步返回需要验证的信息
         String resultStatus = payResult.getResultStatus();
-
         DialogUtil.showHint(payResult.getMemo());
 
         // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档

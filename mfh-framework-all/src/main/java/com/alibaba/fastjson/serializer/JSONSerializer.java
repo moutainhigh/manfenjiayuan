@@ -15,6 +15,8 @@
  */
 package com.alibaba.fastjson.serializer;
 
+import com.alibaba.fastjson.JSONException;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Type;
@@ -24,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.List;
-
-import com.alibaba.fastjson.JSONException;
 
 /**
  * @author wenshao[szujobs@hotmail.com]
@@ -213,7 +213,6 @@ public class JSONSerializer {
         out.write("{\"$ref\":\"");
         out.write(path);
         out.write("\"}");
-        return;
     }
 
     public List<ValueFilter> getValueFilters() {

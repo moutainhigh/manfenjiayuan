@@ -85,9 +85,6 @@ public class ConfigLocationItem implements Serializable {
     public boolean isDom4j(){
         if (parser == null || parser.length() == 0)
             return false;
-        else if (parser.equals(DOM4J))
-            return true;
-        else
-            return false;                   
+        else return parser.equals(DOM4J);
     }
 }

@@ -15,6 +15,19 @@
  */
 package com.alibaba.fastjson.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.annotation.JSONType;
+import com.alibaba.fastjson.asm.ASMException;
+import com.alibaba.fastjson.parser.DefaultJSONParser;
+import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.parser.JSONScanner;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.parser.deserializer.FieldDeserializer;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -49,34 +62,21 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.annotation.JSONType;
-import com.alibaba.fastjson.asm.ASMException;
-import com.alibaba.fastjson.parser.DefaultJSONParser;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.parser.JSONScanner;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.parser.deserializer.FieldDeserializer;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-
 /**
  * @author wenshao[szujobs@hotmail.com]
  */
 public class TypeUtils {
 
-    public static boolean   compatibleWithJavaBean      = false;
-    private static boolean  setAccessibleEnable         = true;
+    public static boolean compatibleWithJavaBean = false;
+    private static boolean setAccessibleEnable = true;
 
-    private static boolean  oracleTimestampMethodInited = false;
-    private static Method   oracleTimestampMethod;
+    private static boolean oracleTimestampMethodInited = false;
+    private static Method oracleTimestampMethod;
 
-    private static boolean  oracleDateMethodInited      = false;
-    private static Method   oracleDateMethod;
+    private static boolean oracleDateMethodInited = false;
+    private static Method oracleDateMethod;
 
-    private static boolean  optionalClassInited         = false;
+    private static boolean optionalClassInited = false;
     private static Class<?> optionalClass;
 
     static {
@@ -291,7 +291,7 @@ public class TypeUtils {
 
         if (value instanceof String) {
             String strVal = (String) value;
-            
+
             //add by zhangyz
             DateFormat dFormat = DefaultJSONParser.dateFormatPatternThread.get();
             if (dFormat != null) {
@@ -301,7 +301,7 @@ public class TypeUtils {
                     ;//下面重试
                 }
             }
-            
+
             if (strVal.indexOf('-') != -1) {
                 String format;
                 if (strVal.length() == JSON.DEFFAULT_DATE_FORMAT.length()) {
@@ -591,7 +591,7 @@ public class TypeUtils {
         return cast(obj, clazz, ParserConfig.getGlobalInstance());
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T cast(Object obj, Class<T> clazz, ParserConfig mapping) {
         if (obj == null) {
             return null;
@@ -733,7 +733,7 @@ public class TypeUtils {
         throw new JSONException("can not cast to : " + clazz.getName());
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T castToEnum(Object obj, Class<T> clazz, ParserConfig mapping) {
         try {
             if (obj instanceof String) {
@@ -792,14 +792,14 @@ public class TypeUtils {
         throw new JSONException("can not cast to : " + type);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> T cast(Object obj, ParameterizedType type, ParserConfig mapping) {
         Type rawTye = type.getRawType();
 
         if (rawTye == Set.class || rawTye == HashSet.class //
-            || rawTye == TreeSet.class //
-            || rawTye == List.class //
-            || rawTye == ArrayList.class) {
+                || rawTye == TreeSet.class //
+                || rawTye == List.class //
+                || rawTye == ArrayList.class) {
             Type itemType = type.getActualTypeArguments()[0];
 
             if (obj instanceof Iterable) {
@@ -812,7 +812,7 @@ public class TypeUtils {
                     collection = new ArrayList();
                 }
 
-                for (Iterator it = ((Iterable) obj).iterator(); it.hasNext();) {
+                for (Iterator it = ((Iterable) obj).iterator(); it.hasNext(); ) {
                     Object item = it.next();
                     collection.add(cast(item, itemType, mapping));
                 }
@@ -856,7 +856,7 @@ public class TypeUtils {
         throw new JSONException("can not cast to : " + type);
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public static <T> T castToJavaBean(Map<String, Object> map, Class<T> clazz, ParserConfig mapping) {
         try {
             if (clazz == StackTraceElement.class) {
@@ -903,7 +903,7 @@ public class TypeUtils {
                 }
 
                 return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                                                  new Class<?>[] { clazz }, object);
+                        new Class<?>[]{clazz}, object);
             }
 
             if (mapping == null) {
@@ -934,21 +934,19 @@ public class TypeUtils {
                             try {
                                 paramType = Long.class; //补丁,add by zhangyz 20150405 对于主键是泛型的，无法自动识别
                                 value = cast(value, paramType, mapping);
-                                method.invoke(object, new Object[] { value });
-                            }
-                            catch(java.lang.reflect.InvocationTargetException ex) {
+                                method.invoke(object, new Object[]{value});
+                            } catch (java.lang.reflect.InvocationTargetException ex) {
                                 paramType = Integer.class;//不行，再还原
                                 value = cast(value, paramType, mapping);
-                                method.invoke(object, new Object[] { value });
+                                method.invoke(object, new Object[]{value});
                             }
-                        }
-                        else {//原来的分支
+                        } else {//原来的分支
                             if (paramType instanceof TypeVariable) {//补丁，add by zhangyz，对于基类泛型提供的补丁
                                 if (fieldDeser.getFieldType() != null)
                                     paramType = fieldDeser.getFieldType();
                             }
                             value = cast(value, paramType, mapping);
-                            method.invoke(object, new Object[] { value });
+                            method.invoke(object, new Object[]{value});
                         }
                     } else {
                         Field field = fieldDeser.getField();
@@ -1084,7 +1082,7 @@ public class TypeUtils {
             }
 
             if (method.getName().equals("getMetaClass")
-                && method.getReturnType().getName().equals("groovy.lang.MetaClass")) {
+                    && method.getReturnType().getName().equals("groovy.lang.MetaClass")) {
                 continue;
             }
 
@@ -1113,7 +1111,7 @@ public class TypeUtils {
                     }
 
                     fieldInfoMap.put(propertyName, new FieldInfo(propertyName, method, null, ordinal, serialzeFeatures,
-                                                                 annotation.label()));
+                            annotation.label()));
                     continue;
                 }
 
@@ -1135,8 +1133,8 @@ public class TypeUtils {
 
                 String propertyName;
                 if (Character.isUpperCase(c3) //
-                    || c3 > 512 // for unicode method name
-                ) {
+                        || c3 > 512 // for unicode method name
+                        ) {
                     if (compatibleWithJavaBean) {
                         propertyName = decapitalize(methodName.substring(3));
                     } else {
@@ -1196,7 +1194,7 @@ public class TypeUtils {
                 }
 
                 fieldInfoMap.put(propertyName,
-                                 new FieldInfo(propertyName, method, field, ordinal, serialzeFeatures, label));
+                        new FieldInfo(propertyName, method, field, ordinal, serialzeFeatures, label));
             }
 
             if (methodName.startsWith("is")) {
@@ -1263,7 +1261,7 @@ public class TypeUtils {
                 }
 
                 fieldInfoMap.put(propertyName,
-                                 new FieldInfo(propertyName, method, field, ordinal, serialzeFeatures, label));
+                        new FieldInfo(propertyName, method, field, ordinal, serialzeFeatures, label));
             }
         }
 
@@ -1303,7 +1301,7 @@ public class TypeUtils {
 
             if (!fieldInfoMap.containsKey(propertyName)) {
                 fieldInfoMap.put(propertyName,
-                                 new FieldInfo(propertyName, null, field, ordinal, serialzeFeatures, label));
+                        new FieldInfo(propertyName, null, field, ordinal, serialzeFeatures, label));
             }
         }
 

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.MD5Util;
 
 import junit.framework.Assert;
 

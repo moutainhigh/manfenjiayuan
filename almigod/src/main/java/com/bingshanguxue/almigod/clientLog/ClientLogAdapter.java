@@ -13,7 +13,7 @@ import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -67,17 +67,17 @@ public class ClientLogAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_hardwareInformation)
+        @BindView(R.id.tv_hardwareInformation)
         TextView tvHardwareInfo;
-        @Bind(R.id.tv_androidLevel)
+        @BindView(R.id.tv_androidLevel)
         TextView tvAndroidLev;
-        @Bind(R.id.tv_softVersion)
+        @BindView(R.id.tv_softVersion)
         TextView tvSoftVer;
-        @Bind(R.id.tv_loginName)
+        @BindView(R.id.tv_loginName)
         TextView tvLoginName;
-        @Bind(R.id.tv_errorTime)
+        @BindView(R.id.tv_errorTime)
         TextView tvErrorTime;
-        @Bind(R.id.tv_stackInformation)
+        @BindView(R.id.tv_stackInformation)
         TextView tvStackInfo;
 
         public ProductViewHolder(final View itemView) {

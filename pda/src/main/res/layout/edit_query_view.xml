@@ -18,7 +18,7 @@
         android:padding="@dimen/spacing_micro"
         android:background="?android:editTextBackground"
         android:hint=""
-        android:singleLine="true"/>
+        android:maxLines="1"/>
 
     <!--<ImageButton-->
         <!--android:id="@+id/ib_del"-->

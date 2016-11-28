@@ -160,10 +160,7 @@ public class PageInfo {
      * @author zhangyz created on 2013-4-11
      */
     public boolean isNotInit() {
-        if (this.totalCount == TOTALCOUNT_NOTINIT)
-            return true;
-        else
-            return false;
+        return this.totalCount == TOTALCOUNT_NOTINIT;
     }
 
     /**
@@ -173,16 +170,10 @@ public class PageInfo {
      */
     public boolean hasNextPage() {
         if (fromLast) {
-            if (pageNo >= FIRST_PAGE_NO || isNotInit())
-                return true;
-            else
-                return false;
+            return pageNo >= FIRST_PAGE_NO || isNotInit();
         }
         else {
-            if (pageNo < totalPage || isNotInit())
-                return true;
-            else
-                return false;
+            return pageNo < totalPage || isNotInit();
         }
     }
 
@@ -237,16 +228,10 @@ public class PageInfo {
      */
     public boolean hasPrevPage() {
         if (fromLast) {
-            if (pageNo < this.totalPage)
-                return true;
-            else
-                return false;
+            return pageNo < this.totalPage;
         }
         else {
-            if (pageNo <= FIRST_PAGE_NO)
-                return false;
-            else
-                return true;
+            return pageNo > FIRST_PAGE_NO;
         }
     }
 

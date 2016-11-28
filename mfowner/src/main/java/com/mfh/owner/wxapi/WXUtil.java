@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.MD5Util;
 import com.mfh.framework.core.utils.StringUtils;
 
 import junit.framework.Assert;
@@ -429,7 +430,7 @@ public class WXUtil {
 						break;
 					case XmlPullParser.START_TAG:
 
-						if("xml".equals(nodeName)==false){
+						if(!"xml".equals(nodeName)){
 							//实例化student对象
 							xml.put(nodeName,parser.nextText());
 						}

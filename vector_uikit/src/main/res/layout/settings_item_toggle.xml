@@ -58,9 +58,9 @@
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/button_toggle"
-                android:layout_width="45dp"
+                android:layout_width="56dp"
                 android:layout_height="24dp"
-                android:layout_marginLeft="8dp"/>
+                android:layout_marginStart="8dp"/>
 
         </LinearLayout>
 

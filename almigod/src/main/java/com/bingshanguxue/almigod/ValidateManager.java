@@ -223,7 +223,6 @@ public class ValidateManager {
     };
 
     private void saveTerminalId(final String respnse){
-        ZLogger.d("saveTerminalId start");
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {

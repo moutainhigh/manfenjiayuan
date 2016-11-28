@@ -22,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:contentDescription="@null"
             android:src="@mipmap/ic_launcher"/>
 
     </LinearLayout>
@@ -30,11 +31,11 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="80dp"
         android:orientation="vertical"
-        android:scrollbars="none"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -109,7 +110,8 @@
                 android:text="登录"
                 android:textColor="@color/material_white"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                tools:ignore="InconsistentLayout"/>
 
         </LinearLayout>
 
@@ -119,9 +121,9 @@
             android:layout_marginTop="16dp"
             android:divider="@drawable/divider_vertical_line"
             android:dividerPadding="8dp"
-            android:visibility="gone"
             android:gravity="center_horizontal"
-            android:showDividers="middle">
+            android:showDividers="middle"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_retrievePwd"
@@ -150,6 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:ignore="InconsistentLayout"/>
 
 </RelativeLayout>

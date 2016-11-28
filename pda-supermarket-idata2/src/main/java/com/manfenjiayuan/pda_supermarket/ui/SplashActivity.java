@@ -31,6 +31,7 @@ import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -177,8 +178,10 @@ public class SplashActivity extends InitActivity {
      */
     private boolean requestPermissions() {
         ArrayList<String> expectPermissions = new ArrayList<>();
+
         expectPermissions.add(Manifest.permission.CAMERA);
         expectPermissions.add(Manifest.permission.READ_CONTACTS);
+        //Location:位置服务
         expectPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         expectPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         //MicroPhone:录音
@@ -188,6 +191,7 @@ public class SplashActivity extends InitActivity {
         expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
         //SMS:短信
         expectPermissions.add(Manifest.permission.RECEIVE_SMS);
+        expectPermissions.add(Manifest.permission.READ_SMS);
         //Storage:文件存储
         expectPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -208,8 +212,7 @@ public class SplashActivity extends InitActivity {
                 permissions[i] = lackPermissions.get(i);
             }
             // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this,
-                    permissions, Route.ARC_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, permissions, Route.ARC_PERMISSIONS);
             return false;
         }
 

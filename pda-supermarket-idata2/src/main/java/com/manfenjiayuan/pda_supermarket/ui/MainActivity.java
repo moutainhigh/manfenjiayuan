@@ -23,6 +23,7 @@ import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
+import com.manfenjiayuan.business.route.Route;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
@@ -215,7 +216,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case ARCode.ARC_NATIVE_LOGIN: {
+            case Route.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     loadOffices();
@@ -557,7 +558,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, ARCode.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
 
 //        LoginActivity.actionStart(MainActivity.this, null);
 //        finish();

@@ -15,6 +15,16 @@
  */
 package com.alibaba.fastjson.serializer;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONAware;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONStreamAware;
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.annotation.JSONType;
+import com.alibaba.fastjson.util.ASMUtils;
+import com.alibaba.fastjson.util.IdentityHashMap;
+import com.alibaba.fastjson.util.ServiceLoader;
+
 import java.io.File;
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
@@ -51,16 +61,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONAware;
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONStreamAware;
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.annotation.JSONType;
-import com.alibaba.fastjson.util.ASMUtils;
-import com.alibaba.fastjson.util.IdentityHashMap;
-import com.alibaba.fastjson.util.ServiceLoader;
 
 /**
  * circular references detect
@@ -107,7 +107,7 @@ public class SerializeConfig extends IdentityHashMap<Type, ObjectSerializer> {
 
 		{
 			JSONType annotation = clazz.getAnnotation(JSONType.class);
-			if (annotation != null && annotation.asm() == false) {
+			if (annotation != null && !annotation.asm()) {
 				asm = false;
 			}
 		}

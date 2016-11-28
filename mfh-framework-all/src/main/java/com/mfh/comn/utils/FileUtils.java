@@ -116,11 +116,11 @@ public class FileUtils {
     public static boolean saveStringToFile(String fullPath, String content, boolean replace, String encode) throws Exception{
         File f = new File(fullPath);
         if (f.exists()){
-            if (replace == false){
+            if (!replace){
                 return true;
             }
-            if (f.isFile() && replace == true){
-                if(f.delete() == false)
+            if (f.isFile()){
+                if(!f.delete())
                     return false;
             }
         }
@@ -128,7 +128,7 @@ public class FileUtils {
             String dir = getDir(fullPath);
             f = new File(dir);
             if (!f.exists()){
-                if(f.mkdirs() == false)
+                if(!f.mkdirs())
                     return false;
             }
         }
@@ -159,7 +159,7 @@ public class FileUtils {
     public static File getFileNameNoSame(String path, String fileName){     
         File file = null;
         file = new File(path, fileName);
-        if (file.exists() == false)//不存在
+        if (!file.exists())//不存在
             return file;
         
         String[] segs = divideFileName(fileName);       
@@ -167,7 +167,7 @@ public class FileUtils {
         do{
             fileName = segs[0] + index + segs[1];//文件名加1
             file = new File(path, fileName);
-            if (file.exists() == false)
+            if (!file.exists())
                 break;
             index ++;
         }
@@ -185,7 +185,7 @@ public class FileUtils {
     public static File getFileNameNoSameAddTime(String path, String fileName){      
         File file = null;
         file = new File(path, fileName);
-        if (file.exists() == false)//不存在
+        if (!file.exists())//不存在
             return file;
         
         String[] segs = divideFileName(fileName);
@@ -202,7 +202,7 @@ public class FileUtils {
             //拼接新文件名
             fileName = segs[0] + separator + dateTime + segs[1];
             file = new File(path, fileName);
-            if (file.exists() == false)
+            if (!file.exists())
                 break;
         }
         while (true);

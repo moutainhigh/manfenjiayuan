@@ -100,7 +100,7 @@ public class SharedPrefesManagerFactory extends SharedPrefesUltimate {
     }
 
     public static boolean isTtsEnabled(){
-        return getBoolean(PREF_NAME_FACTORY, PK_B_TTS_ENABLED, true);
+        return getBoolean(PREF_NAME_FACTORY, PK_B_TTS_ENABLED, false);
     }
 
     /**

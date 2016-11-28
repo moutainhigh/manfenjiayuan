@@ -27,8 +27,8 @@ import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
@@ -112,25 +112,27 @@ public class SplashActivity extends InitActivity {
      * 权限申请
      */
     private boolean requestPermissions() {
-        ArrayList<String> expectPermissions = new ArrayList<>();
-        expectPermissions.add(Manifest.permission.CAMERA);
-        expectPermissions.add(Manifest.permission.READ_CONTACTS);
-        expectPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-        expectPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        ArrayList<String> permissionsNeeded = new ArrayList<>();
+        permissionsNeeded.add(Manifest.permission.CAMERA);
+        permissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+        //Location:位置服务
+        permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
         //MicroPhone:录音
-        expectPermissions.add(Manifest.permission.RECORD_AUDIO);
+        permissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
         //Phone:拨打电话
-        expectPermissions.add(Manifest.permission.CALL_PHONE);
-        expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
+        permissionsNeeded.add(Manifest.permission.CALL_PHONE);
+//        permissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
         //SMS:短信
-        expectPermissions.add(Manifest.permission.RECEIVE_SMS);
+        permissionsNeeded.add(Manifest.permission.RECEIVE_SMS);
+//        permissionsNeeded.add(Manifest.permission.READ_SMS);
         //Storage:文件存储
-        expectPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+//        permissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
 
         List<String> lackPermissions = new ArrayList<>();
-        for (String permission : expectPermissions) {
+        for (String permission : permissionsNeeded) {
             if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 ZLogger.d(getString(R.string.permission_not_granted, permission));
                 lackPermissions.add(permission);
@@ -144,8 +146,7 @@ public class SplashActivity extends InitActivity {
                 permissions[i] = lackPermissions.get(i);
             }
             // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this,
-                    permissions, Route.ARC_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, permissions, Route.ARC_PERMISSIONS);
             return false;
         }
 
@@ -242,6 +243,7 @@ public class SplashActivity extends InitActivity {
             if (isGrannted) {
                 doAsyncTask();
             } else {
+                //如果直接再去请求，已经选择"不再提示"的权限会直接返回false,所以这里跳转到设置页面，用户手动去开启。
                 showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
                         "立刻开启", new DialogInterface.OnClickListener() {
 

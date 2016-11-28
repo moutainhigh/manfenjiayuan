@@ -15,6 +15,19 @@
  */
 package com.alibaba.fastjson;
 
+import com.alibaba.fastjson.util.TypeUtils;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.RandomAccess;
+
 import static com.alibaba.fastjson.util.TypeUtils.castToBigDecimal;
 import static com.alibaba.fastjson.util.TypeUtils.castToBigInteger;
 import static com.alibaba.fastjson.util.TypeUtils.castToBoolean;
@@ -28,19 +41,6 @@ import static com.alibaba.fastjson.util.TypeUtils.castToShort;
 import static com.alibaba.fastjson.util.TypeUtils.castToSqlDate;
 import static com.alibaba.fastjson.util.TypeUtils.castToString;
 import static com.alibaba.fastjson.util.TypeUtils.castToTimestamp;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.RandomAccess;
-
-import com.alibaba.fastjson.util.TypeUtils;
 
 /**
  * @author wenshao[szujobs@hotmail.com]
@@ -367,8 +367,9 @@ public class JSONArray extends JSON implements List<Object>, Cloneable, RandomAc
     }
 
     @Override
-    public Object clone() {
-        return new JSONArray(new ArrayList<Object>(list));
+    protected Object clone() throws CloneNotSupportedException {
+        super.clone();
+        return new JSONArray(new ArrayList<>(list));
     }
 
     public boolean equals(Object obj) {

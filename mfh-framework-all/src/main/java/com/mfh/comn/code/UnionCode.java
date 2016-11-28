@@ -1,9 +1,9 @@
 package com.mfh.comn.code;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 统一编码串，通过字符分割体现层次；统一编码串各段可以位于同一张表或跨表。
@@ -25,10 +25,7 @@ public class UnionCode {
      * @author zhangyz created on 2012-5-8
      */
     public static boolean haveMutiTable(String code){
-        if (code.indexOf(CODE_T_DEVIDE) > 0)
-            return true;
-        else
-            return false;
+        return code.indexOf(CODE_T_DEVIDE) > 0;
     }
     
     /**
@@ -38,10 +35,7 @@ public class UnionCode {
      * @author zhangyz created on 2012-5-9
      */
     public static boolean haveMutiDeep(String code){
-        if (code.indexOf(CODE_T_DEVIDE) > 0 || code.indexOf(DOWN) > 0)
-            return true;
-        else
-            return false;
+        return code.indexOf(CODE_T_DEVIDE) > 0 || code.indexOf(DOWN) > 0;
     }
     
     /**

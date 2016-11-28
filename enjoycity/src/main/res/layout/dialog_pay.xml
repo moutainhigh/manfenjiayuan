@@ -27,7 +27,7 @@
             android:layout_gravity="center_horizontal"/>
     </FrameLayout>
 
-    <include layout="@layout/line"
+    <include layout="@layout/horizontal_line"
         android:background="@color/mf_colorPrimary"/>
 
     <TextView
@@ -52,7 +52,7 @@
         android:gravity="center"
         android:layout_gravity="center_horizontal"/>
 
-    <include layout="@layout/line"/>
+    <include layout="@layout/horizontal_line"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
                 android:src="@mipmap/icon_arrow_right"/>
         </LinearLayout>
 
-        <!--<include layout="@layout/line"/>-->
+        <!--<include layout="@layout/horizontal_line"/>-->
 
         <LinearLayout
             android:id="@+id/ll_alipay"
@@ -109,7 +109,7 @@
         </LinearLayout>
 
 
-        <!--<include layout="@layout/line"/>-->
+        <!--<include layout="@layout/horizontal_line"/>-->
 
         <LinearLayout
             android:layout_width="wrap_content"

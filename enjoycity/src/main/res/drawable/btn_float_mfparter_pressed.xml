@@ -3,46 +3,35 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
-                
-        <layer-list>  
-                     
-            <item>                
-                <shape android:shape="rectangle">                    
-                    <solid android:color="@color/black_10" />
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/black_10"/>
                     <padding
                         android:bottom="6px"
                         android:left="0px"
                         android:right="8px"
-                        android:top="0px" />
+                        android:top="0px"/>
 
-                    <gradient android:startColor="@color/material_white"
+                    <gradient
+                        android:angle="270"
                         android:endColor="@color/black_40"
-                        android:angle="270"/>
-                                    
-                    <corners android:radius="47dp" />
+                        android:startColor="@color/material_white"/>
+                    <corners android:radius="47dp"/>
                 </shape>
-                            
             </item>
-                      
-            <item>                
-                <shape android:shape="rectangle">                    
-                    <solid android:color="@color/material_white" />
-                                        
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/material_white"/>
                     <!--<padding-->
-                        <!--android:bottom="2px"-->
-                        <!--android:left="2px"-->
-                        <!--android:right="2px"-->
-                        <!--android:top="2px" />-->
+                    <!--android:bottom="2px"-->
+                    <!--android:left="2px"-->
+                    <!--android:right="2px"-->
+                    <!--android:top="2px" />-->
 
-                    <corners android:radius="44dp" />
-                                    
+                    <corners android:radius="44dp"/>
                 </shape>
-                            
-            </item>   
-                  
-                    
+            </item>
         </layer-list>
-            
-    </item>        
-
+    </item>
 </layer-list>

@@ -1,5 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
                                                  android:orientation="vertical">
@@ -48,7 +49,8 @@
                 app:endTextSingleLine="false"
                 app:startText="库存成本价:"
                 app:startTextGravity="end"
-                app:startTextWidth="110dp"/>
+                app:startTextWidth="110dp"
+                tools:ignore="InconsistentLayout"/>
             <!--零售价（可编辑）-->
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_costPrice"
@@ -68,7 +70,8 @@
                 android:layout_height="44dp"
                 app:startText="毛利率:"
                 app:startTextGravity="end"
-                app:startTextWidth="110dp"/>
+                app:startTextWidth="110dp"
+                tools:ignore="InconsistentLayout"/>
             <!--库存-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_quantity"
@@ -88,7 +91,8 @@
                 app:editTextHint="请输入排面库存"
                 app:startText="排面库存:"
                 app:startTextGravity="end"
-                app:startTextWidth="110dp"/>
+                app:startTextWidth="110dp"
+                tools:ignore="InconsistentLayout"/>
             <!--平均销量-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_sellNum30"
@@ -99,7 +103,8 @@
                 app:endTextSingleLine="false"
                 app:startText="30天销量:"
                 app:startTextGravity="end"
-                app:startTextWidth="110dp"/>
+                app:startTextWidth="110dp"
+                tools:ignore="InconsistentLayout"/>
             <!--7天销量-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_sellNum7"
@@ -110,7 +115,8 @@
                 app:endTextSingleLine="false"
                 app:startText="7天销量:"
                 app:startTextGravity="end"
-                app:startTextWidth="110dp"/>
+                app:startTextWidth="110dp"
+                tools:ignore="InconsistentLayout"/>
 
 
         </LinearLayout>
@@ -135,7 +141,8 @@
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:pressedTranslationZ="0dp"
-            app:rippleColor="@color/material_green_800"/>
+            app:rippleColor="@color/material_green_800"
+            tools:ignore="InconsistentLayout"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_submit"

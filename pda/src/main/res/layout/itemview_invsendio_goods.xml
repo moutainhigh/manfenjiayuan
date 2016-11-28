@@ -7,12 +7,13 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_normal">
+
     <TextView
         android:id="@+id/tv_name"
         style="@style/mfh_textview_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="true"
+        android:maxLines="1"
         android:text="名称"/>
 
     <TextView
@@ -22,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_name"
         android:layout_marginTop="@dimen/spacing_micro"
-        android:singleLine="true"
+        android:maxLines="1"
         android:text="条码"/>
 
     <TextView
@@ -32,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_barcode"
         android:layout_marginTop="@dimen/spacing_micro"
-        android:singleLine="true"
+        android:maxLines="1"
         android:text="批发价格"/>
 
     <TextView
@@ -42,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_price"
         android:layout_marginTop="@dimen/spacing_micro"
-        android:singleLine="true"
+        android:maxLines="1"
         android:text="拣货数量"/>
 
 </RelativeLayout>

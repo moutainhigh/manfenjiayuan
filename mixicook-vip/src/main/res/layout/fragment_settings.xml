@@ -78,7 +78,6 @@
                 android:id="@+id/button_logout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/minimum_touch_height"
-                android:layout_alignParentBottom="true"
                 android:layout_margin="@dimen/spacing_double"
                 android:background="@drawable/btn_corner_red"
                 android:text="@string/button_logout"

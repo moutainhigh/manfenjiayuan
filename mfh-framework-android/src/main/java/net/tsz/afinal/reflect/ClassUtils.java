@@ -43,7 +43,7 @@ public class ClassUtils {
 	 */
 	public static List<FieldInfo> getAllNormalFields(Class<?> clazz) {
 	    DeserializeBeanInfo beanInfo = new DeserializeBeanInfo(clazz);
-	    DeserializeBeanInfo.computeSettersInner(beanInfo, (Type)clazz, true);
+	    DeserializeBeanInfo.computeSettersInner(beanInfo, clazz, true);
 	    List<FieldInfo> fieldInfos = beanInfo.getFieldList();
 	    return fieldInfos;
 	}
@@ -129,10 +129,8 @@ public class ClassUtils {
             return true;
         if("_id".equals(field.getName()))
             return true;
-        if("id".equals(field.getName()))
-            return true;
-        return false;
-    }
+		return "id".equals(field.getName());
+	}
 	
 	/**
 	 * 根据类名获得该类的主键java对象,原来的方法,老的代码已被zhangyz废弃

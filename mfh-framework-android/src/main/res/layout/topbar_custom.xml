@@ -6,7 +6,7 @@
         android:id="@+id/ib_back"
         style="@style/topbar_icon"
         android:layout_marginStart="@dimen/space_primary"
-        android:contentDescription=""
+        android:contentDescription="@null"
         android:src="@drawable/actionbar_back_indicator"/>
 
     <TextView
@@ -22,7 +22,7 @@
         <ImageButton
             android:id="@+id/ib_more"
             style="@style/topbar_icon"
-            android:contentDescription=""
+            android:contentDescription="@null"
             android:src="@drawable/actionbar_more_indicator"
             android:visibility="invisible"/>
 

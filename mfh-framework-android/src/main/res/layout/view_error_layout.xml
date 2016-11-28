@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/pagefailed_bg"
                     android:visibility="gone"
-                    android:contentDescription="" />
+                    android:contentDescription="@null" />
 
                 <com.mfh.framework.uikit.widget.LoadingImageView
                     android:id="@+id/loadingImageView"

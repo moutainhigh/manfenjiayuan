@@ -20,9 +20,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class AppContext extends MfhApplication {
 
-    /**云子·摇一摇*/
+    /**
+     * 云子·摇一摇
+     */
     /*
-	 * Sensoro Manager
+     * Sensoro Manager
 	 */
     public SensoroManager sensoroManager;
     /*
@@ -45,7 +47,7 @@ public class AppContext extends MfhApplication {
 
         instance = this;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             initSensoro();
         }
     }
@@ -68,7 +70,7 @@ public class AppContext extends MfhApplication {
 
     /**
      * initialize Sensoro SDK
-     * */
+     */
     private void initSensoro() {
         sensoroManager = SensoroManager.getInstance(getApplicationContext());
         /**
@@ -97,7 +99,7 @@ public class AppContext extends MfhApplication {
         /**
          * Check whether the Bluetooth is on
          **/
-        if (sensoroManager.isBluetoothEnabled()){
+        if (sensoroManager.isBluetoothEnabled()) {
             /**
              * Enable SDK service
              **/
@@ -112,13 +114,13 @@ public class AppContext extends MfhApplication {
 
     /**
      * stop Sensoro SDK
-     * */
-    private void stopSensoro(){
+     */
+    private void stopSensoro() {
         if (sensoroManager != null) {
             sensoroManager.stopService();
         }
 
-        if(mBeasons != null){
+        if (mBeasons != null) {
             mBeasons.clear();
         }
     }
@@ -126,23 +128,23 @@ public class AppContext extends MfhApplication {
     /**
      * 传感器信息更新频率为 1 秒；发现一个新的传感器后，如果在 8 秒内没有再次扫描到这个设备，则会回调传感器消失。
      * serialNumber	SN，设备唯一标识
-     major	iBeacon协议中的 major 信息
-     minor	iBeacon协议中的 minor 信息
-     proximityUUID	iBeacon协议中的 UUID 信息
-     rssi	信号强度
-     accuracy	距离（米）
-     proximity	范围（很远，附近，很近，未知）
-     temperature	芯片温度
-     light	光线
-     movingState	移动状态
-     accelerometerCount	移动计数器
-     batteryLevel	电池电量
-     hardwareModelName	硬件版本
-     firmwareVersion	固件版本
-     measuredPower	1 米处测量 rssi
-     transmitPower	广播功率
-     advertisingInterval	广播间隔
-     * */
+     * major	iBeacon协议中的 major 信息
+     * minor	iBeacon协议中的 minor 信息
+     * proximityUUID	iBeacon协议中的 UUID 信息
+     * rssi	信号强度
+     * accuracy	距离（米）
+     * proximity	范围（很远，附近，很近，未知）
+     * temperature	芯片温度
+     * light	光线
+     * movingState	移动状态
+     * accelerometerCount	移动计数器
+     * batteryLevel	电池电量
+     * hardwareModelName	硬件版本
+     * firmwareVersion	固件版本
+     * measuredPower	1 米处测量 rssi
+     * transmitPower	广播功率
+     * advertisingInterval	广播间隔
+     */
     private void initSensoroListener() {
         beaconManagerListener = new BeaconManagerListener() {
 
@@ -232,18 +234,15 @@ public class AppContext extends MfhApplication {
 
     /**
      * 附近是否有云子
-     * */
-    public boolean existBeacons(){
-        if(mBeasons != null && mBeasons.size() > 0){
-            return true;
-        }
-        return false;
+     */
+    public boolean existBeacons() {
+        return mBeasons != null && mBeasons.size() > 0;
     }
 
     /**
      * 云子状态发生改变，通知改变摇一摇周边选项显示/隐藏
-     * */
-    private void notifyBeaconsUpdate(){
+     */
+    private void notifyBeaconsUpdate() {
         Intent intent = new Intent(Constants.ACTION_BEACONS_UPDATE);
         intent.putExtra(Constants.KEY_BEACONS_EXIST, existBeacons());
         sendBroadcast(intent);

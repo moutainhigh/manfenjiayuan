@@ -10,6 +10,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_centerVertical="true"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_alipay_logo"/>
 
     <RelativeLayout
@@ -34,8 +35,9 @@
             android:layout_width="32dp"
             android:layout_height="14dp"
             android:layout_alignParentTop="true"
-            android:src="@mipmap/ic_wepay_label_recommend"
-            android:layout_toEndOf="@+id/tv_title"/>
+            android:layout_toEndOf="@+id/tv_title"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_wepay_label_recommend"/>
 
         <TextView
             android:id="@+id/tv_subtitle"

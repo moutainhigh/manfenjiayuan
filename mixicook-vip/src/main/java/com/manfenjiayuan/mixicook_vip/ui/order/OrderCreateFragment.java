@@ -613,7 +613,7 @@ public class OrderCreateFragment extends BaseFragment {
                 mCreateOrderBrief.setDueDateSpan(timeDisplay);
             }
         } catch (Exception ex) {
-            return;
+            ZLogger.e(ex.toString());
         }
     }
 

@@ -112,7 +112,7 @@ public class MfhUpdateAgent {
      * 内部自动处理更新结果
      */
     private void processUpdateResponseInner(UpdateResponse updateResponse) {
-        Message msg = new Message();
+        Message msg = Message.obtain();
 
         int versionCode = -1;
         AppInfo appInfo = AnalysisAgent.getAppInfo(MfhApplication.getAppContext());
@@ -173,7 +173,7 @@ public class MfhUpdateAgent {
     /**
      * 执行下载
      */
-    public void startDownload(UpdateResponse updateResponse) {
+    private void startDownload(UpdateResponse updateResponse) {
         if (mMfhDownloadListener != null){
             mMfhDownloadListener.onDownloadStart();
         }
@@ -191,9 +191,9 @@ public class MfhUpdateAgent {
                     //下载完成，自动执行安装
                     startInstall(file);
                 } catch (Throwable e) {
-                    if (dialog != null)
+                    if (dialog != null){
                         dialog.dismiss();
-
+                    }
                     if (mMfhDownloadListener != null){
                         mMfhDownloadListener.onDownloadEnd(100, e.toString());
                     }
