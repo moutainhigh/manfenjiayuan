@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
+import com.manfenjiayuan.business.route.Route;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.UserMixInfo;
@@ -194,7 +195,7 @@ public class AdministratorActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
 
-            case Constants.ARC_NATIVE_LOGIN: {
+            case Route.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
@@ -517,7 +518,7 @@ public class AdministratorActivity extends BaseActivity {
 //        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_OFFICELIST);
         Intent intent = new Intent(this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
     }
 
     /**

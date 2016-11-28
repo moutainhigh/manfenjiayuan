@@ -29,7 +29,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.OrderflowLocalWarehouseEvent;
-import com.mfh.litecashier.service.UploadSyncManager;
+import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.ExceptionOrderflowAdapter;
 import com.mfh.litecashier.ui.dialog.DailysettlePreviewDialog;
 import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
@@ -306,7 +306,7 @@ public class OrderFlowFragment extends BaseFragment {
             @Override
             public void onDatasetChanged() {
                 reload();
-                UploadSyncManager.getInstance().sync();
+                DataUploadManager.getInstance().sync();
             }
         });
         if (!mPosOrderDetailDialog.isShowing()) {

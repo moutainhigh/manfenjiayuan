@@ -527,9 +527,9 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
-    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
-        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED) {
+    public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
+        ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED) {
             //刷新供应商
             readCategoryInfoCache();
         }

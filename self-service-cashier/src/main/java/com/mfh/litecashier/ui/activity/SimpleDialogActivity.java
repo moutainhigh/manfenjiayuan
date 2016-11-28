@@ -23,6 +23,7 @@ import com.mfh.litecashier.ui.fragment.pay.PayHistoryFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment;
+import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
 
 import butterknife.BindView;
 
@@ -45,6 +46,8 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FT_PAY_HISTORY = 0x09;//支付记录
     public static final int FT_GOODS_SALESHISTORY = 0x10;//商品销量记录
     public static final int FT_EXCHANGE_SCORE = 0x11;//积分兑换
+
+    public static final int FT_TENANT_POSCATEGORYLIST = 0x12;//租户pos前台类目
 
 
     private int serviceType = 0;
@@ -289,6 +292,19 @@ public class SimpleDialogActivity extends BaseActivity {
                 }
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_TENANT_POSCATEGORYLIST:{
+                TenantCategoryListFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = TenantCategoryListFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = TenantCategoryListFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }

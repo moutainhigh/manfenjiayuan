@@ -91,7 +91,7 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
             tradeNo = args.getString(PrepareActivity.EXTRA_KEY_TRADENO);
         }
 
-        toolbar.setTitle("拣货");
+        toolbar.setTitle("组货");
 //        setSupportActionBar(toolbar);
         // Set an OnMenuItemClickListener to handle menu item clicks
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

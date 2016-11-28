@@ -449,8 +449,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         PosCategoryGodosTempService.getInstance().clear();
 
         Bundle extras = new Bundle();
-        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE,
-                FragmentActivity.FT_ADDMORE_LOCALFRONTGOODS);
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ADDMORE_LOCALFRONTGOODS);
         extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID_POS, categoryId);
         extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID, CateApi.FRONT_CATEGORY_ID_POS);
 

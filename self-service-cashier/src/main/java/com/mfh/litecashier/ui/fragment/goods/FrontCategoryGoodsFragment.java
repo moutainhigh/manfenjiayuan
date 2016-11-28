@@ -91,7 +91,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         setupSwipeRefresh();
 
         //默认先加载缓存数据
-        readCache();
+//        readCache();
     }
 
     @Override
@@ -209,11 +209,11 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
             return;
         }
 
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，读取缓存数据。");
-            readCache();
-            return;
-        }
+//        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+//            ZLogger.d("网络未连接，读取缓存数据。");
+//            readCache();
+//            return;
+//        }
 
         onLoadStart();
 
@@ -321,7 +321,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
                                 cacheArrays.add(goods);
                             }
                         }
-                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
+//                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
                     } else {
                         if (entityList == null) {
                             entityList = new ArrayList<>();

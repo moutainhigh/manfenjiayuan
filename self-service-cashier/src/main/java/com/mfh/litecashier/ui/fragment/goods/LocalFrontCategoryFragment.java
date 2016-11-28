@@ -116,11 +116,11 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
-        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
+    public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
+        ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
+        if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
             reload();
-        } else if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
+        } else if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
             notifyDataChanged(mCategoryGoodsTabStrip.getCurrentPosition());
         }
     }

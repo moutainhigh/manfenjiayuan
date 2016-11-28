@@ -29,6 +29,7 @@ import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
+import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -38,7 +39,6 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.utils.AppHelper;
@@ -205,6 +205,13 @@ public class SplashActivity extends InitActivity {
                         MfhApi.register();
                         IMApi.register();
 
+                        if (MobileApi.DOMAIN.equals(HostServer.HOST_MIXICOOK)){
+                            CateApi.FRONT_CATEGORY_ID_POS = 3407L;
+                        }
+                        else if (MobileApi.DOMAIN.equals(HostServer.HOST_QIANWJ)){
+                            CateApi.FRONT_CATEGORY_ID_POS = 20000019L;
+                        }
+
                         if (aBoolean) {
                             redirectToMain(true);
                         } else {
@@ -224,7 +231,7 @@ public class SplashActivity extends InitActivity {
                 doAsyncTask();
             }
             break;
-            case Constants.ARC_NATIVE_LOGIN: {
+            case Route.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     redirectToMain(false);
                 }
@@ -245,6 +252,13 @@ public class SplashActivity extends InitActivity {
 //                    IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
                     MfhApi.register();
                     IMApi.register();
+
+                    if (MobileApi.DOMAIN.equals(HostServer.HOST_MIXICOOK)){
+                        CateApi.FRONT_CATEGORY_ID_POS = 3407L;
+                    }
+                    else if (MobileApi.DOMAIN.equals(HostServer.HOST_QIANWJ)){
+                        CateApi.FRONT_CATEGORY_ID_POS = 20000019L;
+                    }
 
                     MfhLoginService.get().clear();
                     redirectToLogin();
@@ -269,29 +283,33 @@ public class SplashActivity extends InitActivity {
 
     /**
      * 权限申请
+     *
+     * <li>如果同一组的任何一个权限被授权了，其他权限也自动被授权</li>
      */
     private boolean requestPermissions() {
-        ArrayList<String> expectPermissions = new ArrayList<>();
-        //Constant
-        expectPermissions.add(Manifest.permission.CAMERA);
-        expectPermissions.add(Manifest.permission.READ_CONTACTS);
-        //Location
-        expectPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
-        expectPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        ArrayList<String> permissionsNeeded = new ArrayList<>();
+        //Camera
+        permissionsNeeded.add(Manifest.permission.CAMERA);
+        //Contact
+        permissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+        //Location:位置服务
+        permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        expectPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
         //MicroPhone:录音
-        expectPermissions.add(Manifest.permission.RECORD_AUDIO);
+        permissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
         //Phone:拨打电话
-        expectPermissions.add(Manifest.permission.CALL_PHONE);
-        expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
+        permissionsNeeded.add(Manifest.permission.CALL_PHONE);
+//        expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
         //SMS:短信
-        expectPermissions.add(Manifest.permission.RECEIVE_SMS);
+        permissionsNeeded.add(Manifest.permission.RECEIVE_SMS);
+//        expectPermissions.add(Manifest.permission.READ_SMS);
         //Storage:文件存储
-        expectPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+//        expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
 
         List<String> lackPermissions = new ArrayList<>();
-        for (String permission : expectPermissions) {
+        for (String permission : permissionsNeeded) {
             if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 ZLogger.d(getString(R.string.permission_not_granted, permission));
                 lackPermissions.add(permission);
@@ -326,14 +344,12 @@ public class SplashActivity extends InitActivity {
                 doAsyncTask();
             } else {
 //                MANAGE_APP_PERMISSIONS
-
                 showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
                         "立刻开启", new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-
 
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
@@ -380,7 +396,7 @@ public class SplashActivity extends InitActivity {
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
     }
 
     /**

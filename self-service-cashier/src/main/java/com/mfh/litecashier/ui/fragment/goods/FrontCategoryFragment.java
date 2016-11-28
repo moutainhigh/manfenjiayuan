@@ -2,6 +2,7 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -12,25 +13,32 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.sc.ProductCatalogApi;
+import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
+import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
+import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
+import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;
@@ -59,6 +67,7 @@ public class FrontCategoryFragment extends BaseFragment {
 
     private Long posFrontCategoryId;//pos本地前台类目
     private Long categoryId;
+    private CategoryInfo mCategoryInfo;//租户前台类目
     private String cacheKey;
     private List<PosCategory> curCategoryList;//当前子类目
 
@@ -109,13 +118,38 @@ public class FrontCategoryFragment extends BaseFragment {
         mToolbar.inflateMenu(R.menu.menu_addprodudts2category);
 
         initCategoryGoodsView();
-        reload();
+        selectCategory();
+//        reload();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Constants.ARC_TENANT_CATEGORYLIST: {
+                CategoryInfo categoryInfo = null;
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    categoryInfo = (CategoryInfo) data.getSerializableExtra("categoryInfo");
+                }
+
+                if (categoryInfo == null){
+                    getActivity().finish();
+                }
+                else{
+                    mCategoryInfo = categoryInfo;
+                    categoryId = mCategoryInfo.getId();
+                    reload();
+                }
+            }
+            break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     public void init(Bundle args) {
         if (args != null) {
             this.posFrontCategoryId = args.getLong(EXTRA_CATEGORY_ID_POS);
-            this.categoryId = args.getLong(EXTRA_CATEGORY_ID);
+//            this.categoryId = args.getLong(EXTRA_CATEGORY_ID);
         }
         this.cacheKey = String.format("%s_%d",
                 ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);
@@ -198,6 +232,7 @@ public class FrontCategoryFragment extends BaseFragment {
         }
     }
 
+
     /**
      * 加载前台类目子类目
      */
@@ -277,7 +312,21 @@ public class FrontCategoryFragment extends BaseFragment {
         }
 
         importFromCenterSkus(productIds.toString(), proSkuIds.toString());
+    }
 
+    private void selectCategory(){
+        Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_TENANT_POSCATEGORYLIST);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+        if (hostServer != null){
+            extras.putLong(TenantCategoryListFragment.EXTRA_KEY_TENANTID, hostServer.getId());
+        }
+
+        intent.putExtras(extras);
+        startActivityForResult(intent, Constants.ARC_TENANT_CATEGORYLIST);
     }
 
 

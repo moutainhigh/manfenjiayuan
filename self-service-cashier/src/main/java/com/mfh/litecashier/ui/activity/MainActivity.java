@@ -25,7 +25,9 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
+import com.bingshanguxue.cashier.hardware.printer.EmbPrinter;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
@@ -35,8 +37,11 @@ import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
+import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
+import com.manfenjiayuan.business.route.Route;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.business.view.IScOrderView;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
@@ -70,15 +75,17 @@ import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
+import com.mfh.litecashier.com.EmbPrintManager;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.DataDownloadManager;
+import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
-import com.mfh.litecashier.service.UploadSyncManager;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.CashierMenuAdapter;
@@ -238,8 +245,13 @@ public class MainActivity extends CashierActivity
 
         //打开秤的串口
 //        OpenComPort(comSmscale);
-
-        cloudSpeak("欢迎使用米西厨房智能收银系统");
+        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+        if (hostServer != null){
+            cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getName()));
+        }
+        else{
+            cloudSpeak("欢迎使用智能收银系统");
+        }
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
@@ -283,7 +295,7 @@ public class MainActivity extends CashierActivity
     public void onBackPressed() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
         isWaitForExit = true;
-        UploadSyncManager.getInstance().sync();
+        DataUploadManager.getInstance().sync();
     }
 
 //    @Override
@@ -376,7 +388,12 @@ public class MainActivity extends CashierActivity
             returnGoods();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_FEEDPAPER) == 0) {
             //走纸
-            GPrinterAgent.feedPaper();
+            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                GPrinterAgent.feedPaper();
+            }
+            else{
+                EmbPrinter.feedPaper();
+            }
         } else if (id.compareTo(ResMenu.CASHIER_MENU_MONEYBOX) == 0) {
             openMoneyBox();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_HANGUP_ORDER) == 0) {
@@ -670,7 +687,8 @@ public class MainActivity extends CashierActivity
         if (!MfhLoginService.get().haveLogined()) {
             redirectToLogin();
         } else {
-            enterAdministratorMode();
+//            enterAdministratorMode();
+            UIHelper.startActivity(MainActivity.this, AdministratorActivity.class);
         }
     }
 
@@ -722,7 +740,7 @@ public class MainActivity extends CashierActivity
             //刷新挂单
             refreshFloatHangup();
 
-            UploadSyncManager.getInstance().sync();
+            DataUploadManager.getInstance().sync();
 
             //设置需要更新商品中心,商品后台类目
             SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
@@ -744,7 +762,7 @@ public class MainActivity extends CashierActivity
         if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
             btnSync.startSync();
             btnSync.setBadgeEnabled(false);
-            DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS| DataDownloadManager.POSPRODUCTS_SKU);
+            DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS | DataDownloadManager.POSPRODUCTS_SKU);
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
             menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
@@ -776,6 +794,8 @@ public class MainActivity extends CashierActivity
         } else if (eventId == AffairEvent.EVENT_ID_RESET_CASHIER) {
             reload();
             ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
+            EventBus.getDefault().post(new DataDownloadManager.DataDownloadEvent(DataDownloadManager.DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+
         } else if (eventId == AffairEvent.EVENT_ID_CASHIER_FRONTCATA_GOODS) {
             LocalFrontCategoryGoods goods = (LocalFrontCategoryGoods) bundle.getSerializable("goods");
             cashierGoods(goods);
@@ -786,19 +806,24 @@ public class MainActivity extends CashierActivity
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataDownloadManager.GoodsSyncEvent event) {
+    public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
         ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS) {
-            btnSync.startSync();
-            btnSync.setBadgeEnabled(false);
-        }
-        else if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_POSPRODUCTS_UPDATED) {
-//            CloudSyncManager.get().importFromChainSku();
-            EslSyncManager2.getInstance().sync();
-            SMScaleSyncManager2.getInstance().sync();
-        } else if (event.getEventId() == DataDownloadManager.GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
-            hideProgressDialog();
-            btnSync.stopSync();
+        switch (event.getEventId()) {
+            case DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS: {
+                btnSync.startSync();
+                btnSync.setBadgeEnabled(false);
+            }
+            break;
+            case DataDownloadManager.DataDownloadEvent.EVENT_POSPRODUCTS_UPDATED: {
+                EslSyncManager2.getInstance().sync();
+                SMScaleSyncManager2.getInstance().sync();
+            }
+            break;
+            case DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED: {
+                hideProgressDialog();
+                btnSync.stopSync();
+            }
+            break;
         }
     }
 
@@ -807,14 +832,14 @@ public class MainActivity extends CashierActivity
     /**
      * 上传数据到云端
      */
-    public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
+    public void onEventMainThread(DataUploadManager.UploadSyncManagerEvent event) {
         ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
-        if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
+        if (event.getEventId() == DataUploadManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
             if (isWaitForExit) {
                 isWaitForExit = false;
                 AppHelper.closeApp();
             }
-        } else if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        } else if (event.getEventId() == DataUploadManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             if (isWaitForExit) {
                 isWaitForExit = false;
                 AppHelper.closeApp();
@@ -1058,10 +1083,15 @@ public class MainActivity extends CashierActivity
                     productAdapter.setEntityList(null);
                     changeOrderDiscount(false, 100D);
 
-                    if (data != null){
+                    if (data != null) {
                         ScOrder scOrder = (ScOrder) data.getSerializableExtra(PrepareStep2Fragment.EXTRA_KEY_SCORDER);
-                        if (scOrder != null){
-                            PrintManagerImpl.printSendOrder(scOrder);
+                        if (scOrder != null) {
+                            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                                PrintManagerImpl.printSendOrder(scOrder);
+                            }
+                            else{
+                                EmbPrintManagerImpl.printSendOrder(scOrder);
+                            }
                         }
                     }
                 }
@@ -1069,11 +1099,12 @@ public class MainActivity extends CashierActivity
                 btnPick.setEnabled(true);
             }
             break;
-            case Constants.ARC_NATIVE_LOGIN: {
+            case Route.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     reload();
                     ValidateManager.get().stepValidate(ValidateManager.STEP_REGISTER_PLAT);
+                    EventBus.getDefault().post(new DataDownloadManager.DataDownloadEvent(DataDownloadManager.DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
                 }
             }
             break;
@@ -1112,9 +1143,14 @@ public class MainActivity extends CashierActivity
                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                         cashierOrderInfo.getPosTradeNo());
                 //同步订单信息
-//            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
+//            DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
                 //打印订单
-                PrintManager.printPosOrder(orderEntity, true);
+                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                    PrintManager.printPosOrder(orderEntity, true);
+                }
+                else{
+                    EmbPrintManager.printPosOrder(orderEntity, true);
+                }
                 //保存上一单信息
                 LastOrderInfo lastOrderInfo = CashierAgent.genLastOrderInfo(orderEntity);
                 if (lastOrderInfo != null) {
@@ -1250,7 +1286,12 @@ public class MainActivity extends CashierActivity
      * 开钱箱
      */
     public void openMoneyBox() {
-        GPrinterAgent.openMoneyBox();
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            GPrinterAgent.openMoneyBox();
+        }
+        else{
+            EmbPrinter.openMoneyBox();
+        }
     }
 
     /**
@@ -2070,7 +2111,7 @@ public class MainActivity extends CashierActivity
 //        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_OFFICELIST);
         Intent intent = new Intent(this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_NATIVE_LOGIN);
+        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
     }
 
     /**
@@ -2087,9 +2128,17 @@ public class MainActivity extends CashierActivity
         alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
-                PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                    PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                }
+                else{
+                    EmbPrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                }
 
-                UploadSyncManager.getInstance().sync();
+//                embPrinter.setPrinter();
+//                embPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
+
+                DataUploadManager.getInstance().sync();
             }
 
             @Override
@@ -2155,7 +2204,12 @@ public class MainActivity extends CashierActivity
     public void onIScOrderViewSuccess(ScOrder data) {
         if (data != null) {
 //            PrintManagerImpl.printScOrder(data);
-            PrintManagerImpl.printPrepareOrder(data);
+            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                PrintManagerImpl.printPrepareOrder(data);
+            }
+            else{
+                EmbPrintManagerImpl.printPrepareOrder(data);
+            }
         }
     }
 

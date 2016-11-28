@@ -36,7 +36,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.EmptyEntity;
-import com.mfh.litecashier.service.UploadSyncManager;
+import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.PayHistoryAdapter;
 
 import java.util.List;
@@ -375,7 +375,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
             //修改订单支付信息（支付金额，支付状态）
             CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
 
-            UploadSyncManager.getInstance().stepUploadPosOrder(orderEntity);
+            DataUploadManager.getInstance().stepUploadPosOrder(orderEntity);
         }
 
         productAdapter.notifyDataSetChanged();

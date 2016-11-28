@@ -31,7 +31,7 @@ import de.greenrobot.event.EventBus;
  * 上传数据，确保POS机数据能正确的上传到云端
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-public class UploadSyncManager extends OrderSyncManager {
+public class DataUploadManager extends OrderSyncManager {
     public interface SyncStep {
         int STANDBY = -1;
         int INCOME_DISTRIBUTION_TOPUP   = 0;//清分充值
@@ -43,22 +43,21 @@ public class UploadSyncManager extends OrderSyncManager {
     //当前同步进度
     private int nextStep = SyncStep.STANDBY;
 
-
     private PageInfo incomeDistributionPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
     private PageInfo commitCashPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
 
-    private static UploadSyncManager instance = null;
+    private static DataUploadManager instance = null;
 
     /**
      * 返回 DataSyncManager 实例
      *
      * @return
      */
-    public static UploadSyncManager getInstance() {
+    public static DataUploadManager getInstance() {
         if (instance == null) {
-            synchronized (UploadSyncManager.class) {
+            synchronized (DataUploadManager.class) {
                 if (instance == null) {
-                    instance = new UploadSyncManager();
+                    instance = new DataUploadManager();
                 }
             }
         }

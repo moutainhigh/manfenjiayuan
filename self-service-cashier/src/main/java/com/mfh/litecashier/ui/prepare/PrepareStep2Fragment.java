@@ -104,7 +104,7 @@ public class PrepareStep2Fragment extends BaseFragment {
             emptyView = rootView.findViewById(R.id.empty_view);
             btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
 
-            toolbar.setTitle("结算");
+            toolbar.setTitle("组货");
 //        setSupportActionBar(toolbar);
             // Set an OnMenuItemClickListener to handle menu item clicks
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {

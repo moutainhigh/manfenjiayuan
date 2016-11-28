@@ -59,10 +59,10 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 319
+        versionCode 322
 
         // Defines a user-friendly version name for your app.
-        versionName "1.22.2"
+        versionName "1.22.3"
 
         multiDexEnabled true
 

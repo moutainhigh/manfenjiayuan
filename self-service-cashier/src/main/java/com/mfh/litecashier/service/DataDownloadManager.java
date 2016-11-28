@@ -85,7 +85,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
     private int queue = NA;//默认同步所有数据
 
-    public static class GoodsSyncEvent {
+    public static class DataDownloadEvent {
         public static final int EVENT_ID_SYNC_DATA_PROGRESS = 0X11;//同步进度
         public static final int EVENT_POSPRODUCTS_UPDATED = 0X03;//商品档案
         public static final int EVENT_FRONTEND_CATEGORY_UPDATED = 0X04;//前台类目更新
@@ -95,7 +95,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
         private int eventId;
 
-        public GoodsSyncEvent(int eventId) {
+        public DataDownloadEvent(int eventId) {
             this.eventId = eventId;
         }
 
@@ -185,7 +185,7 @@ public class DataDownloadManager extends BaseSyncManager {
         } else if ((queue & COMPANY_HUMAN) == COMPANY_HUMAN) {
             findCompUserPwdInfoStep1();
         } else {
-            onCompleted("没有同步任务待执行");
+            onNotifyCompleted("没有同步任务待执行");
         }
     }
 
@@ -193,24 +193,23 @@ public class DataDownloadManager extends BaseSyncManager {
      * 结果更新
      */
     private void onUpdate(int eventId, String message) {
-        if (StringUtils.isEmpty(message)) {
+        if (!StringUtils.isEmpty(message)) {
             ZLogger.df(message);
         }
         bSyncInProgress = false;
-        EventBus.getDefault().post(new GoodsSyncEvent(eventId));
+        EventBus.getDefault().post(new DataDownloadEvent(eventId));
     }
 
     /**
      * 完成
      */
-    private void onCompleted(String message) {
-        if (StringUtils.isEmpty(message)) {
+    private void onNotifyCompleted(String message) {
+        if (!StringUtils.isEmpty(message)) {
             ZLogger.df(message);
         }
         bSyncInProgress = false;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED));
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED));
     }
-
 
     /**
      * 同步商品库
@@ -220,12 +219,12 @@ public class DataDownloadManager extends BaseSyncManager {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 if (!MfhLoginService.get().haveLogined()) {
-                    onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步商品档案.");
+                    onNotifyCompleted("会话已失效，暂停同步商品档案.");
                     return;
                 }
 
                 queue ^= POSPRODUCTS;
-                EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+                EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
                 EmbMsgService.getInstance().setAllRead(IMBizType.TENANT_SKU_UPDATE);
 
                 String startCursor = getPosLastUpdateCursor();
@@ -249,7 +248,7 @@ public class DataDownloadManager extends BaseSyncManager {
                     @Override
                     public void onError(Throwable e) {
                         ZLogger.ef(e.toString());
-                        onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "同步商品档案失败.");
+                        onNotifyCompleted("同步商品档案失败.");
                     }
 
                     @Override
@@ -264,7 +263,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
     private void downLoadPosProductStep2(final String lastCursor, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步商品档案.");
+            onNotifyCompleted("网络未连接，暂停同步商品档案.");
             return;
         }
 
@@ -353,7 +352,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "保存商品档案失败.");
+                        onNotifyCompleted( "保存商品档案失败.");
                     }
 
                     @Override
@@ -376,7 +375,7 @@ public class DataDownloadManager extends BaseSyncManager {
      */
     private void countNetSyncAbleSkuNum() {
         if (!MfhLoginService.get().haveLogined()) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停查询指定网点可同步sku总数");
+            onNotifyCompleted("会话已失效，暂停查询指定网点可同步sku总数");
             return;
         }
 
@@ -438,12 +437,12 @@ public class DataDownloadManager extends BaseSyncManager {
      */
     private void findShopOtherBarcodesStep1() {
         if (!MfhLoginService.get().haveLogined()) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步规格商品码表.");
+            onNotifyCompleted("会话已失效，暂停同步规格商品码表.");
             return;
         }
 
         queue ^= POSPRODUCTS_SKU;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
         String lastCursor = SharedPreferencesUltimate.getSyncProductSkuCursor();
 
@@ -454,7 +453,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
     private void findShopOtherBarcodesStep2(final String lastCursor, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步一品多码关系表");
+            onNotifyCompleted("网络未连接，暂停同步一品多码关系表");
             return;
         }
 
@@ -543,12 +542,12 @@ public class DataDownloadManager extends BaseSyncManager {
 
     private void getTopFrontId() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停查询pos前台类目.");
+            onNotifyCompleted("网络未连接，暂停查询pos前台类目.");
             return;
         }
 
         queue ^= FRONTENDCATEGORY;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
         EmbMsgService.getInstance().setAllRead(IMBizType.FRONTCATEGORY_UPDATE);
 
         NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<CategoryInfo,
@@ -584,7 +583,7 @@ public class DataDownloadManager extends BaseSyncManager {
      */
     private void createCategoryInfo() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停创建前台类目.");
+            onNotifyCompleted("网络未连接，暂停创建前台类目.");
             return;
         }
 
@@ -648,30 +647,21 @@ public class DataDownloadManager extends BaseSyncManager {
                             RspListBean<CategoryInfo> retValue = (RspListBean<CategoryInfo>) rspData;
                             items = retValue.getValue();
                         }
-
                         for (CategoryInfo item : items) {
                             PosLocalCategoryService.get().saveOrUpdate(item);
                         }
 
+                        //删除无效的数据
+                        PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
+                                PosLocalCategoryEntity.CLOUD_DEACTIVE));
+
                         int count = PosLocalCategoryService.get().getCount();
                         int cloudNum = items.size();
-                        if (count == cloudNum) {
-                            ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)一致。",
-                                    cloudNum, count));
-                        } else {
-                            ZLogger.df(String.format("同步前台类目结束,云端类目(%d)和本地类目数量(%d)不一致",
-                                    cloudNum, count));
-
-                            //删除无效的数据
-                            PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
-                                    PosLocalCategoryEntity.CLOUD_DEACTIVE));
-                            ZLogger.d(String.format("删除无效的数据，本地类目数量:%d",
-                                    PosLocalCategoryService.get().getCount()));
-                            // TODO: 21/11/2016 删除类目对应的商品
-                        }
+                        ZLogger.df(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
+                                cloudNum, count));
 
                         //通知刷新前台类目数据
-                        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+                        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
 
                         processQueue();
                     }
@@ -699,12 +689,12 @@ public class DataDownloadManager extends BaseSyncManager {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 if (!MfhLoginService.get().haveLogined()) {
-                    onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停下载商品和类目关系表.");
+                    onNotifyCompleted("会话已失效，暂停下载商品和类目关系表.");
                     return;
                 }
 
                 queue ^= FRONTENDCATEGORY_GOODS;
-                EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+                EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
                 EmbMsgService.getInstance().setAllRead(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
 
                 String startCursor = getProductCatalogStartCursor();
@@ -725,7 +715,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "同步商品和类目关系表失败.");
+                        onNotifyCompleted("同步商品和类目关系表失败.");
                     }
 
                     @Override
@@ -741,7 +731,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
     private void downLoadProductCatalog2(final String startCusror, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步类目商品关系表.");
+            onNotifyCompleted("网络未连接，暂停同步类目商品关系表.");
             return;
         }
 
@@ -834,7 +824,7 @@ public class DataDownloadManager extends BaseSyncManager {
      */
     private void countProductCatalogSyncAbleNum() {
         if (!MfhLoginService.get().haveLogined()) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停查询指定网点可同步类目商品关系表.");
+            onNotifyCompleted("会话已失效，暂停查询指定网点可同步类目商品关系表.");
             return;
         }
 
@@ -863,7 +853,7 @@ public class DataDownloadManager extends BaseSyncManager {
                                         "");
                             }
 
-                            EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_PRODUCT_CATALOG_UPDATED));
+                            EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_PRODUCT_CATALOG_UPDATED));
                         } catch (Exception e) {
                             ZLogger.ef(String.format("计算有多少可同步的商品类目关系失败:%s", e.toString()));
                         }
@@ -891,12 +881,12 @@ public class DataDownloadManager extends BaseSyncManager {
      */
     private void listBackendCategoryStep1() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停下载后台类目树.");
+            onNotifyCompleted("网络未连接，暂停下载后台类目树.");
             return;
         }
 
         queue ^= BACKENDCATEGORYINFO;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
         ZLogger.df("下载后台类目树开始");
         CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD,
@@ -954,7 +944,7 @@ public class DataDownloadManager extends BaseSyncManager {
                 .put(ACacheHelper.CK_STOCKGOODS_CATEGORY, cacheArrays.toJSONString());
 
         //通知刷新数据
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED));
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED));
 
         processQueue();
     }
@@ -964,12 +954,12 @@ public class DataDownloadManager extends BaseSyncManager {
      */
     private void findCompUserPwdInfoStep1() {
         if (!MfhLoginService.get().haveLogined()) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "会话已失效，暂停同步账号数据.");
+            onNotifyCompleted("会话已失效，暂停同步账号数据.");
             return;
         }
 
         queue ^= COMPANY_HUMAN;
-        EventBus.getDefault().post(new GoodsSyncEvent(GoodsSyncEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
         mCompanyHumanPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
         findCompUserPwdInfoStep2(mCompanyHumanPageInfo);
@@ -978,7 +968,7 @@ public class DataDownloadManager extends BaseSyncManager {
 
     private void findCompUserPwdInfoStep2(PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onUpdate(GoodsSyncEvent.EVENT_ID_SYNC_DATA_FINISHED, "网络未连接，暂停同步账号数据.");
+            onNotifyCompleted("网络未连接，暂停同步账号数据.");
             return;
         }
 

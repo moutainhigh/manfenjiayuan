@@ -1,24 +1,15 @@
 package com.bingshanguxue.cashier.model;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
+ * 前台类目商品关系表
  * Created by bingshanguxue on 8/15/16.
  */
-public class ProductCatalog implements Serializable{
-    private Long id;
-    private Long paramValueId;//类目编号
-    private Long cataItemId;//spuId,productId
-    private Date createdDate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+public class ProductCatalog extends MfhEntity<Long> {
+    private Long paramValueId;//前台类目编号
+    private Long cataItemId;//商品编号(spuId/productId)，也可能是关联的后台类目编号
+    private Integer subType;//关联后台类目是为1，商品时为0
 
     public Long getParamValueId() {
         return paramValueId;
@@ -36,11 +27,11 @@ public class ProductCatalog implements Serializable{
         this.cataItemId = cataItemId;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Integer getSubType() {
+        return subType;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setSubType(Integer subType) {
+        this.subType = subType;
     }
 }

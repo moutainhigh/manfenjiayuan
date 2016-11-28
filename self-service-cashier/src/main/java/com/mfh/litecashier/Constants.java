@@ -10,7 +10,6 @@ package com.mfh.litecashier;
  */
 public class Constants {
     public static final int ARC_MFPAY                           = 0x06;//支付
-    public static final int ARC_NATIVE_LOGIN                    = 0x02;//登录
     public static final int ARC_CASHIER_PREPAREGOODS            = 0x03;//拣货单组货
     public static final int ARC_APPLY_SHOPCART                  = 0x05;//采购商品购物车
     public static final int ARC_CREATE_PURCHASE_RECEIPT_ORDER   = 0x07;//新建采购收货单
@@ -18,7 +17,7 @@ public class Constants {
     public static final int ARC_CREATE_STOCK_BATCH              = 0x09;//新建库存批次
     public static final int ARC_SELECT_WHOLESALER_TENANT        = 0x21;//选择批发商&门店
     public static final int ARC_HANDOVER                        = 0x30;//交接班
-    public static final int ARC_DAILY_SETTLE                    = 0x31;//交接班
+    public static final int ARC_TENANT_CATEGORYLIST             = 0x31;// 租户pos前台类目
     public static final int ARC_SELECT_STOCKGOODS               = 0x32;//选择库存商品
 
     /*应付金额发生变化*/
