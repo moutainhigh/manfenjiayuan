@@ -25,6 +25,7 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.EmptyEntity;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
@@ -164,6 +165,25 @@ public class PayByWxpayFragment extends BasePayFragment {
         cancelOrder(outTradeNo);
     }
 
+    public void onEventMainThread(PayEvent event) {
+        int action = event.getAction();
+        Bundle extras = event.getArgs();
+        ZLogger.d(String.format("PayEvent:%d\n%s",
+                action, StringUtils.decodeBundle(extras)));
+        if (extras == null){
+            return;
+        }
+
+        switch (event.getAction()) {
+            case PayEvent.EVENT_ID_SCAN_PAYCODE: {
+                int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
+                if (payType == wayType){
+                    onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
+                }
+            }
+            break;
+        }
+    }
     private void initBarCodeInput() {
         etBarCode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER},
                 new EditLabelView.OnInterceptListener() {
