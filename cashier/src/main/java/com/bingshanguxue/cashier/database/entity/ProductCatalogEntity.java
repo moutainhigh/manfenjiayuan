@@ -15,7 +15,7 @@ import com.mfh.framework.api.abs.MfhEntity;
 @Table(name="tb_product_catalog_v001")
 public class ProductCatalogEntity extends MfhEntity<Long> implements ILongId{
     private Long paramValueId;
-    private Long cataItemId;//spuId,productId
+    private Long cataItemId;//商品编号(spuId/productId)，也可能是关联的后台类目编号
     /**是否和云端同步:默认1同步，0不同步*/
     private int isCloudActive = 1;
 

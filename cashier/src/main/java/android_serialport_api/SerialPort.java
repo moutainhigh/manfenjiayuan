@@ -16,6 +16,9 @@
 
 package android_serialport_api;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.printer.sdk.utils.XLog;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -24,11 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.mfh.framework.anlaysis.logger.ZLogger;
-
 public class SerialPort {
-
-	private static final String TAG = "SerialPort";
 
 	/*
 	 * Do not remove or rename the field mFd: it is used by native method close();
@@ -36,6 +35,18 @@ public class SerialPort {
 	private FileDescriptor mFd;
 	private FileInputStream mFileInputStream;
 	private FileOutputStream mFileOutputStream;
+
+	static {
+		try{
+			System.loadLibrary("serial_port");
+		}catch (UnsatisfiedLinkError | Exception e1){
+			ZLogger.e("loadLibrary:serial_port failed, " + e1.toString());
+		}
+	}
+
+	// JNI
+	private native static FileDescriptor open(String path, int baudrate, int flags);
+	public native void close();
 
 	public SerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
 
@@ -78,17 +89,16 @@ public class SerialPort {
 		return mFileOutputStream;
 	}
 
-	// JNI
-	private native static FileDescriptor open(String path, int baudrate, int flags);
-	public native void close();
 
-	static {
-		try{
-			System.loadLibrary("serial_port");
-		}catch (UnsatisfiedLinkError | Exception e1){
-			ZLogger.e("loadLibrary:serial_port failed, " + e1.toString());
-		}
-
-
+	public void close1() {
+		this.close();
+//		this.comDevice = null;
+		this.mFileInputStream = null;
+		this.mFileOutputStream = null;
+//		if(this.mState != 102) {
+//			this.setState(103);
+//		}
 	}
+
+
 }

@@ -65,7 +65,7 @@ public abstract class SerialHelper {
         if (mReadThread != null)
             mReadThread.interrupt();
         if (mSerialPort != null) {
-            mSerialPort.close();
+            mSerialPort.close1();
             mSerialPort = null;
         }
         _isOpen = false;

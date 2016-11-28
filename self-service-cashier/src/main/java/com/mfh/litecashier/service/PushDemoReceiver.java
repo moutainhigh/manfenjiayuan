@@ -225,7 +225,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
             }
             else if (remoteId.equals(20L)){
                 if (!StringUtils.isEmpty(remoteData)){
-                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA_V3, remoteData));
+                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.PRINTER_PRINT_TEXT, remoteData));
                 }
                 else{
                     ZLogger.d("远程打印内容为空");

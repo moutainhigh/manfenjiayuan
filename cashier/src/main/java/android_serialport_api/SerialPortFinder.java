@@ -17,6 +17,7 @@
 package android_serialport_api;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,8 +27,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class SerialPortFinder {
-
-	private static final String TAG = "SerialPortFinder";
 
 	public class Driver {
 		public Driver(String name, String root) {
@@ -111,6 +110,10 @@ public class SerialPortFinder {
 					if (driverDevices != null && driverDevices.size() > 0){
 						for (File file : driverDevices) {
 							String device = file.getName();
+							if (StringUtils.isEmpty(device) || !device.contains("ttymxc")){
+								ZLogger.d("ignore " + device);
+								continue;
+							}
 							String value = String.format("%s (%s)", device, driver.getName());
 							devices.add(value);
 						}
@@ -135,6 +138,10 @@ public class SerialPortFinder {
 				Driver driver = itdriv.next();
 				for (File file : driver.getDevices()) {
 					String device = file.getAbsolutePath();
+					if (StringUtils.isEmpty(device) || !device.contains("ttymxc")){
+						ZLogger.d("ignore " + device);
+						continue;
+					}
 					devices.add(device);
 				}
 			}

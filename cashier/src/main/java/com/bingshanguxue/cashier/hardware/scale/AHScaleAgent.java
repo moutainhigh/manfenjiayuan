@@ -1,7 +1,6 @@
 package com.bingshanguxue.cashier.hardware.scale;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * 爱华电子计价秤(ACS-P215)
@@ -20,38 +19,38 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
  * Created by bingshanguxue on 5/27/16.
  */
 public class AHScaleAgent {
-    private static final boolean ENABLED_DEF = false;
-    private static final String PORT_ACS_P215_DEF = "";
-    private static final String BAUDRATE_ACS_P215_DEF = "9600";
-
-    public static final String PREF_NAME = "pref_ahscale";
-    public static final String PK_ACS_P215_ENABLED = "pk_ACS_P215_ENABLED";
-    public static final String PK_ACS_P215_PORT = "pk_ACS_P215_PORT";
-
-
-    public static String getPort(){
-        return SharedPrefesManagerFactory.getString(PREF_NAME,
-                PK_ACS_P215_PORT, AHScaleAgent.PORT_ACS_P215_DEF);
-    }
-
-    public static void setPort(String port){
-        SharedPrefesManagerFactory.set(PREF_NAME,
-                PK_ACS_P215_PORT, port);
-    }
-
-    public static String getBaudrate() {
-        return BAUDRATE_ACS_P215_DEF;
-    }
-
-    public static boolean isEnabled(){
-        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
-                PK_ACS_P215_ENABLED, ENABLED_DEF);
-    }
-
-    public static void setEnabled(boolean enabled){
-        SharedPrefesManagerFactory.set(PREF_NAME,
-                PK_ACS_P215_ENABLED, enabled);
-    }
+//    private static final boolean ENABLED_DEF = false;
+//    private static final String PORT_ACS_P215_DEF = "";
+//    private static final String BAUDRATE_ACS_P215_DEF = "9600";
+//
+//    public static final String PREF_NAME = "pref_ahscale";
+//    private static final String PK_ACS_P215_ENABLED = "pk_ACS_P215_ENABLED";
+//    private static final String PK_ACS_P215_PORT = "pk_ACS_P215_PORT";
+//
+//
+//    public static String getPort(){
+//        return SharedPrefesManagerFactory.getString(PREF_NAME,
+//                PK_ACS_P215_PORT, AHScaleAgent.PORT_ACS_P215_DEF);
+//    }
+//
+//    public static void setPort(String port){
+//        SharedPrefesManagerFactory.set(PREF_NAME,
+//                PK_ACS_P215_PORT, port);
+//    }
+//
+//    public static String getBaudrate() {
+//        return BAUDRATE_ACS_P215_DEF;
+//    }
+//
+//    public static boolean isEnabled(){
+//        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
+//                PK_ACS_P215_ENABLED, ENABLED_DEF);
+//    }
+//
+//    public static void setEnabled(boolean enabled){
+//        SharedPrefesManagerFactory.set(PREF_NAME,
+//                PK_ACS_P215_ENABLED, enabled);
+//    }
 
 
     /**

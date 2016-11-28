@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.igexin.sdk.PushManager;
@@ -22,6 +23,8 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.com.EmbPrintManager;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.utils.AppHelper;
@@ -224,8 +227,18 @@ public class DeveloperOptionsFragment extends BaseFragment {
                 MfhLoginService.get().getSpid(), BizType.POS, PosOrderEntity.ORDER_STATUS_FINISH);
         List<PosOrderEntity> entities = PosOrderService.get().queryAllDesc(sqlOrder, null);
         if (entities != null && entities.size() > 0) {
-            PrintManager.printPosOrder(entities.get(0), true);
+            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                PrintManager.printPosOrder(entities.get(0), true);
+            }
+            else{
+                EmbPrintManager.printPosOrder(entities.get(0), true);
+            }
         }
-        PrintManagerImpl.printTest();
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            PrintManagerImpl.printTest();
+        }
+        else{
+            EmbPrintManagerImpl.printTest();
+        }
     }
 }

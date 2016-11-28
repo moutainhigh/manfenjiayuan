@@ -11,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -23,6 +24,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosOrder;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.StoreOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
@@ -183,7 +185,12 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
 
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        PrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            PrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
+        }
+        else{
+           EmbPrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
+        }
     }
 
     /**

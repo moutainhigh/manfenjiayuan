@@ -9,15 +9,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -29,6 +30,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.HandOverBill;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.utils.AnalysisHelper;
@@ -175,7 +177,12 @@ public class HandoverFragment extends BaseProgressFragment {
 
         SharedPreferencesUltimate.setLastHandoverShiftId(handOverBill.getShiftId());
         //打印交接单单据
-        PrintManagerImpl.printHandoverBill(handOverBill);
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            PrintManagerImpl.printHandoverBill(handOverBill);
+        }
+        else{
+            EmbPrintManagerImpl.printHandoverBill(handOverBill);
+        }
 
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();

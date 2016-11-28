@@ -3,7 +3,6 @@ package com.mfh.litecashier.utils;
 import android.app.Activity;
 
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.litecashier.ui.dialog.PosRegisterDialog;
 
 /**
@@ -46,35 +45,6 @@ public class GlobalInstance {
 
     public synchronized void setNetWeight(Double netWeight) {
         this.netWeight = netWeight;
-    }
-
-    public synchronized void setNetWeight(byte[] data) {
-        try {
-            if (data == null || data.length < 5) {
-                netWeight = 0D;
-                return;
-            }
-
-            StringBuilder sb = new StringBuilder();
-            for (byte b : data) {
-                char c = (char) b;
-                if (c >= '0' && c <= '9') {
-                    sb.append(c);
-                }
-            }
-
-            if (sb.length() > 0){
-                String dest = sb.toString();
-                int val = Integer.valueOf(dest);
-                netWeight = 0.001 * val;
-            }
-            else{
-                netWeight = 0D;
-            }
-
-        } catch (Exception e) {
-            ZLogger.e(e.toString());
-        }
     }
 
 

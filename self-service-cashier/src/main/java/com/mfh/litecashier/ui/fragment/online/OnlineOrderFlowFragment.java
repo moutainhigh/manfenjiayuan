@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -19,6 +20,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.PosOrder;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
@@ -147,14 +149,19 @@ public class OnlineOrderFlowFragment extends BaseFragment {
 
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        PrintManagerImpl.printPosOrder(curOrder, true);
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            PrintManagerImpl.printPosOrder(curOrder, true);
+        }
+        else{
+            EmbPrintManagerImpl.printPosOrder(curOrder, true);
+        }
     }
 
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
     public void onEventMainThread(OnlineOrderFlowEvent event) {
-        ZLogger.d(String.format("OnlineOrderFlowFragment: OnlineOrderFlowEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("OnlineOrderFlowEvent(%d)", event.getEventId()));
         if (event.getEventId() == OnlineOrderFlowEvent.EVENT_ID_RELOAD_DATA) {
             notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
         } else if (event.getEventId() == OnlineOrderFlowEvent.EVENT_ID_RELAOD_ITEM_DATA) {

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.cashier.v1.CashierAgent;
@@ -31,8 +32,9 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.com.EmbPrintManager;
 import com.mfh.litecashier.com.PrintManager;
-import com.mfh.litecashier.service.UploadSyncManager;
+import com.mfh.litecashier.service.DataUploadManager;
 
 import java.util.List;
 
@@ -103,13 +105,18 @@ public class OrderPrintPreviewDialog extends CommonDialog {
         fabSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadSyncManager.getInstance().stepUploadPosOrder(mPosOrderEntity);
+                DataUploadManager.getInstance().stepUploadPosOrder(mPosOrderEntity);
             }
         });
         fabPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PrintManager.printPosOrder(mPosOrderEntity, true);
+                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                    PrintManager.printPosOrder(mPosOrderEntity, true);
+                }
+                else{
+                    EmbPrintManager.printPosOrder(mPosOrderEntity, true);
+                }
             }
         });
         setContent(rootView, 0);

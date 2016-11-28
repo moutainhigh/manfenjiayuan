@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.model.OrderPayWay;
 import com.bingshanguxue.cashier.model.PayOrder;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
@@ -40,8 +41,9 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashQuotaInfo;
+import com.mfh.litecashier.com.EmbPrintManager;
 import com.mfh.litecashier.com.PrintManager;
-import com.mfh.litecashier.service.UploadSyncManager;
+import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.CashQuotaAdapter;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
 
@@ -512,9 +514,14 @@ public class CashQuotaFragment extends BaseProgressFragment {
         alipayDialog.initialize(quickPayInfo, true, false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
-                PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                    PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                }
+                else{
+                    EmbPrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                }
 
-                UploadSyncManager.getInstance().sync();
+                DataUploadManager.getInstance().sync();
 
                 AlarmManagerHelper.triggleNextDailysettle(0);
             }

@@ -4,6 +4,7 @@ import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
 import com.mfh.framework.core.utils.DataConvertUtil;
+import com.printer.sdk.PrinterConstants;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -27,7 +28,74 @@ import de.greenrobot.event.EventBus;
  *
  * Created by bingshanguxue on 5/27/16.
  */
-public class GPrinterAgent {
+public class EmbPrinter {
+
+    public static byte[] initPrinter() {
+        return new byte[]{(byte)27, (byte)64};
+    }
+
+    public static byte[] setPrinter(int command, int value) {
+        byte[] arrayOfByte = new byte[3];
+        switch(command) {
+            case 0:
+                arrayOfByte[0] = 27;
+                arrayOfByte[1] = 74;
+                break;
+            case 1:
+                arrayOfByte[0] = 27;
+                arrayOfByte[1] = 100;
+                break;
+            case 4:
+                arrayOfByte[0] = 27;
+                arrayOfByte[1] = 86;
+                break;
+            case 11:
+                arrayOfByte[0] = 27;
+                arrayOfByte[1] = 32;
+                break;
+            case 13:
+                arrayOfByte[0] = 27;
+                arrayOfByte[1] = 97;
+                if(value > 2 || value < 0) {
+                    value = 0;
+                }
+        }
+
+        arrayOfByte[2] = (byte)value;
+        return arrayOfByte;
+    }
+
+    public static byte[] setFont(int mCharacterType, int mWidth, int mHeight, int mBold, int mUnderline) {
+        byte mFontSize = 0;
+        byte mFontMode = 0;
+        if(mBold != 0 && mBold != 1) {
+            mBold = 0;
+        }
+
+        byte mFontMode1 = (byte)(mFontMode | mBold << 3);
+        if(mUnderline != 0 && mUnderline != 1) {
+            mUnderline = 0;
+        }
+
+        mFontMode1 = (byte)(mFontMode1 | mUnderline << 7);
+        if(mCharacterType != 0 && mCharacterType != 1) {
+            mCharacterType = 0;
+        }
+
+        mFontMode1 = (byte)(mFontMode1 | mCharacterType << 0);
+        if(mWidth < 0 || mWidth > 7) {
+            mWidth = 0;
+        }
+
+        byte mFontSize1 = (byte)(mFontSize | mWidth << 4);
+        if(mHeight < 0 | mHeight > 7) {
+            mHeight = 0;
+        }
+
+        mFontSize1 = (byte)(mFontSize1 | mHeight);
+        return new byte[]{(byte)27, (byte)33, mFontMode1, (byte)29, (byte)33, mFontSize1};
+    }
+
 
     /**
      * 打印
@@ -48,9 +116,11 @@ public class GPrinterAgent {
      * */
     public static void feedPaper(){
         EscCommand esc = new EscCommand();
-//                    esc.addPrintAndLineFeed();
+        esc.addUserCommand(EmbPrinter.initPrinter());
+
         //打印并且走纸多少行
-        esc.addPrintAndFeedLines((byte) 5);
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 5));
+
         Vector<Byte> datas = esc.getCommand();
         Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
         byte[] bytes = ArrayUtils.toPrimitive(Bytes);

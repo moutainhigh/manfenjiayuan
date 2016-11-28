@@ -2,9 +2,8 @@ package com.mfh.litecashier.com;
 
 import com.bingshanguxue.cashier.hardware.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
-import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
-import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
 import com.gprinter.command.EscCommand;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
@@ -29,13 +28,12 @@ public class SerialManager {
 //    public static final String BAUDRATE_SCREEN = "2400";
 
     //银联
-    public static final String PORT_UMSIPS      = "/dev/ttymxc0";
+    public static final String PORT_UMSIPS      = "/dev/ttymxc2";
     public static final String BAUDRATE_UMSIPS  = "9600";
 
     private List<String> comDevicesPath;//串口信息
 
     public static final String PREF_NAME_SERIAL = "PREF_NAME_SERIAL";
-    public static final String PREF_KEY_PRINTER_PORT = "PREF_KEY_PRINTER_PORT";
     public static final String PK_UMSIPS_PORT = "prefkey_umsips_port";
     public static final String PK_UMSIPS_BAUDRATE = "prefkey_umsips_baudrate";
 
@@ -89,37 +87,17 @@ public class SerialManager {
             occupies.addAll(comDevicesPath);
         }
 
-        if (AHScaleAgent.isEnabled()){
-            String ahPort = AHScaleAgent.getPort();
-            if (!StringUtils.isEmpty(ahPort)){
-                occupies.remove(ahPort);
-            }
-        }
-
-        if (SMScaleAgent.isEnabled()){
-            String smPort = SMScaleAgent.getPort();
-            if (!StringUtils.isEmpty(smPort)){
-                occupies.remove(smPort);
-            }
-        }
-
-        String gprinterPort = getPrinterPort();
-        if (!StringUtils.isEmpty(gprinterPort)){
-            occupies.remove(gprinterPort);
-        }
-
-        if (PoslabAgent.isEnabled()){
-            String ledPort = PoslabAgent.getPort();
-            if (!StringUtils.isEmpty(ledPort)){
-                occupies.remove(ledPort);
-            }
-        }
+        //打印机的串口被固定占用，不可以更改
+        occupies.remove(PrinterAgent.getPort());
+        //电子秤的串口被固定占用，不可以更改
+        occupies.remove(ScaleAgent.getPort());
+        //LED客显的串口被固定占用，不可以更改
+        occupies.remove(PoslabAgent.getPort());
 
         String umsipsPort = getUmsipsPort();
         if (!StringUtils.isEmpty(umsipsPort)){
             occupies.remove(umsipsPort);
         }
-
 
         if (!StringUtils.isEmpty(port) && !occupies.contains(port)){
             occupies.add(port);
@@ -130,33 +108,20 @@ public class SerialManager {
     }
 
 
-    public static String getPrinterPort() {
-        return SharedPrefesManagerFactory.getString(
-                PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, GPrinterAgent.PORT_DEF);
-    }
-
-    public static void setPrinterPort(String port){
-        SharedPrefesManagerFactory.set(PREF_NAME_SERIAL, PREF_KEY_PRINTER_PORT, port);
-    }
-
     public static String getUmsipsPort() {
-        return SharedPrefesManagerFactory.getString(
-                PREF_NAME_SERIAL, PK_UMSIPS_PORT, PORT_UMSIPS);
+        return SharedPrefesManagerFactory.getString(PREF_NAME_SERIAL, PK_UMSIPS_PORT, PORT_UMSIPS);
     }
 
     public static void setUmsipsPort(String port){
-        ZLogger.df(String.format("setUMSIPSPort(%s):%s", PREF_NAME_SERIAL, port));
         SharedPrefesManagerFactory.set(PREF_NAME_SERIAL, PK_UMSIPS_PORT, port);
     }
 
     public static String getUmsipsBaudrate() {
-        return SharedPrefesManagerFactory.getString(
-                PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, BAUDRATE_UMSIPS);
+        return SharedPrefesManagerFactory.getString(PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, BAUDRATE_UMSIPS);
     }
 
     public static void setUmsipsBaudrate(String baudrate){
-        SharedPrefesManagerFactory.set(
-                PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, baudrate);
+        SharedPrefesManagerFactory.set(PREF_NAME_SERIAL, PK_UMSIPS_BAUDRATE, baudrate);
     }
 
 //    public EscCommand addCODE128(EscCommand rawEsc, String content) {

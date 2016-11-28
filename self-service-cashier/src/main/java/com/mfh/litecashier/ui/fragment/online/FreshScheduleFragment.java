@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
@@ -37,6 +38,7 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.FreshScheduleGoods;
+import com.mfh.litecashier.com.EmbPrintManager;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.event.InvSendOrderEvent;
 import com.mfh.litecashier.event.PurchaseSendEvent;
@@ -213,7 +215,12 @@ public class FreshScheduleFragment extends BaseFragment implements IInvSendOrder
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在确认订单...", false);
-                        PrintManager.printScheduleOrder(curOrder, goodsListAdapter.getEntityList());
+                        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                            PrintManager.printScheduleOrder(curOrder, goodsListAdapter.getEntityList());
+                        }
+                        else{
+                            EmbPrintManager.printScheduleOrder(curOrder, goodsListAdapter.getEntityList());
+                        }
                         InvSendOrderApiImpl.receivePlanOrderOnNet(curOrder.getId(), null, confirmRC);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {

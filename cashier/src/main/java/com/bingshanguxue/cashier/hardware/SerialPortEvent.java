@@ -8,15 +8,13 @@ public class SerialPortEvent {
     ////打印机(Gprinter)
     public static final int GPRINTER_SEND_DATA = 1;
     public static final int UPDATE_PORT_GPRINTER = 2;
-    public static final int UPDATE_PORT_SMSCALE= 3;
-    public static final int UPDATE_PORT_AHSCALE= 4;
+    public static final int UPDATE_PORT_SCALE= 3;
 
     public static final int SERIAL_TYPE_VFD = 5;
     public static final int SERIAL_TYPE_VFD_INIT = 6;
     public static final int SERIAL_TYPE_VFD_BYTE = 7;
 
-    public static final int GPRINTER_SEND_DATA_V2 = 8;
-    public static final int GPRINTER_SEND_DATA_V3= 9;
+    public static final int PRINTER_PRINT_TEXT = 9;
 
     int type;
     String cmd;

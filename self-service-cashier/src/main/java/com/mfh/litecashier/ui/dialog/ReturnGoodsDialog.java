@@ -24,7 +24,9 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.cashier.hardware.printer.EmbPrinter;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
@@ -43,6 +45,7 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.com.EmbPrintManager;
 import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
@@ -302,14 +305,25 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
 
         //更新订单信息，同时打开钱箱，退钱给顾客
-        GPrinterAgent.openMoneyBox();
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            GPrinterAgent.openMoneyBox();
+        }
+        else{
+            EmbPrinter.openMoneyBox();
+        }
 
         PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                 cashierOrderInfo.getPosTradeNo());
         //同步订单信息
-//        UploadSyncManager.getInstance().stepUploadPosOrder(orderEntities);
+//        DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
         //打印订单
-        PrintManager.printPosOrder(orderEntity, true);
+
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            PrintManager.printPosOrder(orderEntity, true);
+        }
+        else{
+            EmbPrintManager.printPosOrder(orderEntity, true);
+        }
         CashierShopcartService.getInstance()
                 .deleteBy(String.format("posTradeNo = '%s'", curOrderTradeNo));
 

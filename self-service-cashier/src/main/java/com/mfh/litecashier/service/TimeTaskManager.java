@@ -57,7 +57,7 @@ public class TimeTaskManager {
             switch (msg.what) {
                 case MSG_WHAT_SYNC_POSORDER: {
                     ZLogger.df("定时任务激活：上传收银订单");
-                    UploadSyncManager.getInstance().sync(UploadSyncManager.SyncStep.CASHIER_ORDER);
+                    DataUploadManager.getInstance().sync(DataUploadManager.SyncStep.CASHIER_ORDER);
                 }
                 break;
                 case MSG_WHAT_SYNC_POSGOODS: {

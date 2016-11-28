@@ -25,8 +25,8 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.pay.umsips.TransType;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
@@ -132,8 +132,17 @@ public class UmsipsDialog extends CommonDialog {
         mBaudrateSpinner.setSelection(0);
 
         tvTitle.setText("银联参数设置");
-        etIp.setEnabled(false);
-        etPort.setEnabled(false);
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+            etIp.setEnabled(true);
+            etPort.setEnabled(true);
+            mPortSpinner.setEnabled(true);
+        }
+        else {
+            etIp.setEnabled(false);
+            etPort.setEnabled(false);
+            mPortSpinner.setEnabled(false);
+        }
+
 
 //        etIp.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
@@ -249,15 +258,6 @@ public class UmsipsDialog extends CommonDialog {
 
         mPortSpinner.setSelection(aspnDevices.getPosition(umsipsPort));
         mBaudrateSpinner.setSelection(adapter.getPosition(SerialManager.getUmsipsBaudrate()));
-
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-            mPortSpinner.setEnabled(true);
-            mBaudrateSpinner.setEnabled(true);
-        }
-        else {
-            mPortSpinner.setEnabled(false);
-            mBaudrateSpinner.setEnabled(false);
-        }
     }
 
     /**

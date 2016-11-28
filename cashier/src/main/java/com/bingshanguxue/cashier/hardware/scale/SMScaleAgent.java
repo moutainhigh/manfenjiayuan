@@ -4,44 +4,43 @@ import com.alibaba.fastjson.JSON;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * 寺冈电子秤（DIGI-DS781）
  * Created by bingshanguxue on 5/18/16.
  */
 public class SMScaleAgent {
-    public static String PORT_SCALE_DS781_DEF = "";
-    public static String BAUDRATE_SCALE_DS781_DEF = "9600";
-    public static final boolean ENABLED_DEF = false;
-
-    public static final String PREF_NAME = "pref_scale_ds781";
-    private static final String PK_SCALE_PORT = "pref_scale_port";
-    public static final String PK_SMSCALE_ENABLED = "pk_SMSCALE_ENABLED";
-
-
-    public static String getPort() {
-        return SharedPrefesManagerFactory.getString(
-                PREF_NAME, PK_SCALE_PORT, PORT_SCALE_DS781_DEF);
-    }
-
-    public static void setPort(String port) {
-        SharedPrefesManagerFactory.set(PREF_NAME, PK_SCALE_PORT, port);
-    }
-
-    public static String getBaudrate(){
-        return BAUDRATE_SCALE_DS781_DEF;
-    }
-
-    public static boolean isEnabled(){
-        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
-                PK_SMSCALE_ENABLED, ENABLED_DEF);
-    }
-
-    public static void setEnabled(boolean enabled){
-        SharedPrefesManagerFactory.set(PREF_NAME,
-                PK_SMSCALE_ENABLED, enabled);
-    }
+//    private static final String PORT_SCALE_DS781_DEF = "";
+//    private static final String BAUDRATE_SCALE_DS781_DEF = "9600";
+//    private static final boolean ENABLED_DEF = false;
+//
+//    public static final String PREF_NAME = "pref_scale_ds781";
+//    private static final String PK_SCALE_PORT = "pref_scale_port";
+//    private static final String PK_SMSCALE_ENABLED = "pk_SMSCALE_ENABLED";
+//
+//
+//    public static String getPort() {
+//        return SharedPrefesManagerFactory.getString(
+//                PREF_NAME, PK_SCALE_PORT, PORT_SCALE_DS781_DEF);
+//    }
+//
+//    public static void setPort(String port) {
+//        SharedPrefesManagerFactory.set(PREF_NAME, PK_SCALE_PORT, port);
+//    }
+//
+//    public static String getBaudrate(){
+//        return BAUDRATE_SCALE_DS781_DEF;
+//    }
+//
+//    public static boolean isEnabled(){
+//        return SharedPrefesManagerFactory.getBoolean(PREF_NAME,
+//                PK_SMSCALE_ENABLED, ENABLED_DEF);
+//    }
+//
+//    public static void setEnabled(boolean enabled){
+//        SharedPrefesManagerFactory.set(PREF_NAME,
+//                PK_SMSCALE_ENABLED, enabled);
+//    }
 
 
     /**

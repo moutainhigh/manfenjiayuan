@@ -13,8 +13,7 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
-import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
-import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
@@ -185,8 +184,7 @@ public class AppHelper {
         SharedPrefesManagerFactory.clear(SerialManager.PREF_NAME_SERIAL);
         SharedPrefesManagerFactory.clear(SMScaleSyncManager2.PREF_SMSCALE);
         SharedPrefesManagerFactory.clear(GreenTagsApi.PREF_GREENTAGS);
-        SharedPrefesManagerFactory.clear(AHScaleAgent.PREF_NAME);
-        SharedPrefesManagerFactory.clear(SMScaleAgent.PREF_NAME);
+        SharedPrefesManagerFactory.clear(ScaleAgent.PREF_NAME);
 
         //删除无效文件
         clearRedunantData(true);

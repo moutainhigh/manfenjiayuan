@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
@@ -29,15 +30,16 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.StockOutItem;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.StockOutAdapter;
 
@@ -245,8 +247,12 @@ public class StockDetailFragment extends BaseFragment {
 //                                tvMemberCompany.setText(option.getValue());
 //                            }
                             //打印出库单
-                            PrintManagerImpl.printStockOut(stockOutItems);
-
+                            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+                                PrintManagerImpl.printStockOut(stockOutItems);
+                            }
+                            else{
+                                EmbPrintManagerImpl.printStockOut(stockOutItems);
+                            }
                             animProgress.setVisibility(View.GONE);
                             btnStockOut.setEnabled(true);
                             loadStockoutList();

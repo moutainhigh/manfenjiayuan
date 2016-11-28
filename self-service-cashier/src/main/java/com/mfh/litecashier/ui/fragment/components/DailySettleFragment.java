@@ -13,21 +13,21 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
 import com.bingshanguxue.cashier.database.service.DailysettleService;
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
-import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -36,6 +36,7 @@ import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
 import com.mfh.litecashier.bean.wrapper.AccWrapper;
 import com.mfh.litecashier.bean.wrapper.AggWrapper;
+import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
@@ -161,8 +162,12 @@ public class DailySettleFragment extends BaseProgressFragment {
      */
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        DialogUtil.showHint("开始打印");
-        PrintManagerImpl.printDailySettleBill(dailysettleEntity);
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
+            PrintManagerImpl.printDailySettleBill(dailysettleEntity);
+        }
+        else{
+            EmbPrintManagerImpl.printDailySettleBill(dailysettleEntity);
+        }
     }
 
     private void initAggRecyclerView() {
