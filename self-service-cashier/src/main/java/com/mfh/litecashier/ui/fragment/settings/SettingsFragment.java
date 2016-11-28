@@ -90,20 +90,23 @@ public class SettingsFragment extends BaseFragment {
 
     private void reload(){
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        mTabs.add(new ViewPageInfo("通用", R.mipmap.ic_toolbar_settings, "通用",
+        mTabs.add(new ViewPageInfo("通用", R.mipmap.ic_settings_general, "通用",
                 SettingsCommonFragment.class,
                 null));
-        mTabs.add(new ViewPageInfo("安全", R.mipmap.ic_settings_security_normal, "安全",
-                SettingsSecurityFragment.class,
-                null));
-        mTabs.add(new ViewPageInfo("通知", R.mipmap.ic_settings_notice_normal, "通知",
+        mTabs.add(new ViewPageInfo("通知", R.mipmap.ic_settings_message, "通知",
                 SettingsNoticeFragment.class,
                 null));
         mTabs.add(new ViewPageInfo("账户", R.mipmap.ic_settings_account_selected, "账户",
                 SettingsAccountFragment.class,
                 null));
+        mTabs.add(new ViewPageInfo("安全", R.mipmap.ic_settings_security_normal, "安全",
+                SettingsSecurityFragment.class,
+                null));
+        mTabs.add(new ViewPageInfo("外设", R.mipmap.ic_settings_peripheral, "外设",
+                PeripheralFragment.class,
+                null));
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-            mTabs.add(new ViewPageInfo("开发者选项", R.mipmap.ic_settings_account_selected, "开发者选项",
+            mTabs.add(new ViewPageInfo("开发者选项", R.mipmap.ic_developer_options, "开发者选项",
                     DeveloperOptionsFragment.class,
                     null));
         }

@@ -12,85 +12,72 @@
         android:paddingTop="@dimen/spacing_double"
         android:paddingBottom="@dimen/spacing_double">
 
-        <!--商品-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
-            android:id="@+id/item_posgoods"
+        <!--打印机-->
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
+            android:id="@+id/toggleItem_printer"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:layout_marginTop="@dimen/spacing_double"
             app:position="top"
-            app:src="@mipmap/ic_goods_warehouse"
+            app:src="@mipmap/ic_printer"
+            app:subText="Gprinter"
+            app:subTextSize="12sp"
+            app:text="打印机"
+            app:textSize="16sp"/>
+        <!--爱华电子秤&寺冈电子秤-->
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
+            android:id="@+id/item_scale_rs232"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:position="center"
+            app:src="@mipmap/ic_scale"
+            app:subTextSize="12sp"
+            app:text="电子秤"
+            app:textSize="16sp"/>
+        <!--银联-->
+        <com.bingshanguxue.vector_uikit.SettingsItem
+            android:id="@+id/item_umsips_rs232"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:position="center"
+            app:src="@mipmap/ic_umsips"
             app:subText=""
             app:subTextSize="12sp"
-            app:text="商品库"
+            app:text="银联"
             app:textSize="16sp"/>
-        <!--&lt;!&ndash;米西生鲜&ndash;&gt;-->
-        <!--<com.bingshanguxue.vector_uikit.SettingsItem-->
-        <!--android:id="@+id/item_mixi_fresh"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="56dp"-->
-        <!--app:src="@mipmap/ic_fresh"-->
-        <!--app:position="center"-->
-        <!--app:subText=""-->
-        <!--app:text="米西生鲜"/>-->
-
-        <!--设备-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
-            android:id="@+id/item_terminal"
+        <!--LED客显-->
+        <com.bingshanguxue.vector_uikit.ToggleSettingItem
+            android:id="@+id/toggleItem_leddisplay"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:position="bottom"
-            app:src="@mipmap/ic_terminal"
-            app:subText=""
+            app:src="@mipmap/ic_customer_display"
+            app:subText="LED"
             app:subTextSize="12sp"
-            app:text="设备编号"
+            app:text="客显"
             app:textSize="16sp"/>
 
-        <!--系统键盘-->
+        <!--寺冈电子秤-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
-            android:id="@+id/toggleItem_softkeyboard"
+            android:id="@+id/item_smscale_ftp"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:position="center"
-            app:src="@mipmap/ic_keyboard"
+            android:layout_marginTop="@dimen/spacing_double"
+            app:position="top"
+            app:src="@mipmap/ic_ftp"
             app:subTextSize="12sp"
-            app:text="系统键盘"
+            app:text="FileZilla (寺冈电子秤)"
             app:textSize="16sp"/>
 
-        <!--内存-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
-            android:id="@+id/item_momory"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:position="center"
-            app:src="@mipmap/ic_memory"
-            app:subText="吃饱了别忘记减肥噢"
-            app:subTextSize="12sp"
-            app:text="内存"
-            app:textSize="16sp"/>
-
-
-        <!--语音播报-->
+        <!--绿泰电子价签-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
-            android:id="@+id/toggleItem_tts"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:position="center"
-            app:src="@mipmap/ic_voice"
-            app:subText="语音技术由科大讯飞提供"
-            app:subTextSize="12sp"
-            app:text="语音播报"
-            app:textSize="16sp"/>
-
-        <!--版本-->
-        <com.bingshanguxue.vector_uikit.SettingsItem
-            android:id="@+id/item_version"
+            android:id="@+id/item_greentags_webservice"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             app:position="bottom"
-            app:src="@mipmap/ic_upgrade"
-            app:subText=""
+            app:src="@mipmap/ic_tag"
             app:subTextSize="12sp"
-            app:text="应用版本"
+            app:text="绿泰电子价签"
             app:textSize="16sp"/>
 
     </LinearLayout>

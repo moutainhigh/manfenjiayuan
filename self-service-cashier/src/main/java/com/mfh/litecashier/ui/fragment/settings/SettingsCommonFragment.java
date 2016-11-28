@@ -6,11 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bingshanguxue.cashier.hardware.PoslabAgent;
-import com.bingshanguxue.cashier.hardware.SerialPortEvent;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
-import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
-import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.mfh.framework.anlaysis.AnalysisAgent;
@@ -19,21 +14,18 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.hardware.SMScale.FileZillaDialog;
-import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.DataDownloadManager;
-import com.mfh.litecashier.ui.dialog.SetPortDialog;
 import com.mfh.litecashier.ui.dialog.UmsipsDialog;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.tencent.bugly.beta.Beta;
 
-import org.century.GreenTagsApi;
 import org.century.GreenTagsSettingsDialog;
 
 import java.util.Locale;
@@ -59,28 +51,15 @@ public class SettingsCommonFragment extends BaseFragment {
     @BindView(R.id.item_momory)
     SettingsItem memorySettingsItem;
 
-    @BindView(R.id.toggleItem_leddisplay)
-    ToggleSettingItem tsiLedDisplay;
-    @BindView(R.id.toggleItem_printer)
-    ToggleSettingItem togglePrinter;
     @BindView(R.id.toggleItem_softkeyboard)
     ToggleSettingItem tsiSoftKeyboard;
     @BindView(R.id.toggleItem_tts)
     ToggleSettingItem ttsToggleItem;
 
-    @BindView(R.id.item_ahscale_rs232)
-    ToggleSettingItem toggleAhscale;
-    @BindView(R.id.item_smscale_rs232)
-    ToggleSettingItem toggleSmscale;
-    @BindView(R.id.item_umsips_rs232)
-    SettingsItem umsipsRs232SettingsItem;
-    @BindView(R.id.item_smscale_ftp)
-    ToggleSettingItem toggleSmscaleFtp;
-    @BindView(R.id.item_greentags_webservice)
-    ToggleSettingItem toggleGreenTags;
 
+    private CommonDialog selectScaleDialog = null;
+    private CommonDialog selectPrinterDialog = null;
 
-    private SetPortDialog setPortDialog = null;
     private FileZillaDialog mFileZillaDialog = null;
     private UmsipsDialog mUmsipsDialog = null;
     private GreenTagsSettingsDialog mGreenTagsSettingsDialog = null;
@@ -100,68 +79,7 @@ public class SettingsCommonFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        tsiLedDisplay.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                if (GPrinterAgent.isEnabled() != isChecked) {
-                    GPrinterAgent.setEnabled(isChecked);
 
-                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_VFD_INIT, ""));
-                }
-            }
-        });
-        togglePrinter.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                if (GPrinterAgent.isEnabled() != isChecked) {
-                    GPrinterAgent.setEnabled(isChecked);
-                    if (!isChecked){
-                        GPrinterAgent.setPort("");
-                        SerialManager.setPrinterPort("");
-
-                        togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                                SerialManager.getPrinterPort(),
-                                GPrinterAgent.getBaudrate()));
-                    }
-                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
-                }
-            }
-        });
-        toggleAhscale.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-
-                if (AHScaleAgent.isEnabled() != isChecked) {
-                    AHScaleAgent.setEnabled(isChecked);
-                    if (!isChecked){
-                        AHScaleAgent.setPort("");
-
-                        toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                                AHScaleAgent.getPort(),
-                                AHScaleAgent.getBaudrate()));
-                    }
-                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
-                }
-
-            }
-        });
-        toggleSmscale.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-
-                if (SMScaleAgent.isEnabled() != isChecked) {
-                    SMScaleAgent.setEnabled(isChecked);
-                    if (isChecked){
-                        SMScaleAgent.setEnabled(isChecked);
-                        toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                                SMScaleAgent.getPort(),
-                                SMScaleAgent.getBaudrate()));
-                    }
-                    EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SMSCALE, ""));
-                }
-
-            }
-        });
         tsiSoftKeyboard.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
@@ -174,18 +92,7 @@ public class SettingsCommonFragment extends BaseFragment {
                 SharedPrefesManagerFactory.setTtsEnabled(isChecked);
             }
         });
-        toggleSmscaleFtp.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, isChecked);
-            }
-        });
-        toggleGreenTags.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_B_SYNC_ESL_ENABLED, isChecked);
-            }
-        });
+
 
         reload();
     }
@@ -248,6 +155,7 @@ public class SettingsCommonFragment extends BaseFragment {
                     }
                 });
     }
+
 
 //    /**
 //     * 米西生鲜
@@ -348,138 +256,55 @@ public class SettingsCommonFragment extends BaseFragment {
 //        }
 //    }
 
-    @OnClick(R.id.toggleItem_printer)
-    public void setPrinterPort() {
-        if (setPortDialog == null) {
-            setPortDialog = new SetPortDialog(getActivity());
-            setPortDialog.setCancelable(false);
-            setPortDialog.setCanceledOnTouchOutside(false);
-        }
-        setPortDialog.initialize("打印机(GPrinter)", SerialManager.getPrinterPort(),
-                new SetPortDialog.onDialogClickListener() {
-            @Override
-            public void onSetPort(String port, String baudrate) {
-                SerialManager.setPrinterPort(port);
-                GPrinterAgent.setPort(port);
-                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
-                togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                        SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate()));
-            }
-        });
-        if (!setPortDialog.isShowing()) {
-            setPortDialog.show();
-        }
-    }
+
+//    public void setPrinterPort() {
+//        if (setPortDialog == null) {
+//            setPortDialog = new SetPortDialog(getActivity());
+//            setPortDialog.setCancelable(false);
+//            setPortDialog.setCanceledOnTouchOutside(false);
+//        }
+//        setPortDialog.initialize("打印机(GPrinter)", SerialManager.getPrinterPort(),
+//                new SetPortDialog.onDialogClickListener() {
+//            @Override
+//            public void onSetPort(String port, String baudrate) {
+//                GPrinterAgent.setPort(port);
+//                EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
+//                togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+//                        SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate()));
+//            }
+//        });
+//        if (!setPortDialog.isShowing()) {
+//            setPortDialog.show();
+//        }
+//    }
 
 
-    @OnClick(R.id.item_ahscale_rs232)
-    public void setAhScalePort() {
-        if (setPortDialog == null) {
-            setPortDialog = new SetPortDialog(getActivity());
-            setPortDialog.setCancelable(false);
-            setPortDialog.setCanceledOnTouchOutside(false);
-        }
-        setPortDialog.initialize("爱华电子秤(ACS-P215)", AHScaleAgent.getPort(),
-                new SetPortDialog.onDialogClickListener() {
-                    @Override
-                    public void onSetPort(String port, String baudrate) {
-                        AHScaleAgent.setPort(port);
-                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
-                        toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                                AHScaleAgent.getPort(),
-                                AHScaleAgent.getBaudrate()));
-                    }
-                });
-        if (!setPortDialog.isShowing()) {
-            setPortDialog.show();
-        }
-    }
-
-    @OnClick(R.id.item_smscale_rs232)
-    public void configureSmscaleRs232() {
-        if (setPortDialog == null) {
-            setPortDialog = new SetPortDialog(getActivity());
-            setPortDialog.setCancelable(false);
-            setPortDialog.setCanceledOnTouchOutside(false);
-        }
-        setPortDialog.initialize("寺冈电子秤(DS781)", SMScaleAgent.getPort(),
-                new SetPortDialog.onDialogClickListener() {
-                    @Override
-                    public void onSetPort(String port, String baudrate) {
-                        SMScaleAgent.setPort(port);
-                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SMSCALE, ""));
-                        toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                                SMScaleAgent.getPort(), SMScaleAgent.getBaudrate()));
-                    }
-                });
-        if (!setPortDialog.isShowing()) {
-            setPortDialog.show();
-        }
-    }
-
-    /**
-     * 配置银联参数
-     */
-    @OnClick(R.id.item_umsips_rs232)
-    public void configureUmsipsRs232() {
-        if (mUmsipsDialog == null) {
-            mUmsipsDialog = new UmsipsDialog(getActivity());
-            mUmsipsDialog.setCancelable(false);
-            mUmsipsDialog.setCanceledOnTouchOutside(false);
-        }
-        mUmsipsDialog.init(new UmsipsDialog.onDialogClickListener() {
-            @Override
-            public void onDatasetChanged() {
-                umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                        SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
-            }
-        });
-        if (!mUmsipsDialog.isShowing()) {
-            mUmsipsDialog.show();
-        }
-    }
+//    public void setAhScalePort() {
+//        if (setPortDialog == null) {
+//            setPortDialog = new SetPortDialog(getActivity());
+//            setPortDialog.setCancelable(false);
+//            setPortDialog.setCanceledOnTouchOutside(false);
+//        }
+//        setPortDialog.initialize("爱华电子秤(ACS-P215)", AHScaleAgent.getPort(),
+//                new SetPortDialog.onDialogClickListener() {
+//                    @Override
+//                    public void onSetPort(String port, String baudrate) {
+//                        AHScaleAgent.setPort(port);
+//                        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_AHSCALE, ""));
+//                        toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
+//                                AHScaleAgent.getPort(),
+//                                AHScaleAgent.getBaudrate()));
+//                    }
+//                });
+//        if (!setPortDialog.isShowing()) {
+//            setPortDialog.show();
+//        }
+//    }
 
 
-    @OnClick(R.id.item_smscale_ftp)
-    public void configureSmscaleFtp() {
-        if (mFileZillaDialog == null) {
-            mFileZillaDialog = new FileZillaDialog(getActivity());
-            mFileZillaDialog.setCancelable(false);
-            mFileZillaDialog.setCanceledOnTouchOutside(false);
-        }
-        mFileZillaDialog.init("FileZila 参数设置", new FileZillaDialog.DialogViewClickListener() {
-            @Override
-            public void onSubmit() {
-                toggleSmscaleFtp.setSubTitle(String.format("%s:%d",
-                        SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
-            }
-        });
-        if (!mFileZillaDialog.isShowing()) {
-            mFileZillaDialog.show();
-        }
-    }
-
-    @OnClick(R.id.item_greentags_webservice)
-    public void showGreenTagsDialog() {
-        if (mGreenTagsSettingsDialog == null) {
-            mGreenTagsSettingsDialog = new GreenTagsSettingsDialog(getActivity());
-            mGreenTagsSettingsDialog.setCancelable(false);
-            mGreenTagsSettingsDialog.setCanceledOnTouchOutside(false);
-        }
-        mGreenTagsSettingsDialog.init(new GreenTagsSettingsDialog.DialogViewClickListener() {
-            @Override
-            public void onSubmit() {
-                toggleGreenTags.setSubTitle(GreenTagsApi.URL);
-            }
-        });
-        if (!mGreenTagsSettingsDialog.isShowing()) {
-            mGreenTagsSettingsDialog.show();
-        }
-    }
 
     private void reload() {
         try {
-
             itemPosGoods.setSubTitle(SharedPreferencesUltimate.getSyncProductsCursor());
 //            //米西生鲜
 //            String cursorKey1 = String.format("%s_%d_%s",
@@ -494,47 +319,10 @@ public class SettingsCommonFragment extends BaseFragment {
                 versonSettingsItem.setSubTitle(String.format(Locale.US, "%s - %d",
                         appInfo.getVersionName(), appInfo.getVersionCode()));
             }
-            tsiLedDisplay.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    PoslabAgent.getPort(), PoslabAgent.getBaudrate()));
-            tsiLedDisplay.setChecked(PoslabAgent.isEnabled());
-
-            togglePrinter.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    SerialManager.getPrinterPort(), GPrinterAgent.getBaudrate()));
-            togglePrinter.setChecked(GPrinterAgent.isEnabled());
-
-            toggleAhscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    AHScaleAgent.getPort(),
-                    AHScaleAgent.getBaudrate()));
-            toggleAhscale.setChecked(AHScaleAgent.isEnabled());
-
-            toggleSmscale.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    SMScaleAgent.getPort(), SMScaleAgent.getBaudrate()));
-            toggleSmscale.setChecked(SMScaleAgent.isEnabled());
-
-            umsipsRs232SettingsItem.setSubTitle(String.format("端口－[%s]，波特率－[%s]",
-                    SerialManager.getUmsipsPort(), SerialManager.getUmsipsBaudrate()));
-            toggleSmscaleFtp.setSubTitle(String.format("%s:%d",
-                    SMScaleSyncManager2.FTP_HOST, SMScaleSyncManager2.FTP_PORT));
-            toggleSmscaleFtp.setChecked(SharedPreferencesUltimate
-                    .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, false));
-            toggleGreenTags.setSubTitle(GreenTagsApi.URL);
-            toggleGreenTags.setChecked(SharedPreferencesUltimate
-                    .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_ESL_ENABLED, false));
 
             tsiSoftKeyboard.setChecked(SharedPrefesManagerFactory.isSoftInputEnabled());
             ttsToggleItem.setChecked(SharedPrefesManagerFactory.isTtsEnabled());
 
-            boolean isSuperPermissionGranted = SharedPrefesManagerFactory.isSuperPermissionGranted();
-            if (isSuperPermissionGranted){
-                togglePrinter.setVisibility(View.VISIBLE);
-                toggleAhscale.setVisibility(View.VISIBLE);
-                toggleSmscale.setVisibility(View.VISIBLE);
-            }
-            else{
-                togglePrinter.setVisibility(View.GONE);
-                toggleAhscale.setVisibility(View.GONE);
-                toggleSmscale.setVisibility(View.GONE);
-            }
 
             //        ActivityManager am =  (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
             //        ACache cache = ACache.get(CashierApp.getAppContext(), Constants.CACHE_NAME);
