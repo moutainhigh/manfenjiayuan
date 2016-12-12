@@ -16,9 +16,9 @@
         android:layout_gravity="center_horizontal"
         android:background="@color/mfhtheme_maskPrimary"
         android:baselineAligned="false"
-        android:gravity="center"
         android:divider="@drawable/divider_vertical_line_primary"
         android:dividerPadding="12dp"
+        android:gravity="center"
         android:padding="12dp"
         android:showDividers="middle">
         <!--拣货数量-->
@@ -44,7 +44,7 @@
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"
-            app:topTextColor="@color/mfh_colorPrimary"
+            app:topTextColor="@color/colorPrimary"
             app:topTextSize="30sp"/>
 
     </LinearLayout>
@@ -55,12 +55,15 @@
         android:layout_height="match_parent"
         android:background="@color/material_white"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_double">
+
         <LinearLayout
             android:layout_width="440dp"
-            android:layout_height="44dp"
-            android:layout_margin="16dp"
-            android:gravity="center_vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="72dp"
@@ -68,19 +71,25 @@
                 android:gravity="start|center_vertical"
                 android:text="订单编号"
                 android:textColor="@color/black_70"
-                android:textSize="18sp" />
+                android:textSize="18sp"/>
 
             <com.mfh.litecashier.ui.widget.InputNumberLabelView
                 android:id="@+id/inlv_barcode"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginStart="32dp"
+                app:inputNumberLabelView_inputHint="请扫描订单编号"
                 app:inputNumberLabelView_inputTextColor="@color/black"
                 app:inputNumberLabelView_inputTextColorHint="@color/black_35"
-                app:inputNumberLabelView_inputHint="请扫描订单编号"
                 app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_search_del"/>
         </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/spacing_double"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 </LinearLayout>

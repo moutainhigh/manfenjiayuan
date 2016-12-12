@@ -9,15 +9,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@color/mfhtheme_maskPrimary"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--会员信息-->
-        <include
-            android:id="@+id/view_vip_brief"
-            layout="@layout/include_cashier_pay_header_1"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"/>
+            android:layout_height="130dp"
+            android:background="@color/mfhtheme_maskPrimary"
+            android:orientation="vertical"
+            android:padding="12sp">
+
+            <!--用户信息：用户名/手机号-->
+            <TextView
+                android:id="@+id/tv_vip_brief"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_normal"
+                android:text=":"
+                android:textColor="@color/material_black"
+                android:textSize="@dimen/textsize_normal"/>
+
+            <!--头像-->
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/iv_vip_header"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@mipmap/ic_plat_koubei"
+                android:scaleType="centerInside"
+                android:contentDescription="@null"/>
+
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
@@ -35,9 +59,22 @@
             android:gravity="center"
             android:padding="12dp"
             android:showDividers="middle">
-            <!--订单金额-->
+            <!--拣货数量-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                android:id="@+id/label_orderamount"
+                android:id="@+id/label_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="订单数量"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_black"
+                app:topTextSize="30sp"/>
+
+            <!--拣货金额-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -45,44 +82,17 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="0.00"
-                app:topTextColor="@color/material_black"
-                app:topTextSize="30sp"/>
-            <!--实际金额-->
-            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                android:id="@+id/label_finalamount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:bottomText="实际金额"
-                app:bottomTextColor="@color/black_70"
-                app:bottomTextSize="16sp"
-                app:topText="0.00"
-                app:topTextColor="@color/material_black"
-                app:topTextSize="30sp"/>
-
-            <!--差额-->
-            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                android:id="@+id/label_diffamount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:bottomText="差额"
-                app:bottomTextColor="@color/black_70"
-                app:bottomTextSize="16sp"
-                app:topText="0.00"
                 app:topTextColor="@color/colorPrimary"
                 app:topTextSize="30sp"/>
-
 
         </LinearLayout>
 
         <include
             android:id="@+id/ll_procuct_header"
-            layout="@layout/itemview_header_prepareorder"
+            layout="@layout/itemview_header_takeout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_4x"/>
-
         <!--商品列表-->
         <RelativeLayout
             android:id="@+id/frame_coupon"
