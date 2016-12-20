@@ -19,15 +19,14 @@ public class PayApi {
     public static String WXPAY_CHANNEL_ID = NetFactory.getWxPayChannelId();
     public static String ALIPAY_CHANNEL_ID = NetFactory.getAliPayChannelId();
 
-    /**微信支付的编号*/
+    /**微信APP支付的编号*/
     public final static Long WEPAY_CONFIGID_MFHOWNER = 123L;//满分家园
     public final static Long WEPAY_CONFIGID_MFHPARTER = 124L;//满分小伙伴
     public final static Long WEPAY_CONFIGID_ENJOYCITY = 125L;//城市之间
     public final static Long WEPAY_CONFIGID_MIXICOOK = 126L;//米西厨房
 
-    /**支付宝支付的编号*/
+    /**支付宝APP支付的编号*/
     public final static Long ALIPAY_CONFIGID_MIXICOOK = 127L;//米西厨房
-
 
 
     /**

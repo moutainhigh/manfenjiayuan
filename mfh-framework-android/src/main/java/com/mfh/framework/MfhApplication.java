@@ -94,7 +94,6 @@ public class MfhApplication extends Application {
         initConfig();
 
         ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
-
     }
 
     @Override
@@ -399,7 +398,6 @@ public class MfhApplication extends Application {
             jsonObject.put("cupABI", Build.CPU_ABI);
         }
         jsonObject.put("Security.providers", Security.getProviders());
-
 
 
         ZLogger.d(jsonObject.toJSONString());

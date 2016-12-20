@@ -13,7 +13,7 @@ import com.mfh.framework.prefs.SharedPrefesUltimate;
 public class SharedPrefesManagerBase extends SharedPrefesUltimate {
     public static String PREF_NAME_APP = "pref_app";
 
-    private static final String PK_S_HOSTSERVER = "PK_S_HOSTSERVER_V1";//租户
+    private static final String PK_S_HOSTSERVER = "PK_S_HOSTSERVER_V2";//租户
 
     //    private static SharedPreferencesHelper instance = null;
 //    /**

@@ -48,9 +48,11 @@ public class MfhLoginService implements IService {
     private String password;//登录密码
     private String salt;
     private String sessionId = null;//会话,null表示未登录
-    private Long guid = null;//humanId/ownerId,获取当前消息通讯号
+    private String guid = null;//获取当前消息通讯号
+    private Long humanId = null;
+    private Long ownerId = null;
     private Long cpid = null;//通讯标识号,channel point id
-    private Long userId = null;// 用户编号
+    private Long userId = null;// humanId
     private String mySubdisIds = null;//关联的小区
     private Long spid = 0L;//所属公司编号,租户,tenantId
     private Long curOfficeId = null;//当前所属部门编号,officeId,netId
@@ -112,33 +114,34 @@ public class MfhLoginService implements IService {
         lastOfficeId = sp.getLong(MfhLoginPreferences.PK_LAST_OFFICE_ID, 0L);
         lastSpid = sp.getLong(MfhLoginPreferences.PK_LAST_SPID, 0L);
 
-        if (spLogin == null){
+        if (spLogin == null) {
             spLogin = MfhLoginPreferences.getLoginPreferences(MfhApplication.getAppContext());
         }
-        loginName = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USERNAME, "");
-        password = spLogin.getString(MfhLoginPreferences.PK_LOGIN_PASSWORD, "");
-        curOfficeId = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_OFFICEID, 0L);
-        userId = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_USER_ID, 0L);
-        spid = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_SPID, 0L);
-        guid = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_USER_GUID, 0L);
-        cpid = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_USER_CPID, 0L);
-        mySubdisIds = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_SUBDIS_ID, null);
-        stockIds = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_STOCKI_DS, null);
-        curOfficeName = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_CURRENT_OFFICE_NAME, "");
-        String officesStr = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_OFFICES, null);
+        loginName = spLogin.getString(MfhLoginPreferences.PK_USERNAME, "");
+        password = spLogin.getString(MfhLoginPreferences.PK_PASSWORD, "");
+        curOfficeId = spLogin.getLong(MfhLoginPreferences.PK_OFFICE_CURRENT_ID, 0L);
+        userId = spLogin.getLong(MfhLoginPreferences.PK_USER_ID, 0L);
+        spid = spLogin.getLong(MfhLoginPreferences.PK_SPID, 0L);
+        guid = spLogin.getString(MfhLoginPreferences.PK_GUID, null);
+        humanId = MfhLoginPreferences.getLong(spLogin, MfhLoginPreferences.PK_HUMAN_ID, 0L);
+        ownerId = MfhLoginPreferences.getLong(spLogin, MfhLoginPreferences.PK_OWNER_ID, 0L);
+        cpid = spLogin.getLong(MfhLoginPreferences.PK_CPID, 0L);
+        mySubdisIds = spLogin.getString(MfhLoginPreferences.PK_SUBDIS_IDS, null);
+        stockIds = spLogin.getString(MfhLoginPreferences.PK_STOCK_IDS, null);
+        curOfficeName = spLogin.getString(MfhLoginPreferences.PK_OFFICE_CURRENT_NAME, "");
+        String officesStr = spLogin.getString(MfhLoginPreferences.PK_OFFICES, null);
 //        ZLogger.d("offices:" + officesStr);
         this.offices = JSONObject.parseArray(officesStr, Office.class);
-        sessionId = spLogin.getString(MfhLoginPreferences.PK_LAST_SESSION_ID, null);
-
-        curStockId = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_CURRENT_STOCKID, null);
-        moduleNames = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_MODULES, null);
-        subdisNames = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_SUBDIS_NAME, null);
-        telephone = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_TELEPHONE, "");
-        humanName = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_HUMANNAME, "");
-        sessionDate = spLogin.getLong(MfhLoginPreferences.PK_LOGIN_SESSION_DATE, 0L);
-        cookie = spLogin.getString(MfhLoginPreferences.PK_LOGIN_HTTP_COOKIE, "");
-        headimage = spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_HEADIMAGE, "");
-        sex = spLogin.getInt(MfhLoginPreferences.PK_I_USER_SEX, Sex.UNKNOWN);
+        sessionId = spLogin.getString(MfhLoginPreferences.PK_SESSION_ID, null);
+        curStockId = spLogin.getString(MfhLoginPreferences.PK_STOCK_CURRENT_ID, null);
+        moduleNames = spLogin.getString(MfhLoginPreferences.PK_MODULE_NAMES, null);
+        subdisNames = spLogin.getString(MfhLoginPreferences.PK_SUBDIS_NAMES, null);
+        telephone = spLogin.getString(MfhLoginPreferences.PK_TELEPHONE, "");
+        humanName = spLogin.getString(MfhLoginPreferences.PK_HUMAN_NAME, "");
+        sessionDate = spLogin.getLong(MfhLoginPreferences.PK_SESSION_DATE, 0L);
+        cookie = spLogin.getString(MfhLoginPreferences.PK_COOKIE, "");
+        headimage = spLogin.getString(MfhLoginPreferences.PK_HEAD_IMAGE, "");
+        sex = spLogin.getInt(MfhLoginPreferences.PK_SEX, Sex.UNKNOWN);
     }
 
     /**
@@ -154,22 +157,24 @@ public class MfhLoginService implements IService {
         lastLoginEditor.commit();
 
         SharedPreferences.Editor loginEditor = spLogin.edit();
-        loginEditor.putString(MfhLoginPreferences.PK_LAST_SESSION_ID, sessionId);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USERNAME, loginName);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_PASSWORD, password);
-        loginEditor.putLong(MfhLoginPreferences.PK_LOGIN_SPID, spid);
-        loginEditor.putLong(MfhLoginPreferences.PK_LOGIN_OFFICEID, curOfficeId);
-        loginEditor.putLong(MfhLoginPreferences.PK_LOGIN_USER_ID, userId);
-        loginEditor.putLong(MfhLoginPreferences.PK_LOGIN_USER_GUID, guid);
-        loginEditor.putLong(MfhLoginPreferences.PK_LOGIN_USER_CPID, cpid);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_TELEPHONE, telephone);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_HTTP_COOKIE, cookie);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_HUMANNAME, humanName);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_HEADIMAGE, headimage);
-        loginEditor.putInt(MfhLoginPreferences.PK_I_USER_SEX, sex);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_SUBDIS_ID, mySubdisIds);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_STOCKI_DS, stockIds);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_CURRENT_OFFICE_NAME, curOfficeName);
+        loginEditor.putString(MfhLoginPreferences.PK_SESSION_ID, sessionId);
+        loginEditor.putString(MfhLoginPreferences.PK_USERNAME, loginName);
+        loginEditor.putString(MfhLoginPreferences.PK_PASSWORD, password);
+        loginEditor.putLong(MfhLoginPreferences.PK_SPID, spid);
+        loginEditor.putLong(MfhLoginPreferences.PK_OFFICE_CURRENT_ID, curOfficeId);
+        loginEditor.putLong(MfhLoginPreferences.PK_USER_ID, userId);
+        loginEditor.putString(MfhLoginPreferences.PK_GUID, guid);
+        loginEditor.putLong(MfhLoginPreferences.PK_HUMAN_ID, humanId);
+        loginEditor.putLong(MfhLoginPreferences.PK_OWNER_ID, ownerId);
+        loginEditor.putLong(MfhLoginPreferences.PK_CPID, cpid);
+        loginEditor.putString(MfhLoginPreferences.PK_TELEPHONE, telephone);
+        loginEditor.putString(MfhLoginPreferences.PK_COOKIE, cookie);
+        loginEditor.putString(MfhLoginPreferences.PK_HUMAN_NAME, humanName);
+        loginEditor.putString(MfhLoginPreferences.PK_HEAD_IMAGE, headimage);
+        loginEditor.putInt(MfhLoginPreferences.PK_SEX, sex);
+        loginEditor.putString(MfhLoginPreferences.PK_SUBDIS_IDS, mySubdisIds);
+        loginEditor.putString(MfhLoginPreferences.PK_STOCK_IDS, stockIds);
+        loginEditor.putString(MfhLoginPreferences.PK_OFFICE_CURRENT_NAME, curOfficeName);
         JSONArray officesArr = new JSONArray();
         if (offices != null && offices.size() > 0) {
             for (Office office : offices) {
@@ -177,12 +182,12 @@ public class MfhLoginService implements IService {
             }
         }
 //        ZLogger.d("offices:" + officesArr.toJSONString());
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_OFFICES, officesArr.toJSONString());
+        loginEditor.putString(MfhLoginPreferences.PK_OFFICES, officesArr.toJSONString());
 
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_CURRENT_STOCKID, curStockId);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_SUBDIS_NAME, subdisNames);
-        loginEditor.putLong(MfhLoginPreferences.PK_LOGIN_SESSION_DATE, sessionDate);
-        loginEditor.putString(MfhLoginPreferences.PK_LOGIN_USER_MODULES, moduleNames);
+        loginEditor.putString(MfhLoginPreferences.PK_STOCK_CURRENT_ID, curStockId);
+        loginEditor.putString(MfhLoginPreferences.PK_SUBDIS_NAMES, subdisNames);
+        loginEditor.putLong(MfhLoginPreferences.PK_SESSION_DATE, sessionDate);
+        loginEditor.putString(MfhLoginPreferences.PK_MODULE_NAMES, moduleNames);
         loginEditor.commit();
     }
 
@@ -225,6 +230,8 @@ public class MfhLoginService implements IService {
 
     public void setModuleNames(String moduleNames) {
         this.moduleNames = moduleNames;
+        MfhLoginPreferences.set(MfhLoginPreferences.PREF_NAME_LOGIN,
+                MfhLoginPreferences.PK_MODULE_NAMES, moduleNames);
     }
 
     /**
@@ -332,12 +339,40 @@ public class MfhLoginService implements IService {
         return loginName;
     }
 
-    public Long getCurrentGuId() {
-        return this.guid;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setCurrentGuid(Long guid) {
+    public Long getGuidLong() {
+        if (StringUtils.isEmpty(guid)) {
+            return 0L;
+        }
+        try {
+            return Long.valueOf(guid);
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+
+    public void setGuid(String guid) {
         this.guid = guid;
+    }
+
+    public Long getHumanId() {
+        return humanId;
+    }
+
+    public void setHumanId(Long humanId) {
+        this.humanId = humanId;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public void setLoginName(String loginName) {
@@ -357,27 +392,29 @@ public class MfhLoginService implements IService {
      */
     public void changePassword(String password) {
         this.password = password;
-
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putString(MfhLoginPreferences.PK_LOGIN_PASSWORD, password);
+//        MfhLoginPreferences.set(editor, MfhLoginPreferences.PK_PASSWORD, password);
+        editor.putString(MfhLoginPreferences.PK_PASSWORD, password);
         editor.commit();
     }
 
     /**
      * 切换子账号
-     * */
-    public void changeHuman(Long humanId, String username, String password){
+     */
+    public void changeHuman(Long humanId, Long userId, String username, String password) {
         ZLogger.d(String.format("切换账号：%s(%s)", username, humanId));
         this.sessionId = "";
-        this.guid = humanId;
+        this.humanId = humanId;
+        this.userId = userId;
         this.loginName = username;
         this.password = password;
 
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putString(MfhLoginPreferences.PK_LAST_SESSION_ID, "");//清空session
-        editor.putLong(MfhLoginPreferences.PK_LOGIN_USER_GUID, humanId);
-        editor.putString(MfhLoginPreferences.PK_LOGIN_USERNAME, username);
-        editor.putString(MfhLoginPreferences.PK_LOGIN_PASSWORD, password);
+        editor.putString(MfhLoginPreferences.PK_SESSION_ID, "");//清空session
+        editor.putLong(MfhLoginPreferences.PK_USER_ID, userId);
+        editor.putLong(MfhLoginPreferences.PK_HUMAN_ID, humanId);
+        editor.putString(MfhLoginPreferences.PK_USERNAME, username);
+        editor.putString(MfhLoginPreferences.PK_PASSWORD, password);
         editor.commit();
     }
 
@@ -391,7 +428,7 @@ public class MfhLoginService implements IService {
     }
 
     public Long getSpid() {
-        if (spid == null){
+        if (spid == null) {
             return 0L;
         }
         return spid;
@@ -415,7 +452,7 @@ public class MfhLoginService implements IService {
 
     public String getHumanName() {
 //        return humanName;
-        return spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_HUMANNAME, "");
+        return spLogin.getString(MfhLoginPreferences.PK_HUMAN_NAME, "");
     }
 
     public void setHumanName(String humanName) {
@@ -426,13 +463,13 @@ public class MfhLoginService implements IService {
         this.humanName = humanName;
 
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putString(MfhLoginPreferences.PK_LOGIN_USER_HUMANNAME, humanName);
+        editor.putString(MfhLoginPreferences.PK_HUMAN_NAME, humanName);
         editor.commit();
     }
 
     public String getHeadimage() {
 //        return headimage;
-        return spLogin.getString(MfhLoginPreferences.PK_LOGIN_USER_HEADIMAGE, "");
+        return spLogin.getString(MfhLoginPreferences.PK_HEAD_IMAGE, "");
     }
 
     public void setHeadimage(String headimage) {
@@ -441,7 +478,7 @@ public class MfhLoginService implements IService {
 
     public void updateHeadimage(String headimage) {
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putString(MfhLoginPreferences.PK_LOGIN_USER_HEADIMAGE, headimage);
+        editor.putString(MfhLoginPreferences.PK_HEAD_IMAGE, headimage);
         editor.commit();
 
         this.headimage = headimage;
@@ -462,13 +499,13 @@ public class MfhLoginService implements IService {
         this.sex = sex;
 
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putInt(MfhLoginPreferences.PK_I_USER_SEX, sex);
+        editor.putInt(MfhLoginPreferences.PK_SEX, sex);
         editor.commit();
     }
 
 
     public String getLastLoginName() {
-        if (lastLoginName == null){
+        if (lastLoginName == null) {
             return "";
         }
         return lastLoginName;
@@ -479,10 +516,10 @@ public class MfhLoginService implements IService {
     }
 
     public String getLastLoginPassword() {
-        if (lastLoginPassword == null){
+        if (lastLoginPassword == null) {
             return "";
         }
-            return lastLoginPassword;
+        return lastLoginPassword;
     }
 
     public void setLastLoginPassword(String lastLoginPassword) {
@@ -490,7 +527,7 @@ public class MfhLoginService implements IService {
     }
 
     public Long getLastOfficeId() {
-        if (lastOfficeId == null){
+        if (lastOfficeId == null) {
             return 0L;
         }
         return lastOfficeId;
@@ -501,7 +538,7 @@ public class MfhLoginService implements IService {
     }
 
     public Long getLastSpid() {
-        if (lastSpid == null){
+        if (lastSpid == null) {
             return 0L;
         }
         return lastSpid;
@@ -528,14 +565,14 @@ public class MfhLoginService implements IService {
     /**
      * 检查是否切换公司和部门
      *
-     * @return true,切换公司和部门,需要清空商品库，常用商品，重新同步;false,不做任何操作
+     * @return true, 切换公司和部门, 需要清空商品库，常用商品，重新同步;false,不做任何操作
      */
     public boolean checkCompanyOrOffice() {
-        if (lastOfficeId == null || lastSpid == null){
+        if (lastOfficeId == null || lastSpid == null) {
             return true;
         }
 
-        if (curOfficeId == null || spid == null){
+        if (curOfficeId == null || spid == null) {
             return true;
         }
 
@@ -614,14 +651,18 @@ public class MfhLoginService implements IService {
      */
     public void doLoginAsync(final String name, final String pwd, final LoginCallback loginCallback,
                              String url, String loginType, String loginKind) {
-        //回调
         NetCallBack.NetTaskCallBack callback = new NetCallBack.NetTaskCallBack<UserMixInfo,
                 NetProcessor.Processor<UserMixInfo>>(new NetProcessor.Processor<UserMixInfo>() {
             @Override
             public void processResult(IResponseData rspData) {
-                RspBean<UserMixInfo> retValue = (RspBean<UserMixInfo>) rspData;
+                ZLogger.df("登录成功：");
+
+                UserMixInfo um = null;
+                if (rspData != null){
+                    RspBean<UserMixInfo> retValue = (RspBean<UserMixInfo>) rspData;
 //                Log.d("Nat: loginResponse", String.format("retValue= %s", retValue.toString()));
-                UserMixInfo um = retValue.getValue();
+                    um = retValue.getValue();
+                }
 
                 saveUserMixInfo(name, pwd, um);
 
@@ -633,6 +674,8 @@ public class MfhLoginService implements IService {
             @Override
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
+                ZLogger.df("登录失败：" + errMsg);
+
                 if (loginCallback != null) {
                     loginCallback.loginFailed(errMsg);
                 }
@@ -660,7 +703,8 @@ public class MfhLoginService implements IService {
     }
 
     /**
-     * 异步登录*/
+     * 异步登录
+     */
     public void doLoginAsync(String name, String pwd, LoginCallback loginCallback) {
 //        doLoginAsync(name, pwd, loginCallback, MfhApi.URL_LOGIN,
 //                MfhApi.PARAM_VALUE_LOGIN_TYPE_DEF, MfhApi.PARAM_KEY_LOGIN_KIND);
@@ -688,7 +732,7 @@ public class MfhLoginService implements IService {
     public void setCookie(String cookie) {
         this.cookie = cookie;
         SharedPreferences.Editor editor = spLogin.edit();
-        editor.putString(MfhLoginPreferences.PK_LOGIN_HTTP_COOKIE, cookie);
+        editor.putString(MfhLoginPreferences.PK_COOKIE, cookie);
         editor.commit();
     }
 
@@ -704,87 +748,95 @@ public class MfhLoginService implements IService {
             return;
         }
 
-        final MfhLoginService loginService = this;
-        loginService.loginName = username;
-        loginService.password = password;
-        loginService.lastLoginName = username;
-        loginService.lastLoginPassword = password;
+        try{
+            final MfhLoginService loginService = this;
+            loginService.loginName = username;
+            loginService.password = password;
+            loginService.lastLoginName = username;
+            loginService.lastLoginPassword = password;
 
-        loginService.guid = um.getHumanId();
-        loginService.sessionId = um.getSessionId();
-        loginService.telephone = um.getPhonenumber();
+            loginService.humanId = um.getHumanId();
+            loginService.sessionId = um.getSessionId();
+            loginService.telephone = um.getPhonenumber();
 
-        if (um.getCookiees() != null) {
-            loginService.cookie = um.getCookiees().get(0);
-        }
-        Object objId = um.getId();
-        if (objId instanceof String)
-            loginService.userId = Long.parseLong(objId.toString());
-        else
-            loginService.userId = um.getId();
+            if (um.getCookiees() != null) {
+                loginService.cookie = um.getCookiees().get(0);
+            }
+            Object objId = um.getId();
+            if (objId instanceof String)
+                loginService.userId = Long.parseLong(objId.toString());
+            else
+                loginService.userId = um.getId();
 
-        UserAttribute userAttribute = um.getUserAttribute();
-        if (userAttribute != null) {
+            UserAttribute userAttribute = um.getUserAttribute();
+            if (userAttribute != null) {
 //            loginService.cpid = userAttribute.getCpid();
-            loginService.humanName = userAttribute.getHumanName();
-            loginService.headimage = userAttribute.getHeadimage();
-            loginService.sex = userAttribute.getSex();
-        }
+                loginService.humanName = userAttribute.getHumanName();
+                loginService.headimage = userAttribute.getHeadimage();
+                loginService.sex = userAttribute.getSex();
+                loginService.ownerId = userAttribute.getOwnerId();
+                loginService.guid = userAttribute.getGuid();
+            }
 
-        List<UserComInfo> userComInfos = um.getComInfos();
-        StringBuilder sbStockIds = new StringBuilder();
-        StringBuilder sbSubdisNames = new StringBuilder();
-        if (userComInfos != null && userComInfos.size() > 0) {
-            UserComInfo userComInfo = userComInfos.get(0);
-            loginService.spid = userComInfo.getSpid();
+            List<UserComInfo> userComInfos = um.getComInfos();
+            StringBuilder sbStockIds = new StringBuilder();
+            StringBuilder sbSubdisNames = new StringBuilder();
+            if (userComInfos != null && userComInfos.size() > 0) {
+                UserComInfo userComInfo = userComInfos.get(0);
+                loginService.spid = userComInfo.getSpid();
 
-            loginService.moduleNames = userComInfo.getModuleNames();
-            loginService.mySubdisIds = userComInfo.getSubdisIds();
-            loginService.curOfficeId = userComInfo.getCurOffice();
+                loginService.moduleNames = userComInfo.getModuleNames();
+                loginService.mySubdisIds = userComInfo.getSubdisIds();
+                loginService.curOfficeId = userComInfo.getCurOffice();
 
-            loginService.curStockId = null;
-            loginService.offices = userComInfo.getOffices();
-            if (loginService.offices != null) {
-                for (int i = 0; i < loginService.offices.size(); i++) {
-                    Office office = loginService.offices.get(i);
-                    String stockId = office.getStockId();
-                    if (!StringUtils.isEmpty(stockId)) {
-                        if (i > 0) {
-                            sbStockIds.append(",");
+                loginService.curStockId = null;
+                loginService.offices = userComInfo.getOffices();
+                if (loginService.offices != null) {
+                    for (int i = 0; i < loginService.offices.size(); i++) {
+                        Office office = loginService.offices.get(i);
+                        String stockId = office.getStockId();
+                        if (!StringUtils.isEmpty(stockId)) {
+                            if (i > 0) {
+                                sbStockIds.append(",");
+                            }
+                            sbStockIds.append(stockId);
                         }
-                        sbStockIds.append(stockId);
-                    }
 
-                    if (office.getCode().compareTo(loginService.curOfficeId) == 0) {
-                        loginService.curStockId = office.getStockId();
-                        loginService.curOfficeName = office.getValue();
+                        if (office.getCode().compareTo(loginService.curOfficeId) == 0) {
+                            loginService.curStockId = office.getStockId();
+                            loginService.curOfficeName = office.getValue();
+                        }
+                    }
+                }
+
+                List<Subdis> subdises = userComInfo.getSubdisList();
+                if (null != subdises) {
+                    for (int i = 0; i < subdises.size(); i++) {
+                        //loginService.subdisNames.put(subdises.get(i).getId(), subdises.get(i).getSubdisName());
+                        if (i > 0) {
+                            sbSubdisNames.append(",");
+                        }
+                        sbSubdisNames.append(subdises.get(i).getSubdisName());
                     }
                 }
             }
+            loginService.stockIds = sbStockIds.toString();
+            loginService.subdisNames = sbSubdisNames.toString();
+            loginService.sessionDate = new Date().getTime() + 1000 * 60 * 60 * 3;//三个小时内不去请求
 
-            List<Subdis> subdises = userComInfo.getSubdisList();
-            if (null != subdises) {
-                for (int i = 0; i < subdises.size(); i++) {
-                    //loginService.subdisNames.put(subdises.get(i).getId(), subdises.get(i).getSubdisName());
-                    if (i > 0) {
-                        sbSubdisNames.append(",");
-                    }
-                    sbSubdisNames.append(subdises.get(i).getSubdisName());
-                }
-            }
+            //保存新的登录信息前先判断是否已经切换账号
+            isCompanyOrOfficeChanged = checkCompanyOrOffice();
+            loginService.lastSpid = loginService.spid;
+            loginService.lastOfficeId = loginService.curOfficeId;
+
+            loginService.save();
+
+            restore();
         }
-        loginService.stockIds = sbStockIds.toString();
-        loginService.subdisNames = sbSubdisNames.toString();
-        loginService.sessionDate = new Date().getTime() + 1000 * 60 * 60 * 3;//三个小时内不去请求
-
-        //保存新的登录信息前先判断是否已经切换账号
-        isCompanyOrOfficeChanged = checkCompanyOrOffice();
-        loginService.lastSpid = loginService.spid;
-        loginService.lastOfficeId = loginService.curOfficeId;
-
-        loginService.save();
-
-        restore();
+        catch (Exception e){
+            ZLogger.ef(e.toString());
+            restore();
+        }
     }
 
 }

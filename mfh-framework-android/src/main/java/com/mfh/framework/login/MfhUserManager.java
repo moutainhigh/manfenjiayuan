@@ -45,7 +45,6 @@ public class MfhUserManager {
         return instance;
     }
 
-
     /**
      * 退出登录
      * */

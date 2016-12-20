@@ -1,4 +1,4 @@
-package com.manfenjiayuan.business;
+package com.manfenjiayuan.business.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;

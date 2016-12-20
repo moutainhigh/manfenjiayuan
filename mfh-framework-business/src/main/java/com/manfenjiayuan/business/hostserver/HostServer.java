@@ -1,6 +1,9 @@
 package com.manfenjiayuan.business.hostserver;
 
+import com.mfh.framework.api.tenant.PayCfgId;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 租户
@@ -8,102 +11,88 @@ import java.io.Serializable;
  */
 
 public class HostServer implements Serializable {
-    public static final String HOST_MIXICOOK = "admin.mixicook.com";
-    public static final String HOST_QIANWJ = "qianwj.mixicook.com";
+    private Long saasId;//租户编号
+    private String saasName;//租户名称
+    private String area;//城市编号
+    private String domainUrl;// 域名地址
+
+    private String contact; //联系人
+    private String mobilenumber; //手机号码
+    private String logopicUrl;// 完整的公司头像url,对应logopic
+    private List<PayCfgId> payInfos;//256-微信扫码付; 512-微信app支付 ；4096-支付宝app支付； 2-支付宝扫码付
+
+//    private String baseServerUrl;
 
 
-    private Long id;//租户编号
-    private String name;
-    private String host;
-    private String baseServerUrl;
-
-    private int textLogoResId;
-    private int imgLogoResId;
-    private String activityAlias;
-
-    private String skinName;
-
-
-    public HostServer() {
+    public Long getSaasId() {
+        return saasId;
     }
 
-    public HostServer(Long id, String name,
-                      String host, String baseServerUrl,
-                      int textLogoResId, int imgLogoResId,
-                      String activityAlias, String skinName) {
-        this.id = id;
-        this.name = name;
-        this.host = host;
-        this.baseServerUrl = baseServerUrl;
-        this.textLogoResId = textLogoResId;
-        this.imgLogoResId = imgLogoResId;
-        this.activityAlias = activityAlias;
-        this.skinName = skinName;
+    public void setSaasId(Long saasId) {
+        this.saasId = saasId;
     }
 
-
-
-    public Long getId() {
-        return id;
+    public String getSaasName() {
+        return saasName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSaasName(String saasName) {
+        this.saasName = saasName;
     }
 
-    public String getName() {
-        return name;
+    public String getArea() {
+        return area;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setArea(String area) {
+        this.area = area;
     }
 
-    public int getTextLogoResId() {
-        return textLogoResId;
+    public String getDomainUrl() {
+        return domainUrl;
     }
 
-    public void setTextLogoResId(int textLogoResId) {
-        this.textLogoResId = textLogoResId;
+    public void setDomainUrl(String domainUrl) {
+        this.domainUrl = domainUrl;
     }
 
-    public int getImgLogoResId() {
-        return imgLogoResId;
+//    public String getBaseServerUrl() {
+//        return baseServerUrl;
+//    }
+//
+//    public void setBaseServerUrl(String baseServerUrl) {
+//        this.baseServerUrl = baseServerUrl;
+//    }
+
+    public String getContact() {
+        return contact;
     }
 
-    public void setImgLogoResId(int imgLogoResId) {
-        this.imgLogoResId = imgLogoResId;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
-    public String getHost() {
-        return host;
+    public String getMobilenumber() {
+        return mobilenumber;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setMobilenumber(String mobilenumber) {
+        this.mobilenumber = mobilenumber;
     }
 
-    public String getBaseServerUrl() {
-        return baseServerUrl;
+    public String getLogopicUrl() {
+        return logopicUrl;
     }
 
-    public String getSkinName() {
-        return skinName;
+    public void setLogopicUrl(String logopicUrl) {
+        this.logopicUrl = logopicUrl;
     }
 
-    public void setSkinName(String skinName) {
-        this.skinName = skinName;
+    public List<PayCfgId> getPayInfos() {
+        return payInfos;
     }
 
-    public void setBaseServerUrl(String baseServerUrl) {
-        this.baseServerUrl = baseServerUrl;
-    }
-
-    public String getActivityAlias() {
-        return activityAlias;
-    }
-
-    public void setActivityAlias(String activityAlias) {
-        this.activityAlias = activityAlias;
+    public void setPayInfos(List<PayCfgId> payInfos) {
+        this.payInfos = payInfos;
     }
 }

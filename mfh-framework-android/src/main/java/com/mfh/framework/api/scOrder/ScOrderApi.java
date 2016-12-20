@@ -72,7 +72,8 @@ public class ScOrderApi implements ApiParams {
     static String URL_UPDATECOMMITINFO = URL_SCORDER + "updateCommitInfo";
 
     /**
-     * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手，其中transHumanId为骑手编号，orderId为订单编号
+     * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手，
+     * 其中transHumanId为骑手编号，orderId为订单编号
      * (针对已组货的订单)
      * /scOrder/prepareOrder?orderId=&transHumanId=
      */

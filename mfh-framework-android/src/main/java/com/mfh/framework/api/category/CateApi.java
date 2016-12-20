@@ -8,11 +8,6 @@ import com.mfh.framework.network.NetFactory;
  */
 public class CateApi {
 
-    //
-    public final static Long FRONT_CATEGORY_ID_LAUNDRY = 3543L;//洗衣
-    public static Long FRONT_CATEGORY_ID_POS = 3407L;//POS类目--勿删除
-
-
     /**
      * tenantId，代表类目体系的属性，目前130222就是满分家园，可以作为一个变量
      * 注意：与当前登录用户的tenantId不一样

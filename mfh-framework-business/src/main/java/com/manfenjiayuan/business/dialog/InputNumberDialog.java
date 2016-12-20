@@ -42,8 +42,7 @@ public class InputNumberDialog extends CommonDialog  {
     @SuppressLint("InflateParams")
     private InputNumberDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_inputnumber, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_inputnumber, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_title);

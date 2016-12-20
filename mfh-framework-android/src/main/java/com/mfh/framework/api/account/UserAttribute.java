@@ -50,6 +50,9 @@ public class UserAttribute implements java.io.Serializable {
     }
 
     public Long getOwnerId() {
+        if (ownerId == null){
+            return 0L;
+        }
         return ownerId;
     }
 

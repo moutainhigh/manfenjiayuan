@@ -12,14 +12,17 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
+import com.bingshanguxue.skinloader.listener.ILoaderListener;
+import com.bingshanguxue.skinloader.loader.SkinManager;
+import com.igexin.sdk.PushManager;
+
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
-import com.igexin.sdk.PushManager;
+import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.route.RouteActivity;
-import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.comn.bean.TimeCursor;
@@ -29,8 +32,7 @@ import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.api.mobile.MobileApi;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
@@ -41,8 +43,11 @@ import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
+import com.mfh.litecashier.service.DemoIntentService;
+import com.mfh.litecashier.service.DemoPushService;
 import com.mfh.litecashier.utils.AppHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,7 +88,7 @@ public class SplashActivity extends InitActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ZLogger.d("adb 000019");
+        ZLogger.d("adb 000021");
         loadingImageView.setBackgroundResource(R.drawable.loading_anim);
         loadingImageView.toggle(true);
 
@@ -106,7 +111,7 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 16);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 17);
 
 //        String hostServerData = SharedPrefesManagerBase.getText(SharedPrefesManagerBase.PK_S_HOSTSERVER, null);
 //        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData),
@@ -134,8 +139,6 @@ public class SplashActivity extends InitActivity {
             return;
         }
 
-        // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
-//        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
         setupGetui();
 
         super.doAsyncTask();
@@ -152,6 +155,9 @@ public class SplashActivity extends InitActivity {
                 //首次启动(由于应用程序可能会被多次执行在不同的进程中，所以这里在启动页调用)
                 ZLogger.df(String.format("应用程序启动(%s-%d）",
                         appInfo.getVersionName(), appInfo.getVersionCode()));
+
+                MfhApi.register();
+                IMApi.register();
 
                 if (SharedPrefesManagerFactory.isAppFirstStart()) {
                     //保存应用启动时间
@@ -192,18 +198,18 @@ public class SplashActivity extends InitActivity {
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+                        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
                         if (hostServer == null) {
                             redirect2HostServer();
                             return;
                         }
 
-                        ZLogger.d("进入租户\n" + JSON.toJSONString(hostServer));
-                        MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
-                        MobileApi.DOMAIN = hostServer.getHost();
-//                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
-                        MfhApi.register();
-                        IMApi.register();
+                        ZLogger.df("进入租户\n" + JSON.toJSONString(hostServer));
+//                        MfhApi.URL_BASE_SERVER = String.format("http://%s/pmc", hostServer.getDomainUrl());
+//                        MobileApi.DOMAIN = hostServer.getDomainUrl();
+////                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
+//                        MfhApi.register();
+//                        IMApi.register();
 
                         if (aBoolean) {
                             redirectToMain(true);
@@ -217,41 +223,28 @@ public class SplashActivity extends InitActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Route.ARC_ANDROID_SETTINGS: {
+            case ResultCode.ARC_ANDROID_SETTINGS: {
                 if (data != null){
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
                 doAsyncTask();
             }
             break;
-            case Route.ARC_NATIVE_SIGNIN: {
+            case ResultCode.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     redirectToMain(false);
                 }
             }
             break;
-            case Route.ARC_APP_HOSTSERVER: {
+            case ResultCode.ARC_APP_HOSTSERVER: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
+                    HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
                     if (hostServer == null) {
                         finish();
                     }
 
+                    loadSkin(GlobalInstanceBase.getInstance().getSkinName());
 //                    AppIconManager.changeIcon(SplashActivity.this, hostServer.getActivityAlias());
-
-                    SharedPrefesManagerBase.setHostServer(hostServer);
-                    MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
-                    MobileApi.DOMAIN = hostServer.getHost();
-//                    IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
-                    MfhApi.register();
-                    IMApi.register();
-
-                    if (MobileApi.DOMAIN.equals(HostServer.HOST_MIXICOOK)){
-                        CateApi.FRONT_CATEGORY_ID_POS = 3407L;
-                    }
-                    else if (MobileApi.DOMAIN.equals(HostServer.HOST_QIANWJ)){
-                        CateApi.FRONT_CATEGORY_ID_POS = 20000019L;
-                    }
 
                     MfhLoginService.get().clear();
                     redirectToLogin();
@@ -266,20 +259,30 @@ public class SplashActivity extends InitActivity {
     }
 
     /**
-     * 设置个推
+     * 个推SDK初始化
+     * 我们建议应用开发者在Activity或Service类中调用个推SDK的初始化方法，确保SDK在各种情况下都能正常运行。
+     * 一般情况下可以在主Activity的onCreate()或者onResume()方法中调用，也可以在多个主要界面Activity的
+     * onCreate()或onResume()方法中调用。反复调用SDK初始化并不会有什么副作用。
      */
     private void setupGetui() {
+        ZLogger.df("准备初始化个推服务...");
+        PushManager.getInstance().initialize(this.getApplicationContext(), DemoPushService.class);
+
+        // 注册 intentService 后 PushDemoReceiver 无效, sdk 会使用 DemoIntentService 传递数据,
+        // AndroidManifest 对应保留一个即可(如果注册 DemoIntentService, 可以去掉 PushDemoReceiver, 如果注册了
+        // IntentService, 必须在 AndroidManifest 中声明)
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), DemoIntentService.class);
+
+        // 检查 so 是否存在
+        File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
+        ZLogger.df("libgetuiext2.so exist = " + file.exists());
+
         String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
-        ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
-        PushManager.getInstance().initialize(this.getApplicationContext());
+        ZLogger.df("当前应用的cid = " + cid);
     }
 
-    /**
-     * 权限申请
-     *
-     * <li>如果同一组的任何一个权限被授权了，其他权限也自动被授权</li>
-     */
-    private boolean requestPermissions() {
+    @Override
+    protected ArrayList<String> getRequestPermissions() {
         ArrayList<String> permissionsNeeded = new ArrayList<>();
         //Camera
         permissionsNeeded.add(Manifest.permission.CAMERA);
@@ -299,71 +302,15 @@ public class SplashActivity extends InitActivity {
         //Storage:文件存储
         permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 //        expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-
-        List<String> lackPermissions = new ArrayList<>();
-        for (String permission : permissionsNeeded) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                ZLogger.d(getString(R.string.permission_not_granted, permission));
-                lackPermissions.add(permission);
-            }
-        }
-
-        int size = lackPermissions.size();
-        if (size > 0) {
-            String[] permissions = new String[size];
-            for (int i = 0; i < size; i++) {
-                permissions[i] = lackPermissions.get(i);
-            }
-            // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this, permissions, Route.ARC_PERMISSIONS);
-            return false;
-        }
-
-        return true;
+        return permissionsNeeded;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == Route.ARC_PERMISSIONS) {
-            // BEGIN_INCLUDE(permission_result)
-            // Received permission result for camera permission.
-            ZLogger.i("Received response for permissions request.");
-
-            // Check if the only required permission has been granted
-            boolean isGrannted = PermissionUtil.verifyPermissions(grantResults);
-            ZLogger.d("isGrannted=" + isGrannted);
-            if (isGrannted) {
-                doAsyncTask();
-            } else {
-//                MANAGE_APP_PERMISSIONS
-                showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
-                        "立刻开启", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
-//                startActivity(intent);
-                                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
-                            }
-                        }, "残忍拒绝", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                            }
-                        });
-            }
-            // END_INCLUDE(permission_result)
-
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+    protected void onPermissionsGranted() {
+        super.onPermissionsGranted();
+        doAsyncTask();
     }
+
 
     private void redirect2HostServer() {
         ZLogger.d("准备跳转到域名选择页面");
@@ -376,7 +323,7 @@ public class SplashActivity extends InitActivity {
         Intent intent = new Intent(this, RouteActivity.class);
         intent.putExtras(extras);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, Route.ARC_APP_HOSTSERVER);
+        startActivityForResult(intent, ResultCode.ARC_APP_HOSTSERVER);
     }
 
     /**
@@ -389,7 +336,7 @@ public class SplashActivity extends InitActivity {
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
+        startActivityForResult(intent, ResultCode.ARC_NATIVE_SIGNIN);
     }
 
     /**
@@ -409,5 +356,39 @@ public class SplashActivity extends InitActivity {
             MainActivity.actionStart(SplashActivity.this, null);
             finish();
         }
+    }
+
+    /**
+     * 加载皮肤
+     * */
+    private void loadSkin(String skinName) {
+        SkinManager.getInstance().loadSkin(skinName,
+                new ILoaderListener() {
+                    @Override
+                    public void onStart() {
+                        ZLogger.df("正在切换主题");
+//                        dialog.show();
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        ZLogger.df("切换主题成功");
+                        DialogUtil.showHint("切换租户成功");
+                    }
+
+                    @Override
+                    public void onFailed(String errMsg) {
+                        ZLogger.df("切换主题失败:" + errMsg);
+                        DialogUtil.showHint(errMsg);
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+                        ZLogger.d("主题皮肤文件下载中:" + progress);
+                    }
+                }
+
+        );
+
     }
 }

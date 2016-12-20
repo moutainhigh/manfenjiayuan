@@ -36,6 +36,7 @@ import com.mfh.framework.api.sms.EmbWxUserRegisterApi;
 import com.mfh.framework.api.sms.HumanAuthTempApi;
 import com.mfh.framework.api.stock.StockApi;
 import com.mfh.framework.api.subdist.SubdistApi;
+import com.mfh.framework.api.tenant.TenantApi;
 import com.mfh.framework.network.NetFactory;
 
 
@@ -44,6 +45,8 @@ import com.mfh.framework.network.NetFactory;
  * Created by bingshanguxue on 2015/6/11.
  */
 public class MfhApi implements ApiParams {
+    public static String URL_TENANT = NetFactory.getServerUrl();
+
     //UBS:默认从配置文件读取，也可以配置
     public static String URL_BASE_SERVER = NetFactory.getServerUrl();
     //网络电话
@@ -111,5 +114,6 @@ public class MfhApi implements ApiParams {
         InvSkuLabelApi.register();
         PosOrderApi.register();
         ScApi.register();
+        TenantApi.register();
     }
 }

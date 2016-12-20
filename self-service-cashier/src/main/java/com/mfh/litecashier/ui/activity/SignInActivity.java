@@ -17,17 +17,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.skinloader.base.SkinBaseActivity;
+import com.bingshanguxue.skinloader.listener.ILoaderListener;
+import com.bingshanguxue.skinloader.loader.SkinManager;
+import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.route.RouteActivity;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
-import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -142,8 +142,8 @@ public class SignInActivity extends SkinBaseActivity {
             }
         });
 
-        dynamicAddView(rootView, "background", R.color.colorPrimary);
-        dynamicAddView(btnSignin, "background", R.color.colorPrimary);
+//        dynamicAddView(rootView, "background", R.color.colorPrimary);
+//        dynamicAddView(btnSignin, "background", R.color.colorPrimary);
 
         refresh();
     }
@@ -195,7 +195,6 @@ public class SignInActivity extends SkinBaseActivity {
                 //登录成功
                 DialogUtil.showHint("登录成功");
 //                MainActivity.actionStart(SignInActivity.this, null);
-                ZLogger.df("login success.");
 
                 IMClient.getInstance().registerBridge();
 
@@ -206,7 +205,6 @@ public class SignInActivity extends SkinBaseActivity {
             @Override
             public void loginFailed(String errMsg) {
                 //登录失败
-                ZLogger.df("login failed : " + errMsg);
                 setProcessingStep(STEP_NA);
 //                DialogUtil.showHint(errMsg);
                 Snackbar.make(etUserName, errMsg, Snackbar.LENGTH_SHORT)
@@ -218,22 +216,13 @@ public class SignInActivity extends SkinBaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Route.ARC_APP_HOSTSERVER: {
+            case ResultCode.ARC_APP_HOSTSERVER: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
-                    if (hostServer != null) {
-//                        AppIconManager.changeIcon(SignInActivity.this, hostServer.getActivityAlias());
-
-                        SharedPrefesManagerBase.setHostServer(hostServer);
-                        MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
-                        MobileApi.DOMAIN = hostServer.getHost();
-//                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
-                        MfhApi.register();
-                        IMApi.register();
-
-                        refresh();
-                    }
+                    loadSkin(GlobalInstanceBase.getInstance().getSkinName());
                 }
+
+                //放在最后，如果没有选择租户，还会自动弹出租户页面
+                refresh();
             }
             break;
         }
@@ -256,10 +245,26 @@ public class SignInActivity extends SkinBaseActivity {
         HostServer hostServer = SharedPrefesManagerBase.getHostServer();
         if (hostServer == null){
             ivHostServer.setImageResource(R.mipmap.ic_launcher);
+            redirect2HostServer();
         }
         else{
-            ivHostServer.setImageResource(hostServer.getTextLogoResId());
+            ivHostServer.setImageResource(getImageResource(hostServer.getDomainUrl()));
         }
+    }
+    private int getImageResource(String domain){
+        if (!StringUtils.isEmpty(domain)){
+            if (domain.startsWith("admin")){
+                return R.mipmap.ic_textlogo_mixicook;
+            }
+            else if (domain.startsWith("lanlj")){
+                return R.mipmap.ic_textlogo_lanlj;
+            }
+            else if (domain.startsWith("qianwj")){
+                return R.mipmap.ic_textlogo_qianwj;
+            }
+        }
+
+        return R.mipmap.ic_launcher;
     }
 
     @OnClick(R.id.tv_retrievePwd)
@@ -341,6 +346,40 @@ public class SignInActivity extends SkinBaseActivity {
         Intent intent = new Intent(this, RouteActivity.class);
         intent.putExtras(extras);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, Route.ARC_APP_HOSTSERVER);
+        startActivityForResult(intent, ResultCode.ARC_APP_HOSTSERVER);
+    }
+
+    /**
+     * 加载皮肤
+     * */
+    private void loadSkin(String skinName) {
+        SkinManager.getInstance().loadSkin(skinName,
+                new ILoaderListener() {
+                    @Override
+                    public void onStart() {
+                        ZLogger.df("正在切换主题");
+//                        dialog.show();
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        ZLogger.df("切换主题成功");
+                        DialogUtil.showHint("切换租户成功");
+                    }
+
+                    @Override
+                    public void onFailed(String errMsg) {
+                        ZLogger.df("切换主题失败:" + errMsg);
+                        DialogUtil.showHint(errMsg);
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+                        ZLogger.d("主题皮肤文件下载中:" + progress);
+                    }
+                }
+
+        );
+
     }
 }

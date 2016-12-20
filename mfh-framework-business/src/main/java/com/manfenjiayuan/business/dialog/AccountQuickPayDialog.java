@@ -77,8 +77,7 @@ public class AccountQuickPayDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private AccountQuickPayDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_quickpay_account, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_quickpay_account, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

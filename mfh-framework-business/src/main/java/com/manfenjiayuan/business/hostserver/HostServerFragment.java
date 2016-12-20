@@ -12,20 +12,24 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.skinloader.config.SkinConfig;
-import com.bingshanguxue.skinloader.listener.ILoaderListener;
-import com.bingshanguxue.skinloader.loader.SkinManager;
 import com.bingshanguxue.skinloader.utils.SkinFileUtils;
-import com.manfenjiayuan.business.AppIconManager;
+import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.R;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.tenant.SassInfo;
+import com.mfh.framework.api.tenant.TenantApi;
+import com.mfh.framework.api.tenant.TenantInfo;
+import com.mfh.framework.api.tenant.TenantMode;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.mvp.OnModeListener;
+import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,17 +39,16 @@ import java.util.List;
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class HostServerFragment extends BaseProgressFragment {
-    public static String EXTRA_KEY_MODE= "mode";
-    public static String EXTRA_KEY_HOSTSERVER= "hostServer";
+    public static String EXTRA_KEY_MODE = "mode";
+    public static String EXTRA_KEY_HOSTSERVER = "hostServer";
 
 
-//    @Bind(R.id.toolbar)
-//    Toolbar toolbar;
-//    @Bind(R.id.recyclerView)
+    //    @Bind(R.id.recyclerView)
     RecyclerView menuRecyclerView;
     private GridLayoutManager mRLayoutManager;
     private HostServerAdapter menuAdapter;
     private int mode = 0;
+    private TenantMode mTenantMode;
 
 
     public static HostServerFragment newInstance(Bundle args) {
@@ -77,38 +80,15 @@ public class HostServerFragment extends BaseProgressFragment {
             mode = args.getInt(EXTRA_KEY_MODE, 0);
         }
 
-//        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-//        toolbar.setTitle("选择租户");
-////        setSupportActionBar(toolbar);
-////        toolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
-////        toolbar.setNavigationOnClickListener(
-////                new View.OnClickListener() {
-////                    @Override
-////                    public void onClick(View v) {
-////                        getActivity().onBackPressed();
-////                    }
-////                });
-//        // Set an OnMenuItemClickListener to handle menu item clicks
-//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                // Handle the menu item
-//                int id = item.getItemId();
-//                if (id == R.id.action_close) {
-//                    getActivity().onBackPressed();
-//                }
-//                return true;
-//            }
-//        });
-//
-////        // Inflate a menu to be displayed in the toolbar
-//        toolbar.inflateMenu(R.menu.menu_normal);
+        mTenantMode = new TenantMode();
 
         menuRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
         initMenuRecyclerView();
 
         copySkinResources();
+
+        listWhole();
     }
 
     @Override
@@ -119,10 +99,9 @@ public class HostServerFragment extends BaseProgressFragment {
     }
 
     private void initMenuRecyclerView() {
-        if (mode == 1){
+        if (mode == 1) {
             mRLayoutManager = new GridLayoutManager(getActivity(), 4);
-        }
-        else{
+        } else {
             mRLayoutManager = new GridLayoutManager(getActivity(), 6);
         }
         menuRecyclerView.setLayoutManager(mRLayoutManager);
@@ -139,127 +118,91 @@ public class HostServerFragment extends BaseProgressFragment {
         menuAdapter.setOnAdapterLitener(new HostServerAdapter.AdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                HostServer entity = menuAdapter.getEntity(position);
+                TenantInfo entity = menuAdapter.getEntity(position);
 
                 updateHostserver(entity);
             }
         });
         menuRecyclerView.setAdapter(menuAdapter);
-        menuAdapter.setEntityList(getAdminMenus());
+//        menuAdapter.setEntityList(getAdminMenus());
+    }
+
+    private void listWhole() {
+        mTenantMode.listWhole(TenantApi.BizDomainType.RETAIL, TenantApi.DomainUrlType.NORMAL,
+                null, new OnPageModeListener<TenantInfo>() {
+                    @Override
+                    public void onProcess() {
+                        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+                    }
+
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<TenantInfo> dataList) {
+                        if (pageInfo == null || pageInfo.getPageNo() == 1) {
+                            menuAdapter.setEntityList(dataList);
+                        } else {
+                            menuAdapter.appendEntityList(dataList);
+                        }
+                        hideProgressDialog();
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        hideProgressDialog();
+                        DialogUtil.showHint(errorMsg);
+//                        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "errorMsg", true);
+                    }
+                });
+    }
+
+    private void updateHostserver(final TenantInfo tenantInfo) {
+        if (tenantInfo == null) {
+            return;
+        }
+        ZLogger.df("选择租户：" + JSON.toJSONString(tenantInfo));
+
+        String requestUrl = String.format("http://%s/pmc/tenantInfo/getSaasInfo",
+                tenantInfo.getId());
+        mTenantMode.getSaasInfo(requestUrl,
+                tenantInfo.getSaasId(), new OnModeListener<SassInfo>() {
+                    @Override
+                    public void onProcess() {
+                        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+                    }
+
+                    @Override
+                    public void onSuccess(SassInfo sassInfo) {
+                        GlobalInstanceBase.getInstance().updateHostServer(tenantInfo, sassInfo);
+
+                        hideProgressDialog();
+
+                        Intent intent = new Intent();
+//                        intent.putExtra("hostServer", hostServer);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onError(String errorMsg) {
+                        ZLogger.ef(errorMsg);
+                        hideProgressDialog();
+                        DialogUtil.showHint(errorMsg);
+                    }
+                });
     }
 
     /**
-     * 获取菜单
+     * 拷贝皮肤资源
      */
-    public synchronized List<HostServer> getAdminMenus() {
-        List<HostServer> functionalList = new ArrayList<>();
-        String packageName = MfhApplication.getAppContext().getPackageName();
-        if ("com.manfenjiayuan.pda_supermarket".equals(packageName)){
-            functionalList.add(new HostServer(134342L,
-                    "米西厨房", "admin.mixicook.com",
-                    "http://admin.mixicook.com/pmc",
-                    R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_launcher_mixicook,
-                    AppIconManager.ACTIVITY_ALIAS_MIXICOOK, "mixicook.skin"));
-            functionalList.add(new HostServer(137039L,
-                    "满分邻居", "lanlj.mixicook.com",
-                    "http://lanlj.mixicook.com/pmc",
-                    R.mipmap.ic_textlogo_lanlj, R.mipmap.ic_launcher_lanlj,
-                    AppIconManager.ACTIVITY_ALIAS_LANLJ, "lanlj.skin"));
-            functionalList.add(new HostServer(137143L,
-                    "千万加", "qianwj.mixicook.com",
-                    "http://qianwj.mixicook.com/pmc",
-                    R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_qianwj,
-                    AppIconManager.ACTIVITY_ALIAS_QIANWJ, "qianwj.skin"));
-        }
-        else if ("com.mfh.litecashier".equals(packageName)){
-            functionalList.add(new HostServer(134342L,
-                    "米西厨房", "admin.mixicook.com",
-                    "http://admin.mixicook.com/pmc",
-                    R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_launcher_mixicook,
-                    AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin"));
-            functionalList.add(new HostServer(137039L,
-                    "满分邻居", "lanlj.mixicook.com",
-                    "http://lanlj.mixicook.com/pmc",
-                    R.mipmap.ic_textlogo_lanlj, R.mipmap.ic_launcher_lanlj,
-                    AppIconManager.ACTIVITY_ALIAS_CASHIER_LANLJ, "lanlj.skin"));
-            functionalList.add(new HostServer(137143L,
-                    "千万加", "qianwj.mixicook.com",
-                    "http://qianwj.mixicook.com/pmc",
-                    R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_qianwj,
-                    AppIconManager.ACTIVITY_ALIAS_CASHIER_QIANWJ, "qianwj.skin"));
-            if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-                functionalList.add(new HostServer(134342L,
-                        "米西厨房-测试", "dev.mixicook.com",
-                        "http://dev.mixicook.com/pmc",
-                        R.mipmap.ic_textlogo_qianwj, R.mipmap.ic_launcher_mixicook,
-                        AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin"));
-            }
-        }
-
-        return functionalList;
-    }
-
-    private void updateHostserver(final HostServer hostServer){
-        if (hostServer == null){
-            return;
-        }
-        ZLogger.d("选择域名服务：" + JSON.toJSONString(hostServer));
-
-        //切换皮肤
-        SkinManager.getInstance().loadSkin(hostServer.getSkinName(),
-                new ILoaderListener() {
-                    @Override
-                    public void onStart() {
-                        ZLogger.d("正在切换主题");
-//                        dialog.show();
-                        Intent data = new Intent();
-                        data.putExtra("hostServer", hostServer);
-                        getActivity().setResult(Activity.RESULT_OK, data);
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    public void onSuccess() {
-                        ZLogger.d("切换主题成功");
-                        DialogUtil.showHint("切换租户成功");
-//                        dialog.dismiss();
-                        Intent data = new Intent();
-                        data.putExtra("hostServer", hostServer);
-                        getActivity().setResult(Activity.RESULT_OK, data);
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    public void onFailed(String errMsg) {
-                        ZLogger.d("切换主题失败:" + errMsg);
-                        DialogUtil.showHint(errMsg);
-//                        dialog.dismiss();
-                        Intent data = new Intent();
-                        data.putExtra("hostServer", hostServer);
-                        getActivity().setResult(Activity.RESULT_OK, data);
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-                        ZLogger.d("主题皮肤文件下载中:" + progress);
-                    }
-                }
-
-        );
-    }
-
-    private void copySkinResources(){
+    private void copySkinResources() {
         try {
             String[] skinFiles = MfhApplication.getAm().list(SkinConfig.SKIN_DIR_NAME);
             for (String fileName : skinFiles) {
                 File file = new File(SkinFileUtils.getSkinDir(MfhApplication.getAppContext()), fileName);
-                if (!file.exists()){
+                if (!file.exists()) {
                     ZLogger.d("拷贝皮肤文件:" + fileName);
                     SkinFileUtils.copySkinAssetsToDir(MfhApplication.getAppContext(), fileName,
                             SkinFileUtils.getSkinDir(MfhApplication.getAppContext()));
-                }
-                else{
+                } else {
                     ZLogger.d("已经安装过皮肤文件:" + fileName);
                 }
             }
@@ -268,5 +211,4 @@ public class HostServerFragment extends BaseProgressFragment {
             ZLogger.e(e.toString());
         }
     }
-
 }

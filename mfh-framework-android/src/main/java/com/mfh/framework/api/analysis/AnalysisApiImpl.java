@@ -42,7 +42,7 @@ public class AnalysisApiImpl extends AnalysisApi {
         params.put("wrapper", "true");
         params.put("shiftId", String.valueOf(shiftId));
         params.put("aggDate", aggDate);
-        params.put("createdBy", String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        params.put("createdBy", String.valueOf(MfhLoginService.get().getHumanId()));
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_ANALYSIS_AGGSHIFT, params, responseCallback);
@@ -58,7 +58,7 @@ public class AnalysisApiImpl extends AnalysisApi {
         params.put("wrapper", "true");
         params.put("shiftId", String.valueOf(shiftId));
         params.put("aggDate", aggDate);
-        params.put("createdBy", String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        params.put("createdBy", String.valueOf(MfhLoginService.get().getHumanId()));
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_ACCANALYSIS_AGGSHIFT, params, responseCallback);

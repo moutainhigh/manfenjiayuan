@@ -34,6 +34,7 @@ public abstract class RegularAdapter<D, VH extends RecyclerView.ViewHolder>
         super.onViewRecycled(holder);
     }
 
+
     public List<D> getEntityList() {
         return entityList;
     }

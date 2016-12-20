@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
  * Created by bingshanguxue on 5/24/16.
  */
 public class UserApiImpl extends UserApi {
+
     public static void validSession(AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
@@ -32,7 +33,8 @@ public class UserApiImpl extends UserApi {
      * @param newPwd 新密码
      * 注：确认新密码在调用接口前做处理，默认确认新密码和新密码相同。
      * */
-    public static void updateUserPassword(Long humanId, String oldPwd, String newPwd, AjaxCallBack<? extends Object> responseCallback){
+    public static void updateUserPassword(Long humanId, String oldPwd, String newPwd,
+                                          AjaxCallBack<? extends Object> responseCallback){
         AjaxParams params = new AjaxParams();
         params.put("humanId", String.valueOf(humanId));
         params.put("oldPwd", oldPwd);
@@ -152,6 +154,27 @@ public class UserApiImpl extends UserApi {
         params.put("paramName", paramName);
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_GET_MYPARAMVALUE, params, responseCallback);
+    }
+
+    /**
+     * 获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息
+     * */
+    public static void getPartner(Long humanId, AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        if (humanId != null){
+            params.put("humanId", String.valueOf(humanId));
+        }
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.getHttp(true).post(URL_HUMANABILITY_GETPARTER, params, responseCallback);
+    }
+
+    /**
+     * 获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息
+     * */
+    public static void queryPrivList(AjaxCallBack<? extends Object> responseCallback) {
+        AjaxParams params = new AjaxParams();
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        AfinalFactory.getHttp(true).post(URL_QUERY_PRIVLIST, params, responseCallback);
     }
 
 }

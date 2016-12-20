@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.manfenjiayuan.business.R;
+import com.mfh.framework.api.tenant.TenantInfo;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -17,9 +19,9 @@ import java.util.List;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
 public class HostServerAdapter
-        extends RegularAdapter<HostServer, HostServerAdapter.MenuOptioinViewHolder> {
+        extends RegularAdapter<TenantInfo, HostServerAdapter.MenuOptioinViewHolder> {
 
-    public HostServerAdapter(Context context, List<HostServer> entityList) {
+    public HostServerAdapter(Context context, List<TenantInfo> entityList) {
         super(context, entityList);
     }
 
@@ -41,10 +43,10 @@ public class HostServerAdapter
 
     @Override
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
-        final HostServer entity = entityList.get(position);
+        final TenantInfo entity = entityList.get(position);
 
-        holder.ivHeader.setImageResource(entity.getImgLogoResId());
-        holder.tvName.setText(entity.getName());
+        holder.ivHeader.setImageResource(getImageResource(entity.getId()));
+        holder.tvName.setText(entity.getSaasName());
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
@@ -74,6 +76,22 @@ public class HostServerAdapter
             });
 
         }
+    }
+
+    private int getImageResource(String domain){
+        if (!StringUtils.isEmpty(domain)){
+            if (domain.startsWith("admin")){
+                return R.mipmap.ic_launcher_mixicook;
+            }
+            else if (domain.startsWith("lanlj")){
+                return R.mipmap.ic_launcher_lanlj;
+            }
+            else if (domain.startsWith("qianwj")){
+                return R.mipmap.ic_launcher_qianwj;
+            }
+        }
+
+        return R.mipmap.ic_launcher;
     }
 
 }

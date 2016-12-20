@@ -3,10 +3,12 @@ package com.mfh.framework.login;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.mfh.framework.prefs.SharedPrefesUltimate;
+
 /**
  * Created by bingshanguxue on 16/3/17.
  */
-public class MfhLoginPreferences {
+public class MfhLoginPreferences extends SharedPrefesUltimate {
     //保存上一次用户登录信息
     public static String PREF_NAME_LAST_LOGIN = "login_history";
     public static final String PK_LAST_USERNAME = "last_username";
@@ -15,44 +17,37 @@ public class MfhLoginPreferences {
     public static final String PK_LAST_SPID = "last_spid";
 
     public static SharedPreferences getLastLoginPreferences(Context context) {
-        SharedPreferences pre = context.getSharedPreferences(PREF_NAME_LAST_LOGIN,
-                Context.MODE_PRIVATE);//MODE_MULTI_PROCESS
-        return pre;
+        return getSharedPreferences(context, PREF_NAME_LAST_LOGIN);
     }
 
     //保存当前用户登录信息
-    public static String PREF_NAME_LOGIN = "login";
-    public static final String PK_USERNAME = "username";
-    public static final String PK_PASSWORD = "password";
-    public static final String PK_LOGIN_USERNAME = "app.login.name";
-    public static final String PK_LOGIN_PASSWORD = "app.login.password";
-    public static final String PK_LOGIN_SPID = "app.spid";
-    public static final String PK_LOGIN_OFFICEID = "app.office.id";
-    public static final String PK_LOGIN_USER_GUID = "profile.guid";
-    public static final String PK_LOGIN_USER_CPID = "profile.cpid";//channel point id = cpid
-    public static final String PK_LOGIN_USER_TELEPHONE = "app.telephone";
-    public static final String PK_LOGIN_HTTP_COOKIE = "app.http.cookie";
-    public static final String PK_LOGIN_USER_SUBDIS_ID = "app.user.subdisid";
-    public static final String PK_LOGIN_USER_ID = "app.user.id";
-    public static final String PK_LOGIN_USER_MODULES = "app.user.modules";
-    public static final String PK_LOGIN_USER_SUBDIS_NAME = "app.subdisName";
-    public static final String PK_LOGIN_SESSION_DATE = "app.session.date";
-    public static final String PK_LOGIN_USER_HUMANNAME = "app.user.humanName";
-    public static final String PK_LOGIN_USER_HEADIMAGE = "app.headimage";
-    public static final String PK_I_USER_SEX = "user_sex";
-    public static final String PK_LOGIN_USER_STOCKI_DS = "app.user.stock_ids";
-    public static final String PK_LOGIN_USER_CURRENT_STOCKID = "app.user.current.stock.id";
-    public static final String PK_LOGIN_USER_CURRENT_OFFICE_NAME = "app.user.current.office.name";
-    public static final String PK_LOGIN_USER_OFFICES = "app.user.offices";
-    public static final String PK_LAST_SESSION_ID = "last_session_id";
+    public static String PREF_NAME_LOGIN = "pref_login";
+    public static final String PK_USERNAME = "PK_USERNAME";//登录用户名
+    public static final String PK_PASSWORD = "PK_PASSWORD";//登录密码
+    public static final String PK_SPID = "PK_SPID";
+    public static final String PK_GUID = "PK_GUID";
+    public static final String PK_HUMAN_ID = "PK_HUMAN_ID";
+    public static final String PK_HUMAN_NAME = "PK_HUMAN_NAME";//用户昵称
+    public static final String PK_OWNER_ID = "PK_OWNER_ID";
+    public static final String PK_CPID = "PK_CPID";//channel point id = cpid
+    public static final String PK_TELEPHONE = "PK_TELEPHONE";
+    public static final String PK_COOKIE = "PK_COOKIE";
+    public static final String PK_SUBDIS_IDS = "PK_SUBDIS_IDS";
+    public static final String PK_SUBDIS_NAMES = "PK_SUBDIS_NAMES";
+    public static final String PK_USER_ID = "PK_USER_ID";
+    public static final String PK_MODULE_NAMES = "PK_MODULE_NAMES";
+    public static final String PK_SESSION_DATE = "PK_SESSION_DATE";
+    public static final String PK_HEAD_IMAGE = "PK_HEAD_IMAGE";
+    public static final String PK_SEX = "PK_SEX";
+    public static final String PK_STOCK_IDS = "PK_STOCK_IDS";
+    public static final String PK_STOCK_CURRENT_ID = "PK_STOCK_CURRENT_ID";
+    public static final String PK_OFFICE_CURRENT_ID = "PK_OFFICE_CURRENT_ID";
+    public static final String PK_OFFICE_CURRENT_NAME = "PK_OFFICE_CURRENT_NAME";
+    public static final String PK_OFFICES = "PK_OFFICES";
+    public static final String PK_SESSION_ID = "PK_SESSION_ID";
 
     public static SharedPreferences getLoginPreferences(Context context) {
-        if (context == null){
-            return null;
-        }
-        SharedPreferences pre = context.getSharedPreferences(PREF_NAME_LOGIN,
-                Context.MODE_PRIVATE);//MODE_MULTI_PROCESS
-        return pre;
+        return getSharedPreferences(context, PREF_NAME_LOGIN);
     }
 
     /**
