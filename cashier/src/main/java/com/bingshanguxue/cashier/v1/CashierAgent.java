@@ -32,7 +32,6 @@ import java.util.Map;
  * Created by bingshanguxue on 7/6/16.
  */
 public class CashierAgent {
-
     /**
      * 查询订单
      */
@@ -43,17 +42,6 @@ public class CashierAgent {
         if (entities != null && entities.size() > 0) {
             return entities.get(0);
         }
-        return null;
-    }
-
-    public static PosOrderEntity fetchOrderEntity(Integer bizType, int status) {
-        String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",
-                MfhLoginService.get().getSpid(), bizType, status);
-        List<PosOrderEntity> entities = PosOrderService.get().queryAllBy(sqlOrder);
-        if (entities != null && entities.size() > 0) {
-            return entities.get(0);
-        }
-
         return null;
     }
 
@@ -95,22 +83,26 @@ public class CashierAgent {
     /**
      * 订单结算（后台拆分订单）
      *
-     * @param orderBarCode     订单交易流水条码
+     * @param orderBarCode 本地订单交易流水条码
+     * @param outTradeNo 外部订单编号
      * @param shopcartEntities 订单明细
      */
-    public static boolean simpleSettle(String orderBarCode, List<CashierShopcartEntity> shopcartEntities) {
-        //保存or更新订单
-        PosOrderEntity orderEntity = fetchOrderEntity(BizType.POS, orderBarCode);
+    private static boolean simpleSettle(Integer bizType, Integer subType,
+                                        String orderBarCode, String outTradeNo,
+                                        List<CashierShopcartEntity> shopcartEntities) {
+        PosOrderEntity orderEntity = fetchOrderEntity(bizType, orderBarCode);
         if (orderEntity == null) {
             orderEntity = new PosOrderEntity();
             orderEntity.setSellerId(MfhLoginService.get().getSpid());// 需要登录
-            orderEntity.setBizType(BizType.POS);
+            orderEntity.setBizType(bizType);
             orderEntity.setBarCode(orderBarCode);
             orderEntity.setSellOffice(MfhLoginService.get().getCurOfficeId());
-            orderEntity.setCreatedBy(String.valueOf(MfhLoginService.get().getCurrentGuId()));
+            orderEntity.setCreatedBy(MfhLoginService.get().getGuid());
             orderEntity.setPosId(SharedPrefesManagerFactory.getTerminalId());//设备编号
             orderEntity.setCreatedDate(new Date());
         }
+        orderEntity.setSubType(subType);
+        orderEntity.setOuterTradeNo(outTradeNo);
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);//订单状态
         orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
@@ -208,7 +200,6 @@ public class CashierAgent {
         return cashierOrderInfo;
     }
 
-
     /**
      * 生成结算信息
      * @param orderEntity
@@ -298,7 +289,7 @@ public class CashierAgent {
 
         Human human = new Human();
         human.setId(MfhLoginService.get().getUserId());
-        human.setGuid(String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        human.setGuid(String.valueOf(MfhLoginService.get().getGuid()));
         human.setHeadimageUrl(MfhLoginService.get().getHeadimage());
 
         //当前收银信息
@@ -321,12 +312,12 @@ public class CashierAgent {
     /**
      * 结算
      */
-    public static CashierOrderInfo settle(String orderBarCode, int status,
+    public static CashierOrderInfo settle(Integer bizType, Integer subType, String orderBarCode,
+                                          String outTradeNo, int status,
                                           List<CashierShopcartEntity> shopcartEntities) {
         //创建or更新订单，保存or更新订单明细
-        simpleSettle(orderBarCode, shopcartEntities);
-        CashierOrderInfo cashierOrderInfo = makeCashierOrderInfo(BizType.POS,
-                orderBarCode, null);
+        simpleSettle(bizType, subType, orderBarCode, outTradeNo, shopcartEntities);
+        CashierOrderInfo cashierOrderInfo = makeCashierOrderInfo(BizType.POS, orderBarCode, null);
         // 7/5/16  修复初始状态，订单金额为空的问题。
         updateCashierOrder(cashierOrderInfo, status);
 
@@ -336,8 +327,8 @@ public class CashierAgent {
     /**
      * 调单1
      */
-    public static List<PosOrderItemEntity> resume(String orderBarCode) {
-        PosOrderEntity orderEntity = fetchOrderEntity(BizType.POS, orderBarCode);
+    public static List<PosOrderItemEntity> resume(Integer bizType, String orderBarCode) {
+        PosOrderEntity orderEntity = fetchOrderEntity(bizType, orderBarCode);
         if (orderEntity == null) {
             return null;
         }
@@ -377,7 +368,7 @@ public class CashierAgent {
         Human human = cashierOrderInfo.getVipMember();
         if (human != null) {
             orderEntity.setHumanId(human.getId());
-            orderEntity.setScore(0D);//会员积分
+//            orderEntity.setScore(0D);//会员积分
         }
 
         //支付完成

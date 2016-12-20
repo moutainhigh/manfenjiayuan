@@ -6,7 +6,6 @@ import com.bingshanguxue.cashier.model.OrderMarketRules;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
-import com.bingshanguxue.cashier.v2.CashierOrderItemInfo;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
@@ -209,21 +208,6 @@ public class CashierOrderInfo implements java.io.Serializable {
     public void setPayType(Integer payType) {
         this.payType = payType;
     }
-
-    /**
-     * 初始化快捷支付
-     *
-     * @param bizType                业务类型
-     * @param orderBarCode           订单编号（日结：机器设备号_日期）
-     * @param cashierOrderItemInfo   订单结算信息
-     *                               TOTO,修改支付类型和已结算金额
-     */
-    public void initQuickPayment(Integer bizType, String orderBarCode,
-                                 CashierOrderItemInfo cashierOrderItemInfo,
-                                 String subject, Human vipMember) {
-
-    }
-
 
     /**
      * 保存卡券和促销规则

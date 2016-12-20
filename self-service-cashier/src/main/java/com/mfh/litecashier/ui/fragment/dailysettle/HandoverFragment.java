@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.components;
+package com.mfh.litecashier.ui.fragment.dailysettle;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.network.NetCallBack;
@@ -29,7 +30,6 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
-import com.mfh.litecashier.bean.wrapper.HandOverBill;
 import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
@@ -44,7 +44,7 @@ import butterknife.OnClick;
 
 /**
  * <h>交接班</h><br>
- * {@link com.mfh.litecashier.bean.wrapper.HandOverBill}<br>
+ * {@link HandOverBill}<br>
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class HandoverFragment extends BaseProgressFragment {
@@ -134,37 +134,6 @@ public class HandoverFragment extends BaseProgressFragment {
         getActivity().finish();
     }
 
-
-
-//    @OnClick(R.id.label_endDate)
-//    public void changeEndDate() {
-//        final Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(handOverBill.getEndDate());
-//
-//        if (dateTimePickerDialog == null) {
-//            dateTimePickerDialog = new DateTimePickerDialog(getActivity());
-//            dateTimePickerDialog.setCancelable(true);
-//            dateTimePickerDialog.setCanceledOnTouchOutside(true);
-//        }
-//        dateTimePickerDialog.init(calendar, new DateTimePickerDialog.OnDateTimeSetListener() {
-//            @Override
-//            public void onDateTimeSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minute) {
-//
-//                calendar.set(Calendar.YEAR, year);
-//                calendar.set(Calendar.MONTH, monthOfYear);
-//                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//                calendar.set(Calendar.MINUTE, minute);
-//                handOverBill.setEndDate(calendar.getTime());
-//                labelEndDate.setLabelText(TimeCursor.InnerFormat.format(calendar.getTime()));
-//            }
-//        });
-//        if (!dateTimePickerDialog.isShowing()) {
-//            dateTimePickerDialog.show();
-//        }
-//    }
-
-
     /**
      * 确定交接班
      */
@@ -249,19 +218,20 @@ public class HandoverFragment extends BaseProgressFragment {
         tvHeaderTitle.setText(String.format("交接班 (班次：%d)", handOverBill.getShiftId()));
         tvOfficeName.setText(String.format("门店：%s", handOverBill.getOfficeName()));
         tvHumanName.setText(String.format("交班人：%s", handOverBill.getHumanName()));
-        tvHandoverDateTime.setText(String.format("交班时间：%s", TimeCursor.InnerFormat.format(handOverBill.getEndDate())));
+        tvHandoverDateTime.setText(String.format("交班时间：%s",
+                TimeCursor.InnerFormat.format(handOverBill.getEndDate())));
         tvAmount.setText(String.format("营业额合计：%.2f", handOverBill.getAmount()));
-        tvIncome.setText(String.format("账户新增：%.2f", handOverBill.getIncome()));
+        tvIncome.setText(String.format("账户新增：%.2f", handOverBill.getAmount() - handOverBill.getCash()));
         tvCash.setText(String.format("现金收取：%.2f", handOverBill.getCash()));
 
         //显示数据
         if (aggListAdapter != null) {
-            aggListAdapter.setEntityList(handOverBill.getAggAnalysisList());
+            aggListAdapter.setEntityList(AnalysisHelper.getAggItemsWrapper(handOverBill.getAggItems()));
         }
 
         //显示数据
         if (accListAdapter != null) {
-            accListAdapter.setEntityList(handOverBill.getAccAnalysisList());
+            accListAdapter.setEntityList(AnalysisHelper.getAccAnalysisList(handOverBill.getAccItems()));
         }
 
     }
@@ -418,14 +388,19 @@ public class HandoverFragment extends BaseProgressFragment {
 
     private void saveAccData(RspQueryResult<AccItem> rs){
         ZLogger.d("保存交接班流水分析数据");
+        Double cash = 0D;
         List<AccItem> entityList = new ArrayList<>();
         if (rs != null && rs.getReturnNum() > 0) {
             for (EntityWrapper<AccItem> wrapper : rs.getRowDatas()) {
                 AccItem accItem = wrapper.getBean();
                 accItem.setPayTypeCaption(wrapper.getPropCaption("payType"));
                 entityList.add(accItem);
+                if (accItem.getPayType().equals(WayType.CASH)){
+                    cash = accItem.getAmount();
+                }
             }
         }
+        handOverBill.setCash(cash);
         handOverBill.setAccItems(entityList);
 
         refresh();

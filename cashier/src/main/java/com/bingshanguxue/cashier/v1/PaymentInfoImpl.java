@@ -8,7 +8,7 @@ import com.mfh.framework.api.account.Human;
 /**
  * Created by bingshanguxue on 7/7/16.
  */
-public class PaymentInfoImpl{
+public class PaymentInfoImpl {
 
     /**
      * 订单支付记录

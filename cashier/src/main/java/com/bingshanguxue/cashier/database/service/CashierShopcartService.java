@@ -11,6 +11,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -133,7 +134,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             return;
         }
 
-        if (!BizConfig.RELEASE){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted() && !BizConfig.RELEASE){
             ZLogger.d(String.format("添加商品到收银台:\n" +
                     "orderBarcode=%s\n" +
                     "orderDiscount=%.0f%%\n" +
