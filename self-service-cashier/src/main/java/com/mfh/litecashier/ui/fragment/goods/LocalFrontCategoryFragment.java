@@ -8,12 +8,14 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
@@ -34,12 +36,15 @@ import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * POS-本地前台类目
@@ -116,6 +121,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
         ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
@@ -155,7 +161,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     }
 
     private void reload() {
-        try{
+        try {
             Long oldCategoryId = null;
             int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
             ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
@@ -181,12 +187,12 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             int tabCount = categoryGoodsPagerAdapter.getCount();
             int newIndex = 0;
             Long newCategoryId = null;
-            for (int i = 0; i < tabCount; i++){
+            for (int i = 0; i < tabCount; i++) {
                 ViewPageInfo tab = categoryGoodsPagerAdapter.getTab(i);
                 if (tab != null) {
                     Long categoryId = tab.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
                     ZLogger.d(String.format("check id=%d, index=%d", categoryId, i));
-                    if (ObjectsCompact.equals(oldCategoryId, categoryId)){
+                    if (ObjectsCompact.equals(oldCategoryId, categoryId)) {
                         newCategoryId = categoryId;
                         newIndex = i;
                         break;
@@ -199,8 +205,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             mCategoryGoodsViewPager.setCurrentItem(newIndex, false);
 
             notifyDataChanged(newIndex);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ZLogger.ef(e.toString());
         }
     }
@@ -274,7 +279,8 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                             Long code = Long.valueOf(result);
                             ZLogger.df("新建前台类目成功:" + code);
 
-                            DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
+                            //后台发送消息触发同步
+//                            DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
                         }
 
                     } catch (Exception e) {
@@ -307,18 +313,148 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             mModifyLocalCategoryDialog.setCancelable(false);
         }
 
-        mModifyLocalCategoryDialog.init(categoryEntity, new ModifyLocalCategoryDialog.DialogListener() {
-            @Override
-            public void onComplete() {
-                reload();
+        mModifyLocalCategoryDialog.init(categoryEntity, categoryEntity.getName(),
+                new ModifyLocalCategoryDialog.DialogListener() {
+                    @Override
+                    public void onUpdate(PosLocalCategoryEntity categoryEntity, String nameCn) {
+                        doUpdate(categoryEntity, nameCn);
+                    }
 
-                //删除或修改类目成功客户端主动去同步数据
-                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
-            }
-        });
+                    @Override
+                    public void onDelete(PosLocalCategoryEntity categoryEntity) {
+                        doDelete(categoryEntity);
+                    }
+                });
 
         if (!mModifyLocalCategoryDialog.isShowing()) {
             mModifyLocalCategoryDialog.show();
         }
+    }
+
+    /**
+     * 修改栏目名称
+     */
+    private void doUpdate(final PosLocalCategoryEntity categoryEntity, final String nameCn) {
+        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("创建前台类目失败, " + errMsg);
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"删除成功!","version":"1","data":""}
+                        //新建类目成功，保存类目信息，并触发同步。
+                        try {
+//                            if (rspData == null) {
+//                                return;
+//                            }
+//
+//                            RspValue<String> retValue = (RspValue<String>) rspData;
+//                            String result = retValue.getValue();
+//                            Long code = Long.valueOf(result);
+
+                            //本地先假修改，后台数据更新后再去同步
+                            categoryEntity.setName(nameCn);
+                            PosLocalCategoryService.get().saveOrUpdate(categoryEntity);
+                            DialogUtil.showHint("修改成功");
+
+                            reload();
+
+                            //删除或修改类目成功客户端主动去同步数据
+//                            DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
+
+                            hideProgressDialog();
+
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        if (categoryEntity == null) {
+            DialogUtil.showHint("类目无效");
+            return;
+        }
+
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", categoryEntity.getId());
+        jsonObject.put("nameCn", nameCn);
+        jsonObject.put("catePosition", CateApi.CATE_POSITION_FRONT);
+        jsonObject.put("tenantId", MfhLoginService.get().getSpid());
+        ScCategoryInfoApi.update(jsonObject.toJSONString(), responseRC);
+    }
+
+    /**
+     * 删除栏目
+     */
+    private void doDelete(final PosLocalCategoryEntity categoryEntity) {
+        if (categoryEntity == null) {
+            DialogUtil.showHint("类目无效");
+            return;
+        }
+
+        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
+                NetProcessor.Processor<String>>(
+                new NetProcessor.Processor<String>() {
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.df("创建前台类目失败, " + errMsg);
+                    }
+
+                    @Override
+                    public void processResult(IResponseData rspData) {
+//                        {"code":"0","msg":"删除成功!","version":"1","data":""}
+                        //新建类目成功，保存类目信息，并触发同步。
+                        try {
+//                            if (rspData == null) {
+//                                return;
+//                            }
+//
+//                            RspValue<String> retValue = (RspValue<String>) rspData;
+//                            String result = retValue.getValue();
+//                            Long code = Long.valueOf(result);
+
+                            //本地假删除
+                            PosLocalCategoryService.get().deleteById(String.valueOf(categoryEntity.getId()));
+                            DialogUtil.showHint("删除成功");
+                            reload();
+
+                            //删除或修改类目成功客户端主动去同步数据
+//                            DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
+                        } catch (Exception e) {
+                            ZLogger.ef(e.toString());
+                        }
+                        hideProgressDialog();
+                    }
+                }
+                , String.class
+                , CashierApp.getAppContext()) {
+        };
+
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+
+        ScCategoryInfoApi.delete(categoryEntity.getId(), responseRC);
     }
 }

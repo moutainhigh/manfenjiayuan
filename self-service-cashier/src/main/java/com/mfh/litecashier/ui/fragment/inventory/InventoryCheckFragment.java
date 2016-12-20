@@ -17,33 +17,37 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
 import com.mfh.framework.api.invCheckOrder.InvCheckOrderApi;
 import com.mfh.framework.api.invCheckOrder.InvCheckOrderApiImpl;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.network.AfinalFactory;
-import com.mfh.framework.uikit.base.BaseFragment;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
+import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.invCheckOrder.InvCheckOrder;
 import com.mfh.litecashier.bean.InvCheckOrderItem;
 import com.mfh.litecashier.bean.ReceivableOrderDetail;
 import com.mfh.litecashier.event.StockCheckEvent;
 import com.mfh.litecashier.ui.adapter.StockCheckGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.StockCheckOrderAdapter;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
-import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +55,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 库存－－库存盘点
@@ -307,6 +310,7 @@ public class InventoryCheckFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(StockCheckEvent event) {
         ZLogger.d(String.format("InventoryCheckFragment: StockCheckEvent(%d)", event.getEventId()));
         if (event.getEventId() == StockCheckEvent.EVENT_ID_RELOAD_DATA) {

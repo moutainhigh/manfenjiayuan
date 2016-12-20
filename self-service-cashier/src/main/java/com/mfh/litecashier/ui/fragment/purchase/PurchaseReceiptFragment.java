@@ -36,11 +36,14 @@ import com.mfh.litecashier.event.PurchaseReceiptEvent;
 import com.mfh.litecashier.ui.adapter.PurchaseReceiptGoodsAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 采购－采购收货
@@ -173,6 +176,7 @@ public class PurchaseReceiptFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PurchaseReceiptEvent event) {
         ZLogger.d(String.format("PurchaseReceiptFragment: PurchaseReceiptEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == PurchaseReceiptEvent.EVENT_ID_RELOAD_DATA) {

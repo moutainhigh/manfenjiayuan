@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -66,12 +66,15 @@ import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.CashierHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 手动订货&智能订货
@@ -111,7 +114,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     TextView emptyView;
 
     @BindView(R.id.fab_shopcart)
-    FloatingActionButton fabShopcart;
+    ImageButton fabShopcart;
 
     private List<CategoryOption> rootOptions = new ArrayList<>();
     //使用ArrayMap替代HashMap,提高效率
@@ -693,6 +696,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         categoryRecyclerView.setAdapter(categoryListAdapter);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
         ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED) {
@@ -701,6 +705,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PurchaseShopcartSyncEvent event) {
         ZLogger.d(String.format("PurchaseShopcartSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == PurchaseShopcartSyncEvent.EVENT_ID_DATASET_CHANGED

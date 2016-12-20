@@ -220,8 +220,8 @@ public class MessageFragment extends BaseFragment {
                 chatMessageAdapter.appendEntity(result);
             }
         };
-        EmbMsgService.getInstance().sendMessageToPeople(MfhLoginService.get().getCurrentGuId(),
-                MfhLoginService.get().getCurrentGuId(), new TextParam(message), processor);
+        EmbMsgService.getInstance().sendMessageToPeople(MfhLoginService.get().getGuidLong(),
+                MfhLoginService.get().getGuidLong(), new TextParam(message), processor);
     }
 
     private void initTabs() {

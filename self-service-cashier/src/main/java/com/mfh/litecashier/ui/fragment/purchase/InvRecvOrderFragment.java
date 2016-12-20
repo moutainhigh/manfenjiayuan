@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -27,11 +27,14 @@ import com.mfh.litecashier.event.PurchaseReceiptEvent;
 import com.mfh.litecashier.ui.adapter.InvRecvOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 采购收货－待审核/待收货/已收货
@@ -153,6 +156,7 @@ public class InvRecvOrderFragment extends BaseListFragment<InvSendIoOrder> imple
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(InvRecvOrderEvent event) {
         ZLogger.d(String.format("InvRecvOrderFragment: InvRecvOrderEvent(%d)", event.getEventId()));
         if (event.getEventId() == InvRecvOrderEvent.EVENT_ID_RELOAD_DATA) {

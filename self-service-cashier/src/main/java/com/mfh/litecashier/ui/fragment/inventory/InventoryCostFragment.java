@@ -63,12 +63,15 @@ import com.mfh.litecashier.ui.widget.InputSearchView;
 import com.mfh.litecashier.ui.widget.MOrderLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 库存－－库存成本
@@ -519,6 +522,7 @@ public class InventoryCostFragment extends BaseProgressFragment
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(CommodityStockEvent event) {
         ZLogger.d(String.format("CommodityStockEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == CommodityStockEvent.EVENT_ID_RELOAD_DATA) {
@@ -527,6 +531,7 @@ public class InventoryCostFragment extends BaseProgressFragment
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
         ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED) {

@@ -11,19 +11,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.api.invOrder.InvOrderApiImpl;
-import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invIoOrder.InvIoOrder;
+import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -32,17 +35,18 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.framework.api.invIoOrder.InvIoOrder;
 import com.mfh.litecashier.bean.InvIoOrderItem;
 import com.mfh.litecashier.event.InvIOOrderEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.ui.adapter.InvIOGoodsAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +54,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 库存－－库存批次
@@ -243,6 +246,7 @@ public class InventoryIOFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(StockBatchEvent event) {
         ZLogger.d(String.format("InventoryCostFragment: StockBatchEvent(%d)", event.getEventId()));
         if (event.getEventId() == StockBatchEvent.EVENT_ID_RELOAD_DATA) {

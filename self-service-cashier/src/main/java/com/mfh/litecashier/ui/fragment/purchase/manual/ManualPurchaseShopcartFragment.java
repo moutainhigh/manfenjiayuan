@@ -16,9 +16,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.companyInfo.CompanyInfoApiImpl;
 import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -39,11 +39,12 @@ import com.mfh.litecashier.database.logic.PurchaseGoodsService;
 import com.mfh.litecashier.database.logic.PurchaseOrderService;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 手动订货购物车

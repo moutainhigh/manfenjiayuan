@@ -24,12 +24,15 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.FrontCategoryGoods;
 import com.mfh.litecashier.utils.ACacheHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -104,6 +107,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(FrontCategoryGoodsEvent event) {
         ZLogger.d(String.format("FrontCategoryGoodsEvent(%d/%d)",
                 event.getAffairId(), event.getCategoryId()));

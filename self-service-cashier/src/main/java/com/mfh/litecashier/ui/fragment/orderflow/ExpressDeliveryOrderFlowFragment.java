@@ -39,6 +39,10 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,7 +51,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 代收快递－订单流水
@@ -194,6 +197,7 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ExpressDeliveryOrderFlowEvent event) {
         ZLogger.d(String.format("ExpressDeliveryOrderFlowFragment: ExpressDeliveryOrderFlowEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == ExpressDeliveryOrderFlowEvent.EVENT_ID_RELOAD_DATA) {

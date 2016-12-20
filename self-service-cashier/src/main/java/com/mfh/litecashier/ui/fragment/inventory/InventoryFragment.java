@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
@@ -13,13 +15,12 @@ import com.mfh.litecashier.event.InventoryTransEvent;
 import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.event.StockCheckEvent;
 import com.mfh.litecashier.event.StockLossEvent;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 /**
  * 首页－－库存

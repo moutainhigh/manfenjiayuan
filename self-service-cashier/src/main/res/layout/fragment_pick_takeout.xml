@@ -33,21 +33,18 @@
 
             <!--头像-->
             <ImageView
-                android:layout_centerInParent="true"
                 android:id="@+id/iv_vip_header"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@mipmap/ic_plat_koubei"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
                 android:scaleType="centerInside"
-                android:contentDescription="@null"/>
+                android:src="@mipmap/ic_plat_koubei"/>
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="0dp"
-            android:background="#D2D2D2"/>
+
+        <include layout="@layout/horizontal_line"/>
 
         <!--商品金额-->
         <LinearLayout
@@ -87,12 +84,7 @@
 
         </LinearLayout>
 
-        <include
-            android:id="@+id/ll_procuct_header"
-            layout="@layout/itemview_header_takeout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_4x"/>
+
         <!--商品列表-->
         <RelativeLayout
             android:id="@+id/frame_coupon"
@@ -104,9 +96,17 @@
             android:paddingEnd="@dimen/spacing_4x"
             android:paddingStart="@dimen/spacing_4x">
 
+            <include
+                android:id="@+id/ll_procuct_header"
+                layout="@layout/itemview_header_takeout"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@color/material_white"/>
+
             <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                 android:id="@+id/goods_list"
                 android:layout_width="match_parent"
+                android:layout_below="@+id/ll_procuct_header"
                 android:layout_height="match_parent"/>
 
             <!--空视图-->

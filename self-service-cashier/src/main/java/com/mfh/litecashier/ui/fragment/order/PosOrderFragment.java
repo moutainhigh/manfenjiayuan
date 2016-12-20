@@ -1,70 +1,72 @@
-package com.mfh.litecashier.ui.fragment.orderflow;
+package com.mfh.litecashier.ui.fragment.order;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.model.PosOrder;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.core.utils.ObjectsCompact;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.PosOrder;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
-import com.mfh.litecashier.event.StoreOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
-import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
-import com.mfh.litecashier.ui.adapter.StoreOrderflowOrderAdapter;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 线下门店订单流水
  * Created by bingshanguxue on 15/8/31.
  */
-public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
+public class PosOrderFragment extends BaseListFragment<PosOrder>
         implements IOrderflowView {
+
+    public static final String EXTRA_KEY_BTYPE = "btype";
+    public static final String EXTRA_KEY_SUBTYPES = "subTypes";
+    public static final String EXTRA_KEY_ORDERSTATUS = "orderStatus";
+    public static final String EXTRA_KEY_SELLOFFICES = "sellOffices";
+
+    @BindView(R.id.progressBar)
+    ProgressBar mProgressBar;
+
     @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.order_list)
     RecyclerViewEmptySupport orderRecyclerView;
     @BindView(R.id.empty_view)
-    TextView emptyView;
+    View emptyView;
     private LinearLayoutManager linearLayoutManager;
-    private StoreOrderflowOrderAdapter orderListAdapter;
-
-    @BindView(R.id.fab_print)
-    FloatingActionButton fabPrint;
-    @BindView(R.id.goods_list)
-    RecyclerView goodsRecyclerView;
-    private StoreOrderflowGoodsAdapter goodsListAdapter;
+    private PosOrderAdapter orderListAdapter;
 
     private OrderflowPresenter orderflowPresenter;
+    private Integer mBizType;
+    private String mSubTypes;
+    private String orderStatus;
+    private String sellOffices;
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_orderflow_store;
+        return R.layout.fragment_inv_sendorder;
     }
 
     @Override
@@ -78,9 +80,16 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if (args != null) {
+            mBizType = args.getInt(EXTRA_KEY_BTYPE);
+            mSubTypes = args.getString(EXTRA_KEY_SUBTYPES);
+            orderStatus = args.getString(EXTRA_KEY_ORDERSTATUS);
+            sellOffices = args.getString(EXTRA_KEY_SELLOFFICES);
+        }
+
         setupSwipeRefresh();
         initOrderRecyclerView();
-        initGoodsRecyclerView();
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             readCache();
@@ -116,18 +125,21 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
         orderRecyclerView.setEmptyView(emptyView);
         orderRecyclerView.addOnScrollListener(orderListScrollListener);
 
-        orderListAdapter = new StoreOrderflowOrderAdapter(CashierApp.getAppContext(), null);
-        orderListAdapter.setOnAdapterListener(new StoreOrderflowOrderAdapter.OnAdapterListener() {
+        orderListAdapter = new PosOrderAdapter(CashierApp.getAppContext(), null);
+        orderListAdapter.setOnAdapterListener(new PosOrderAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                goodsListAdapter.setEntityList(orderListAdapter.getCurrentOrderItems());
+                Bundle args = new Bundle();
+                args.putSerializable("order", orderListAdapter.getCurPosOrder());
+                EventBus.getDefault().post(new OrderEvent(OrderEvent.EVENT_ID_LOAD_POSORDER_ITEMS, args));
             }
 
             @Override
             public void onDataSetChanged() {
                 onLoadFinished();
-                goodsListAdapter.setEntityList(orderListAdapter.getCurrentOrderItems());
-            }
+                Bundle args = new Bundle();
+                args.putSerializable("order", orderListAdapter.getCurPosOrder());
+                EventBus.getDefault().post(new OrderEvent(OrderEvent.EVENT_ID_LOAD_POSORDER_ITEMS, args));            }
         });
         orderRecyclerView.setAdapter(orderListAdapter);
     }
@@ -156,50 +168,20 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
         }
     };
 
-    private void initGoodsRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        goodsRecyclerView.setLayoutManager(linearLayoutManager);
-        //enable optimizations if all item views are of the same height and width for
-        //signficantly smoother scrolling
-        goodsRecyclerView.setHasFixedSize(true);
-        //添加分割线
-        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        goodsListAdapter = new StoreOrderflowGoodsAdapter(CashierApp.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListener(new StoreOrderflowGoodsAdapter.OnAdapterListener() {
-
-            @Override
-            public void onDataSetChanged() {
-                if (goodsListAdapter != null && goodsListAdapter.getItemCount() > 0) {
-                    fabPrint.setVisibility(View.VISIBLE);
-//                    btnPrint.setEnabled(true);
-                } else {
-                    fabPrint.setVisibility(View.GONE);
-//                    btnPrint.setEnabled(false);
-                }
-            }
-        });
-        goodsRecyclerView.setAdapter(goodsListAdapter);
-    }
-
-    @OnClick(R.id.fab_print)
-    public void printOrder() {
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
-        }
-        else{
-           EmbPrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
-        }
-    }
-
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(StoreOrderFlowEvent event) {
-        ZLogger.d(String.format("StoreOrderFlowFragment: StoreOrderFlowEvent(%d)", event.getAffairId()));
-        if (event.getAffairId() == StoreOrderFlowEvent.EVENT_ID_RELOAD_DATA) {
-            reload();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(OrderEvent event) {
+        int eventId = event.getEventId();
+        Bundle args = event.getArgs();
+        ZLogger.d(String.format("OrderEvent(%d)-%s", eventId, StringUtils.decodeBundle(args)));
+        if (eventId == OrderEvent.EVENT_ID_RELOAD_DATA) {
+            int bizType = args.getInt("bizType");
+            String subType = args.getString(EXTRA_KEY_SUBTYPES);
+            if (bizType == mBizType && ObjectsCompact.equals(mSubTypes, subType)){
+                reload();
+            }
         }
     }
 
@@ -220,9 +202,36 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        orderflowPresenter.loadOrders(BizType.POS, String.valueOf(Constants.ORDER_STATUS_RECEIVED),
-                MfhLoginService.get().getCurOfficeId(), mPageInfo);
+        orderflowPresenter.findGoodsOrderList(mBizType, mSubTypes,
+                orderStatus, sellOffices, mPageInfo);
         mPageInfo.setPageNo(1);
+    }
+
+    /**
+     * 翻页加载更多数据
+     */
+    public void loadMore() {
+        if (bSyncInProgress) {
+            ZLogger.d("正在加载线下门店订单流水。");
+//            onLoadFinished();
+            return;
+        }
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            ZLogger.d("网络未连接，暂停加载线下门店订单流水。");
+            onLoadFinished();
+            return;
+        }
+
+        // && mPageInfo.getPageNo() <= MAX_PAGE
+        if (mPageInfo.hasNextPage()) {
+            mPageInfo.moveToNext();
+
+            orderflowPresenter.findGoodsOrderList(mBizType, mSubTypes,
+                    orderStatus, sellOffices, mPageInfo);
+        } else {
+            ZLogger.d("加载线下门店订单流水，已经是最后一页。");
+            onLoadFinished();
+        }
     }
 
     @Override
@@ -296,33 +305,6 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
         return true;
     }
 
-    /**
-     * 翻页加载更多数据
-     */
-    public void loadMore() {
-        if (bSyncInProgress) {
-            ZLogger.d("正在加载线下门店订单流水。");
-//            onLoadFinished();
-            return;
-        }
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载线下门店订单流水。");
-            onLoadFinished();
-            return;
-        }
-
-        // && mPageInfo.getPageNo() <= MAX_PAGE
-        if (mPageInfo.hasNextPage()) {
-            mPageInfo.moveToNext();
-
-            orderflowPresenter.loadOrders(BizType.POS, String.valueOf(Constants.ORDER_STATUS_RECEIVED),
-                    MfhLoginService.get().getCurOfficeId(), mPageInfo);
-        } else {
-            ZLogger.d("加载线下门店订单流水，已经是最后一页。");
-            onLoadFinished();
-        }
-    }
-
     @Override
     public void setRefreshing(boolean refreshing) {
         if (refreshing) {
@@ -365,6 +347,8 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
 
             mState = STATE_REFRESH;
         }
+
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -377,6 +361,8 @@ public class StoreOrderFlowFragment extends BaseListFragment<PosOrder>
 
             mState = STATE_NONE;
         }
+        mProgressBar.setVisibility(View.GONE);
+
     }
 
 }

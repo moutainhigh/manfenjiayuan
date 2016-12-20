@@ -14,14 +14,14 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.framework.api.account.Human;
 import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.invOrder.InvOrderApi;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
@@ -44,11 +44,14 @@ import com.mfh.litecashier.ui.adapter.InventoryTransGoodsAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 库存－－库存调拨<br>
@@ -205,7 +208,7 @@ public class InventoryTransFragment extends BaseFragment {
 
     private void doPayWork(int dialogType, Long orderId, Double amount) {
         Human human = new Human();
-        human.setGuid(String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        human.setGuid(MfhLoginService.get().getGuid());
         human.setId(MfhLoginService.get().getUserId());
         human.setHeadimageUrl(MfhLoginService.get().getHeadimage());
 
@@ -348,6 +351,7 @@ public class InventoryTransFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(InventoryTransEvent event) {
         ZLogger.d(String.format("InventoryTransFragment: InventoryTransEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == InventoryTransEvent.EVENT_ID_INIT_DATA) {

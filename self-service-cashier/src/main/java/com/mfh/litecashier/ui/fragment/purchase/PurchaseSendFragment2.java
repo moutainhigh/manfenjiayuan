@@ -10,12 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
-import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invOrder.InvOrderApi;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.mvp.MvpFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.widget.CustomViewPager;
@@ -27,15 +29,16 @@ import com.mfh.litecashier.event.PurchaseSendEvent;
 import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 import com.mfh.litecashier.presenter.InvSendOrderPresenter2;
 import com.mfh.litecashier.ui.adapter.PurchaseSendGoodsAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.litecashier.utils.ACacheHelper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 /**
  * 采购订单
@@ -188,8 +191,9 @@ public class PurchaseSendFragment2 extends MvpFragment<IInvSendOrderView, InvSen
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PurchaseSendEvent event) {
-        ZLogger.d(String.format("FreshScheduleFragment: PurchaseSendEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("PurchaseSendEvent(%d)", event.getEventId()));
         if (event.getEventId() == PurchaseSendEvent.EVENT_ID_RELOAD_DATA) {
             notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
         } else if (event.getEventId() == PurchaseSendEvent.EVENT_ID_RELAOD_ITEM_DATA) {
@@ -200,31 +204,15 @@ public class PurchaseSendFragment2 extends MvpFragment<IInvSendOrderView, InvSen
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PurchaseShopcartSyncEvent event) {
-        ZLogger.d(String.format("FreshScheduleFragment: PurchaseShopcartSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("PurchaseShopcartSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == PurchaseShopcartSyncEvent.EVENT_ID_ORDER_SUCCESS) {
             //刷新供应商
             notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());
         }
     }
 
-    /**
-     * 刷新底部信息
-     */
-//    private void refreshBottomBar() {
-//        Double count = 0D;
-//        Double goodsFee = 0D;
-//        List<InvSendOrderItem> orderItems = goodsListAdapter.getEntityList();
-//        if (orderItems != null && orderItems.size() > 0) {
-//            for (InvSendOrderItem orderItem : orderItems) {
-//                count += orderItem.getTotalCount();
-//                goodsFee += orderItem.getAmount();
-//            }
-//        }
-//
-//        tvGoodsQunatity.setText(String.format("商品数：%.2f", count));
-//        tvTotalAmount.setText(String.format("商品金额：%.2f", goodsFee));
-//    }
 
     /**
      * 加载订单明细

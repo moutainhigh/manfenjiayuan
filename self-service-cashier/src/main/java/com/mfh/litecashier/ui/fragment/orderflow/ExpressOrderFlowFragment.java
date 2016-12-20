@@ -2,12 +2,12 @@ package com.mfh.litecashier.ui.fragment.orderflow;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
@@ -23,22 +23,25 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.PosOrder;
 import com.mfh.litecashier.com.EmbPrintManagerImpl;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.ExpressOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
-import com.mfh.litecashier.ui.adapter.StoreOrderflowGoodsAdapter;
+import com.bingshanguxue.cashier.model.PosOrder;
+import com.mfh.litecashier.ui.fragment.order.PosOrderItemsAdapter;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 快递代发订单流水
@@ -55,10 +58,10 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
     private StockOrderflowOrderAdapter orderListAdapter;
 
     @BindView(R.id.fab_print)
-    FloatingActionButton fabPrint;
+    ImageButton fabPrint;
     @BindView(R.id.goods_list)
     RecyclerView goodsRecyclerView;
-    private StoreOrderflowGoodsAdapter goodsListAdapter;
+    private PosOrderItemsAdapter goodsListAdapter;
 
     private OrderflowPresenter orderflowPresenter;
 
@@ -161,8 +164,8 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
         //添加分割线
         goodsRecyclerView.addItemDecoration(new LineItemDecoration(
                 getActivity(), LineItemDecoration.VERTICAL_LIST));
-        goodsListAdapter = new StoreOrderflowGoodsAdapter(CashierApp.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListener(new StoreOrderflowGoodsAdapter.OnAdapterListener() {
+        goodsListAdapter = new PosOrderItemsAdapter(CashierApp.getAppContext(), null);
+        goodsListAdapter.setOnAdapterListener(new PosOrderItemsAdapter.OnAdapterListener() {
 
             @Override
             public void onDataSetChanged() {
@@ -181,16 +184,17 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
     @OnClick(R.id.fab_print)
     public void printOrder(){
         if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
+            PrintManagerImpl.getInstance().printPosOrder(orderListAdapter.getCurPosOrder(), 1);
         }
         else{
-            EmbPrintManagerImpl.printPosOrder(orderListAdapter.getCurPosOrder(), true);
+            EmbPrintManagerImpl.getInstance().printPosOrder(orderListAdapter.getCurPosOrder(), 1);
         }
     }
 
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ExpressOrderFlowEvent event) {
         ZLogger.d(String.format("ExpressOrderFlowFragment: ExpressOrderFlowEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == ExpressOrderFlowEvent.EVENT_ID_RELOAD_DATA) {
@@ -224,8 +228,9 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
 //            entityList.clear();
 //        }
 
-        orderflowPresenter.loadOrders(BizType.STOCK, String.valueOf(Constants.ORDER_STATUS_RECEIVED),
-                MfhLoginService.get().getCurOfficeId(), mPageInfo);
+        orderflowPresenter.findGoodsOrderList(BizType.STOCK, null,
+                String.valueOf(Constants.ORDER_STATUS_RECEIVED),
+                String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
 
         mPageInfo.setPageNo(1);
     }
@@ -319,8 +324,9 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE){
             mPageInfo.moveToNext();
 
-            orderflowPresenter.loadOrders(BizType.STOCK, String.valueOf(Constants.ORDER_STATUS_RECEIVED),
-                    MfhLoginService.get().getCurOfficeId(), mPageInfo);
+            orderflowPresenter.findGoodsOrderList(BizType.STOCK, null,
+                    String.valueOf(Constants.ORDER_STATUS_RECEIVED),
+                    String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
 
         }else{
             ZLogger.d("加载快递代揽订单流水，已经是最后一页。");

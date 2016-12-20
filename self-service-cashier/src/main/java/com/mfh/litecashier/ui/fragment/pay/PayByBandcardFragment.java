@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
@@ -43,9 +43,10 @@ import com.mfh.litecashier.ui.widget.PayProcessView;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 银联卡支付
@@ -58,7 +59,7 @@ public class PayByBandcardFragment extends BasePayFragment {
     @BindView(R.id.payProcessView)
     PayProcessView payProcessView;
     @BindView(R.id.fab_pay)
-    FloatingActionButton fabPay;
+    ImageButton fabPay;
 
 
     private BankDAO bankDAO;
@@ -507,7 +508,7 @@ public class PayByBandcardFragment extends BasePayFragment {
         }
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("humanId", MfhLoginService.get().getCurrentGuId());//订单发起人
+        jsonObject.put("humanId", MfhLoginService.get().getHumanId());//订单发起人
         jsonObject.put("pointId", cardNO);//该人在该支付渠道下的标识，如微信openid、扫码支付授权码、银联银行卡号等
         jsonObject.put("transactionId", traceNO);//支付服务生成的正式订单号// TODO: 4/7/16
         jsonObject.put("appid", bankCode);//哪个银联

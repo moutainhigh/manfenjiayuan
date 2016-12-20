@@ -24,6 +24,7 @@ public abstract class BaseFragment extends Fragment {
 
 
     protected View rootView;
+
     public static final int ANIM_TYPE_NEW_NONE = -1;//默认动画
     public static final int ANIM_TYPE_NEW_FLOW = 0;//新流程，底部弹出
     protected int animType = ANIM_TYPE_NEW_NONE;

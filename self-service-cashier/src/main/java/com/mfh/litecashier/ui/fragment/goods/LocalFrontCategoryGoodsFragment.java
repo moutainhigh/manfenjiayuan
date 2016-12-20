@@ -46,11 +46,14 @@ import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -129,6 +132,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(LocalFrontCategoryGoodsEvent event) {
         ZLogger.d(String.format("LocalFrontCategoryGoodsEvent(%d/%s)",
                 event.getEventId(), StringUtils.decodeBundle(event.getArgs())));

@@ -11,17 +11,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
+import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -35,11 +35,14 @@ import com.mfh.litecashier.ui.adapter.PurchaseReturnGoodsAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 采购退货
@@ -120,6 +123,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PurchaseReturnEvent event) {
         ZLogger.d(String.format("PurchaseReturnFragment: PurchaseReturnEvent(%d)", event.getEventId()));
         if (event.getEventId() == PurchaseReturnEvent.EVENT_ID_RELOAD_DATA) {

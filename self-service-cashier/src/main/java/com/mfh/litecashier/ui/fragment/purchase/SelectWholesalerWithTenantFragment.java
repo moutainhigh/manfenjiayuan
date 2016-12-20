@@ -8,20 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.mfh.framework.uikit.base.BaseFragment;
+import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
+import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
-import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
-import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 对话框－－ 选择批发商商品(新建采购收货单/采购退货单)
@@ -120,6 +123,7 @@ public class SelectWholesalerWithTenantFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(SelectWholesalerWithTenantEvent event) {
         ZLogger.d(String.format("SelectWholesaleWithTenantFragment: SelectWholesalerWithTenantEvent(%d)", event.getEventId()));
         if (event.getEventId() == SelectWholesalerWithTenantEvent.EVENT_ID_ITEM_SELECTED) {

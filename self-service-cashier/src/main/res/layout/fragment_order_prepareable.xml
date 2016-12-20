@@ -22,21 +22,38 @@
             android:layout_width="@dimen/common_right_panel_width"
             android:layout_height="match_parent">
 
-            <!--导航-->
-            <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
-                android:id="@+id/tab_order"
+            <!-- google 官方下拉刷新 -->
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swiperefreshlayout"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@drawable/bg_bottomline_primary"
-                app:allowWidthFull="true"
-                app:slidingBlock="@drawable/slidingblock_white_greenline"/>
+                android:layout_height="match_parent">
 
-            <!--订单列表-->
-            <com.mfh.framework.uikit.widget.CustomViewPager
-                android:id="@+id/viewpager_order"
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/order_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/loading"
+                android:layout_centerInParent="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="gone"/>
+
+            <!--空视图-->
+            <TextView
+                android:id="@+id/empty_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/tab_order"/>
+                style="@style/mfh_textview_text"
+                android:text="@string/label_nodata_reload"
+                android:gravity="center"
+                android:clickable="true"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -108,21 +125,12 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/btn_rectange_green"
                     android:gravity="center"
-                    android:text="打印小票"
+                    android:text="接单"
                     android:textColor="@color/material_white"
                     android:textSize="18sp"/>
 
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/fab_print"
-                style="@style/FloatImageButton"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginBottom="@dimen/spacing_8x"
-                android:layout_marginEnd="@dimen/spacing_double"
-                android:src="@mipmap/ic_print_white"
-                android:visibility="gone"/>
         </RelativeLayout>
 
     </LinearLayout>

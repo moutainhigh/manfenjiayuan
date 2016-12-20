@@ -11,33 +11,36 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.PosOrder;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
+import com.bingshanguxue.cashier.model.PosOrder;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 线上销售－－待配送/已配送
- * Created by kun on 15/8/31.
+ * Created by bingshanguxue on 15/8/31.
  */
 public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOrderflowView{
     public static final String EXTRA_KEY_STATUS = "status";
@@ -185,6 +188,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(GoodsListEvent event) {
         ZLogger.d(String.format("PlatformProviderFragment: GoodsListEvent(%d)", event.getEventId()));
         if (event.getEventId() == GoodsListEvent.EVENT_ID_RELOAD_DATA) {
@@ -229,8 +233,8 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
 //            entityList.clear();
 //        }
 
-        orderflowPresenter.loadOrders(BizType.SC, status,
-                MfhLoginService.get().getCurOfficeId(), mPageInfo);
+        orderflowPresenter.findGoodsOrderList(BizType.SC, null, status,
+                String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
         mPageInfo.setPageNo(1);
     }
 
@@ -326,8 +330,8 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
 
-            orderflowPresenter.loadOrders(BizType.SC, status,
-                    MfhLoginService.get().getCurOfficeId(), mPageInfo);
+            orderflowPresenter.findGoodsOrderList(BizType.SC, null, status,
+                    String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
         } else {
             ZLogger.d("加载线上订单订单流水，已经是最后一页。");
             onLoadFinished();

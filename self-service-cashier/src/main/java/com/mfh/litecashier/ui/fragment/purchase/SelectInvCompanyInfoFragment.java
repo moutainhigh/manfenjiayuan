@@ -27,12 +27,13 @@ import com.mfh.litecashier.ui.adapter.SelectPlatformProviderAdapter;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 import static com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment.SelectWholesalerWithTenantEvent;
 
