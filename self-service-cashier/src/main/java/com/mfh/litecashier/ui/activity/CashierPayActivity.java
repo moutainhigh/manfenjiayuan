@@ -6,18 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep2Fragment;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -103,8 +105,6 @@ public class CashierPayActivity extends BaseActivity {
 
             cashierOrderInfo = (CashierOrderInfo) intent.getSerializableExtra(EXTRA_KEY_CASHIER_ORDERINFO);
         }
-
-//        cashierOrderInfo = GlobalInstance.getInstance().getCashierOrderInfo();
     }
     /**
      * 显示
@@ -220,7 +220,7 @@ public class CashierPayActivity extends BaseActivity {
 //        });
 //        cancelPayDialog.show();
 //    }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayActionEvent event) {
         Bundle args = event.getArgs();
         ZLogger.df(String.format("PayActionEvent:%d\n%s",

@@ -63,7 +63,7 @@ public class StockCheckOrderAdapter
         holder.tvCreateDate.setText(String.format("盘点时间：%s", TimeUtil.format(entity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
         holder.tvOrderStatus.setText(String.format("状态: %s", entity.getStatusCaption()));
         if (entity.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_PROCESSING)){
-            holder.tvOrderStatus.setTextColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
+            holder.tvOrderStatus.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         }
         else{
             holder.tvOrderStatus.setTextColor(Color.BLACK);

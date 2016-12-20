@@ -17,7 +17,6 @@ public class TimeTaskManager {
     private static final int HOUR = 60 * 60 * 1000;
 
     private static final int MSG_WHAT_SYNC_POSORDER = 1;
-    private static final int MSG_WHAT_SYNC_POSGOODS = 2;
 
 
     private static TimeTaskManager instance = null;
@@ -44,25 +43,14 @@ public class TimeTaskManager {
      */
     private static Timer syncPosOrderTimer = new Timer();
 
-    /**
-     * 同步商品
-     */
-    private static Timer syncGoodsTimer = new Timer();
-
 
     static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
             switch (msg.what) {
                 case MSG_WHAT_SYNC_POSORDER: {
                     ZLogger.df("定时任务激活：上传收银订单");
-                    DataUploadManager.getInstance().sync(DataUploadManager.SyncStep.CASHIER_ORDER);
-                }
-                break;
-                case MSG_WHAT_SYNC_POSGOODS: {
-                    ZLogger.df("定时任务激活：同步商品库");
-                    DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS | DataDownloadManager.POSPRODUCTS_SKU);
+                    DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
                 }
                 break;
             }
@@ -81,9 +69,6 @@ public class TimeTaskManager {
         if (syncPosOrderTimer == null) {
             syncPosOrderTimer = new Timer();
         }
-        if (syncGoodsTimer == null) {
-            syncGoodsTimer = new Timer();
-        }
 
         syncPosOrderTimer.schedule(new TimerTask() {
             @Override
@@ -93,14 +78,6 @@ public class TimeTaskManager {
                 handler.sendMessage(message);
             }
         }, 10 * SECOND, 10 * MINUTE);
-        syncGoodsTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Message message = new Message();
-                message.what = MSG_WHAT_SYNC_POSGOODS;
-                handler.sendMessage(message);
-            }
-        }, 10 * SECOND, 6 * HOUR);
     }
 
     public void cancel() {
@@ -109,9 +86,5 @@ public class TimeTaskManager {
             syncPosOrderTimer.cancel();
         }
         syncPosOrderTimer = null;
-        if (syncGoodsTimer != null) {
-            syncGoodsTimer.cancel();
-        }
-        syncGoodsTimer = null;
     }
 }

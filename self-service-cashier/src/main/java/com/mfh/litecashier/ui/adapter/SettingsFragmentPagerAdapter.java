@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -16,9 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mfh.framework.core.utils.DrawableUtils;
-import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.widget.SideSlidingTabStrip;
+import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.widget.ViewPageInfo;
 
 import java.util.ArrayList;
@@ -85,9 +83,8 @@ public class SettingsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         }
 
         // 加入tab title
-        View v = LayoutInflater.from(mContext).inflate(
-                tabResId, null, false);
-        if (sizeInitialized){
+        View v = LayoutInflater.from(mContext).inflate(tabResId, null, false);
+        if (sizeInitialized) {
             //in pixel
             v.setLayoutParams(new ViewGroup.LayoutParams(blockWidthInPixel, blockHeightInPixexl));
         }
@@ -101,10 +98,10 @@ public class SettingsFragmentPagerAdapter extends FragmentStatePagerAdapter {
         icon.setImageDrawable(null);
         icon.setBackgroundResource(info.resId);
         //使用mute()，避免将使用同一个资源的图片都修改了。
-        icon.setBackground(DrawableUtils.tintDrawable(icon.getBackground().mutate(),
-                ContextCompat.getColorStateList(mContext, R.color.settings_tab_tint_colors)));
+//        icon.setBackground(DrawableUtils.tintDrawable(icon.getBackground().mutate(),
+//                ContextCompat.getColorStateList(mContext, R.color.settings_tab_tint_colors)));
 
-                mPagerStrip.addTab(v);
+        mPagerStrip.addTab(v);
 
         mTabs.add(info);
         notifyDataSetChanged();
@@ -119,9 +116,8 @@ public class SettingsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     /**
      * 移除一个tab
-     * 
-     * @param index
-     *            备注：如果index小于0，则从第一个开始删 如果大于tab的数量值则从最后一个开始删除
+     *
+     * @param index 备注：如果index小于0，则从第一个开始删 如果大于tab的数量值则从最后一个开始删除
      */
     public void remove(int index) {
         if (mTabs.isEmpty()) {

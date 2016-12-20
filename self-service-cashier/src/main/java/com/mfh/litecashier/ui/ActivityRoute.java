@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.litecashier.ui.activity.CanaryActivity;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
@@ -34,16 +33,6 @@ public class ActivityRoute {
         Bundle extras = new Bundle();
         extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleActivity.FT_INVENTORY);
-        UIHelper.startActivity(context, SimpleActivity.class, extras);
-    }
-
-    /**
-     * 流水
-     */
-    public static void redirect2Orderflow(Context context) {
-        Bundle extras = new Bundle();
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleActivity.FT_ORDERFLOW);
         UIHelper.startActivity(context, SimpleActivity.class, extras);
     }
 
@@ -78,13 +67,6 @@ public class ActivityRoute {
 //        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
 //        extras.putBoolean(DailySettleFragment.EXTRA_KEY_CANCELABLE, cancelable);
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
-    }
-
-    /**
-     * 金丝雀
-     */
-    public static void redirect2Canary(Context context) {
-        UIHelper.startActivity(context, CanaryActivity.class);
     }
 
     /**
@@ -141,6 +123,19 @@ public class ActivityRoute {
                 SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleDialogActivity.FT_EXCHANGE_SCORE);
+        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
+
+    /**
+     * 买手接单
+     * */
+    public static void redirect2PrepareAbleOrders(Context context){
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+                SimpleDialogActivity.DT_MIDDLE);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleDialogActivity.FT_PREPAREABLE_ORDER);
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
     }
 

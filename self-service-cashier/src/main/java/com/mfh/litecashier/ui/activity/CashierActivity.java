@@ -10,9 +10,9 @@ import com.bingshanguxue.cashier.hardware.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
-import com.bingshanguxue.cashier.hardware.scale.AHScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.AHScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
-import com.bingshanguxue.cashier.hardware.scale.SMScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.SMScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
 import com.gprinter.command.GpCom;
 import com.iflytek.cloud.ErrorCode;
@@ -32,6 +32,10 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.com.SerialManager;
 import com.mfh.litecashier.utils.GlobalInstance;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -42,11 +46,12 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
 import android_serialport_api.SerialPortFinder;
-import de.greenrobot.event.EventBus;
 
 /**
  * 首页
@@ -130,12 +135,15 @@ public abstract class CashierActivity extends BaseActivity {
         CloseComPort(comPrint);
         CloseComPort(comScale);
 
-//        if (embPrinter != null){
-//            ZLogger.d("断开打印机串口");
-//            embPrinter.closeConnection();
-//            embPrinter = null;
-//        }
+        if (mSerialDispatcher != null){
+            mSerialDispatcher.quit();
+            mSerialDispatcher = null;
+        }
 
+        if (DispQueue != null){
+            DispQueue.interrupt();
+            DispQueue = null;
+        }
 
         if (mTts != null) {
             mTts.stopSpeaking();
@@ -193,7 +201,7 @@ public abstract class CashierActivity extends BaseActivity {
                 while (!isInterrupted()) {
                     final ComBean ComData;
                     while ((ComData = mComBeanQueue.poll()) != null) {
-                        DispRecData(ComData);
+                        performData(ComData);
 
                         Thread.sleep(50);//显示性能高的话，可以把此数值调小。
                         break;
@@ -210,10 +218,11 @@ public abstract class CashierActivity extends BaseActivity {
         }
     }
 
+
     /**
      * 显示接收数据
      */
-    private void DispRecData(ComBean comBean) {
+    private void performData(ComBean comBean) {
         String port = comBean.sComPort;
         if (StringUtils.isEmpty(port)) {
             return;
@@ -229,14 +238,15 @@ public abstract class CashierActivity extends BaseActivity {
         Long rightNow = System.currentTimeMillis();
 
         if (ScaleAgent.isEnabled()) {
+            //接收到串口数据
             if (port.equals(ScaleAgent.getPort())) {
                 if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_ACS_P215) {
-                    Double netWeight = AHScaleAgent.parseACSP215(comBean.bRec);
+                    Double netWeight = AHScaleHelper.parseACSP215(comBean.bRec);
                     if (netWeight != null) {
                         GlobalInstance.getInstance().setNetWeight(netWeight);
                     }
                 } else if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_DS_781A) {
-                    DS781A ds781A = SMScaleAgent.parseData(comBean.bRec);
+                    DS781A ds781A = SMScaleHelper.parseData(comBean.bRec);
                     if (ds781A != null) {
                         GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
                     }
@@ -262,6 +272,74 @@ public abstract class CashierActivity extends BaseActivity {
 
     }
 
+    private int comMode = 1;
+    /**
+     * The queue of ComBean from serial port.
+     */
+    private PriorityBlockingQueue<ComBean> mSerialQueue = new PriorityBlockingQueue<>();
+    private SerialDispatcher mSerialDispatcher;//线程数据分发器
+
+    /**
+     * Provides a thread to process data from serial port.
+     */
+    private class SerialDispatcher extends Thread {
+        /**
+         * Used for telling us to die.
+         */
+        private volatile boolean mQuit = false;
+
+        /**
+         * The queue of ComBean from serial port.
+         */
+        private BlockingQueue<ComBean> mQueue;
+
+        public SerialDispatcher(BlockingQueue<ComBean> queue){
+            mQueue = queue;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+
+            while (!isInterrupted()) {
+                //设置线程优先级
+//                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                ComBean comBean;
+                try {
+                    // 取走BlockingQueue里排在首位的对象,若BlockingQueue为空,阻断进入等待状态直到BlockingQueue有新的数据被加入;
+                    // Get a data from the  queue, blocking until at least one is available.
+                    comBean = mQueue.take();
+                } catch (InterruptedException e) {
+                    // We may have been interrupted because it was time to quit.
+                    if (mQuit) {
+                        return;
+                    }
+                    continue;
+                }
+
+                try {
+                    if (comBean != null) {
+                        performData(comBean);
+                        Thread.sleep(50);//显示性能高的话，可以把此数值调小。
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /**
+         * Forces this dispatcher to quit immediately.  If any requests are still in
+         * the queue, they are not guaranteed to be processed.
+         */
+        public void quit() {
+            mQuit = true;
+            interrupt();
+        }
+    }
+
+
+
     /**
      * 初始化串口
      */
@@ -273,11 +351,18 @@ public abstract class CashierActivity extends BaseActivity {
 //        embPrinter = PrinterInstance.getPrinterInstance(new File(PrinterAgent.getPort()),
 //                Integer.parseInt(PrinterAgent.getBaudrate()), 0, mHandler);
 
-        DispQueue = new DispQueueThread();
-        DispQueue.start();
+        if (comMode == 1){
+            DispQueue = new DispQueueThread();
+            DispQueue.start();
+        }
+        else{
+            mSerialDispatcher = new SerialDispatcher(mSerialQueue);
+            mSerialDispatcher.start();
+        }
 
         setControls();
     }
+
 
     private class OpenPortRunnable implements Runnable {
         private SerialHelper serialHelper;
@@ -393,6 +478,7 @@ public abstract class CashierActivity extends BaseActivity {
     /**
      * 串口
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(SerialPortEvent event) {
         ZLogger.d(String.format("SerialPortEvent(%d)", event.getType()));
         //客显
@@ -401,19 +487,11 @@ public abstract class CashierActivity extends BaseActivity {
                 OpenComPort(comDisplay);
                 sendPortData(comDisplay, event.getCmd(), true);
             }
-        } else if (event.getType() == SerialPortEvent.GPRINTER_SEND_DATA) {
+        } else if (event.getType() == SerialPortEvent.RINTER_PRINT_PRIMITIVE) {
             if (comPrint != null) {
                 OpenComPort(comPrint);
                 sendPortData(comPrint, event.getCmdBytes());
             }
-        } else if (event.getType() == SerialPortEvent.PRINTER_PRINT_TEXT) {
-            if (comPrint != null) {
-                OpenComPort(comPrint);
-                sendPortData(comPrint, event.getCmdBytes());
-            }
-//                if (embPrinter != null){
-//                    embPrinter.printText(event.getCmd());
-//                }
         } else if (event.getType() == SerialPortEvent.UPDATE_PORT_GPRINTER) {
             CloseComPort(comPrint);
 

@@ -79,7 +79,7 @@ public class CashierApp extends MfhApplication {
             initSkinLoader();
         }
 
-        ZLogger.d(String.format("initialize finished(%s)", processAppName));
+        ZLogger.df(String.format("initialize finished(%s)", processAppName));
     }
 
     @Override

@@ -10,14 +10,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
-import com.manfenjiayuan.business.route.Route;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.UserMixInfo;
@@ -26,9 +25,9 @@ import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
@@ -39,15 +38,16 @@ import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
 import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
 import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
-import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
 import com.mfh.litecashier.utils.AppHelper;
+import com.tencent.bugly.beta.Beta;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -109,21 +109,21 @@ public class AdministratorActivity extends BaseActivity {
                         AdministratorActivity.this.onBackPressed();
                     }
                 });
-        // Set an OnMenuItemClickListener to handle menu item clicks
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_canary) {
-                    ActivityRoute.redirect2Canary(AdministratorActivity.this);
-                }
-                return true;
-            }
-        });
-
-        // Inflate a menu to be displayed in the toolbar
-        toolbar.inflateMenu(R.menu.menu_administrator);
+//        // Set an OnMenuItemClickListener to handle menu item clicks
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                // Handle the menu item
+//                int id = item.getItemId();
+//                if (id == R.id.action_canary) {
+//                    ActivityRoute.redirect2Canary(AdministratorActivity.this);
+//                }
+//                return true;
+//            }
+//        });
+//
+//        // Inflate a menu to be displayed in the toolbar
+//        toolbar.inflateMenu(R.menu.menu_administrator);
     }
 
     @Override
@@ -146,13 +146,13 @@ public class AdministratorActivity extends BaseActivity {
         initMenuRecyclerView();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_administrator, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_administrator, menu);
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public void onPause() {
@@ -195,7 +195,7 @@ public class AdministratorActivity extends BaseActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
 
-            case Route.ARC_NATIVE_SIGNIN: {
+            case ResultCode.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
@@ -324,14 +324,14 @@ public class AdministratorActivity extends BaseActivity {
     /**
      * 日结
      */
-    private void dailySettle(String datetime) {
+    private void dailySettle() {
 //        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));
         Intent intent = new Intent(this, SimpleDialogActivity.class);
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FRAGMENT_TYPE_DAILY_SETTLE);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
+//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -378,26 +378,32 @@ public class AdministratorActivity extends BaseActivity {
                 "手动订货", R.mipmap.ic_admin_purchase_manual));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_INVENTORY,
                 "库存", R.mipmap.ic_admin_menu_inventory));
-        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_ORDERFLOW,
-                "流水", R.mipmap.ic_admin_menu_orderflow));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_RECEIPT,
                 "单据", R.mipmap.ic_admin_menu_receipt));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_ANALYSIS,
                 "统计", R.mipmap.ic_admin_menu_analysis));
-        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_DAILYSETTLE,
-                "日结", R.mipmap.ic_admin_menu_dailysettle));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_CASHQUOTA,
                 "授信", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_FACTORYDATA_RESET,
-                "授信", R.mipmap.ic_admin_factorydatareset));
+                "恢复出厂设置", R.mipmap.ic_admin_factorydatareset));
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SYSTEM_UPGRADE,
+                "系统升级", R.mipmap.ic_admin_system_upgrade));
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+            functionalList.add(new ResMenu(ResMenu.CANARY_MENU_ORDERFLOW,
+                    "流水", R.mipmap.ic_admin_menu_orderflow));
+            functionalList.add(new ResMenu(ResMenu.CANARY_MENU_GOODS,
+                    "商品档案", R.mipmap.ic_admin_menu_inventory));
+            functionalList.add(new ResMenu(ResMenu.CANARY_MENU_MESSAGE_MGR,
+                    "消息管理器", R.mipmap.ic_admin_menu_settings));
+        }
 
         return functionalList;
     }
 
     /**
-     * 固有功能
+     * 响应菜单
      */
     private void responseMenu(Long id) {
         if (id == null) {
@@ -408,32 +414,34 @@ public class AdministratorActivity extends BaseActivity {
             ActivityRoute.redirect2Purchase(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_INVENTORY) == 0) {
             ActivityRoute.redirect2Inventory(this);
-        } else if (id.compareTo(ResMenu.ADMIN_MENU_ORDERFLOW) == 0) {
-            ActivityRoute.redirect2Orderflow(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_RECEIPT) == 0) {
             ActivityRoute.redirect2Receipt(this);
-        } else if (id.compareTo(ResMenu.ADMIN_MENU_DAILYSETTLE) == 0) {
-            dailySettle(null);
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_ANALYSIS) == 0) {
+            dailySettle();
         } else if (id.compareTo(ResMenu.ADMIN_MENU_SETTINGS) == 0) {
             ActivityRoute.redirect2Settings(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_CASHQUOTA) == 0) {
             ActivityRoute.redirect2CashQuota(this);
-        }
-        else if (id.compareTo(ResMenu.ADMIN_MENU_FACTORYDATA_RESET) == 0) {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_FACTORYDATA_RESET) == 0) {
             factoryDataReset();
-        } else {
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_SYSTEM_UPGRADE) == 0) {
+            Beta.checkUpgrade();
+        } else if (id.compareTo(ResMenu.CANARY_MENU_ORDERFLOW) == 0) {
+            ActivityRoute.redirect2CanaryOrderflow(this);
+        } else if (id.compareTo(ResMenu.CANARY_MENU_GOODS) == 0) {
+            ActivityRoute.redirect2CanaryGoods(this);
+        } else if (id.compareTo(ResMenu.CANARY_MENU_MESSAGE_MGR) == 0) {
+            ActivityRoute.redirect2MsgMgr(this);
+        }else {
             DialogUtil.showHint(R.string.coming_soon);
         }
     }
-
-
 
 
     /**
      * 退出当前账号
      */
     private void logout() {
-
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在退出当前账号...", false);
 //                    // 保存统计数据
 //                    MobclickAgent.onKillProcess(CashierApp.getAppContext());
@@ -446,7 +454,7 @@ public class AdministratorActivity extends BaseActivity {
             public void onSuccess() {
 //                showProgressDialog(ProgressDialog.STATUS_DONE, "正在退出当前账号...", false);
                 hideProgressDialog();
-                redirectToLogin();
+                redirect2Login();
             }
 
             @Override
@@ -458,7 +466,7 @@ public class AdministratorActivity extends BaseActivity {
             public void onError(int code, String message) {
 //                showProgressDialog(ProgressDialog.STATUS_ERROR, "正在退出当前账号...", true);
                 hideProgressDialog();
-                redirectToLogin();
+                redirect2Login();
             }
         });
     }
@@ -491,7 +499,7 @@ public class AdministratorActivity extends BaseActivity {
                         EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
 
                         if (!bSlient) {
-                            redirectToLogin();
+                            redirect2Login();
                         }
                     }
                 });
@@ -501,16 +509,7 @@ public class AdministratorActivity extends BaseActivity {
     /**
      * 跳转至登录页面,清空账号信息
      */
-    private void redirectToLogin() {
-        // 重置数据更新标志，避免登录其他账号导致数据重叠。
-        //设置需要更新前台类目
-//        SharedPreferencesUltimate.setSyncFrontCategorySubEnabled(true);
-        //设置需要更新商品中心,商品后台类目
-//        SharedPreferencesUltimate.setSyncEnabled(SharedPreferencesUltimate.PREF_KEY_SYNC_BACKEND_CATEGORYINFO_ENABLED, true);
-
-//        MobclickAgent.onProfileSignOff();
-//        AppHelper.resetMemberAccountData();
-
+    private void redirect2Login() {
         MfhLoginService.get().clear();
 
         Bundle extras = new Bundle();
@@ -518,7 +517,7 @@ public class AdministratorActivity extends BaseActivity {
 //        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_OFFICELIST);
         Intent intent = new Intent(this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
+        startActivityForResult(intent, ResultCode.ARC_NATIVE_SIGNIN);
     }
 
     /**

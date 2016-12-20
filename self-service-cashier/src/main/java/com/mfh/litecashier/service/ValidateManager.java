@@ -21,18 +21,19 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Date;
 
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;

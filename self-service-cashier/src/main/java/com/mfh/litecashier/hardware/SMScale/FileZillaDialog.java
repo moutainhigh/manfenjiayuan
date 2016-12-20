@@ -59,8 +59,7 @@ public class FileZillaDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private FileZillaDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_filezilla, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_filezilla, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

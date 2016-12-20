@@ -53,8 +53,7 @@ public class AccountDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private AccountDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_account, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_account, null);
 //        ButterKnife.bind(rootView);
 
         ivHeader = (AvatarView) rootView.findViewById(R.id.iv_header);

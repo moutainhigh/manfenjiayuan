@@ -102,8 +102,7 @@ public class AlipayDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private AlipayDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_alipay, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_alipay, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -277,7 +276,7 @@ public class AlipayDialog extends CommonDialog {
 //        orderInfo.put("discountable_amount", MStringUtil.formatAmount(discountableAmount));
         orderInfo.put("subject", mQuickPayInfo.getSubject());
         orderInfo.put("body", mQuickPayInfo.getBody());
-        orderInfo.put("operator_id", MfhLoginService.get().getCurrentGuId());//商户操作员编号
+        orderInfo.put("operator_id", MfhLoginService.get().getHumanId());//商户操作员编号
         orderInfo.put("store_id", MfhLoginService.get().getCurOfficeId());//商户门店编号
         orderInfo.put("terminal_id", SharedPrefesManagerFactory.getTerminalId());
         orderInfo.put("seller_id", MfhLoginService.get().getSpid());//租户ID

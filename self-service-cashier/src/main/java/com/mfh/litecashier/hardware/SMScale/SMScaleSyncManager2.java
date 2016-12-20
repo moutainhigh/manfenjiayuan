@@ -22,6 +22,8 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.opencsv.CSVWriter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -34,7 +36,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import de.greenrobot.event.EventBus;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 import rx.Observable;
 import rx.Observer;
@@ -233,7 +234,8 @@ public class SMScaleSyncManager2 extends FTPManager {
                     " or cateType = '%d') " +
                             "and updatedDate >= '%s'",
                     CateApi.BACKEND_CATE_BTYPE_FRESH,
-                    CateApi.BACKEND_CATE_BTYPE_FRUIT, CateApi.BACKEND_CATE_BTYPE_WARTER,
+                    CateApi.BACKEND_CATE_BTYPE_FRUIT,
+                    CateApi.BACKEND_CATE_BTYPE_WARTER,
                     startCursor);
         }
 

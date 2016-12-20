@@ -55,8 +55,7 @@ public class AdministratorSigninDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private AdministratorSigninDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_administrator_signin, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_administrator_signin, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -246,7 +245,7 @@ public class AdministratorSigninDialog extends CommonDialog {
             return;
         }
 
-        CommonUserAccountApi.checkAccountPassword(MfhLoginService.get().getCurrentGuId(),
+        CommonUserAccountApi.checkAccountPassword(MfhLoginService.get().getHumanId(),
                 pwdStr, responseCallback);
     }
 

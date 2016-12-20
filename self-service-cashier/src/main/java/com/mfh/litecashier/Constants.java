@@ -36,14 +36,14 @@ public class Constants {
 //    0:      已下单,订单生效
 //    100:    已经取消
 //    1:      待发货
-//    2:      配送中
+//    2:
 //    3:      已到达
 //    4:      已签收
     public static final int ORDER_STATUS_INIT = -1;
     public static final int ORDER_STATUS_ORDERED = 0;
     public static final int ORDER_STATUS_CANCELED = 100;
     public static final int ORDER_STATUS_WAIT_SHIP = 1;
-    public static final int ORDER_STATUS_DELIVER = 2;
+    public static final int ORDER_STATUS_DELIVER = 2;//配送中
     public static final int ORDER_STATUS_ARRIVED = 3;
     public static final int ORDER_STATUS_RECEIVED = 4;
 
