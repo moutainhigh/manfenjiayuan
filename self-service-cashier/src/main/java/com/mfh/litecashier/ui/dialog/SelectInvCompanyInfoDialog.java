@@ -112,8 +112,7 @@ public class SelectInvCompanyInfoDialog extends CommonDialog
     @SuppressLint("InflateParams")
     private SelectInvCompanyInfoDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_select_platform_provider, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_select_platform_provider, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

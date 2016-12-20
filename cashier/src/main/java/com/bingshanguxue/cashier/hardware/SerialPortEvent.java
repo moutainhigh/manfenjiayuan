@@ -1,12 +1,14 @@
 package com.bingshanguxue.cashier.hardware;
 
+import android.os.Bundle;
+
 /**
  * Created by kun on 15/9/7.
  */
 public class SerialPortEvent {
     public static final int SERIAL_TYPE_DISPLAY = 0;//屏显（JOOYTEC）
-    ////打印机(Gprinter)
-    public static final int GPRINTER_SEND_DATA = 1;
+    ////打印机
+    public static final int RINTER_PRINT_PRIMITIVE = 1;//byte[]
     public static final int UPDATE_PORT_GPRINTER = 2;
     public static final int UPDATE_PORT_SCALE= 3;
 
@@ -14,11 +16,12 @@ public class SerialPortEvent {
     public static final int SERIAL_TYPE_VFD_INIT = 6;
     public static final int SERIAL_TYPE_VFD_BYTE = 7;
 
-    public static final int PRINTER_PRINT_TEXT = 9;
 
     int type;
     String cmd;
     byte[] cmdBytes;
+
+    private Bundle args;
 
     public SerialPortEvent(int type, String cmd) {
         this.type = type;
@@ -28,6 +31,11 @@ public class SerialPortEvent {
     public SerialPortEvent(int type, byte[] cmdBytes) {
         this.type = type;
         this.cmdBytes = cmdBytes;
+    }
+
+    public SerialPortEvent(int type, Bundle args) {
+        this.type = type;
+        this.args = args;
     }
 
     public int getType() {

@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 /**
  * 采购订单
- * Created by kun on 15/9/23.
+ * Created by bingshanguxue on 15/9/23.
  */
 public class InvSendOrderEvent {
     public static final int EVENT_ID_RELOAD_DATA = 0X01;//初始化数据

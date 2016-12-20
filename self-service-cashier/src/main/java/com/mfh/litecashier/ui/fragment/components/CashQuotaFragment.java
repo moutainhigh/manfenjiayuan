@@ -3,7 +3,6 @@ package com.mfh.litecashier.ui.fragment.components;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -41,8 +40,8 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashQuotaInfo;
-import com.mfh.litecashier.com.EmbPrintManager;
-import com.mfh.litecashier.com.PrintManager;
+import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
+import com.bingshanguxue.cashier.hardware.printer.PrintManager;
 import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.CashQuotaAdapter;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
@@ -91,7 +90,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
     TextView emptyView;
 
     @BindView(R.id.fab_print)
-    FloatingActionButton fabPrint;
+    ImageButton fabPrint;
 
     private AlipayDialog alipayDialog = null;
 
@@ -515,13 +514,13 @@ public class CashQuotaFragment extends BaseProgressFragment {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
                 if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                    PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                    PrintManager.getInstance().printTopupReceipt(quickPayInfo, outTradeNo);
                 }
                 else{
-                    EmbPrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                    EmbPrintManager.getInstance().printTopupReceipt(quickPayInfo, outTradeNo);
                 }
 
-                DataUploadManager.getInstance().sync();
+                DataUploadManager.getInstance().syncDefault();
 
                 AlarmManagerHelper.triggleNextDailysettle(0);
             }

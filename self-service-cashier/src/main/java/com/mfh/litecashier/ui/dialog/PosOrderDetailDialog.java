@@ -58,8 +58,7 @@ public class PosOrderDetailDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private PosOrderDetailDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_posorder_detail, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_posorder_detail, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -168,12 +167,10 @@ public class PosOrderDetailDialog extends CommonDialog {
             }
             break;
             case "支付宝":{
-
                 wayType = WayType.ALI_F2F;
             }
             break;
             case "微信":{
-
                 wayType = WayType.WX_F2F;
             }
             break;

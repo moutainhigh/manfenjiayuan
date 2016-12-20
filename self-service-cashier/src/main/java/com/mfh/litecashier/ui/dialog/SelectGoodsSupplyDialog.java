@@ -69,8 +69,7 @@ public class SelectGoodsSupplyDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private SelectGoodsSupplyDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_order_stockgoods, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_order_stockgoods, null);
 //        ButterKnife.bind(rootView);
 
         try {

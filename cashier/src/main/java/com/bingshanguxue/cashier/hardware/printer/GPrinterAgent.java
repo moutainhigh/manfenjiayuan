@@ -2,14 +2,13 @@ package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.gprinter.command.EscCommand;
-import com.gprinter.command.LabelCommand;
 import com.mfh.framework.core.utils.DataConvertUtil;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Vector;
 
-import de.greenrobot.event.EventBus;
 
 /**
  * GPrinter打印机&钱箱
@@ -27,52 +26,7 @@ import de.greenrobot.event.EventBus;
  *
  * Created by bingshanguxue on 5/27/16.
  */
-public class GPrinterAgent {
-
-    /**
-     * 打印
-     * */
-    public static void print(EscCommand escCommand){
-        if (escCommand != null) {
-            //获得打印命令
-            Vector<Byte> datas = escCommand.getCommand();//发送数据
-            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
-        }
-    }
-
-    /**
-     * 走纸
-     * */
-    public static void feedPaper(){
-        EscCommand esc = new EscCommand();
-//                    esc.addPrintAndLineFeed();
-        //打印并且走纸多少行
-        esc.addPrintAndFeedLines((byte) 5);
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
-    }
-
-    /**
-     * 打开钱箱
-     * */
-    public static void openMoneyBox(){
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                CommandConstants.CMD_HEX_STX_M));
-
-        EscCommand esc = new EscCommand();
-        esc.addGeneratePluseAtRealtime(LabelCommand.FOOT.F2, (byte)20);
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
-    }
+public class GPrinterAgent extends Printer{
 
     /**
      * 清除屏幕上的字符

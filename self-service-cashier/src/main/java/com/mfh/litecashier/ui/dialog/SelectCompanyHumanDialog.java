@@ -53,8 +53,7 @@ public class SelectCompanyHumanDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private SelectCompanyHumanDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_select_companyhuman, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_select_companyhuman, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

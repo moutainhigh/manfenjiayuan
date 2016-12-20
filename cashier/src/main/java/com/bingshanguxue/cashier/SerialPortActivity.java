@@ -9,6 +9,8 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -20,7 +22,6 @@ import java.util.Queue;
 import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
 import android_serialport_api.SerialPortFinder;
-import de.greenrobot.event.EventBus;
 
 
 /**

@@ -3,7 +3,8 @@ package com.bingshanguxue.cashier.hardware;
 import com.bingshanguxue.cashier.hardware.printer.CommandConstants;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+
 
 /**
  * POSLAB--LED客显

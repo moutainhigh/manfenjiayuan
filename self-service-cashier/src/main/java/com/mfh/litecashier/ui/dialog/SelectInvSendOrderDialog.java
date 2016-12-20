@@ -131,8 +131,7 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
     @SuppressLint("InflateParams")
     private SelectInvSendOrderDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_select_sendorder, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_select_sendorder, null);
 //        ButterKnife.bind(rootView);
 
         invSendOrderPresenter = new InvSendOrderPresenter(this);

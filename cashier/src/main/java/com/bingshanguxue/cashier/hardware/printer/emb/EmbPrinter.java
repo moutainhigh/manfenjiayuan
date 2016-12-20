@@ -1,16 +1,18 @@
-package com.bingshanguxue.cashier.hardware.printer;
+package com.bingshanguxue.cashier.hardware.printer.emb;
 
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
+import com.bingshanguxue.cashier.hardware.printer.CommandConstants;
+import com.bingshanguxue.cashier.hardware.printer.Printer;
 import com.gprinter.command.EscCommand;
 import com.gprinter.command.LabelCommand;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.printer.sdk.PrinterConstants;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Vector;
 
-import de.greenrobot.event.EventBus;
 
 /**
  * GPrinter打印机&钱箱
@@ -28,7 +30,7 @@ import de.greenrobot.event.EventBus;
  *
  * Created by bingshanguxue on 5/27/16.
  */
-public class EmbPrinter {
+public class EmbPrinter extends Printer {
 
     public static byte[] initPrinter() {
         return new byte[]{(byte)27, (byte)64};
@@ -96,52 +98,41 @@ public class EmbPrinter {
         return new byte[]{(byte)27, (byte)33, mFontMode1, (byte)29, (byte)33, mFontSize1};
     }
 
-
-    /**
-     * 打印
-     * */
-    public static void print(EscCommand escCommand){
-        if (escCommand != null) {
-            //获得打印命令
-            Vector<Byte> datas = escCommand.getCommand();//发送数据
-            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
-        }
-    }
-
     /**
      * 走纸
      * */
-    public static void feedPaper(){
+    @Override
+    public void feedPaper() {
         EscCommand esc = new EscCommand();
         esc.addUserCommand(EmbPrinter.initPrinter());
 
         //打印并且走纸多少行
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 5));
+        printAndLineFeed(esc, 2);
 
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
+        print(esc);
     }
 
     /**
      * 打开钱箱
      * */
-    public static void openMoneyBox(){
+    @Override
+    public void openMoneyBox(){
         EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
                 CommandConstants.CMD_HEX_STX_M));
 
         EscCommand esc = new EscCommand();
         esc.addGeneratePluseAtRealtime(LabelCommand.FOOT.F2, (byte)20);
-        Vector<Byte> datas = esc.getCommand();
-        Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-        byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.GPRINTER_SEND_DATA, bytes));
+
+        print(esc);
+    }
+
+    @Override
+    public void printAndLineFeed(EscCommand escCommand, int lines) {
+        if (escCommand == null){
+            return;
+        }
+        byte[] command = EmbPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, lines);
+        escCommand.addUserCommand(command);
     }
 
     /**

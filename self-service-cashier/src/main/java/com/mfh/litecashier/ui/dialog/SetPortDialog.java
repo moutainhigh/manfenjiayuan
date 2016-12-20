@@ -49,8 +49,7 @@ public class SetPortDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private SetPortDialog(final Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_setport, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_setport, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

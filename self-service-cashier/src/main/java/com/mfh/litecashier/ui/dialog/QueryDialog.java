@@ -78,8 +78,7 @@ public class QueryDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private QueryDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_query, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_query, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
