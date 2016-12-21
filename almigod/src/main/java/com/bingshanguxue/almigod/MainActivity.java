@@ -26,15 +26,17 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.tencent.bugly.beta.Beta;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
 
     MenuItem menuLogin = null;
     MenuItem menuLogout = null;
@@ -260,6 +262,7 @@ public class MainActivity extends BaseActivity
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ValidateManager.ValidateManagerEvent event) {
         int eventId = event.getEventId();
 //        Bundle args = event.getArgs();
@@ -274,7 +277,7 @@ public class MainActivity extends BaseActivity
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN: {
-                redirectToLogin();
+//                redirectToLogin();
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER: {

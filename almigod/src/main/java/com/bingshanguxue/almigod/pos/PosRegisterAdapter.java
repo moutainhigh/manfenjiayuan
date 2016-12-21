@@ -43,8 +43,7 @@ public class PosRegisterAdapter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater
-                .inflate(R.layout.itemview_posregister, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_posregister, parent, false));
     }
 
     @Override

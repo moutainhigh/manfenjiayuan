@@ -147,7 +147,7 @@ public class RemoteControlFragment extends BaseFragment {
         jsonObject.put("remoteId", mRemoteControl.getId());
         jsonObject.put("remoteInfo", mRemoteControl.getName());
         jsonObject.put("data", mRemoteControl.getData());
-        msgService.sendText(MfhLoginService.get().getCurrentGuId(),
+        msgService.sendText(MfhLoginService.get().getGuidLong(),
                 null, mPosRegister.getChannelId(), mPosRegister.getChannelPointId(),
                 IMBizType.REMOTE_CONTROL_CMD, jsonObject.toJSONString(), processor);
     }

@@ -39,8 +39,7 @@ public class RemoteControlAdapter extends RegularAdapter<RemoteControl, RemoteCo
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater.inflate(
-                R.layout.cardview_remotecontrol, null, false);
+        View v = mLayoutInflater.inflate(R.layout.cardview_remotecontrol, parent, false);
 //        v.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 105),
 //                DensityUtil.dip2px(mContext, 122)));
 

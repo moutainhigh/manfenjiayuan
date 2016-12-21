@@ -51,11 +51,6 @@ public class ClientLogAdapter
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         ClientLog entity = entityList.get(position);
 
-//        if (selectedEntity != null && selectedEntity.getId().compareTo(entity.getId()) == 0) {
-//            holder.rootView.setSelected(true);
-//        } else {
-//            holder.rootView.setSelected(false);
-//        }
         holder.tvHardwareInfo.setText(String.format("硬件信息:%s", entity.getHardwareInformation()));
         holder.tvAndroidLev.setText(String.format("系统版本:%s", entity.getAndroidLevel()));
         holder.tvSoftVer.setText(String.format("软件版本:%s", entity.getSoftVersion()));
@@ -63,7 +58,6 @@ public class ClientLogAdapter
         holder.tvErrorTime.setText(String.format("错误时间:%s",
                 TimeUtil.format(entity.getErrorTime(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
         holder.tvStackInfo.setText(String.format("堆栈信息:%s", entity.getStackInformation()));
-
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
