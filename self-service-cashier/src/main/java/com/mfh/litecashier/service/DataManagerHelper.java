@@ -11,15 +11,15 @@ import java.util.Date;
 /**
  * Created by bingshanguxue on 8/30/16.
  */
-public class BaseSyncManager {
+public class DataManagerHelper {
     public static final int MAX_SYNC_PAGESIZE = 40;
 
     /**
-     * 获取POS商品库同步时间
+     * 获取POS商品档案同步时间
      */
     public static String getPosLastUpdateCursor() {
         String startCursor = SharedPreferencesUltimate.getSyncProductsCursor();
-        ZLogger.df(String.format("上次商品更新时间(%s)。", startCursor));
+        ZLogger.df(String.format("商品档案同步游标:(%s)。", startCursor));
 
 //        //得到指定模范的时间
         if (!StringUtils.isEmpty(startCursor)) {
@@ -28,11 +28,11 @@ public class BaseSyncManager {
                 Date rightNow = new Date();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
-                    ZLogger.df(String.format("上次商品更新时间大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.df(String.format("商品档案同步游标大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();
-                ZLogger.ef(String.format("获取POS商品库同步时间失败: %s", e.toString()));
+                ZLogger.ef(String.format("获取商品档案同步游标失败: %s", e.toString()));
             }
         }
 

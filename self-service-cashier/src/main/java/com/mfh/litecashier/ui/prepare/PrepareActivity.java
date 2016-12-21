@@ -11,7 +11,9 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -24,6 +26,7 @@ public class PrepareActivity extends BaseActivity {
 
     private PrepareStep1Fragment mPrepareStep1Fragment;
     private PrepareStep2Fragment mPrepareStep2Fragment;
+    private PrepareTakeoutFragment mPrepareTakeoutFragment;
 
     private String tradeNo = null;
 
@@ -139,6 +142,41 @@ public class PrepareActivity extends BaseActivity {
         ZLogger.df("跳转到组货页面end");
     }
 
+    public void showTakeoutFragment(BizSubTypeWrapper subTypeWrapper, String outerNo) {
+        if (subTypeWrapper == null || StringUtils.isEmpty(outerNo)){
+            return;
+        }
+        if (curStep == 2){
+            return;
+        }
+        ZLogger.df("准备跳转到第三方外卖组货页面");
+        curStep = 2;
+
+        try{
+            Bundle args = new Bundle();
+            args.putString(PrepareTakeoutFragment.EXTRA_KEY_POS_TRADENO, tradeNo);
+            args.putSerializable(PrepareTakeoutFragment.EXTRA_KEY_SUBTYPE, subTypeWrapper);
+            args.putString(PrepareTakeoutFragment.EXTRA_KEY_OUTTER_TRADENO, outerNo);
+
+            if (mPrepareTakeoutFragment == null) {
+                mPrepareTakeoutFragment = PrepareTakeoutFragment.newInstance(args);
+            }
+            else{
+                mPrepareTakeoutFragment.setArguments(args);
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, mPrepareTakeoutFragment)
+                    .commit();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            ZLogger.ef(e.toString());
+        }
+        ZLogger.df("跳转到组货页面end");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PrepareEvent event) {
         Bundle args = event.getArgs();
         ZLogger.df(String.format("PrepareEvent:%d\n%s",
@@ -152,6 +190,13 @@ public class PrepareActivity extends BaseActivity {
                     }
 
                     showStep2(scOrder);
+                }
+            }
+            break;
+            case PrepareEvent.ACTION_PREPARE_TAKEOUT:{
+                if (args != null){
+                    showTakeoutFragment((BizSubTypeWrapper) args.getSerializable(PrepareTakeoutFragment.EXTRA_KEY_SUBTYPE),
+                            args.getString(PrepareEvent.KEY_OUTERNO, null));
                 }
             }
             break;

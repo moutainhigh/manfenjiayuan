@@ -16,32 +16,33 @@ import com.mfh.framework.api.PosOrderApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Date;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 
 /**
  * 上传数据，确保POS机数据能正确的上传到云端
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 public class DataUploadManager extends OrderSyncManager {
-    public interface SyncStep {
-        int STANDBY = -1;
-        int INCOME_DISTRIBUTION_TOPUP   = 0;//清分充值
-        int CASH_QUOTA_TOPUP            = 1;//现金授权充值
-        int CASHIER_ORDER            = 2;//收银订单
-    }
+    public static final int NA = 0;
+    public static final int INCOME_DISTRIBUTION_TOPUP = 1;//清分充值
+    public static final int CASH_QUOTA_TOPUP = 2;//现金授权充值
+    public static final int POS_ORDER = 4;//收银订单／外部订单
 
+    private int rollback = -1;
+    private static final int MAX_ROLLBACK = 5;
     private boolean bSyncInProgress = false;//是否正在同步
-    //当前同步进度
-    private int nextStep = SyncStep.STANDBY;
+    private int queue = NA;//默认同步所有数据
 
     private PageInfo incomeDistributionPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
     private PageInfo commitCashPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
@@ -67,73 +68,60 @@ public class DataUploadManager extends OrderSyncManager {
     /**
      * 下载更新POS数据库
      */
-    public synchronized void sync() {
-        if (bSyncInProgress) {
-            ZLogger.df("正在同步POS数据...");
-            nextStep = SyncStep.INCOME_DISTRIBUTION_TOPUP;
-            return;
-        }
-        processStep(SyncStep.INCOME_DISTRIBUTION_TOPUP, SyncStep.CASH_QUOTA_TOPUP);
+    public synchronized void syncDefault() {
+        sync(7);
     }
 
     public void sync(int step) {
+        queue |= step;
         if (bSyncInProgress) {
-            if (nextStep > step) {
-                nextStep = step;
+            rollback++;
+            ZLogger.df(String.format("正在同步POS数据..., rollback=%d/%d", rollback, MAX_ROLLBACK));
+            EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED));
+
+            //自动恢复同步
+            if (rollback >= MAX_ROLLBACK) {
+                bSyncInProgress = false;
             }
-            ZLogger.df(String.format("正在同步POS数据,下一步:%d", nextStep));
+            return;
         }
-        else{
-            processStep(step, SyncStep.STANDBY);
-        }
+
+        processQueue();
     }
 
     /**
-     * 下一步
+     * 同步
      */
-    private void nextStep() {
-        processStep(nextStep, nextStep + 1);
-    }
+    private void processQueue() {
+        ZLogger.d(String.format("queue ＝ %d", queue));
 
-    private void processStep(int step, int nextStep) {
-        this.nextStep = nextStep;
+        rollback = -1;
         this.bSyncInProgress = true;
-        ZLogger.df(String.format("step=%d, nextStep=%d", step, nextStep));
 
-        switch (step) {
-            case SyncStep.INCOME_DISTRIBUTION_TOPUP: {
-                uploadIncomeDistribution();
-            }
-            break;
-            case SyncStep.CASH_QUOTA_TOPUP: {
-                uploadCashQuota();
-            }
-            break;
-            case SyncStep.CASHIER_ORDER: {
-                uploadPosOrders();
-            }
-            break;
-            default: {
-                onCompleted();
-            }
-            break;
+        if ((queue & INCOME_DISTRIBUTION_TOPUP) == INCOME_DISTRIBUTION_TOPUP) {
+            uploadIncomeDistribution();
+        } else if ((queue & CASH_QUOTA_TOPUP) == CASH_QUOTA_TOPUP) {
+            uploadCashQuota();
+        } else if ((queue & POS_ORDER) == POS_ORDER) {
+            uploadPosOrders();
+        } else {
+            onNotifyCompleted("没有同步任务待执行");
         }
     }
 
 
     private void onNext(String message) {
         ZLogger.df(message);
-        nextStep();
+        processQueue();
     }
 
-    private void onError(String message) {
-        ZLogger.df(message);
-        bSyncInProgress = false;
-        EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR));
-    }
-
-    private void onCompleted() {
-        ZLogger.df("上传POS数据结束");
+    /**
+     * 完成
+     */
+    private void onNotifyCompleted(String message) {
+        if (!StringUtils.isEmpty(message)) {
+            ZLogger.df(message);
+        }
         bSyncInProgress = false;
         EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED));
     }
@@ -159,6 +147,8 @@ public class DataUploadManager extends OrderSyncManager {
      * 提交清分充值记录
      * */
     private void uploadIncomeDistribution() {
+        queue ^= INCOME_DISTRIBUTION_TOPUP;
+
         incomeDistributionPageInfo = new PageInfo(1, 1);//翻页
 
         commintCashAndTrigDateEnd();
@@ -169,16 +159,12 @@ public class DataUploadManager extends OrderSyncManager {
      */
     private void commintCashAndTrigDateEnd() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onError("网络未连接，暂停同步清分充值支付记录。");
+            onNotifyCompleted("网络未连接，暂停同步清分充值支付记录。");
             return;
         }
 
         String sqlWhere = String.format("bizType = '%d' and subBizType = '%d' and paystatus = '%d' and syncStatus = '%d'",
                 BizType.DAILYSETTLE, BizType.INCOME_DISTRIBUTION, PayStatus.FINISH, SyncStatus.INIT);
-
-//        ZLogger.d(String.format("查询清分充值支付记录:%s (%d/%d %d)",
-//                sqlWhere, incomeDistributionPageInfo.getPageNo(),
-//                incomeDistributionPageInfo.getTotalPage(), incomeDistributionPageInfo.getTotalCount()));
 
         List<PosTopupEntity> entities = PosTopupService.get().queryAll(sqlWhere, incomeDistributionPageInfo);
         if (entities == null || entities.size() <= 0) {
@@ -209,7 +195,7 @@ public class DataUploadManager extends OrderSyncManager {
                             incomeDistributionPageInfo.moveToNext();
                             commintCashAndTrigDateEnd();
                         } else {
-                            nextStep();
+                            processQueue();
                         }
                     }
 
@@ -223,7 +209,7 @@ public class DataUploadManager extends OrderSyncManager {
                             incomeDistributionPageInfo.moveToNext();
                             commintCashAndTrigDateEnd();
                         } else {
-                            nextStep();
+                            processQueue();
                         }
                     }
                 }
@@ -235,6 +221,7 @@ public class DataUploadManager extends OrderSyncManager {
     }
 
     private void uploadCashQuota() {
+        queue ^= CASH_QUOTA_TOPUP;
         commitCashPageInfo = new PageInfo(1, 1);//翻页
 
         commintCash();
@@ -245,7 +232,7 @@ public class DataUploadManager extends OrderSyncManager {
      */
     private void commintCash() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onError("网络未连接，暂停同步营业额现金支付记录。");
+            onNotifyCompleted("网络未连接，暂停同步营业额现金支付记录。");
             return;
         }
 
@@ -281,7 +268,7 @@ public class DataUploadManager extends OrderSyncManager {
                             commitCashPageInfo.moveToNext();
                             commintCash();
                         } else {
-                            nextStep();
+                            processQueue();
                         }
                     }
 
@@ -295,7 +282,7 @@ public class DataUploadManager extends OrderSyncManager {
                             commitCashPageInfo.moveToNext();
                             commintCash();
                         } else {
-                            nextStep();
+                            processQueue();
                         }
                     }
                 }
@@ -310,6 +297,8 @@ public class DataUploadManager extends OrderSyncManager {
      * 上传POS订单
      */
     public synchronized void uploadPosOrders() {
+        queue ^= POS_ORDER;
+
         mOrderPageInfo = new PageInfo(1, MAX_SYNC_ORDER_PAGESIZE);
         orderStartCursor = getPosOrderStartCursor();
         //上传未同步并且已完成的订单
@@ -338,12 +327,12 @@ public class DataUploadManager extends OrderSyncManager {
      */
     private void batchUploadPosOrder() {
         if (!MfhLoginService.get().haveLogined()) {
-            onError("会话已失效，暂停同步收银订单数据。");
+            onNotifyCompleted("会话已失效，暂停同步收银订单数据。");
             return;
         }
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onError("网络未连接，暂停同步收银订单数据。");
+            onNotifyCompleted("网络未连接，暂停同步收银订单数据。");
             return;
         }
 
@@ -422,12 +411,12 @@ public class DataUploadManager extends OrderSyncManager {
         }
 
         if (!MfhLoginService.get().haveLogined()) {
-            onError("会话已失效，暂停同步POS订单数据。");
+            onNotifyCompleted("会话已失效，暂停同步POS订单数据。");
             return;
         }
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            onError("网络未连接，暂停同步POS订单数据。");
+            onNotifyCompleted("网络未连接，暂停同步POS订单数据。");
             return;
         }
 

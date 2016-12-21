@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -13,10 +12,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -34,12 +35,12 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -49,25 +50,25 @@ import butterknife.OnClick;
 public class PrepareStep2Fragment extends BaseFragment {
     public static final String EXTRA_KEY_SCORDER = "scOrder";
 
-//    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-//    @Bind(R.id.iv_vip_header)
+    @BindView(R.id.iv_vip_header)
     AvatarView ivMemberHeader;
-//    @Bind(R.id.tv_vip_brief)
+    @BindView(R.id.tv_vip_brief)
     TextView tvVipBrief;
-//    @Bind(R.id.label_orderamount)
+    @BindView(R.id.label_orderamount)
     MultiLayerLabel labelOrderAmount;
-//    @Bind(R.id.label_finalamount)
+    @BindView(R.id.label_finalamount)
     MultiLayerLabel labelActualAmount;
-//    @Bind(R.id.label_diffamount)
+    @BindView(R.id.label_diffamount)
     MultiLayerLabel labelDiffAmount;
-//    @Bind(R.id.goods_list)
+    @BindView(R.id.goods_list)
     RecyclerViewEmptySupport goodsRecyclerView;
-//    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
     private PrepareOrderAdapter couponAdapter;
-//    @Bind(R.id.fab_submit)
-    FloatingActionButton btnSubmit;
+    @BindView(R.id.fab_submit)
+    ImageButton btnSubmit;
 
     private ScOrder mScOrder;
 
@@ -87,22 +88,12 @@ public class PrepareStep2Fragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        try{
+        try {
             Bundle args = getArguments();
             ZLogger.df(String.format("打开组货页面，%s", StringUtils.decodeBundle(args)));
             if (args != null) {
                 mScOrder = (ScOrder) args.getSerializable(EXTRA_KEY_SCORDER);
             }
-
-            toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-            ivMemberHeader = (AvatarView) rootView.findViewById(R.id.iv_vip_header);
-            tvVipBrief = (TextView) rootView.findViewById(R.id.tv_vip_brief);
-            labelOrderAmount = (MultiLayerLabel) rootView.findViewById(R.id.label_orderamount);
-            labelActualAmount = (MultiLayerLabel) rootView.findViewById(R.id.label_finalamount);
-            labelDiffAmount = (MultiLayerLabel) rootView.findViewById(R.id.label_diffamount);
-            goodsRecyclerView = (RecyclerViewEmptySupport) rootView.findViewById(R.id.goods_list);
-            emptyView = rootView.findViewById(R.id.empty_view);
-            btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
 
             toolbar.setTitle("组货");
 //        setSupportActionBar(toolbar);
@@ -128,8 +119,7 @@ public class PrepareStep2Fragment extends BaseFragment {
             initgoodsRecyclerView();
 
             refresh();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             ZLogger.ef(e.toString());
         }
@@ -199,11 +189,10 @@ public class PrepareStep2Fragment extends BaseFragment {
             labelOrderAmount.setTopText(String.format("%.2f", amount));
             labelActualAmount.setTopText(String.format("%.2f", actualAmount));
             Double diff = actualAmount - amount;
-            if (diff > 0){
+            if (diff > 0) {
                 labelDiffAmount.setTopText(String.format("+%.2f", Math.abs(diff)),
                         ContextCompat.getColor(getContext(), R.color.material_red_500));
-            }
-            else{
+            } else {
                 labelDiffAmount.setTopText(String.format("-%.2f", Math.abs(diff)),
                         ContextCompat.getColor(getContext(), R.color.material_green_500));
             }
@@ -257,7 +246,7 @@ public class PrepareStep2Fragment extends BaseFragment {
                 @Override
                 public void processResult(IResponseData rspData) {
                     //{"code":"0","msg":"操作成功!","version":"1","data":null}
-                    if (rspData != null){
+                    if (rspData != null) {
                         RspValue<String> retValue = (RspValue<String>) rspData;
                         String retStr = retValue.getValue();
                     }

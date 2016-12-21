@@ -1,42 +1,51 @@
 package com.mfh.litecashier.ui.prepare;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScOrderView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
+import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 /**
  * 首页－－采购
@@ -53,9 +62,15 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
     MultiLayerLabel labelAmount;
     @BindView(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
+    @BindView(R.id.recyclerView)
+    RecyclerView menuRecyclerView;
+    private GridLayoutManager mRLayoutManager;
+    private PrepareTypeAdapter menuAdapter;
 
     private String tradeNo;
+    private BizSubTypeWrapper mBizSubTypeWrapper = null;
     private ScOrderPresenter mScOrderPresenter;
+    private List<CashierShopcartEntity> mShopcartEntities;
 
 
     public static PrepareStep1Fragment newInstance(Bundle args) {
@@ -85,13 +100,13 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
-        ZLogger.df(String.format("打开支付页面，%s", StringUtils.decodeBundle(args)));
+        ZLogger.df(String.format("拣货，%s", StringUtils.decodeBundle(args)));
 
         if (args != null) {
             tradeNo = args.getString(PrepareActivity.EXTRA_KEY_TRADENO);
         }
 
-        toolbar.setTitle("组货");
+        toolbar.setTitle("拣货");
 //        setSupportActionBar(toolbar);
         // Set an OnMenuItemClickListener to handle menu item clicks
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -111,9 +126,9 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
         toolbar.inflateMenu(R.menu.menu_normal);
 
         initInlvBarcode();
+        initMenuRecyclerView();
         inlvBarcode.clear();
         inlvBarcode.requestFocusEnd();
-        inlvBarcode.setEnabled(true);
 
         refresh();
     }
@@ -135,24 +150,168 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
 
     private void initInlvBarcode() {
 //        inlvBarcode.setSoftKeyboardEnabled(false);
-        inlvBarcode.setDigits(2);
+//        inlvBarcode.setDigits(2);
         inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
                 KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
             @Override
             public void onKey(int keyCode, String text) {
                 //Press “Enter”
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    submitOrder();
+                    submitOrder(inlvBarcode.getInputString());
                 }
             }
         });
+        inlvBarcode.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
+            @Override
+            public void onClickAction1(String text) {
+                submitOrder(text);
+            }
+
+            @Override
+            public void onLongClickAction1(String text) {
+
+            }
+        });
+        inlvBarcode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()
+                            || inlvBarcode.isSoftKeyboardEnabled()) {
+                        showBarcodeKeyboard();
+                    }
+                }
+
+                inlvBarcode.requestFocusEnd();
+                //返回true,不再继续传递事件
+                return true;
+            }
+        });
+    }
+
+    private void initMenuRecyclerView() {
+        mRLayoutManager = new GridLayoutManager(getActivity(), 6);
+        menuRecyclerView.setLayoutManager(mRLayoutManager);
+        //enable optimizations if all item views are of the same height and width for
+        //signficantly smoother scrolling
+        menuRecyclerView.setHasFixedSize(true);
+//        menuRecyclerView.setScrollViewCallbacks(mScrollViewScrollCallbacks);
+        //设置Item增加、移除动画
+        menuRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        //添加分割线
+//        menuRecyclerView.addItemDecoration(new GridItemDecoration2(getActivity(), 1,
+//                getResources().getColor(R.color.mf_dividerColorPrimary), 0.1f,
+//                getResources().getColor(R.color.mf_dividerColorPrimary), 0.5f,
+//                getResources().getColor(R.color.mf_dividerColorPrimary), 0.1f));
+//        menuRecyclerView.addItemDecoration(new GridItemDecoration(
+//                4, 2, false));
+
+        menuAdapter = new PrepareTypeAdapter(CashierApp.getAppContext(), null);
+        menuAdapter.setOnAdapterLitener(new PrepareTypeAdapter.AdapterListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                responseMenu(menuAdapter.getEntity(position));
+            }
+        });
+        menuRecyclerView.setAdapter(menuAdapter);
+        menuAdapter.setEntityList(getSubTypes());
+    }
+
+    private NumberInputDialog barcodeInputDialog = null;
+    /**
+     * 显示条码输入界面
+     * 相当于扫描条码
+     */
+    private void showBarcodeKeyboard() {
+        if (barcodeInputDialog == null) {
+            barcodeInputDialog = new NumberInputDialog(getActivity());
+            barcodeInputDialog.setCancelable(true);
+            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        }
+        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "订单编号", "订单编号", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        if (StringUtils.isEmpty(value)){
+                            return;
+                        }
+
+                        if (mBizSubTypeWrapper == null){
+                            submitOrder(value);
+                        }
+                        else{
+                            Bundle args = new Bundle();
+                            args.putSerializable(PrepareTakeoutFragment.EXTRA_KEY_SUBTYPE, mBizSubTypeWrapper);
+                            args.putString(PrepareEvent.KEY_OUTERNO, value);
+                            EventBus.getDefault().post(new PrepareEvent(PrepareEvent.ACTION_PREPARE_TAKEOUT, args));
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+        barcodeInputDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                mBizSubTypeWrapper = null;
+            }
+        });
+//        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
+        if (!barcodeInputDialog.isShowing()) {
+            barcodeInputDialog.show();
+        }
+    }
+
+    /**
+     * 获取菜单
+     */
+    private synchronized List<BizSubTypeWrapper> getSubTypes() {
+        List<BizSubTypeWrapper> functionalList = new ArrayList<>();
+        functionalList.add(new BizSubTypeWrapper(PosType.POS_TYPE_MEITUAN,
+                "美团", R.mipmap.ic_plat_meituan));
+        functionalList.add(new BizSubTypeWrapper(PosType.POS_TYPE_ELEM,
+                "饿了么", R.mipmap.ic_plat_eleme));
+        functionalList.add(new BizSubTypeWrapper(PosType.POS_TYPE_BAIDU,
+                "百度外卖", R.mipmap.ic_plat_baiduwaimai));
+        functionalList.add(new BizSubTypeWrapper(PosType.POS_TYPE_KOUBEI,
+                "口碑", R.mipmap.ic_plat_koubei));
+        functionalList.add(new BizSubTypeWrapper(PosType.POS_TYPE_DIANPING,
+                "大众点评", R.mipmap.ic_plat_dianping));
+        functionalList.add(new BizSubTypeWrapper(PosType.POS_TYPE_TELPHONE,
+                "电话", R.mipmap.ic_plat_telephone));
+
+        return functionalList;
+    }
+
+    private void responseMenu(BizSubTypeWrapper bizSubTypeWrapper){
+        List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
+                .queryAllBy(String.format("posTradeNo = '%s'", tradeNo));
+        if (shopcartEntities != null && shopcartEntities.size() > 0){
+            mBizSubTypeWrapper = bizSubTypeWrapper;
+
+            showBarcodeKeyboard();
+        }
+        else{
+            DialogUtil.showHint("未添加商品");
+        }
     }
 
     /**
      * 查询订单
      */
-    private void submitOrder() {
-        String barcode = inlvBarcode.getInputString();
+    private void submitOrder(String barcode) {
         inlvBarcode.clear();
         inlvBarcode.requestFocusEnd();
         if (StringUtils.isEmpty(barcode)) {
@@ -171,41 +330,15 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
         mScOrderPresenter.getByBarcode(barcode, ScOrder.MFHORDER_STATUS_BUYING, true);
     }
 
-    private NetCallBack.QueryRsCallBack responseRC = new NetCallBack.QueryRsCallBack<>(
-            new NetProcessor.QueryRsProcessor<ScOrder>(new PageInfo(1, 10)) {
-                @Override
-                public void processQueryResult(RspQueryResult<ScOrder> rs) {
-                    //此处在主线程中执行。
-                    ScOrder scOrder = null;
-                    if (rs != null && rs.getReturnNum() > 0) {
-                        scOrder = rs.getRowEntity(0);
-                    }
-
-                    refreshScOrder(scOrder);
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    DialogUtil.showHint(errMsg);
-                    hideProgressDialog();
-                    ZLogger.d("加载待拣货订单失败:" + errMsg);
-//                    goodsAdapter.setEntityList(null);
-                }
-            }, ScOrder.class, MfhApplication.getAppContext());
-
-
     private void refresh(){
-        List<CashierShopcartEntity> entities = null;
-
         if (!StringUtils.isEmpty(tradeNo)){
-            entities = CashierShopcartService.getInstance()
+            mShopcartEntities = CashierShopcartService.getInstance()
                     .queryAllBy(String.format("posTradeNo = '%s'", tradeNo));
         }
 
         Double bcount = 0D, amount = 0D;
-        if (entities != null && entities.size() > 0){
-            for (CashierShopcartEntity entity : entities){
+        if (mShopcartEntities != null && mShopcartEntities.size() > 0){
+            for (CashierShopcartEntity entity : mShopcartEntities){
                 bcount += entity.getBcount();
                 amount += entity.getFinalAmount();
             }
