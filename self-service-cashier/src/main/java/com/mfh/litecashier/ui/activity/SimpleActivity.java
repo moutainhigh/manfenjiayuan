@@ -12,12 +12,9 @@ import android.view.WindowManager;
 
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.fragment.canary.OrderFlowFragment;
-import com.mfh.litecashier.ui.fragment.canary.SettingsGoodsFragment;
-import com.mfh.litecashier.ui.fragment.goods.BackendCategoryFragment;
+import com.mfh.litecashier.ui.fragment.components.OrderFlowFragment;
+import com.mfh.litecashier.ui.fragment.components.SettingsGoodsFragment;
 import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
-import com.mfh.litecashier.ui.fragment.online.OnlineFragment;
-import com.mfh.litecashier.ui.fragment.orderflow.StoreOrderFlowFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseShopcartFragment;
@@ -37,14 +34,11 @@ public class SimpleActivity extends BaseActivity {
     public static final int FT_PURCHASE_MANUAL_SHOPCART = 0x07;//采购商品－购物车
 
     public static final int FT_INVENTORY = 0x11;//库存
-    public static final int FT_ORDERFLOW = 0x12;//POS流水
-    public static final int FT_ONLINE_ORDER = 0x14;//线上订单:(生鲜预定)
     public static final int FT_RECEIPT = 0x16;//单据
     public static final int FT_SETTINGS = 0x17;//设置
-    public static final int FT_GOODS_LIST = 0x18;//商品列表
 
     public static final int FT_CANARY_GOODS = 0x20;//商品
-    public static final int FT_CANARY_ORDERFLOW = 0x21;//流水
+    public static final int FT_CANARY_ORDERFLOW = 0x21;//POS流水
     public static final int FT_CANARY_CANARY = 0x23;//金丝雀
 
     @BindView(R.id.toolbar)
@@ -85,16 +79,14 @@ public class SimpleActivity extends BaseActivity {
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        if (fragmentType != FT_ONLINE_ORDER) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-            toolbar.setNavigationOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            SimpleActivity.this.onBackPressed();
-                        }
-                    });
-        }
+        toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        toolbar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SimpleActivity.this.onBackPressed();
+                    }
+                });
         // Set an OnMenuItemClickListener to handle menu item clicks
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -144,14 +136,12 @@ public class SimpleActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         switch (fragmentType) {
-            case FT_ORDERFLOW:
             case FT_RECEIPT:
             case FT_SETTINGS:
             case FT_PURCHASE_MANUAL:
             case FT_PURCHASE_MANUAL_SHOPCART:
             case FT_CANARY_GOODS:
-            case FT_CANARY_ORDERFLOW:
-            case FT_GOODS_LIST:{
+            case FT_CANARY_ORDERFLOW:{
                 getMenuInflater().inflate(R.menu.menu_empty, menu);
             }
             break;
@@ -160,7 +150,6 @@ public class SimpleActivity extends BaseActivity {
                 standardShopcartMenu = menu.findItem(R.id.action_shopcart_standard);
             }
             break;
-            case FT_ONLINE_ORDER:
             default: {
                 getMenuInflater().inflate(R.menu.menu_normal, menu);
             }
@@ -188,24 +177,6 @@ public class SimpleActivity extends BaseActivity {
      */
     private void initFragments() {
         switch (fragmentType) {
-            case FT_ONLINE_ORDER: {
-                toolbar.setTitle("线上订单");
-                OnlineFragment fragment = new OnlineFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_GOODS_LIST: {
-                toolbar.setTitle("商品列表");
-                BackendCategoryFragment fragment = new BackendCategoryFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
             case FT_PURCHASE_MANUAL: {
                 toolbar.setTitle("手动订货");
                 ManualPurchaseFragment fragment;
@@ -230,19 +201,9 @@ public class SimpleActivity extends BaseActivity {
                         .commit();
             }
             break;
-
             case FT_INVENTORY: {
                 toolbar.setTitle("库存成本");
                 InventoryCostFragment fragment = new InventoryCostFragment();
-                getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-            break;
-            case FT_ORDERFLOW: {
-                toolbar.setTitle("流水");
-                StoreOrderFlowFragment fragment = new StoreOrderFlowFragment();
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)

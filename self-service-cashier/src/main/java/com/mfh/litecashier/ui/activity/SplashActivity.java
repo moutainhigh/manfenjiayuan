@@ -100,6 +100,7 @@ public class SplashActivity extends InitActivity {
             tvVersion.setText("");
         }
 
+        requestPermissions();
     }
 
     @Override
@@ -111,37 +112,14 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 17);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 18);
 
-//        String hostServerData = SharedPrefesManagerBase.getText(SharedPrefesManagerBase.PK_S_HOSTSERVER, null);
-//        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData),
-//                HostServer.class);
-//        if (hostServer == null){
-//            hostServer = new HostServer(1L,
-//                    "米西厨房", "admin.mixicook.com",
-//                    "http://admin.mixicook.com/pmc",
-//                    "http://mobile.mixicook.com/mfhmobile/mobile/api",
-//                    R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_hybridlogo_mixicook,
-//                    AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin");
-//            SharedPrefesManagerBase.set(SharedPrefesManagerBase.PK_S_HOSTSERVER,
-//                    JSONObject.toJSONString(hostServer));
-//        }
+        setupGetui();
     }
 
     @Override
     protected void initSecondary() {
         super.initSecondary();
-    }
-
-    @Override
-    public void doAsyncTask() {
-        if (!requestPermissions()) {
-            return;
-        }
-
-        setupGetui();
-
-        super.doAsyncTask();
     }
 
     @Override
@@ -227,7 +205,7 @@ public class SplashActivity extends InitActivity {
                 if (data != null){
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
-                doAsyncTask();
+                requestPermissions();
             }
             break;
             case ResultCode.ARC_NATIVE_SIGNIN: {
@@ -310,7 +288,6 @@ public class SplashActivity extends InitActivity {
         super.onPermissionsGranted();
         doAsyncTask();
     }
-
 
     private void redirect2HostServer() {
         ZLogger.d("准备跳转到域名选择页面");
