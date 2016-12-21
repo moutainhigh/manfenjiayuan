@@ -169,8 +169,9 @@ public class MainActivity extends BaseActivity {
             }
         };
         EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class, this);
-        msgService.sendMessageToPeople(MfhLoginService.get().getCurrentGuId(),
-                132079L, new TextParam("test message from display"), processor);
+        msgService.sendMessageToPeople(MfhLoginService.get().getGuidLong(),
+                MfhLoginService.get().getGuidLong(),
+                new TextParam("test message from display"), processor);
     }
 
     public void onEventMainThread(CashierOrderEvent event) {

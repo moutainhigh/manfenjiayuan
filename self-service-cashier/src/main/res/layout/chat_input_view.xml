@@ -15,7 +15,7 @@
         android:background="?android:editTextBackground"
         android:gravity="bottom|start"
         android:textColor="@color/material_black"
-        android:textColorHint="@color/material_black_hint"
+        android:textColorHint="@color/material_black_200"
         android:textSize="@dimen/ch_fontsize_button"
         android:hint="点击输入文字"
         android:maxLines="4"/>

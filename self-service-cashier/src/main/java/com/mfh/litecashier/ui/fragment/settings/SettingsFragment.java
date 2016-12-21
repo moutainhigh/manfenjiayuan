@@ -16,10 +16,13 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.SettingsFragmentPagerAdapter;
 import com.mfh.litecashier.ui.widget.ViewPageInfo;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 /**
  * 设置－－
@@ -126,6 +129,7 @@ public class SettingsFragment extends BaseFragment {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(SettingsFragment.SettingsEvent event) {
         ZLogger.d(String.format(" SettingsEvent(%d)", event.getEventId()));
         if (event.getEventId() == SettingsEvent.EVENT_ID_RELOAD_DATA) {

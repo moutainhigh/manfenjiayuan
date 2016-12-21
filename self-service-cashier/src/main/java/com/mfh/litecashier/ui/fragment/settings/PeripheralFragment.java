@@ -24,10 +24,10 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.century.GreenTagsApi;
 import org.century.GreenTagsSettingsDialog;
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 设置－－通用

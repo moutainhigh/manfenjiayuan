@@ -63,8 +63,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private FrontCategoryGoodsDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_frontcategory_goods, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_frontcategory_goods, null);
 //        ButterKnife.bind(rootView);
 
         etValue = (EditText) rootView.findViewById(R.id.et_quantity);

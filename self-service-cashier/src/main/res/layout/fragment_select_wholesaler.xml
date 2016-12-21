@@ -16,7 +16,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/spacing_double"
         app:inputNumberLabelView_inputHint="速记码"
-        app:inputNumberLabelView_inputTextColor="@color/black"
+        app:editTextColor="@color/black"
         app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
 
     <!--分割线-->
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_below="@+id/inlv_shortCode"
-        android:background="@color/mfh_colorPrimary"/>
+        android:background="@color/colorPrimary"/>
 
 
     <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport

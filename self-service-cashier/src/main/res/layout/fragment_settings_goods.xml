@@ -100,7 +100,7 @@
             android:background="@color/mfhtheme_maskPrimary"
             android:orientation="horizontal"
             app:inputNumberLabelView_inputHint="商品条码"
-            app:inputNumberLabelView_inputTextColor="@color/black"
+            app:editTextColor="@color/black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
     </RelativeLayout>
 

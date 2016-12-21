@@ -40,6 +40,8 @@ public class ACacheHelper {
     public static final String TCK_INVENTORY_CREATEALLOCATION_GOODS_DATA = "TCK_INVENTORY_CREATEALLOCATION_GOODS_DATA";//新建调拨单单临时存储数据
     public static final String TCK_PURCHASE_SEARCH_PARAMS = "TCK_PURCHASE_SEARCH_PARAMS";//采购商品搜索条件
 
+    public static final String TCK_LAST_TENANT_POSFRONTCATEGORY = "TCK_LAST_TENANT_POSFRONTCATEGORY";//上一次选择的租户pos前台类目
+
 
     public static void put(String key, String value){
         ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)

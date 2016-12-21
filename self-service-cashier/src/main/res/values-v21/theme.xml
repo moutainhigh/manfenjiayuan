@@ -1,7 +1,7 @@
 <resources>
 
     <!-- application theme 日间模式 -->
-    <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
+    <style name="AppBaseTheme_Light" parent="MfhTheme">
         <item name="android:editTextBackground">@drawable/bg_input_rectange</item>
     </style>
 

@@ -82,7 +82,7 @@ public class IMHelper {
      */
     public static boolean isMySelf(EmbMsg msg) {
         Long guid = msg.getFromGuid();
-        Long myId = MfhLoginService.get().getCurrentGuId();
+        Long myId = MfhLoginService.get().getGuidLong();
         if(guid == null || myId == null){
             return false;
         }

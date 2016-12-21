@@ -299,8 +299,8 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
 
     /**
      * 向后台发送消息
-     * @param sessionId
-     * @param wxParam
+     * @param fromGuid
+     * @param toGuid
      */
     public void sendText(Long fromGuid, Long toGuid, Long channelId, String toChannelPointId,
                          Integer bizType, Object body,

@@ -11,9 +11,17 @@
         android:layout_alignParentTop="true"
         android:visibility="gone"/>
 
+    <View
+        android:id="@+id/separate_bottom"
+        style="@style/separator_horizontal"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <ImageView
             android:id="@+id/iv_logo"
@@ -58,7 +66,7 @@
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/button_toggle"
-                android:layout_width="56dp"
+                android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"/>
 
@@ -72,11 +80,5 @@
             android:visibility="gone"/>
 
     </RelativeLayout>
-
-    <View
-        android:id="@+id/separate_bottom"
-        style="@style/separator_horizontal"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"/>
 
 </RelativeLayout>

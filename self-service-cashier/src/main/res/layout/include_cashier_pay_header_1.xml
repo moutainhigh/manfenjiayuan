@@ -21,8 +21,8 @@
         android:id="@+id/iv_vip_header"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/chat_tmp_user_head"/>
-
+        android:src="@drawable/chat_tmp_user_head"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

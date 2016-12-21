@@ -23,18 +23,19 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.EmbPrintManager;
+import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
 import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManager;
+import com.bingshanguxue.cashier.hardware.printer.PrintManager;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 设置－－开发者选项
@@ -165,11 +166,14 @@ public class DeveloperOptionsFragment extends BaseFragment {
         int resourceId = resources.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         //获取NavigationBar的高度
-        tvDisplay.setText(String.format("DisplayMetrics: %d*%d %f%navigation_bar_height:%d",
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("DisplayMetrics: %d*%d %f%navigation_bar_height:%d\n",
                 resources.getDisplayMetrics().widthPixels,
                 this.getResources().getDisplayMetrics().heightPixels,
                 this.getResources().getDisplayMetrics().density,
                 resources.getDimensionPixelSize(resourceId)));
+//        sb.append(String.format("buildTime: %s", BuildConfig.S))
+        tvDisplay.setText(sb.toString());
         //获取当前SDK的服务状态
 //        pushServiceSwitchCompact.setChecked(PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()));
 
@@ -228,17 +232,17 @@ public class DeveloperOptionsFragment extends BaseFragment {
         List<PosOrderEntity> entities = PosOrderService.get().queryAllDesc(sqlOrder, null);
         if (entities != null && entities.size() > 0) {
             if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                PrintManager.printPosOrder(entities.get(0), true);
+                PrintManager.getInstance().printPosOrder(entities.get(0));
             }
             else{
-                EmbPrintManager.printPosOrder(entities.get(0), true);
+                EmbPrintManager.getInstance().printPosOrder(entities.get(0));
             }
         }
         if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManagerImpl.printTest();
+            PrintManager.getInstance().printTest();
         }
         else{
-            EmbPrintManagerImpl.printTest();
+            EmbPrintManagerImpl.getInstance().printTest();
         }
     }
 }

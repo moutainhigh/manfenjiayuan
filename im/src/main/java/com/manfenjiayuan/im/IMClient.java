@@ -63,7 +63,7 @@ public class IMClient {
 
         //检查参数
         String clientId = IMConfig.getPushClientId();
-        Long guid = MfhLoginService.get().getCurrentGuId();
+        Long guid = MfhLoginService.get().getGuidLong();
 
         registerBridge(guid, clientId);
     }

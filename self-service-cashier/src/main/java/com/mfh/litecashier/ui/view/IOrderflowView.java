@@ -2,7 +2,7 @@ package com.mfh.litecashier.ui.view;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.MvpView;
-import com.mfh.litecashier.bean.PosOrder;
+import com.bingshanguxue.cashier.model.PosOrder;
 
 import java.util.List;
 

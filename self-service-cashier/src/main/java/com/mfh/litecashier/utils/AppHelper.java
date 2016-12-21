@@ -179,7 +179,6 @@ public class AppHelper {
         //删除SharedPreference
         SharedPrefesManagerFactory.clear();
         SharedPrefesManagerFactory.clear(SharedPrefesManagerBase.PREF_NAME_APP);
-//        SharedPrefesManagerFactory.clear(SPM.d);
 
         SharedPrefesManagerFactory.clear(SerialManager.PREF_NAME_SERIAL);
         SharedPrefesManagerFactory.clear(SMScaleSyncManager2.PREF_SMSCALE);
@@ -191,7 +190,6 @@ public class AppHelper {
 
         //删除数据库
         DataCleanManager.cleanApplicationData(context);
-
 
         //删除用户账号数据
         MfhLoginService.get().clear();
@@ -227,7 +225,6 @@ public class AppHelper {
      */
     public static void clearRedunantData(boolean isFactoryReset){
         if (isFactoryReset){
-            AnalysisHelper.deleteOldDailysettle(0);//日结
             CashierHelper.clearOldPosOrder(0);//收银订单
             PosTopupService.get().deleteOldData(0);
             ZLogger.deleteOldFiles(0);
@@ -242,7 +239,6 @@ public class AppHelper {
             GlobalInstance.getInstance().reset();
         }
         else{
-            AnalysisHelper.deleteOldDailysettle(7);//日结
             CashierHelper.clearOldPosOrder(7);//收银订单
             PosTopupService.get().deleteOldData(7);
             ZLogger.deleteOldFiles(7);

@@ -24,9 +24,9 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
-import com.bingshanguxue.cashier.hardware.printer.EmbPrinter;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrintManager;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
@@ -36,6 +36,7 @@ import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -45,8 +46,6 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.EmbPrintManager;
-import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
@@ -92,8 +91,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
     @SuppressLint("InflateParams")
     private ReturnGoodsDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_returngoods, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_returngoods, null);
 //        ButterKnife.bind(rootView);
 
         cashierPresenter = new CashierPresenter(this);
@@ -118,6 +116,17 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
                     //条码枪扫描结束后会自动触发回车键
                     query(text);
                 }
+
+            }
+        });
+        inlvBarcode.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
+            @Override
+            public void onClickAction1(String text) {
+                query(text);
+            }
+
+            @Override
+            public void onLongClickAction1(String text) {
 
             }
         });
@@ -280,8 +289,9 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
     private void submitOrder(){
         btnSubmit.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
-        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(curOrderTradeNo,
-                PosOrderEntity.ORDER_STATUS_PROCESS, productAdapter.getEntityList());
+        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS, PosType.POS_STANDARD,
+                curOrderTradeNo, null, PosOrderEntity.ORDER_STATUS_PROCESS,
+                productAdapter.getEntityList());
         ZLogger.df(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
 
         //2016-07-09 需注意，这里的
@@ -306,10 +316,10 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 
         //更新订单信息，同时打开钱箱，退钱给顾客
         if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            GPrinterAgent.openMoneyBox();
+            PrintManager.getInstance().getPrinter().openMoneyBox();
         }
         else{
-            EmbPrinter.openMoneyBox();
+            EmbPrintManager.getInstance().getPrinter().openMoneyBox();
         }
 
         PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
@@ -319,10 +329,10 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         //打印订单
 
         if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManager.printPosOrder(orderEntity, true);
+            PrintManager.getInstance().printPosOrder(orderEntity);
         }
         else{
-            EmbPrintManager.printPosOrder(orderEntity, true);
+            EmbPrintManager.getInstance().printPosOrder(orderEntity);
         }
         CashierShopcartService.getInstance()
                 .deleteBy(String.format("posTradeNo = '%s'", curOrderTradeNo));

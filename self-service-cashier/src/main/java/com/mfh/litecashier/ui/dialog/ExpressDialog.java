@@ -52,8 +52,7 @@ public class ExpressDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ExpressDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_express, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_express, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

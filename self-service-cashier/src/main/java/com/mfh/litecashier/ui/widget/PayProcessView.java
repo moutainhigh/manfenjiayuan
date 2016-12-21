@@ -3,9 +3,9 @@ package com.mfh.litecashier.ui.widget;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.CountDownTimer;
-import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,9 +28,9 @@ public class PayProcessView extends RelativeLayout{
     @BindView(R.id.tv_process)
     TextView tvProcess;
     @BindView(R.id.fab_cancel)
-    FloatingActionButton fabCancel;
+    ImageButton fabCancel;
     @BindView(R.id.fab_refresh)
-    FloatingActionButton fabRefresh;
+    ImageButton fabRefresh;
 
     private View rootView;
     private PayCountDownTimer payCountDownTimer;

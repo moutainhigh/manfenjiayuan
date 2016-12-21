@@ -135,11 +135,12 @@
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/spacing_8x"
+            app:editInputType="barcode"
             android:layout_marginStart="@dimen/spacing_8x"
             app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
-            app:inputNumberLabelView_inputTextColor="@color/black"
+            app:editTextColor="@color/material_black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_search_del"/>
+            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_toolbar_search_white"/>
 
         <include
             android:id="@+id/ll_procuct_header"
@@ -157,6 +158,7 @@
 
     </LinearLayout>
 
+    <!--折扣-->
     <TextView
         android:id="@+id/fab_orderDiscount"
         style="@style/singleline_text"
@@ -171,9 +173,20 @@
         android:text=""
         android:textColor="@color/material_white"
         android:textSize="20sp"
-        android:visibility="gone"
+        android:visibility="visible"
         />
 
+    <com.mfh.framework.uikit.compound.BadgeViewButton
+        android:id="@+id/buttonPrepareOrder"
+        android:layout_width="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_height="80dp"
+        android:layout_below="@+id/horizontal_line"
+        android:layout_gravity="end|bottom"
+        app:src="@mipmap/ic_alert_prepareorder"
+        android:layout_margin="@dimen/spacing_double"/>
+
+    <!--挂单-->
     <TextView
         android:id="@+id/float_hangup"
         style="@style/singleline_text"

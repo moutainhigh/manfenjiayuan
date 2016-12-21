@@ -216,7 +216,7 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
         AjaxParams params = new AjaxParams();
         //个人账号：guid + type(0)
         //客服账号：createguid(在管家会话里，创建人就是粉丝) + type(0)
-        params.put(ApiParams.PARAM_KEY_CREATE_GUID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        params.put(ApiParams.PARAM_KEY_CREATE_GUID, String.valueOf(MfhLoginService.get().getGuid()));
         //createguid, 在管家会话里，参与成员
 //        params.put("guid", SharedPreferencesHelper.getUserGuid());
 
@@ -439,7 +439,7 @@ public class IMConversationService extends BaseService<IMConversation, Long, IMC
             if (StringUtils.isBlank(subdisIds))
                 throw new RuntimeException("所辖小区为空!");
             if (msgMode == IMConstants.MSG_MODE_APART) {
-                params.put(ApiParams.PARAM_KEY_GUID, String.valueOf(MfhLoginService.get().getCurrentGuId()));
+                params.put(ApiParams.PARAM_KEY_GUID, String.valueOf(MfhLoginService.get().getGuid()));
                 params.put(ApiParams.PARAM_KEY_SUBDIS_ID, subdisIds);
             } else if (msgMode == IMConstants.MSG_MODE_TAX) {
                 params.put(ApiParams.PARAM_KEY_BUREAD_UID, subdisIds);

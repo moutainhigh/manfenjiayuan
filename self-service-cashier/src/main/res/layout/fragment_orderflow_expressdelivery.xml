@@ -66,7 +66,7 @@
                 android:layout_weight="1"
                 android:text="软件费：-0.00"
                 android:textSize="16sp"
-                android:textColor="@color/mfh_colorPrimary"
+                android:textColor="@color/colorPrimary"
                 android:padding="8dp"/>
             <TextView
                 android:id="@+id/tv_sms_fee"
@@ -75,7 +75,7 @@
                 android:layout_weight="1"
                 android:text="短信费：-0.00"
                 android:textSize="16sp"
-                android:textColor="@color/mfh_colorPrimary"
+                android:textColor="@color/colorPrimary"
                 android:padding="8dp"/>
             <TextView
                 android:id="@+id/tv_storage_fee"

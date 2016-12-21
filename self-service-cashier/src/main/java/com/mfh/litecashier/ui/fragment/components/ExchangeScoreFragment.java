@@ -18,6 +18,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -91,6 +92,18 @@ public class ExchangeScoreFragment extends BaseProgressFragment {
                 return (keyCode == KeyEvent.KEYCODE_TAB
                         || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
+            }
+        });
+        etPayCode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    DeviceUtils.hideSoftInput(CashierApp.getAppContext(), etPayCode);
+                }
+                etPayCode.requestFocus();
+                etPayCode.setSelection(etPayCode.length());
+                //返回true,不再继续传递事件
+                return true;
             }
         });
 

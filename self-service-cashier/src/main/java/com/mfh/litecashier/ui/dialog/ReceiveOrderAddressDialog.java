@@ -46,8 +46,7 @@ public class ReceiveOrderAddressDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ReceiveOrderAddressDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_hanguporder, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_hanguporder, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

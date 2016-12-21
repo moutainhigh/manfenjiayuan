@@ -64,8 +64,7 @@ public class ResumeMachineDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ResumeMachineDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_resume_machine, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_resume_machine, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -209,7 +208,8 @@ public class ResumeMachineDialog extends CommonDialog {
             //验证密码
             if (EncryptUtil.validPwd(human.getPassword(), human.getSalt(), password)){
 
-                MfhLoginService.get().changeHuman(human.getHumanId(), human.getUserName(), password);
+                MfhLoginService.get().changeHuman(human.getHumanId(), human.getUserId(),
+                        human.getUserName(), password);
 
                 dismiss();
 

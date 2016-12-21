@@ -176,7 +176,7 @@ public class IMFactory {
 
 	/**
 	 * 获得消息所用的参数
-	 * @param cpid
+	 * @param bizType
 	 * @param guid
 	 * @return MsgParameter
 	 */
@@ -202,7 +202,7 @@ public class IMFactory {
 
 	/**
 	 * 获得消息所用的参数
-	 * @param cpid
+	 * @param bizType
 	 * @param guid
 	 * @return MsgParameter
 	 */

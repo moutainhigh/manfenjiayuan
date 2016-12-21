@@ -26,10 +26,11 @@
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="32dp"
-            app:inputNumberLabelView_inputTextColor="@color/black"
+            app:editInputType="price"
+            app:editTextColor="@color/material_black"
             app:inputNumberLabelView_inputTextColorHint="@color/black_35"
             app:inputNumberLabelView_inputHint="@string/hint_money"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_search_del"/>
+            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_key_enter"/>
     </LinearLayout>
 
     <LinearLayout

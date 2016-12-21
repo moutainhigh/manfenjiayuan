@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:background="@color/white_20">
+        android:background="@color/material_white">
 
         <!--style="@style/SpinnerMfhTheme"-->
         <Spinner

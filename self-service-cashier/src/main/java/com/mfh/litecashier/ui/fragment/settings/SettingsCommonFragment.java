@@ -27,12 +27,12 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.tencent.bugly.beta.Beta;
 
 import org.century.GreenTagsSettingsDialog;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 设置－－通用
@@ -145,7 +145,7 @@ public class SettingsCommonFragment extends BaseFragment {
                         SharedPreferencesUltimate.setSyncProductsCursor("");
                         SharedPreferencesUltimate.setPosSkuLastUpdate("");
 
-                        DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS);
+                        DataDownloadManager.get().syncProducts();
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -205,7 +205,7 @@ public class SettingsCommonFragment extends BaseFragment {
                 exitTime = System.currentTimeMillis();
             }
         }
-        else{
+        else {
             if ((System.currentTimeMillis() - exitTime) > 3000) {
                 clickVersionTimes = 1;
                 exitTime = System.currentTimeMillis();

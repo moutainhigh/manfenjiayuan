@@ -76,8 +76,7 @@ public class RegisterUserDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private RegisterUserDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_register_user, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_register_user, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

@@ -16,24 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
-import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
-import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
 
@@ -52,9 +40,12 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
     private ImageButton btnClose;
 
     private PosLocalCategoryEntity mCategoryEntity = null;
+    private String rawText;
 
     public interface DialogListener{
-        void onComplete();
+        void onUpdate(PosLocalCategoryEntity categoryEntity, final String nameCn);
+        void onDelete(PosLocalCategoryEntity categoryEntity);
+
     }
     private DialogListener listener;
 
@@ -66,8 +57,7 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ModifyLocalCategoryDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_modify_localcategory, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_modify_localcategory, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -77,7 +67,6 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
         btnDelete = (Button) rootView.findViewById(R.id.button_delete);
 
         tvTitle.setText("编辑栏目");
-
 
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etName, InputMethodManager.SHOW_IMPLICIT);
@@ -128,13 +117,28 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doUpdate();
+                final String queryText = etName.getText().toString();
+
+                if (ObjectsCompact.equals(rawText, queryText)){
+                    dismiss();
+                }
+                else{
+                    dismiss();
+
+                    if (listener != null){
+                        listener.onUpdate(mCategoryEntity, queryText);
+                    }
+                }
             }
         });
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doDelete();
+                dismiss();
+
+                if (listener != null){
+                    listener.onDelete(mCategoryEntity);
+                }
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -174,11 +178,13 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
-    public void init(PosLocalCategoryEntity categoryEntity, DialogListener dialogListener){
+    public void init(PosLocalCategoryEntity categoryEntity, String rawText, DialogListener dialogListener){
         this.mCategoryEntity = categoryEntity;
+        this.rawText = rawText;
         this.listener = dialogListener;
 
-        this.etName.setText(mCategoryEntity.getName());
+        this.etName.setText(rawText);
+        this.etName.setHint(rawText);
     }
 
     @Override
@@ -204,126 +210,4 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
         DeviceUtils.toggleSoftInput(getContext());
     }
 
-    /**
-     * 修改栏目名称
-     * */
-    private void doUpdate(){
-        final String queryText = etName.getText().toString();
-        if (StringUtils.isEmpty(queryText)){
-            DialogUtil.showHint("栏目名称不能为空");
-            return;
-        }
-
-        if (mCategoryEntity == null){
-            DialogUtil.showHint("类目无效");
-            return;
-        }
-
-        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("创建前台类目失败, " + errMsg);
-                    }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"删除成功!","version":"1","data":""}
-                        //新建类目成功，保存类目信息，并触发同步。
-                        try {
-                            if (rspData == null) {
-                                return;
-                            }
-//
-//                            RspValue<String> retValue = (RspValue<String>) rspData;
-//                            String result = retValue.getValue();
-//                            Long code = Long.valueOf(result);
-
-                            //本地先假修改，后台数据更新后再去同步
-                            mCategoryEntity.setName(queryText);
-                            PosLocalCategoryService.get().saveOrUpdate(mCategoryEntity);
-                            DialogUtil.showHint("修改成功");
-                            if (listener != null){
-                                listener.onComplete();
-                            }
-                        } catch (Exception e) {
-                            ZLogger.ef(e.toString());
-                        }
-                        dismiss();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())){
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", mCategoryEntity.getId());
-        jsonObject.put("nameCn", queryText);
-        jsonObject.put("catePosition", CateApi.CATE_POSITION_FRONT);
-        jsonObject.put("tenantId", MfhLoginService.get().getSpid());
-        ScCategoryInfoApi.update(jsonObject.toJSONString(), responseRC);
-    }
-
-    /**
-     * 删除栏目
-     * */
-    private void doDelete(){
-        if (mCategoryEntity == null){
-            DialogUtil.showHint("类目无效");
-            return;
-        }
-
-        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("创建前台类目失败, " + errMsg);
-                    }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"删除成功!","version":"1","data":""}
-                        //新建类目成功，保存类目信息，并触发同步。
-                        try {
-                            if (rspData == null) {
-                                return;
-                            }
-//
-//                            RspValue<String> retValue = (RspValue<String>) rspData;
-//                            String result = retValue.getValue();
-//                            Long code = Long.valueOf(result);
-
-                            //本地假删除
-                            PosLocalCategoryService.get().deleteById(String.valueOf(mCategoryEntity.getId()));
-                            DialogUtil.showHint("删除成功");
-
-                            if (listener != null){
-                                listener.onComplete();
-                            }
-                        } catch (Exception e) {
-                            ZLogger.ef(e.toString());
-                        }
-                        dismiss();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())){
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-
-        ScCategoryInfoApi.delete(mCategoryEntity.getId(), responseRC);
-    }
 }

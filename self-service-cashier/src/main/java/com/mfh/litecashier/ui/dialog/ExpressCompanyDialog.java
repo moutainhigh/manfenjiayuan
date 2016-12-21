@@ -29,9 +29,8 @@ import java.util.List;
 
 /**
  * 快递公司
- * 
+ *
  * @author NAT.ZZN(bingshanguxue)
- * 
  */
 public class ExpressCompanyDialog extends CommonDialog {
 
@@ -40,6 +39,7 @@ public class ExpressCompanyDialog extends CommonDialog {
 
     public interface OnResponseCallback {
         void saveHumanFdCompany(HumanCompanyOption option);
+
         void onSelectCompany(String value);
     }
 
@@ -60,24 +60,23 @@ public class ExpressCompanyDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ExpressCompanyDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_express_company, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_express_company, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
-        listView = (ListView)rootView.findViewById(R.id.listview);
+        listView = (ListView) rootView.findViewById(R.id.listview);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 dismiss();
                 if (mListener != null) {
-                    if (dialogType == DT_CREATE){
-                                            //创建
-                        HumanCompanyOption option = (HumanCompanyOption)parent.getAdapter().getItem(position);
+                    if (dialogType == DT_CREATE) {
+                        //创建
+                        HumanCompanyOption option = (HumanCompanyOption) parent.getAdapter().getItem(position);
                         mListener.saveHumanFdCompany(option);
-                    }else{
-                        HumanCompanyOption option = (HumanCompanyOption)parent.getAdapter().getItem(position);
+                    } else {
+                        HumanCompanyOption option = (HumanCompanyOption) parent.getAdapter().getItem(position);
 //
                         mListener.onSelectCompany(option.getValue());
                     }
@@ -122,14 +121,13 @@ public class ExpressCompanyDialog extends CommonDialog {
         this.dialogType = dialogType;
         this.mListener = callback;
 
-        try{
+        try {
             listView.setAdapter(new ExpressCompanyAdapter(getContext(), options));
 
-            if (dialogType == DT_CREATE){
+            if (dialogType == DT_CREATE) {
                 CompanyInfoApiImpl.comnQuery(queryRspCallback);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ZLogger.e(e.toString());
         }
     }
@@ -138,9 +136,9 @@ public class ExpressCompanyDialog extends CommonDialog {
     public void show() {
         super.show();
 
-        if (dialogType == DT_CREATE){
-              tvTitle.setText("选择快递公司");
-        }else{
+        if (dialogType == DT_CREATE) {
+            tvTitle.setText("选择快递公司");
+        } else {
             tvTitle.setText("选择快递公司");
         }
     }
@@ -151,28 +149,27 @@ public class ExpressCompanyDialog extends CommonDialog {
             new NetProcessor.Processor<ReceiveOrderCompanyWrapper>() {
                 @Override
                 public void processResult(IResponseData rspData) {
-                    if (rspData == null){
+                    if (rspData == null) {
                         ZLogger.df("未查询到结果");
                         return;
                     }
 
-                    try{
+                    try {
 //                        {"code":"0","msg":"新增成功!","version":"1","data":{"val":"40513"}}
 //                        java.lang.ClassCastException: java.lang.Integer cannot be cast to com.alibaba.fastjson.JSONObject
                         RspBean<ReceiveOrderCompanyWrapper> retValue = (RspBean<ReceiveOrderCompanyWrapper>) rspData;
                         ReceiveOrderCompanyWrapper wrapper = retValue.getValue();
 
-                        if (wrapper != null){
+                        if (wrapper != null) {
                             listView.setAdapter(new ExpressCompanyAdapter(getContext(), wrapper.getOptions()));
                         }
-                    }catch(Exception ex){
+                    } catch (Exception ex) {
                         ZLogger.e("createBatchResponseCallback, " + ex.toString());
                     }
                 }
             }
             , ReceiveOrderCompanyWrapper.class
-            , CashierApp.getAppContext())
-    {
+            , CashierApp.getAppContext()) {
     };
 
 }

@@ -5,6 +5,6 @@
     <size
         android:width="0.5dp"/>
 
-    <solid android:color="@color/white_50"/>
+    <solid android:color="@color/mf_dividerColorPrimary"/>
 
 </shape>

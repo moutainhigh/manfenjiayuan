@@ -12,7 +12,7 @@
     <style name="mfh_form_header">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/form_header_height_default</item>
-        <item name="android:background">@drawable/bg_bottomline_green</item>
+        <item name="android:background">@drawable/bg_bottomline_primary</item>
         <item name="android:padding">8dp</item>
     </style>
 
@@ -55,22 +55,19 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <!--EditText-->
-    <style name="mfh_edittext_normal">
-        <item name="android:background">@drawable/bg_input_rectange</item>
-        <item name="android:paddingStart">@dimen/spacing_normal</item>
-        <item name="android:paddingEnd">@dimen/spacing_normal</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/material_black</item>
-        <item name="android:textColorHint">@color/material_black_hint</item>
-        <item name="android:textSize">@dimen/textsize_normal</item>
-    </style>
-
     <style name="mfh_textview_text">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <!--自定义fab样式用于imageButton-->
+    <style name="FloatImageButton">
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:background">@drawable/bg_fab_circle_green</item>
+        <item name="android:contentDescription">@null</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
 
 
 </resources>

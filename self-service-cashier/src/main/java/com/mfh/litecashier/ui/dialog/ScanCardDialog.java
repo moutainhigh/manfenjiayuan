@@ -48,8 +48,7 @@ public class ScanCardDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ScanCardDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_scancard, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_scancard, null);
 //        ButterKnife.bind(rootView);
 
         etCardNo = (EditText) rootView.findViewById(R.id.et_card_id);

@@ -16,20 +16,22 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
-import com.mfh.framework.api.account.UserAccount;
+import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.UserAccount;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.dialog.CommonDialog;
+import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
 import java.io.ByteArrayOutputStream;
@@ -49,7 +51,8 @@ public class QueryBalanceDialog extends CommonDialog {
     private View rootView;
     private ImageButton btnClose;
     private EditText etCardNo;
-    private TextView tvTitle, tvCash, tvScore;
+    private TextView tvTitle;
+    private TextLabelView tvCash, tvScore;
 //    private AvatarView ivHeader;
     private Button btnSubmit;
 
@@ -70,16 +73,15 @@ public class QueryBalanceDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private QueryBalanceDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_query_balance, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_query_balance, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
 //        ivHeader = (AvatarView) rootView.findViewById(R.id.iv_header);
         etCardNo = (EditText) rootView.findViewById(R.id.et_card_id);
 //        tvUsername = (TextView) rootView.findViewById(R.id.tv_username);
-        tvCash = (TextView) rootView.findViewById(R.id.tv_cash);
-        tvScore = (TextView) rootView.findViewById(R.id.tv_score);
+        tvCash = (TextLabelView) rootView.findViewById(R.id.tv_cash);
+        tvScore = (TextLabelView) rootView.findViewById(R.id.tv_score);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
@@ -102,6 +104,18 @@ public class QueryBalanceDialog extends CommonDialog {
                 return (keyCode == KeyEvent.KEYCODE_TAB
                         || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
                         || keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT);
+            }
+        });
+        etCardNo.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    DeviceUtils.hideSoftInput(CashierApp.getAppContext(), etCardNo);
+                }
+                etCardNo.requestFocus();
+                etCardNo.setSelection(etCardNo.length());
+                //返回true,不再继续传递事件
+                return true;
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -170,12 +184,14 @@ public class QueryBalanceDialog extends CommonDialog {
 
     private void refresh(UserAccount userAccount){
         if (userAccount != null){
-            tvCash.setText(MUtils.formatDouble("余额：", "", userAccount.getCur_cash(), "", null, null));
-            tvScore.setText(String.format("积分：%d", userAccount.getCur_score()));
+            tvCash.setEndText(MUtils.formatDouble(userAccount.getCur_cash(), "暂无数据"));
+            tvScore.setEndText(userAccount.getCur_score() != null
+                    ? String.valueOf(userAccount.getCur_score())
+            : "暂无数据");
         }
         else{
-            tvCash.setText("余额：暂无数据");
-            tvScore.setText("积分：暂无数据");
+            tvCash.setEndText("暂无数据");
+            tvScore.setEndText("暂无数据");
         }
 
         etCardNo.getText().clear();

@@ -2,7 +2,6 @@ package com.mfh.litecashier.utils;
 
 import android.app.Activity;
 
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.mfh.litecashier.ui.dialog.PosRegisterDialog;
 
 /**
@@ -12,7 +11,6 @@ public class GlobalInstance {
 
     private Double netWeight;//净重(单位kg)
     private PosRegisterDialog mPosRegisterDialog = null;
-    private CashierOrderInfo mCashierOrderInfo;
 
     private static GlobalInstance instance;
 
@@ -47,14 +45,6 @@ public class GlobalInstance {
         this.netWeight = netWeight;
     }
 
-
-    public CashierOrderInfo getCashierOrderInfo() {
-        return mCashierOrderInfo;
-    }
-
-    public void setCashierOrderInfo(CashierOrderInfo cashierOrderInfo) {
-        mCashierOrderInfo = cashierOrderInfo;
-    }
 
     /**
      * 注册设备

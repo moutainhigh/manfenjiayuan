@@ -59,8 +59,7 @@ public class DoubleInputDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private DoubleInputDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_input_double, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_input_double, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

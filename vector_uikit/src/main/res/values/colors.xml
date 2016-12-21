@@ -3,24 +3,21 @@
 
     <!--窗口背景色-->
     <color name="windowBackground">#fbf9fc</color>
+    <color name="colorAccent">@color/material_orange_500</color>
+    <color name="colorPrimary">@color/material_green_500</color>
+    <color name="colorPrimaryDark">@color/material_green_A700</color>
+    <color name="colorPrimaryGrey">@color/material_grey_500</color>
 
-    <color name="mfh_colorPrimary">@color/material_green_500</color>
-    <color name="mfh_colorPrimaryGrey">@color/material_grey_500</color>
-    <color name="mfh_colorPrimaryDark">@color/material_green_700</color>
-    <color name="mfh_colorAccent">#FF4081</color>
-
-
-    <color name="mfh_circleBadge">#ffff4036</color>
+    <color name="mfh_circleBadge">#FE5000</color>
 
     <!--满分家园颜色基础档案，所有应用都应遵循该规范，除特殊情况需要可以自定义颜色-->
     <color name="mfh_black">#35363B</color>
 
-    <color name="mf_dividerColorPrimary">#a0a0a0</color>
+    <color name="mf_dividerColorPrimary">#d2d2d3</color>
     <color name="mf_dialog_frame">#64000000</color>
     <color name="mf_red">#FE5000</color>
     <!--灰色蒙板-->
     <color name="mfhtheme_maskPrimary">#F4F5F9</color>
-
 
     <!--分割线-->
     <color name="mfh_divider_light">#dddddd</color>

@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                app:paddingStart="@dimen/spacing_double"
+                android:paddingEnd="@dimen/spacing_double"
+                android:orientation="vertical">
+
+    <!--<include-->
+        <!--android:id="@+id/headview"-->
+        <!--layout="@layout/itemview_orderflow_store_goods_header"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="?attr/actionBarSize" />-->
+
+    <!--商品列表-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_double"
+        android:paddingBottom="@dimen/spacing_double"/>
+</LinearLayout>

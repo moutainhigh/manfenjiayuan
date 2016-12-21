@@ -184,7 +184,7 @@ public class SkinManager implements ISkinLoader {
 
                         File file = new File(skinPkgPath);
                         if (!file.exists()) {
-                            ZLogger.d("皮肤文件不存在");
+                            ZLogger.d("皮肤文件不存在" + skinPkgPath);
                             return null;
                         }
                         PackageManager mPm = context.getPackageManager();

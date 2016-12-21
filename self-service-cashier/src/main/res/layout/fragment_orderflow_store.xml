@@ -19,6 +19,7 @@
             android:id="@+id/ll_procuct_header"
             layout="@layout/itemview_orderflow_store_goods_header"
             android:layout_width="match_parent"
+            android:background="@color/material_green_500"
             android:layout_height="?attr/actionBarSize"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp" />
@@ -33,15 +34,14 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp" />
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageButton
             android:id="@+id/fab_print"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/FloatImageButton"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/spacing_double"
             android:src="@mipmap/ic_print_white"
-            android:visibility="gone" />
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <!--订单列表-->

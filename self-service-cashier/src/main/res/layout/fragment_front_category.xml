@@ -3,7 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/appbar"/>
+    <!--<include layout="@layout/appbar"/>-->
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mfh_toolbar_background"
+        android:orientation="vertical"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <!--app:layout_scrollFlags="scroll|enterAlways|snap"-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/mfh_toolbar_background"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <com.bingshanguxue.vector_uikit.widget.NaviAddressView
+                android:id="@+id/addressView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:endSrcVisible="true"
+                app:startSrcVisible="true"
+                app:text="请选择商品库"
+                app:textColor="@color/material_white"
+                app:textColorHint="@color/material_white"
+                app:textSize="14sp"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
 
     <LinearLayout

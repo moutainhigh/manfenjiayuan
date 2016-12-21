@@ -3,7 +3,6 @@ package com.mfh.litecashier.utils;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderItemService;
@@ -13,16 +12,12 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.TextDrawable;
-import com.manfenjiayuan.im.constants.IMBizType;
-import com.manfenjiayuan.im.database.entity.EmbMsg;
-import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
@@ -229,8 +224,8 @@ public class CashierHelper {
      * 获取指定长度的操作员编号,左对齐，不足右补空格(0)
      */
     public static String getOperateId(int length) {
-        Long guid = MfhLoginService.get().getCurrentGuId();
-        String operateId = guid != null ? String.valueOf(guid) : "";
+        Long humanId = MfhLoginService.get().getHumanId();
+        String operateId = humanId != null ? String.valueOf(humanId) : "";
 
         StringBuilder sb = new StringBuilder();
         sb.append(operateId);
@@ -256,17 +251,7 @@ public class CashierHelper {
         CashierOrderInfoWrapper cashierOrderInfoWrapper = new CashierOrderInfoWrapper();
         cashierOrderInfoWrapper.setCmdType(cmdType);
         cashierOrderInfoWrapper.setCashierOrderInfo(cashierOrderInfo);
-        NetProcessor.ComnProcessor processor = new NetProcessor.ComnProcessor<EmbMsg>() {
-            @Override
-            protected void processOperResult(EmbMsg result) {
-//                doAfterSendSuccess(result);
-                ZLogger.d("发送订单信息到客显成功");
-            }
-        };
-        EmbMsgService.getInstance().sendText(MfhLoginService.get().getCurrentGuId(),
-                MfhLoginService.get().getCurrentGuId(), null, null,
-                IMBizType.CUSTOMER_DISPLAY_PAYORDER,
-                JSON.toJSONString(cashierOrderInfoWrapper), processor);
+        // TODO: 13/12/2016 双屏异显
     }
 
 }

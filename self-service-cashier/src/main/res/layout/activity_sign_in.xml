@@ -4,7 +4,7 @@
                 android:id="@+id/rootview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/mfh_colorPrimary"
+                android:background="@color/colorPrimary"
                 android:padding="@dimen/spacing_normal"
                 skin:enable="true">
 
@@ -47,7 +47,7 @@
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white_35"
+            android:background="@color/material_white_600"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -89,12 +89,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@color/mfh_colorPrimary"
+                android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:minHeight="?android:attr/actionBarSize"
                 android:text="@string/button_login_signin"
                 android:textColor="@color/material_white"
                 android:textSize="@dimen/textsize_normal"
+                skin:enable="true"
                 tools:ignore="InconsistentLayout"/>
 
         </LinearLayout>
@@ -114,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_normal"
                 android:text="@string/button_login_retrieve_pwd"
-                android:textColor="@color/white_60"
+                android:textColor="@color/material_white_600"
                 android:textSize="14sp"/>
 
             <TextView
@@ -123,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_normal"
                 android:text="@string/button_login_signup"
-                android:textColor="@color/white_60"
+                android:textColor="@color/material_white_600"
                 android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>

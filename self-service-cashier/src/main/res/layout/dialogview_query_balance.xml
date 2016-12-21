@@ -3,6 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="@dimen/mf_simple_dialog_width"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <include layout="@layout/dialogview_headerview"/>
@@ -28,61 +29,53 @@
 
                 <EditText
                     android:id="@+id/et_card_id"
-                    android:layout_width="0.1dp"
-                    android:layout_height="0.1dp"
-                    android:layout_centerInParent="true"
-                    android:maxLines="1"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
+                    style="@style/mfh_edittext_normal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginBottom="@dimen/spacing_double"
-                    android:layout_marginTop="@dimen/spacing_double"
-                    android:scaleType="centerInside"
-                    android:src="@mipmap/card_mixicook"
-                    tools:ignore="ContentDescription"/>
+                    android:layout_margin="@dimen/spacing_4x"
+                    android:gravity="center"
+                    android:hint="请刷卡"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:minHeight="48dp"
+                    android:padding="@dimen/spacing_micro"
+                    android:textColor="@color/material_black"
+                    android:textSize="16sp">
+
+                    <requestFocus
+                        android:duplicateParentState="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"/>
+                </EditText>
+
             </RelativeLayout>
 
-            <!--<com.bingshanguxue.vector_uikit.widget.AvatarView-->
-            <!--android:id="@+id/iv_header"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:src="@drawable/chat_tmp_user_head" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/tv_username"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:padding="16dp"-->
-            <!--android:singleLine="true"-->
-            <!--android:text=""-->
-            <!--android:textColor="@color/material_black"-->
-            <!--android:textSize="18sp" />-->
-
-            <TextView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/tv_cash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_double"
-                android:gravity="center_vertical"
-                android:text="余额: 暂无数据"
-                style="@style/singleline_text"
-                />
+                android:layout_marginTop="32dp"
+                app:endTextColor="@color/material_black"
+                app:endTextSize="16sp"
+                app:startText="余额:"
+                app:endText=""
+                app:startTextColor="@color/material_black_50"
+                app:startTextGravity="end"
+                app:startTextSize="16sp"
+                app:startTextWidth="80dp"/>
 
-            <TextView
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/tv_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_double"
-                android:gravity="center_vertical"
-                android:text="积分: 暂无数据"
-                style="@style/singleline_text"
-                />
-
+                android:layout_marginTop="@dimen/spacing_normal"
+                app:endTextColor="@color/material_black"
+                app:endTextSize="16sp"
+                app:startText="积分:"
+                app:startTextColor="@color/material_black_50"
+                app:startTextGravity="end"
+                app:startTextSize="16sp"
+                app:startTextWidth="80dp"/>
 
         </LinearLayout>
 

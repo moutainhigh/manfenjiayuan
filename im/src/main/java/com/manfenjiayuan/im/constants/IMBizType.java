@@ -50,9 +50,10 @@ public class IMBizType {
      * </ol>
      * */
     public final static int FRONTCATEGORY_UPDATE   = 1106;//前台类目——增删改，同步类目，
+    public final static int ABILITY_UPDATED   = 1110;//删除了买手或骑手，发送1110消息
 
-    public final static int CUSTOMER_DISPLAY_PAYORDER   = 1107;//收银机推送订单到客显设备
-    public final static int REMOTE_CONTROL_CMD   = 1108;//远程控制指令
+    public final static int REMOTE_CONTROL_CMD   = 1128;//远程控制指令
+
 
 
     public static String name(int value) {

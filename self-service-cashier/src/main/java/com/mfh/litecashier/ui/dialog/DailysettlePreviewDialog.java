@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -21,15 +20,15 @@ import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.constant.BizSubType;
-import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.PosType;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 
@@ -56,8 +55,8 @@ public class DailysettlePreviewDialog extends CommonDialog {
     private TextView tvTitle;
     private Button btnSubmit;
     private ImageButton btnClose;
-    private FloatingActionButton fabSync;
-    private FloatingActionButton fabPrint;
+    private ImageButton fabSync;
+    private ImageButton fabPrint;
     private WebView mWebview;
 
     private Date dailysettleDate;
@@ -70,15 +69,14 @@ public class DailysettlePreviewDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private DailysettlePreviewDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_order_printpreview, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_order_printpreview, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
-        fabSync = (FloatingActionButton) rootView.findViewById(R.id.fab_sync);
-        fabPrint = (FloatingActionButton) rootView.findViewById(R.id.fab_print);
+        fabSync = (ImageButton) rootView.findViewById(R.id.fab_sync);
+        fabPrint = (ImageButton) rootView.findViewById(R.id.fab_print);
         mWebview = (WebView) rootView.findViewById(R.id.webview);
         //设置编码
         mWebview.getSettings().setDefaultTextEncodingName("UTF -8");
@@ -282,7 +280,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
                             "  <td>%d</td>\n" +
 //                            "  <td>暂未统计</td>\n" +
                             "</tr>\n",
-                            BizSubType.name(subType),
+                            PosType.name(subType),
                             subTypeEntities.size()));
                 }
                 sbHtml.append("</table>");

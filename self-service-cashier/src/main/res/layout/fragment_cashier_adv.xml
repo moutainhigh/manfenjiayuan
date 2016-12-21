@@ -102,7 +102,7 @@
             android:text="订购"
             android:textSize="16sp"
             android:background="@drawable/btn_hollow_green"
-            android:textColor="@color/mfh_colorPrimary"
+            android:textColor="@color/colorPrimary"
             android:layout_margin="8dp"/>
     </LinearLayout>
 

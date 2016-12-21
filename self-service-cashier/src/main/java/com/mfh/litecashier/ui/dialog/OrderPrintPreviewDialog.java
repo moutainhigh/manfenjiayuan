@@ -110,10 +110,10 @@ public class OrderPrintPreviewDialog extends CommonDialog {
             @Override
             public void onClick(View v) {
                 if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                    PrintManager.getInstance().printPosOrder(mPosOrderEntity, true);
+                    PrintManager.getInstance().printPosOrder(mPosOrderEntity);
                 }
                 else{
-                    EmbPrintManager.getInstance().printPosOrder(mPosOrderEntity, true);
+                    EmbPrintManager.getInstance().printPosOrder(mPosOrderEntity);
                 }
             }
         });

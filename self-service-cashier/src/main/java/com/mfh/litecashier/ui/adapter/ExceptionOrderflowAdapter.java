@@ -153,7 +153,7 @@ public class ExceptionOrderflowAdapter
             break;
             case PosOrderEntity.ORDER_STATUS_FINISH: {
                 drawableOrderStatus.setText1(String.format("支付完成(%d)", entity.getStatus()));
-                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
+                drawableOrderStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
             }
             break;
             default: {
@@ -165,13 +165,13 @@ public class ExceptionOrderflowAdapter
         //同步状态
         if (entity.getSyncStatus() == PosOrderEntity.SYNC_STATUS_SYNCED) {
             drawableSyncStatus.setText1(String.format("已同步(%d)", entity.getSyncStatus()));
-            drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
+            drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         } else {
             drawableSyncStatus.setText1(String.format("(%d)", entity.getSyncStatus()));
         }
         if (PosOrderEntity.ACTIVE.equals(entity.getIsActive())) {
             drawableActive.setText1(String.format("开启(%d)", entity.getIsActive()));
-            drawableActive.setBadgeColor(ContextCompat.getColor(mContext, R.color.mfh_colorPrimary));
+            drawableActive.setBadgeColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         } else {
             drawableActive.setText1(String.format("关闭(%d)", entity.getIsActive()));
         }

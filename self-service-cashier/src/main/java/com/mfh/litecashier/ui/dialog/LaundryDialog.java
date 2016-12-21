@@ -57,8 +57,7 @@ public class LaundryDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private LaundryDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_laundry, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_laundry, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

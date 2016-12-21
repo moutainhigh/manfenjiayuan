@@ -82,8 +82,7 @@ public class InitCardByStepDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private InitCardByStepDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_initcard_bystep, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_initcard_bystep, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

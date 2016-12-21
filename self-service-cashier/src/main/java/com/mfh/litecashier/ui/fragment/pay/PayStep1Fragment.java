@@ -1,22 +1,23 @@
 package com.mfh.litecashier.ui.fragment.pay;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.BasePayStepFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
@@ -26,21 +27,24 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
-import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 首页－－采购
@@ -71,7 +75,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
     CustomViewPager mViewPager;
     private TopFragmentPagerAdapter viewPagerAdapter;
     @BindView(R.id.fab_give)
-    FloatingActionButton fabGive;
+    ImageButton fabGive;
 
 
     public static PayStep1Fragment newInstance(Bundle args) {
@@ -183,9 +187,24 @@ public class PayStep1Fragment extends BasePayStepFragment {
      * */
     @OnClick(R.id.fab_give)
     public void onClickGive(){
-        CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+        showConfirmDialog("确认要赠送吗？",
+                getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
 
-        onPayFinished();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+
+                        onPayFinished();                    }
+                }, getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        ZLogger.df("取消赠送");
+                    }
+                });
     }
 
     /**
@@ -201,6 +220,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayStep1Event event) {
         ZLogger.d(String.format("PayStep1Event:%d\n%s",
                 event.getAction(), StringUtils.decodeBundle(event.getArgs())));

@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.litecashier.bean.PosOrder;
-import com.mfh.litecashier.bean.PosOrderItem;
+import com.bingshanguxue.cashier.model.PosOrder;
+import com.bingshanguxue.cashier.model.PosOrderItem;
 
 import java.util.List;
 

@@ -10,12 +10,10 @@ public class ResMenu implements Serializable{
 
     //收银
     public static final Long CASHIER_MENU_ONLINE_ORDER     = 10L;//线上订单
-    public static final Long CASHIER_MENU_GOODS_LIST       = 11L;//商品列表
     public static final Long CASHIER_MENU_REGISTER_VIP     = 12L;//注册
     public static final Long CASHIER_MENU_MEMBER_CARD      = 13L;//会员卡（开卡）
     public static final Long CASHIER_MENU_HANGUP_ORDER  = 14L;//挂单
     public static final Long CASHIER_MENU_RETURN_GOODS  = 15L;//退货
-    public static final Long CASHIER_MENU_FEEDPAPER = 16L;//走纸
     public static final Long CASHIER_MENU_MONEYBOX  = 17L;//钱箱
     public static final Long CASHIER_MENU_BALANCE_QUERY    = 18L;//余额查询
     public static final Long CASHIER_MENU_SETTINGS         = 19L;//设置
@@ -28,17 +26,17 @@ public class ResMenu implements Serializable{
     //管理者控制台
     public static final Long ADMIN_MENU_PURCHASE_MANUAL = 51L;//订货
     public static final Long ADMIN_MENU_INVENTORY= 52L;//库存
-    public static final Long ADMIN_MENU_ORDERFLOW= 53L;//流水
     public static final Long ADMIN_MENU_RECEIPT= 54L;//单据
     public static final Long ADMIN_MENU_ANALYSIS= 55L;//统计
     public static final Long ADMIN_MENU_DAILYSETTLE= 56L;//日结
     public static final Long ADMIN_MENU_CASHQUOTA= 57L;//现金授权
     public static final Long ADMIN_MENU_SETTINGS= 58L;//设置
     public static final Long ADMIN_MENU_FACTORYDATA_RESET= 59L;//恢复出厂设置
+    public static final Long ADMIN_MENU_SYSTEM_UPGRADE=60L;//系统升级
 
 
     //金丝雀
-    public static final Long CANARY_MENU_GOODS    = 71L;//商品
+    public static final Long CANARY_MENU_GOODS    = 71L;//商品档案
     public static final Long CANARY_MENU_ORDERFLOW= 72L;//流水
     public static final Long CANARY_MENU_MESSAGE_MGR= 74L;//消息管理器
 

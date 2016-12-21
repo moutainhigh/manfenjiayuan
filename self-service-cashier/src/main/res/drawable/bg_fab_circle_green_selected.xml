@@ -107,7 +107,7 @@
     <!-- Blue button pressed -->
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/mfh_colorPrimary"/>
+            <solid android:color="@color/colorPrimary"/>
         </shape>
     </item>
 </layer-list>

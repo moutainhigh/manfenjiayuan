@@ -186,10 +186,9 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <ImageButton
         android:id="@+id/fab_print"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FloatImageButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"

@@ -148,7 +148,7 @@ public class MfhURLConf {
 //        sb.append(String.format("channelid=%d", MfhApi.PARAM_VALUE_CHANNEL_ID_DEF));
 
         sb.append("&");
-        sb.append(String.format("humanid=%s", MfhLoginService.get().getCurrentGuId()));
+        sb.append(String.format("humanid=%s", MfhLoginService.get().getHumanId()));
 
         sb.append("&");
         sb.append(String.format("JSESSIONID=%s", MfhLoginService.get().getCurrentSessionId()));

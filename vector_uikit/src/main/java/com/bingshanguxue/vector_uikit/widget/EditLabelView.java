@@ -77,7 +77,6 @@ public class EditLabelView extends LinearLayout {
                 this.tvStartText.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
             }
 
-
             etInput.setHint(ta.getString(R.styleable.EditLabelView_editTextHint));
             int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.EditLabelView_editTextSize, 16);
             int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);

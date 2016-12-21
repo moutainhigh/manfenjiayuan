@@ -18,7 +18,7 @@
             android:layout_height="48dp"
             app:position="single"
             app:src="@mipmap/ic_voice"
-            app:subText="常在河边走,哪有不湿手"
+            app:subText="666"
             app:subTextSize="12sp"
             app:text="超级权限"
             app:textSize="16sp"/>

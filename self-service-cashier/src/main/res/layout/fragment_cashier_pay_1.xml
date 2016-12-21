@@ -62,7 +62,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="0.00"
-                app:topTextColor="@color/mfh_colorPrimary"
+                app:topTextColor="@color/colorPrimary"
                 app:topTextSize="30sp"/>
 
         </LinearLayout>
@@ -91,10 +91,9 @@
     </LinearLayout>
 
 
-    <android.support.design.widget.FloatingActionButton
+    <ImageButton
         android:id="@+id/fab_give"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FloatImageButton"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_double"
         android:src="@mipmap/ic_fab_give"/>

@@ -8,13 +8,13 @@
         </shape>
     </item>
     <!--30%透明度的黑色线-->
-    <item>
+    <item android:top="0dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/divider_gray" />
+            <solid android:color="@color/mf_dividerColorPrimary" />
         </shape>
     </item>
 
-    <item android:top="0.5dp">
+    <item android:top="1dp">
         <shape android:shape="rectangle">
             <solid android:color="@color/material_white" />
         </shape>
