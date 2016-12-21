@@ -1,14 +1,22 @@
 package com.mfh.litecashier.ui.activity;
 
 import android.app.Activity;
+import android.app.Presentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.hardware.display.DisplayManager;
+import android.media.MediaRouter;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,9 +33,10 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
-import com.bingshanguxue.cashier.hardware.printer.EmbPrinter;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrintManager;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
@@ -37,11 +46,13 @@ import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
+import com.igexin.sdk.PushManager;
+import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
+import com.manfenjiayuan.business.utils.BarcodeUtils;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.business.view.IScOrderView;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
@@ -51,7 +62,9 @@ import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.api.constant.Priv;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scOrder.ScOrder;
@@ -59,12 +72,14 @@ import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.compound.BadgeViewButton;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
@@ -75,15 +90,14 @@ import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
-import com.mfh.litecashier.com.EmbPrintManager;
 import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManager;
 import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.service.DataUploadManager;
+import com.mfh.litecashier.service.DemoPushService;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.ValidateManager;
@@ -102,6 +116,7 @@ import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
 import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
 import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
+import com.mfh.litecashier.ui.fragment.goods.query.QueryGoodsFragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.prepare.PrepareActivity;
 import com.mfh.litecashier.ui.prepare.PrepareStep2Fragment;
@@ -113,16 +128,22 @@ import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.mfh.litecashier.R.id.fragment_plugin;
 
 
 /**
@@ -131,7 +152,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class MainActivity extends CashierActivity
-        implements ICashierView, IScOrderView {
+        implements ICashierView, IScOrderView, QueryGoodsFragment.OnFragmentListener {
 
     @BindView(R.id.slideMenu)
     RecyclerView menuRecyclerView;
@@ -164,7 +185,11 @@ public class MainActivity extends CashierActivity
     TextView fabHangup;
     @BindView(R.id.fab_orderDiscount)
     TextView fabOrderDiscount;
+    @BindView(R.id.buttonPrepareOrder)
+    BadgeViewButton btnPrepareOrder;
 
+    private Fragment mQueryGoodsFragment;
+    private Fragment mLocalFrontCategoryFragment;
 
     private NumberInputDialog barcodeInputDialog = null;
     private DoubleInputDialog commitPriceDialog = null;//价格为空，补填价格
@@ -194,6 +219,8 @@ public class MainActivity extends CashierActivity
 
     private CashierPresenter cashierPresenter;
     private ScOrderPresenter mScOrderPresenter;
+
+
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -227,11 +254,43 @@ public class MainActivity extends CashierActivity
             DialogUtil.showHint("您正在使用的是测试版本，如需切换到正式版本请联系服务商。");
         }
 
+        setupGetui();
+
         initMenuRecyclerView();
         initBarCodeInput();
         initCashierRecyclerView();
+
+        if (savedInstanceState != null) {  // “内存重启”时调用
+            mQueryGoodsFragment = getSupportFragmentManager().findFragmentByTag("QueryGoodsFragment");
+            mLocalFrontCategoryFragment = getSupportFragmentManager().findFragmentByTag("LocalFrontCategoryFragment");
+            // 解决重叠问题
+            getSupportFragmentManager().beginTransaction()
+                    .show(mLocalFrontCategoryFragment)
+                    .hide(mQueryGoodsFragment)
+                    .commit();
+        }else{  // 正常时
+            mQueryGoodsFragment = QueryGoodsFragment.newInstance(null, this);
+            mLocalFrontCategoryFragment = LocalFrontCategoryFragment.newInstance(null);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_plugin, mQueryGoodsFragment, "QueryGoodsFragment")
+                    .add(R.id.fragment_plugin,mLocalFrontCategoryFragment, "LocalFrontCategoryFragment")
+                    .hide(mQueryGoodsFragment)
+                    .commit();
+        }
+
+//        redirect2LocalCategory();
+
 //        showAdvFragment();
-        showLocalFrontCategoryFragment();
+//        showLocalFrontCategoryFragment();
+
+        if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)){
+            btnPrepareOrder.setVisibility(View.VISIBLE);
+            btnPrepareOrder.setBadgeNumber(0);
+        }
+        else{
+            btnPrepareOrder.setVisibility(View.GONE);
+        }
 
         if (menuAdapter != null) {
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
@@ -245,11 +304,10 @@ public class MainActivity extends CashierActivity
 
         //打开秤的串口
 //        OpenComPort(comSmscale);
-        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
-        if (hostServer != null){
-            cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getName()));
-        }
-        else{
+        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+        if (hostServer != null) {
+            cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));
+        } else {
             cloudSpeak("欢迎使用智能收银系统");
         }
 
@@ -295,7 +353,7 @@ public class MainActivity extends CashierActivity
     public void onBackPressed() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
         isWaitForExit = true;
-        DataUploadManager.getInstance().sync();
+        DataUploadManager.getInstance().syncDefault();
     }
 
 //    @Override
@@ -372,13 +430,15 @@ public class MainActivity extends CashierActivity
 
         if (id.compareTo(ResMenu.CASHIER_MENU_ONLINE_ORDER) == 0) {
             redirectToOnlineOrder();
-        } else if (id.compareTo(ResMenu.CASHIER_MENU_GOODS_LIST) == 0) {
-            redirectToGoodsList();
+//            test();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_PACKAGE) == 0) {
             packageService();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_REGISTER_VIP) == 0) {
             registerVIPStep1();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_BALANCE_QUERY) == 0) {
+//            if (mPresentation != null) {
+//                mPresentation.setText("查询余额");
+//            }
             queryBalance();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_MEMBER_CARD) == 0) {
             initVipCardStep1();
@@ -386,26 +446,33 @@ public class MainActivity extends CashierActivity
             expressService();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_RETURN_GOODS) == 0) {
             returnGoods();
-        } else if (id.compareTo(ResMenu.CASHIER_MENU_FEEDPAPER) == 0) {
-            //走纸
-            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                GPrinterAgent.feedPaper();
-            }
-            else{
-                EmbPrinter.feedPaper();
-            }
         } else if (id.compareTo(ResMenu.CASHIER_MENU_MONEYBOX) == 0) {
             openMoneyBox();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_HANGUP_ORDER) == 0) {
+//            if (mPresentation != null) {
+//                mPresentation.dismiss();
+//            } else {
+//                DialogUtil.showHint("不支持双屏");
+//            }
             hangUpOrder();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_SETTINGS) == 0) {
             redirectToSettings();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_DISCOUNT) == 0) {
+//            if (mPresentation != null) {
+//                mPresentation.setText("折扣");
+//            } else {
+//                DialogUtil.showHint("不支持双屏");
+//            }
             changeOrderDiscount();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_PRINT_ORDER) == 0) {
 //            printScOrder();
             printPrepareOrder();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_SCORE) == 0) {
+//            if (mPresentation != null) {
+//                mPresentation.setText("积分兑换");
+//            } else {
+//                DialogUtil.showHint("不支持双屏");
+//            }
             exchangeScore();
         } else {
             DialogUtil.showHint(R.string.coming_soon);
@@ -416,7 +483,6 @@ public class MainActivity extends CashierActivity
      * 取包裹
      */
     private void packageService() {
-        //直接根据取货码查询
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_STOCK_DETAIL);
@@ -427,7 +493,6 @@ public class MainActivity extends CashierActivity
      * 余额查询
      */
     private void queryBalance() {
-        //开卡
         if (mQueryBalanceDialog == null) {
             mQueryBalanceDialog = new QueryBalanceDialog(this);
             mQueryBalanceDialog.setCancelable(false);
@@ -461,20 +526,14 @@ public class MainActivity extends CashierActivity
         ZLogger.df(">>>打开线上订单页面");
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
-        SimpleActivity.actionStart(this, extras);
+//        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
+//        SimpleActivity.actionStart(this, extras);
+
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ORDER);
+        FragmentActivity.actionStart(this, extras);
+
     }
 
-    /**
-     * 跳转到商品列表
-     */
-    public void redirectToGoodsList() {
-        ZLogger.df(">>>打开商品列表");
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_GOODS_LIST);
-        SimpleActivity.actionStart(this, extras);
-    }
 
     /**
      * 会员注册1-验证手机号
@@ -661,7 +720,7 @@ public class MainActivity extends CashierActivity
         }
 
         //同步数据
-        ZLogger.d("点击同步按钮，准备同步数据...");
+        ZLogger.df("点击[同步]，准备下载数据...");
         DataDownloadManager.get().manualSync();
     }
 
@@ -740,7 +799,7 @@ public class MainActivity extends CashierActivity
             //刷新挂单
             refreshFloatHangup();
 
-            DataUploadManager.getInstance().sync();
+            DataUploadManager.getInstance().syncDefault();
 
             //设置需要更新商品中心,商品后台类目
             SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
@@ -755,6 +814,7 @@ public class MainActivity extends CashierActivity
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(AffairEvent event) {
         int eventId = event.getAffairId();
         Bundle bundle = event.getArgs();
@@ -762,13 +822,19 @@ public class MainActivity extends CashierActivity
         if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SKU) {
             btnSync.startSync();
             btnSync.setBadgeEnabled(false);
-            DataDownloadManager.get().sync(DataDownloadManager.POSPRODUCTS | DataDownloadManager.POSPRODUCTS_SKU);
+            DataDownloadManager.get().syncProducts();
+        } else if (eventId == AffairEvent.EVENT_ID_ORDER_TRANS_NOTIFY) {
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
+            ZLogger.d("待拣货订单未读消息个数为：" + count);
+            if (count > 0) {
+                cloudSpeak("您有新订单，请尽快处理");
+            }
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
             menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
             ZLogger.d("生鲜预定订单未读消息个数为：" + count);
             if (count > 0) {
-                cloudSpeak("您有新订单,请注意查收");
+                cloudSpeak("您有新订单，请尽快处理");
             }
         } else if (eventId == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
             Double amount = bundle.getDouble("amount");
@@ -806,6 +872,7 @@ public class MainActivity extends CashierActivity
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
         ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
         switch (event.getEventId()) {
@@ -822,6 +889,9 @@ public class MainActivity extends CashierActivity
             case DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED: {
                 hideProgressDialog();
                 btnSync.stopSync();
+
+//                EslSyncManager2.getInstance().sync();
+//                SMScaleSyncManager2.getInstance().sync();
             }
             break;
         }
@@ -832,6 +902,7 @@ public class MainActivity extends CashierActivity
     /**
      * 上传数据到云端
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataUploadManager.UploadSyncManagerEvent event) {
         ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataUploadManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
@@ -850,6 +921,7 @@ public class MainActivity extends CashierActivity
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ValidateManager.ValidateManagerEvent event) {
         int eventId = event.getEventId();
         Bundle args = event.getArgs();
@@ -933,6 +1005,9 @@ public class MainActivity extends CashierActivity
      */
     @OnClick(R.id.fab_settle)
     public void settle() {
+//        if (mPresentation != null) {
+//            mPresentation.dismiss();
+//        }
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         btnSettle.setEnabled(false);
 
@@ -988,8 +1063,10 @@ public class MainActivity extends CashierActivity
         Observable.create(new Observable.OnSubscribe<CashierOrderInfo>() {
             @Override
             public void call(Subscriber<? super CashierOrderInfo> subscriber) {
-                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(curPosTradeNo,
-                        PosOrderEntity.ORDER_STATUS_STAY_PAY, productAdapter.getEntityList());
+                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS,
+                        PosType.POS_STANDARD, curPosTradeNo, null,
+                        PosOrderEntity.ORDER_STATUS_STAY_PAY,
+                        productAdapter.getEntityList());
                 if (cashierOrderInfo != null) {
                     ZLogger.df(String.format("[点击结算]--生成结算信息：%s",
                             JSON.toJSONString(cashierOrderInfo)));
@@ -1033,7 +1110,6 @@ public class MainActivity extends CashierActivity
                 });
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -1054,7 +1130,7 @@ public class MainActivity extends CashierActivity
                     }
                     if (isClearOrder) {
                         ZLogger.df("清空收银购物车，重新开始新订单");
-//加载订单
+                        //加载订单
                         if (StringUtils.isEmpty(curPosTradeNo)) {
                             CashierShopcartService.getInstance()
                                     .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
@@ -1073,7 +1149,7 @@ public class MainActivity extends CashierActivity
             break;
             case Constants.ARC_CASHIER_PREPAREGOODS: {
                 if (resultCode == Activity.RESULT_OK) {
-                    ZLogger.df("拣货单配送成功");
+                    ZLogger.df("拣货单组货成功");
 
                     if (StringUtils.isEmpty(curPosTradeNo)) {
                         CashierShopcartService.getInstance()
@@ -1084,13 +1160,33 @@ public class MainActivity extends CashierActivity
                     changeOrderDiscount(false, 100D);
 
                     if (data != null) {
-                        ScOrder scOrder = (ScOrder) data.getSerializableExtra(PrepareStep2Fragment.EXTRA_KEY_SCORDER);
-                        if (scOrder != null) {
-                            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                                PrintManagerImpl.printSendOrder(scOrder);
+                        boolean isTakeoutOrder = data.getBooleanExtra("isTakeOutOrder", false);
+                        if (isTakeoutOrder) {
+                            CashierOrderInfo cashierOrderInfo = (CashierOrderInfo) data.getSerializableExtra("cashierOrderInfo");
+                            if (cashierOrderInfo != null) {
+                                PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
+                                        cashierOrderInfo.getPosTradeNo());
+                                if (orderEntity != null) {
+                                    if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
+                                        PrintManagerImpl.getInstance().printPosOrder(orderEntity);
+                                    } else {
+                                        EmbPrintManagerImpl.getInstance().printPosOrder(orderEntity);
+                                    }
+                                }
+
+                                //同步订单信息
+                                if (SharedPreferencesUltimate.isUploadPosOrderRealtime()){
+                                    DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
+                                }
                             }
-                            else{
-                                EmbPrintManagerImpl.printSendOrder(scOrder);
+                        } else {
+                            ScOrder scOrder = (ScOrder) data.getSerializableExtra(PrepareStep2Fragment.EXTRA_KEY_SCORDER);
+                            if (scOrder != null) {
+                                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
+                                    PrintManagerImpl.getInstance().printSendOrder(scOrder, 3);
+                                } else {
+                                    EmbPrintManagerImpl.getInstance().printSendOrder(scOrder, 3);
+                                }
                             }
                         }
                     }
@@ -1099,7 +1195,7 @@ public class MainActivity extends CashierActivity
                 btnPick.setEnabled(true);
             }
             break;
-            case Route.ARC_NATIVE_SIGNIN: {
+            case ResultCode.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     reload();
@@ -1138,18 +1234,21 @@ public class MainActivity extends CashierActivity
                         JSONObject.toJSONString(cashierOrderInfo)));
 
                 // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
-                CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER, cashierOrderInfo);
+                CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER,
+                        cashierOrderInfo);
 
                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                         cashierOrderInfo.getPosTradeNo());
+
                 //同步订单信息
-//            DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
-                //打印订单
-                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                    PrintManager.printPosOrder(orderEntity, true);
+                if (SharedPreferencesUltimate.isUploadPosOrderRealtime()){
+                    DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
                 }
-                else{
-                    EmbPrintManager.printPosOrder(orderEntity, true);
+                //打印订单
+                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
+                    PrintManager.getInstance().printPosOrder(orderEntity);
+                } else {
+                    EmbPrintManager.getInstance().printPosOrder(orderEntity);
                 }
                 //保存上一单信息
                 LastOrderInfo lastOrderInfo = CashierAgent.genLastOrderInfo(orderEntity);
@@ -1171,8 +1270,6 @@ public class MainActivity extends CashierActivity
                                 WayType.name(payType), finalAmount, bCount));
                     }
                 }
-
-
                 subscriber.onNext(lastOrderInfo);
                 subscriber.onCompleted();
             }
@@ -1286,11 +1383,10 @@ public class MainActivity extends CashierActivity
      * 开钱箱
      */
     public void openMoneyBox() {
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            GPrinterAgent.openMoneyBox();
-        }
-        else{
-            EmbPrinter.openMoneyBox();
+        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
+            PrintManager.getInstance().getPrinter().openMoneyBox();
+        } else {
+            EmbPrintManager.getInstance().getPrinter().openMoneyBox();
         }
     }
 
@@ -1299,40 +1395,52 @@ public class MainActivity extends CashierActivity
      */
     private void initBarCodeInput() {
         inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
-                KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
-            @Override
-            public void onKey(int keyCode, String text) {
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    //条码枪扫描结束后会自动触发回车键
-                    searchGoodsByBarcode(text);
+                        KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD},
+                new InputNumberLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                            //条码枪扫描结束后会自动触发回车键
+                            searchGoodsByBarcode(text);
 //                        searchGoodsByBarcodeRx(text);
-                }
-                //Press “*”
-                if (keyCode == KeyEvent.KEYCODE_NUMPAD_MULTIPLY) {
-                    //判断是否已经有数字，如果已经有则直接加数字，否则弹窗
-                    if (StringUtils.isEmpty(text)) {
-                        changeGoodsQuantity(0);
+                        }
+                        //Press “*”
+                        if (keyCode == KeyEvent.KEYCODE_NUMPAD_MULTIPLY) {
+                            //判断是否已经有数字，如果已经有则直接加数字，否则弹窗
+                            if (StringUtils.isEmpty(text)) {
+                                changeGoodsQuantity(0);
 //                            if (productAdapter != null) {
 //                                productAdapter.changeQuantity();
 //                            }
-                    } else {
-                        inlvBarcode.clear();
-                        try {
-                            if (productAdapter != null) {
-                                productAdapter.changeQuantity(Double.valueOf(text));
+                            } else {
+                                inlvBarcode.clear();
+                                try {
+                                    if (productAdapter != null) {
+                                        productAdapter.changeQuantity(Double.valueOf(text));
+                                    }
+                                } catch (Exception e) {
+                                    ZLogger.e(e.toString());
+                                }
                             }
-                        } catch (Exception e) {
-                            ZLogger.e(e.toString());
+                        }
+                        //Press “＋”
+                        if (keyCode == KeyEvent.KEYCODE_NUMPAD_ADD) {
+                            if (btnSettle.isEnabled()) {
+                                settle();
+                            }
                         }
                     }
-                }
-                //Press “＋”
-                if (keyCode == KeyEvent.KEYCODE_NUMPAD_ADD) {
-                    if (btnSettle.isEnabled()) {
-                        settle();
-                    }
-                }
+                });
+        inlvBarcode.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
+            @Override
+            public void onClickAction1(String text) {
+                redirect2QueryGoods();
+            }
+
+            @Override
+            public void onLongClickAction1(String text) {
+
             }
         });
         inlvBarcode.requestFocusEnd();
@@ -1693,8 +1801,8 @@ public class MainActivity extends CashierActivity
         //Step 1:
         if (productAdapter.getItemCount() > 0) {
             ZLogger.d(String.format("挂单：%s", curPosTradeNo));
-            CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
-                    productAdapter.getEntityList());
+            CashierAgent.settle(BizType.POS, PosType.POS_STANDARD, curPosTradeNo, null,
+                    PosOrderEntity.ORDER_STATUS_HANGUP, productAdapter.getEntityList());
 
             //刷新挂单
             refreshFloatHangup();
@@ -1720,16 +1828,17 @@ public class MainActivity extends CashierActivity
         if (productAdapter.getItemCount() > 0) {
             //挂起当前订单
             ZLogger.df(String.format("挂单：%s", curPosTradeNo));
-            CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
-                    productAdapter.getEntityList());
+            CashierAgent.settle(BizType.POS, PosType.POS_STANDARD, curPosTradeNo, null,
+                    PosOrderEntity.ORDER_STATUS_HANGUP, productAdapter.getEntityList());
         }
 
         ZLogger.df(String.format("调单：%s", posTradeNo));
+
         //加载新订单
         obtaincurPosTradeNo(posTradeNo);
         //加载明细
         CashierShopcartService.getInstance().readOrderItems(posTradeNo,
-                CashierAgent.resume(posTradeNo));
+                CashierAgent.resume(BizType.POS, posTradeNo));
         List<CashierShopcartEntity> shopcartEntities = CashierShopcartService.getInstance()
                 .queryAllBy(String.format("posTradeNo = '%s'", posTradeNo));
         productAdapter.setEntityList(shopcartEntities);
@@ -1772,13 +1881,14 @@ public class MainActivity extends CashierActivity
                 }
 
                 PosProductEntity goods;
-                //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
-                if (barCode.startsWith("2") && barCode.length() == 13) {
-                    String plu = barCode.substring(1, 7);
-                    String weightStr = String.format("%s.%s", barCode.substring(7, 9), barCode.substring(9, 12));
-                    Double weight = Double.valueOf(weightStr);
-                    ZLogger.df(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",
-                            barCode, plu, weight));
+
+                if (BarcodeUtils.getType(barCode) == BarcodeUtils.BARCODE_DIGI){
+                    String plu = BarcodeUtils.getDigiPlu(barCode);
+//                    String plu = barCode.substring(1, 7);
+//                    String weightStr = String.format("%s.%s", barCode.substring(7, 9), barCode.substring(9, 12));
+//                    Double weight = Double.valueOf(weightStr);
+//                    ZLogger.df(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",
+//                            barCode, plu, weight));
 
                     int packFlag = 0;//是否是箱规：0不是；1是
                     //Step 1:查询商品
@@ -2111,7 +2221,7 @@ public class MainActivity extends CashierActivity
 //        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_OFFICELIST);
         Intent intent = new Intent(this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
+        startActivityForResult(intent, ResultCode.ARC_NATIVE_SIGNIN);
     }
 
     /**
@@ -2128,17 +2238,13 @@ public class MainActivity extends CashierActivity
         alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
-                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                    PrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
-                }
-                else{
-                    EmbPrintManager.printTopupReceipt(quickPayInfo, outTradeNo);
+                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
+                    PrintManager.getInstance().printTopupReceipt(quickPayInfo, outTradeNo);
+                } else {
+                    EmbPrintManager.getInstance().printTopupReceipt(quickPayInfo, outTradeNo);
                 }
 
-//                embPrinter.setPrinter();
-//                embPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2);
-
-                DataUploadManager.getInstance().sync();
+                DataUploadManager.getInstance().syncDefault();
             }
 
             @Override
@@ -2165,7 +2271,7 @@ public class MainActivity extends CashierActivity
             fragment = HomeAdvFragment.newInstance(null);
         }
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_plugin, fragment).show(fragment)
+                .add(fragment_plugin, fragment).show(fragment)
                 .commit();
     }
 
@@ -2181,7 +2287,7 @@ public class MainActivity extends CashierActivity
             fragment = LocalFrontCategoryFragment.newInstance(null);
         }
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_plugin, fragment).show(fragment)
+                .add(fragment_plugin, fragment).show(fragment)
                 .commit();
     }
 
@@ -2204,13 +2310,245 @@ public class MainActivity extends CashierActivity
     public void onIScOrderViewSuccess(ScOrder data) {
         if (data != null) {
 //            PrintManagerImpl.printScOrder(data);
-            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                PrintManagerImpl.printPrepareOrder(data);
-            }
-            else{
-                EmbPrintManagerImpl.printPrepareOrder(data);
+            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
+                PrintManagerImpl.getInstance().printPrepareOrder(data);
+            } else {
+                EmbPrintManagerImpl.getInstance().printPrepareOrder(data);
             }
         }
+    }
+
+
+    private MediaRouter mMediaRouter;
+    private DemoPresentation mPresentation;
+
+    private void test() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            boolean isMultiWindowSupported = isInMultiWindowMode();
+        }
+
+        DisplayManager displayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+        Display[] presentationDisplays = displayManager.getDisplays(DisplayManager.DISPLAY_CATEGORY_PRESENTATION);
+        //presentationDisplays[0]主屏；presentationDisplays[1]分屏
+        if (presentationDisplays.length > 0) {
+            // If there is more than one suitable presentation display, then we could consider
+            // giving the user a choice.  For this example, we simply choose the first display
+            // which is the one the system recommends as the preferred presentation display.
+            Display display = presentationDisplays[0];
+            mPresentation = new DemoPresentation(this, display);
+
+            mPresentation.show();
+        }
+
+        // Get the media router service.
+        mMediaRouter = (MediaRouter) getSystemService(Context.MEDIA_ROUTER_SERVICE);
+        updatePresentation();
+    }
+
+    private void updatePresentation() {
+        // Get the current route and its presentation display.
+        MediaRouter.RouteInfo route = mMediaRouter.getSelectedRoute(
+                MediaRouter.ROUTE_TYPE_LIVE_VIDEO);
+        Display presentationDisplay = route != null ? route.getPresentationDisplay() : null;
+
+        // Dismiss the current presentation if the display has changed.
+        if (mPresentation != null && mPresentation.getDisplay() != presentationDisplay) {
+            ZLogger.d("Dismissing presentation because the current route no longer "
+                    + "has a presentation display.");
+            mPresentation.dismiss();
+            mPresentation = null;
+        }
+
+        // Show a new presentation if needed.
+        if (mPresentation == null && presentationDisplay != null) {
+            ZLogger.d("Showing presentation on display: " + presentationDisplay);
+            mPresentation = new DemoPresentation(this, presentationDisplay);
+            mPresentation.setOnDismissListener(mOnDismissListener);
+            try {
+                mPresentation.show();
+            } catch (WindowManager.InvalidDisplayException ex) {
+                ZLogger.d("Couldn't show presentation!  Display was removed in "
+                        + "the meantime.");
+                mPresentation = null;
+            }
+        }
+
+        // Update the contents playing in this activity.
+        updateContents();
+    }
+
+    private void updateContents() {
+        // Show either the content in the main activity or the content in the presentation
+        // along with some descriptive text about what is happening.
+        if (mPresentation != null) {
+//            mInfoTextView.setText(getResources().getString(
+//                    R.string.presentation_with_media_router_now_playing_remotely,
+//                    mPresentation.getDisplay().getName()));
+//            mSurfaceView.setVisibility(View.INVISIBLE);
+//            mSurfaceView.onPause();
+//            if (mPaused) {
+//                mPresentation.getSurfaceView().onPause();
+//            } else {
+//                mPresentation.getSurfaceView().onResume();
+//            }
+        } else {
+//            mInfoTextView.setText(getResources().getString(
+//                    R.string.presentation_with_media_router_now_playing_locally,
+//                    getWindowManager().getDefaultDisplay().getName()));
+//            mSurfaceView.setVisibility(View.VISIBLE);
+//            if (mPaused) {
+//                mSurfaceView.onPause();
+//            } else {
+//                mSurfaceView.onResume();
+//            }
+        }
+    }
+
+    /**
+     * Listens for when presentations are dismissed.
+     */
+    private final DialogInterface.OnDismissListener mOnDismissListener =
+            new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (dialog == mPresentation) {
+                        ZLogger.d("Presentation was dismissed.");
+                        mPresentation = null;
+                        updateContents();
+                    }
+                }
+            };
+
+    @Override
+    public void onClose() {
+        redirect2LocalCategory();
+    }
+
+    @Override
+    public void onAddGoods(PosProductEntity productEntity) {
+        onFindGoods(productEntity, 0);
+    }
+
+    /**
+     * The presentation to show on the secondary display.
+     * <p>
+     * Note that this display may have different metrics from the display on which
+     * the main activity is showing so we must be careful to use the presentation's
+     * own {@link Context} whenever we load resources.
+     * </p>
+     */
+    private final static class DemoPresentation extends Presentation {
+        private GLSurfaceView mSurfaceView;
+
+        private TextView textView2;
+
+        public DemoPresentation(Context context, Display display) {
+            super(context, display);
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            // Be sure to call the super class.
+            super.onCreate(savedInstanceState);
+
+            // Get the resources for the context of the presentation.
+            // Notice that we are getting the resources from the context of the presentation.
+            Resources r = getContext().getResources();
+
+            // Inflate the layout.
+            setContentView(R.layout.presentation_test);
+
+            // Set up the surface view for visual interest.
+//            mSurfaceView = (GLSurfaceView)findViewById(R.id.surface_view);
+//            mSurfaceView.setRenderer(new CubeRenderer(false));
+            textView2 = (TextView) findViewById(R.id.textView2);
+        }
+
+        public void setText(String text) {
+            textView2.setText(text);
+            DialogUtil.showHint(text);
+            ZLogger.d(text);
+        }
+
+        public GLSurfaceView getSurfaceView() {
+            return mSurfaceView;
+        }
+    }
+
+    /**
+     * 个推SDK初始化
+     * 我们建议应用开发者在Activity或Service类中调用个推SDK的初始化方法，确保SDK在各种情况下都能正常运行。
+     * 一般情况下可以在主Activity的onCreate()或者onResume()方法中调用，也可以在多个主要界面Activity的
+     * onCreate()或onResume()方法中调用。反复调用SDK初始化并不会有什么副作用。
+     */
+    private void setupGetui() {
+        ZLogger.df("准备初始化个推服务...");
+        PushManager.getInstance().initialize(this.getApplicationContext(), DemoPushService.class);
+
+        // 注册 intentService 后 PushDemoReceiver 无效, sdk 会使用 DemoIntentService 传递数据,
+        // AndroidManifest 对应保留一个即可(如果注册 DemoIntentService, 可以去掉 PushDemoReceiver, 如果注册了
+        // IntentService, 必须在 AndroidManifest 中声明)
+//        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), DemoIntentService.class);
+
+        // 检查 so 是否存在
+        File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
+        ZLogger.df("libgetuiext2.so exist = " + file.exists());
+
+        String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
+        ZLogger.df("当前应用的cid = " + cid);
+    }
+
+    /**
+     * 接单
+     * */
+    @OnClick(R.id.buttonPrepareOrder)
+    public void redirect2PrepareOrder(){
+        ActivityRoute.redirect2PrepareAbleOrders(this);
+    }
+
+    /**
+     * 查询商品
+     */
+    private void redirect2QueryGoods(){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        mQueryGoodsFragment = getSupportFragmentManager().findFragmentByTag("QueryGoodsFragment");
+        if (mQueryGoodsFragment == null){
+            mQueryGoodsFragment = QueryGoodsFragment.newInstance(null, this);
+            fragmentTransaction.add(R.id.fragment_plugin, mQueryGoodsFragment, "QueryGoodsFragment");
+        }
+        ((QueryGoodsFragment)mQueryGoodsFragment).setOnFragmentListener(this);
+        mLocalFrontCategoryFragment = getSupportFragmentManager().findFragmentByTag("LocalFrontCategoryFragment");
+        if (mLocalFrontCategoryFragment == null){
+            mLocalFrontCategoryFragment = LocalFrontCategoryFragment.newInstance(null);
+            fragmentTransaction.add(R.id.fragment_plugin, mLocalFrontCategoryFragment, "LocalFrontCategoryFragment");
+        }
+
+        fragmentTransaction.show(mQueryGoodsFragment)
+                .hide(mLocalFrontCategoryFragment).commit();
+    }
+
+    /**
+     * 前台类目
+     */
+    private void redirect2LocalCategory(){
+//        DialogUtil.showHint("redirect2LocalCategory");
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        mQueryGoodsFragment = getSupportFragmentManager().findFragmentByTag("QueryGoodsFragment");
+        if (mQueryGoodsFragment == null){
+            mQueryGoodsFragment = QueryGoodsFragment.newInstance(null, this);
+            fragmentTransaction.add(R.id.fragment_plugin, mQueryGoodsFragment, "QueryGoodsFragment");
+        }
+
+        mLocalFrontCategoryFragment = getSupportFragmentManager().findFragmentByTag("LocalFrontCategoryFragment");
+        if (mLocalFrontCategoryFragment == null){
+            mLocalFrontCategoryFragment = LocalFrontCategoryFragment.newInstance(null);
+            fragmentTransaction.add(R.id.fragment_plugin, mLocalFrontCategoryFragment, "LocalFrontCategoryFragment");
+        }
+
+        fragmentTransaction.show(mLocalFrontCategoryFragment)
+                .hide(mQueryGoodsFragment).commit();
     }
 
 }

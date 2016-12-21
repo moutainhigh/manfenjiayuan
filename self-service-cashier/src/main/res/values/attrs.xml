@@ -20,10 +20,12 @@
         <attr name="inputNumberLabelView_title" format="string"/>
         <attr name="inputNumberLabelView_titleWidth" format="dimension"/>
 
-        <attr name="inputNumberLabelView_inputTextColor" format="color"/>
+        <attr name="editTextColor"/>
         <attr name="inputNumberLabelView_inputTextSize" format="dimension"/>
         <attr name="inputNumberLabelView_inputTextColorHint" format="color"/>
         <attr name="inputNumberLabelView_inputHint" format="string"/>
+        <attr name="editInputType"/>
+        <attr name="editBackground"/>
 
         <attr name="inputNumberLabelView_rightButtonWidth" format="dimension"/>
         <attr name="inputNumberLabelView_rightImageButtonSrc" format="reference"/>

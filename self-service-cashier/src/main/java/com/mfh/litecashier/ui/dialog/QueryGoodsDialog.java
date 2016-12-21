@@ -56,8 +56,7 @@ public class QueryGoodsDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private QueryGoodsDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_querygoods, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_querygoods, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
@@ -77,6 +76,18 @@ public class QueryGoodsDialog extends CommonDialog {
 
                     inlvBarcode.clear();
                 }
+            }
+        });
+        inlvBarcode.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
+            @Override
+            public void onClickAction1(String text) {
+                query(text);
+
+                inlvBarcode.clear();
+            }
+
+            @Override
+            public void onLongClickAction1(String text) {
 
             }
         });

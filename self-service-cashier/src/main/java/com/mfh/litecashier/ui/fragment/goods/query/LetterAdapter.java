@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.goods;
+package com.mfh.litecashier.ui.fragment.goods.query;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -59,7 +59,7 @@ public class LetterAdapter
                 .height(DensityUtil.dip2px(CashierApp.getAppContext(), 80)) // height in px
                 .fontSize(DensityUtil.sp2px(CashierApp.getAppContext(), 50))/* size in px */
                 .endConfig()
-                .buildRect(entity.getName(), Color.TRANSPARENT);
+                .buildRect(entity.getValue(), Color.TRANSPARENT);
 
         holder.ivHeader.setImageDrawable(drawable);
 
