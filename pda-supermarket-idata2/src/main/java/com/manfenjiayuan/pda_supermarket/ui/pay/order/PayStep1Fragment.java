@@ -33,11 +33,14 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -176,6 +179,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
         paySlidingTabStrip.setClickEnabled(isActive);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayStep1Event event) {
         ZLogger.d(String.format("PayStep1Event:%d\n%s",
                 event.getAction(), StringUtils.decodeBundle(event.getArgs())));

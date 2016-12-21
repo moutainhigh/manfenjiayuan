@@ -9,7 +9,8 @@ import com.mfh.framework.R;
 import com.mfh.framework.core.utils.ClipboardUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+
 
 /**
  * Created by shengkun on 15/6/11.

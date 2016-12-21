@@ -9,7 +9,7 @@ import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 
 /**
- * Created by Administrator on 2015/6/5.
+ * Created by bingshanguxue on 2015/6/5.
  */
 public class WXEventProcessor extends BroadcastReceiver implements IWXAPIEventHandler{
     //override broadcast receiver

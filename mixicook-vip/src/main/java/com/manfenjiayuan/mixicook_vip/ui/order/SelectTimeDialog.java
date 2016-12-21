@@ -56,8 +56,7 @@ public class SelectTimeDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private SelectTimeDialog(final Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.view_select_time, null);
+        rootView = getLayoutInflater().inflate(R.layout.view_select_time, null);
 //        ButterKnife.bind(rootView);
 
         mDateSpinner = (Spinner) rootView.findViewById(R.id.spinner_date);

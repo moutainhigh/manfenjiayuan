@@ -57,7 +57,7 @@
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="12sp"
             app:topText="0.00"
-            app:topTextColor="@color/mfh_colorPrimary"
+            app:topTextColor="@color/colorPrimary"
             app:topTextSize="26sp"/>
 
     </LinearLayout>

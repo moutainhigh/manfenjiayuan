@@ -24,10 +24,9 @@ import com.bingshanguxue.pda.bizz.home.HomeAdapter;
 import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
-import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.pda_wholesaler.AppHelper;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.utils.DataCacheHelper;
@@ -204,7 +203,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Route.ARC_NATIVE_SIGNIN: {
+            case ResultCode.ARC_NATIVE_SIGNIN: {
                 loadOffices();
                 configMenuOptions();
 
@@ -460,7 +459,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
+        startActivityForResult(intent, ResultCode.ARC_NATIVE_SIGNIN);
 
 //        LoginActivity.actionStart(MainActivity.this, null);
 //        finish();

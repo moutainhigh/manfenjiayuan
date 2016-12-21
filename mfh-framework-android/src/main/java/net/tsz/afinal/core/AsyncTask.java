@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -78,7 +80,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
     private final AtomicBoolean mTaskInvoked = new AtomicBoolean();
 
     private static class SerialExecutor implements Executor {
-        final ArrayDeque<Runnable> mTasks = new ArrayDeque<Runnable>();
+        final ArrayDeque<Runnable> mTasks = new ArrayDeque<>();
         Runnable mActive;
 
         public synchronized void execute(final Runnable r) {
@@ -475,8 +477,12 @@ public abstract class AsyncTask<Params, Progress, Result> {
      */
     protected final void publishProgress(Progress... values) {
         if (!isCancelled()) {
+            ZLogger.d("publishProgress");
             sHandler.obtainMessage(MESSAGE_POST_PROGRESS,
-                    new AsyncTaskResult<Progress>(this, values)).sendToTarget();
+                    new AsyncTaskResult<>(this, values)).sendToTarget();
+        }
+        else{
+            ZLogger.d("isCancelled");
         }
     }
 

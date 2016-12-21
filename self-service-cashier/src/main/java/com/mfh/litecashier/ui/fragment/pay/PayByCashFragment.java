@@ -34,8 +34,9 @@ import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 /**
  * 支付--现金支付
@@ -114,8 +115,19 @@ public class PayByCashFragment extends BasePayFragment {
                 }
             }
         });
+        inlvPaidMoney.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
+            @Override
+            public void onClickAction1(String text) {
+                submitOrder();
+            }
+
+            @Override
+            public void onLongClickAction1(String text) {
+
+            }
+        });
 //        inlvPaidMoney.setSoftKeyboardEnabled(false);
-        inlvPaidMoney.setDigits(2);
+//        inlvPaidMoney.setDigits(2);
         inlvPaidMoney.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

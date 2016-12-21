@@ -41,7 +41,7 @@ public abstract class InitActivity extends BaseActivity implements OnClickListen
         //发送策略定义了用户由统计分析SDK产生的数据发送回友盟服务器的频率
 //        MobclickAgent.updateOnlineConfig(this);
 
-        doAsyncTask();
+//        doAsyncTask();
     }
 
     @Override

@@ -25,18 +25,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bingshanguxue.skinloader.base.SkinBaseActivity;
+import com.bingshanguxue.skinloader.listener.ILoaderListener;
+import com.bingshanguxue.skinloader.loader.SkinManager;
+import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.R;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.route.RouteActivity;
-import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
-import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.mobile.MobileApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -74,8 +73,8 @@ public class SignInActivity extends SkinBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
 //        hideSystemUI();
         super.onCreate(savedInstanceState);
-        dynamicAddView(rootView, "background", R.color.colorPrimary);
-        dynamicAddView(btnSignIn, "background", R.color.colorPrimary);
+//        dynamicAddView(rootView, "background", R.color.colorPrimary);
+//        dynamicAddView(btnSignIn, "background", R.color.colorPrimary);
 
         refresh();
     }
@@ -83,6 +82,7 @@ public class SignInActivity extends SkinBaseActivity {
     @Override
     protected void initViews() {
         super.initViews();
+        ZLogger.df(">>>进入登录页面");
         rootView = findViewById(R.id.rootview);
         loginFormView = findViewById(R.id.login_form);
         etUserName = (EditText) findViewById(R.id.et_username);
@@ -242,7 +242,6 @@ public class SignInActivity extends SkinBaseActivity {
             @Override
             public void loginFailed(String errMsg) {
                 //登录失败
-                ZLogger.d("登录失败：" + errMsg);
                 DialogUtil.showHint(errMsg);
                 showProgress(false);
             }
@@ -293,26 +292,51 @@ public class SignInActivity extends SkinBaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Route.ARC_APP_HOSTSERVER: {
+            case ResultCode.ARC_APP_HOSTSERVER: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    HostServer hostServer = (HostServer) data.getSerializableExtra(HostServerFragment.EXTRA_KEY_HOSTSERVER);
-                    if (hostServer != null) {
-//                        AppIconManager.changeIcon(SignInActivity.this, hostServer.getActivityAlias());
-
-                        SharedPrefesManagerBase.setHostServer(hostServer);
-                        MfhApi.URL_BASE_SERVER = hostServer.getBaseServerUrl();
-                        MobileApi.DOMAIN = hostServer.getHost();
-//                        IMApi.URL_MOBILE_MESSAGE = hostServer.getBaseMessageUrl();
-                        MfhApi.register();
-                        IMApi.register();
-                        refresh();
-                    }
+                    loadSkin(GlobalInstanceBase.getInstance().getSkinName());
                 }
+                refresh();
             }
             break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    /**
+     * 加载皮肤
+     * */
+    private void loadSkin(String skinName) {
+        SkinManager.getInstance().loadSkin(skinName,
+                new ILoaderListener() {
+                    @Override
+                    public void onStart() {
+                        ZLogger.df("正在切换主题");
+//                        dialog.show();
+                    }
+
+                    @Override
+                    public void onSuccess() {
+                        ZLogger.df("切换主题成功");
+                        DialogUtil.showHint("切换租户成功");
+                    }
+
+                    @Override
+                    public void onFailed(String errMsg) {
+                        ZLogger.df("切换主题失败:" + errMsg);
+                        DialogUtil.showHint(errMsg);
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+                        ZLogger.d("主题皮肤文件下载中:" + progress);
+                    }
+                }
+
+        );
+
     }
 
     private void refresh() {
@@ -326,11 +350,12 @@ public class SignInActivity extends SkinBaseActivity {
             etUserName.requestFocus();
         }
 
-        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer == null) {
             ivHostServer.setImageResource(R.mipmap.ic_launcher);
+            redirect2HostServer();
         } else {
-            ivHostServer.setImageResource(hostServer.getTextLogoResId());
+            ivHostServer.setImageResource(getImageResource(hostServer.getDomainUrl()));
         }
     }
 
@@ -344,7 +369,23 @@ public class SignInActivity extends SkinBaseActivity {
         Intent intent = new Intent(this, RouteActivity.class);
         intent.putExtras(extras);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, Route.ARC_APP_HOSTSERVER);
+        startActivityForResult(intent, ResultCode.ARC_APP_HOSTSERVER);
+    }
+
+    private int getImageResource(String domain){
+        if (!StringUtils.isEmpty(domain)){
+            if (domain.startsWith("admin")){
+                return R.mipmap.ic_textlogo_mixicook;
+            }
+            else if (domain.startsWith("lanlj")){
+                return R.mipmap.ic_textlogo_lanlj;
+            }
+            else if (domain.startsWith("qianwj")){
+                return R.mipmap.ic_textlogo_qianwj;
+            }
+        }
+
+        return R.mipmap.ic_launcher;
     }
 
 //    @Override

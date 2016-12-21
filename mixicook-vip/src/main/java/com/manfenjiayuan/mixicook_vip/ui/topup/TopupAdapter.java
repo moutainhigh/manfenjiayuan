@@ -42,8 +42,7 @@ public class TopupAdapter extends RegularAdapter<TopAmount, TopupAdapter.MenuOpt
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater.inflate(
-                R.layout.itemview_topup, null, false);
+        View v = mLayoutInflater.inflate(R.layout.itemview_topup, null, false);
 //        v.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 105),
 //                DensityUtil.dip2px(mContext, 122)));
 

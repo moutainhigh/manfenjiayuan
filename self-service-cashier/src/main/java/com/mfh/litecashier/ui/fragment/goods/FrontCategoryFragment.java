@@ -10,11 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
+import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
-import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
@@ -41,11 +44,13 @@ import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
 import com.mfh.litecashier.utils.ACacheHelper;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
+import butterknife.OnClick;
 
 /**
  * 收银－－前台类目
@@ -55,9 +60,10 @@ public class FrontCategoryFragment extends BaseFragment {
 
     public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
 
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.addressView)
+    NaviAddressView mAddressView;
     @BindView(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
     @BindView(R.id.viewpager_category_goods)
@@ -89,7 +95,7 @@ public class FrontCategoryFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         init(getArguments());
 
-        mToolbar.setTitle("选择商品");
+//        mToolbar.setTitle("选择商品");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -117,8 +123,21 @@ public class FrontCategoryFragment extends BaseFragment {
         mToolbar.inflateMenu(R.menu.menu_addprodudts2category);
 
         initCategoryGoodsView();
-        selectCategory();
-//        reload();
+        //加载上一次选择的类目
+        String cacheStr = ACacheHelper.getAsString(ACacheHelper.TCK_LAST_TENANT_POSFRONTCATEGORY);
+        ZLogger.d(String.format("cacheStr=%s", cacheStr));
+        mCategoryInfo = JSONObject.toJavaObject(JSON.parseObject(cacheStr), CategoryInfo.class);
+
+        if (mCategoryInfo != null){
+            categoryId = mCategoryInfo.getId();
+//            mToolbar.setTitle(mCategoryInfo.getNameCn());
+            mAddressView.setText(mCategoryInfo.getNameCn());
+            reload();
+        }
+        else{
+            mAddressView.setText("");
+            selectCategory();
+        }
     }
 
     @Override
@@ -134,8 +153,12 @@ public class FrontCategoryFragment extends BaseFragment {
                     getActivity().finish();
                 }
                 else{
+                    ACacheHelper.put(ACacheHelper.TCK_LAST_TENANT_POSFRONTCATEGORY,
+                            JSONObject.toJSONString(categoryInfo));
+
                     mCategoryInfo = categoryInfo;
                     categoryId = mCategoryInfo.getId();
+                    mAddressView.setText(mCategoryInfo.getNameCn());
                     reload();
                 }
             }
@@ -312,15 +335,19 @@ public class FrontCategoryFragment extends BaseFragment {
         importFromCenterSkus(productIds.toString(), proSkuIds.toString());
     }
 
-    private void selectCategory(){
+    /**
+     * 选择商品库
+     * */
+    @OnClick(R.id.addressView)
+    public void selectCategory(){
         Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_TENANT_POSCATEGORYLIST);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer != null){
-            extras.putLong(TenantCategoryListFragment.EXTRA_KEY_TENANTID, hostServer.getId());
+            extras.putLong(TenantCategoryListFragment.EXTRA_KEY_TENANTID, hostServer.getSaasId());
         }
 
         intent.putExtras(extras);
@@ -381,7 +408,6 @@ public class FrontCategoryFragment extends BaseFragment {
                 , String.class
                 , CashierApp.getAppContext()) {
         };
-
 
         ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
                 productIds, submitRC);

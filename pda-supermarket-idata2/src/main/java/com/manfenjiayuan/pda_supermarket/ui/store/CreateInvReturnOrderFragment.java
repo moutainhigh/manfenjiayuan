@@ -281,7 +281,7 @@ public class CreateInvReturnOrderFragment extends PDAScanFragment {
                     hideProgressDialog();
                     getActivity().finish();
 
-//                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+//                    DataDownloadManager.get().sync(DataDownloadManager.SYNC_STEP_PRODUCTS);
                 }
             }
             , String.class

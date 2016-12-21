@@ -23,7 +23,7 @@ import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
@@ -32,7 +32,7 @@ import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
-import com.manfenjiayuan.pda_supermarket.service.DataSyncManagerImpl;
+import com.manfenjiayuan.pda_supermarket.service.DemoPushService;
 import com.manfenjiayuan.pda_supermarket.service.TimeTaskManager;
 import com.manfenjiayuan.pda_supermarket.service.UploadSyncManager;
 import com.manfenjiayuan.pda_supermarket.utils.AlertBeepManager;
@@ -51,13 +51,18 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
+import com.mfh.litecashier.service.DataDownloadManager;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -150,6 +155,9 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         EventBus.getDefault().register(this);
 
+        setupGetui();
+
+
         mBeepManager = new AlertBeepManager(this);
 
 
@@ -216,7 +224,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Route.ARC_NATIVE_SIGNIN: {
+            case ResultCode.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
                     loadOffices();
@@ -558,7 +566,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         Intent intent = new Intent(MainActivity.this, SignInActivity.class);
         intent.putExtras(extras);
-        startActivityForResult(intent, Route.ARC_NATIVE_SIGNIN);
+        startActivityForResult(intent, ResultCode.ARC_NATIVE_SIGNIN);
 
 //        LoginActivity.actionStart(MainActivity.this, null);
 //        finish();
@@ -567,6 +575,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ValidateManager.ValidateManagerEvent event) {
         int eventId = event.getEventId();
 //        Bundle args = event.getArgs();
@@ -592,12 +601,13 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
 //                Beta.checkUpgrade(false, false);
 
-                DataSyncManagerImpl.get().sync();
+//                DataDownloadManager.get().sync();
             }
             break;
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(AffairEvent event) {
         int eventId = event.getAffairId();
         Bundle bundle = event.getArgs();
@@ -606,7 +616,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
             ZLogger.df("SKU更新未读消息个数为：" + count);
             if (count > 1) {
-                DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+                DataDownloadManager.get().syncProducts();
             }
         } else if (eventId == AffairEvent.EVENT_ID_BUYER_PREPAREABLE) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
@@ -619,9 +629,10 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
-    public void onEventMainThread(DataSyncManagerImpl.DataSyncEvent event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
         ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
-        if (event.getEventId() == DataSyncManagerImpl.DataSyncEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
 //            btnSync.stopSync();
             //同步数据结束后开始同步订单
@@ -632,6 +643,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     /**
      * 上传数据到云端
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
         ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
         if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
@@ -713,5 +725,25 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     @Override
     public void onPlatUpdate() {
 
+    }
+
+    /**
+     * 设置个推
+     */
+    private void setupGetui() {
+        ZLogger.df("准备初始化个推服务...");
+        PushManager.getInstance().initialize(this.getApplicationContext(), DemoPushService.class);
+
+        // 注册 intentService 后 PushDemoReceiver 无效, sdk 会使用 DemoIntentService 传递数据,
+        // AndroidManifest 对应保留一个即可(如果注册 DemoIntentService, 可以去掉 PushDemoReceiver, 如果注册了
+        // IntentService, 必须在 AndroidManifest 中声明)
+//        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), DemoIntentService.class);
+
+        // 检查 so 是否存在
+        File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
+        ZLogger.df("libgetuiext2.so exist = " + file.exists());
+
+        String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
+        ZLogger.df("当前应用的cid = " + cid);
     }
 }

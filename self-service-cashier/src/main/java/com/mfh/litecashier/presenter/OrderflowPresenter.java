@@ -2,7 +2,7 @@ package com.mfh.litecashier.presenter;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.litecashier.bean.PosOrder;
+import com.bingshanguxue.cashier.model.PosOrder;
 import com.mfh.litecashier.mode.OrderflowMode;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 
@@ -22,14 +22,16 @@ public class OrderflowPresenter {
     }
 
     /**
-     * 查询洗衣类目商品商品
-     * @param frontCategoryId 类目编号
+     * 查询订单
+     * @param btype 类目编号
      * */
     /**
      * 获取门店数据
      * */
-    public void loadOrders(Integer btype, String orderStatus, Long sellOffices, PageInfo pageInfo){
-        orderflowMode.loadOrders(btype, orderStatus, sellOffices, pageInfo, new OnPageModeListener<PosOrder>() {
+    public void findGoodsOrderList(Integer btype, String subTypes, String orderStatus,
+                                   String sellOffices, PageInfo pageInfo){
+        orderflowMode.findGoodsOrderList(btype, subTypes, orderStatus, sellOffices, pageInfo,
+                new OnPageModeListener<PosOrder>() {
             @Override
             public void onProcess() {
                 if (iOrderflowView != null) {

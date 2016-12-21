@@ -18,6 +18,8 @@ public class WayType {
     public final static Integer RULES      = 1024;//卡券和促销规则支付（卡券优惠部分）
     public final static Integer SCORE      = 2048;//积分支付
     public final static Integer ALIPAY_APP  = 4096;//支付宝——APP支付
+    public final static Integer TAKEOUT  = 16384;//第三方外卖（支持第三方外卖订单拣货，统一使用支付方式）
+
 
 
     public static String name(Integer value) {
@@ -76,11 +78,17 @@ public class WayType {
             }
             sb.append("卡券促销");
         }
-        if ((value & ALIPAY_APP) == RULES) {
+        if ((value & ALIPAY_APP) == ALIPAY_APP) {
             if (sb.length() > 0){
                 sb.append(",");
             }
             sb.append("支付宝App支付");
+        }
+        if ((value & TAKEOUT) == TAKEOUT) {
+            if (sb.length() > 0){
+                sb.append(",");
+            }
+            sb.append("第三方外卖");
         }
 
         return sb.toString();

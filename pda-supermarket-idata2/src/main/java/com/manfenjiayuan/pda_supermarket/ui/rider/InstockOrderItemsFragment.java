@@ -19,8 +19,11 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -89,6 +92,7 @@ public class InstockOrderItemsFragment extends BaseFragment {
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ScOrderEvent event) {
         int eventId = event.getEventId();
         Bundle args = event.getArgs();

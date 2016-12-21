@@ -31,7 +31,9 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -177,6 +179,7 @@ public class GoodsInfoFragment extends BaseFragment {
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ScGoodsSkuEvent event) {
         int eventId = event.getEventId();
         Bundle args = event.getArgs();

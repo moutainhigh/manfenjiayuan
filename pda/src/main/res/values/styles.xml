@@ -31,17 +31,6 @@
         <item name="endTextColor">@color/material_black</item>
     </style>
 
-    <style name="mfh_editlabelview">
-        <item name="startTextWidth">120dp</item>
-        <item name="startTextSize">16sp</item>
-        <item name="startTextColor">@color/black_35</item>
-        <item name="editTextSize">16sp</item>
-        <item name="editTextColor">@color/material_black</item>
-        <item name="editTextColorHint">@color/black_35</item>
-        <item name="endTextSize">16sp</item>
-        <item name="endTextColor">@color/material_black</item>
-    </style>
-
     <style name="mf_scrolview">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>

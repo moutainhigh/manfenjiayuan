@@ -17,7 +17,9 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -216,6 +218,7 @@ public class CashierPayActivity extends BaseActivity {
 //        cancelPayDialog.show();
 //    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayActionEvent event) {
         Bundle args = event.getArgs();
         ZLogger.df(String.format("PayActionEvent:%d\n%s",

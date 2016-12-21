@@ -117,9 +117,7 @@ public class PrintManager implements IPrinterManager {
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
         /**打印 订单条码*/
-        esc.addText(String.format("订单号:%d \n", curOrder.getId()));
-        /**打印 应付款*/
-//        esc.addText(String.format("应付款:%.2f \n", orderEntity.getAmount()));
+//        esc.addText(String.format("订单号:%d \n", curOrder.getId()));
         /**打印 订购日期*/
         esc.addText(String.format("日期:%s \n",
                 TimeUtil.format(curOrder.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
@@ -388,11 +386,10 @@ public class PrintManager implements IPrinterManager {
     /**
      * 订单明细模版1
      */
-    public EscCommand makeOrderItem1(EscCommand rawEsc, String name, String unit,
-                                     String bcount) {
-        EscCommand esc = rawEsc;
+    public void makeOrderItem1(EscCommand esc, String name, String unit,
+                               String bcount) {
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
 
@@ -415,18 +412,15 @@ public class PrintManager implements IPrinterManager {
 //            ZLogger.d("printText:" + printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
     /**
      * 拣货单明细模版
      */
-    public EscCommand createPrepareOrderItem(EscCommand rawEsc, String name, String bcount,
-                                             String amount) {
-        EscCommand esc = rawEsc;
+    public void createPrepareOrderItem(EscCommand esc, String name, String bcount,
+                                       String amount) {
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
 
@@ -450,8 +444,6 @@ public class PrintManager implements IPrinterManager {
 //            ZLogger.d("printText:" + printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
     public EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity) {
@@ -480,7 +472,7 @@ public class PrintManager implements IPrinterManager {
         esc.addText(String.format("下单时间：%s \n",
                 TimeUtil.format(posOrderEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
         esc.addText(String.format("机器设备号:%s\n", SharedPrefesManagerFactory.getTerminalId()));
-        esc.addText(String.format("收银时间:%s/%s \n",
+        esc.addText(String.format("收银员:%s/%s \n",
                 MfhLoginService.get().getLoginName(), MfhLoginService.get().getTelephone()));
         esc.addPrintAndLineFeed();
 
@@ -567,11 +559,10 @@ public class PrintManager implements IPrinterManager {
      * esc.addText("货号/品名       单价 数量   小计\n");
      * esc.addText("业务类型            数量    金额\n");
      */
-    public EscCommand makePosOrderLine(EscCommand rawEsc, String name,
-                                       String price, String bcount, String amount) {
-        EscCommand esc = rawEsc;
+    public void makePosOrderLine(EscCommand esc, String name,
+                                 String price, String bcount, String amount) {
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
 
         //最多显示17*0.6=10.2个汉字
@@ -595,8 +586,6 @@ public class PrintManager implements IPrinterManager {
 //            ZLogger.d("printText:" + printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
 //    @Deprecated
@@ -748,7 +737,7 @@ public class PrintManager implements IPrinterManager {
     /**
      * 打印POS订单流水
      */
-    public void printPosOrder(final PosOrderEntity posOrderEntity, boolean withCode128) {
+    public void printPosOrder(final PosOrderEntity posOrderEntity) {
 
         Observable.create(new Observable.OnSubscribe<EscCommand>() {
             @Override
@@ -1123,11 +1112,10 @@ public class PrintManager implements IPrinterManager {
      * esc.addText("货号/品名       单价 数量   小计\n");
      * esc.addText("业务类型            数量    金额\n");
      */
-    public EscCommand makeTestTemp(EscCommand rawEsc, String name,
+    public void makeTestTemp(EscCommand esc, String name,
                                    String price, String bcount, String amount) {
-        EscCommand esc = rawEsc;
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
 
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
@@ -1153,8 +1141,6 @@ public class PrintManager implements IPrinterManager {
 //            ZLogger.d("printText:" + printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
 }

@@ -25,10 +25,10 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.EmptyEntity;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
-import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
-import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -42,9 +42,12 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -165,6 +168,7 @@ public class PayByWxpayFragment extends BasePayFragment {
         cancelOrder(outTradeNo);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayEvent event) {
         int action = event.getAction();
         Bundle extras = event.getArgs();

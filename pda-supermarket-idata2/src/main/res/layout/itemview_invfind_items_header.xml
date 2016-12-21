@@ -3,7 +3,7 @@
               android:id="@+id/rootview"
               android:layout_width="match_parent"
               android:layout_height="44dp"
-              android:background="@drawable/bg_bottomline_green"
+              android:background="@drawable/bg_bottomline_primary"
               android:gravity="center"
               android:orientation="horizontal"
               android:padding="@dimen/spacing_normal">

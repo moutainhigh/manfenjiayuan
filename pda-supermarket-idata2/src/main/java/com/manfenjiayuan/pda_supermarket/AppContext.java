@@ -35,7 +35,7 @@ public class AppContext extends MfhApplication {
 
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);
-        ZLogger.d("进程:" + processAppName);
+        ZLogger.df("进程:" + processAppName);
         // 如果app启用了远程的service，此application:onCreate会被调用2次
         // 默认的app会在以包名为默认的process name下运行，如果查到的process name不是app的process name就立即返回
         if (processAppName != null && processAppName.equalsIgnoreCase(getPackageName())) {
@@ -57,6 +57,7 @@ public class AppContext extends MfhApplication {
             debugPrint();
         }
 
+        ZLogger.df(String.format("initialize finished(%s)", processAppName));
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);

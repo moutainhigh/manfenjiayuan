@@ -47,7 +47,7 @@
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="115dp"
-            android:background="@color/material_black_A80"
+            android:background="@color/material_black_200"
             android:gravity="center">
 
             <TextView

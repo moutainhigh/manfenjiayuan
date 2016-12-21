@@ -1,9 +1,12 @@
 package com.mfh.framework.core.location;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -26,10 +29,24 @@ public class LocationClient {
     private static final float MIN_DISTANCE = 5;
     //
 //    final MyLocationListener listener = new MyLocationListener();
+
     /**
      * @param listener 监听者
      * */
-    public static void startGPSMonitor(Context context, MyLocationListener listener){
+    public static void startGPSMonitor(Context context, MyLocationListener listener) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            ZLogger.d("please confirm that you have already granted" +
+                    "Manifest.permission.ACCESS_FINE_LOCATION and Manifest.permission.ACCESS_COARSE_LOCATION");
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         //创建LocationManager实例，指向定位服务
         final LocationManager locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -58,7 +75,21 @@ public class LocationClient {
     /**
      * 停止监听
      * */
-    public static void stopGPSMonitor(Context context, MyLocationListener listener){
+    public static void stopGPSMonitor(Context context, MyLocationListener listener) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            ZLogger.d("please confirm that you have already granted" +
+                    "Manifest.permission.ACCESS_FINE_LOCATION and Manifest.permission.ACCESS_COARSE_LOCATION");
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
         //创建LocationManager实例，指向定位服务
         final LocationManager locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locMgr.removeUpdates(listener);

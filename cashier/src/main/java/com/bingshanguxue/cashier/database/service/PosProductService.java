@@ -8,6 +8,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.core.utils.AbbreviationUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import net.tsz.afinal.db.table.KeyValue;
@@ -179,21 +180,18 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 //                    } else {
 //                        entity.setNameSortLetter("#");
 //                    }
+        entity.setAbbreviation(AbbreviationUtil.cn2py(posGoods.getName()));
 
         PosProductService.get().saveOrUpdate(entity);
     }
 
-    public void deactiveAll(){
-//        List<PosProductEntity> entities = PosProductService.get().queryAll();
-//        for (PosProductEntity entity : entities){
-//            entity.setIsCloudActive(0);
-//            saveOrUpdate(entity);
-//        }
-
+    /**
+     * 假删除数据
+     * */
+    public void pretendDelete(){
         List<KeyValue> keyValues = new ArrayList<>();
         keyValues.add(new KeyValue("isCloudActive", 0));
-        getDao().update(PosProductEntity.class, keyValues,
-                String.format("isCloudActive = %d", 1));
+        getDao().update(PosProductEntity.class, keyValues, String.format("isCloudActive = %d", 1));
 
     }
 

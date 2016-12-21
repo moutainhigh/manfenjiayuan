@@ -45,7 +45,9 @@
 #混淆时是否记录日志
 -verbose
 
--keepattributes Exceptions,InnerClasses
+# Preserve some attributes that may be required for reflection.
+-keepattributes *Annotation*,Exceptions,Signature,InnerClasses,EnclosingMethod
+#-keepattributes Exceptions,InnerClasses
 #不跳过library中的非public的类
 -dontskipnonpubliclibraryclasses
 -dontskipnonpubliclibraryclassmembers
@@ -72,6 +74,11 @@
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
+# Keep setters in Views so that animations can still work.
+-keepclassmembers public class * extends android.view.View {
+    void set*(***);
+    *** get*();
+}
 # We want to keep methods in Activity that could be used in the XML attribute onClick
 # 保护指定类的成员，如果此类受到保护他们会保护的更好
 -keepclassmembers class * extends android.app.Activity {
@@ -85,6 +92,10 @@
 # 保护指定的类文件和类成员
 -keep class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator *;
+}
+
+-keepclassmembers class **.R$* {
+    public static <fields>;
 }
 
 # adding this in to preserve line numbers so that the stack traces
@@ -109,6 +120,7 @@
 # Don't warn about those in case this app is linking against an older
 # platform version.  We know about them, and they are safe.
 # Keep the support library
+-dontnote android.support.**
 -dontwarn android.support.**
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.** { *; }

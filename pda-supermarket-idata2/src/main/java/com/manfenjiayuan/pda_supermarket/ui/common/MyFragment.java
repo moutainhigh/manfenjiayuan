@@ -152,6 +152,7 @@ public class MyFragment extends BaseFragment {
      */
     @OnClick(R.id.button_logout)
     public void logout() {
+        ZLogger.df("手动退出当前账号");
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在退出当前账号...", false);
 //                    // 保存统计数据
 //                    MobclickAgent.onKillProcess(CashierApp.getAppContext());

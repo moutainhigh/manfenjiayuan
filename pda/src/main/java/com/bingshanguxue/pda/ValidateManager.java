@@ -20,15 +20,16 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -314,6 +315,7 @@ public class ValidateManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
 //                        {"code":"1","msg":"会话已失效，请重新登录","version":"1","data":""}
+                        ZLogger.df("会话已失效，准备自动重新登录：");
                         retryLogin();
                     }
                 }
@@ -355,7 +357,7 @@ public class ValidateManager {
                 });
     }
 
-    public class ValidateManagerEvent {
+    public static class ValidateManagerEvent {
         public static final int EVENT_ID_VALIDATE_START             = 0X01;//验证开始
         public static final int EVENT_ID_VALIDATE_NEED_LOGIN        = 0X02;//需要登录
         public static final int EVENT_ID_RETRYLOGIN_SUCCEED   = 0X03;//重登录成功

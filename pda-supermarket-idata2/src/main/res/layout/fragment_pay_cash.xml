@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="找零金额"
             android:textColor="@color/black_70"
-            android:gravity="end|center_vertical"
+            android:gravity="start|center_vertical"
             android:textSize="18sp"/>
 
         <com.bingshanguxue.vector_uikit.FontFitTextView

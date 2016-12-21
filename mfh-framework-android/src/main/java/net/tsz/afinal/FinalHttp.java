@@ -17,6 +17,7 @@ package net.tsz.afinal;
 
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -47,6 +48,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.HttpEntityWrapper;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -76,7 +78,7 @@ public class FinalHttp {
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
     public static final String HEADER_COOKIE = "Cookie";
     public static final String HEADER_cookie = "cookie";
-    public static final String KEY_JSESSIONID = "JSESSIONID";//传给服务器的会话Id
+    public static final String PARAM_JSESSIONID = "JSESSIONID";//传给服务器的会话Id
     public static final String CHARSET_UTF8 = "utf-8";
     private static final String ENCODING_GZIP = "gzip";
 
@@ -140,19 +142,21 @@ public class FinalHttp {
 //
 //
                 httpClient.getCookieStore().clear();
-//                foStringBuilder sb = new StringBuilder();
-//                sb.append("FinalHttp.requst.header:\n");
-//                for(Header header : request.getAllHeaders()){
-//                    sb.append(String.format("\t%s\t%s\n", header.getName(), header.getValue()));
-//                }
-//                ZLogger.d(sb.toString());
+                if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("FinalHttp.requst.header:\n");
+                    for(Header header : request.getAllHeaders()){
+                        sb.append(String.format("\t%s\t%s\n", header.getName(), header.getValue()));
+                    }
+                    ZLogger.d(sb.toString());
 //
-//                CookieStore cookieStore = httpClient.getCookieStore();
-//                for (Cookie cookie : httpClient.getCookieStore().getCookies()){
-//                    ZLogger.d("FinalHttp.request.cookie:" + cookie.toString());
-//                }r (Cookie cookie : httpClient.getCookieStore().getCookies()){
-//                    ZLogger.d("FinalHttp.request.cookie:" + cookie.toString());
-//                }
+                    CookieStore cookieStore = httpClient.getCookieStore();
+                    for (Cookie cookie : httpClient.getCookieStore().getCookies()){
+                        ZLogger.d("FinalHttp.request.cookie:" + cookie.toString());
+                    }
+                }
+
+
 //                for (final Cookie cookie : cookieStore.getCookies()){
 //                    ZLogger.d("FinalHttp.request.cookie:" + cookie.toString());
 //                    httpClient.getCookieStore().addCookie(new Cookie() {
@@ -240,16 +244,19 @@ public class FinalHttp {
                     }
                 }
 //
-//                StringBuilder sb = new StringBuilder();
-//                sb.append("FinalHttp.response.header:\n");
-//                for(Header header : response.getAllHeaders()){
-//                    sb.append(String.format("\t%s\t%s\n", header.getName(), header.getValue()));
-//                }
-//                ZLogger.d(sb.toString());
-////
-//                for (Cookie cookie : httpClient.getCookieStore().getCookies()){
-//                    ZLogger.d("FinalHttp.response.cookie:" + cookie.toString());
-//                }
+                if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("FinalHttp.response.header:\n");
+                    for(Header header : response.getAllHeaders()){
+                        sb.append(String.format("\t%s\t%s\n", header.getName(), header.getValue()));
+                    }
+                    ZLogger.d(sb.toString());
+//
+                    for (Cookie cookie : httpClient.getCookieStore().getCookies()){
+                        ZLogger.d("FinalHttp.response.cookie:" + cookie.toString());
+                    }
+                }
+
             }
         });
 //        httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);

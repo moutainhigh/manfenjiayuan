@@ -19,11 +19,11 @@ import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
-import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
-import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.BasePayStepFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
+import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -32,11 +32,14 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -166,6 +169,7 @@ public class InstockPayFragment extends BasePayStepFragment {
         isAcceptBarcodeEnabled = isActive;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayStep1Event event) {
         ZLogger.d(String.format("PayStep1Event:%d\n%s",
                 event.getAction(), StringUtils.decodeBundle(event.getArgs())));

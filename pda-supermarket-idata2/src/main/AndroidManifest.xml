@@ -12,12 +12,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
-    <!-- 自定义权限 -->
-    <uses-permission android:name="getui.permission.GetuiService.com.manfenjiayuan.pda_supermarket"/>
-
-    <permission
-        android:name="getui.permission.GetuiService.com.manfenjiayuan.pda_supermarket"
-        android:protectionLevel="normal"/>
     <!-- 个推SDK权限配置结束 -->
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -216,14 +210,15 @@
 
 
         <!-- 个推SDK配置开始 -->
-        <!-- 配置第三方Receiver -->
-        <receiver
-            android:name=".service.PushDemoReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.igexin.sdk.action.${GETUI_APP_ID}"/>
-            </intent-filter>
-        </receiver>
+        <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
+        <service android:name=".service.DemoIntentService"/>
+        <!-- 配置SDK核心服务 -->
+        <service
+            android:name=".service.DemoPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice">
+        </service>
         <!-- 个推SDK配置结束 -->
 
 

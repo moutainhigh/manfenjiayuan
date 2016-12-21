@@ -51,12 +51,13 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -350,9 +351,11 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
                 JSONObject jsonObject = new JSONObject();
                 // TODO: 19/10/2016
                 jsonObject.put("skuId", entity.getSkuId());
+                //收货
                 if (entity.getIsEnable() == 1){
                     jsonObject.put("bcount", entity.getCommitCount());
                 }
+                //退货
                 else{
                     jsonObject.put("bcount", 0D);
                 }
@@ -390,7 +393,7 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
      * 加载优惠券列表
      */
     public void submitStep2() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "组货中...", false);
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         btnSubmit.setEnabled(false);
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {

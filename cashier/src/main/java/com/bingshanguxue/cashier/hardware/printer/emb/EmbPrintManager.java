@@ -47,7 +47,7 @@ public class EmbPrintManager extends PrintManager {
     public void printBarcode(EscCommand esc, String barcode) {
 //        super.printBarcode(esc, barcode);
 
-        if (esc == null){
+        if (esc == null) {
             return;
         }
 
@@ -67,7 +67,7 @@ public class EmbPrintManager extends PrintManager {
      */
     @Override
     public EscCommand makePosOrderEsc1(PosOrder curOrder) {
-        EscCommand esc = super.makePosOrderEsc1(curOrder);
+        EscCommand esc = new EscCommand();
 
         esc.addUserCommand(EmbPrinter.initPrinter());
         //打印并且走纸3行
@@ -132,10 +132,10 @@ public class EmbPrintManager extends PrintManager {
 
     /**
      * 平台配送单
-     * */
+     */
     @Override
     public EscCommand makePosOrderEsc2(PosOrder posOrder) {
-        EscCommand esc = super.makePosOrderEsc2(posOrder);
+        EscCommand esc = new EscCommand();
 
         esc.addUserCommand(EmbPrinter.initPrinter());
         //打印并且走纸2行
@@ -197,7 +197,7 @@ public class EmbPrintManager extends PrintManager {
 
     @Override
     public EscCommand makePosOrderEsc3(PosOrder posOrder) {
-        EscCommand esc = super.makePosOrderEsc3(posOrder);
+        EscCommand esc = new EscCommand();
 
         esc.addUserCommand(EmbPrinter.initPrinter());
         //打印并且走纸2行
@@ -258,10 +258,9 @@ public class EmbPrintManager extends PrintManager {
         esc.addText(String.format("订单金额: %.2f\n", posOrder.getAmount()));
         esc.addText(String.format("拣货金额: %.2f\n", posOrder.getCommitAmount()));
         Double disAmount = MathCompact.sub(posOrder.getCommitAmount(), posOrder.getAmount());
-        if (disAmount < 0){
+        if (disAmount < 0) {
             esc.addText(String.format("   差额: -%.2f\n", disAmount));
-        }
-        else{
+        } else {
             esc.addText(String.format("   差额: +%.2f\n", disAmount));
         }
         mPrinter.printAndLineFeed(esc, 2);
@@ -273,15 +272,13 @@ public class EmbPrintManager extends PrintManager {
         return esc;
     }
 
-
     /**
      * 订单明细模版1
-     * */
+     */
     @Override
-    public EscCommand makeOrderItem1(EscCommand rawEsc, String name, String unit, String bcount) {
-        EscCommand esc = rawEsc;
+    public void makeOrderItem1(EscCommand esc, String name, String unit, String bcount) {
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
         esc.addUserCommand(EmbPrinter.initPrinter());
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
@@ -307,20 +304,16 @@ public class EmbPrintManager extends PrintManager {
 //            ZLogger.d("printText:" + printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
     /**
      * 拣货单明细模版
      */
     @Override
-    public EscCommand createPrepareOrderItem(EscCommand rawEsc, String name, String bcount,
+    public void createPrepareOrderItem(EscCommand esc, String name, String bcount,
                                              String amount) {
-        EscCommand esc = rawEsc;
         if (esc == null) {
-            esc = new EscCommand();
-        }
+return;        }
         esc.addUserCommand(EmbPrinter.initPrinter());
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
 
@@ -344,8 +337,6 @@ public class EmbPrintManager extends PrintManager {
 //            ZLogger.d("printText:" + printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
     @Override
@@ -416,16 +407,15 @@ public class EmbPrintManager extends PrintManager {
 //        esc.addText(String.format("应收:%.2f\n", payableAmount));
 
         List<PayWay> payWays = payWrapper.getPayWays();
-        if (payWays != null && payWays.size() > 0){
-            for (PayWay payWay : payWays){
+        if (payWays != null && payWays.size() > 0) {
+            for (PayWay payWay : payWays) {
                 //现金支付（订单支付金额＋找零金额）
-                if (WayType.CASH.equals(payWay.getPayType())){
+                if (WayType.CASH.equals(payWay.getPayType())) {
                     esc.addText(String.format("%s:%.2f\n", WayType.name(payWay.getPayType()),
                             payWay.getAmount() + payWrapper.getChange()));
-                }
-                else{
+                } else {
                     esc.addText(String.format("%s:%.2f\n",
-                            WayType.name(payWay.getPayType()) , payWay.getAmount()));
+                            WayType.name(payWay.getPayType()), payWay.getAmount()));
                 }
             }
         }
@@ -449,6 +439,35 @@ public class EmbPrintManager extends PrintManager {
         return esc;
     }
 
+    @Override
+    public void makePosOrderLine(EscCommand esc, String name, String price, String bcount, String amount) {
+        if (esc == null) {
+            return;
+        }
+
+        //最多显示17*0.6=10.2个汉字
+        if (Printer.getLength(name) > 16) {
+            esc.addText(name);//显示名称
+            esc.addText("\n");
+            //另起一行显示单价/数量/小计，居右显示
+            esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                    PrinterConstants.Command.ALIGN_RIGHT));//设置打印左对齐
+            esc.addText(String.format("%s%s%s", Printer.formatShort(price, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(bcount, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(amount, 6, Printer.BLANK_GRAVITY.LEFT)));
+        } else {
+            //在名称后面显示单价/数量/小计
+            String printText = String.format("%s%s%s%s",
+                    Printer.formatShort(name, 16, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(price, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(bcount, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(amount, 6, Printer.BLANK_GRAVITY.LEFT));
+            esc.addText(printText);
+
+//            ZLogger.d("printText:" + printText);
+        }
+        esc.addText("\n");
+    }
 
     @Override
     public EscCommand makeTopupEsc(QuickPayInfo mQuickPayInfo, String outTradeNo) {
@@ -612,4 +631,35 @@ public class EmbPrintManager extends PrintManager {
         }
     }
 
+    @Override
+    public void makeTestTemp(EscCommand esc, String name, String price, String bcount, String amount) {
+        if (esc == null) {
+            return;
+        }
+
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_LEFT));
+
+        //最多显示17*0.6=10.2个汉字
+        if (Printer.getLength(name) > 16) {
+            esc.addText(name);//显示名称
+            esc.addText("\n");
+            //另起一行显示单价/数量/小计，居右显示
+            esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                    PrinterConstants.Command.ALIGN_RIGHT));
+            esc.addText(String.format("%s%s%s", Printer.formatShort(price, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(bcount, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(amount, 6, Printer.BLANK_GRAVITY.LEFT)));
+        } else {
+            //在名称后面显示单价/数量/小计
+            String printText = String.format("%s%s%s%s",
+                    Printer.formatShort(name, 16, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(price, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(bcount, 5, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(amount, 6, Printer.BLANK_GRAVITY.LEFT));
+            esc.addText(printText);
+
+//            ZLogger.d("printText:" + printText);
+        }
+        esc.addText("\n");    }
 }

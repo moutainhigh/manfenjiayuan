@@ -60,9 +60,8 @@ public class MultimediaActivity extends BaseActivity {
 
     }
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 //相册
@@ -88,9 +87,9 @@ public class MultimediaActivity extends BaseActivity {
                 break;
             }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,

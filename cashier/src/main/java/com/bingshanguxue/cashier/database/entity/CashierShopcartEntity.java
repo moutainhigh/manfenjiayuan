@@ -17,7 +17,7 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     private String posTradeNo;
 
     // 5/19/16 新增商品类目类型字段，支持按类目进行账务清分
-//    private Integer cateType = BizSubType.POS_STANDARD;
+//    private Integer cateType = PosType.POS_STANDARD;
     private Integer prodLineId = 0;//产品线编号
 
     private String barcode; //商品条形码,最小商品库存单元的条形码

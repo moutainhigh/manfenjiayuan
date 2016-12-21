@@ -50,8 +50,7 @@ public class ActionDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ActionDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_action, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_action, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_title);

@@ -45,7 +45,7 @@ public class AppContext extends MfhApplication {
 //            ACacheHelper.CACHE_NAME = "ACache_Dev";
         }
 
-        MultiTypeInstaller.start();
+        MultiTypeInstaller.register();
 
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);

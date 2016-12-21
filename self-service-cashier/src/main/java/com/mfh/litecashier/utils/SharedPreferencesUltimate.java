@@ -95,6 +95,8 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
     public static final String PK_B_SYNC_SMSCALE_FTP_ENABLED = "pk_b_SYNC_SMSCALE_FTP_ENABLED";
     //是否允许同步商品数据 ViaWs 2绿泰电子价签
     public static final String PK_B_SYNC_ESL_ENABLED = "pk_b_SYNC_ESL_ENABLED";
+    //是否实时上传POS订单
+    public static final String PK_B_UPLOAD_POSORDER_RELATIME = "PK_B_UPLOAD_POSORDER_RELATIME";
     public static final String PK_L_CATETYPE_POS_ID = "pk_l_catetype_pos_id";
 
     public static String getSyncProductsCursor() {
@@ -151,6 +153,14 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
 
     public static void setSyncCompanyHumanEnabled(boolean enabled) {
         set(PK_SYNC_COMPANY_HUMAN_ENABLED, enabled);
+    }
+
+    public static boolean isUploadPosOrderRealtime() {
+        return getBoolean(PK_B_UPLOAD_POSORDER_RELATIME, true);
+    }
+
+    public static void setUploadPosOrderRealtime(boolean enabled) {
+        set(PK_B_UPLOAD_POSORDER_RELATIME, enabled);
     }
 
     /**

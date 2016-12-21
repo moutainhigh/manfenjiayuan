@@ -9,9 +9,10 @@ import android.view.WindowManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
-import com.mfh.litecashier.ui.fragment.canary.MessageMgrFragment;
+import com.mfh.litecashier.ui.fragment.components.MessageMgrFragment;
 import com.mfh.litecashier.ui.fragment.components.StockDetailFragment;
 import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
+import com.mfh.litecashier.ui.fragment.order.OrderFragment;
 
 /**
  * 服务
@@ -24,6 +25,7 @@ public class FragmentActivity extends BaseActivity {
     public static final int FT_STOCK_DETAIL = 0x32;
     public static final int FT_GROUPON_DETAIL = 0x33;  //团购详情页
     public static final int FT_CANARY_MESSAGE_MGR = 0x50;//消息管理器
+    public static final int FT_ORDER = 0x51;//订单
 
 
     private int fragmentType = 0;
@@ -105,6 +107,7 @@ public class FragmentActivity extends BaseActivity {
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }
+            break;
             //团购详情页
             case FT_GROUPON_DETAIL: {
                 GrouponFragment fragment;
@@ -118,6 +121,7 @@ public class FragmentActivity extends BaseActivity {
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }
+            break;
             //消息管理器
             case FT_CANARY_MESSAGE_MGR: {
                 MessageMgrFragment fragment;
@@ -131,6 +135,20 @@ public class FragmentActivity extends BaseActivity {
                         .replace(R.id.fragment_container, fragment)
                         .commit();
             }
+            break;
+            case FT_ORDER: {
+                OrderFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = OrderFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = OrderFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
         }
     }
 

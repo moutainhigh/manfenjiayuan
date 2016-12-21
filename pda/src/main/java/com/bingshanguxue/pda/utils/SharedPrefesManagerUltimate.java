@@ -45,7 +45,10 @@ public class SharedPrefesManagerUltimate extends SharedPrefesManagerBase {
     }
 
     public static void setSyncProductsStartcursor(String cursor){
-        set(dynamicRegister(),  PK_SYNC_PRODUCTS_STARTCURSOR, cursor);
+        set(PK_SYNC_PRODUCTS_STARTCURSOR, cursor);
+    }
+    public static void setSyncProductsStartCursor(Date lastUpdate) {
+        set(PK_SYNC_PRODUCTS_STARTCURSOR, TimeUtil.format(lastUpdate, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
     }
 
     public static String getSyncProductSkuCursor() {
@@ -53,11 +56,11 @@ public class SharedPrefesManagerUltimate extends SharedPrefesManagerBase {
     }
 
     public static void setSyncProductSkuStartcursor(String cursor){
-        set(dynamicRegister(), PK_SYNC_PRODUCTSKU_STARTCURSOR, cursor);
+        set(PK_SYNC_PRODUCTSKU_STARTCURSOR, cursor);
     }
 
     public static void setSyncProductSkuStartcursor(Date lastCursor) {
-        set(dynamicRegister(), PK_SYNC_PRODUCTSKU_STARTCURSOR,
+        set(PK_SYNC_PRODUCTSKU_STARTCURSOR,
                 TimeUtil.format(lastCursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
 
     }

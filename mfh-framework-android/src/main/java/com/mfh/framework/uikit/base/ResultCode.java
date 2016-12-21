@@ -1,10 +1,10 @@
-package com.manfenjiayuan.business.route;
+package com.mfh.framework.uikit.base;
 
 /**
  * Created by bingshanguxue on 13/11/2016.
  */
 
-public interface Route {
+public interface ResultCode {
     int ARC_ANDROID_SETTINGS    = 0x1001;//系统设置
     int ARC_PERMISSIONS         = 0X1002;//request the permission.
 

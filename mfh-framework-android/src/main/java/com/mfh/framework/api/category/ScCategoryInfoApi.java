@@ -138,6 +138,8 @@ public class ScCategoryInfoApi {
         params.put("cateType", String.valueOf(cateType));
         params.put("catePosition", String.valueOf(catePosition));
         params.put("deep", String.valueOf(deep));//层级
+        params.put("parentIdNull", "1");//层级
+
         if (tenantId != null) {
             params.put("tenantId", String.valueOf(tenantId));
         }

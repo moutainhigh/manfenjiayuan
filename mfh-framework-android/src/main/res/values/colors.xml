@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">@color/material_green_500</color>
-    <color name="colorPrimaryGrey">@color/material_grey_500</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
     <!--二维码扫描界面颜色配置-->
     <color name="result_view">#b0000000</color>
     <color name="viewfinder_mask">#60000000</color>
@@ -76,15 +71,6 @@
     <color name="black_80">#cc000000</color>
     <color name="black_90">#e6000000</color>
 
-
-    <color name="white_20">#33ffffff</color>
-    <color name="white_30">#4dffffff</color>
-    <color name="white_35">#59ffffff</color>
-    <color name="white_40">#66ffffff</color>
-    <color name="white_50">#80ffffff</color>
-    <color name="white_60">#99ffffff</color>
-    <color name="white_70">#b3ffffff</color>
-    <color name="white_80">#ccffffff</color>
 
 
 </resources>

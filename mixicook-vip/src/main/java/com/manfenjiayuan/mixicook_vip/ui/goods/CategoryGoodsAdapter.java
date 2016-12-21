@@ -46,8 +46,7 @@ public class CategoryGoodsAdapter extends RegularAdapter<ScGoodsSku, CategoryGoo
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater.inflate(
-                R.layout.itemview_categorygoods, null, false);
+        View v = mLayoutInflater.inflate(R.layout.itemview_categorygoods, parent, false);
 
        return new MenuOptioinViewHolder(v);
     }

@@ -39,9 +39,12 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -253,6 +256,7 @@ public class PayByAlipayFragment extends BasePayFragment {
         getActivity().registerReceiver(receiver, intentFilter);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayEvent event) {
         int action = event.getAction();
         Bundle extras = event.getArgs();

@@ -56,8 +56,11 @@ public class MsgMgrAdapter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater
-                .inflate(R.layout.cardview_message, parent, false));
+        // Inflate the view for this view holder
+        View view = mLayoutInflater.inflate(R.layout.cardview_message, parent, false);
+        // Call the view holder's constructor, and pass the view to it;
+// return that new view holder
+        return new ProductViewHolder(view);
     }
 
     @Override
@@ -70,10 +73,9 @@ public class MsgMgrAdapter
 //                        .badgeColor(0xFF5722)
                         .badgeColor(ContextCompat.getColor(mContext, R.color.lightskyblue))
                         .build();
-        if (entity.getIsRead() == 1){
+        if (entity.getIsRead() == 1) {
             drawableIsRead.setText1("已读");
-        }
-        else {
+        } else {
             drawableIsRead.setText1("未读");
         }
 
@@ -95,8 +97,8 @@ public class MsgMgrAdapter
                         .text2(IMBizType.name(entity.getBizType()))
                         .build();
         SpannableString badgeBrief = new SpannableString(TextUtils.concat(drawableIsRead.toSpannable(),
-                "  " , TextUtils.concat(drawableTechType.toSpannable(),
-                "  " , drawableBizType.toSpannable())));
+                "  ", TextUtils.concat(drawableTechType.toSpannable(),
+                        "  ", drawableBizType.toSpannable())));
         holder.tvBadge.setText(badgeBrief);
 
         holder.tvId.setText(String.format("编号：%s", entity.getId()));

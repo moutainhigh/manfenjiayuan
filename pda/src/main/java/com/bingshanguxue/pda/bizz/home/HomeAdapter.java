@@ -37,8 +37,7 @@ public class HomeAdapter extends RegularAdapter<HomeMenu, HomeAdapter.MenuOptioi
 
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater.inflate(
-                R.layout.itemview_homemenu, null, false);
+        View v = mLayoutInflater.inflate(R.layout.itemview_homemenu, parent, false);
 //        v.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dip2px(mContext, 105),
 //                DensityUtil.dip2px(mContext, 122)));
 

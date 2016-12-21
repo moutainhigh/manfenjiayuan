@@ -8,17 +8,17 @@ import android.os.Bundle;
  */
 public class AffairEvent {
     public static final int EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER = 0X03;//预定订单更新
-    public static final int EVENT_ID_APPEND_UNREAD_SKU = 0X04;//预定订单更新
+    public static final int EVENT_ID_APPEND_UNREAD_SKU = 0X04;//SKU更新
+    public static final int EVENT_ID_ORDER_TRANS_NOTIFY = 0X05;//SKU更新
 
-    public static final int EVENT_ID_LOCK_POS_CLIENT = 0X05;//锁定POS机器
-    public static final int EVENT_ID_PRE_LOCK_POS_CLIENT = 0X06;//锁定POS机器提示
-    public static final int EVENT_ID_UNLOCK_POS_CLIENT = 0X07;//锁定POS机器
-    public static final int EVENT_ID_RESET_CASHIER = 0X08;//初始化收银
-    public static final int EVENT_ID_CASHIER_FRONTCATA_GOODS = 0X09;//前台类目收银
+    public static final int EVENT_ID_LOCK_POS_CLIENT = 0X15;//锁定POS机器
+    public static final int EVENT_ID_PRE_LOCK_POS_CLIENT = 0X16;//锁定POS机器提示
+    public static final int EVENT_ID_UNLOCK_POS_CLIENT = 0X17;//锁定POS机器
+    public static final int EVENT_ID_RESET_CASHIER = 0X18;//初始化收银
+    public static final int EVENT_ID_CASHIER_FRONTCATA_GOODS = 0X19;//前台类目收银
 
     //同步数据
     public static final int EVENT_ID_FACTORY_DATA_RESET = 0X20;//恢复出厂设置
-    public static final int EVENT_ID_SYNC_DATA_START = 0X21;//同步数据开始
     public static final int EVENT_ID_REDIRECT_TO_LOGIN = 0X11;//跳转至登录页面
 
     //常用商品

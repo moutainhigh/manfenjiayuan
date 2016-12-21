@@ -60,7 +60,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="12sp"
                 app:topText="0.00"
-                app:topTextColor="@color/mfh_colorPrimary"
+                app:topTextColor="@color/colorPrimary"
                 app:topTextSize="24sp"/>
 
             <!--代金券-->
@@ -73,7 +73,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="12sp"
                 app:topText="0.00"
-                app:topTextColor="@color/mfh_colorPrimary"
+                app:topTextColor="@color/colorPrimary"
                 app:topTextSize="24sp"/>
             <!--积分-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
@@ -85,7 +85,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="12sp"
                 app:topText="0.00"
-                app:topTextColor="@color/mfh_colorPrimary"
+                app:topTextColor="@color/colorPrimary"
                 app:topTextSize="24sp"/>
 
             <!--应付金额-->

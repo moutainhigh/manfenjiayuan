@@ -41,6 +41,9 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -275,6 +278,8 @@ public class InvCheckInspectFragment extends PDAScanFragment implements IScGoods
         UIHelper.startActivity(getActivity(), SecondaryActivity.class, extras);
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataSyncService.StockTakeSyncEvent event) {
         ZLogger.d(String.format("StockTakeSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncService.StockTakeSyncEvent.EVENT_ID_SYNC_FINISHED) {

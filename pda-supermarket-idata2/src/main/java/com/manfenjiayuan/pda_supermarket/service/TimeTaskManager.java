@@ -5,6 +5,7 @@ import android.os.Message;
 
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.litecashier.service.DataDownloadManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,7 +25,7 @@ public class TimeTaskManager {
     private static TimeTaskManager instance = null;
 
     /**
-     * 返回 DataSyncManagerImpl 实例
+     * 返回 DataDownloadManager 实例
      *
      * @return
      */
@@ -79,7 +80,7 @@ public class TimeTaskManager {
                 break;
                 case MSG_WHAT_SYNC_POSGOODS: {
                     ZLogger.df("定时任务激活：同步商品库");
-                    DataSyncManagerImpl.get().sync(DataSyncManagerImpl.SYNC_STEP_PRODUCTS);
+                    DataDownloadManager.get().syncProducts();
                 }
                 break;
             }

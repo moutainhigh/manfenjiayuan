@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text="@string/button_login_retrieve_pwd"
-                android:textColor="@color/white_60"
+                android:textColor="@color/material_white_600"
                 android:textSize="12sp"/>
 
             <TextView
@@ -149,7 +149,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text="@string/button_login_signup"
-                android:textColor="@color/white_60"
+                android:textColor="@color/material_white_600"
                 android:textSize="12sp"/>
         </LinearLayout>
     </RelativeLayout>

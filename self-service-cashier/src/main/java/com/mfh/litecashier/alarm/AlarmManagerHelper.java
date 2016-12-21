@@ -79,26 +79,24 @@ public class AlarmManagerHelper {
 
         Intent intent = new Intent(ZIntent.ACTION_DAILYSETTLE);
         intent.setClass(context, DailysettleReceiver.class);
+//        intent.putExtra()
 
         PendingIntent broadcast = PendingIntent.getBroadcast(context, REQUEST_CODE_DAILYSETTLE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        manager.set(AlarmManager.RTC_WAKEUP, trigger.getTimeInMillis(), broadcast);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.set(AlarmManager.RTC_WAKEUP, trigger.getTimeInMillis(), broadcast);//定时，不重复
     }
-
 
     /**
      * 注册Bugly自动检测更新
      * <p/>
-     * <p> 1.程序启动后每隔一小时检测一次<br>
+     * <p> 1.程序启动后每隔12小时检测一次<br>
      * <p/>
      * TODO,在设置中添加取消方法。
      */
     public static void registerBuglyUpgrade(Context context) {
+        // Set the alarm to start at 1:00 a.m.
         Calendar trigger = Calendar.getInstance();
-
-        //第二天凌晨2点钟
 //            trigger.add(Calendar.DAY_OF_MONTH, 1);
         trigger.add(Calendar.HOUR_OF_DAY, 1);
         trigger.set(Calendar.MINUTE, 0);
@@ -115,10 +113,14 @@ public class AlarmManagerHelper {
         Intent intent = new Intent(ZIntent.ACTION_BETA_BUGLY_CHECKUPDATE);
         intent.setClass(context, KeepAlarmLiveReceiver.class);
 
-        PendingIntent broadcast = PendingIntent.getBroadcast(context, REQUEST_CODE_BUGLY_UPGRADE, intent,
+//        PendingIntent broadcast = PendingIntent.getBroadcast(context, REQUEST_CODE_BUGLY_UPGRADE, intent,
+//                FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE_BUGLY_UPGRADE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        manager.set(AlarmManager.RTC_WAKEUP, trigger.getTimeInMillis(), broadcast);
+        // setRepeating() lets you specify a precise custom interval--in this case, 20 minutes.
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, trigger.getTimeInMillis(),
+                AlarmManager.INTERVAL_HALF_DAY, pendingIntent);
     }
 }

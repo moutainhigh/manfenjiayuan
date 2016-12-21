@@ -651,9 +651,7 @@ public class EmbPrintManagerImpl extends EmbPrintManager {
         else{
             esc.addText(String.format("   差额: +%.2f\n", disAmount));
         }
-//        esc.addText(MUtils.formatDouble("差额", ": ", MathCompact.sub(amount, actualAmount), "", null, null));
         esc.addText("\n");
-
 
         /**
          * 打印 结束语

@@ -77,8 +77,7 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private InvSendIoOrderPayDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_pay_invsendioorder, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_pay_invsendioorder, null);
 //        ButterKnife.bind(rootView);
 
         tvHandleAmount = (TextView) rootView.findViewById(R.id.tv_handle_amount);

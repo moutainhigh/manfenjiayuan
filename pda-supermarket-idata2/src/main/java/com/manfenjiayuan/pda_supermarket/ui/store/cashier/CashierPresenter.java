@@ -1,5 +1,6 @@
 package com.manfenjiayuan.pda_supermarket.ui.store.cashier;
 
+import com.manfenjiayuan.business.utils.BarcodeUtils;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosProductEntity;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosProductSkuEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.PosProductSkuService;
@@ -31,7 +32,7 @@ public class CashierPresenter {
         }
 
         //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
-        if (barcode.startsWith("2") && barcode.length() == 13) {
+        if (BarcodeUtils.getType(barcode) == BarcodeUtils.BARCODE_DIGI){
             findFreshGoods(barcode);
             return;
         }

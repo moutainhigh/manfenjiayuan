@@ -13,17 +13,20 @@ import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -96,6 +99,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ScGoodsSkuEvent event) {
         int eventId = event.getEventId();
         Bundle args = event.getArgs();

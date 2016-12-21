@@ -27,8 +27,9 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.StringUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 /**
  * 支付--现金支付

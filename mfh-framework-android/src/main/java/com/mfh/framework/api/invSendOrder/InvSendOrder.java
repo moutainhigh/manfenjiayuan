@@ -1,17 +1,14 @@
 package com.mfh.framework.api.invSendOrder;
 
-import com.mfh.comn.bean.ILongId;
+import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.api.invOrder.InvOrderApi;
-
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 采购单
  * Created by bingshanguxue on 15/9/22.
  */
-public class InvSendOrder implements ILongId, Serializable {
-    private Long id;//订单编号
+public class InvSendOrder extends MfhEntity<Long> {
+//    private Long id;//订单编号
     private Double goodsFee = 0D;//商品金额
 //    private Double transFee = 0D;//配送费
 //    private Double totalFee = 0D;//总金额
@@ -22,7 +19,6 @@ public class InvSendOrder implements ILongId, Serializable {
     private String receiveMobile;//电话
     private String name;//订单名称
     private Double askTotalCount;//订单商品总数
-    private Date createdDate;//下单时间
 
     //发货方信息
     private Long sendNetId;
@@ -30,13 +26,7 @@ public class InvSendOrder implements ILongId, Serializable {
     private String sendCompanyName;//发货方供应商名称
     private Integer isPrivate;//是否是私有供应商
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Double getGoodsFee() {
         return goodsFee;
@@ -108,14 +98,6 @@ public class InvSendOrder implements ILongId, Serializable {
 
     public void setAskTotalCount(Double askTotalCount) {
         this.askTotalCount = askTotalCount;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
     }
 
     public String getStatusCaption() {

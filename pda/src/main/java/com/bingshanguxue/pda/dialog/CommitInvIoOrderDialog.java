@@ -52,8 +52,7 @@ public class CommitInvIoOrderDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private CommitInvIoOrderDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_commit_invioorder, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_commit_invioorder, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

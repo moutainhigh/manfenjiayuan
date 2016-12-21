@@ -59,8 +59,7 @@ public class ScOrderPaymentDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private ScOrderPaymentDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_scorder_payment, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_scorder_payment, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

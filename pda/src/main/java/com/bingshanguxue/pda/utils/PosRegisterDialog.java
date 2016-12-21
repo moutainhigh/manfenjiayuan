@@ -91,8 +91,7 @@ public class PosRegisterDialog extends CommonDialog implements IPosRegisterView 
     @SuppressLint("InflateParams")
     private PosRegisterDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_posregister, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_posregister, null);
 //        ButterKnife.bind(rootView);
 
         mPosRegisterPresenter = new PosRegisterPresenter(this);

@@ -16,7 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
 import com.igexin.sdk.PushManager;
-import com.manfenjiayuan.business.route.Route;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
@@ -108,10 +108,8 @@ public class SplashActivity extends InitActivity {
         DbVersion.setDomainVersion("PDASUPERMARKET.CLIENT.DB.UPGRADE", 0);
     }
 
-    /**
-     * 权限申请
-     */
-    private boolean requestPermissions() {
+    @Override
+    protected ArrayList<String> getRequestPermissions() {
         ArrayList<String> permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.CAMERA);
         permissionsNeeded.add(Manifest.permission.READ_CONTACTS);
@@ -129,29 +127,9 @@ public class SplashActivity extends InitActivity {
         //Storage:文件存储
         permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 //        permissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-
-        List<String> lackPermissions = new ArrayList<>();
-        for (String permission : permissionsNeeded) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                ZLogger.d(getString(R.string.permission_not_granted, permission));
-                lackPermissions.add(permission);
-            }
-        }
-
-        int size = lackPermissions.size();
-        if (size > 0) {
-            String[] permissions = new String[size];
-            for (int i = 0; i < size; i++) {
-                permissions[i] = lackPermissions.get(i);
-            }
-            // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this, permissions, Route.ARC_PERMISSIONS);
-            return false;
-        }
-
-        return true;
+        return permissionsNeeded;
     }
+
 
     @Override
     protected void initComleted() {
@@ -206,7 +184,7 @@ public class SplashActivity extends InitActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Route.ARC_ANDROID_SETTINGS: {
+            case ResultCode.ARC_ANDROID_SETTINGS: {
                 if (data != null) {
                     ZLogger.d(StringUtils.decodeBundle(data.getExtras()));
                 }
@@ -225,52 +203,10 @@ public class SplashActivity extends InitActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
-        if (requestCode == Route.ARC_PERMISSIONS) {
-            // BEGIN_INCLUDE(permission_result)
-            // Received permission result for camera permission.
-            ZLogger.i("Received response for permissions request.");
-
-            // Check if the only required permission has been granted
-            boolean isGrannted = PermissionUtil.verifyPermissions(grantResults);
-            ZLogger.d("isGrannted=" + isGrannted);
-            if (isGrannted) {
-                doAsyncTask();
-            } else {
-                //如果直接再去请求，已经选择"不再提示"的权限会直接返回false,所以这里跳转到设置页面，用户手动去开启。
-                showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
-                        "立刻开启", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
-//                startActivity(intent);
-                                startActivityForResult(intent, Route.ARC_ANDROID_SETTINGS);
-                            }
-                        }, "残忍拒绝", new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                            }
-                        });
-//                MANAGE_APP_PERMISSIONS
-            }
-            // END_INCLUDE(permission_result)
-
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+    protected void onPermissionsGranted() {
+        super.onPermissionsGranted();
+        doAsyncTask();
     }
 
     /**

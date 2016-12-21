@@ -50,6 +50,8 @@ public class ScProductPriceApi {
             params.put("frontCataLogId", String.valueOf(frontCataLogId));
         }
         params.put("priceMask", "0");
+        params.put("includeSub", "true");
+
         if (pageInfo != null) {
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));

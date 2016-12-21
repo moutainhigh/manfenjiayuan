@@ -13,19 +13,22 @@ import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.ScApi;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -86,6 +89,7 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ScGoodsSkuEvent event) {
         int eventId = event.getEventId();
         Bundle args = event.getArgs();
@@ -97,7 +101,6 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
                 reload();
             }
             break;
-
         }
     }
 

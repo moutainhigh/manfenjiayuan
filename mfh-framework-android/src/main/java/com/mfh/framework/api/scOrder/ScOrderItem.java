@@ -10,6 +10,8 @@ import com.mfh.framework.api.constant.PriceType;
 
 public class ScOrderItem extends MfhEntity<Long> {
     private Long skuId;
+
+    private String imgUrl;//图片
     private String productName;//商品名称
     private String unitName;//单位
     private Double bcount;//数量
@@ -22,6 +24,14 @@ public class ScOrderItem extends MfhEntity<Long> {
 
     //以下字段为app新增字段
     private Double quantityCheck;
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     public Long getSkuId() {
         return skuId;

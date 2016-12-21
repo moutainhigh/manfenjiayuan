@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.pda.ValidateManager;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
@@ -17,20 +18,19 @@ import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
 import com.manfenjiayuan.pda_supermarket.ui.MainActivity;
-import com.mfh.framework.core.utils.NotificationUtils;
-import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
+import com.mfh.framework.core.utils.NotificationUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.tencent.bugly.beta.Beta;
 
-import java.util.Calendar;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Date;
 
-import de.greenrobot.event.EventBus;
 
 /**
  * 应用未启动, 个推 service已经被唤醒,保存在该时间段内离线消息
@@ -216,24 +216,10 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 ZLogger.df("消息无效: time＝null");
                 return;
             }
-
-            Calendar msgTrigger = Calendar.getInstance();
-            msgTrigger.setTime(createTime);
-
-            Calendar minTrigger = Calendar.getInstance();
-            minTrigger.add(Calendar.HOUR_OF_DAY, -1);
-            if (minTrigger.after(msgTrigger)) {
-                ZLogger.df(String.format("消息过期--当前时间:%s,消息创建时间:%s",
-                        TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                        TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-                return;
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
+            if (count > 0){
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
             }
-
-            ZLogger.df(String.format("SKU更新--当前时间:%s,消息创建时间:%s",
-                    TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                    TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
         }
         //买手抢单组货
         else if (IMBizType.ORDER_TRANS_NOTIFY == bizType) {
@@ -261,6 +247,9 @@ public class PushDemoReceiver extends BroadcastReceiver {
             }
         } else if (IMBizType.REMOTE_CONTROL_CMD == bizType) {
             responseRemoteControl(JSONObject.parseObject(content));
+        } else if (IMBizType.ABILITY_UPDATED == bizType) {
+            EventBus.getDefault().post(new ValidateManager.ValidateManagerEvent(
+                    ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN, new Bundle()));
         }
     }
 

@@ -18,8 +18,11 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.QrCodeUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -97,6 +100,7 @@ public class ScOrderBarcodeFragment extends BaseFragment {
     /**
      * 验证
      */
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(ScOrderEvent event) {
         int eventId = event.getEventId();
         Bundle args = event.getArgs();

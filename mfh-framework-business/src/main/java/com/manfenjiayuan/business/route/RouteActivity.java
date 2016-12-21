@@ -13,12 +13,13 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.base.ResultCode;
 
 /**
  * 路由
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class RouteActivity extends BaseActivity implements Route, BackHandledInterface {
+public class RouteActivity extends BaseActivity implements ResultCode, BackHandledInterface {
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
     public static final int FT_APP_HOSTSERVER = 0x01;//选择平台租户

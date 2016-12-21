@@ -50,7 +50,6 @@ public class ScOrderApiImpl extends ScOrderApi{
      * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手
      * @param id 订单编号
      * @param jsonStr 订单明细
-     *
      */
     public static void updateCommitInfo(Long id, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
@@ -61,7 +60,6 @@ public class ScOrderApiImpl extends ScOrderApi{
         AfinalFactory.postDefault(URL_UPDATECOMMITINFO, params, responseCallback);
     }
 
-
     /**
      * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手
      * @param orderId 订单编号
@@ -69,7 +67,8 @@ public class ScOrderApiImpl extends ScOrderApi{
      * @param transHumanId 骑手编号,可以为空
      *
      */
-    public static void prepareOrder(Long orderId, Long buyerId, Long transHumanId, AjaxCallBack<? extends Object> responseCallback) {
+    public static void prepareOrder(Long orderId, Long buyerId, Long transHumanId,
+                                    AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("orderId", String.valueOf(orderId));
         if (buyerId != null){

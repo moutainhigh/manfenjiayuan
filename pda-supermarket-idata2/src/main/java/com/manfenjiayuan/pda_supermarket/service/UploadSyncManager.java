@@ -15,10 +15,11 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Date;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 
 /**
  * 上传数据，确保POS机数据能正确的上传到云端
@@ -37,7 +38,7 @@ public class UploadSyncManager extends OrderSyncManager {
     private static UploadSyncManager instance = null;
 
     /**
-     * 返回 DataSyncManagerImpl 实例
+     * 返回 DataDownloadManager 实例
      *
      * @return
      */

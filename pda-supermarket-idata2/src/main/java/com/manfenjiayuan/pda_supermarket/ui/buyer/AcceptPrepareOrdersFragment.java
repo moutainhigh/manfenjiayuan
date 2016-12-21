@@ -10,9 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
+import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.view.IScOrderView;
 import com.manfenjiayuan.pda_supermarket.R;
@@ -36,12 +36,13 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -93,9 +94,6 @@ public class AcceptPrepareOrdersFragment extends BaseFragment implements IScOrde
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        //清空签收数据库
-//        InvRecvGoodsService.get().clear();
 
         mScOrderPresenter = new ScOrderPresenter(this);
     }

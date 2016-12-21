@@ -9,7 +9,7 @@ import me.drakeet.multitype.MultiTypePool;
  */
 
 public class MultiTypeInstaller {
-    public static void start() {
+    public static void register() {
         MultiTypePool.register(Card1.class, new Card1ViewProvider());
         MultiTypePool.register(StoreRackCard.class, new Card2ViewProvider());
         MultiTypePool.register(Card6.class, new Card6ViewProvider());

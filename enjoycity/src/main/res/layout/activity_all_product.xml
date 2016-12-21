@@ -55,7 +55,6 @@
         </LinearLayout>
 
 
-
         <com.mfh.enjoycity.view.FloatShopcartView
             android:id="@+id/fab_shopcart"
             android:layout_width="wrap_content"

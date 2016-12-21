@@ -52,7 +52,7 @@ import java.net.UnknownHostException;
 
 public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> implements EntityCallBack {
 
-    public static final String JSESSIONID = "JSESSIONID";//传给服务器的会话Id
+    public static final String PARAM_JSESSIONID = "JSESSIONID";//传给服务器的会话Id
     public static final String POST = "POST";
     public static final String GET = "GET";
     private static final int MAX_RETRY_TIMES = 0;//最大重试MAX_RETRY_TIMES次
@@ -179,7 +179,7 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
 //                        break;
                     }
                     else{
-                        String cookie = String.format("%s=%s", FinalHttp.KEY_JSESSIONID, newSid);
+                        String cookie = String.format("%s=%s", PARAM_JSESSIONID, newSid);
                         request.addHeader(FinalHttp.HEADER_SET_COOKIE, cookie);
                         request.addHeader(FinalHttp.HEADER_COOKIE, cookie);
                         request.addHeader(FinalHttp.HEADER_cookie, cookie);
@@ -188,14 +188,14 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
 
                         if (requestMethod.equals(POST)){
 //                        //修改Entity中的JSSIONID字段
-                            String newParams = replaceParam(requestParams.toString(), JSESSIONID, newSid);
+                            String newParams = replaceParam(requestParams.toString(), PARAM_JSESSIONID, newSid);
 //                            HttpEntity entity = new StringEntity(newParams);
                             HttpEntity entity = convertToAjaxParams(newParams).getEntity();
                             ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
                         }
                         else if(requestMethod.equals(GET)){
                             //修改URL中的JSSIONID字段
-                            String newRequestUrl = replaceParam(requestUrl, JSESSIONID, newSid);
+                            String newRequestUrl = replaceParam(requestUrl, PARAM_JSESSIONID, newSid);
 //                            newRequestUrl = replaceParam(newRequestUrl, "lastupdate", "0");
                             URI uri = new URI(newRequestUrl);
 //                            Log.d("Nat: makeRequestWithRetries.autoLogin.URI", uri.toString());
@@ -388,7 +388,8 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
             if(status.getStatusCode() == 416 && isResume){
                 errorMsg += " \n maybe you have download complete.";
             }
-            publishProgress(UPDATE_FAILURE, new HttpResponseException(status.getStatusCode(), status.getReasonPhrase()),errorMsg);
+            publishProgress(UPDATE_FAILURE, new HttpResponseException(status.getStatusCode(),
+                    status.getReasonPhrase()),errorMsg);
         } else {
             try {
                 HttpEntity entity = response.getEntity();
@@ -401,9 +402,12 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
                     else{
                         responseBody = mStrEntityHandler.handleEntity(entity,this,charset);
                     }
-
+                    publishProgress(UPDATE_SUCCESS,responseBody);
                 }
-                publishProgress(UPDATE_SUCCESS,responseBody);
+                else{
+                    ZLogger.d("response.getEntity() 返回空");
+                    publishProgress(UPDATE_SUCCESS,responseBody);
+                }
 
             } catch (IOException e) {
                 publishProgress(UPDATE_FAILURE,e,e.getMessage());

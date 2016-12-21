@@ -140,7 +140,6 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder>
         orderAdapter.setOnAdapterListener(new ScOrderAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //TODO,跳转至详情页
                 Bundle extras = new Bundle();
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
                 extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVFIND_CREATE);

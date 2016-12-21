@@ -58,8 +58,7 @@ public class DateTimePickerDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private DateTimePickerDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_datetime_picker, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_datetime_picker, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

@@ -10,20 +10,21 @@ import com.mfh.framework.api.constant.PriceType;
  * POS--商品--库存
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="tb_pos_procuct_v1")
-public class PosProductEntity extends MfhEntity<Long> implements ILongId{
+@Table(name = "tb_pos_procuct_v1")
+public class PosProductEntity extends MfhEntity<Long> implements ILongId {
     //SPU:Standard Product Unit
 //    private Long id;//最小商品库存单元编号
     private Long productId; //产品spu编号
     private String name = "";    // 商品名称
-    private String namePinyin = "";//拼音
+    private String namePinyin = "";//全拼
+    private String abbreviation = "";//拼音缩写
     private String nameSortLetter = "";//排序字段
 
     //SKU:Stock Keeping Unit
     private Long proSkuId;  //产品sku编号
     private String barcode = ""; //最小商品库存单元的条形码
     private Integer priceType = PriceType.PIECE;//价格类型0-计件 1-计重
-    private Double costPrice    = 0D;  // 商品价格
+    private Double costPrice = 0D;  // 商品价格
     private String unit = "";    // 单位，如箱、瓶
     private Double packageNum = 0D;//箱规
 
@@ -35,7 +36,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     /**
      * 当云端下架或删除一个商品时，并未真正删除商品，而是相当于把status修改成0。
      * 如果是物理删除目前没有办法增量同步到pos端。pos端下单时需要自行判断注意只有status=1的商品才能购买
-     *
+     * <p>
      * 2016-11-04, 门店商品状态，决定线上能否购买,线下收银不作限制：1-有效，默认，0-无效
      */
     private Integer status = 1;
@@ -48,7 +49,9 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     private Integer prodLineId = 0;
 
 
-    /**是否和云端同步:默认1同步，0不同步*/
+    /**
+     * 是否和云端同步:默认1同步，0不同步
+     */
     private int isCloudActive = 1;
 
     public Long getProSkuId() {
@@ -84,7 +87,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public String getNamePinyin() {
-        if (namePinyin == null){
+        if (namePinyin == null) {
             return "";
         }
         return namePinyin;
@@ -94,9 +97,16 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
         this.namePinyin = namePinyin;
     }
 
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
 
     public String getNameSortLetter() {
-        if (nameSortLetter == null){
+        if (nameSortLetter == null) {
             return "";
         }
         return nameSortLetter;
@@ -107,7 +117,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public String getUnit() {
-        if (unit == null){
+        if (unit == null) {
             return "";
         }
         return unit;
@@ -119,7 +129,8 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
 
 
     /**
-     * 价格为空时需要手动补充*/
+     * 价格为空时需要手动补充
+     */
     public Double getCostPrice() {
         return costPrice;
     }
@@ -153,7 +164,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Integer getStatus() {
-        if (status == null){
+        if (status == null) {
             return 1;
         }
         return status;
@@ -164,7 +175,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Integer getPriceType() {
-        if (priceType == null){
+        if (priceType == null) {
             return PriceType.PIECE;
         }
         return priceType;
@@ -175,7 +186,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Double getPackageNum() {
-        if(packageNum == null){
+        if (packageNum == null) {
             return 0D;
         }
         return packageNum;
@@ -202,7 +213,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId{
     }
 
     public Integer getProdLineId() {
-        if (procateId == null){
+        if (procateId == null) {
             return 0;
         }
         return prodLineId;

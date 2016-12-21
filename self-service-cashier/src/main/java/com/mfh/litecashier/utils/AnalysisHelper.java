@@ -10,27 +10,19 @@ package com.mfh.litecashier.utils;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.database.service.PosOrderPayService;
-import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.bean.AccItem;
 import com.mfh.litecashier.bean.AggItem;
-import com.mfh.litecashier.bean.wrapper.AccWrapper;
-import com.mfh.litecashier.bean.wrapper.AggWrapper;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
-import com.mfh.litecashier.bean.wrapper.HandOverBill;
-import com.bingshanguxue.cashier.database.entity.DailysettleEntity;
-import com.bingshanguxue.cashier.database.service.DailysettleService;
+import com.mfh.litecashier.ui.fragment.dailysettle.DailysettleInfo;
+import com.mfh.litecashier.ui.fragment.dailysettle.HandOverBill;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +73,7 @@ public class AnalysisHelper {
      * 创建日结单
      * @param dailySettleDatetime 日结日期
      * */
-    public static DailysettleEntity createDailysettle(String dailySettleDatetime){
+    public static DailysettleInfo createDailysettle(String dailySettleDatetime){
         //判断日结日期
         Date dailySettleDate = new Date();//日结日期
         if (!StringUtils.isEmpty(dailySettleDatetime)){
@@ -99,79 +91,19 @@ public class AnalysisHelper {
      * 创建日结单
      * @param dailySettleDate 日结日期
      * */
-    public static DailysettleEntity createDailysettle(Date dailySettleDate){
-        //查找日结订单
-        String barcode = MUtils.genDateBarcode(BizType.DAILYSETTLE,
-                dailySettleDate, "yyyyMMdd");
-        List<DailysettleEntity> entityList  = DailysettleService.get()
-                .queryAllDesc(String.format(Locale.getDefault(),
-                        "officeId = '%d' and barCode = '%s'",
-                        MfhLoginService.get().getCurOfficeId(), barcode), null);
+    public static DailysettleInfo createDailysettle(Date dailySettleDate){
+        DailysettleInfo dailysettleInfo = new DailysettleInfo();
 
-        DailysettleEntity dailysettleEntity;
-        if (entityList != null && entityList.size() > 0){
-            dailysettleEntity = entityList.get(0);
-            if (dailysettleEntity.getConfirmStatus() == DailysettleEntity.CONFIRM_STATUS_NO){
-                dailysettleEntity.setDailysettleDate(dailySettleDate);
-                dailysettleEntity.setUpdatedDate(new Date());
-            }
-        }
-        else{
-            dailysettleEntity = new DailysettleEntity();
-            dailysettleEntity.setBarCode(barcode);
-            dailysettleEntity.setCreatedDate(new Date());
-            dailysettleEntity.setUpdatedDate(new Date());
-            dailysettleEntity.setDailysettleDate(dailySettleDate);//日结日期
-            dailysettleEntity.setOfficeId(MfhLoginService.get().getCurOfficeId());
-            dailysettleEntity.setOfficeName(MfhLoginService.get().getCurOfficeName());
-            dailysettleEntity.setHumanName(MfhLoginService.get().getHumanName());
-        }
+        dailysettleInfo.setCreatedDate(dailySettleDate);//日结日期
+        dailysettleInfo.setUpdatedDate(new Date());
+        dailysettleInfo.setOfficeId(MfhLoginService.get().getCurOfficeId());
+        dailysettleInfo.setOfficeName(MfhLoginService.get().getCurOfficeName());
+        dailysettleInfo.setHumanName(MfhLoginService.get().getHumanName());
 
-        DailysettleService.get().saveOrUpdate(dailysettleEntity);
-        ZLogger.df(String.format("新建or更新日结单：%s\n%s",
-                barcode, JSON.toJSONString(dailysettleEntity)));
+        ZLogger.df(String.format("新建or更新日结单:\n%s",
+                JSON.toJSONString(dailysettleInfo)));
 
-        return dailysettleEntity;
-    }
-
-    /**
-     * 删除订单,同时删除对应订单的商品明细和支付记录
-     *
-     * @param orderEntity 订单
-     */
-    public static void deleteDailysettle(DailysettleEntity orderEntity){
-        if (orderEntity == null){
-            return;
-        }
-        DailysettleService.get().deleteById(String.valueOf(orderEntity.getId()));
-        //删除支付记录
-        PosOrderPayService.get().deleteBy(String.format(Locale.getDefault(),
-                "orderId = '%d'", orderEntity.getId()));
-    }
-
-    /**
-     * 清除旧数据
-     *
-     * @param saveDate 保存的天数
-     */
-    public static void deleteOldDailysettle(int saveDate) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 0 - saveDate);//
-        String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
-        ZLogger.d(String.format("日结过期时间(%s)保留最近30天数据。", expireCursor));
-
-        List<DailysettleEntity> entityList = DailysettleService.get()
-                .queryAllBy(String.format("updatedDate < '%s'", expireCursor));
-        if (entityList != null && entityList.size() > 0) {
-            for (DailysettleEntity entity : entityList) {
-                deleteDailysettle(entity);
-            }
-            ZLogger.d(String.format("清除过期结数据(%s)。", expireCursor));
-
-        } else {
-            ZLogger.d(String.format("暂无过期结数据需要清除(%s)。", expireCursor));
-        }
+        return dailysettleInfo;
     }
 
     private static AnalysisItemWrapper translateAggItem(AggItem aggItem){
@@ -197,138 +129,51 @@ public class AnalysisHelper {
     /**
      * 获取经营分析数据
      * */
-    public static List<AnalysisItemWrapper> getAggItemsWrapper(DailysettleEntity dailysettleEntity){
-        if (dailysettleEntity == null){
+    public static List<AnalysisItemWrapper> getAggItemsWrapper(DailysettleInfo dailysettleInfo){
+        if (dailysettleInfo == null){
             return null;
         }
 
-        AggWrapper aggWrapper = JSONObject.toJavaObject(JSON.parseObject(dailysettleEntity.getAggData()), AggWrapper.class);
-
-        return getAggAnalysisList(aggWrapper);
-
+        return getAggItemsWrapper(dailysettleInfo.getAggItems());
     }
 
-    public static List<AnalysisItemWrapper> getAggAnalysisList(AggWrapper aggWrapper){
-        if (aggWrapper == null){
-            aggWrapper = new AggWrapper();
-        }
-
+    public static List<AnalysisItemWrapper> getAggItemsWrapper(List<AggItem> aggItems){
         List<AnalysisItemWrapper> items = new ArrayList<>();
 
-        List<AggItem> posItems = aggWrapper.getPosItems();
-        if (posItems != null && posItems.size() > 0){
-            for (AggItem aggItem : posItems){
+        if (aggItems != null && aggItems.size() > 0){
+            for (AggItem aggItem : aggItems){
                 items.add(translateAggItem(aggItem));
             }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("社区超市"));
-        }
-        List<AggItem> scItems = aggWrapper.getScItems();
-        if (scItems != null && scItems.size() > 0){
-            for (AggItem aggItem : scItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("线上订单"));
-        }
-        List<AggItem> laundryItems = aggWrapper.getLaundryItems();
-        if (laundryItems != null && laundryItems.size() > 0){
-            for (AggItem aggItem : laundryItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("衣物洗护"));
-        }
-        List<AggItem> pijuItems = aggWrapper.getPijuItems();
-        if (pijuItems != null && pijuItems.size() > 0){
-            for (AggItem aggItem : pijuItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("皮具护理"));
-        }
-
-        List<AggItem> stockItems = aggWrapper.getStockItems();
-        if (stockItems != null && stockItems.size() > 0){
-            for (AggItem aggItem : stockItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("快递代收"));
-        }
-        List<AggItem> sendItems = aggWrapper.getSendItems();
-        if (sendItems != null && sendItems.size() > 0){
-            for (AggItem aggItem : sendItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("快递代揽"));
-        }
-        List<AggItem> rechargeItems = aggWrapper.getRechargeItems();
-        if (rechargeItems != null && rechargeItems.size() > 0){
-            for (AggItem aggItem : rechargeItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-        else{
-            items.add(genDefaultAnalysisItemWrapper("转账充值"));
         }
 
         return items;
     }
 
-    public static AnalysisItemWrapper accItem2AnalysisItemWrapper(AccItem accItem){
-        AnalysisItemWrapper item = new AnalysisItemWrapper();
-        item.setCaption(accItem.getPayTypeCaption());
-        item.setTurnover(accItem.getAmount());
-        item.setOrderNum(accItem.getOrderNum());
-        item.setIsShowIndex(true);
-        return item;
-    }
-
-    public static List<AnalysisItemWrapper> getAccAnalysisList(AccWrapper accWrapper){
-        if (accWrapper == null){
-            accWrapper = new AccWrapper();
-            accWrapper.initialize(null);
-        }
-
+    public static List<AnalysisItemWrapper> getAccAnalysisList( List<AccItem> accItems){
         List<AnalysisItemWrapper> items = new ArrayList<>();
 
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getCash()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getAlipay()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getWx()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getAccount()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getBank()));
-        items.add(accItem2AnalysisItemWrapper(accWrapper.getRule()));
+        if (accItems != null && accItems.size() > 0){
+            for (AccItem accItem : accItems){
+                AnalysisItemWrapper item = new AnalysisItemWrapper();
+                item.setCaption(accItem.getPayTypeCaption());
+                item.setTurnover(accItem.getAmount());
+                item.setOrderNum(accItem.getOrderNum());
+                item.setIsShowIndex(true);
+                items.add(item);
+            }
+        }
         return items;
     }
 
     /**
      * 获取流水分析数据
      * */
-    public static List<AnalysisItemWrapper> getAccItemsWrapper(DailysettleEntity dailysettleEntity){
-        if (dailysettleEntity == null){
+    public static List<AnalysisItemWrapper> getAccItemsWrapper(DailysettleInfo dailysettleInfo){
+        if (dailysettleInfo == null){
             return null;
         }
 
-        AccWrapper accWrapper = JSON.toJavaObject(JSON.parseObject(dailysettleEntity.getAccData()),
-                AccWrapper.class);
-
-        return getAccAnalysisList(accWrapper);
+        return getAccAnalysisList(dailysettleInfo.getAccItems());
     }
-
-    public static AccItem generateAccItem(Integer payType, String payTypeCaption) {
-        AccItem accItem = new AccItem();
-        accItem.setPayType(payType);
-        accItem.setPayTypeCaption(payTypeCaption);
-        return accItem;
-    }
-
 
 }

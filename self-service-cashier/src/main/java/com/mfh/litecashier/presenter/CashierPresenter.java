@@ -5,6 +5,7 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.mode.CashierMode;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
+import com.manfenjiayuan.business.utils.BarcodeUtils;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
@@ -38,7 +39,7 @@ public class CashierPresenter {
         }
 
         //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
-        if (barcode.startsWith("2") && barcode.length() == 13) {
+        if (BarcodeUtils.getType(barcode) == BarcodeUtils.BARCODE_DIGI){
             findFreshGoods(barcode);
             return;
         }
@@ -157,10 +158,6 @@ public class CashierPresenter {
         if (SharedPrefesManagerFactory.isSuperPermissionGranted() && !BizConfig.RELEASE) {
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
                     "注册", R.mipmap.ic_service_register_vip));
-            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_GOODS_LIST,
-                    "商品列表", R.mipmap.ic_service_goodslist));
-            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_FEEDPAPER,
-                    "走纸", R.mipmap.ic_service_feedpaper));
 //            functionalList.add(CashierFunctional.generate(ResMenu.CASHIER_MENU_PACKAGE,
 //                    "包裹", R.mipmap.ic_service_package));
         }

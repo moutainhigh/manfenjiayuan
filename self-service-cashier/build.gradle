@@ -59,16 +59,16 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 322
+        versionCode 332
 
         // Defines a user-friendly version name for your app.
-        versionName "1.22.3"
+        versionName "1.22.5"
 
         multiDexEnabled true
 
         ndk {
             //设置支持的SO库架构
-            abiFilters 'armeabi' , 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi' , 'armeabi-v7a'
         }
 
         manifestPlaceholders = [
@@ -102,6 +102,7 @@ android {
          */
         release {
 //            buildConfigField "boolean", "LOG_DEBUG", "false"//是否输出LOG信息
+            // Enables code shrinking for the release build type.
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
@@ -197,9 +198,10 @@ dependencies {
     //    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 //    compile project(':im')
     compile project(':cashier')
-    compile rootProject.ext.dependencies["rxjava"]
-    compile rootProject.ext.dependencies["rxandroid"]
     compile rootProject.ext.dependencies["bugly_crash_upgrade"]
     compile rootProject.ext.dependencies["butterknife"]
     apt rootProject.ext.dependencies["butterknife-compiler"]
+    compile rootProject.ext.dependencies["getui"]
+//    compile 'me.drakeet.multitype:multitype:2.0.0'
+
 }

@@ -13,13 +13,14 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
-import com.mfh.litecashier.ui.fragment.components.DailySettleFragment;
+import com.mfh.litecashier.ui.fragment.dailysettle.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
-import com.mfh.litecashier.ui.fragment.components.HandoverFragment;
+import com.mfh.litecashier.ui.fragment.dailysettle.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
 import com.mfh.litecashier.ui.fragment.pay.PayHistoryFragment;
+import com.mfh.litecashier.ui.fragment.prepareorder.PrepareAbleOrdersFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment;
@@ -35,8 +36,8 @@ import butterknife.BindView;
 public class SimpleDialogActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "serviceType";
 
-    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x21;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x22;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x01;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x02;//采购商品－新增商品
     public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x03;//选择收货单
     public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x04;//采购商品详情
     public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x05;//选择批发商&门店
@@ -48,6 +49,8 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FT_EXCHANGE_SCORE = 0x11;//积分兑换
 
     public static final int FT_TENANT_POSCATEGORYLIST = 0x12;//租户pos前台类目
+
+    public static final int FT_PREPAREABLE_ORDER                  = 0x21;//买手接单
 
 
     private int serviceType = 0;
@@ -303,6 +306,20 @@ public class SimpleDialogActivity extends BaseActivity {
                     fragment = TenantCategoryListFragment.newInstance(intent.getExtras());
                 } else {
                     fragment = TenantCategoryListFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+
+            case FT_PREPAREABLE_ORDER:{
+                PrepareAbleOrdersFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = PrepareAbleOrdersFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = PrepareAbleOrdersFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)

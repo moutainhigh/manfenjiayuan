@@ -1,14 +1,19 @@
 package com.mfh.framework.uikit.base;
 
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,8 +25,12 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.location.MfLocationManagerProxy;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -256,6 +265,129 @@ public class BaseActivity extends AppCompatActivity {
         activityStyle2.recycle();
     }
 
+
+    /**
+     * 获取权限后执行下一步操作
+     * */
+    protected void onPermissionsGranted(){}
+
+    /**
+     * 权限缺失，部分权限没有开启。可以引导用户手动去开启（推荐），也可以在使用中动态申请。
+     * */
+    protected void onPermissionsInsufficient(){
+        showConfirmDialog("应用需要相关权限才能正常使用，请在设置中开启",
+                "立刻开启", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        intent.setData(Uri.parse("package:" + getPackageName())); // 根据包名打开对应的设置界面
+//                startActivity(intent);
+                        startActivityForResult(intent, ResultCode.ARC_ANDROID_SETTINGS);
+                    }
+                }, "残忍拒绝", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+    }
+
+    /**
+     * 获取需要申请的权限，主要需要在AndroidManifest.xml文件中声明权限
+     * */
+    protected ArrayList<String> getRequestPermissions(){
+        ArrayList<String> permissionsNeeded = new ArrayList<>();
+        //Camera
+        permissionsNeeded.add(Manifest.permission.CAMERA);
+        //Contact
+        permissionsNeeded.add(Manifest.permission.READ_CONTACTS);
+        //Location:位置服务
+        permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+//        expectPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        //MicroPhone:录音
+        permissionsNeeded.add(Manifest.permission.RECORD_AUDIO);
+        //Phone:拨打电话
+        permissionsNeeded.add(Manifest.permission.CALL_PHONE);
+//        expectPermissions.add(Manifest.permission.READ_PHONE_STATE);
+        //SMS:短信
+        permissionsNeeded.add(Manifest.permission.RECEIVE_SMS);
+//        expectPermissions.add(Manifest.permission.READ_SMS);
+        //Storage:文件存储
+        permissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+//        expectPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        return permissionsNeeded;
+    }
+
+    /**
+     * 权限申请
+     *
+     * <li>如果同一组的任何一个权限被授权了，其他权限也自动被授权</li>
+     */
+    protected void requestPermissions() {
+        ArrayList<String> permissionsNeeded = getRequestPermissions();
+
+        List<String> lackPermissions = new ArrayList<>();
+        for (String permission : permissionsNeeded) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                ZLogger.d(String.format("权限[%s]未开启", permission));
+                lackPermissions.add(permission);
+            }
+        }
+
+        int size = lackPermissions.size();
+        if (size > 0) {
+            String[] permissions = new String[size];
+            for (int i = 0; i < size; i++) {
+                permissions[i] = lackPermissions.get(i);
+            }
+            // Camera permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions(this, permissions, ResultCode.ARC_PERMISSIONS);
+        }
+        else{
+            onPermissionsGranted();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == ResultCode.ARC_PERMISSIONS) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+            ZLogger.i("Received response for permissions request.");
+
+            // Check if the only required permission has been granted
+            boolean isGranted = PermissionUtil.verifyPermissions(grantResults);
+            ZLogger.d("isGranted=" + isGranted);
+            if (isGranted) {
+                onPermissionsGranted();
+            } else {
+                onPermissionsInsufficient();
+            }
+            // END_INCLUDE(permission_result)
+
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ResultCode.ARC_ANDROID_SETTINGS: {
+                //从设置页返回后重新检查权限
+                requestPermissions();
+            }
+            break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     /**
      * 初始化定位

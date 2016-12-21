@@ -68,7 +68,7 @@
             android:drawableStart="@mipmap/icon_searchthing"
             android:gravity="center"
             android:text="搜索其他小区"
-            android:textColor="@color/mfh_colorPrimary"
+            android:textColor="@color/colorPrimary"
             android:textSize="12sp"
             android:visibility="gone"/>
 
@@ -82,7 +82,7 @@
             android:drawableStart="@mipmap/icon_searchthing"
             android:gravity="center"
             android:text="添加新地址"
-            android:textColor="@color/mfh_colorPrimary"
+            android:textColor="@color/colorPrimary"
             android:textSize="12sp"
             android:visibility="gone"/>
     </LinearLayout>

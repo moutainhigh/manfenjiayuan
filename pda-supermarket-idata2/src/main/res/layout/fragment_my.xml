@@ -29,7 +29,7 @@
                 app:subTextSize="16sp"
                 app:textSize="16sp"
                 app:endArrowVisible="false"
-                android:background="@color/mfh_colorPrimary"/>
+                android:background="@color/colorPrimary"/>
 
             <!--摄像头扫描-->
             <com.bingshanguxue.vector_uikit.ToggleSettingItem

@@ -64,8 +64,7 @@ public class GreenTagsSettingsDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private GreenTagsSettingsDialog(Context context, int defStyle) {
         super(context, defStyle);
-        rootView = getLayoutInflater().inflate(
-                R.layout.dialogview_greentags_settings, null);
+        rootView = getLayoutInflater().inflate(R.layout.dialogview_greentags_settings, null);
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);

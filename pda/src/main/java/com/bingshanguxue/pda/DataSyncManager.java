@@ -19,6 +19,9 @@ import java.util.Date;
  * Created by bingshanguxue on 5/27/16.
  */
 public class DataSyncManager {
+    public static final int MAX_SYNC_PAGESIZE = 40;
+
+
     private static DataSyncManager instance = null;
 
     /**
@@ -50,8 +53,8 @@ public class DataSyncManager {
         };
         EmbMsgService msgService = ServiceFactory.getService(EmbMsgService.class,
                 MfhApplication.getAppContext());
-        msgService.sendText(MfhLoginService.get().getCurrentGuId(),
-                MfhLoginService.get().getCurrentGuId(), null, null,
+        msgService.sendText(MfhLoginService.get().getGuidLong(),
+                MfhLoginService.get().getGuidLong(), null, null,
                 IMBizType.TENANT_SKU_UPDATE, "update sku", processor);
     }
 

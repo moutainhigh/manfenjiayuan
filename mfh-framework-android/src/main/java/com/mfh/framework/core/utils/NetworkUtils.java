@@ -81,13 +81,14 @@ public class NetworkUtils {
     }
 
     /**
-     * 互联网连接的类型
+     * Check whether the device is connected, and if so, whether the connection
+     * is wifi or mobile (it could be something else).
      */
     public static String getNetworkType(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
-        if (info == null) {
+        if (info == null || !info.isConnected()) {
             return null;
         }
 

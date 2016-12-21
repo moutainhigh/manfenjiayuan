@@ -336,15 +336,37 @@
 
     <!--Material Color : Black-->
     <color name="material_black">#000000</color>
-    <color name="material_black_A80">#32000000</color>
-    <color name="material_black_A100">#64000000</color>
-    <color name="material_black_A150">#96000000</color>
-    <color name="material_black_A200">#c8000000</color>
-    <color name="material_black_hint">#26000000</color>
+    <color name="material_black_50">#858585</color>
+    <color name="material_black_100">#5E5E5E</color>
+    <color name="material_black_200">#424242</color>
+    <color name="material_black_300">#1F1F1F</color>
+    <color name="material_black_400">#0F0F0F</color>
+    <color name="material_black_500">#000000</color>
+    <color name="material_black_600">#000000</color>
+    <color name="material_black_700">#000000</color>
+    <color name="material_black_800">#000000</color>
+    <color name="material_black_900">#000000</color>
+    <color name="material_black_A100">#858585</color>
+    <color name="material_black_A200">#5E5E5E</color>
+    <color name="material_black_A400">#0F0F0F</color>
+    <color name="material_black_A700">#000000</color>
 
-    <!--Material Color : White-->
+    <!--Material Color : White(白色) -->
     <color name="material_white">#FFFFFF</color>
-    <!--白色 -->
+    <color name="material_white_50">#FFFFFF</color>
+    <color name="material_white_100">#FFFFFF</color>
+    <color name="material_white_200">#FFFFFF</color>
+    <color name="material_white_300">#FFFFFF</color>
+    <color name="material_white_400">#FFFFFF</color>
+    <color name="material_white_500">#FFFFFF</color>
+    <color name="material_white_600">#F0F0F0</color>
+    <color name="material_white_700">#E0E0E0</color>
+    <color name="material_white_800">#D1D1D1</color>
+    <color name="material_white_900">#C2C2C2</color>
+    <color name="material_white_A100">#FFFFFF</color>
+    <color name="material_white_A200">#FFFFFF</color>
+    <color name="material_white_A400">#FFFFFF</color>
+    <color name="material_white_A700">#E0E0E0</color>
 
 
 </resources>

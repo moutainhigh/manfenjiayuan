@@ -1,7 +1,7 @@
 <resources>
 
     <!-- application theme 日间模式 -->
-    <style name="AppBaseTheme_Light" parent="MfhNoActionBarAppTheme">
+    <style name="AppBaseTheme_Light" parent="MfhTheme">
         <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
         <item name="android:statusBarColor">@color/material_green_500</item>
     </style>

@@ -34,13 +34,13 @@ import org.century.GreenTagsSettingsDialog;
 import org.century.schemas.GoodsInfoEX;
 import org.century.schemas.ReaderInfoEX;
 import org.century.schemas.TagInfoEX;
+import org.greenrobot.eventbus.EventBus;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 
 /**

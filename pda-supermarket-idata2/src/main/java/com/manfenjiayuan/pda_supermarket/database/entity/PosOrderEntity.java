@@ -3,7 +3,7 @@ package com.manfenjiayuan.pda_supermarket.database.entity;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.abs.MfhEntity;
-import com.mfh.framework.api.constant.BizSubType;
+import com.mfh.framework.api.constant.PosType;
 
 /**
  * POS--订单销售流水
@@ -246,7 +246,7 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
     public Integer getSubType() {
         if (subType == null) {
-            return BizSubType.POS_STANDARD;
+            return PosType.POS_STANDARD;
         }
         return subType;
     }

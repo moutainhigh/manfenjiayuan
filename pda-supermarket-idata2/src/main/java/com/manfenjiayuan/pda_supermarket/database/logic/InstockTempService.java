@@ -130,14 +130,14 @@ public class InstockTempService extends BaseService<InstockTempEntity, String, I
         entity.setSkuId(scOrderItem.getSkuId());
         entity.setProductName(scOrderItem.getProductName());
         entity.setUnitName(scOrderItem.getUnitName());
-        entity.setBcount(scOrderItem.getBcount());
+        entity.setBcount(scOrderItem.getBcount());//订单数量
         entity.setPrice(scOrderItem.getPrice());
         entity.setAmount(scOrderItem.getAmount());
         entity.setPriceType(scOrderItem.getPriceType());
-        entity.setCommitCount(scOrderItem.getCommitCount());
+        entity.setCommitCount(scOrderItem.getCommitCount());//实际组货数量
         entity.setCommitAmount(scOrderItem.getCommitAmount());
 
-        entity.setIsEnable(1);
+        entity.setIsEnable(1);//默认是可收货状态，退货时设为0
         saveOrUpdate(entity);
 
     }

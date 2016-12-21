@@ -10,7 +10,9 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 
 /**
@@ -68,6 +70,7 @@ public abstract class PDAScanFragment extends BaseFragment {
         // TODO: 18/11/2016 会员支付码
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PDAScanManager.ScanBarcodeEvent event) {
         Bundle bundle = event.getArgs();
         if (bundle == null){

@@ -109,7 +109,7 @@ public class CashierAgent {
             orderEntity.setBizType(BizType.POS);
             orderEntity.setBarCode(orderBarCode);
             orderEntity.setSellOffice(MfhLoginService.get().getCurOfficeId());
-            orderEntity.setCreatedBy(String.valueOf(MfhLoginService.get().getCurrentGuId()));
+            orderEntity.setCreatedBy(MfhLoginService.get().getGuid());
             orderEntity.setPosId(SharedPrefesManagerFactory.getTerminalId());//设备编号
             orderEntity.setCreatedDate(new Date());
         }
@@ -299,7 +299,7 @@ public class CashierAgent {
 
         Human human = new Human();
         human.setId(MfhLoginService.get().getUserId());
-        human.setGuid(String.valueOf(MfhLoginService.get().getCurrentGuId()));
+        human.setGuid(MfhLoginService.get().getGuid());
         human.setHeadimageUrl(MfhLoginService.get().getHeadimage());
 
         //当前收银信息

@@ -25,8 +25,11 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
-import de.greenrobot.event.EventBus;
 
 
 /**
@@ -207,6 +210,7 @@ public class InvCheckHistoryFragment extends BaseFragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataSyncService.StockTakeSyncEvent event) {
         ZLogger.d(String.format("StockTakeSyncEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataSyncService.StockTakeSyncEvent.EVENT_ID_SYNC_FINISHED) {
