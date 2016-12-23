@@ -135,12 +135,12 @@
             android:layout_height="44dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/spacing_8x"
-            app:editInputType="barcode"
             android:layout_marginStart="@dimen/spacing_8x"
-            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
+            app:editInputType="barcode"
             app:editTextColor="@color/material_black"
-            app:inputNumberLabelView_inputTextColorHint="@color/black_35"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_toolbar_search_white"/>
+            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
+            app:editTextColorHint="@color/mfh_textColorHint"
+            app:inputNumberLabelView_rightImageButtonSrc="@drawable/btn_switch_goods"/>
 
         <include
             android:id="@+id/ll_procuct_header"
@@ -179,12 +179,12 @@
     <com.mfh.framework.uikit.compound.BadgeViewButton
         android:id="@+id/buttonPrepareOrder"
         android:layout_width="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_height="80dp"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/horizontal_line"
         android:layout_gravity="end|bottom"
-        app:src="@mipmap/ic_alert_prepareorder"
-        android:layout_margin="@dimen/spacing_double"/>
+        android:layout_margin="@dimen/spacing_double"
+        app:src="@mipmap/ic_alert_prepareorder"/>
 
     <!--挂单-->
     <TextView

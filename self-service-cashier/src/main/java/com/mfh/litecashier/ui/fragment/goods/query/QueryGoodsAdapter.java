@@ -51,6 +51,12 @@ public class QueryGoodsAdapter
         holder.tvCostPrice
                 .setText(MUtils.formatDouble(null, null,
                         entity.getCostPrice(), "", "/", entity.getUnit()));
+        if (entity.getStatus().equals(0)){
+            holder.overlayView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.overlayView.setVisibility(View.GONE);
+        }
     }
 
     public class MenuOptioinViewHolder extends RecyclerView.ViewHolder {
@@ -58,6 +64,8 @@ public class QueryGoodsAdapter
         TextView tvName;
         @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
+        @BindView(R.id.overlay)
+        View overlayView;
 
         public MenuOptioinViewHolder(final View itemView) {
             super(itemView);

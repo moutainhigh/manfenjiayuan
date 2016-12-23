@@ -28,7 +28,7 @@
     <item>
         <shape android:shape="rectangle">
             <stroke android:width="0px" android:color="@color/material_grey_500"/>
-            <solid android:color="@color/material_black"/>
+            <solid android:color="@color/mfh_barBackground"/>
             <corners android:radius="0dp"/>
         </shape>
     </item>

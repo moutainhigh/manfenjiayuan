@@ -21,12 +21,13 @@
         <attr name="inputNumberLabelView_titleWidth" format="dimension"/>
 
         <attr name="editTextColor"/>
-        <attr name="inputNumberLabelView_inputTextSize" format="dimension"/>
-        <attr name="inputNumberLabelView_inputTextColorHint" format="color"/>
+        <attr name="editTextSize"/>
+        <attr name="editTextColorHint"/>
         <attr name="inputNumberLabelView_inputHint" format="string"/>
         <attr name="editInputType"/>
         <attr name="editBackground"/>
-
+        <attr name="editFocusable"/>
+        <attr name="editFocusableInTouchMode"/>
         <attr name="inputNumberLabelView_rightButtonWidth" format="dimension"/>
         <attr name="inputNumberLabelView_rightImageButtonSrc" format="reference"/>
         <attr name="clearOnClickDel" format="boolean"/>

@@ -4,11 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +15,6 @@ import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseListFragment;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -41,13 +37,13 @@ import rx.schedulers.Schedulers;
  */
 public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
     @BindView(R.id.goodsRecyclerView)
     RecyclerViewEmptySupport goodsRecyclerView;
     @BindView(R.id.empty_view)
     View emptyView;
-    private LinearLayoutManager linearLayoutManager;
+    private GridLayoutManager linearLayoutManager;
     private QueryGoodsAdapter goodsListAdapter;
 
     @BindView(R.id.inlv_barcode)
@@ -95,35 +91,35 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setTitle("商品查询");
-//        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-//        mToolbar.setNavigationOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        getActivity().onBackPressed();
+//        mToolbar.setTitle("商品查询");
+////        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+////        mToolbar.setNavigationOnClickListener(
+////                new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View v) {
+////                        getActivity().onBackPressed();
+////                    }
+////                });
+//
+//
+//// Set an OnMenuItemClickListener to handle menu item clicks
+//        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                // Handle the menu item
+//                int id = item.getItemId();
+//                if (id == R.id.action_reload) {
+////                    DialogUtil.showHint("close");
+//                    if (mOnFragmentListener != null) {
+//                        mOnFragmentListener.onClose();
 //                    }
-//                });
-
-
-// Set an OnMenuItemClickListener to handle menu item clicks
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_reload) {
-//                    DialogUtil.showHint("close");
-                    if (mOnFragmentListener != null) {
-                        mOnFragmentListener.onClose();
-                    }
-                }
-                return true;
-            }
-        });
-
-        // Inflate a menu to be displayed in the toolbar
-        mToolbar.inflateMenu(R.menu.menu_querygoods);
+//                }
+//                return true;
+//            }
+//        });
+//
+//        // Inflate a menu to be displayed in the toolbar
+//        mToolbar.inflateMenu(R.menu.menu_querygoods);
 
 
         initGoodsRecyclerView();
@@ -189,16 +185,19 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
      * 初始化商品列表
      */
     private void initGoodsRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        linearLayoutManager = new GridLayoutManager(getActivity(), 1,
+                GridLayoutManager.HORIZONTAL, false);
+
+//        linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
+//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
         goodsRecyclerView.setHasFixedSize(true);
         //添加分割线
-        letterRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.HORIZONTAL_LIST));
-//        letterRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
+//        letterRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.HORIZONTAL_LIST));
+        goodsRecyclerView.addItemDecoration(new DividerGridItemDecoration(getActivity()));
 
         //设置列表为空时显示的视图
         goodsRecyclerView.setEmptyView(emptyView);

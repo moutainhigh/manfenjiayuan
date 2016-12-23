@@ -10,20 +10,19 @@
         android:layout_width="70dp"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
+        android:background="@color/mfh_barBackground"
         android:orientation="vertical">
         <!--导航-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/slideMenu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/mfh_black"/>
+            android:layout_weight="1"/>
 
         <com.bingshanguxue.vector_uikit.SyncButton
             android:id="@+id/button_sync"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/mfh_black"/>
+            android:layout_height="60dp"/>
 
     </LinearLayout>
 

@@ -3,8 +3,6 @@
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent">
 
-    <include layout="@layout/appbar"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,17 +12,19 @@
         android:orientation="vertical"
         android:showDividers="middle"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--android:background="@color/material_white"-->
+
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:background="@null"
+            android:layout_height="108dp">
+
             <!--商品显示区域-->
             <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                 android:id="@+id/goodsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
             <!--空视图-->
             <TextView
                 android:id="@+id/empty_view"
@@ -40,20 +40,24 @@
         <com.mfh.litecashier.ui.widget.InputNumberLabelView
             android:id="@+id/inlv_barcode"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
             app:editBackground="@drawable/bg_input_black"
+            app:editFocusable="false"
+            app:editFocusableInTouchMode="false"
             app:editInputType="text"
-            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:editTextColor="@color/material_white"
-            app:inputNumberLabelView_inputTextColorHint="@color/black_35"
+            app:editTextColorHint="@color/material_white_800"
+            app:editTextSize="40sp"
+            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_key_enter"/>
 
         <!--字符输入区域-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/letterRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="540dp"/>
+            android:layout_height="552dp"/>
 
     </LinearLayout>
 

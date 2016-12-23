@@ -47,8 +47,6 @@ import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.igexin.sdk.PushManager;
-import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.utils.BarcodeUtils;
@@ -99,7 +97,6 @@ import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.service.DemoPushService;
 import com.mfh.litecashier.service.EslSyncManager2;
-import com.mfh.litecashier.service.TimeTaskManager;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.CashierMenuAdapter;
@@ -151,7 +148,7 @@ import static com.mfh.litecashier.R.id.fragment_plugin;
  * Created by bingshanguxue on 15/8/30.
  */
 
-public class MainActivity extends CashierActivity
+public class MainActivity extends CashierActivity2
         implements ICashierView, IScOrderView, QueryGoodsFragment.OnFragmentListener {
 
     @BindView(R.id.slideMenu)
@@ -304,17 +301,23 @@ public class MainActivity extends CashierActivity
 
         //打开秤的串口
 //        OpenComPort(comSmscale);
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
-        if (hostServer != null) {
-            cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));
-        } else {
-            cloudSpeak("欢迎使用智能收银系统");
-        }
+//        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+//        if (hostServer != null) {
+//            if (mTtsBinder != null){
+//                mTtsBinder.cloudSpeak("1");
+////                mTtsBinder.cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));
+//            }
+////            cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));
+//        } else {
+//            if (mTtsBinder != null){
+//                mTtsBinder.cloudSpeak("1");
+////                mTtsBinder.cloudSpeak("欢迎使用智能收银系统");
+//            }
+////            cloudSpeak("欢迎使用智能收银系统");
+//        }
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
-//        AlarmManagerHelper.triggleSyncPosOrder(this);
-        TimeTaskManager.getInstance().start();
     }
 
     @Override
@@ -827,14 +830,18 @@ public class MainActivity extends CashierActivity
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
             ZLogger.d("待拣货订单未读消息个数为：" + count);
             if (count > 0) {
-                cloudSpeak("您有新订单，请尽快处理");
+                if (mTtsBinder != null){
+                    mTtsBinder.cloudSpeak("您有新订单，请尽快处理");
+                }
             }
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
             menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
             ZLogger.d("生鲜预定订单未读消息个数为：" + count);
             if (count > 0) {
-                cloudSpeak("您有新订单，请尽快处理");
+                if (mTtsBinder != null){
+                    mTtsBinder.cloudSpeak("您有新订单，请尽快处理");
+                }
             }
         } else if (eventId == AffairEvent.EVENT_ID_LOCK_POS_CLIENT) {
             Double amount = bundle.getDouble("amount");
@@ -1263,11 +1270,15 @@ public class MainActivity extends CashierActivity
                     GPrinterAgent.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
 
                     if (changeAmount >= 0.01) {
-                        cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
-                                WayType.name(payType), finalAmount, changeAmount, bCount));
+                        if (mTtsBinder != null){
+                            mTtsBinder.cloudSpeak(String.format("%s 支付 %.2f 元, 找零 %.2f 元，商品数量 %.0f, 谢谢光临！",
+                                    WayType.name(payType), finalAmount, changeAmount, bCount));
+                        }
                     } else {
-                        cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
-                                WayType.name(payType), finalAmount, bCount));
+                        if (mTtsBinder != null){
+                            mTtsBinder.cloudSpeak(String.format("%s 支付 %.2f 元, 商品数量 %.0f, 谢谢光临！",
+                                    WayType.name(payType), finalAmount, bCount));
+                        }
                     }
                 }
                 subscriber.onNext(lastOrderInfo);
@@ -1435,7 +1446,12 @@ public class MainActivity extends CashierActivity
         inlvBarcode.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
             @Override
             public void onClickAction1(String text) {
-                redirect2QueryGoods();
+                if (inlvBarcode.isAction1Selected()){
+                    redirect2LocalCategory();
+                }
+                else{
+                    redirect2QueryGoods();
+                }
             }
 
             @Override
@@ -2510,6 +2526,8 @@ public class MainActivity extends CashierActivity
      * 查询商品
      */
     private void redirect2QueryGoods(){
+        inlvBarcode.setAction1Selected(true);
+
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         mQueryGoodsFragment = getSupportFragmentManager().findFragmentByTag("QueryGoodsFragment");
@@ -2532,6 +2550,7 @@ public class MainActivity extends CashierActivity
      * 前台类目
      */
     private void redirect2LocalCategory(){
+        inlvBarcode.setAction1Selected(false);
 //        DialogUtil.showHint("redirect2LocalCategory");
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
