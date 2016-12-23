@@ -34,9 +34,10 @@ import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
-import com.bingshanguxue.cashier.hardware.printer.PrintManager;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
+import com.bingshanguxue.cashier.hardware.printer.gp.GpPrinterManager;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
-import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
+import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrinterManager;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
@@ -275,11 +276,6 @@ public class MainActivity extends CashierActivity2
                     .hide(mQueryGoodsFragment)
                     .commit();
         }
-
-//        redirect2LocalCategory();
-
-//        showAdvFragment();
-//        showLocalFrontCategoryFragment();
 
         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)){
             btnPrepareOrder.setVisibility(View.VISIBLE);
@@ -1174,11 +1170,7 @@ public class MainActivity extends CashierActivity2
                                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                                         cashierOrderInfo.getPosTradeNo());
                                 if (orderEntity != null) {
-                                    if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                                        PrintManagerImpl.getInstance().printPosOrder(orderEntity);
-                                    } else {
-                                        EmbPrintManagerImpl.getInstance().printPosOrder(orderEntity);
-                                    }
+                                    PrinterFactory.getPrinterManager().printPosOrder(orderEntity);
                                 }
 
                                 //同步订单信息
@@ -1189,11 +1181,7 @@ public class MainActivity extends CashierActivity2
                         } else {
                             ScOrder scOrder = (ScOrder) data.getSerializableExtra(PrepareStep2Fragment.EXTRA_KEY_SCORDER);
                             if (scOrder != null) {
-                                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                                    PrintManagerImpl.getInstance().printSendOrder(scOrder, 3);
-                                } else {
-                                    EmbPrintManagerImpl.getInstance().printSendOrder(scOrder, 3);
-                                }
+                                PrinterFactory.getPrinterManager().printSendOrder(scOrder, 3);
                             }
                         }
                     }
@@ -1247,16 +1235,13 @@ public class MainActivity extends CashierActivity2
                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                         cashierOrderInfo.getPosTradeNo());
 
-                //同步订单信息
+                //实时同步订单信息
                 if (SharedPreferencesUltimate.isUploadPosOrderRealtime()){
                     DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
                 }
                 //打印订单
-                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                    PrintManager.getInstance().printPosOrder(orderEntity);
-                } else {
-                    EmbPrintManager.getInstance().printPosOrder(orderEntity);
-                }
+                PrinterFactory.getPrinterManager().printPosOrder(orderEntity);
+
                 //保存上一单信息
                 LastOrderInfo lastOrderInfo = CashierAgent.genLastOrderInfo(orderEntity);
                 if (lastOrderInfo != null) {
@@ -1394,11 +1379,7 @@ public class MainActivity extends CashierActivity2
      * 开钱箱
      */
     public void openMoneyBox() {
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-            PrintManager.getInstance().getPrinter().openMoneyBox();
-        } else {
-            EmbPrintManager.getInstance().getPrinter().openMoneyBox();
-        }
+        PrinterFactory.getPrinterManager().openMoneyBox();
     }
 
     /**
@@ -2254,12 +2235,7 @@ public class MainActivity extends CashierActivity2
         alipayDialog.initialize(quickPayInfo, false, new AlipayDialog.DialogClickListener() {
             @Override
             public void onPaySucceed(QuickPayInfo mQuickPayInfo, String outTradeNo) {
-                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                    PrintManager.getInstance().printTopupReceipt(quickPayInfo, outTradeNo);
-                } else {
-                    EmbPrintManager.getInstance().printTopupReceipt(quickPayInfo, outTradeNo);
-                }
-
+                PrinterFactory.getPrinterManager().printTopupReceipt(quickPayInfo, outTradeNo);
                 DataUploadManager.getInstance().syncDefault();
             }
 
@@ -2274,38 +2250,6 @@ public class MainActivity extends CashierActivity2
         }
     }
 
-
-    /**
-     * 显示广告
-     */
-    private void showAdvFragment() {
-        HomeAdvFragment fragment;
-        Intent intent = this.getIntent();
-        if (intent != null) {
-            fragment = HomeAdvFragment.newInstance(intent.getExtras());
-        } else {
-            fragment = HomeAdvFragment.newInstance(null);
-        }
-        getSupportFragmentManager().beginTransaction()
-                .add(fragment_plugin, fragment).show(fragment)
-                .commit();
-    }
-
-    /**
-     * 显示广告
-     */
-    private void showLocalFrontCategoryFragment() {
-        LocalFrontCategoryFragment fragment;
-        Intent intent = this.getIntent();
-        if (intent != null) {
-            fragment = LocalFrontCategoryFragment.newInstance(intent.getExtras());
-        } else {
-            fragment = LocalFrontCategoryFragment.newInstance(null);
-        }
-        getSupportFragmentManager().beginTransaction()
-                .add(fragment_plugin, fragment).show(fragment)
-                .commit();
-    }
 
     @Override
     public void onIScOrderViewProcess() {
@@ -2325,12 +2269,7 @@ public class MainActivity extends CashierActivity2
     @Override
     public void onIScOrderViewSuccess(ScOrder data) {
         if (data != null) {
-//            PrintManagerImpl.printScOrder(data);
-            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                PrintManagerImpl.getInstance().printPrepareOrder(data);
-            } else {
-                EmbPrintManagerImpl.getInstance().printPrepareOrder(data);
-            }
+            PrinterFactory.getPrinterManager().printPrepareOrder(data);
         }
     }
 

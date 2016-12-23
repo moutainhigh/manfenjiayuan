@@ -1,6 +1,7 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
-import com.gprinter.command.EscCommand;
+
+import com.bingshanguxue.cashier.hardware.printer.gprinter.EscCommand;
 
 /**
  * Created by bingshanguxue on 12/12/2016.
@@ -8,8 +9,14 @@ import com.gprinter.command.EscCommand;
 
 public interface IPrinter {
 
+    /**
+     * 走纸,默认3行
+     * */
     void feedPaper();
 
+    /**
+     * 开钱箱
+     * */
     void openMoneyBox();
 
     /**
@@ -17,5 +24,8 @@ public interface IPrinter {
      * */
     void printAndLineFeed(EscCommand escCommand, int lines);
 
-
+    /**
+     * 打印CODE128条码
+     * */
+    void addCODE128(EscCommand esc, String barcode);
 }

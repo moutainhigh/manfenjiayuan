@@ -24,9 +24,7 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
-import com.bingshanguxue.cashier.hardware.printer.PrintManager;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
-import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
@@ -315,25 +313,15 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
 
         //更新订单信息，同时打开钱箱，退钱给顾客
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManager.getInstance().getPrinter().openMoneyBox();
-        }
-        else{
-            EmbPrintManager.getInstance().getPrinter().openMoneyBox();
-        }
+        PrinterFactory.getPrinterManager().openMoneyBox();
 
         PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                 cashierOrderInfo.getPosTradeNo());
         //同步订单信息
 //        DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
         //打印订单
+        PrinterFactory.getPrinterManager().printPosOrder(orderEntity);
 
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManager.getInstance().printPosOrder(orderEntity);
-        }
-        else{
-            EmbPrintManager.getInstance().printPosOrder(orderEntity);
-        }
         CashierShopcartService.getInstance()
                 .deleteBy(String.format("posTradeNo = '%s'", curOrderTradeNo));
 

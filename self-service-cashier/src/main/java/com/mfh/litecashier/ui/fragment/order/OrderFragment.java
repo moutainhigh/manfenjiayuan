@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.PosOrder;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
@@ -29,8 +29,6 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.service.DataUploadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -145,11 +143,7 @@ public class OrderFragment extends BaseFragment {
         btnPrint.setEnabled(false);
         if (mPosOrder != null) {
             ZLogger.d("准备打印订单");
-            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                PrintManagerImpl.getInstance().printPosOrder(mPosOrder, printTimes);
-            } else {
-                EmbPrintManagerImpl.getInstance().printPosOrder(mPosOrder, printTimes);
-            }
+            PrinterFactory.getPrinterManager().printPosOrder(mPosOrder, printTimes);
         }
         else{
             ZLogger.d("订单无效");
@@ -157,23 +151,6 @@ public class OrderFragment extends BaseFragment {
         btnPrint.setEnabled(true);
     }
 
-    @OnClick(R.id.fab_print)
-    public void printOrder2() {
-        DialogUtil.showHint("打印单据");
-        btnPrint.setEnabled(false);
-        if (mPosOrder != null) {
-            ZLogger.d("准备打印订单");
-            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                PrintManagerImpl.getInstance().printPosOrder(mPosOrder, printTimes);
-            } else {
-                EmbPrintManagerImpl.getInstance().printPosOrder(mPosOrder, printTimes);
-            }
-        }
-        else{
-            ZLogger.d("订单无效");
-        }
-        btnPrint.setEnabled(true);
-    }
 
     private void initTabs() {
         mViewPager.setScrollEnabled(true);

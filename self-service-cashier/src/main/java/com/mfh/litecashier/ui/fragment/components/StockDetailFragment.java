@@ -19,13 +19,14 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
+import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -38,9 +39,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.StockOutItem;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.StockOutAdapter;
 
 import java.util.ArrayList;
@@ -246,13 +244,8 @@ public class StockDetailFragment extends BaseFragment {
 //                                HumanCompanyOption option = humanCompany.getOptionList().get(0);
 //                                tvMemberCompany.setText(option.getValue());
 //                            }
-                            //打印出库单
-                            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                                PrintManagerImpl.printStockOut(stockOutItems);
-                            }
-                            else{
-                                EmbPrintManagerImpl.printStockOut(stockOutItems);
-                            }
+                            PrinterFactory.getPrinterManager().printStockOutOrder(stockOutItems);
+
                             animProgress.setVisibility(View.GONE);
                             btnStockOut.setEnabled(true);
                             loadStockoutList();

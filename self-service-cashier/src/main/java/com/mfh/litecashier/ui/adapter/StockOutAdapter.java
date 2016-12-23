@@ -11,7 +11,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.litecashier.bean.StockOutItem;
+import com.mfh.framework.api.pmcstock.StockOutItem;
 
 import java.util.ArrayList;
 import java.util.List;

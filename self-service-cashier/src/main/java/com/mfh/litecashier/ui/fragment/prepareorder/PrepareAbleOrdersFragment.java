@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScOrderView;
@@ -34,8 +34,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
 
 import java.util.List;
 
@@ -181,13 +179,8 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
                     //出库成功:1-556637
                     showProgressDialog(ProgressDialog.STATUS_PROCESSING, "接单成功", true);
                     ZLogger.d(String.format("接单成功: %s，准备打印订单", result));
-                    if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON) {
-                        PrintManagerImpl.getInstance().printPrepareOrder(mScOrder);
-                    } else {
-                        EmbPrintManagerImpl.getInstance().printPrepareOrder(mScOrder);
-                    }
+                    PrinterFactory.getPrinterManager().printPrepareOrder(mScOrder);
                     btnPrint.setEnabled(true);
-
                 }
 
                 @Override

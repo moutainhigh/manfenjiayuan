@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.litecashier.bean.StockOutItem;
+import com.mfh.framework.api.pmcstock.StockOutItem;
 
 import java.util.List;
 

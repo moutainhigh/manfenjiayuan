@@ -11,9 +11,7 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 public class PrinterAgent {
     private static final boolean ENABLED_DEF = false;
 
-    public static final int PRINTER_TYPE_COMMON = 0;
-    public static final int PRINTER_TYPE_EMBEDED = 1;
-    private static final int PRINTER_TYPE_DEF = PRINTER_TYPE_COMMON;//0,外接；1,嵌入式
+    private static final int PRINTER_TYPE_DEF = PrinterModel.PRINTER_TYPE_COMMON;//0,外接；1,嵌入式
     private static final String PORT_DEF = "/dev/ttymxc0";
     private static final String BAUDRATE_DEF = "9600";
 
@@ -48,10 +46,10 @@ public class PrinterAgent {
 
     public static String getPrinterName(){
         int scaleType = getPrinterType();
-        if (scaleType == PRINTER_TYPE_COMMON){
+        if (scaleType == PrinterModel.PRINTER_TYPE_COMMON){
             return "分离式";
         }
-        else if (scaleType == PRINTER_TYPE_EMBEDED){
+        else if (scaleType == PrinterModel.PRINTER_TYPE_EMBEDED){
             return "嵌入式";
         }
         else{

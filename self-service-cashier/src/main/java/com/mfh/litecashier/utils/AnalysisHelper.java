@@ -15,11 +15,11 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.litecashier.bean.AccItem;
-import com.mfh.litecashier.bean.AggItem;
+import com.mfh.framework.api.analysis.AccItem;
+import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
-import com.mfh.litecashier.ui.fragment.dailysettle.DailysettleInfo;
-import com.mfh.litecashier.ui.fragment.dailysettle.HandOverBill;
+import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
+import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 
 import java.text.ParseException;
 import java.util.ArrayList;

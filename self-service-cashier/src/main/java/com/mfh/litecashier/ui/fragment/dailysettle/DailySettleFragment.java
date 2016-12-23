@@ -10,7 +10,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
+import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
@@ -18,6 +19,8 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.analysis.AccItem;
+import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -30,10 +33,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.AccItem;
-import com.mfh.litecashier.bean.AggItem;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
@@ -153,12 +152,7 @@ public class DailySettleFragment extends BaseProgressFragment {
      */
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManagerImpl.printDailySettleBill(mDailysettleInfo);
-        }
-        else{
-            EmbPrintManagerImpl.printDailySettleBill(mDailysettleInfo);
-        }
+        PrinterFactory.getPrinterManager().printDailySettleReceipt(mDailysettleInfo);
     }
 
     private void initAggRecyclerView() {

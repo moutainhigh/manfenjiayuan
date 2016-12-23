@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.hardware.printer.PrintManager;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
-import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
@@ -87,12 +85,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
         //有现金支付时才打开钱箱
         if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
                 && paymentInfo.getPaidAmount() > 0) {
-            if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                PrintManager.getInstance().getPrinter().openMoneyBox();
-            }
-            else{
-                EmbPrintManager.getInstance().getPrinter().openMoneyBox();
-            }
+            PrinterFactory.getPrinterManager().openMoneyBox();
             ZLogger.df(String.format(">>开钱箱：收银：%.2f,找零:%.2f",
                     paymentInfo.getPaidAmount(), paymentInfo.getChange()));
         }

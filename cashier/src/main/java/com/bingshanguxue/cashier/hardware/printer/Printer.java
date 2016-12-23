@@ -1,8 +1,7 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
-import com.gprinter.command.EscCommand;
-import com.gprinter.command.LabelCommand;
+import com.bingshanguxue.cashier.hardware.printer.gprinter.EscCommand;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -15,93 +14,19 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Vector;
 
-
 /**
  * 打印机
- * Created by bingshanguxue on 08/12/2016.
+ * Created by bingshanguxue on 23/12/2016.
  */
 
-public class Printer implements IPrinter{
-
-    public static java.text.SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.US);
-
-    /**
-     * 打印
-     * @param escCommand 打印命令
-     * */
-    public static void print(EscCommand escCommand) {
-        if (escCommand != null) {
-            ZLogger.d(">>发送打印命令");
-
-            Vector<Byte> datas = escCommand.getCommand();//发送数据
-            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
-            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
-//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.RINTER_PRINT_PRIMITIVE, bytes));
-        }
-    }
-
-    public static  void print(EscCommand escCommand, int printTimes) {
-        if (escCommand != null && printTimes > 0) {
-            for (int i = 0 ; i < printTimes; i++){
-                print(escCommand);
-            }
-        }
-    }
-
-    public static void print(String text) {
-        byte[] bs = null;
-        if(!text.equals("")) {
-            try {
-                bs = text.getBytes("GB2312");
-            } catch (UnsupportedEncodingException var4) {
-                var4.printStackTrace();
-            }
-        }
-        if (bs != null){
-            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.RINTER_PRINT_PRIMITIVE, bs));
-        }
-    }
-
-    /**
-     * 走纸
-     * */
-    @Override
-    public void feedPaper() {
-        EscCommand esc = new EscCommand();
-//       esc.addPrintAndLineFeed();
-        //打印并且走纸多少行
-        esc.addPrintAndFeedLines((byte) 3);
-
-        print(esc);
-    }
-
-    /**
-     * 打开钱箱
-     * */
-    @Override
-    public void openMoneyBox() {
-        EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.SERIAL_TYPE_DISPLAY,
-                CommandConstants.CMD_HEX_STX_M));
-
-        EscCommand esc = new EscCommand();
-        esc.addGeneratePluseAtRealtime(LabelCommand.FOOT.F2, (byte)20);
-
-        print(esc);
-    }
-
-    @Override
-    public void printAndLineFeed(EscCommand escCommand, int lines) {
-        if (escCommand == null){
-            return;
-        }
-        escCommand.addPrintAndFeedLines((byte) lines);//打印并且走纸3行
-    }
+public class Printer implements IPrinter {
+    public static java.text.SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm",
+            Locale.US);
 
     /**
      * 空格对齐方式
      **/
-    public static enum BLANK_GRAVITY {
+    public enum BLANK_GRAVITY {
         NONE(0),
         LEFT(1),
         CENTER(2),
@@ -168,5 +93,105 @@ public class Printer implements IPrinter{
                 return subStr;
             }
         }
+    }
+
+    /**
+     * 添加横线
+     */
+    public void addLine(EscCommand esc) {
+        if (esc == null) {
+            return;
+        }
+        esc.addText("--------------------------------\n");//32个
+    }
+
+
+    /**
+     * 初始化打印机
+     * <table>
+     *     <tr>
+     *        <td>格式</td>
+     *        <table>
+     *            <tr><td>ASCII码</td><td>ESC</td><td>@</td></tr>
+     *            <tr><td>十六进制码</td><td>1B</td><td>40</td></tr>
+     *            <tr><td>十进制码</td><td>27</td><td>64</td></tr>
+     *        </table>
+     *     </tr>
+     *     <tr>
+     *         <td>描述</td>
+     *         <td>清除打印缓冲区数据，打印模式被设为上电时的默认值模式。</td>
+     *     </tr>
+     *     <tr>
+     *         <td>注释</td>
+     *         <td>
+     *             <li>DIP开关的设置不进行再次检测。</li>
+     *             <li>接收缓冲区中的数据保留。</li>
+     *             <li>NV位图数据不擦除。</li>
+     *             <li>用户NV存储器数据不擦除。</li>
+     *         </td>
+     *     </tr>
+     * </table>
+     * */
+    public static byte[] initPrinter() {
+        return new byte[]{(byte) 27, (byte) 64};
+    }
+
+    /**
+     * 打印
+     * @param escCommand 打印命令
+     * @param printTimes 打印次数
+     * */
+    public static  void print(EscCommand escCommand, int printTimes) {
+        if (escCommand != null && printTimes > 0) {
+            for (int i = 0 ; i < printTimes; i++){
+                print(escCommand);
+            }
+        }
+    }
+
+    public static void print(EscCommand escCommand) {
+        if (escCommand != null) {
+            ZLogger.d(">>发送打印命令");
+
+            Vector<Byte> datas = escCommand.getCommand();//发送数据
+            Byte[] Bytes = datas.toArray(new Byte[datas.size()]);
+            byte[] bytes = ArrayUtils.toPrimitive(Bytes);
+//        String str = Base64.encodeToString(bytes, Base64.DEFAULT);
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.RINTER_PRINT_PRIMITIVE, bytes));
+        }
+    }
+
+    public static void print(String text) {
+        byte[] bs = null;
+        if(!text.equals("")) {
+            try {
+                bs = text.getBytes("GB2312");
+            } catch (UnsupportedEncodingException var4) {
+                var4.printStackTrace();
+            }
+        }
+        if (bs != null){
+            EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.RINTER_PRINT_PRIMITIVE, bs));
+        }
+    }
+
+    @Override
+    public void feedPaper() {
+
+    }
+
+    @Override
+    public void openMoneyBox() {
+
+    }
+
+    @Override
+    public void printAndLineFeed(EscCommand escCommand, int lines) {
+
+    }
+
+    @Override
+    public void addCODE128(EscCommand esc, String barcode) {
+
     }
 }

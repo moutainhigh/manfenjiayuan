@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
+import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
@@ -17,6 +18,8 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.analysis.AccItem;
+import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -28,10 +31,6 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.AccItem;
-import com.mfh.litecashier.bean.AggItem;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
 import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
@@ -146,12 +145,7 @@ public class HandoverFragment extends BaseProgressFragment {
 
         SharedPreferencesUltimate.setLastHandoverShiftId(handOverBill.getShiftId());
         //打印交接单单据
-        if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-            PrintManagerImpl.printHandoverBill(handOverBill);
-        }
-        else{
-            EmbPrintManagerImpl.printHandoverBill(handOverBill);
-        }
+        PrinterFactory.getPrinterManager().printHandoverBill(handOverBill);
 
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();

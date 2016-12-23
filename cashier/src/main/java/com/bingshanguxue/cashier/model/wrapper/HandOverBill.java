@@ -1,7 +1,7 @@
-package com.mfh.litecashier.ui.fragment.dailysettle;
+package com.bingshanguxue.cashier.model.wrapper;
 
-import com.mfh.litecashier.bean.AccItem;
-import com.mfh.litecashier.bean.AggItem;
+import com.mfh.framework.api.analysis.AccItem;
+import com.mfh.framework.api.analysis.AggItem;
 
 import java.util.Date;
 import java.util.List;

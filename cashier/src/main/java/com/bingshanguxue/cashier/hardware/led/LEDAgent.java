@@ -1,7 +1,7 @@
-package com.bingshanguxue.cashier.hardware.printer;
+package com.bingshanguxue.cashier.hardware.led;
 
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
-import com.gprinter.command.EscCommand;
+import com.bingshanguxue.cashier.hardware.printer.gprinter.EscCommand;
 import com.mfh.framework.core.utils.DataConvertUtil;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,7 +26,7 @@ import java.util.Vector;
  *
  * Created by bingshanguxue on 5/27/16.
  */
-public class GPrinterAgent extends Printer{
+public class LedAgent {
 
     /**
      * 清除屏幕上的字符

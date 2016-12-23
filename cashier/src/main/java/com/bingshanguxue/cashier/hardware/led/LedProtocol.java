@@ -1,10 +1,10 @@
-package com.bingshanguxue.cashier.hardware.printer;
+package com.bingshanguxue.cashier.hardware.led;
 
 /**
  * 客显指令集合
  * Created by bingshanguxue on 15/9/9.
  */
-public class CommandConstants {
+public class LedProtocol {
     public static final String HEX_CR = "0D";
     public static final String HEX_0 = "30";
     public static final String HEX_1 = "31";

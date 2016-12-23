@@ -90,6 +90,7 @@ public class DoubleInputDialog extends CommonDialog {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     DeviceUtils.hideSoftInput(getContext(), etValue);
                 }
+
                 etValue.requestFocus();
                 etValue.setSelection(etValue.length());
                 //返回true,不再继续传递事件

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.cashier.v1.CashierAgent;
@@ -31,8 +31,6 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrintManager;
-import com.bingshanguxue.cashier.hardware.printer.PrintManager;
 import com.mfh.litecashier.service.DataUploadManager;
 
 import java.util.List;
@@ -109,12 +107,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
         fabPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (PrinterAgent.getPrinterType() == PrinterAgent.PRINTER_TYPE_COMMON){
-                    PrintManager.getInstance().printPosOrder(mPosOrderEntity);
-                }
-                else{
-                    EmbPrintManager.getInstance().printPosOrder(mPosOrderEntity);
-                }
+                PrinterFactory.getPrinterManager().printPosOrder(mPosOrderEntity);
             }
         });
         setContent(rootView, 0);

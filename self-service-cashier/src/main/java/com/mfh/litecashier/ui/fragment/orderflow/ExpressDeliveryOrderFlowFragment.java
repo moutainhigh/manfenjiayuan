@@ -30,7 +30,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.ReceiveBatchItem;
-import com.mfh.litecashier.bean.StockOutItem;
+import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.litecashier.event.ExpressDeliveryOrderFlowEvent;
 import com.mfh.litecashier.ui.adapter.ExpressDeliveryOrderflowGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.ExpressDeliveryOrderflowOrderAdapter;
