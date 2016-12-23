@@ -2,10 +2,11 @@ package com.manfenjiayuan.pda_supermarket.service;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Printer;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.hardware.printer.Printer;
 import com.bingshanguxue.pda.ValidateManager;
+import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
@@ -18,14 +19,19 @@ import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.entity.EmbMsg;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
+import com.manfenjiayuan.pda_supermarket.AppContext;
+import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
+import com.manfenjiayuan.pda_supermarket.ui.MainActivity;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
+import com.mfh.framework.api.constant.Priv;
+import com.mfh.framework.core.utils.NotificationUtils;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.alarm.AlarmManagerHelper;
-import com.mfh.litecashier.event.AffairEvent;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.tencent.bugly.beta.Beta;
 
@@ -92,10 +98,9 @@ public class DemoIntentService extends GTIntentService {
     public void onReceiveClientId(Context context, String clientid) {
         ZLogger.df("onReceiveClientId -> " + "clientid = " + clientid);
 
-        // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
         if(clientid != null){
             ZLogger.df(String.format("个推 clientId=%s-%s",
-                    PushManager.getInstance().getClientid(CashierApp.getAppContext()),
+                    PushManager.getInstance().getClientid(AppContext.getAppContext()),
                     clientid));
             IMConfig.savePushClientId(clientid);
         }
@@ -193,7 +198,7 @@ public class DemoIntentService extends GTIntentService {
     /**
      * 处理透传（payload）数据
      * */
-    private static void processPushPayload(Context context, String data){
+    private void processPushPayload(Context context, String data){
         if (!MfhLoginService.get().haveLogined()){
             ZLogger.d("用户未登录，忽略透传消息");
             return;
@@ -224,89 +229,66 @@ public class DemoIntentService extends GTIntentService {
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
             }
         }
-        else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType){
-            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
-            if (count > 0){
-                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY_GOODS);
-            }
-        }
-        else if (IMBizType.FRONTCATEGORY_UPDATE == bizType){
-            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
-            if (count > 0){
-                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY|DataDownloadManager.FRONTENDCATEGORY_GOODS);
-            }
-        }
-        //买手抢单组货
+        //顾客下单后通知买手抢单组货
         else if (IMBizType.ORDER_TRANS_NOTIFY == bizType) {
+            if (!MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)){
+                return;
+            }
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
             if (count > 0){
-                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_ORDER_TRANS_NOTIFY));
+                Bundle extras = new Bundle();
+
+                JSONObject jsonObject = JSONObject.parseObject(data);
+                JSONObject msgObj = jsonObject.getJSONObject("msg");
+                JSONObject metaObj = msgObj.getJSONObject("meta");
+                if (metaObj != null) {
+                    extras.putString("orderId", metaObj.getString("tagOne"));
+                }
+                extras.putString("content", content);
+
+                NotificationUtils.makeNotification(AppContext.getAppContext(), R.mipmap.ic_launcher,
+                        "米西厨房PDA", "新订单", MainActivity.class);
+
+                //程序退到后台，显示通知
+                if (MfhLoginService.get().haveLogined() && SharedPrefesManagerFactory.getNotificationAcceptEnabled()) {
+                    // && !PushUtil.isForeground(context)){
+//                    UIHelper.sendBroadcast(Constants.BROADCAST_ACTION_NOTIFY_TAKE_ORDER, extras);
+//                    Notification notification = PushUtil.generateNotification(context, "接单通知", bodyObj.getString("content"));
+//                    PushUtil.showNotification(context, 0, notification);
+                    // TODO: 24/10/2016 红点提示
+                }
+
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_BUYER_PREPAREABLE));
             }
-        }
-        //新的采购订单
-        else if (IMBizType.NEW_PURCHASE_ORDER == bizType){
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER));
-        }
-        //现金超过授权额度，要求锁定pos机
-        else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
-            Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
-
-            //保留最近一个小时的消息
-            if (createTime == null){
-                ZLogger.df("消息无效: time＝null");
-                return;
-            }
-
-            Calendar msgTrigger = Calendar.getInstance();
-            msgTrigger.setTime(createTime);
-
-            Calendar minTrigger = Calendar.getInstance();
-            minTrigger.add(Calendar.HOUR_OF_DAY, -1);
-            if (minTrigger.after(msgTrigger)) {
-                ZLogger.df(String.format("消息过期--当前时间:%s,消息创建时间:%s",
-                        TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                        TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-                return;
-            }
-
-            ZLogger.df(String.format("现金超过授权额度--当前时间:%s,消息创建时间:%s",
-                    TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
-                    TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
-
-            AlarmManagerHelper.triggleNextDailysettle(1);
-            ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
-        }
-        //现金授权额度将要用完，即将锁定pos机
-        else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
-            AlarmManagerHelper.triggleNextDailysettle(1);
-
-            Double cashLimitAmount = Double.valueOf(content);
-            ZLogger.d("cashQuotaAmount=" + cashLimitAmount);
-            Bundle args = new Bundle();
-            args.putDouble("amount", cashLimitAmount);
-
-            EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
+        } else if (IMBizType.ABILITY_UPDATED == bizType) {
+            EventBus.getDefault().post(new ValidateManager.ValidateManagerEvent(
+                    ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN, new Bundle()));
         }
         else if (IMBizType.REMOTE_CONTROL_CMD == bizType){
-            JSONObject contentOjb = JSONObject.parseObject(content);
-            Long remoteId = contentOjb.getLong("remoteId");
-            String remoteInfo = contentOjb.getString("remoteInfo");
-            String remoteData = contentOjb.getString("data");
-            ZLogger.df(String.format("<--远程控制: %d %s\n", remoteId, remoteInfo, remoteData));
-            if (remoteId.equals(1L)){
-                RemoteControlClient.getInstance().uploadLogFileStep1();
-            }
-            else if (remoteId.equals(2L)){
-                RemoteControlClient.getInstance().uploadCrashFileStep1();
-            }
-            else if (remoteId.equals(3L)){
-                Beta.checkUpgrade(false, false);
-            }
-            else if (remoteId.equals(20L)){
-                Printer.print(remoteData);
-            }
+            responseRemoteControl(JSONObject.parseObject(content));
         }
     }
+    /**
+     * 响应远程控制
+     * */
+    private void responseRemoteControl(JSONObject jsonObject){
+        if (jsonObject == null){
+            return;
+        }
+        Long remoteId = jsonObject.getLong("remoteId");
+        String remoteInfo = jsonObject.getString("remoteInfo");
+        String remoteData = jsonObject.getString("data");
+        ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
+
+        if (remoteId.equals(1L)) {
+            RemoteControlClient.getInstance().uploadLogFileStep1();
+        } else if (remoteId.equals(2L)) {
+            RemoteControlClient.getInstance().uploadCrashFileStep1();
+        } else if (remoteId.equals(3L)) {
+            Beta.checkUpgrade(false, false);
+        }
+    }
+
 
 
 //    case PushConsts.GET_SDKONLINESTATE:

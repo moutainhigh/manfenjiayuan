@@ -8,6 +8,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.core.utils.AbbreviationUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import net.tsz.afinal.db.table.KeyValue;
@@ -179,6 +180,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 //                    } else {
 //                        entity.setNameSortLetter("#");
 //                    }
+        entity.setAbbreviation(AbbreviationUtil.cn2py(posGoods.getName()));
 
         PosProductService.get().saveOrUpdate(entity);
     }

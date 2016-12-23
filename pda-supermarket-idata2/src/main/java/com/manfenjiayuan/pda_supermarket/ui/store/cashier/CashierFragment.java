@@ -34,6 +34,7 @@ import com.manfenjiayuan.pda_supermarket.service.UploadSyncManager;
 import com.manfenjiayuan.pda_supermarket.ui.store.CashierPayActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -228,7 +229,8 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
         //Step 1:
         if (productAdapter.getItemCount() > 0) {
             ZLogger.d(String.format("挂单：%s", curPosTradeNo));
-            CashierAgent.settle(curPosTradeNo, PosOrderEntity.ORDER_STATUS_HANGUP,
+            CashierAgent.settle(BizType.POS,
+                    PosType.POS_STANDARD, curPosTradeNo, null, PosOrderEntity.ORDER_STATUS_HANGUP,
                     productAdapter.getEntityList());
         }
 
@@ -343,7 +345,8 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
         Observable.create(new Observable.OnSubscribe<CashierOrderInfo>() {
             @Override
             public void call(Subscriber<? super CashierOrderInfo> subscriber) {
-                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(curPosTradeNo,
+                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS,
+                        PosType.POS_STANDARD, curPosTradeNo, null,
                         PosOrderEntity.ORDER_STATUS_STAY_PAY, productAdapter.getEntityList());
 
                 subscriber.onNext(cashierOrderInfo);

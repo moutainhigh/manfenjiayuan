@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PosProductDao extends BaseDbDao<PosProductEntity, String> {
 
-    private static final String TABLE_NAME = "tb_pda_procuct_v00001";
+    private static final String TABLE_NAME = "tb_pda_procuct_v00002";
 
     @Override
     protected Pair<String, String> initTableChName() {

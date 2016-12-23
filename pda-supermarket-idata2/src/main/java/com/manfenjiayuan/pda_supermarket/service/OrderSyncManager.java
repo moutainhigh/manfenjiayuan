@@ -104,6 +104,7 @@ public abstract class OrderSyncManager {
         order.put("adjPrice", orderEntity.getRetailAmount() - orderEntity.getFinalAmount()); //调价金额
         order.put("paystatus", orderEntity.getPaystatus());
         order.put("subType", orderEntity.getSubType());
+        order.put("outerNo", orderEntity.getOuterTradeNo());//外部订单编号（外部平台订单组货功能特有）
         order.put("posId", orderEntity.getPosId());//设备编号
         order.put("sellOffice", orderEntity.getSellOffice());//curoffice id
         order.put("sellerId", orderEntity.getSellerId());//spid

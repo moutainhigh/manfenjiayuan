@@ -2,14 +2,15 @@ package com.manfenjiayuan.pda_supermarket.database.entity;
 
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
-import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.api.constant.PosType;
+import com.mfh.framework.api.abs.MfhEntity;
+import com.mfh.framework.api.constant.BizType;
 
 /**
  * POS--订单销售流水
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name = "tb_pda_order_v00001")
+@Table(name = "tb_pda_order_v00002")
 public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     /**
      * POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo
@@ -24,9 +25,14 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
      */
     private Integer isActive = ACTIVE;
 
-    private Integer bizType;//业务类型
-    //实际取值为商品的产品线编号
-    private Integer subType;//业务子类型，根据商品而定
+    private Integer bizType = BizType.POS;//业务类型
+    /**
+     * 业务子类型
+     * <li>@deprecated 实际取值为商品的产品线编号</li>
+     * <li>@deprecated 根据商品而定</li>
+     * <li>增加第三方订单</li>
+     * */
+    private Integer subType = PosType.POS_STANDARD;
 
     private String posId; //POS编号
 
@@ -83,27 +89,7 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     private Long sellOffice; //销售网点
     private Long sellerId;//订单所属租户编号(销售网点的公司);//spid，ternatid
 
-
-    //=========== @Deprecated start ==================
-    @Deprecated
-    private Integer payType;//支付方式
-    @Deprecated
-    private String couponsIds = ""; //优惠券号列表
-    @Deprecated
-    private String ruleIds = "";//促销规则
-    @Deprecated
-    private Double score = 0D; //订单总积分
-    @Deprecated
-    private Double ruleDiscountAmount = 0D;//折扣价2(促销规则&卡券优惠)
-    @Deprecated
-    //已支付金额＝实际收取金额＋折扣价2 >＝ 商品成交金额＝折扣价1＋商品零售金额
-    private Double paidAmount = 0D;
-    @Deprecated
-    //找零金额，与paidAmount一样，订单支付记录表中对应AMOUNT_TYPE_OUT的金额总和
-    //注意：只记录当前订单找零金额，不纳入统计
-    private Double change = 0D;
-    //=========== @Deprecated end ==================
-
+    private String outerTradeNo;//外部订单编号
 
     public String getBarCode() {
         return barCode;
@@ -255,84 +241,11 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
         this.subType = subType;
     }
 
-
-    @Deprecated
-    public String getCouponsIds() {
-        return couponsIds;
+    public String getOuterTradeNo() {
+        return outerTradeNo;
     }
 
-    @Deprecated
-    public void setCouponsIds(String couponsIds) {
-        this.couponsIds = couponsIds;
+    public void setOuterTradeNo(String outerTradeNo) {
+        this.outerTradeNo = outerTradeNo;
     }
-
-    @Deprecated
-    public String getRuleIds() {
-        return ruleIds;
-    }
-
-    @Deprecated
-    public void setRuleIds(String ruleIds) {
-        this.ruleIds = ruleIds;
-    }
-
-    @Deprecated
-    public Double getScore() {
-        return score;
-    }
-
-    @Deprecated
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
-    @Deprecated
-    public Double getRuleDiscountAmount() {
-        if (ruleDiscountAmount == null) {
-            return 0D;
-        }
-        return ruleDiscountAmount;
-    }
-
-    @Deprecated
-    public void setRuleDiscountAmount(Double ruleDiscountAmount) {
-        this.ruleDiscountAmount = ruleDiscountAmount;
-    }
-
-    @Deprecated
-    public Double getPaidAmount() {
-        if (paidAmount == null) {
-            return 0D;
-        }
-        return paidAmount;
-    }
-
-    @Deprecated
-    public void setPaidAmount(Double paidAmount) {
-        this.paidAmount = paidAmount;
-    }
-
-    @Deprecated
-    public Double getChange() {
-        if (change == null) {
-            return 0D;
-        }
-        return change;
-    }
-
-    @Deprecated
-    public void setChange(Double change) {
-        this.change = change;
-    }
-
-    @Deprecated
-    public Integer getPayType() {
-        return payType;
-    }
-
-    @Deprecated
-    public void setPayType(Integer payType) {
-        this.payType = payType;
-    }
-
 }

@@ -80,6 +80,8 @@ public class SplashActivity extends InitActivity {
             tvVersion.setText(String.format("%s-%d",
                     appInfo.getVersionName(), appInfo.getVersionCode()));
         }
+
+        requestPermissions();
     }
 
     @Override
@@ -88,34 +90,11 @@ public class SplashActivity extends InitActivity {
 
         DbVersion.setDomainVersion("PDASUPERMARKET.CLIENT.DB.UPGRADE", 0);
 
-//        String hostServerData = SharedPrefesManagerBase.getText(SharedPrefesManagerBase.PK_S_HOSTSERVER, null);
-//        HostServer hostServer = JSONObject.toJavaObject(JSONObject.parseObject(hostServerData),
-//                HostServer.class);
-//        if (hostServer == null){
-//            hostServer = new HostServer(1L,
-//                    "米西厨房", "admin.mixicook.com",
-//                    "http://admin.mixicook.com/pmc",
-//                    "http://mobile.mixicook.com/mfhmobile/mobile/api",
-//                    R.mipmap.ic_textlogo_mixicook, R.mipmap.ic_hybridlogo_mixicook,
-//                    AppIconManager.ACTIVITY_ALIAS_CASHIER_MIXICOOK, "mixicook.skin");
-//            SharedPrefesManagerBase.set(SharedPrefesManagerBase.PK_S_HOSTSERVER,
-//                    JSONObject.toJSONString(hostServer));
-//        }
-    }
-
-    @Override
-    public void doAsyncTask() {
-        if (!requestPermissions()) {
-            return;
-        }
-
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
         setupGetui();
-
-        super.doAsyncTask();
-        // TODO: 07/11/2016
     }
+
 
     @Override
     protected void initComleted() {
@@ -208,9 +187,8 @@ public class SplashActivity extends InitActivity {
     @Override
     protected void onPermissionsGranted() {
         super.onPermissionsGranted();
-// SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
-//        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
-        setupGetui();
+        doAsyncTask();
+
     }
 
 
@@ -230,7 +208,7 @@ public class SplashActivity extends InitActivity {
         File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
         ZLogger.df("libgetuiext2.so exist = " + file.exists());
 
-        String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
+        String cid = PushManager.getInstance().getClientid(AppContext.getAppContext());
         ZLogger.df("当前应用的cid = " + cid);
     }
 

@@ -18,6 +18,7 @@ import com.manfenjiayuan.business.ui.HybridActivity;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.service.DemoPushService;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -29,6 +30,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseFragment;
+import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.tencent.bugly.beta.Beta;
 
@@ -146,11 +148,35 @@ public class MyFragment extends BaseFragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @OnClick(R.id.button_logout)
+    /**
+     * 显示退出提示框
+     */
+    public void showLogoutAlert() {
+        CommonDialog dialog = new CommonDialog(getContext());
+        dialog.setMessage(R.string.dialog_message_logout);
+        dialog.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                logout();
+
+            }
+        });
+        dialog.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
     /**
      * 退出当前账号
      */
-    @OnClick(R.id.button_logout)
     public void logout() {
         ZLogger.df("手动退出当前账号");
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在退出当前账号...", false);
@@ -235,7 +261,7 @@ public class MyFragment extends BaseFragment {
 
             if (StringUtils.isEmpty(cid)) {
                 ZLogger.df("准备初始化个推服务...");
-                PushManager.getInstance().initialize(AppContext.getAppContext());
+                PushManager.getInstance().initialize(AppContext.getAppContext(), DemoPushService.class);
 //                        PushManager.getInstance().turnOnPush(AppContext.getAppContext());
             } else {
                 ZLogger.df("准备开启个推服务...");

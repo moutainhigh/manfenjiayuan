@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.igexin.sdk.PushManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.ValidateManager;
@@ -23,6 +24,7 @@ import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
+import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
@@ -659,54 +661,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         }
     }
 
-    /**
-     * 显示退出提示框
-     */
-    public void showLogoutAlert() {
-        CommonDialog dialog = new CommonDialog(this);
-        dialog.setMessage(R.string.dialog_message_logout);
-        dialog.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                logout();
-
-            }
-        });
-        dialog.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
-
-    /**
-     * 退出当前账号
-     */
-    private void logout() {
-        MfhUserManager.getInstance().logout(new Callback() {
-            @Override
-            public void onSuccess() {
-                redirectToLogin();
-            }
-
-            @Override
-            public void onProgress(int progress, String status) {
-
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                redirectToLogin();
-            }
-        });
-    }
-
-
     @Override
     public void onRegisterPlatProcess() {
 
@@ -743,7 +697,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         File file = new File(this.getApplicationInfo().nativeLibraryDir + File.separator + "libgetuiext2.so");
         ZLogger.df("libgetuiext2.so exist = " + file.exists());
 
-        String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
+        String cid = PushManager.getInstance().getClientid(AppContext.getAppContext());
         ZLogger.df("当前应用的cid = " + cid);
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class PosOrderDao extends BaseSeqAbleDao<PosOrderEntity, String> {
 
-    private static final String TABLE_NAME = "tb_pda_order_v00001";
+    private static final String TABLE_NAME = "tb_pda_order_v00002";
 
     public static final String ORDER_BY_UPDATEDDATE_ASC = "updatedDate asc";//升序
     public static final String ORDER_BY_UPDATEDATE_DESC = "updatedDate desc";
@@ -37,10 +37,10 @@ public class PosOrderDao extends BaseSeqAbleDao<PosOrderEntity, String> {
         return String.class;
     }
 
-    @Override
-    public String getSequeceName() {
-        return "tb_pos_order_v3";
-    }
+//    @Override
+//    public String getSequeceName() {
+//        return "tb_pos_order_v3";
+//    }
 
     /**
      * 查询指定session下的消息类比，按照逆序

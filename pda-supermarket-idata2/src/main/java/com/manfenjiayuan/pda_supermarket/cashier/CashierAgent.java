@@ -100,19 +100,23 @@ public class CashierAgent {
      * @param orderBarCode     订单交易流水条码
      * @param shopcartEntities 订单明细
      */
-    public static boolean simpleSettle(String orderBarCode, List<CashierShopcartEntity> shopcartEntities) {
+    public static boolean simpleSettle(Integer bizType, Integer subType,
+                                       String orderBarCode, String outTradeNo,
+                                       List<CashierShopcartEntity> shopcartEntities) {
         //保存or更新订单
-        PosOrderEntity orderEntity = fetchOrderEntity(BizType.POS, orderBarCode);
+        PosOrderEntity orderEntity = fetchOrderEntity(bizType, orderBarCode);
         if (orderEntity == null) {
             orderEntity = new PosOrderEntity();
             orderEntity.setSellerId(MfhLoginService.get().getSpid());// 需要登录
-            orderEntity.setBizType(BizType.POS);
+            orderEntity.setBizType(bizType);
             orderEntity.setBarCode(orderBarCode);
             orderEntity.setSellOffice(MfhLoginService.get().getCurOfficeId());
             orderEntity.setCreatedBy(MfhLoginService.get().getGuid());
             orderEntity.setPosId(SharedPrefesManagerFactory.getTerminalId());//设备编号
             orderEntity.setCreatedDate(new Date());
         }
+        orderEntity.setSubType(subType);
+        orderEntity.setOuterTradeNo(outTradeNo);
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);//订单状态
         orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
@@ -322,10 +326,11 @@ public class CashierAgent {
     /**
      * 结算
      */
-    public static CashierOrderInfo settle(String orderBarCode, int status,
+    public static CashierOrderInfo settle(Integer bizType, Integer subType, String orderBarCode,
+                                          String outTradeNo, int status,
                                           List<CashierShopcartEntity> shopcartEntities) {
         //创建or更新订单，保存or更新订单明细
-        simpleSettle(orderBarCode, shopcartEntities);
+        simpleSettle(bizType, subType, orderBarCode, outTradeNo, shopcartEntities);
         CashierOrderInfo cashierOrderInfo = makeCashierOrderInfo(BizType.POS,
                 orderBarCode, null);
         // 7/5/16  修复初始状态，订单金额为空的问题。
@@ -378,7 +383,7 @@ public class CashierAgent {
         Human human = cashierOrderInfo.getVipMember();
         if (human != null) {
             orderEntity.setHumanId(human.getId());
-            orderEntity.setScore(0D);//会员积分
+//            orderEntity.setScore(0D);//会员积分
         }
 
         //支付完成
