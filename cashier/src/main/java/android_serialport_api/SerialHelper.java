@@ -75,6 +75,7 @@ public abstract class SerialHelper {
         try {
 //			ZLogger.d("串口发送" + DataConvertUtil.ByteArrToHex(bOutArray));
             mOutputStream.write(bOutArray);
+//            mOutputStream.flush();
         } catch (IOException e) {
 //			e.printStackTrace();
             ZLogger.e(e.toString());

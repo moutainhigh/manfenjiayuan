@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.led.LedAgent;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.service.PeripheralService;
@@ -154,11 +154,11 @@ public abstract class CashierActivity2 extends BaseActivity {
             }
 
             if (mPeripheralBinder != null){
-                mPeripheralBinder.VFD(GPrinterAgent.VFD("12.306"));
+                mPeripheralBinder.VFD(LedAgent.VFD("12.306"));
             }
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD) {
             if (mPeripheralBinder != null){
-                mPeripheralBinder.VFD(GPrinterAgent.VFD(event.getCmd()));
+                mPeripheralBinder.VFD(LedAgent.VFD(event.getCmd()));
             }
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_BYTE) {
             if (mPeripheralBinder != null){

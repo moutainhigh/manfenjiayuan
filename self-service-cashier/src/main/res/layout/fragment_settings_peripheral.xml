@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/spacing_double"
-        android:paddingBottom="@dimen/spacing_double">
+        android:paddingBottom="@dimen/spacing_double"
+        android:paddingTop="@dimen/spacing_double">
 
         <!--打印机-->
         <com.bingshanguxue.vector_uikit.ToggleSettingItem
@@ -64,9 +64,10 @@
             android:layout_height="56dp"
             android:layout_marginTop="@dimen/spacing_double"
             app:position="top"
-            app:src="@mipmap/ic_ftp"
+            app:src="@mipmap/ic_scale_label"
+            app:subText="寺冈SM110"
             app:subTextSize="12sp"
-            app:text="FileZilla (寺冈电子秤)"
+            app:text="标签秤"
             app:textSize="16sp"/>
 
         <!--绿泰电子价签-->
@@ -74,10 +75,23 @@
             android:id="@+id/item_greentags_webservice"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:position="bottom"
+            app:position="center"
             app:src="@mipmap/ic_tag"
             app:subTextSize="12sp"
             app:text="绿泰电子价签"
+            app:textSize="16sp"/>
+
+
+        <!--小票打印-->
+        <com.bingshanguxue.vector_uikit.SettingsItem
+            android:id="@+id/item_receipt"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:position="center"
+            app:src="@mipmap/ic_receipt"
+            app:subText="点击设置"
+            app:subTextSize="12sp"
+            app:text="银联"
             app:textSize="16sp"/>
 
     </LinearLayout>

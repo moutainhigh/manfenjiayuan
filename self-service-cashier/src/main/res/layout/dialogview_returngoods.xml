@@ -88,7 +88,7 @@
             app:editInputType="barcode"
             app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:editTextColor="@color/material_black"
-            app:inputNumberLabelView_inputTextColorHint="@color/black_35"
+            app:editTextColorHint="@color/mfh_textColorHint"
             app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_toolbar_search_white" />
 
         <!--商品列表-->

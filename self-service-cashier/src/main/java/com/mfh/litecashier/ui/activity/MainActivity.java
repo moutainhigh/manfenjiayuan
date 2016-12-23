@@ -33,11 +33,8 @@ import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.led.LedAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.bingshanguxue.cashier.hardware.printer.gp.GpPrinterManager;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
-import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrinterManager;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
@@ -89,8 +86,6 @@ import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.mfh.litecashier.com.PrintManagerImpl;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.presenter.CashierPresenter;
@@ -112,7 +107,6 @@ import com.mfh.litecashier.ui.dialog.QueryBalanceDialog;
 import com.mfh.litecashier.ui.dialog.RegisterUserDialog;
 import com.mfh.litecashier.ui.dialog.ReturnGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ValidatePhonenumberDialog;
-import com.mfh.litecashier.ui.fragment.components.HomeAdvFragment;
 import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryFragment;
 import com.mfh.litecashier.ui.fragment.goods.query.QueryGoodsFragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
@@ -140,8 +134,6 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.mfh.litecashier.R.id.fragment_plugin;
 
 
 /**
@@ -1152,7 +1144,8 @@ public class MainActivity extends CashierActivity2
             break;
             case Constants.ARC_CASHIER_PREPAREGOODS: {
                 if (resultCode == Activity.RESULT_OK) {
-                    ZLogger.df("拣货单组货成功");
+                    DialogUtil.showHint("配送成功");
+                    ZLogger.df("配送成功");
 
                     if (StringUtils.isEmpty(curPosTradeNo)) {
                         CashierShopcartService.getInstance()
@@ -1165,10 +1158,10 @@ public class MainActivity extends CashierActivity2
                     if (data != null) {
                         boolean isTakeoutOrder = data.getBooleanExtra("isTakeOutOrder", false);
                         if (isTakeoutOrder) {
-                            CashierOrderInfo cashierOrderInfo = (CashierOrderInfo) data.getSerializableExtra("cashierOrderInfo");
-                            if (cashierOrderInfo != null) {
+                            String posTradeNo = data.getStringExtra("posTradeNo");
+                            if (StringUtils.isEmpty(posTradeNo)) {
                                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
-                                        cashierOrderInfo.getPosTradeNo());
+                                        posTradeNo);
                                 if (orderEntity != null) {
                                     PrinterFactory.getPrinterManager().printPosOrder(orderEntity);
                                 }
@@ -1252,7 +1245,7 @@ public class MainActivity extends CashierActivity2
 
                     //显示找零
 //        SerialManager.show(4, Math.abs(cashierOrderInfo.getHandleAmount()));
-                    GPrinterAgent.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
+                    LedAgent.vfdShow(String.format("Change:%.2f\r\nThank You!", changeAmount));
 
                     if (changeAmount >= 0.01) {
                         if (mTtsBinder != null){
@@ -1355,7 +1348,7 @@ public class MainActivity extends CashierActivity2
                 if (productAdapter.getItemCount() > 0) {
                     btnSettle.setEnabled(true);
                 } else {
-                    GPrinterAgent.clear();
+                    LedAgent.clear();
                     btnSettle.setEnabled(false);
                 }
                 if (needScroll) {
@@ -1794,7 +1787,7 @@ public class MainActivity extends CashierActivity2
      */
     public void hangUpOrder() {
         inlvBarcode.clear();
-        GPrinterAgent.clear();
+        LedAgent.clear();
         //Step 1:
         if (productAdapter.getItemCount() > 0) {
             ZLogger.d(String.format("挂单：%s", curPosTradeNo));
@@ -1820,7 +1813,7 @@ public class MainActivity extends CashierActivity2
      */
     private void resumeOrder(String posTradeNo) {
         inlvBarcode.clear();
-        GPrinterAgent.clear();
+        LedAgent.clear();
 
         if (productAdapter.getItemCount() > 0) {
             //挂起当前订单

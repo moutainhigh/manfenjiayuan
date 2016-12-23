@@ -17,7 +17,6 @@
 package android_serialport_api;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.printer.sdk.utils.XLog;
 
 import java.io.File;
 import java.io.FileDescriptor;

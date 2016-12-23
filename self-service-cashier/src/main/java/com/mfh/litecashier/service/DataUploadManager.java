@@ -1,6 +1,9 @@
 package com.mfh.litecashier.service;
 
 
+import android.os.Handler;
+import android.os.Message;
+
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.PayStatus;
 import com.bingshanguxue.cashier.SyncStatus;
@@ -27,6 +30,8 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -47,6 +52,12 @@ public class DataUploadManager extends OrderSyncManager {
     private PageInfo incomeDistributionPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
     private PageInfo commitCashPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 1);//翻页
 
+    /**
+     * 定时同步订单
+     */
+    private static final int MSG_WHAT_SYNC_POSORDER = 1;
+    private static Timer syncPosOrderTimer = new Timer();
+
     private static DataUploadManager instance = null;
 
     /**
@@ -64,6 +75,51 @@ public class DataUploadManager extends OrderSyncManager {
         }
         return instance;
     }
+
+    static Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_WHAT_SYNC_POSORDER: {
+                    ZLogger.df("定时任务激活：上传收银订单");
+                    DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
+                }
+                break;
+            }
+
+            // 要做的事情
+            super.handleMessage(msg);
+        }
+    };
+
+    /**
+     * 定时同步POS订单
+     */
+    public void start() {
+        cancelTimer();
+        ZLogger.d("定时任务开启...");
+        if (syncPosOrderTimer == null) {
+            syncPosOrderTimer = new Timer();
+        }
+
+        syncPosOrderTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = MSG_WHAT_SYNC_POSORDER;
+                handler.sendMessage(message);
+            }
+        }, 10 * 1000, 10 * 60 * 1000);
+    }
+
+    public void cancelTimer() {
+        ZLogger.d("取消定时任务...");
+        if (syncPosOrderTimer != null) {
+            syncPosOrderTimer.cancel();
+        }
+        syncPosOrderTimer = null;
+    }
+
 
     /**
      * 下载更新POS数据库

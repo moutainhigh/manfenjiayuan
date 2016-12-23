@@ -17,7 +17,6 @@ package net.tsz.afinal.http;
 
 import android.os.SystemClock;
 
-
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 
@@ -316,6 +315,8 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
 
     @Override
     protected Object doInBackground(Object... params) {
+        ZLogger.d("InBackground");
+
         if(params!=null && params.length == 3){
             targetUrl = String.valueOf(params[1]);
             isResume = (Boolean) params[2];
@@ -338,34 +339,42 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
     @SuppressWarnings("unchecked")
     @Override
     protected void onProgressUpdate(Object... values) {
-        int update = Integer.valueOf(String.valueOf(values[0]));
-        if (values.length > 1){
-//            Log.d("Nat: makeRequestWithRetries.onProgressUpdate", String.format("%s/%s", String.valueOf(values[0]), String.valueOf(values[1])));
-        }else if (values.length > 0){
-//            Log.d("Nat: makeRequestWithRetries.onProgressUpdate",String.valueOf(values[0]));
+        try{
+            if (values.length > 1){
+                ZLogger.d(String.format("%s/%s", String.valueOf(values[0]), String.valueOf(values[1])));
+            }else if (values.length > 0){
+                ZLogger.d(String.valueOf(values[0]));
+            }
+            int update = Integer.valueOf(String.valueOf(values[0]));
+
+            switch (update) {
+                case UPDATE_START:
+                    if(callback!=null)
+                        callback.onStart();
+                    break;
+                case UPDATE_LOADING:
+                    if(callback!=null)
+                        callback.onLoading(Long.valueOf(String.valueOf(values[1])),
+                                Long.valueOf(String.valueOf(values[2])));
+                    break;
+                case UPDATE_FAILURE:
+                    if(callback!=null)
+                        callback.onFailure((Throwable)values[1],(String)values[2]);
+                    break;
+                case UPDATE_SUCCESS:
+                    if(callback!=null)
+                        callback.onSuccess((T)values[1]);
+                    break;
+                default:
+                    break;
+            }
+            super.onProgressUpdate(values);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            ZLogger.e(e.toString());
         }
 
-        switch (update) {
-            case UPDATE_START:
-                if(callback!=null)
-                    callback.onStart();
-                break;
-            case UPDATE_LOADING:
-                if(callback!=null)
-                    callback.onLoading(Long.valueOf(String.valueOf(values[1])),Long.valueOf(String.valueOf(values[2])));
-                break;
-            case UPDATE_FAILURE:
-                if(callback!=null)
-                    callback.onFailure((Throwable)values[1],(String)values[2]);
-                break;
-            case UPDATE_SUCCESS:
-                if(callback!=null)
-                    callback.onSuccess((T)values[1]);
-                break;
-            default:
-                break;
-        }
-        super.onProgressUpdate(values);
     }
 
     public boolean isStop() {
@@ -388,6 +397,7 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
             if(status.getStatusCode() == 416 && isResume){
                 errorMsg += " \n maybe you have download complete.";
             }
+            ZLogger.d(errorMsg);
             publishProgress(UPDATE_FAILURE, new HttpResponseException(status.getStatusCode(),
                     status.getReasonPhrase()),errorMsg);
         } else {
@@ -402,6 +412,7 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
                     else{
                         responseBody = mStrEntityHandler.handleEntity(entity,this,charset);
                     }
+                    ZLogger.d("handleResponse 成功");
                     publishProgress(UPDATE_SUCCESS,responseBody);
                 }
                 else{
@@ -410,6 +421,7 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
                 }
 
             } catch (IOException e) {
+                ZLogger.e(e.toString());
                 publishProgress(UPDATE_FAILURE,e,e.getMessage());
             }
 
@@ -418,13 +430,17 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
     private long time;
     @Override
     public void callBack(long count, long current,boolean mustNoticeUI) {
+        ZLogger.d(String.format("callBack: count=%d, current=%d, mustNoticeUI=%b",
+                count, current, mustNoticeUI));
         if(callback!=null && callback.isProgress()){
             if(mustNoticeUI){
+                ZLogger.d("noticeUi, loading...");
                 publishProgress(UPDATE_LOADING,count,current);
             }else{
                 long thisTime = SystemClock.uptimeMillis();
                 if(thisTime - time >= callback.getRate()){
                     time = thisTime ;
+                    ZLogger.d("noticeUi, loading...");
                     publishProgress(UPDATE_LOADING,count,current);
                 }
             }

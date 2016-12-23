@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
                 app:editTextColor="@color/black"
-                app:inputNumberLabelView_inputTextColorHint="@color/black_35" />
+                app:editTextColorHint="@color/mfh_textColorHint"/>
             <!--商品名称-->
             <com.mfh.litecashier.ui.widget.InputSearchView
                 android:id="@+id/inlv_productname"
@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 app:inputNumberLabelView_inputHint="@string/hint_product_name"
                 app:editTextColor="@color/black"
-                app:inputNumberLabelView_inputTextColorHint="@color/black_35" />
+                app:editTextColorHint="@color/mfh_textColorHint" />
 
 
             <!--批发商-->
@@ -115,7 +115,7 @@
                 android:layout_weight="1"
                 app:inputNumberLabelView_inputHint="@string/hint_product_brand"
                 app:editTextColor="@color/black"
-                app:inputNumberLabelView_inputTextColorHint="@color/black_35" />
+                app:editTextColorHint="@color/mfh_textColorHint" />
 
             <!--style="@style/SpinnerMfhTheme"-->
             <Spinner

@@ -17,7 +17,7 @@
         android:layout_margin="@dimen/spacing_double"
         app:inputNumberLabelView_inputHint="速记码"
         app:editTextColor="@color/black"
-        app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+        app:editTextColorHint="@color/mfh_textColorHint"/>
 
     <!--分割线-->
     <View

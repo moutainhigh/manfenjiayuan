@@ -114,15 +114,6 @@
 
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/fab_print"
-                style="@style/FloatImageButton"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginBottom="@dimen/spacing_8x"
-                android:layout_marginEnd="@dimen/spacing_double"
-                android:src="@mipmap/ic_print_white"
-                android:visibility="gone"/>
         </RelativeLayout>
 
     </LinearLayout>

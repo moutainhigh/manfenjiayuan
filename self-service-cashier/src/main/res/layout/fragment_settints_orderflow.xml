@@ -84,7 +84,7 @@
             android:orientation="horizontal"
             app:inputNumberLabelView_inputHint="订单编号"
             app:editTextColor="@color/black"
-            app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+            app:editTextColorHint="@color/mfh_textColorHint"/>
 
         <!--订单流水号-->
         <com.mfh.litecashier.ui.widget.InputSearchView
@@ -97,7 +97,7 @@
             android:orientation="horizontal"
             app:inputNumberLabelView_inputHint="订单流水号"
             app:editTextColor="@color/black"
-            app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+            app:editTextColorHint="@color/mfh_textColorHint"/>
 
 
         <!--日结-->

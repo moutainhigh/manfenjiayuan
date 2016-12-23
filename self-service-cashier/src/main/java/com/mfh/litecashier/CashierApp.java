@@ -45,6 +45,12 @@ public class CashierApp extends MfhApplication {
 
         super.onCreate();
 
+//        byte[] test = EmbPrinter.setFont(0, 1, 1, 0, 0);
+//        ZLogger.d(Base64.encodeToString(test, Base64.DEFAULT));
+//        EscCommand esc = new EscCommand();
+//        esc.addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF,
+//                EscCommand.ENABLE.ON, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF);
+
         SMScaleSyncManager2.FOLDER_PATH_SMSCALE = getPackageName() + File.separator + "smscale";
 
         mRefWatcher = LeakCanary.install(this);

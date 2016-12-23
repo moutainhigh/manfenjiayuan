@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
@@ -24,9 +23,6 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.hardware.printer.emb.EmbPrinterManager;
-import com.mfh.litecashier.com.EmbPrintManagerImpl;
-import com.bingshanguxue.cashier.hardware.printer.gp.GpPrinterManager;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 

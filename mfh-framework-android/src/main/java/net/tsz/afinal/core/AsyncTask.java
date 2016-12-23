@@ -477,7 +477,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      */
     protected final void publishProgress(Progress... values) {
         if (!isCancelled()) {
-            ZLogger.d("publishProgress");
+            ZLogger.d("publishProgress: " + values[0]);
             sHandler.obtainMessage(MESSAGE_POST_PROGRESS,
                     new AsyncTaskResult<>(this, values)).sendToTarget();
         }
@@ -503,9 +503,11 @@ public abstract class AsyncTask<Params, Progress, Result> {
 			AsyncTaskResult result = (AsyncTaskResult) msg.obj;
             switch (msg.what) {
                 case MESSAGE_POST_RESULT:
+                    ZLogger.d("MESSAGE_POST_RESULT");
                     result.mTask.finish(result.mData[0]);
                     break;
                 case MESSAGE_POST_PROGRESS:
+                    ZLogger.d("MESSAGE_POST_PROGRESS");
                     result.mTask.onProgressUpdate(result.mData);
                     break;
             }

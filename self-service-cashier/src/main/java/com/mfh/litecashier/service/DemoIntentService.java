@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.hardware.printer.Printer;
+import com.bingshanguxue.cashier.hardware.printer.gprinter.GPrinter;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
@@ -20,12 +20,11 @@ import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
-import com.mfh.framework.core.utils.NotificationUtils;
+import com.mfh.framework.api.constant.Priv;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.R;
 import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 import com.tencent.bugly.beta.Beta;
@@ -93,7 +92,6 @@ public class DemoIntentService extends GTIntentService {
     public void onReceiveClientId(Context context, String clientid) {
         ZLogger.df("onReceiveClientId -> " + "clientid = " + clientid);
 
-        // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
         if(clientid != null){
             ZLogger.df(String.format("个推 clientId=%s-%s",
                     PushManager.getInstance().getClientid(CashierApp.getAppContext()),
@@ -194,7 +192,7 @@ public class DemoIntentService extends GTIntentService {
     /**
      * 处理透传（payload）数据
      * */
-    private static void processPushPayload(Context context, String data){
+    private void processPushPayload(Context context, String data){
         if (!MfhLoginService.get().haveLogined()){
             ZLogger.d("用户未登录，忽略透传消息");
             return;
@@ -239,6 +237,9 @@ public class DemoIntentService extends GTIntentService {
         }
         //买手抢单组货
         else if (IMBizType.ORDER_TRANS_NOTIFY == bizType) {
+            if (!MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)){
+                return;
+            }
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
             if (count > 0){
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_ORDER_TRANS_NOTIFY));
@@ -289,23 +290,31 @@ public class DemoIntentService extends GTIntentService {
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
         }
         else if (IMBizType.REMOTE_CONTROL_CMD == bizType){
-            JSONObject contentOjb = JSONObject.parseObject(content);
-            Long remoteId = contentOjb.getLong("remoteId");
-            String remoteInfo = contentOjb.getString("remoteInfo");
-            String remoteData = contentOjb.getString("data");
-            ZLogger.df(String.format("<--远程控制: %d %s\n", remoteId, remoteInfo, remoteData));
-            if (remoteId.equals(1L)){
-                RemoteControlClient.getInstance().uploadLogFileStep1();
-            }
-            else if (remoteId.equals(2L)){
-                RemoteControlClient.getInstance().uploadCrashFileStep1();
-            }
-            else if (remoteId.equals(3L)){
-                Beta.checkUpgrade(false, false);
-            }
-            else if (remoteId.equals(20L)){
-                Printer.print(remoteData);
-            }
+            responseRemoteControl(JSONObject.parseObject(content));
+        }
+    }
+
+    /**
+     * 响应远程控制
+     * */
+    private void responseRemoteControl(JSONObject jsonObject){
+        if (jsonObject == null){
+            return;
+        }
+        Long remoteId = jsonObject.getLong("remoteId");
+        String remoteInfo = jsonObject.getString("remoteInfo");
+        String remoteData = jsonObject.getString("data");
+        ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
+
+        if (remoteId.equals(1L)) {
+            RemoteControlClient.getInstance().uploadLogFileStep1();
+        } else if (remoteId.equals(2L)) {
+            RemoteControlClient.getInstance().uploadCrashFileStep1();
+        } else if (remoteId.equals(3L)) {
+            Beta.checkUpgrade(false, false);
+        }
+        else if (remoteId.equals(20L)){
+            GPrinter.print(remoteData);
         }
     }
 

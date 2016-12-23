@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.led.LedAgent;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.BasePayStepFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
@@ -165,7 +165,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
                     JSONObject.toJSONString(cashierOrderInfo)));
 
 //        SerialManager.show(2, cashierOrderInfo.getHandleAmount());
-            GPrinterAgent.vfdShow(String.format("Total:%.2f", handleAmount));
+            LedAgent.vfdShow(String.format("Total:%.2f", handleAmount));
 
             tvHandleAmount.setText(String.format("%.2f", handleAmount));
             tvTotalAmount.setTopText(String.format("%.2f", cashierOrderInfo.getRetailAmount()));

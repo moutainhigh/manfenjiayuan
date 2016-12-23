@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:background="@color/material_white"
+                                                 android:orientation="vertical">
+
+    <!--<include-->
+        <!--layout="@layout/appbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"/>-->
+
+    <LinearLayout
+        android:id="@+id/headview"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/mfh_toolbar_background"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/spacing_double"
+        android:paddingEnd="@dimen/spacing_double"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_header_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:padding="4dp"
+            android:text="打印设置"
+            android:textColor="@color/material_white"
+            android:textSize="20sp"
+            android:maxLines="1"/>
+
+        <ImageButton
+            android:id="@+id/button_header_close"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_toolbar_close"/>
+
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/headview">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_double"
+            android:paddingTop="@dimen/spacing_double">
+
+            <!--收银小票-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_posorder"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_umsips"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="收银小票"
+                app:textSize="16sp"/>
+            <!--拣货单-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_prepareorder"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_umsips"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="拣货单"
+                app:textSize="16sp"/>
+            <!--配送单-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_sendorder"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_umsips"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="配送单"
+                app:textSize="16sp"/>
+            <!--外部配送单-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_sendorder_3p"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_umsips"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="外部配送单"
+                app:textSize="16sp"/>
+            <!--日结单-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_alalysis"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_umsips"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="日结单"
+                app:textSize="16sp"/>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

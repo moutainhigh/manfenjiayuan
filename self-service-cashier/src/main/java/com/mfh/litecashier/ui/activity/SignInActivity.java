@@ -22,7 +22,6 @@ import com.bingshanguxue.skinloader.loader.SkinManager;
 import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
-import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.route.RouteActivity;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.IMClient;
@@ -35,6 +34,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
@@ -93,9 +93,9 @@ public class SignInActivity extends SkinBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
+        ZLogger.d("进入登录页面");
         Intent intent = this.getIntent();
         if (intent != null) {
             loginMode = intent.getIntExtra(EXTRA_KEY_LOGINMODE, LOGIN_MODE_SPLASH);
@@ -103,7 +103,6 @@ public class SignInActivity extends SkinBaseActivity {
 
         //TODO 单击屏幕隐藏键盘
 //        etUserName.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
 //        startService(new Intent(this, Utf7ImeService.class));
         //hide soft input
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -231,8 +230,6 @@ public class SignInActivity extends SkinBaseActivity {
     }
 
     private void refresh(){
-//        dynamicAddView(rootFrame, "background", R.color.colorPrimaryDark);
-
         String lastUsername = MfhLoginService.get().getLastLoginName();
         if (!StringUtils.isEmpty(lastUsername)){
             etUserName.setText(lastUsername);
@@ -249,6 +246,19 @@ public class SignInActivity extends SkinBaseActivity {
         }
         else{
             ivHostServer.setImageResource(getImageResource(hostServer.getDomainUrl()));
+
+//            String domain = hostServer.getDomainUrl();
+//            if (!StringUtils.isEmpty(domain)){
+//                if (domain.startsWith("admin")){
+//                    LauncherManager.changeLauncherIcon(this, LauncherManager.ALIAS_MIXICOOK);
+//                }
+//                else if (domain.startsWith("lanlj")){
+//                    LauncherManager.changeLauncherIcon(this, LauncherManager.ALIAS_LANLJ);
+//                }
+//                else if (domain.startsWith("qianwj")){
+//                    LauncherManager.changeLauncherIcon(this, LauncherManager.ALIAS_QIANWJ);
+//                }
+//            }
         }
     }
     private int getImageResource(String domain){
@@ -337,6 +347,7 @@ public class SignInActivity extends SkinBaseActivity {
 
     @OnClick(R.id.bottomview)
     public void redirect2HostServer(){
+        ZLogger.d("跳转到选择租户页面");
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putBoolean(BaseActivity.EXTRA_KEY_FULLSCREEN, true);

@@ -1,43 +1,107 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:divider="@drawable/divider_horizontal_line_primary"
-    android:showDividers="middle"
-    android:background="@color/material_white">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:divider="@drawable/divider_horizontal_line_primary"
+              android:orientation="vertical"
+              android:showDividers="middle">
+
+    <!--租户卡片-->
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_normal"
+        app:cardBackgroundColor="@color/material_white"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="5dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/spacing_normal">
+            <!-- 公司头像-->
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"/>
+            <!-- 租户名称-->
+            <TextView
+                android:id="@+id/tv_saasName"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/material_black"
+                android:textSize="16sp"/>
+
+            <!--域名地址-->
+            <TextView
+                android:id="@+id/tv_domainUrl"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text=""/>
+
+            <!--联系人-->
+            <TextView
+                android:id="@+id/tv_contact"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text=""/>
+
+            <!--手机号码-->
+            <TextView
+                android:id="@+id/tv_mobilenumber"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text=""/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/tv_curofficeid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/material_black"
+        android:padding="8dp"
         android:text="当前网点编号"
-        android:padding="8dp"/>
+        android:textColor="@color/material_black"/>
 
     <!--账号同步-->
     <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/text_account_sync_interval"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:gravity="start"
             android:padding="8dp"
             android:text=""
-            android:textSize="16sp"
             android:textColor="@color/material_black"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:textSize="16sp"/>
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switchCompat_accountSync"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:gravity="center"
             android:layout_width="80dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="8dp"/>
 
     </LinearLayout>
 

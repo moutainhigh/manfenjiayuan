@@ -1,6 +1,6 @@
 package com.mfh.litecashier.com;
 
-import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
 import com.mfh.framework.anlaysis.logger.ZLogger;

@@ -2,13 +2,15 @@ package com.mfh.litecashier.ui.fragment.settings;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterModel;
 import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
@@ -59,7 +61,7 @@ public class PeripheralFragment extends BaseFragment {
 
     @Override
     protected int getLayoutResId() {
-        return R.layout.fragment_peripheral;
+        return R.layout.fragment_settings_peripheral;
     }
 
     @Override
@@ -139,15 +141,15 @@ public class PeripheralFragment extends BaseFragment {
                     int printerType = PrinterAgent.getPrinterType();
                     switch (id) {
                         case R.id.tv_option_1:
-                            if (printerType != PrinterAgent.PRINTER_TYPE_COMMON){
-                                PrinterAgent.setPrinterType(PrinterAgent.PRINTER_TYPE_COMMON);
+                            if (printerType != PrinterModel.PRINTER_TYPE_COMMON){
+                                PrinterAgent.setPrinterType(PrinterModel.PRINTER_TYPE_COMMON);
                                 togglePrinter.setSubTitle(PrinterAgent.getPrinterName());
                                 EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
                             }
                             break;
                         case R.id.tv_option_2:
-                            if (printerType != PrinterAgent.PRINTER_TYPE_EMBEDED){
-                                PrinterAgent.setPrinterType(PrinterAgent.PRINTER_TYPE_EMBEDED);
+                            if (printerType != PrinterModel.PRINTER_TYPE_EMBEDED){
+                                PrinterAgent.setPrinterType(PrinterModel.PRINTER_TYPE_EMBEDED);
                                 togglePrinter.setSubTitle(PrinterAgent.getPrinterName());
                                 EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_GPRINTER, ""));
                             }
@@ -317,6 +319,13 @@ public class PeripheralFragment extends BaseFragment {
         if (!mGreenTagsSettingsDialog.isShowing()) {
             mGreenTagsSettingsDialog.show();
         }
+    }
+
+    @OnClick(R.id.item_receipt)
+    public void setReceipt() {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        ReceiptDialogFragment receiptDialogFragment = new ReceiptDialogFragment();
+        receiptDialogFragment.show(fm, "fragment_settings_recept");
     }
 
     private void reload() {

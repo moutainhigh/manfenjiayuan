@@ -11,7 +11,9 @@
  */
 package com.mfh.framework.database.seq;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.utils.UuidUtil;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 
 /**
  * 序列业务接口
@@ -77,8 +79,10 @@ public class SequenceServiceImpl implements SequenceService{
     @Override
     public synchronized long getNextSeqLongValue(String sequeceName) {
         Sequence sequence = sequenceDao.getSequence(sequeceName);
-        if (sequence == null)
+        if (sequence == null){
             throw new RuntimeException("指定的序列名:" + sequeceName + "不存在,数据库初始化有错误!");
+        }
+        ZLogger.d(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
         long sequenceValue = sequence.getSequenceValue();//当前值
         long nextValue;
         if (sequenceValue < 0)//第一次
@@ -86,10 +90,16 @@ public class SequenceServiceImpl implements SequenceService{
         else{
             nextValue = sequenceValue + sequence.getStepValue();
             if (sequence.getMaxValue() > 0 && nextValue >= sequence.getMaxValue()) {
-                if (sequence.isCycle())
+                if (sequence.isCycle()){
                     nextValue = sequence.getMinValue();
-                else
+                    ZLogger.df(String.format("序列(%d)已经达到最大值(%d),使用最小值(%d)重新生成新的序列!",
+                            nextValue, sequence.getMaxValue(), sequence.getMinValue()));
+                }
+                else{
+                    ZLogger.ef(String.format("序列(%d)已经达到最大值(%d),不能生成新的序列!",
+                            nextValue, sequence.getMaxValue()));
                     throw new RuntimeException("序列已经达到最大值,不能生成新的序列!");
+                }
             }
         }
         sequence.setSequenceValue(nextValue);

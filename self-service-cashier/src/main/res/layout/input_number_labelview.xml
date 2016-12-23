@@ -42,7 +42,7 @@
             android:scaleType="centerInside"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/spacing_normal"
+            android:layout_marginEnd="@dimen/spacing_double"
             android:layout_marginStart="@dimen/spacing_normal"
             android:background="@null"
             android:contentDescription="@null"
@@ -53,10 +53,11 @@
 
     <ImageButton
         android:id="@+id/ib_label_action1"
-        android:layout_width="66dp"
+        android:layout_width="72dp"
         android:layout_height="match_parent"
         android:background="@drawable/btn_rectange_green"
         android:contentDescription="@null"
+        android:scaleType="centerInside"
         android:src="@mipmap/ic_toolbar_search_white" />
 
 </LinearLayout>

@@ -708,7 +708,7 @@ public class EmbMsgService extends BaseService<EmbMsg, String, EmbMsgDao> {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 0 - saveDate);//
         String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
-        ZLogger.d(String.format("订单过期时间(%s)保留最近 %d 天数据。", expireCursor, saveDate));
+        ZLogger.d(String.format("消息过期时间(%s)保留最近 %d 天数据。", expireCursor, saveDate));
 
         deleteBy(String.format("createdDate < '%s'", expireCursor));
     }

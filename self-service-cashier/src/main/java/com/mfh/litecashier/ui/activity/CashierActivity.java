@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Base64;
 
-import com.bingshanguxue.cashier.hardware.PoslabAgent;
+import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
-import com.bingshanguxue.cashier.hardware.printer.GPrinterAgent;
+import com.bingshanguxue.cashier.hardware.led.LedAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
@@ -511,10 +511,10 @@ public abstract class CashierActivity extends BaseActivity {
 
             comDisplay = new SerialControl(PoslabAgent.getPort(), PoslabAgent.getBaudrate());
             OpenComPort(comDisplay);
-            sendPortData(comDisplay, GPrinterAgent.VFD("12.306"));
+            sendPortData(comDisplay, LedAgent.VFD("12.306"));
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD) {
             OpenComPort(comDisplay);
-            sendPortData(comDisplay, GPrinterAgent.VFD(event.getCmd()));
+            sendPortData(comDisplay, LedAgent.VFD(event.getCmd()));
         } else if (event.getType() == SerialPortEvent.SERIAL_TYPE_VFD_BYTE) {
             OpenComPort(comDisplay);
             sendPortData(comDisplay, event.getCmdBytes());

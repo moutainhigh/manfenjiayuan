@@ -76,7 +76,6 @@ public class GlobalInstanceBase extends Observable{
 
         updateApi(mHostServer);
 
-
         setChanged();    //标记此 Observable对象为已改变的对象
         notifyObservers();    //通知所有观察者
     }
@@ -106,14 +105,14 @@ public class GlobalInstanceBase extends Observable{
 
         String domainUrl = mHostServer != null ? mHostServer.getDomainUrl() : null;
         if (!StringUtils.isEmpty(domainUrl)){
-            if (domainUrl.contains("mixicook")) {
+            if (domainUrl.startsWith("admin")) {
                 skinName = "mixicook.skin";
             }
-            else if (domainUrl.contains("qianwj")) {
+            else if (domainUrl.startsWith("qianwj")) {
                 skinName = "qianwj.skin";
             }
-            else if (domainUrl.contains("qianwj")) {
-                skinName = "qianwj.skin";
+            else if (domainUrl.startsWith("lanlj")) {
+                skinName = "lanlj.skin";
             }
         }
 

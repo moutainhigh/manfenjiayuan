@@ -18,7 +18,7 @@
         android:layout_margin="8dp"
         app:inputNumberLabelView_inputHint="速记码"
         app:editTextColor="@color/black"
-        app:inputNumberLabelView_inputTextColorHint="@color/black_35"/>
+        app:editTextColorHint="@color/mfh_textColorHint"/>
 
     <RelativeLayout
         android:layout_width="@dimen/mfh_normal_dialog_width"

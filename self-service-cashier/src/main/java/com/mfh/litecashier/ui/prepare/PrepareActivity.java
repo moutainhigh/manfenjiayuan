@@ -203,6 +203,4 @@ public class PrepareActivity extends BaseActivity {
         }
     }
 
-
-
 }

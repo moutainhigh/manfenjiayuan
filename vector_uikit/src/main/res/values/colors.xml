@@ -8,25 +8,4 @@
     <color name="colorPrimaryDark">@color/material_green_A700</color>
     <color name="colorPrimaryGrey">@color/material_grey_500</color>
 
-    <color name="mfh_circleBadge">#FE5000</color>
-
-    <!--满分家园颜色基础档案，所有应用都应遵循该规范，除特殊情况需要可以自定义颜色-->
-    <color name="mfh_black">#35363B</color>
-
-    <color name="mf_dividerColorPrimary">#d2d2d3</color>
-    <color name="mf_dialog_frame">#64000000</color>
-    <color name="mf_red">#FE5000</color>
-    <!--灰色蒙板-->
-    <color name="mfhtheme_maskPrimary">#F4F5F9</color>
-
-    <!--分割线-->
-    <color name="mfh_divider_light">#dddddd</color>
-
-    <color name="mfh_toolbar_background">#34343A</color>
-    <color name="mfh_statusBarColor">#34343A</color>
-    <color name="mfh_splash_startColor">#64ffffff</color>
-    <color name="mfh_splash_endColor">#64e5e5e5</color>
-    <color name="mfh_positive_default">#009b4f</color>
-    <color name="mfh_negative_defalult">#fd5001</color>
-
 </resources>
