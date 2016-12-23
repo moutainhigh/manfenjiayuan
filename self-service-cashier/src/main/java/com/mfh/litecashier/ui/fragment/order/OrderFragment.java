@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
+import com.bingshanguxue.cashier.hardware.printer.PrinterContract;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.PosOrder;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
@@ -19,7 +21,6 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -139,15 +140,8 @@ public class OrderFragment extends BaseFragment {
      */
     @OnClick(R.id.button_print)
     public void printOrder() {
-        DialogUtil.showHint("打印单据");
         btnPrint.setEnabled(false);
-        if (mPosOrder != null) {
-            ZLogger.d("准备打印订单");
-            PrinterFactory.getPrinterManager().printPosOrder(mPosOrder, printTimes);
-        }
-        else{
-            ZLogger.d("订单无效");
-        }
+        PrinterFactory.getPrinterManager().printPosOrder(mPosOrder, printTimes);
         btnPrint.setEnabled(true);
     }
 
@@ -202,16 +196,16 @@ public class OrderFragment extends BaseFragment {
 
         Bundle args = new Bundle();
         if (index == 0) {
-            printTimes = 1;
+            printTimes = PrinterAgent.getInstance().getPrinterTimes(PrinterContract.Receipt.CASHIER_ORDER);
             args.putInt("bizType", BizType.POS);
             args.putString(PosOrderFragment.EXTRA_KEY_SUBTYPES, "0");
         } else if (index == 1) {
-            printTimes = 3;
+            printTimes = PrinterAgent.getInstance().getPrinterTimes(PrinterContract.Receipt.SEND_ORDER);
             args.putInt("bizType", BizType.SC);
 //            args.putString(FreshScheduleOrderFragment.EXTRA_KEY_STATUS,
 //                    String.valueOf(InvOrderApi.ORDER_STATUS_CONFIRM));
         } else if (index == 2) {
-            printTimes = 3;
+            printTimes = PrinterAgent.getInstance().getPrinterTimes(PrinterContract.Receipt.SEND_ORDER_3P);
             args.putInt("bizType", BizType.POS);
             args.putString(PosOrderFragment.EXTRA_KEY_SUBTYPES, "5,6,7,8,9,10");
         }

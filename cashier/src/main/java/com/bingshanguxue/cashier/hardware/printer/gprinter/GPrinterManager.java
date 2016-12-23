@@ -22,7 +22,6 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.api.scOrder.ScOrderItem;
-import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -33,12 +32,34 @@ import java.util.Date;
 import java.util.List;
 
 
-
 /**
  * 分离式打印机
  * Created by bingshanguxue on 6/22/16.
  */
 public class GPrinterManager extends PrinterManager {
+
+    private static GPrinterManager instance = null;
+
+    /**
+     * 返回 PrintManagerImpl 实例
+     *
+     * @return PrintManagerImpl
+     */
+    public static GPrinterManager getInstance() {
+        if (instance == null) {
+            synchronized (GPrinterManager.class) {
+                if (instance == null) {
+                    instance = new GPrinterManager();
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    public GPrinterManager() {
+        mPrinter = create();
+    }
 
     @Override
     public IPrinter create() {
@@ -562,10 +583,9 @@ public class GPrinterManager extends PrinterManager {
     }
 
     @Override
-    public EscCommand makeHandoverTemp(EscCommand rawEsc, String name, String bcount, String amount) {
-        EscCommand esc = rawEsc;
+    public void makeHandoverTemp(EscCommand esc, String name, String bcount, String amount) {
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
 
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
@@ -589,8 +609,6 @@ public class GPrinterManager extends PrinterManager {
             esc.addText(printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
     /**
@@ -1023,56 +1041,6 @@ public class GPrinterManager extends PrinterManager {
         esc.addText("\n");
     }
 
-
-    /**
-     * 打印线上订单明细
-     */
-    @Override
-    public void makeOrderItem4(EscCommand esc, String name, String bcount, String amount) {
-        if (esc == null) {
-            return;
-        }
-
-        try {
-            //计算行数
-            int maxLine = Math.max(1, (name == null ? 0 : (Printer.getLength(name) - 1) / 20 + 1));
-//        ZLogger.d(String.format("maxLine=%d", maxLine));
-
-            String nameTemp = name;
-            int mid = maxLine / 2;
-            for (int i = 0; i < maxLine; i++) {
-//            ZLogger.d(String.format("nameTemp: %d(%d)", getLength(nameTemp), nameTemp.toCharArray().length));
-                String nameLine = DataConvertUtil.subString(nameTemp,
-                        Math.min(20, Printer.getLength(nameTemp)));
-//            String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, nameTemp.toCharArray().length));
-//            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
-                StringBuilder line = new StringBuilder();
-                //插入名称，不足补空格
-                //中间一行插入数量&金额
-                if (i == mid) {
-                    line.append(Printer.formatShort(nameLine, 20, Printer.BLANK_GRAVITY.RIGHT));
-                    line.append(Printer.formatShort(bcount, 6, Printer.BLANK_GRAVITY.RIGHT));
-                    line.append(Printer.formatShort(amount, 6, Printer.BLANK_GRAVITY.LEFT));
-                } else {
-                    line.append(Printer.formatShort(nameLine, 20, Printer.BLANK_GRAVITY.RIGHT));
-                }
-                line.append("\n");
-//            ZLogger.d(String.format("print line(%d/%d):%s" , i, mid, line.toString()));
-                esc.addText(line.toString());
-
-//                assert nameTemp != null;
-                if (!StringUtils.isEmpty(nameTemp)) {
-                    nameTemp = nameTemp.substring(nameLine.length(), nameTemp.length()).trim();
-                }
-//            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
-//            line.append(formatLong(sub2, 8));
-            }
-//        esc.addText("--------------------------------\n");//32个
-
-        } catch (Exception e) {
-            ZLogger.ef(e.toString());
-        }
-    }
 
 //    @Deprecated
 //    private static EscCommand makePosOrderEsc(List<PosOrderEntity> orderEntities){

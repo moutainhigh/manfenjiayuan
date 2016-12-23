@@ -57,11 +57,11 @@
 
             <!--收银小票-->
             <com.bingshanguxue.vector_uikit.SettingsItem
-                android:id="@+id/item_posorder"
+                android:id="@+id/item_cashier"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:position="center"
-                app:src="@mipmap/ic_umsips"
+                app:src="@mipmap/ic_receipt"
                 app:subText=""
                 app:subTextSize="12sp"
                 app:text="收银小票"
@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:position="center"
-                app:src="@mipmap/ic_umsips"
+                app:src="@mipmap/ic_receipt"
                 app:subText=""
                 app:subTextSize="12sp"
                 app:text="拣货单"
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:position="center"
-                app:src="@mipmap/ic_umsips"
+                app:src="@mipmap/ic_receipt"
                 app:subText=""
                 app:subTextSize="12sp"
                 app:text="配送单"
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:position="center"
-                app:src="@mipmap/ic_umsips"
+                app:src="@mipmap/ic_receipt"
                 app:subText=""
                 app:subTextSize="12sp"
                 app:text="外部配送单"
@@ -105,10 +105,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 app:position="center"
-                app:src="@mipmap/ic_umsips"
+                app:src="@mipmap/ic_receipt"
                 app:subText=""
                 app:subTextSize="12sp"
                 app:text="日结单"
+                app:textSize="16sp"/>
+            <!--出库单-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_stockout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_receipt"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="出库单"
                 app:textSize="16sp"/>
 
         </LinearLayout>

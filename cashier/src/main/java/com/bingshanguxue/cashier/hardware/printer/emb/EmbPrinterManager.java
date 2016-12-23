@@ -41,6 +41,29 @@ import java.util.List;
  */
 public class EmbPrinterManager extends PrinterManager {
 
+    private static EmbPrinterManager instance = null;
+
+    /**
+     * 返回 PrintManagerImpl 实例
+     *
+     * @return PrintManagerImpl
+     */
+    public static EmbPrinterManager getInstance() {
+        if (instance == null) {
+            synchronized (EmbPrinterManager.class) {
+                if (instance == null) {
+                    instance = new EmbPrinterManager();
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    public EmbPrinterManager() {
+        mPrinter = create();
+    }
+
     @Override
     public IPrinter create() {
         return new EmbPrinter();
@@ -586,10 +609,9 @@ public class EmbPrinterManager extends PrinterManager {
     }
 
     @Override
-    public EscCommand makeHandoverTemp(EscCommand rawEsc, String name, String bcount, String amount) {
-        EscCommand esc = rawEsc;
+    public void makeHandoverTemp(EscCommand esc, String name, String bcount, String amount) {
         if (esc == null) {
-            esc = new EscCommand();
+            return;
         }
         esc.addUserCommand(EmbPrinter.initPrinter());
 
@@ -615,8 +637,6 @@ public class EmbPrinterManager extends PrinterManager {
             esc.addText(printText);
         }
         esc.addText("\n");
-
-        return esc;
     }
 
     /**
@@ -642,7 +662,8 @@ public class EmbPrinterManager extends PrinterManager {
         mPrinter.printAndLineFeed(esc, 1);
 //进纸一行
         //设置打印左对齐
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_LEFT));
         /**打印 订单条码*/
         esc.addText(String.format("订单号:%d \n", curOrder.getId()));
         /**打印 应付款*/
@@ -675,14 +696,15 @@ public class EmbPrinterManager extends PrinterManager {
         }
 
         mPrinter.printAndLineFeed(esc, 1);
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
         /**打印 结束语*/
-        esc.addText("谢谢惠顾!\n");
-        esc.addText("欢迎下次光临\n");
+        addFooter(esc);
 
 //        addFooter(esc);
         mPrinter.printAndLineFeed(esc, 3);
 //打印并且走纸3行
+        ZLogger.d("生成打印数据成功");
 
         return esc;
     }

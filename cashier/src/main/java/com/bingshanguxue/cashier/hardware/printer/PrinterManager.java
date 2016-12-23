@@ -1,5 +1,6 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.hardware.printer.gprinter.EscCommand;
 import com.bingshanguxue.cashier.model.PosOrder;
@@ -30,31 +31,9 @@ import rx.schedulers.Schedulers;
  * Created by bingshanguxue on 23/12/2016.
  */
 
-public class PrinterManager implements IPrinterManager{
+public abstract class PrinterManager implements IPrinterManager{
     protected IPrinter mPrinter;
 
-    private static PrinterManager instance = null;
-
-    /**
-     * 返回 PrintManagerImpl 实例
-     *
-     * @return PrintManagerImpl
-     */
-    public static PrinterManager getInstance() {
-        if (instance == null) {
-            synchronized (PrinterManager.class) {
-                if (instance == null) {
-                    instance = new PrinterManager();
-                }
-            }
-        }
-
-        return instance;
-    }
-
-    public PrinterManager() {
-        mPrinter = create();
-    }
 
     public IPrinter getPrinter() {
         return mPrinter;
@@ -83,10 +62,7 @@ public class PrinterManager implements IPrinterManager{
         }
     }
 
-    @Override
-    public IPrinter create() {
-        return null;
-    }
+    public abstract IPrinter create();
 
     @Override
     public void openMoneyBox() {
@@ -125,10 +101,7 @@ public class PrinterManager implements IPrinterManager{
                 });
     }
 
-    @Override
-    public EscCommand makeTopupEsc(QuickPayInfo mQuickPayInfo, String outTradeNo) {
-        return null;
-    }
+    public abstract EscCommand makeTopupEsc(QuickPayInfo mQuickPayInfo, String outTradeNo);
 
     /**
      * 打印POS订单流水
@@ -158,15 +131,13 @@ public class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        Printer.print(escCommand);
+                        Printer.print(escCommand, PrinterAgent.getInstance()
+                                .getPrinterTimes(PrinterContract.Receipt.CASHIER_ORDER));
                     }
                 });
     }
 
-    @Override
-    public EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity) {
-        return null;
-    }
+    public abstract EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity);
 
 
     /**
@@ -197,18 +168,16 @@ public class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        Printer.print(escCommand);
+                        Printer.print(escCommand, PrinterAgent.getInstance()
+                                .getPrinterTimes(PrinterContract.Receipt.PREPARE_ORDER));
                     }
                 });
     }
 
-    @Override
-    public EscCommand makePrepareOrderEsc(ScOrder scOrder) {
-        return null;
-    }
+    public abstract EscCommand makePrepareOrderEsc(ScOrder scOrder);
 
     @Override
-    public void printSendOrder(final ScOrder scOrder, final int printTimes) {
+    public void printSendOrder(final ScOrder scOrder) {
         Observable.create(new Observable.OnSubscribe<EscCommand>() {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
@@ -232,15 +201,13 @@ public class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        Printer.print(escCommand, printTimes);
+                        Printer.print(escCommand, PrinterAgent.getInstance()
+                                .getPrinterTimes(PrinterContract.Receipt.SEND_ORDER));
                     }
                 });
     }
 
-    @Override
-    public EscCommand makeSendOrderEsc(ScOrder scOrder) {
-        return null;
-    }
+    public abstract EscCommand makeSendOrderEsc(ScOrder scOrder);
 
     /**
      * 打印出库单(取件)
@@ -270,15 +237,13 @@ public class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        Printer.print(escCommand);
+                        Printer.print(escCommand, PrinterAgent.getInstance()
+                                .getPrinterTimes(PrinterContract.Receipt.STOCKOUT));
                     }
                 });
     }
 
-    @Override
-    public EscCommand makeStockOutOrderEsc(List<StockOutItem> orderItems) {
-        return null;
-    }
+    public abstract EscCommand makeStockOutOrderEsc(List<StockOutItem> orderItems);
 
     @Override
     public void printDailySettleReceipt(final DailysettleInfo dailysettleInfo) {
@@ -305,15 +270,13 @@ public class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        Printer.print(escCommand);
+                        Printer.print(escCommand, PrinterAgent.getInstance().
+                                getPrinterTimes(PrinterContract.Receipt.ANALYSIS));
                     }
                 });
     }
 
-    @Override
-    public EscCommand makeDailySettleEsc(DailysettleInfo dailysettleInfo) {
-        return null;
-    }
+    public abstract EscCommand makeDailySettleEsc(DailysettleInfo dailysettleInfo);
 
     @Override
     public void printHandoverBill(final HandOverBill handOverBill) {
@@ -340,15 +303,13 @@ public class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onNext(EscCommand escCommand) {
-                        Printer.print(escCommand);
+                        Printer.print(escCommand, PrinterAgent.getInstance()
+                                .getPrinterTimes(PrinterContract.Receipt.ANALYSIS));
                     }
                 });
     }
 
-    @Override
-    public EscCommand makeHandoverEsc(HandOverBill handOverBill) {
-        return null;
-    }
+    public abstract EscCommand makeHandoverEsc(HandOverBill handOverBill);
 
     /**
      * 打印 商品明细（城市之间）
@@ -359,15 +320,12 @@ public class PrinterManager implements IPrinterManager{
      * 012345678901234567890123 45678901
      * 商品名               金额
      */
-    @Override
-    public EscCommand makeHandoverTemp(EscCommand rawEsc, String name, String bcount, String amount) {
-        return null;
-    }
+    public abstract void makeHandoverTemp(EscCommand rawEsc, String name, String bcount, String amount);
 
     /**
      * 打印日结经营分析明细
      */
-    public int printDailySettleAggItem(EscCommand esc, int startIndex,
+    public void printDailySettleAggItem(EscCommand esc, int startIndex,
                                                List<AggItem> aggItems) {
         if (aggItems != null) {
             for (AggItem aggItem : aggItems) {
@@ -379,13 +337,12 @@ public class PrinterManager implements IPrinterManager{
                 startIndex++;
             }
         }
-        return startIndex;
     }
 
     /**
      * 打印日结流水分析明细
      */
-    public int printDailySettleAccItem(EscCommand esc, int startIndex,
+    public void printDailySettleAccItem(EscCommand esc, int startIndex,
                                                List<AccItem> accItems) {
         if (accItems != null && accItems.size() > 0) {
             for (AccItem accItem : accItems){
@@ -396,7 +353,6 @@ public class PrinterManager implements IPrinterManager{
                 startIndex++;
             }
         }
-        return startIndex;
     }
 
     @Override
@@ -431,12 +387,14 @@ public class PrinterManager implements IPrinterManager{
     /**
      * 打印订单
      */
-    private EscCommand makePosOrderEsc(PosOrder posOrder) {
+    public EscCommand makePosOrderEsc(PosOrder posOrder) {
         EscCommand esc = new EscCommand();
 
         if (posOrder == null) {
+            ZLogger.d("订单数据无效，生成打印数据失败");
             return null;
         }
+        ZLogger.d(String.format("准备生成打印数据：%s", JSONObject.toJSONString(posOrder)));
 
         Integer bizType = posOrder.getBtype();
         Integer subType = posOrder.getSubType();
@@ -454,21 +412,14 @@ public class PrinterManager implements IPrinterManager{
         }
         return esc;
     }
+    //收银订单
+    public abstract EscCommand makePosOrderEsc1(PosOrder posOrder);
 
-    @Override
-    public EscCommand makePosOrderEsc1(PosOrder posOrder) {
-        return null;
-    }
+//平台配送单
+   public abstract EscCommand makePosOrderEsc2(PosOrder posOrder);
 
-    @Override
-    public EscCommand makePosOrderEsc2(PosOrder posOrder) {
-        return null;
-    }
-
-    @Override
-    public EscCommand makePosOrderEsc3(PosOrder posOrder) {
-        return null;
-    }
+    //外部平台配送单
+    public abstract EscCommand makePosOrderEsc3(PosOrder posOrder);
 
     @Override
     public void printTestPage() {
@@ -500,10 +451,8 @@ public class PrinterManager implements IPrinterManager{
                 });
     }
 
-    @Override
-    public EscCommand makeTestPageEsc() {
-        return null;
-    }
+    public abstract EscCommand makeTestPageEsc();
+
     /**
      * 打印 商品明细（城市之间）
      * 5个数字等于3个汉字（1个数字＝3/5个汉字）
@@ -524,15 +473,9 @@ public class PrinterManager implements IPrinterManager{
      * esc.addText("货号/品名       单价 数量   小计\n");
      * esc.addText("业务类型            数量    金额\n");
      */
-    @Override
-    public void makeTestTemp(EscCommand esc, String name, String price, String bcount, String amount) {
+    public abstract void makeTestTemp(EscCommand esc, String name, String price, String bcount, String amount);
 
-    }
-
-    @Override
-    public void makeOrderItem1(EscCommand esc, String name, String unit, String bcount) {
-
-    }
+    public abstract void makeOrderItem1(EscCommand esc, String name, String unit, String bcount);
 
     /**
      * 打印 商品明细（城市之间）
@@ -543,12 +486,8 @@ public class PrinterManager implements IPrinterManager{
      * esc.addText("货号/品名     单价   数量  小计\n");
      * esc.addText("商品名        00.01  00.020  00.03\n");32=16+5+5+6
      */
-    @Override
-    public void makeOrderItem2(EscCommand esc, String name, String price, String bcount, String amount) {
+    public abstract void makeOrderItem2(EscCommand esc, String name, String price, String bcount, String amount);
 
-    }
-
-    @Override
     public void makeOrderItem3(EscCommand esc, String name, String bcount, String amount) {
         if (esc == null) {
             return;
@@ -583,8 +522,49 @@ public class PrinterManager implements IPrinterManager{
         }
     }
 
-    @Override
-    public void makeOrderItem4(EscCommand esc, String name, String bcount, String amount) {
+    public void makeOrderItem4(EscCommand esc, String name, String bcount, String amount){
+        if (esc == null) {
+            return;
+        }
 
+        try {
+            //计算行数
+            int maxLine = Math.max(1, (name == null ? 0 : (Printer.getLength(name) - 1) / 20 + 1));
+//        ZLogger.d(String.format("maxLine=%d", maxLine));
+
+            String nameTemp = name;
+            int mid = maxLine / 2;
+            for (int i = 0; i < maxLine; i++) {
+//            ZLogger.d(String.format("nameTemp: %d(%d)", getLength(nameTemp), nameTemp.toCharArray().length));
+                String nameLine = DataConvertUtil.subString(nameTemp,
+                        Math.min(20, Printer.getLength(nameTemp)));
+//            String sub2 = DataConvertUtil.subString(nameTemp, Math.min(PRINT_PRODUCT_NAME_MAX_LEN, nameTemp.toCharArray().length));
+//            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
+                StringBuilder line = new StringBuilder();
+                //插入名称，不足补空格
+                //中间一行插入数量&金额
+                if (i == mid) {
+                    line.append(Printer.formatShort(nameLine, 20, Printer.BLANK_GRAVITY.RIGHT));
+                    line.append(Printer.formatShort(bcount, 6, Printer.BLANK_GRAVITY.RIGHT));
+                    line.append(Printer.formatShort(amount, 6, Printer.BLANK_GRAVITY.LEFT));
+                } else {
+                    line.append(Printer.formatShort(nameLine, 20, Printer.BLANK_GRAVITY.RIGHT));
+                }
+                line.append("\n");
+//            ZLogger.d(String.format("print line(%d/%d):%s" , i, mid, line.toString()));
+                esc.addText(line.toString());
+
+//                assert nameTemp != null;
+                if (!StringUtils.isEmpty(nameTemp)) {
+                    nameTemp = nameTemp.substring(nameLine.length(), nameTemp.length()).trim();
+                }
+//            ZLogger.d(String.format("subName2=%s nameTemp=%s", sub2, nameTemp));
+//            line.append(formatLong(sub2, 8));
+            }
+//        esc.addText("--------------------------------\n");//32个
+
+        } catch (Exception e) {
+            ZLogger.ef(e.toString());
+        }
     }
 }

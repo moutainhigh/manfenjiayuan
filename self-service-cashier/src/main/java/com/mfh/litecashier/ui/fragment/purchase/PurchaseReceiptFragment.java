@@ -178,7 +178,7 @@ public class PurchaseReceiptFragment extends BaseFragment {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PurchaseReceiptEvent event) {
-        ZLogger.d(String.format("PurchaseReceiptFragment: PurchaseReceiptEvent(%d)", event.getAffairId()));
+        ZLogger.d(String.format("PurchaseReceiptEvent(%d)", event.getAffairId()));
         if (event.getAffairId() == PurchaseReceiptEvent.EVENT_ID_RELOAD_DATA) {
             //优先加载缓存显示，同时在后台加载数据
             notifyOrderRefresh(paySlidingTabStrip.getCurrentPosition());

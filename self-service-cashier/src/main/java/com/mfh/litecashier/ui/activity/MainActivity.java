@@ -1144,7 +1144,7 @@ public class MainActivity extends CashierActivity2
             break;
             case Constants.ARC_CASHIER_PREPAREGOODS: {
                 if (resultCode == Activity.RESULT_OK) {
-                    DialogUtil.showHint("配送成功");
+//                    DialogUtil.showHint("配送成功");
                     ZLogger.df("配送成功");
 
                     if (StringUtils.isEmpty(curPosTradeNo)) {
@@ -1174,7 +1174,7 @@ public class MainActivity extends CashierActivity2
                         } else {
                             ScOrder scOrder = (ScOrder) data.getSerializableExtra(PrepareStep2Fragment.EXTRA_KEY_SCORDER);
                             if (scOrder != null) {
-                                PrinterFactory.getPrinterManager().printSendOrder(scOrder, 3);
+                                PrinterFactory.getPrinterManager().printSendOrder(scOrder);
                             }
                         }
                     }

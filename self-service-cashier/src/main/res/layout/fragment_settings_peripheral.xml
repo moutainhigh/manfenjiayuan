@@ -91,7 +91,7 @@
             app:src="@mipmap/ic_receipt"
             app:subText="点击设置"
             app:subTextSize="12sp"
-            app:text="银联"
+            app:text="小票打印"
             app:textSize="16sp"/>
 
     </LinearLayout>
