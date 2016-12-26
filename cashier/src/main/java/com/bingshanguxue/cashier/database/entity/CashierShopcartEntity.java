@@ -22,6 +22,8 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
 
     private String barcode; //商品条形码,最小商品库存单元的条形码
     private String name; // 商品名称
+    private String skuName;
+    private String shortName;
     private String unit; // 单位，如箱、瓶
     private Double bcount = 0D; //商品数量,quantity
 
@@ -104,6 +106,22 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSkuName() {
+        return skuName;
+    }
+
+    public void setSkuName(String skuName) {
+        this.skuName = skuName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public Long getGoodsId() {

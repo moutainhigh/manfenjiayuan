@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.database.service;
 
 import com.bingshanguxue.cashier.database.dao.PosProductDao;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
-import com.bingshanguxue.cashier.model.PosGoods;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
@@ -125,12 +125,12 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
                         barcode, MfhLoginService.get().getSpid()));
         if (entities != null && entities.size() > 0) {
             PosProductEntity goods = entities.get(0);
-            ZLogger.df(String.format("找到%d个商品:%s[%s]",
-                    entities.size(), barcode, goods.getName()));
+            ZLogger.d(String.format("找到%d个商品:%s[%s]",
+                    entities.size(), barcode, goods.getSkuName()));
             return goods;
         }
         else{
-            ZLogger.df(String.format("未找到商品:%s", barcode));
+            ZLogger.d(String.format("未找到商品:%s", barcode));
         }
 
         return null;
@@ -154,6 +154,8 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         entity.setBarcode(posGoods.getBarcode());
         entity.setProductId(posGoods.getProductId());
         entity.setName(posGoods.getName());
+        entity.setSkuName(posGoods.getSkuName());
+        entity.setShortName(posGoods.getShortName());
         entity.setUnit(posGoods.getUnit());
         entity.setCostPrice(posGoods.getCostPrice());
         entity.setQuantity(posGoods.getQuantity());

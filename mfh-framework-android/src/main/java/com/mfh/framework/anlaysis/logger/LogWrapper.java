@@ -47,7 +47,7 @@ public class LogWrapper {
         sb.append("[ (").append(className)
                 .append(":").append(lineNumber)
                 .append(")#").append(methodNameShort)
-                .append(")#").append(processName)
+//                .append(")#").append(processName)
                 .append(" ]");
         String headString = sb.toString();
 

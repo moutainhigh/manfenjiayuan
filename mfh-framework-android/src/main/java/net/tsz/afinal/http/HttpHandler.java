@@ -340,6 +340,7 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
     @Override
     protected void onProgressUpdate(Object... values) {
         try{
+            ZLogger.d("onProgressUpdate");
             if (values.length > 1){
                 ZLogger.d(String.format("%s/%s", String.valueOf(values[0]), String.valueOf(values[1])));
             }else if (values.length > 0){

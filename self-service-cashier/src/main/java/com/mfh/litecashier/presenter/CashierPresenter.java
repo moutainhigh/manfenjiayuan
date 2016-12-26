@@ -87,6 +87,7 @@ public class CashierPresenter {
 
         try {
             String plu = barcode.substring(1, 7);
+//            String plu = BarcodeUtils.getDigiPlu(barcode);
             //有小数点，单位克转换成千克。
             String weightStr = String.format("%s.%s", barcode.substring(7, 9), barcode.substring(9, 12));
             Double weight = Double.valueOf(weightStr);
@@ -136,7 +137,7 @@ public class CashierPresenter {
     public synchronized List<ResMenu> getCashierFunctions() {
         List<ResMenu> functionalList = new ArrayList<>();
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_ONLINE_ORDER,
-                "线上订单", R.mipmap.ic_service_online_order));
+                "订单列表", R.mipmap.ic_service_online_order));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_DISCOUNT,
                 "折扣", R.mipmap.ic_menu_cashier_discount));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SCORE,

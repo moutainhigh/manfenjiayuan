@@ -3,8 +3,6 @@ package com.mfh.framework.uikit.base;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.logic.IBaseViewComponent;
@@ -17,8 +15,8 @@ import com.mfh.framework.core.utils.DialogUtil;
  * @author zhangyz created on 2013-4-5
  * @since Framework 1.0
  */
-public abstract class InitActivity extends BaseActivity implements OnClickListener,
-        IBaseViewComponent<Object, Object> {
+public abstract class InitActivity extends BaseActivity
+        implements IBaseViewComponent<Object, Object> {
 
     private Handler mHandler = null;//用于异步更新界面
 
@@ -118,11 +116,6 @@ public abstract class InitActivity extends BaseActivity implements OnClickListen
         //java.lang.NoClassDefFoundError
         ZLogger.e("执行出错:" + ex.toString());
         DialogUtil.showHint("执行出错:" + ex.getMessage());
-    }
-
-    @Override
-    public void onClick(View view) {
-        
     }
 
     /**

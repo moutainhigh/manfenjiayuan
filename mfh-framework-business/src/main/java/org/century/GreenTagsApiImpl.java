@@ -1,6 +1,7 @@
 package org.century;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import org.century.ksoap2.KSoapHelper;
 import org.century.schemas.ArrayOfGoodsInfoEX;
@@ -49,7 +50,9 @@ public class GreenTagsApiImpl extends GreenTagsApi {
         goodsInfoEXArray.setArrayGoodsInfoEx(arrayOfGoodsInfoEX);
         request.addProperty("goodsInfoExArray", goodsInfoEXArray);
 //        request.addProperty("goodsInfoExArray", new ArrayOfGoodsInfoEX(arrayGoodsInfoEx));
-        ZLogger.df(String.format("ESLPushGoodsInfoExPack.request: %s", request.toString()));
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+            ZLogger.df(String.format("ESLPushGoodsInfoExPack.request: %s", request.toString()));
+        }
 
         //Step 2: Create envelope
         SoapSerializationEnvelope envelope = KSoapHelper.getSoapSerializationEnvelope(request);

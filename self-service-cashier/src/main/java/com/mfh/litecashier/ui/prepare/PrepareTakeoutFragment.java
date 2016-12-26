@@ -88,7 +88,7 @@ public class PrepareTakeoutFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         try {
             Bundle args = getArguments();
-            ZLogger.df(String.format("打开组货页面，%s", StringUtils.decodeBundle(args)));
+            ZLogger.df(String.format("打开第三方组货页面，%s", StringUtils.decodeBundle(args)));
             if (args != null) {
                 posTradeNo = args.getString(EXTRA_KEY_POS_TRADENO);
                 mBizSubTypeWrapper = (BizSubTypeWrapper) args.getSerializable(EXTRA_KEY_SUBTYPE);
@@ -111,7 +111,7 @@ public class PrepareTakeoutFragment extends BaseFragment {
                 }
             });
 
-            // Inflate a menu to be displayed in the toolbar
+            // Inflate a menu to be displayed in the
             toolbar.inflateMenu(R.menu.menu_normal);
 
             initgoodsRecyclerView();
@@ -165,7 +165,8 @@ public class PrepareTakeoutFragment extends BaseFragment {
     }
 
     private void refresh() {
-        if (mBizSubTypeWrapper == null || StringUtils.isEmpty(posTradeNo) || StringUtils.isEmpty(outterTradeNo)) {
+        if (mBizSubTypeWrapper == null || StringUtils.isEmpty(posTradeNo)
+                || StringUtils.isEmpty(outterTradeNo)) {
             DialogUtil.showHint("订单数据错误");
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
@@ -194,19 +195,22 @@ public class PrepareTakeoutFragment extends BaseFragment {
         btnSubmit.setEnabled(false);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "组货中...", true);
 
-        //下单
         CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS,
                 mBizSubTypeWrapper.getSubType(), posTradeNo, outterTradeNo,
                 PosOrderEntity.ORDER_STATUS_FINISH, mShopcartEntities);
 
         hideProgressDialog();
 
-        DialogUtil.showHint("组货成功");
-        Intent data = new Intent();
-        data.putExtra("cashierOrderInfo", cashierOrderInfo);
-        data.putExtra("isTakeOutOrder", true);
-        getActivity().setResult(Activity.RESULT_OK, data);
-        getActivity().finish();
+        if (cashierOrderInfo != null){
+            Intent data = new Intent();
+            data.putExtra("isTakeOutOrder", true);
+            data.putExtra("posTradeNo", posTradeNo);
+            getActivity().setResult(Activity.RESULT_OK, data);
+            getActivity().finish();
+        }
+        else{
+            DialogUtil.showHint("组货失败");
+        }
     }
 
 }

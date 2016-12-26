@@ -217,8 +217,10 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                                             "  <td>%.2f</td>" +
                                             "  <td>%.2f</td>" +
                                             "  <td>%.2f</td>" +
-                                            "</tr>\n", entity.getBarcode(), entity.getName(),
-                                    entity.getFinalPrice(), entity.getBcount(), entity.getFinalAmount()));
+                                            "</tr>\n",
+                                    entity.getBarcode(), entity.getSkuName(),
+                                    entity.getFinalPrice(), entity.getBcount(),
+                                    entity.getFinalAmount()));
                         }
                         sbHtml.append("</table>");
                     }

@@ -129,6 +129,8 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
             entity.setProSkuId(goods.getProSkuId());
             entity.setProductId(goods.getProductId());
             entity.setName(goods.getName());
+            entity.setSkuName(goods.getSkuName());
+            entity.setShortName(goods.getShortName());
             entity.setUnit(goods.getUnit());
             entity.setProviderId(goods.getProviderId());
             entity.setPriceType(goods.getPriceType());

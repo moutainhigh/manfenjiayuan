@@ -299,6 +299,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                                 goods.setProductId(entity1.getProductId());
                                 goods.setBarcode(entity1.getBarcode());
                                 goods.setName(entity1.getName());
+                                goods.setSkuName(entity1.getSkuName());
+                                goods.setShortName(entity1.getShortName());
                                 goods.setProviderId(entity1.getProviderId());
                                 goods.setCostPrice(entity1.getCostPrice());
                                 goods.setUnit(entity1.getUnit());

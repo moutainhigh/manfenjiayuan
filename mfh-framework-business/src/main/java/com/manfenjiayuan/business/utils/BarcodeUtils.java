@@ -2,6 +2,7 @@ package com.manfenjiayuan.business.utils;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 /**
  * 条码工具
@@ -43,10 +44,13 @@ public class BarcodeUtils {
     public static String getDigiPlu(String baracode){
         try{
             String plu = baracode.substring(1, 7);
+            //有小数点，单位克转换成千克。
             String weightStr = String.format("%s.%s", baracode.substring(7, 9), baracode.substring(9, 12));
             Double weight = Double.valueOf(weightStr);
-            ZLogger.df(String.format("BARCODE_DIGI 条码：%s, PLU码：%s, 重量：%f",
-                    baracode, plu, weight));
+            if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+                ZLogger.d(String.format("BARCODE_DIGI 条码：%s, PLU码：%s, 重量：%f",
+                        baracode, plu, weight));
+            }
             return plu;
         }
         catch (Exception e){

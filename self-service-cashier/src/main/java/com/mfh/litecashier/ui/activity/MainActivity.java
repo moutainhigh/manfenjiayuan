@@ -141,7 +141,7 @@ import rx.schedulers.Schedulers;
  * Created by bingshanguxue on 15/8/30.
  */
 
-public class MainActivity extends CashierActivity2
+public class MainActivity extends CashierActivity
         implements ICashierView, IScOrderView, QueryGoodsFragment.OnFragmentListener {
 
     @BindView(R.id.slideMenu)
@@ -195,7 +195,6 @@ public class MainActivity extends CashierActivity2
     private InitCardByStepDialog initCardDialog = null;
     private ReturnGoodsDialog returnGoodsDialog = null;
     private ExpressDialog expressDialog = null;
-    private AdministratorSigninDialog mAdministratorSigninDialog = null;
 
 
     /**
@@ -281,28 +280,8 @@ public class MainActivity extends CashierActivity2
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
         }
 
-        //刷新挂单
-        refreshFloatHangup();
-
         reload();
         ValidateManager.get().batchValidate();
-
-        //打开秤的串口
-//        OpenComPort(comSmscale);
-//        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
-//        if (hostServer != null) {
-//            if (mTtsBinder != null){
-//                mTtsBinder.cloudSpeak("1");
-////                mTtsBinder.cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));
-//            }
-////            cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));
-//        } else {
-//            if (mTtsBinder != null){
-//                mTtsBinder.cloudSpeak("1");
-////                mTtsBinder.cloudSpeak("欢迎使用智能收银系统");
-//            }
-////            cloudSpeak("欢迎使用智能收银系统");
-//        }
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
@@ -322,7 +301,7 @@ public class MainActivity extends CashierActivity2
 
         if (inlvBarcode != null) {
             inlvBarcode.clear();
-            inlvBarcode.requestFocus();
+            inlvBarcode.requestFocusEnd();
         }
 
         int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
@@ -701,9 +680,6 @@ public class MainActivity extends CashierActivity2
     public void syncData() {
         btnSync.startSync();
 
-        //设置需要更新商品中心,商品后台类目
-        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
-
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             btnSync.stopSync();
@@ -725,12 +701,6 @@ public class MainActivity extends CashierActivity2
 
         btnSync.startSync();
         DataDownloadManager.get().launcherSync();
-
-        /**
-         * @param isManual  用户手动点击检查，非用户点击操作请传false
-         * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
-         */
-//        Beta.checkUpgrade(false, false);
     }
 
     public void redirectToSettings() {
@@ -739,27 +709,6 @@ public class MainActivity extends CashierActivity2
         } else {
 //            enterAdministratorMode();
             UIHelper.startActivity(MainActivity.this, AdministratorActivity.class);
-        }
-    }
-
-
-    /**
-     * 进入管理员模式
-     */
-    private void enterAdministratorMode() {
-        if (mAdministratorSigninDialog == null) {
-            mAdministratorSigninDialog = new AdministratorSigninDialog(this);
-            mAdministratorSigninDialog.setCancelable(false);
-            mAdministratorSigninDialog.setCanceledOnTouchOutside(false);
-        }
-        mAdministratorSigninDialog.init("管理员密码", new AdministratorSigninDialog.OnResponseCallback() {
-            @Override
-            public void onSignInSuccess() {
-                UIHelper.startActivity(MainActivity.this, AdministratorActivity.class);
-            }
-        });
-        if (!mAdministratorSigninDialog.isShowing()) {
-            mAdministratorSigninDialog.show();
         }
     }
 
@@ -792,10 +741,7 @@ public class MainActivity extends CashierActivity2
 
             DataUploadManager.getInstance().syncDefault();
 
-            //设置需要更新商品中心,商品后台类目
-            SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED, true);
-
-            //清除缓存数据
+             //清除缓存数据
             ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME).clear();
 
             ZLogger.d("重新加载数据，准备同步数据...");
@@ -869,7 +815,7 @@ public class MainActivity extends CashierActivity2
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
-        ZLogger.d(String.format("GoodsSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
         switch (event.getEventId()) {
             case DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS: {
                 btnSync.startSync();
@@ -884,9 +830,6 @@ public class MainActivity extends CashierActivity2
             case DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED: {
                 hideProgressDialog();
                 btnSync.stopSync();
-
-//                EslSyncManager2.getInstance().sync();
-//                SMScaleSyncManager2.getInstance().sync();
             }
             break;
         }
@@ -1144,10 +1087,8 @@ public class MainActivity extends CashierActivity2
             break;
             case Constants.ARC_CASHIER_PREPAREGOODS: {
                 if (resultCode == Activity.RESULT_OK) {
-//                    DialogUtil.showHint("配送成功");
-                    ZLogger.df("配送成功");
-
-                    if (StringUtils.isEmpty(curPosTradeNo)) {
+                    ZLogger.df("订单组货成功");
+                    if (!StringUtils.isEmpty(curPosTradeNo)) {
                         CashierShopcartService.getInstance()
                                 .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
                     }
@@ -1156,10 +1097,11 @@ public class MainActivity extends CashierActivity2
                     changeOrderDiscount(false, 100D);
 
                     if (data != null) {
+                        ZLogger.df("配送成功: " + StringUtils.decodeBundle(data.getExtras()));
                         boolean isTakeoutOrder = data.getBooleanExtra("isTakeOutOrder", false);
                         if (isTakeoutOrder) {
                             String posTradeNo = data.getStringExtra("posTradeNo");
-                            if (StringUtils.isEmpty(posTradeNo)) {
+                            if (!StringUtils.isEmpty(posTradeNo)) {
                                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                                         posTradeNo);
                                 if (orderEntity != null) {
@@ -1562,42 +1504,6 @@ public class MainActivity extends CashierActivity2
      */
     private void exchangeScore() {
         ActivityRoute.redirect2ExchangeScore(this);
-    }
-
-    /**
-     * 打印商城订单
-     */
-    private void printScOrder() {
-        if (barcodeInputDialog == null) {
-            barcodeInputDialog = new NumberInputDialog(this);
-            barcodeInputDialog.setCancelable(true);
-            barcodeInputDialog.setCanceledOnTouchOutside(true);
-        }
-        barcodeInputDialog.initializeBarcode(EditInputType.BARCODE, "商城订单", "订单条码", "打印订单",
-                new NumberInputDialog.OnResponseCallback() {
-                    @Override
-                    public void onNext(String value) {
-                        mScOrderPresenter.getByCode(value);
-                    }
-
-                    @Override
-                    public void onNext(Double value) {
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-
-                    }
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
-                });
-        if (!barcodeInputDialog.isShowing()) {
-            barcodeInputDialog.show();
-        }
     }
 
     /**

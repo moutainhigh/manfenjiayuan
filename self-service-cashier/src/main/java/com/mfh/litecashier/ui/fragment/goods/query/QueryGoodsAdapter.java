@@ -47,7 +47,7 @@ public class QueryGoodsAdapter
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
         final PosProductEntity entity = entityList.get(position);
 
-        holder.tvName.setText(entity.getName());
+        holder.tvName.setText(String.format("%s/%s", entity.getSkuName(), entity.getShortName()));
         holder.tvCostPrice
                 .setText(MUtils.formatDouble(null, null,
                         entity.getCostPrice(), "", "/", entity.getUnit()));

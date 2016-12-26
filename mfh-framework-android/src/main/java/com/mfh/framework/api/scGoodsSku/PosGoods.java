@@ -1,4 +1,4 @@
-package com.bingshanguxue.cashier.model;
+package com.mfh.framework.api.scGoodsSku;
 
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.category.CateApi;
@@ -18,7 +18,9 @@ public class PosGoods implements ILongId, Serializable {
     private Long proSkuId;  //产品sku编号
     private String barcode; //最小商品库存单元的条形码
     private Long productId; //所属产品spu编号
-    private String name;    // 商品名称
+    private String name;    // 商品名称(包含规格)
+    private String skuName;//商品名称
+    private String shortName;//商品规格
     private String unit;    // 单位，如箱、瓶
     private Double costPrice;   // 商品价格
     private Double quantity = 0D; // 商品数量(库存)
@@ -65,6 +67,22 @@ public class PosGoods implements ILongId, Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSkuName() {
+        return skuName;
+    }
+
+    public void setSkuName(String skuName) {
+        this.skuName = skuName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public String getUnit() {

@@ -81,7 +81,7 @@ public class PrepareTakeoutAdapter
             CashierShopcartEntity entity = getEntity(position);
             if (entity != null) {
                 // - replace the contents of the view with that element
-                holder.tvName.setText(entity.getName());
+                holder.tvName.setText(entity.getSkuName());
                 holder.tvPrice.setText(String.format("%.2f", entity.getFinalPrice()));
                 //计件：整数；记重：3位小数
                 if (PriceType.WEIGHT.equals(entity.getPriceType())) {

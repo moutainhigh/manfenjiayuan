@@ -95,7 +95,7 @@ public class DataUploadManager extends OrderSyncManager {
     /**
      * 定时同步POS订单
      */
-    public void start() {
+    public void startTimer() {
         cancelTimer();
         ZLogger.d("定时任务开启...");
         if (syncPosOrderTimer == null) {
@@ -161,7 +161,7 @@ public class DataUploadManager extends OrderSyncManager {
         } else if ((queue & POS_ORDER) == POS_ORDER) {
             uploadPosOrders();
         } else {
-            onNotifyCompleted("没有同步任务待执行");
+            onNotifyCompleted("没有上传任务待执行");
         }
     }
 

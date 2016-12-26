@@ -219,9 +219,11 @@ public class MUtils {
         while (humanId.startsWith("0")) {
             humanId = humanId.substring(1, humanId.length());
         }
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+            ZLogger.df(String.format("验证会员付款码: <%s> --> <%s>",
+                    paycode, humanId));
+        }
 
-        ZLogger.df(String.format("验证会员付款码: <%s> --> <%s>",
-                paycode, humanId));
         return humanId;
     }
 

@@ -117,7 +117,7 @@ public class SettingsGoodsAdapter
         holder.tvBadge.setText(badgeBrief);
 
         holder.tvId.setText(String.format("编号：%d", entity.getId()));
-        holder.tvName.setText(String.format("商品：(%s)/%s", entity.getBarcode(), entity.getName()));
+        holder.tvName.setText(String.format("商品：(%s)/%s", entity.getBarcode(), entity.getSkuName()));
         holder.tvSpuId.setText(String.format("SPU编号：%d", entity.getProductId()));
         holder.tvSkuId.setText(String.format("SKU编号：%d", entity.getProSkuId()));
         holder.tvCostPrice.setText(MUtils.formatDouble("零售价：", "",

@@ -110,7 +110,7 @@ public class EslSyncManager {
         //更新商品属性
         ArrayOfProperty propertyList = new ArrayOfProperty();
         propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_GOODSCODE, goods.getBarcode()));
-        propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_NAME, goods.getName()));
+        propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_NAME, goods.getSkuName()));
 //        propertyList.add(new Property(GoodsInfoEX.TABLE_COLOUMNINDEX_ORIGIN, "米西厨房"));
 
         //2016-07-16 计重商品单位按“斤”显示，价格／2

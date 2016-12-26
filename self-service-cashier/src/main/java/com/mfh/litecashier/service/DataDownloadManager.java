@@ -13,7 +13,7 @@ import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
-import com.bingshanguxue.cashier.model.PosGoods;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
 import com.bingshanguxue.cashier.model.ProductCatalog;
 import com.bingshanguxue.cashier.model.ProductSkuBarcode;
 import com.manfenjiayuan.business.GlobalInstanceBase;
@@ -258,7 +258,7 @@ public class DataDownloadManager {
         } else if ((queue & BACKENDCATEGORYINFO) == BACKENDCATEGORYINFO) {
             listBackendCategoryStep1();
         } else {
-            onNotifyCompleted("没有同步任务待执行");
+            onNotifyCompleted("没有下载任务待执行");
         }
     }
 

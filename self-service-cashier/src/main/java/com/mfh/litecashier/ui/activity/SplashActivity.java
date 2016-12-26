@@ -112,7 +112,7 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 18);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 19);
 
         setupGetui();
     }
@@ -364,7 +364,6 @@ public class SplashActivity extends InitActivity {
                         ZLogger.d("主题皮肤文件下载中:" + progress);
                     }
                 }
-
         );
 
     }

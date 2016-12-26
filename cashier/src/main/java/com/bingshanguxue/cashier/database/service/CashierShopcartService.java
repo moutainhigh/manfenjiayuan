@@ -160,6 +160,8 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             shopcartEntity.setBarcode(goods.getBarcode());
             shopcartEntity.setProductId(goods.getProductId());
             shopcartEntity.setName(goods.getName());
+            shopcartEntity.setShortName(goods.getShortName());
+            shopcartEntity.setSkuName(goods.getSkuName());
             shopcartEntity.setUnit(goods.getUnit());
             shopcartEntity.setCostPrice(goods.getCostPrice());
 
@@ -227,6 +229,8 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
                 shopcartEntity.setBarcode(goods.getBarcode());
                 shopcartEntity.setProductId(goods.getProductId());
                 shopcartEntity.setName(goods.getName());
+                shopcartEntity.setSkuName(goods.getSkuName());
+                shopcartEntity.setShortName(goods.getShortName());
                 shopcartEntity.setUnit(goods.getUnit());
                 shopcartEntity.setProviderId(goods.getProviderId());
                 shopcartEntity.setUnit(goods.getUnit());

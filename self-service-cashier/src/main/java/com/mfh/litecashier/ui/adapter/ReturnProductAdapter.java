@@ -53,7 +53,7 @@ public class ReturnProductAdapter
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         CashierShopcartEntity entity = entityList.get(position);
 
-        holder.tvName.setText(entity.getName());
+        holder.tvName.setText(entity.getSkuName());
 
         //退货时单个扫描商品需要
         holder.tvPrice.setText(String.format("%.2f", entity.getCostPrice()));

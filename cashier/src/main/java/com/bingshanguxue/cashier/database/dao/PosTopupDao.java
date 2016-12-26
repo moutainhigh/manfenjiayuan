@@ -17,7 +17,6 @@ public class PosTopupDao extends BaseSeqAbleDao<PosTopupEntity, String> {
 
     private static final String TABLE_NAME = "tb_pos_topup_v1";
 
-
     public static final String ORDER_BY_UPDATEDDATE_ASC = "updatedDate asc";//升序
     public static final String ORDER_BY_UPDATEDATE_DESC = "updatedDate desc";
     public static final String ORDER_BY_CREATEDDATE_ASC = "createdDate asc";

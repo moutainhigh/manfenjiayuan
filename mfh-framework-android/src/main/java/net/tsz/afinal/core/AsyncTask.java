@@ -499,6 +499,8 @@ public abstract class AsyncTask<Params, Progress, Result> {
         @SuppressWarnings("unchecked")
 		@Override
         public void handleMessage(Message msg) {
+            ZLogger.d("handleMessage" );
+
             @SuppressWarnings("rawtypes")
 			AsyncTaskResult result = (AsyncTaskResult) msg.obj;
             switch (msg.what) {

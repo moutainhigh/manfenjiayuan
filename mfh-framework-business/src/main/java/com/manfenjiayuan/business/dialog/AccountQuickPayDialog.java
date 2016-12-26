@@ -202,7 +202,7 @@ public class AccountQuickPayDialog extends CommonDialog {
      */
     private void submitOrder() {
         if (bPayProcessing) {
-            ZLogger.df("正在进行支付，不用重复发起请求");
+            ZLogger.d("正在进行支付，不用重复发起请求");
             return;
         }
 

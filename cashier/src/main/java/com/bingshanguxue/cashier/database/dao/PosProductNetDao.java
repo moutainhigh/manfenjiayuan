@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.database.dao;
 
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
-import com.bingshanguxue.cashier.model.PosGoods;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
 
 /**
  * 基于网络访问

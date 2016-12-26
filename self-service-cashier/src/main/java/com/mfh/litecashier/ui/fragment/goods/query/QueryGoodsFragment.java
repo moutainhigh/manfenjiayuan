@@ -37,8 +37,6 @@ import rx.schedulers.Schedulers;
  */
 public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 
-//    @BindView(R.id.toolbar)
-//    Toolbar mToolbar;
     @BindView(R.id.goodsRecyclerView)
     RecyclerViewEmptySupport goodsRecyclerView;
     @BindView(R.id.empty_view)
@@ -91,37 +89,6 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        mToolbar.setTitle("商品查询");
-////        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
-////        mToolbar.setNavigationOnClickListener(
-////                new View.OnClickListener() {
-////                    @Override
-////                    public void onClick(View v) {
-////                        getActivity().onBackPressed();
-////                    }
-////                });
-//
-//
-//// Set an OnMenuItemClickListener to handle menu item clicks
-//        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                // Handle the menu item
-//                int id = item.getItemId();
-//                if (id == R.id.action_reload) {
-////                    DialogUtil.showHint("close");
-//                    if (mOnFragmentListener != null) {
-//                        mOnFragmentListener.onClose();
-//                    }
-//                }
-//                return true;
-//            }
-//        });
-//
-//        // Inflate a menu to be displayed in the toolbar
-//        mToolbar.inflateMenu(R.menu.menu_querygoods);
-
-
         initGoodsRecyclerView();
         initOrderBarcodeView();
         initLetterRecyclerView();

@@ -143,7 +143,7 @@ public class CashierSwipAdapter
             CashierShopcartEntity entity = getEntity(position);
             if (entity != null){
                 // - replace the contents of the view with that element
-                holder.tvName.setText(entity.getName());
+                holder.tvName.setText(entity.getSkuName());
                 holder.tvFinalPrice.setText(String.format("%.2f", entity.getFinalPrice()));
                 holder.tvDiscount.setText(String.format("%.0f%%",
                         CashierAgent.calculatePriceDiscount(entity.getCostPrice(),

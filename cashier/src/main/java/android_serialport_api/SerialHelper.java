@@ -3,6 +3,7 @@ package android_serialport_api;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,7 +74,9 @@ public abstract class SerialHelper {
 
     public void send(byte[] bOutArray) {
         try {
-//			ZLogger.d("串口发送" + DataConvertUtil.ByteArrToHex(bOutArray));
+            if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+                ZLogger.d("串口发送" + DataConvertUtil.ByteArrToHex(bOutArray));
+            }
             mOutputStream.write(bOutArray);
 //            mOutputStream.flush();
         } catch (IOException e) {

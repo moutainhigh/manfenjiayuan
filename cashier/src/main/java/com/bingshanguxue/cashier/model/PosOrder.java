@@ -14,6 +14,7 @@ import me.drakeet.multitype.Item;
  */
 public class PosOrder extends MfhEntity<Long> implements Item {
 //    private Long id;//订单编号
+//    private Long posOrderId;//pos机订单编号
     private String barcode;//订单条码
     private String formatTime;//下单时间
     private Double amount;//金额

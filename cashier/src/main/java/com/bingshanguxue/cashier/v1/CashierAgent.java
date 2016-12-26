@@ -157,7 +157,7 @@ public class CashierAgent {
                     if (sbBody.length() > 0) {
                         sbBody.append(",");
                     }
-                    sbBody.append(itemEntity.getName());
+                    sbBody.append(itemEntity.getSkuName());
 
                     JSONObject item = new JSONObject();
                     item.put("goodsId", itemEntity.getGoodsId());
@@ -235,7 +235,7 @@ public class CashierAgent {
                 if (sbBody.length() > 0) {
                     sbBody.append(",");
                 }
-                sbBody.append(itemEntity.getName());
+                sbBody.append(itemEntity.getSkuName());
 
                 JSONObject item = new JSONObject();
                 item.put("goodsId", itemEntity.getGoodsId());

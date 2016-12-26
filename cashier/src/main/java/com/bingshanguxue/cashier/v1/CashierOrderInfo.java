@@ -233,10 +233,10 @@ public class CashierOrderInfo implements java.io.Serializable {
         //检查输入参数是否正确
         if (amountArray == null ||
                 amountArray.size() < 1) {
-            ZLogger.df("输入参数不正确");
+            ZLogger.d("输入参数不正确");
             return false;
         }
-        ZLogger.df(String.format("保存会员/优惠券优惠金额\n%s", JSON.toJSONString(amountArray)));
+        ZLogger.d(String.format("保存会员/优惠券优惠金额\n%s", JSON.toJSONString(amountArray)));
 
         PayAmount payAmount = amountArray.get(0);
 

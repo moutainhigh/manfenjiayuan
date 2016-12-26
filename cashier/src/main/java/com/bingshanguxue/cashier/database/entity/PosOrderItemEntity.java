@@ -5,6 +5,7 @@ import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.abs.MfhEntity;
+import com.mfh.framework.core.utils.StringUtils;
 
 /**
  * POS--销售订单明细
@@ -29,6 +30,8 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
 
     private String barcode; //商品条形码,最小商品库存单元的条形码
     private String name; // 商品名称
+    private String skuName;
+    private String shortName;
     private String unit; // 单位，如箱、瓶
     private int priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double bcount = 0D; //商品数量,quantity
@@ -123,6 +126,26 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSkuName() {
+        //2016-12-25 兼容旧版本已经下载过商品档案的情况，skuName和shortName没有数据的问题
+        if (StringUtils.isEmpty(skuName)){
+            return name;
+        }
+        return skuName;
+    }
+
+    public void setSkuName(String skuName) {
+        this.skuName = skuName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public Long getGoodsId() {

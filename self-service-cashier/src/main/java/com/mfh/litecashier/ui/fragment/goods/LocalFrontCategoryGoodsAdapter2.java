@@ -70,7 +70,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
         LocalFrontCategoryGoods entity = entityList.get(position);
 
         if (holder.getItemViewType() == ITEM_TYPE.ITEM_TYPE_GOODS.ordinal()){
-            ((GoodsViewHolder)holder).tvName.setText(entity.getName());
+            ((GoodsViewHolder)holder).tvName.setText(String.format("%s/%s", entity.getSkuName(), entity.getShortName()));
             ((GoodsViewHolder)holder).tvCostPrice
                     .setText(MUtils.formatDouble(null, null,
                             entity.getCostPrice(), "", "/", entity.getUnit()));
