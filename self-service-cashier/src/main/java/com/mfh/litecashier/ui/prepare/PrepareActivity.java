@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
  */
 public class PrepareActivity extends BaseActivity {
 
+    //本地订单条码
     public static final String EXTRA_KEY_TRADENO = "tradeNo";
 
     private PrepareStep1Fragment mPrepareStep1Fragment;
@@ -142,6 +143,9 @@ public class PrepareActivity extends BaseActivity {
         ZLogger.df("跳转到组货页面end");
     }
 
+    /**
+     * 第三方组货
+     * */
     public void showTakeoutFragment(BizSubTypeWrapper subTypeWrapper, String outerNo) {
         if (subTypeWrapper == null || StringUtils.isEmpty(outerNo)){
             return;

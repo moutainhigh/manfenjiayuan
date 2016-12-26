@@ -5,6 +5,7 @@ import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.core.utils.StringUtils;
 
 /**
  * POS--商品--库存
@@ -15,7 +16,9 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
     //SPU:Standard Product Unit
 //    private Long id;//最小商品库存单元编号
     private Long productId; //产品spu编号
-    private String name = "";    // 商品名称
+    private String name = "";    // 商品名称(包含规格)
+    private String skuName = "";//商品名称
+    private String shortName = "";//商品规格
     private String namePinyin = "";//全拼
     private String abbreviation = "";//拼音缩写
     private String nameSortLetter = "";//排序字段
@@ -84,6 +87,26 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSkuName() {
+        //2016-12-25 兼容旧版本已经下载过商品档案的情况，skuName和shortName没有数据的问题
+        if (StringUtils.isEmpty(skuName)){
+            return name;
+        }
+        return skuName;
+    }
+
+    public void setSkuName(String skuName) {
+        this.skuName = skuName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public String getNamePinyin() {

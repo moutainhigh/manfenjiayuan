@@ -154,6 +154,9 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         entity.setBarcode(posGoods.getBarcode());
         entity.setProductId(posGoods.getProductId());
         entity.setName(posGoods.getName());
+        entity.setSkuName(posGoods.getSkuName());
+        entity.setShortName(posGoods.getShortName());
+        entity.setName(posGoods.getName());
         entity.setUnit(posGoods.getUnit());
         entity.setCostPrice(posGoods.getCostPrice());
         entity.setQuantity(posGoods.getQuantity());

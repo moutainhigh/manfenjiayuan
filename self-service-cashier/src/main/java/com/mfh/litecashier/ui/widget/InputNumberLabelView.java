@@ -127,11 +127,13 @@ public class InputNumberLabelView extends LinearLayout {
             tvTitle.setVisibility(VISIBLE);
         }
 
-        int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.InputNumberLabelView_inputNumberLabelView_inputTextSize, 16);
+        int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.InputNumberLabelView_editTextSize, 16);
         int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);
         etInput.setTextSize(editTextSizeInSp);
         etInput.setTextColor(ta.getColor(R.styleable.InputNumberLabelView_editTextColor, 0));
-        etInput.setHintTextColor(ta.getColor(R.styleable.InputNumberLabelView_inputNumberLabelView_inputTextColorHint, 0));
+        etInput.setHintTextColor(ta.getColor(R.styleable.InputNumberLabelView_editTextColorHint, 0));
+        etInput.setFocusable(ta.getBoolean(R.styleable.InputNumberLabelView_editFocusable, true));
+        etInput.setFocusableInTouchMode(ta.getBoolean(R.styleable.InputNumberLabelView_editFocusableInTouchMode, true));
         Drawable editBackground = ta.getDrawable(R.styleable.InputNumberLabelView_editBackground);
         if (editBackground != null){
             etInput.setBackground(editBackground);
@@ -156,6 +158,11 @@ public class InputNumberLabelView extends LinearLayout {
                 etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(3)});
                 break;
+            case EditInputType.NUMBER:
+                //相当于在.xml文件中设置inputType="number
+                etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(3)});
+                break;
             case EditInputType.TEXT_PASSWORD:
                 etInput.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 break;
@@ -169,15 +176,16 @@ public class InputNumberLabelView extends LinearLayout {
         }
 
         int rightImageButtonResId = ta.getResourceId(R.styleable.InputNumberLabelView_inputNumberLabelView_rightImageButtonSrc, R.mipmap.ic_search_del);
+        ibAction1.setImageResource(rightImageButtonResId);
+
         clearOnClickDel = ta.getBoolean(R.styleable.InputNumberLabelView_clearOnClickDel, true);
         softKeyboardEnabled = ta.getBoolean(R.styleable.InputNumberLabelView_softKeyboardEnabled, false);
 
         ta.recycle();
 
-        ibAction1.setImageResource(rightImageButtonResId);
-
-        etInput.setFocusable(true);
-        etInput.setFocusableInTouchMode(true);//不自动获取EditText的焦点
+//
+//        etInput.setFocusable(true);
+//        etInput.setFocusableInTouchMode(true);//不自动获取EditText的焦点
         etInput.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -335,6 +343,14 @@ public class InputNumberLabelView extends LinearLayout {
             mOnViewListener.onLongClickAction1(etInput.getText().toString());
         }
         return true;
+    }
+
+    public void setAction1Selected(boolean selected){
+        this.ibAction1.setSelected(selected);
+    }
+
+    public boolean isAction1Selected(){
+        return this.ibAction1.isSelected();
     }
 
     public void setOnInoutKeyListener(OnKeyListener l) {

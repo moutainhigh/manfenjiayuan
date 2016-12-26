@@ -60,9 +60,7 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
     //同步账号
     private static final String PK_SYNC_COMPANY_HUMAN_INTERVAL = "pk_sync_company_human_interval";//同步间隔（单位，秒）
     private static final String PK_SYNC_COMPANY_HUMAN_ENABLED = "pk_sync_company_human_enabled";
-
-    public static final String PK_SYNC_BACKEND_CATEGORYINFO_FRESH_ENABLED = "pk_sync_bakend_categoryinfo_fresh_enabled";
-      //库存
+    //库存
     public static final String PK_SYNC_STOCKCHECK_ORDER_ENABLED = "pk_sync_stockcheck_order_enabled";//库存盘点订单
     public static final String PK_SYNC_STOCKLOSS_ORDER_ENABLED = "pk_sync_stockloss_order_enabled";//库存报损订单
     public static final String PK_SYNC_INVIOORDER_IN_ENABLED = "pk_sync_invioorder_in_enabled";//库存批次流水（入库）
@@ -83,13 +81,6 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
     public static final String PK_UMSIPS_MCHTID = "pk_umsips_mchtid";   //商户号
     public static final String PK_UMSIPS_TERMID = "pk_umsips_termid";   //终端设备号
     public static final String PK_UMSIPS_AUTHSN = "pk_umsips_authsn";   //SN密文
-
-    //混合支付
-    public static final String PREF_KEY_HYBRID_PAYMENT_ENABLED = "pk_hybrid_payment_enabled";
-    //串口客显
-    public static final String PREF_KEY_COM_CUSTOMERDISPLAY_ENABLED = "pk_com_customerdisplay_enabled";
-    //PAD客显
-    public static final String PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED = "pk_pad_customerdisplay_enabled";
 
     //是否允许同步商品数据 ViaFTP 2寺冈电子秤
     public static final String PK_B_SYNC_SMSCALE_FTP_ENABLED = "pk_b_SYNC_SMSCALE_FTP_ENABLED";

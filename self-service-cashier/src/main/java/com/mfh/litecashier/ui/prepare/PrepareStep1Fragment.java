@@ -127,10 +127,18 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
 
         initInlvBarcode();
         initMenuRecyclerView();
-        inlvBarcode.clear();
-        inlvBarcode.requestFocusEnd();
-
         refresh();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (inlvBarcode != null){
+            inlvBarcode.clear();
+//        inlvBarcode.setInputString("cest");
+            inlvBarcode.requestFocusEnd();
+        }
     }
 
     @Override
@@ -324,13 +332,15 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
         }
 
         // TODO: 17/10/2016 查询订单
-//        PmcStockApiImpl.getGoodsOrderListByHuman(barcode,
-//                MfhLoginService.get().getCurrentGuId(),responseRC);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         mScOrderPresenter.getByBarcode(barcode, ScOrder.MFHORDER_STATUS_BUYING, true);
     }
 
     private void refresh(){
+        inlvBarcode.clear();
+//        inlvBarcode.setInputString("cest");
+        inlvBarcode.requestFocusEnd();
+
         if (!StringUtils.isEmpty(tradeNo)){
             mShopcartEntities = CashierShopcartService.getInstance()
                     .queryAllBy(String.format("posTradeNo = '%s'", tradeNo));

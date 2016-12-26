@@ -1,1 +1,0 @@
-ALTER TABLE tb_pos_order_v2 ADD COLUMN ruleDiscountAmount DOUBLE;

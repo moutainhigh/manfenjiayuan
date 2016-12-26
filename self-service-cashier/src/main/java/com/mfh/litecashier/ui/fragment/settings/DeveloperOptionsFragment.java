@@ -46,13 +46,8 @@ public class DeveloperOptionsFragment extends BaseFragment {
     SettingsItem itemFactoryReset;
     @BindView(R.id.toggleItem_release)
     ToggleSettingItem toggleItemRelease;
-    @BindView(R.id.toggleItem_customer_screen)
-    ToggleSettingItem toggleItemCustomerScreen;
-    @BindView(R.id.toggleItem_hybrid_payment)
-    ToggleSettingItem toggleHybridPayment;
     @BindView(R.id.toggleItem_getui)
     ToggleSettingItem toggleGettui;
-
     @BindView(R.id.tv_display)
     TextView tvDisplay;
 
@@ -102,18 +97,6 @@ public class DeveloperOptionsFragment extends BaseFragment {
                 }
             }
         });
-        toggleItemCustomerScreen.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, isChecked);
-            }
-        });
-        toggleHybridPayment.init(new ToggleSettingItem.OnViewListener() {
-            @Override
-            public void onToggleChanged(boolean isChecked) {
-                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PREF_KEY_HYBRID_PAYMENT_ENABLED, isChecked);
-            }
-        });
 
         toggleGettui.init(new ToggleSettingItem.OnViewListener() {
             @Override
@@ -154,11 +137,7 @@ public class DeveloperOptionsFragment extends BaseFragment {
             toggleItemRelease.setChecked(false);
             toggleItemRelease.setSubTitle("开发测试");
         }
-
-        toggleItemCustomerScreen.setChecked(SharedPreferencesUltimate
-                .getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false));
-
-        Resources resources = this.getResources();
+   Resources resources = this.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         //获取NavigationBar的高度

@@ -129,7 +129,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/25.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.getui/sdk/2.9.5.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.jakewharton/butterknife/8.4.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.bugly/crashreport_upgrade/1.1.6/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.tencent.bugly/crashreport_upgrade/1.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/io.reactivex/rxandroid/1.2.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/me.drakeet.multitype/multitype/2.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
@@ -139,9 +139,9 @@
     <orderEntry type="library" exported="" name="AMap_Search_V3.5.0_20160927" level="project" />
     <orderEntry type="library" exported="" name="libammsdk" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-25.1.0" level="project" />
+    <orderEntry type="library" exported="" name="crashreport_upgrade-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-25.1.0" level="project" />
-    <orderEntry type="library" exported="" name="crashreport_upgrade-1.1.6" level="project" />
     <orderEntry type="library" exported="" name="AMap_3DMap_V4.0.1_20160923" level="project" />
     <orderEntry type="library" exported="" name="alipaySdk-20161009" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.1.0" level="project" />

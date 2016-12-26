@@ -273,11 +273,18 @@ public class NumberInputDialog extends CommonDialog {
         if (inputType == EditInputType.BARCODE || inputType == EditInputType.PHONE) {
             this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         } else if (inputType == EditInputType.NUMBER_DECIMAL
-                || inputType == EditInputType.PRICE
-                || inputType == EditInputType.WEIGHT) {
+                || inputType == EditInputType.PRICE) {
             //相当于在.xml文件中设置inputType="numberDecimal
             this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
+            this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(2)});
+        }  else if (inputType == EditInputType.WEIGHT) {
+            //相当于在.xml文件中设置inputType="numberDecimal
+            this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(3)});
+        }  else if (inputType == EditInputType.NUMBER) {
+            //相当于在.xml文件中设置inputType="numberDecimal
+            this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+//            this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
         } else {
             this.etInput.setInputType(InputType.TYPE_CLASS_TEXT);
         }

@@ -502,7 +502,8 @@ public class FinalHttp {
         return download(url, params, target, false, callback);
     }
 
-    public HttpHandler<File> download(String url, AjaxParams params, String target, boolean isResume, AjaxCallBack<File> callback) {
+    public HttpHandler<File> download(String url, AjaxParams params, String target, boolean isResume,
+                                      AjaxCallBack<File> callback) {
         final HttpGet get = new HttpGet(getUrlWithQueryString(url, params));
         HttpHandler<File> handler = new HttpHandler<>(httpClient, httpContext, callback, charset);
         handler.executeOnExecutor(executor, get, target, isResume);
@@ -510,7 +511,9 @@ public class FinalHttp {
     }
 
 
-    protected <T> void sendRequest(DefaultHttpClient client, HttpContext httpContext, HttpUriRequest uriRequest, String contentType, AjaxCallBack<T> ajaxCallBack) {
+    protected <T> void sendRequest(DefaultHttpClient client, HttpContext httpContext,
+                                   HttpUriRequest uriRequest, String contentType,
+                                   AjaxCallBack<T> ajaxCallBack) {
         if (contentType != null) {
             uriRequest.addHeader("Content-Type", contentType);
         }

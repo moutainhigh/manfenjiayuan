@@ -19,7 +19,6 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.bean.wrapper.CashierOrderInfoWrapper;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
 
 import java.text.ParseException;
@@ -243,14 +242,14 @@ public class CashierHelper {
      * 更新客显信息
      */
     public static void broadcastCashierOrderInfo(int cmdType, CashierOrderInfo cashierOrderInfo) {
-        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
-            ZLogger.d("PAD客显功能未打开");
-            return;
-        }
-
-        CashierOrderInfoWrapper cashierOrderInfoWrapper = new CashierOrderInfoWrapper();
-        cashierOrderInfoWrapper.setCmdType(cmdType);
-        cashierOrderInfoWrapper.setCashierOrderInfo(cashierOrderInfo);
+//        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
+//            ZLogger.d("PAD客显功能未打开");
+//            return;
+//        }
+//
+//        CashierOrderInfoWrapper cashierOrderInfoWrapper = new CashierOrderInfoWrapper();
+//        cashierOrderInfoWrapper.setCmdType(cmdType);
+//        cashierOrderInfoWrapper.setCashierOrderInfo(cashierOrderInfo);
         // TODO: 13/12/2016 双屏异显
     }
 

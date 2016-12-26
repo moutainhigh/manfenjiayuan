@@ -1,64 +1,55 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:baselineAligned="false"
+              android:divider="@drawable/divider_vertical_line_primary"
+              android:orientation="vertical"
+              android:showDividers="middle">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/material_white"
-        android:baselineAligned="false"
-        android:divider="@drawable/divider_vertical_line_primary"
-        android:orientation="vertical"
-        android:showDividers="middle"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <!--android:background="@color/material_white"-->
+        android:layout_height="108dp"
+        android:background="@null">
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:background="@null"
-            android:layout_height="108dp">
-
-            <!--商品显示区域-->
-            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-                android:id="@+id/goodsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-            <!--空视图-->
-            <TextView
-                android:id="@+id/empty_view"
-                style="@style/mfh_textview_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="未找到商品"/>
-
-        </RelativeLayout>
-
-        <com.mfh.litecashier.ui.widget.InputNumberLabelView
-            android:id="@+id/inlv_barcode"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            app:editBackground="@drawable/bg_input_black"
-            app:editFocusable="false"
-            app:editFocusableInTouchMode="false"
-            app:editInputType="text"
-            app:editTextColor="@color/material_white"
-            app:editTextColorHint="@color/material_white_800"
-            app:editTextSize="40sp"
-            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_key_enter"/>
-
-        <!--字符输入区域-->
+        <!--商品显示区域-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-            android:id="@+id/letterRecyclerView"
+            android:id="@+id/goodsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="552dp"/>
+            android:layout_height="match_parent"/>
+        <!--空视图-->
+        <TextView
+            android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="未找到商品"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+    <com.mfh.litecashier.ui.widget.InputNumberLabelView
+        android:id="@+id/inlv_barcode"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        app:editBackground="@drawable/bg_input_black"
+        app:editFocusable="false"
+        app:editFocusableInTouchMode="false"
+        app:editInputType="text"
+        app:editTextColor="@color/material_white"
+        app:editTextColorHint="@color/material_white_800"
+        app:editTextSize="40sp"
+        app:inputNumberLabelView_inputHint="商品名首字母"
+        app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_key_enter"/>
+
+    <!--字符输入区域-->
+    <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+        android:id="@+id/letterRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="552dp"/>
+
+</LinearLayout>

@@ -91,6 +91,10 @@ public class EditLabelView extends LinearLayout {
                 //相当于在.xml文件中设置inputType="numberDecimal
                 etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             }
+            else if (inputType == EditInputType.NUMBER) {
+                //相当于在.xml文件中设置inputType="numberDecimal
+                etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+            }
             else if (inputType == EditInputType.TEXT_PASSWORD) {
                 //相当于在.xml文件中设置inputType="numberDecimal
                 etInput.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);

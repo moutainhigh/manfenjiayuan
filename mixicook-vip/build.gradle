@@ -135,7 +135,7 @@ dependencies {
     compile project(path: ':vector_uikit')
     compile rootProject.ext.dependencies["rxjava"]
     compile rootProject.ext.dependencies["rxandroid"]
-    compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile rootProject.ext.dependencies["crashreport_upgrade"]
     compile rootProject.ext.dependencies["getui"]
     compile rootProject.ext.dependencies["butterknife"]
     apt rootProject.ext.dependencies["butterknife-compiler"]

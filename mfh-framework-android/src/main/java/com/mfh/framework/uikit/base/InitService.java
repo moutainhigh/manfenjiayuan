@@ -2,18 +2,17 @@ package com.mfh.framework.uikit.base;
 
 import android.content.Context;
 
+import com.mfh.comn.config.UConfig;
+import com.mfh.comn.upgrade.UpgradeConfigParseHelper;
 import com.mfh.framework.BizConfig;
-import com.mfh.framework.configure.UConfigCache;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.configure.UConfigCache;
+import com.mfh.framework.core.logic.ServiceFactory;
+import com.mfh.framework.core.service.BaseService;
+import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.database.dao.BaseDbDao;
 import com.mfh.framework.database.upgrade.SqlliteUpgradeSupport;
-import com.mfh.framework.core.service.BaseService;
-import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.core.logic.ServiceFactory;
-import com.mfh.framework.network.NetStateService;
-import com.mfh.comn.config.UConfig;
-import com.mfh.comn.upgrade.UpgradeConfigParseHelper;
 
 /**
  * 系统初始化服务，所有启动时需要的检测和初始化工作放在此处
@@ -43,7 +42,7 @@ public class InitService extends BaseService {
      * @author zhangyz created on 2013-5-9
      */
     public void init (Context context) {
-        NetStateService.getInstance().register(context);
+//        NetStateService.getInstance().register(context);
 
         checkDb(context);
 

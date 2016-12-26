@@ -24,12 +24,12 @@ public class CashierMode {
                         barcode, MfhLoginService.get().getSpid()));
         if (entities != null && entities.size() > 0) {
             PosProductEntity goods = entities.get(0);
-            ZLogger.df(String.format("找到%d个商品:%s[%s][%s]",
-                    entities.size(), barcode, goods.getAbbreviation(), goods.getName()));
+            ZLogger.d(String.format("找到%d个商品:%s[%s][%s]",
+                    entities.size(), barcode, goods.getAbbreviation(), goods.getSkuName()));
             return goods;
         }
         else{
-            ZLogger.df(String.format("未找到商品:%s", barcode));
+            ZLogger.d(String.format("未找到商品:%s", barcode));
         }
 
         return null;

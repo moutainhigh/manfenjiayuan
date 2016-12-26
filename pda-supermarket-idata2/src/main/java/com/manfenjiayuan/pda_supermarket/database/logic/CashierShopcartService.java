@@ -158,7 +158,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             shopcartEntity.setProSkuId(goods.getProSkuId());
             shopcartEntity.setBarcode(goods.getBarcode());
             shopcartEntity.setProductId(goods.getProductId());
-            shopcartEntity.setName(goods.getName());
+            shopcartEntity.setName(goods.getSkuName());
             shopcartEntity.setUnit(goods.getUnit());
             shopcartEntity.setCostPrice(goods.getCostPrice());
 

@@ -90,7 +90,7 @@ public class PrepareStep2Fragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         try {
             Bundle args = getArguments();
-            ZLogger.df(String.format("打开组货页面，%s", StringUtils.decodeBundle(args)));
+            ZLogger.df(String.format("打开平台组货页面，%s", StringUtils.decodeBundle(args)));
             if (args != null) {
                 mScOrder = (ScOrder) args.getSerializable(EXTRA_KEY_SCORDER);
             }

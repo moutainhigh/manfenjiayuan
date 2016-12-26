@@ -107,6 +107,7 @@
     <style name="dialog_common" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowBackground">@drawable/dialog_background</item>
         <item name="android:editTextBackground">@drawable/bg_input_rectange</item>
+        <!--<item name="android:backgroundDimEnabled">false</item>-->
     </style>
 
     <style name="dialog_title" parent="@style/fullline_view">

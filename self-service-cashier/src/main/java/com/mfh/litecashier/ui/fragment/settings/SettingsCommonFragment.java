@@ -201,7 +201,37 @@ public class SettingsCommonFragment extends BaseFragment {
     public void checkUpdate() {
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
             if ((System.currentTimeMillis() - exitTime) > 3000) {
+//                Beta.checkUpgrade();
+                exitTime = System.currentTimeMillis();
+            }
+        }
+        else {
+            if ((System.currentTimeMillis() - exitTime) > 3000) {
+                clickVersionTimes = 1;
+                exitTime = System.currentTimeMillis();
                 Beta.checkUpgrade();
+            }
+            else{
+                clickVersionTimes++;
+            }
+
+            if (clickVersionTimes == 8){
+                clickVersionTimes = 0;
+
+                DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
+                SharedPrefesManagerFactory.setSuperPermissionGranted(true);
+                EventBus.getDefault().post(new SettingsFragment.SettingsEvent(SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
+
+                reload();
+            }
+            else{
+                DialogUtil.showHint(String.format("再点 %d 次即可获得超级权限!", 8-clickVersionTimes));
+            }
+        }
+    }{
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+            if ((System.currentTimeMillis() - exitTime) > 3000) {
+//                Beta.checkUpgrade();
                 exitTime = System.currentTimeMillis();
             }
         }

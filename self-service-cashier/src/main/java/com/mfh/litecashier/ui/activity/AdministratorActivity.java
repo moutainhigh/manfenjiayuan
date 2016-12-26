@@ -390,7 +390,7 @@ public class AdministratorActivity extends BaseActivity {
                 "恢复出厂设置", R.mipmap.ic_admin_factorydatareset));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SYSTEM_UPGRADE,
                 "系统升级", R.mipmap.ic_admin_system_upgrade));
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             functionalList.add(new ResMenu(ResMenu.CANARY_MENU_ORDERFLOW,
                     "流水", R.mipmap.ic_admin_menu_orderflow));
             functionalList.add(new ResMenu(ResMenu.CANARY_MENU_GOODS,
@@ -425,6 +425,11 @@ public class AdministratorActivity extends BaseActivity {
         } else if (id.compareTo(ResMenu.ADMIN_MENU_FACTORYDATA_RESET) == 0) {
             factoryDataReset();
         } else if (id.compareTo(ResMenu.ADMIN_MENU_SYSTEM_UPGRADE) == 0) {
+            /**
+             * @param isManual  用户手动点击检查，非用户点击操作请传false
+             * @param isSilence 是否显示弹窗等交互，[true:没有弹窗和toast] [false:有弹窗或toast]
+             */
+//        Beta.checkUpgrade(false, false);
             Beta.checkUpgrade();
         } else if (id.compareTo(ResMenu.CANARY_MENU_ORDERFLOW) == 0) {
             ActivityRoute.redirect2CanaryOrderflow(this);
@@ -432,7 +437,7 @@ public class AdministratorActivity extends BaseActivity {
             ActivityRoute.redirect2CanaryGoods(this);
         } else if (id.compareTo(ResMenu.CANARY_MENU_MESSAGE_MGR) == 0) {
             ActivityRoute.redirect2MsgMgr(this);
-        }else {
+        } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
     }

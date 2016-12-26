@@ -59,10 +59,10 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 332
+        versionCode 337
 
         // Defines a user-friendly version name for your app.
-        versionName "1.22.5"
+        versionName "1.22.7"
 
         multiDexEnabled true
 
@@ -164,6 +164,9 @@ android {
         }
     }
 
+    /**
+     * 签名配置文件
+     * */
     File propFile = file('signing.properties');
     if (propFile.exists()) {
         def Properties props = new Properties()
@@ -198,7 +201,9 @@ dependencies {
     //    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 //    compile project(':im')
     compile project(':cashier')
-    compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile rootProject.ext.dependencies["crashreport_upgrade"]
+    compile rootProject.ext.dependencies["nativecrashreport"]
+//    compile 'com.tencent.bugly:nativecrashreport:1.2.1'
     compile rootProject.ext.dependencies["butterknife"]
     apt rootProject.ext.dependencies["butterknife-compiler"]
     compile rootProject.ext.dependencies["getui"]

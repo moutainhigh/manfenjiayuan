@@ -160,7 +160,7 @@ public class DataDownloadManager extends DataSyncManager {
         } else if ((queue & POSPRODUCTS_SKU) == POSPRODUCTS_SKU) {
             findShopOtherBarcodesStep1();
         } else {
-            onNotifyCompleted("没有同步任务待执行");
+            onNotifyCompleted("没有下载任务待执行");
         }
     }
 

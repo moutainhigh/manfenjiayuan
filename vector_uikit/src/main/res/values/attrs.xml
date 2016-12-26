@@ -27,6 +27,9 @@
     <attr name="editTextHint" format="string|reference"/>
     <attr name="editBackground" format="reference|color"/>
     <attr name="editTextColorHint" format="reference|color"/>
+    <attr name="editFocusable" format="boolean"/>
+    <attr name="editFocusableInTouchMode" format="boolean"/>
+
 
 
     <attr name="borderWidth" format="dimension"/>
@@ -59,6 +62,7 @@
         <enum name="weight" value="4"/>
         <enum name="textPassword" value="5"/>
         <enum name="phone" value="6"/>
+        <enum name="number" value="7"/>
     </attr>
 
     <declare-styleable name="SettingsItem">

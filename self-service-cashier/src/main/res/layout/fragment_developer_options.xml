@@ -43,25 +43,7 @@
             android:layout_height="48dp"
             app:position="bottom"
             app:text="开发/测试"
-            app:textSize="16sp"/>
-
-        <!--客显-->
-        <com.bingshanguxue.vector_uikit.ToggleSettingItem
-            android:id="@+id/toggleItem_customer_screen"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="@dimen/spacing_double"
-            app:position="top"
-            app:text="客显（PAD）"
-            app:textSize="16sp"/>
-
-        <!--混合支付-->
-        <com.bingshanguxue.vector_uikit.ToggleSettingItem
-            android:id="@+id/toggleItem_hybrid_payment"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:position="center"
-            app:text="混合支付"
+            app:subTextSize="12sp"
             app:textSize="16sp"/>
 
         <!--个推-->
@@ -71,6 +53,7 @@
             android:layout_height="48dp"
             app:position="center"
             app:text="个推"
+            app:subTextSize="12sp"
             app:textSize="16sp"/>
 
         <!--显示-->

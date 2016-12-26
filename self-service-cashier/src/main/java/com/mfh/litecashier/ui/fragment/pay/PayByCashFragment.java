@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,7 +31,6 @@ import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -193,8 +191,7 @@ public class PayByCashFragment extends BasePayFragment {
     protected void submitOrder() {
         super.submitOrder();
         //混合支付aas
-        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)
-                && rechargeAmount < 0) {
+        if (rechargeAmount < 0) {
             ZLogger.df("收取金额不足");
 //            DialogUtil.showHint("收取金额不足");
             return;
@@ -248,14 +245,8 @@ public class PayByCashFragment extends BasePayFragment {
                 tvCharge.setText(MUtils.formatDouble(rechargeAmount, ""));
                 tvCharge.setTextColor(AppHelper.getOkTextColor());
             } else {
-                //混合支付
-                if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_HYBRID_PAYMENT_ENABLED, false)) {
-                    tvCharge.setText(R.string.default_amount);
-                    tvCharge.setTextColor(Color.parseColor("#000000"));
-                } else {
-                    tvCharge.setText("金额不足");
-                    tvCharge.setTextColor(AppHelper.getErrorTextColor());
-                }
+                tvCharge.setText("金额不足");
+                tvCharge.setTextColor(AppHelper.getErrorTextColor());
             }
         } catch (Exception e) {
             ZLogger.e(e.toString());

@@ -288,7 +288,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                             plu,
                             FLAG_F12,
                             String.valueOf(goods.getCateType()),
-                            goods.getName(),
+                            goods.getSkuName(),
                             PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
                 }
                 syncProcess(String.format("开始写入%d个商品到CSV文件", goodsList.size()));
@@ -332,7 +332,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                                 plu,
                                 FLAG_F12,
                                 String.valueOf(goods.getCateType()),
-                                goods.getName(),
+                                goods.getSkuName(),
                                 PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
                     }
                     syncProcess(String.format("开始写入%d个商品到CSV文件", goodsList2.size()));

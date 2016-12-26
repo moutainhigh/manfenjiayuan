@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ResMenu implements Serializable{
 
     //收银
-    public static final Long CASHIER_MENU_ONLINE_ORDER     = 10L;//线上订单
+    public static final Long CASHIER_MENU_ONLINE_ORDER     = 10L;//订单列表
     public static final Long CASHIER_MENU_REGISTER_VIP     = 12L;//注册
     public static final Long CASHIER_MENU_MEMBER_CARD      = 13L;//会员卡（开卡）
     public static final Long CASHIER_MENU_HANGUP_ORDER  = 14L;//挂单

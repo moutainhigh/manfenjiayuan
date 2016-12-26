@@ -91,11 +91,11 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
         setupSwipeRefresh();
         initOrderRecyclerView();
 
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            readCache();
-        } else {
-            reload();
-        }
+//        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+//            readCache();
+//        } else {
+//            reload();
+//        }
     }
 
     @Override

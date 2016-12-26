@@ -107,5 +107,5 @@ dependencies {
     compile project(':mfh-framework-android')
     compile project(':im')
     compile project(path: ':mfh-framework-business')
-    compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile rootProject.ext.dependencies["crashreport_upgrade"]
 }
