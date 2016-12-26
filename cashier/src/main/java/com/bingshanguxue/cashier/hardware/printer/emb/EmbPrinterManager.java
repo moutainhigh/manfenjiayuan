@@ -79,7 +79,7 @@ public class EmbPrinterManager extends PrinterManager {
         esc.addUserCommand(EmbPrinter.initPrinter());
 
         //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 2);
+        printAndLineFeed(esc, 2);
 
         //设置打印居中
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
@@ -92,7 +92,7 @@ public class EmbPrinterManager extends PrinterManager {
             esc.addText(MfhLoginService.get().getCurOfficeName());
         }
 
-        mPrinter.printAndLineFeed(esc, 1);
+        printAndLineFeed(esc, 1);
         //设置打印左对齐
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
         /**打印 机器设备号＋订单号*/
@@ -108,11 +108,12 @@ public class EmbPrinterManager extends PrinterManager {
         /**
          * 打印 结束语
          * */
-        mPrinter.printAndLineFeed(esc, 1);
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        printAndLineFeed(esc, 1);
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
         esc.addText("请注意保管好您的交易凭条!\n");
         //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 3);
+        printAndLineFeed(esc, 3);
 
         return esc;
     }
@@ -123,52 +124,63 @@ public class EmbPrinterManager extends PrinterManager {
             return null;
         }
 
-        ZLogger.d(JSONObject.toJSONString(posOrderEntity));
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+            ZLogger.d(JSONObject.toJSONString(posOrderEntity));
+        }
         EscCommand esc = new EscCommand();
         esc.addUserCommand(EmbPrinter.initPrinter());
-        //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 2);
-        //设置打印居中
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
 
-//        //设置为倍高倍宽
-        esc.addUserCommand(EmbPrinter.setFont(0, 1, 1, 0, 0));
         /**打印 标题*/
-        esc.addText("收银小票\n");
+        printAndLineFeed(esc, 1);
+        //设置打印居中
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
+        //设置为倍高倍宽
+        esc.addUserCommand(EmbPrinter.setFont(0, 1, 1, 0, 0));
+        esc.addText(String.format("%s\n", MfhLoginService.get().getCurOfficeName()));
         //取消倍高倍宽
         esc.addUserCommand(EmbPrinter.setFont(0, 0, 0, 0, 0));
 
-        mPrinter.printAndLineFeed(esc, 1);
+        /**打印头部*/
+        printAndLineFeed(esc, 1);
         //设置打印左对齐
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_LEFT));
         esc.addText(String.format("下单时间：%s \n",
                 TimeUtil.format(posOrderEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
-        esc.addText(String.format("机器设备号:%s\n", SharedPrefesManagerFactory.getTerminalId()));
-        esc.addText(String.format("收银时间:%s/%s \n",
-                MfhLoginService.get().getLoginName(), MfhLoginService.get().getTelephone()));
-        mPrinter.printAndLineFeed(esc, 1);
+        esc.addText(String.format("设备编号:%s\n", SharedPrefesManagerFactory.getTerminalId()));
+        esc.addText(String.format("营业员:%s\n", MfhLoginService.get().getHumanName()));
 
         /**打印 商品明细*/
-//        esc.addText("货号/品名       单价 数量   小计\n");
-        esc.addText("货号/品名     单价   数量  小计\n");
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
-
+        printAndLineFeed(esc, 1);
         List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
+//            esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
+            esc.addText("品名            单价 数量   小计\n");
+            esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+            esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                    PrinterConstants.Command.ALIGN_LEFT));
             esc.addText("--------------------------------\n");//32个
             for (PosOrderItemEntity entity : posOrderItemEntityList) {
-                makeOrderItem2(esc, String.format("%s/%s", entity.getBarcode(),
-                        entity.getName()), String.format("%.2f", entity.getFinalPrice()),
+//                String shortName = entity.getShortName();
+//                String text1;
+//                if (!StringUtils.isEmpty(shortName)){
+//                    text1 = String.format("%s(%s)", entity.getSkuName(),entity.getShortName());
+//                }
+//                else{
+//                    text1 = entity.getSkuName();
+//                }
+                makeOrderItem2(esc, entity.getSkuName(),
+                        String.format("%.2f", entity.getFinalPrice()),
                         String.format("%.2f", entity.getBcount()),
                         String.format("%.2f", entity.getFinalAmount()));
             }
-            esc.addText("--------------------------------\n");//32个
         }
 
         /**
          * 打印合计信息
          * */
+        esc.addText("--------------------------------\n");//32个
         //设置打印左对齐
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                 PrinterConstants.Command.ALIGN_RIGHT));
@@ -197,24 +209,19 @@ public class EmbPrinterManager extends PrinterManager {
                 }
             }
         }
-
         esc.addText(String.format("找零:%.2f\n", payWrapper.getChange()));
 
-        /**
-         * 打印 结束语
-         * */
-        //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 3);
-
+        /** 打印 结束语*/
+        printAndLineFeed(esc, 2);//打印并且走纸3行
         //设置打印左对齐
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
         addFooter(esc);
-
-        //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 3);
+        printAndLineFeed(esc, 3);//打印并且走纸3行
 
         return esc;
     }
+
+
 
     @Override
     public EscCommand makePrepareOrderEsc(ScOrder scOrder) {
@@ -647,70 +654,62 @@ public class EmbPrinterManager extends PrinterManager {
         EscCommand esc = new EscCommand();
 
         esc.addUserCommand(EmbPrinter.initPrinter());
-        //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 2);
+        /**打印 标题*/
+        printAndLineFeed(esc, 1);//打印并且走纸3行
         //设置打印居中
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
         //设置为倍高倍宽
         esc.addUserCommand(EmbPrinter.setFont(0, 1, 1, 0, 0));
-
-        /**打印 标题*/
-        esc.addText("收银小票\n");
+        esc.addText(String.format("%s\n", MfhLoginService.get().getCurOfficeName()));
         //取消倍高倍宽
         esc.addUserCommand(EmbPrinter.setFont(0, 0, 0, 0, 0));
 
-        mPrinter.printAndLineFeed(esc, 1);
-//进纸一行
+        /**打印头部*/
+        printAndLineFeed(esc, 1);//进纸一行
         //设置打印左对齐
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                 PrinterConstants.Command.ALIGN_LEFT));
-        /**打印 订单条码*/
-        esc.addText(String.format("订单号:%d \n", curOrder.getId()));
-        /**打印 应付款*/
-//        esc.addText(String.format("应付款:%.2f \n", orderEntity.getAmount()));
-        /**打印 订购日期*/
+//        esc.addText(String.format("订单号:%d \n", curOrder.getId()));
         esc.addText(String.format("日期:%s \n",
                 TimeUtil.format(curOrder.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
         esc.addText(String.format("订单金额:%.2f\n", curOrder.getAmount()));
         esc.addText(String.format("支付方式:%s\n", WayType.name(curOrder.getPayType())));
-        mPrinter.printAndLineFeed(esc, 1);
-
-        esc.addText("--------------------------------\n");//32个
-        esc.addText("货号/品名           数量   小计\n");
-//        makeTemp(esc, "商品ID", "品名", "数量", "单价", "金额");
-//        Double totalQuantity = 0D, totalAmount = 0D;
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-        //设置为倍高倍宽
-//        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
-//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
 
         /**打印 商品明细*/
+        printAndLineFeed(esc, 1);
         List<PosOrderItem> oderItems = curOrder.getItems();
         if (oderItems != null && oderItems.size() > 0) {
+            esc.addText("--------------------------------\n");//32个
+//            esc.addText("品名         单价   数量  小计\n");
+            esc.addText("品名            单价 数量   小计\n");
+            esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
             for (PosOrderItem entity : oderItems) {
-                makeOrderItem3(esc,
-                        String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
+                makeOrderItem2(esc,
+                        entity.getProductName(),
+                        String.format("%.2f", entity.getPrice()),
                         String.format("%.2f", entity.getBcount()),
                         String.format("%.2f", entity.getAmount()));
+//                makeOrderItem3(esc,
+//                        String.format("%s", entity.getProductName()),
+//                        String.format("%.2f", entity.getBcount()),
+//                        String.format("%.2f", entity.getAmount()));
             }
         }
 
-        mPrinter.printAndLineFeed(esc, 1);
+        /**打印 结束语*/
+        esc.addText("--------------------------------\n");//32个
+        printAndLineFeed(esc, 1);
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                 PrinterConstants.Command.ALIGN_CENTER));
-        /**打印 结束语*/
         addFooter(esc);
-
-//        addFooter(esc);
-        mPrinter.printAndLineFeed(esc, 3);
-//打印并且走纸3行
-        ZLogger.d("生成打印数据成功");
+        printAndLineFeed(esc, 3);//打印并且走纸3行
 
         return esc;
     }
 
     /**
-     * 平台配送单
+     * 外部配送单
      */
     @Override
     public EscCommand makePosOrderEsc2(PosOrder posOrder) {
@@ -718,9 +717,8 @@ public class EmbPrinterManager extends PrinterManager {
 
         esc.addUserCommand(EmbPrinter.initPrinter());
         //打印并且走纸2行
-        mPrinter.printAndLineFeed(esc, 2);
-
-        /**打印 一维条码*/
+        printAndLineFeed(esc, 1);
+        //打印 一维条码
         addCODE128(esc, posOrder.getBarcode());
 
         /**打印 标题*/
@@ -728,47 +726,127 @@ public class EmbPrinterManager extends PrinterManager {
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
         //设置为倍高倍宽
         esc.addUserCommand(EmbPrinter.setFont(0, 1, 1, 0, 0));
-        esc.addText("外部平台配送单\n");
+        esc.addText("配送单\n");
+        esc.addText(String.format("%s\n", PosType.name(posOrder.getSubType())));
         //取消倍高倍宽
         esc.addUserCommand(EmbPrinter.setFont(0, 0, 0, 0, 0));
 
-        /**打印 订单基本信息*/
-        mPrinter.printAndLineFeed(esc, 1);
+        /**打印 头部*/
+        printAndLineFeed(esc, 1);
         //设置打印左对齐
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
-        //订单来源
-        esc.addText(String.format("订单来源: %s \n", PosType.name(posOrder.getSubType())));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_LEFT));
         //订单编号
-        esc.addText(String.format("订单号: %d \n", posOrder.getId()));
+//        esc.addText(String.format("订单号: %d \n", posOrder.getId()));
         //发货时间
-        esc.addText(String.format("发货时间: %s \n",
+        esc.addText(String.format("下单时间: %s \n",
                 TimeUtil.format(posOrder.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
 
         /**打印 订单明细*/
-        mPrinter.printAndLineFeed(esc, 1);
-        esc.addText("--------------------------------\n");//32个
-        esc.addText("货号/品名           数量   小计\n");
-//        makeTemp(esc, "商品ID", "品名", "数量", "单价", "金额");
-//        Double totalQuantity = 0D, totalAmount = 0D;
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+        printAndLineFeed(esc, 1);
         List<PosOrderItem> oderItems = posOrder.getItems();
         if (oderItems != null && oderItems.size() > 0) {
+            esc.addText("品名                 数量   小计\n");
+            esc.addText("--------------------------------\n");//32个
+//            esc.addText("品名           数量   小计\n");
+            esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
             for (PosOrderItem entity : oderItems) {
-                makeOrderItem3(esc,
-                        String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
-                        String.format("%.2f", entity.getCommitCount()),
-                        String.format("%.2f", entity.getCommitAmount()));
+                makeOrderItem4(esc, entity.getProductName(),
+                        String.format("*%.2f", entity.getBcount()),
+                        String.format("%.2f", entity.getAmount()));
             }
         }
+
+        /**打印 尾部*/
         esc.addText("--------------------------------\n");//32个
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_RIGHT));
         esc.addText(String.format("订单金额: %.2f\n", posOrder.getAmount()));
 
-        mPrinter.printAndLineFeed(esc, 2);
         /**打印 结束语*/
+        printAndLineFeed(esc, 1);
         addFooter(esc);
         //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 3);
+        printAndLineFeed(esc, 3);
+
+        return esc;
+    }
+
+    @Override
+    public EscCommand makeSendOrder3pEsc(PosOrderEntity posOrderEntity) {
+        if (posOrderEntity == null) {
+            return null;
+        }
+
+        EscCommand esc = new EscCommand();
+
+        esc.addUserCommand(EmbPrinter.initPrinter());
+        //打印并且走纸2行
+        printAndLineFeed(esc, 1);
+        //打印 一维条码
+        addCODE128(esc, posOrderEntity.getOuterTradeNo());
+
+        /**打印 标题*/
+        //设置打印居中
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
+        //设置为倍高倍宽
+        esc.addUserCommand(EmbPrinter.setFont(0, 1, 1, 0, 0));
+        esc.addText("配送单\n");
+        esc.addText(String.format("%s\n", PosType.name(posOrderEntity.getSubType())));
+        //取消倍高倍宽
+        esc.addUserCommand(EmbPrinter.setFont(0, 0, 0, 0, 0));
+
+
+        /**打印头部*/
+        printAndLineFeed(esc, 1);
+        //设置打印左对齐
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_LEFT));
+        esc.addText(String.format("下单时间：%s \n",
+                TimeUtil.format(posOrderEntity.getCreatedDate(), TimeCursor.FORMAT_YYYYMMDDHHMM)));
+
+        /**打印 商品明细*/
+        printAndLineFeed(esc, 1);
+        List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent.fetchOrderItems(posOrderEntity);
+        if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
+//            esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
+            esc.addText("品名                 数量   小计\n");
+            esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+            esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                    PrinterConstants.Command.ALIGN_LEFT));
+            esc.addText("--------------------------------\n");//32个
+            for (PosOrderItemEntity entity : posOrderItemEntityList) {
+//                String shortName = entity.getShortName();
+//                String text1;
+//                if (!StringUtils.isEmpty(shortName)){
+//                    text1 = String.format("%s(%s)", entity.getSkuName(),entity.getShortName());
+//                }
+//                else{
+//                    text1 = entity.getSkuName();
+//                }
+                makeOrderItem4(esc, entity.getSkuName(),
+                        String.format("*%.2f", entity.getBcount()),
+                        String.format("%.2f", entity.getFinalAmount()));
+            }
+        }
+
+        /**
+         * 打印合计信息
+         * */
+        esc.addText("--------------------------------\n");//32个
+        //设置打印左对齐
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_RIGHT));
+        esc.addText(String.format("订单金额:%.2f\n", posOrderEntity.getFinalAmount()));
+
+        /** 打印 结束语*/
+        printAndLineFeed(esc, 2);//打印并且走纸3行
+        //设置打印左对齐
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
+        addFooter(esc);
+        printAndLineFeed(esc, 3);//打印并且走纸3行
 
         return esc;
     }
@@ -782,7 +860,7 @@ public class EmbPrinterManager extends PrinterManager {
 
         esc.addUserCommand(EmbPrinter.initPrinter());
         //打印并且走纸2行
-        mPrinter.printAndLineFeed(esc, 2);
+        printAndLineFeed(esc, 1);
 
         /**打印 一维条码*/
         addCODE128(esc, posOrder.getBarcode());
@@ -797,7 +875,7 @@ public class EmbPrinterManager extends PrinterManager {
         esc.addUserCommand(EmbPrinter.setFont(0, 0, 0, 0, 0));
 
         /**打印 订单基本信息*/
-        mPrinter.printAndLineFeed(esc, 1);
+        printAndLineFeed(esc, 1);
         //设置打印左对齐
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
         //客户
@@ -818,24 +896,24 @@ public class EmbPrinterManager extends PrinterManager {
 
 
         /**打印 订单明细*/
-        mPrinter.printAndLineFeed(esc, 1);
-        esc.addText("--------------------------------\n");//32个
-        esc.addText("货号/品名           数量   小计\n");
-//        makeTemp(esc, "商品ID", "品名", "数量", "单价", "金额");
-//        Double totalQuantity = 0D, totalAmount = 0D;
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-
+        printAndLineFeed(esc, 1);
         List<PosOrderItem> oderItems = posOrder.getItems();
         if (oderItems != null && oderItems.size() > 0) {
+            esc.addText("品名                 数量   小计\n");
+            esc.addText("--------------------------------\n");//32个
+//            esc.addText("品名           数量   小计\n");
+            esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
             for (PosOrderItem entity : oderItems) {
-                makeOrderItem3(esc,
-                        String.format("%s/%s", entity.getBarcode(), entity.getProductName()),
-                        String.format("%.2f", entity.getBcount()),
-                        String.format("%.2f", entity.getAmount()));
+                makeOrderItem4(esc,
+                        entity.getProductName(),
+                        String.format("*%.2f", entity.getCommitCount()),
+                        String.format("%.2f", entity.getCommitAmount()));
             }
         }
+
         esc.addText("--------------------------------\n");//32个
-        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
+                PrinterConstants.Command.ALIGN_CENTER));
         esc.addText(String.format("订单金额: %.2f\n", posOrder.getAmount()));
         esc.addText(String.format("拣货金额: %.2f\n", posOrder.getCommitAmount()));
         Double disAmount = MathCompact.sub(posOrder.getCommitAmount(), posOrder.getAmount());
@@ -844,11 +922,12 @@ public class EmbPrinterManager extends PrinterManager {
         } else {
             esc.addText(String.format("   差额: +%.2f\n", disAmount));
         }
-        mPrinter.printAndLineFeed(esc, 2);
+
         /**打印 结束语*/
+        printAndLineFeed(esc, 2);
         addFooter(esc);
         //打印并且走纸3行
-        mPrinter.printAndLineFeed(esc, 3);
+        printAndLineFeed(esc, 3);
 
         return esc;
     }
@@ -859,7 +938,7 @@ public class EmbPrinterManager extends PrinterManager {
             EscCommand esc = new EscCommand();
             esc.addUserCommand(EmbPrinter.initPrinter());
 
-            mPrinter.printAndLineFeed(esc, 2);
+            printAndLineFeed(esc, 2);
 //打印并且走纸3行
             //设置打印居中
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
@@ -868,11 +947,11 @@ public class EmbPrinterManager extends PrinterManager {
             esc.addText("打印测试");
 //        //取消倍高倍宽
             esc.addUserCommand(EmbPrinter.setFont(0, 0, 0, 0, 0));
-            mPrinter.printAndLineFeed(esc, 1);
+            printAndLineFeed(esc, 1);
 
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
             esc.addText("Welcome to use Gprinter!\n");   //  打印文字
-            mPrinter.printAndLineFeed(esc, 1);
+            printAndLineFeed(esc, 1);
 
 //        /*打印繁体中文  需要打印机支持繁体字库*/
 //        String message = GPrinterAgent.SimToTra("佳博票据打印机\n");
@@ -906,14 +985,11 @@ public class EmbPrinterManager extends PrinterManager {
                     StringUtils.genNonceStringByLength(8)),
                     "12.34", "23.45", "34.56");
 
-            mPrinter.printAndLineFeed(esc, 1);
+            printAndLineFeed(esc, 1);
 
 /*打印一维条码code128*/
             esc.addText("Print code128\n");   //  打印文字
             addCODE128(esc, MUtils.getOrderBarCode());
-
-            mPrinter.printAndLineFeed(esc, 1);
-
 
         /*QRCode 命令打印
         此命令只在支持 QRCode 命令打印的机型才能使用。
@@ -924,7 +1000,7 @@ public class EmbPrinterManager extends PrinterManager {
                     MobileApi.DOMAIN);
             esc.addUserCommand(barcode.getBarcodeData());
 //打印 QRCode
-            mPrinter.printAndLineFeed(esc, 1);
+            printAndLineFeed(esc, 1);
 
             /**打印 APP LOGO*/
 //            esc.addText("Print bitmap!\n");   //  打印文字
@@ -1047,15 +1123,15 @@ public class EmbPrinterManager extends PrinterManager {
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                     PrinterConstants.Command.ALIGN_RIGHT));//设置打印左对齐
             esc.addText(String.format("%s%s%s",
-                    Printer.formatShort(price, 6, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(bcount, 6, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(price, 6, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(bcount, 6, Printer.BLANK_GRAVITY.LEFT),
                     Printer.formatShort(amount, 7, Printer.BLANK_GRAVITY.LEFT)));
         } else {
             //在名称后面显示单价/数量/小计
             String printText = String.format("%s%s%s%s",
                     Printer.formatShort(name, 13, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(price, 6, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(bcount, 6, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(price, 6, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(bcount, 6, Printer.BLANK_GRAVITY.LEFT),
                     Printer.formatShort(amount, 7, Printer.BLANK_GRAVITY.LEFT));
             esc.addText(printText);
         }

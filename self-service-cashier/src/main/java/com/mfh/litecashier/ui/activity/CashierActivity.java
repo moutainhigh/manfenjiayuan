@@ -6,17 +6,15 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Base64;
 
-import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.led.LedAgent;
+import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
-import com.gprinter.command.GpCom;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
@@ -40,7 +38,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -522,61 +519,61 @@ public abstract class CashierActivity extends BaseActivity {
     }
 
 
-    public int sendEscCommand(String b64) {
-        ZLogger.d("sendEscCommand:\n" + b64);
-        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
-        byte[] datas = Base64.decode(b64, Base64.DEFAULT);
-        Vector vector = new Vector();
-        byte[] var9 = datas;
-        int var8 = datas.length;
-
-        for (int var7 = 0; var7 < var8; ++var7) {
-            byte b = var9[var7];
-            vector.add(Byte.valueOf(b));
-        }
-
-        retval = sendDataImmediately(vector);
-
-        return retval.ordinal();
-    }
-
-    public GpCom.ERROR_CODE sendDataImmediately(Vector<Byte> Command) {
-        ZLogger.d("sendDataImmediately:\n" + Command.toString());
-        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
-        Vector data = new Vector(Command.size());
-        for (int k = 0; k < Command.size(); ++k) {
-            if (data.size() >= 1024) {
-                retval = writeDataImmediately(data);
-                data.clear();
-                if (retval != GpCom.ERROR_CODE.SUCCESS) {
-                    return retval;
-                }
-            }
-
-            data.add((Byte) Command.get(k));
-        }
-
-        retval = writeDataImmediately(data);
-
-        return retval;
-    }
-
-    public GpCom.ERROR_CODE writeDataImmediately(Vector<Byte> data) {
-        ZLogger.d("writeDataImmediately:\n" + data.toString());
-
-        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
-        if (data != null && data.size() > 0) {
-            byte[] sendData = new byte[data.size()];
-
-            for (int e = 0; e < data.size(); ++e) {
-                sendData[e] = ((Byte) data.get(e)).byteValue();
-            }
-
-            sendPortData(comPrint, sendData);
-        }
-
-        return retval;
-    }
+//    public int sendEscCommand(String b64) {
+//        ZLogger.d("sendEscCommand:\n" + b64);
+//        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
+//        byte[] datas = Base64.decode(b64, Base64.DEFAULT);
+//        Vector vector = new Vector();
+//        byte[] var9 = datas;
+//        int var8 = datas.length;
+//
+//        for (int var7 = 0; var7 < var8; ++var7) {
+//            byte b = var9[var7];
+//            vector.add(Byte.valueOf(b));
+//        }
+//
+//        retval = sendDataImmediately(vector);
+//
+//        return retval.ordinal();
+//    }
+//
+//    public GpCom.ERROR_CODE sendDataImmediately(Vector<Byte> Command) {
+//        ZLogger.d("sendDataImmediately:\n" + Command.toString());
+//        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
+//        Vector data = new Vector(Command.size());
+//        for (int k = 0; k < Command.size(); ++k) {
+//            if (data.size() >= 1024) {
+//                retval = writeDataImmediately(data);
+//                data.clear();
+//                if (retval != GpCom.ERROR_CODE.SUCCESS) {
+//                    return retval;
+//                }
+//            }
+//
+//            data.add((Byte) Command.get(k));
+//        }
+//
+//        retval = writeDataImmediately(data);
+//
+//        return retval;
+//    }
+//
+//    public GpCom.ERROR_CODE writeDataImmediately(Vector<Byte> data) {
+//        ZLogger.d("writeDataImmediately:\n" + data.toString());
+//
+//        GpCom.ERROR_CODE retval = GpCom.ERROR_CODE.SUCCESS;
+//        if (data != null && data.size() > 0) {
+//            byte[] sendData = new byte[data.size()];
+//
+//            for (int e = 0; e < data.size(); ++e) {
+//                sendData[e] = ((Byte) data.get(e)).byteValue();
+//            }
+//
+//            sendPortData(comPrint, sendData);
+//        }
+//
+//        return retval;
+//    }
 
     private static final int SECOND = 1000;
     private static final int MINUTE = 60 * 1000;

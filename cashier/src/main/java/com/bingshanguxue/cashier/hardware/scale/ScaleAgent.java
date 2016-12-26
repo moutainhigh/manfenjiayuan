@@ -12,7 +12,7 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
  */
 
 public class ScaleAgent {
-    private static final boolean ENABLED_DEF = false;
+    private static final boolean ENABLED_DEF = true;
     public static final int SCALE_TYPE_ACS_P215 = 0;
     public static final int SCALE_TYPE_DS_781A = 1;
     private static final int SCALE_TYPE_DEF = SCALE_TYPE_ACS_P215;//0,爱华；1,寺冈

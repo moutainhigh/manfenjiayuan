@@ -20,8 +20,6 @@ import org.greenrobot.eventbus.EventBus;
  */
 public class EmbPrinter extends Printer {
 
-
-
     public static byte[] setPrinter(int command, int value) {
         byte[] arrayOfByte = new byte[3];
         switch (command) {

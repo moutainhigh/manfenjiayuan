@@ -8,7 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 
 
 /**
- * GPrinter打印机&钱箱
+ * 佳博GP-5860III热敏打印机
  * <h1>通信协议</h1>
  * <ol>
  * <li>9600波特率，8位数字位，1位停止位，没有校验位</li>

@@ -10,7 +10,7 @@ import java.util.Observable;
  */
 
 public class PrinterAgent extends Observable {
-    private static final boolean ENABLED_DEF = false;
+    private static final boolean ENABLED_DEF = true;
     private static final int PRINTER_TYPE_DEF = PrinterModel.PRINTER_TYPE_COMMON;//0,外接；1,嵌入式
     private static final int PRINT_TIMES_DEF = 1;
     private static final String PORT_DEF = "/dev/ttymxc0";

@@ -56,9 +56,19 @@ public abstract class PrinterManager implements IPrinterManager{
         }
     }
 
+    /**
+     * 打印条码，自动进纸一行
+     * */
     public void addCODE128(EscCommand esc, String barcode) {
         if (mPrinter != null){
             mPrinter.addCODE128(esc, barcode);
+            mPrinter.printAndLineFeed(esc, 1);
+        }
+    }
+
+    public void printAndLineFeed(EscCommand esc, int lines) {
+        if (mPrinter != null){
+            mPrinter.printAndLineFeed(esc, lines);
         }
     }
 
@@ -111,7 +121,16 @@ public abstract class PrinterManager implements IPrinterManager{
         Observable.create(new Observable.OnSubscribe<EscCommand>() {
             @Override
             public void call(Subscriber<? super EscCommand> subscriber) {
-                subscriber.onNext(makePosOrderEsc(posOrderEntity));
+                EscCommand escCommand = null;
+                if (posOrderEntity != null) {
+                    if (PosType.POS_STANDARD.equals(posOrderEntity.getSubType())){
+                        escCommand = makePosOrderEsc(posOrderEntity);
+                    }
+                    else {
+                        escCommand = makeSendOrder3pEsc(posOrderEntity);
+                    }
+                }
+                subscriber.onNext(escCommand);
                 subscriber.onCompleted();
             }
         })
@@ -138,6 +157,7 @@ public abstract class PrinterManager implements IPrinterManager{
     }
 
     public abstract EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity);
+    public abstract EscCommand makeSendOrder3pEsc(PosOrderEntity posOrderEntity);
 
 
     /**
@@ -522,7 +542,43 @@ public abstract class PrinterManager implements IPrinterManager{
         }
     }
 
-    public void makeOrderItem4(EscCommand esc, String name, String bcount, String amount){
+    public void makeOrderItem4(EscCommand esc, String text1, String text2, String text3){
+        if (esc == null) {
+            return;
+        }
+
+        try {
+            //计算行数
+            int maxLine = Math.max(1, (text1 == null ? 0 : (Printer.getLength(text1) - 1) / 20 + 1));
+
+            String nameTemp = text1;
+            for (int i = 0; i < maxLine; i++) {
+                String nameLine = DataConvertUtil.subString(nameTemp,
+                        Math.min(18, Printer.getLength(nameTemp)));
+                StringBuilder line = new StringBuilder();
+                //插入名称，不足补空格
+                //中间一行插入数量&金额
+                if (i == 0) {
+                    line.append(Printer.formatShort(nameLine, 18, Printer.BLANK_GRAVITY.RIGHT));
+                    line.append(Printer.formatShort(text2, 7, Printer.BLANK_GRAVITY.LEFT));
+                    line.append(Printer.formatShort(text3, 7, Printer.BLANK_GRAVITY.LEFT));
+                } else {
+                    line.append(Printer.formatShort(nameLine, 18, Printer.BLANK_GRAVITY.RIGHT));
+                }
+                line.append("\n");
+                esc.addText(line.toString());
+
+//                assert nameTemp != null;
+                if (!StringUtils.isEmpty(nameTemp)) {
+                    nameTemp = nameTemp.substring(nameLine.length(), nameTemp.length()).trim();
+                }
+            }
+        } catch (Exception e) {
+            ZLogger.ef(e.toString());
+        }
+    }
+
+    public void makeOrderItem5(EscCommand esc, String name, String bcount, String amount){
         if (esc == null) {
             return;
         }
