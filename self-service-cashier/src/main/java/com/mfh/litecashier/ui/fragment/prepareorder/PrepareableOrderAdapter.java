@@ -57,12 +57,11 @@ public class PrepareableOrderAdapter
         } else {
             holder.rootView.setSelected(false);
         }
-        holder.tvCreateDate.setText(String.format("下单时间：%s",
+        holder.tvBarcode.setText(String.format("下单时间：%s",
                 TimeUtil.format(entity.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
-        holder.tvAmount.setText(String.format("商品总价：%.2f", entity.getAmount()));
-
-        holder.tvBarcode.setText(String.format("订单编号：%d", entity.getId()));
-//        holder.tvPayType.setText(String.format("支付方式：%s", WayType.name(entity.getPaystatus())));
+        holder.tvCreateDate.setText(String.format("收货人：%s", entity.getReceiveName()));
+        holder.tvAmount.setText(String.format("手机号：%s", entity.getReceivePhone()));
+        holder.tvPayType.setVisibility(View.GONE);
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -113,6 +112,14 @@ public class PrepareableOrderAdapter
         }
 
         notifyDataSetChanged();
+        if (adapterListener != null) {
+            adapterListener.onDataSetChanged();
+        }
+    }
+
+    @Override
+    public void appendEntityList(List<ScOrder> entityList) {
+        super.appendEntityList(entityList);
         if (adapterListener != null) {
             adapterListener.onDataSetChanged();
         }

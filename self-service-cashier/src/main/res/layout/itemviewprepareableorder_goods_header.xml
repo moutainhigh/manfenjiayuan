@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_header"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <TextView
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2.5"
+        android:text="商品" />
+
+    <TextView
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="价格" />
+
+    <TextView
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="数量" />
+
+    <TextView
+        style="@style/mfh_form_header_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="小计" />
+
+
+</LinearLayout>

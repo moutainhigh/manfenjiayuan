@@ -71,7 +71,6 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
 
     private ScOrderPresenter mScOrderPresenter;
     private ScOrder mScOrder;
-    private int printTimes = 1;//打印次数，默认是1
 
     public static PrepareAbleOrdersFragment newInstance(Bundle args) {
         PrepareAbleOrdersFragment fragment = new PrepareAbleOrdersFragment();
@@ -177,10 +176,14 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
                     }
 
                     //出库成功:1-556637
-                    showProgressDialog(ProgressDialog.STATUS_PROCESSING, "接单成功", true);
+                    showProgressDialog(ProgressDialog.STATUS_DONE, "接单成功", true);
+//                    DialogUtil.showHint("接单成功");
+//                    hideProgressDialog();
                     ZLogger.d(String.format("接单成功: %s，准备打印订单", result));
                     PrinterFactory.getPrinterManager().printPrepareOrder(mScOrder);
                     btnPrint.setEnabled(true);
+
+                    reload();
                 }
 
                 @Override
@@ -219,8 +222,8 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
         //signficantly smoother scrolling
         orderRecyclerView.setHasFixedSize(true);
         //添加分割线
-//        mRecyclerView.addItemDecoration(new LineItemDecoration(
-//                getActivity(), LineItemDecoration.VERTICAL_LIST));
+        orderRecyclerView.addItemDecoration(new LineItemDecoration(
+                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
         orderRecyclerView.setEmptyView(emptyView);
         orderRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -253,7 +256,6 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
             public void onItemClick(View view, int position) {
                 reloadOrderItems(orderAdapter.getEntity(position));
             }
-
 
             @Override
             public void onDataSetChanged() {
@@ -398,17 +400,21 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
 //        List<Item> items = new ArrayList<>();
         if (mScOrder != null) {
 //            items.add(mPosOrder);
-            tvGoodsQunatity.setText(MUtils.formatDouble("商品数", "：", mScOrder.getBcount(), "无", null, null));
-            tvTotalAmount.setText(MUtils.formatDouble("商品金额", "：", mScOrder.getAmount(), "无", null, null));
+            tvGoodsQunatity.setText(MUtils.formatDouble("商品数", "：",
+                    mScOrder.getBcount(), "无", null, null));
+            tvTotalAmount.setText(MUtils.formatDouble("商品金额", "：",
+                    mScOrder.getAmount(), "无", null, null));
             btnPrint.setEnabled(true);
-            goodsAdapter.setEntityList(mScOrder.getItems());
+
+            mScOrderPresenter.getByBarcode(scOrder.getBarcode(), scOrder.getStatus(), true);
+
+//            goodsAdapter.setEntityList(mScOrder.getItems());
 
         } else {
             tvGoodsQunatity.setText(MUtils.formatDouble("商品数", "：", null, "无", null, null));
             tvTotalAmount.setText(MUtils.formatDouble("商品金额", "：", null, "无", null, null));
             btnPrint.setEnabled(false);
             goodsAdapter.setEntityList(null);
-
         }
 //        goodsRecyclerView.setAdapter(new MultiTypeAdapter(items));
     }
@@ -425,11 +431,43 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
 
     @Override
     public void onIScOrderViewSuccess(PageInfo pageInfo, List<ScOrder> dataList) {
+        try {
+            mPageInfo = pageInfo;
 
+            //第一页，缓存数据
+            if (mPageInfo != null && mPageInfo.getPageNo() == 1) {
+                if (orderAdapter != null) {
+                    orderAdapter.setEntityList(dataList);
+                }
+            } else {
+                if (dataList != null && dataList.size() > 0) {
+                    if (orderAdapter != null) {
+                        orderAdapter.appendEntityList(dataList);
+                    }
+                }
+            }
+
+            ZLogger.d(String.format("加载待组货订单结束,pageInfo':page=%d/%d(%d/%d)",
+                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
+                    orderAdapter.getItemCount(), mPageInfo.getTotalCount()));
+
+            onLoadFinished();
+        } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+            ZLogger.e(String.format("加载待组货订单失败: %s", ex.toString()));
+
+            onLoadFinished();
+        }
     }
 
     @Override
     public void onIScOrderViewSuccess(ScOrder data) {
 
+        if (data != null){
+            goodsAdapter.setEntityList(data.getItems());
+        }
+        else{
+            goodsAdapter.setEntityList(null);
+        }
     }
 }

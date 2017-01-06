@@ -118,6 +118,7 @@ public class SettingsGoodsAdapter
 
         holder.tvId.setText(String.format("编号：%d", entity.getId()));
         holder.tvName.setText(String.format("商品：(%s)/%s", entity.getBarcode(), entity.getSkuName()));
+        holder.tvAbbreviation.setText(entity.getAbbreviation());
         holder.tvSpuId.setText(String.format("SPU编号：%d", entity.getProductId()));
         holder.tvSkuId.setText(String.format("SKU编号：%d", entity.getProSkuId()));
         holder.tvCostPrice.setText(MUtils.formatDouble("零售价：", "",
@@ -146,6 +147,8 @@ public class SettingsGoodsAdapter
         TextView tvSpuId;
         @BindView(R.id.tv_name)
         TextView tvName;
+        @BindView(R.id.tv_abbreviation)
+        TextView tvAbbreviation;
         @BindView(R.id.tv_sku_id)
         TextView tvSkuId;
         @BindView(R.id.tv_costprice)

@@ -40,6 +40,15 @@
             android:layout_height="wrap_content"
             android:text="商品条码&amp;商品名称" />
 
+
+        <!--助记码-->
+        <TextView
+            android:id="@+id/tv_abbreviation"
+            style="@style/singleline_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="助记码" />
+
         <!--SPU编号-->
         <TextView
             android:id="@+id/tv_spu_id"

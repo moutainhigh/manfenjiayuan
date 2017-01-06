@@ -4,10 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
@@ -42,15 +40,12 @@ public class PrepareableOrderItemsAdapter
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ProductViewHolder(mLayoutInflater.inflate(
-                R.layout.itemview_content_orderflow_store_goods, parent, false));
+                R.layout.itemview_content_prepareableorder_goods, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         ScOrderItem entity = entityList.get(position);
-
-        Glide.with(mContext).load(entity.getImgUrl()).error(R.mipmap.ic_image_error)
-                .into(holder.ivHeader);
 
         holder.tvName.setText(entity.getProductName());
 //        holder.tvBarcode.setText(entity.getBarcode());
@@ -64,12 +59,8 @@ public class PrepareableOrderItemsAdapter
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.iv_header)
-        ImageView ivHeader;
         @BindView(R.id.tv_name)
         TextView tvName;
-        @BindView(R.id.tv_barcode)
-        TextView tvBarcode;
         @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
         @BindView(R.id.tv_quantity)

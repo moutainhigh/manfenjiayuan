@@ -42,7 +42,7 @@ public class SettingsCommonFragment extends BaseFragment {
 
     @BindView(R.id.item_posgoods)
     SettingsItem itemPosGoods;
-//    @Bind(R.id.item_mixi_fresh)
+    //    @Bind(R.id.item_mixi_fresh)
 //    SettingsItem itemMixiFresh;
     @BindView(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
@@ -197,68 +197,40 @@ public class SettingsCommonFragment extends BaseFragment {
 
     private static long exitTime = 0;
     private static int clickVersionTimes = 0;
+
     @OnClick(R.id.item_version)
     public void checkUpdate() {
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             if ((System.currentTimeMillis() - exitTime) > 3000) {
-//                Beta.checkUpgrade();
+                Beta.checkUpgrade();
                 exitTime = System.currentTimeMillis();
             }
-        }
-        else {
+        } else {
             if ((System.currentTimeMillis() - exitTime) > 3000) {
                 clickVersionTimes = 1;
                 exitTime = System.currentTimeMillis();
-                Beta.checkUpgrade();
-            }
-            else{
+//                Beta.checkUpgrade();
+            } else {
                 clickVersionTimes++;
             }
 
-            if (clickVersionTimes == 8){
+            if (clickVersionTimes == 8) {
                 clickVersionTimes = 0;
 
                 DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
                 SharedPrefesManagerFactory.setSuperPermissionGranted(true);
-                EventBus.getDefault().post(new SettingsFragment.SettingsEvent(SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
+//                ZLogger.LOG_ENABLED = SharedPrefesManagerFactory.isSuperPermissionGranted();
+
+                EventBus.getDefault().post(new SettingsFragment.SettingsEvent(
+                        SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
 
                 reload();
-            }
-            else{
-                DialogUtil.showHint(String.format("再点 %d 次即可获得超级权限!", 8-clickVersionTimes));
-            }
-        }
-    }{
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-            if ((System.currentTimeMillis() - exitTime) > 3000) {
-//                Beta.checkUpgrade();
-                exitTime = System.currentTimeMillis();
-            }
-        }
-        else {
-            if ((System.currentTimeMillis() - exitTime) > 3000) {
-                clickVersionTimes = 1;
-                exitTime = System.currentTimeMillis();
-                Beta.checkUpgrade();
-            }
-            else{
-                clickVersionTimes++;
-            }
-
-            if (clickVersionTimes == 8){
-                clickVersionTimes = 0;
-
-                DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
-                SharedPrefesManagerFactory.setSuperPermissionGranted(true);
-                EventBus.getDefault().post(new SettingsFragment.SettingsEvent(SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
-
-                reload();
-            }
-            else{
-                DialogUtil.showHint(String.format("再点 %d 次即可获得超级权限!", 8-clickVersionTimes));
+            } else {
+                DialogUtil.showHint(String.format("再点 %d 次即可获得超级权限!", 8 - clickVersionTimes));
             }
         }
     }
+
 
 //    @OnClick(R.id.toggleItem_leddisplay)
 //    public void setLedPort() {
@@ -330,7 +302,6 @@ public class SettingsCommonFragment extends BaseFragment {
 //            setPortDialog.show();
 //        }
 //    }
-
 
 
     private void reload() {

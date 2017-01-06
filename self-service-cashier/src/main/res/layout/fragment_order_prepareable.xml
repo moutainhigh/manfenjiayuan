@@ -65,15 +65,17 @@
 
             <include
                 android:id="@+id/headview"
-                layout="@layout/itemview_orderflow_store_goods_header"
+                layout="@layout/itemviewprepareableorder_goods_header"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"/>
+
+
             <!--商品列表-->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/order_goods_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/frame_bottom"
+                android:layout_above="@+id/frame_bottom"
                 android:layout_below="@+id/headview"
                 android:padding="@dimen/spacing_normal"/>
             <!---->
@@ -87,14 +89,15 @@
             <!--android:layout_centerInParent="true"-->
             <!--android:visibility="gone"/>-->
 
+
             <!--底部快捷菜单-->
             <LinearLayout
                 android:id="@+id/frame_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
                 android:background="@drawable/bg_topline"
                 android:gravity="center_vertical"
+                android:layout_alignParentBottom="true"
                 android:orientation="horizontal">
                 <!--商品数-->
                 <TextView
@@ -130,7 +133,6 @@
                     android:textSize="18sp"/>
 
             </LinearLayout>
-
         </RelativeLayout>
 
     </LinearLayout>

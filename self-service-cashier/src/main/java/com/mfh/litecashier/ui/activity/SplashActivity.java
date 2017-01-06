@@ -104,6 +104,12 @@ public class SplashActivity extends InitActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setupGetui();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
     }

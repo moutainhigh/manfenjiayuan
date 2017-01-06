@@ -38,8 +38,6 @@ import butterknife.OnClick;
  * Created by kun on 15/8/31.
  */
 public class DeveloperOptionsFragment extends BaseFragment {
-
-
     @BindView(R.id.toggle_superPermission)
     ToggleSettingItem toggleSuperPermission;
     @BindView(R.id.item_factoryreset)
@@ -64,7 +62,10 @@ public class DeveloperOptionsFragment extends BaseFragment {
                 boolean isSuperPermissionGranted = SharedPrefesManagerFactory.isSuperPermissionGranted();
                 if (isSuperPermissionGranted != isChecked) {
                     SharedPrefesManagerFactory.setSuperPermissionGranted(isChecked);
-                    EventBus.getDefault().post(new SettingsFragment.SettingsEvent(SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
+//                    ZLogger.LOG_ENABLED = SharedPrefesManagerFactory.isSuperPermissionGranted();
+
+                    EventBus.getDefault().post(new SettingsFragment.SettingsEvent(
+                            SettingsFragment.SettingsEvent.EVENT_ID_RELOAD_DATA));
                 }
             }
         });

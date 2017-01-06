@@ -34,9 +34,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * 设置－－POS机本地商品库
- * 适用场景，查看本地商品库
- *
+ * POS机本地商品库
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
 public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
