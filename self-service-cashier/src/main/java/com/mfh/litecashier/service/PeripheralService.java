@@ -425,7 +425,7 @@ public class PeripheralService extends Service {
             String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
                     comBean.sRecTime, port,
                     new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
-            ZLogger.df("COM RECV:" + sMsg);
+            ZLogger.d("COM RECV:" + sMsg);
         }
 
         Long rightNow = System.currentTimeMillis();

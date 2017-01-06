@@ -159,18 +159,6 @@ public class UserApiImpl extends UserApi {
     /**
      * 获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息
      * */
-    public static void getPartner(Long humanId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (humanId != null){
-            params.put("humanId", String.valueOf(humanId));
-        }
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_HUMANABILITY_GETPARTER, params, responseCallback);
-    }
-
-    /**
-     * 获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息
-     * */
     public static void queryPrivList(AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());

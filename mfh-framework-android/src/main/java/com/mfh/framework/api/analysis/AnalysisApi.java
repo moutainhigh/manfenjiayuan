@@ -3,7 +3,7 @@ package com.mfh.framework.api.analysis;
 import com.mfh.framework.api.MfhApi;
 
 /**
- * 日结/清分/交接班
+ * 统计分析API: 日结/清分/交接班
  * Created by bingshanguxue on 8/4/16.
  */
 public class AnalysisApi {

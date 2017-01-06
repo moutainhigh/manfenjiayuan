@@ -16,6 +16,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
+import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.framework.api.stock.StockApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -30,13 +31,11 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.ReceiveBatchItem;
-import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.litecashier.event.ExpressDeliveryOrderFlowEvent;
 import com.mfh.litecashier.ui.adapter.ExpressDeliveryOrderflowGoodsAdapter;
 import com.mfh.litecashier.ui.adapter.ExpressDeliveryOrderflowOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 
-import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,6 +50,11 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 代收快递－订单流水
@@ -260,8 +264,7 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
         NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<ReceiveBatchItem>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<ReceiveBatchItem> rs) {
-                //此处在主线程中执行。
-                new QueryAsyncTask(pageInfo).execute(rs);
+                saveQueryResult(rs, pageInfo);
             }
 
             @Override
@@ -275,57 +278,29 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
         AfinalFactory.postDefault(StockApi.URL_RECEIVEBATCH_COMNQUERY, params, queryRsCallBack);
     }
 
-    public class QueryAsyncTask extends AsyncTask<RspQueryResult<ReceiveBatchItem>, Integer, Long> {
-        private PageInfo pageInfo;
-
-        public QueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<ReceiveBatchItem>... params) {
-            saveQueryResult(params[0], pageInfo);
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-            ZLogger.d(String.format("加载代收快递订单流水结束,pageInfo':page=%d,rows=%d(%d/%d)",
-                    mPageInfo.getPageNo(), mPageInfo.getPageSize(),
-                    (entityList == null ? 0 : entityList.size()), mPageInfo.getTotalCount()));
-
-            if (orderListAdapter != null) {
-                orderListAdapter.setEntityList(entityList);
-            }
-            onLoadFinished();
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<ReceiveBatchItem> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
+    /**
+     * 将后台返回的结果集保存到本地,同步执行
+     *
+     * @param rs       结果集
+     * @param pageInfo 分页信息
+     */
+    private void saveQueryResult(final RspQueryResult<ReceiveBatchItem> rs, final PageInfo pageInfo) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
                 mPageInfo = pageInfo;
-                ZLogger.d(String.format("保存代收快递订单流水,pageInfo':page=%d,rows=%d(%d/%d)",
-                        mPageInfo.getPageNo(), mPageInfo.getPageSize(),
-                        (entityList == null ? 0 : entityList.size()), mPageInfo.getTotalCount()));
 
                 if (rs == null) {
                     return;
                 }
-
+                if (entityList == null) {
+                    entityList = new ArrayList<>();
+                }
+                if (mPageInfo.getPageNo() == 1) {
+                    entityList.clear();
+                }
                 //第一页，缓存数据
                 if (mPageInfo.getPageNo() == 1) {
-                    if (entityList == null) {
-                        entityList = new ArrayList<>();
-                    } else {
-                        entityList.clear();
-                    }
                     ZLogger.d("缓存代收快递订单流水第一页数据");
                     JSONArray cacheArrays = new JSONArray();
                     for (EntityWrapper<ReceiveBatchItem> wrapper : rs.getRowDatas()) {
@@ -342,9 +317,6 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
                     }
                     ACacheHelper.put(ACacheHelper.CK_ORDERFLOW_EXPRESS_DELIVERY, cacheArrays.toJSONString());
                 } else {
-                    if (entityList == null) {
-                        entityList = new ArrayList<>();
-                    }
                     for (EntityWrapper<ReceiveBatchItem> wrapper : rs.getRowDatas()) {
                         ReceiveBatchItem item = wrapper.getBean();
                         item.setCompanyName(wrapper.getCaption().get("companyId"));
@@ -353,11 +325,34 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
                         entityList.add(item);
                     }
                 }
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("加载代收快递订单流水失败: %s", ex.toString()));
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
             }
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef(String.format("加载代收快递订单流水失败: %s", e.toString()));
+                        onLoadFinished();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (orderListAdapter != null) {
+                            orderListAdapter.setEntityList(entityList);
+                        }
+                        onLoadFinished();
+                    }
+
+                });
     }
 
 

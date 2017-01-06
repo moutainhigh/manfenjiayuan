@@ -41,6 +41,9 @@ public class AbsOrder extends MfhEntity<Long>{
     }
 
     public Double getDisAmount() {
+        if (disAmount == null){
+            return 0D;
+        }
         return disAmount;
     }
 

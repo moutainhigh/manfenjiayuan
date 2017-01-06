@@ -2,7 +2,7 @@ package com.mfh.litecashier.database.logic;
 
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.litecashier.bean.CompanyHuman;
+import com.mfh.framework.api.CompanyHuman;
 import com.mfh.litecashier.database.dao.CompanyHumanDao;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.comn.bean.PageInfo;

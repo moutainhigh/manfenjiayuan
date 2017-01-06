@@ -8,6 +8,7 @@ import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
 /**
+ * POS订单
  * Created by bingshanguxue on 04/11/2016.
  */
 

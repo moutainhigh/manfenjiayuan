@@ -101,6 +101,7 @@ public class SimpleDialogActivity extends BaseActivity {
         else if (dialogType == DT_MIDDLE){
             layoutParams.width = DensityUtil.dip2px(this,
                     getResources().getDimension(R.dimen.mf_simple_dialog_width));
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
         }
         else if (dialogType == DT_VERTICIAL_FULLSCREEN){
             layoutParams.width = DensityUtil.dip2px(this, 600);

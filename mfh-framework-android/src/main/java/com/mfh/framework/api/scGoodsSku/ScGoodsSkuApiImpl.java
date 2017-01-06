@@ -254,6 +254,7 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
 
     /**
      * 从批发商导入某个类目的商品到当前门店
+     * 注意此操作只会同步批发商的商品库到门店的商品库，POS机的商品库同步是另外一个逻辑
      * @param sendTenantId 平台上的某个批发商
      * @param cateType 类目
      * @param startCursor 时间戳

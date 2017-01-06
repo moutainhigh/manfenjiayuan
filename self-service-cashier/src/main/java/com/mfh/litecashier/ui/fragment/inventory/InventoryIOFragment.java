@@ -41,7 +41,6 @@ import com.mfh.litecashier.event.StockBatchEvent;
 import com.mfh.litecashier.ui.adapter.InvIOGoodsAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 
-import net.tsz.afinal.core.AsyncTask;
 import net.tsz.afinal.http.AjaxParams;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,6 +53,11 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 库存－－库存批次
@@ -383,8 +387,7 @@ public class InventoryIOFragment extends BaseFragment {
         NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<InvIoOrderItem>(pageInfo) {
             @Override
             public void processQueryResult(RspQueryResult<InvIoOrderItem> rs) {
-                //此处在主线程中执行。
-                new ProductQueryAsyncTask(pageInfo).execute(rs);
+                saveQueryResult(rs, pageInfo);
             }
 
             @Override
@@ -398,51 +401,16 @@ public class InventoryIOFragment extends BaseFragment {
         AfinalFactory.postDefault(InvOrderApiImpl.URL_INVIOORDERITEM_LIST, params, queryRsCallBack);
     }
 
-    public class ProductQueryAsyncTask extends AsyncTask<RspQueryResult<InvIoOrderItem>, Integer, Long> {
-        private PageInfo pageInfo;
-
-        public ProductQueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<InvIoOrderItem>... params) {
-            saveQueryResult(params[0], pageInfo);
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-//            ZLogger.d(String.format("pageInfo':page=%d,rows=%d(%d)", pageInfo.getPageNo(), pageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size())));
-
-            if (goodsListAdapter != null) {
-                goodsListAdapter.setEntityList(goodsList);
-            }
-            onLoadFinished();
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<InvIoOrderItem> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
+    private void saveQueryResult(final RspQueryResult<InvIoOrderItem> rs, final PageInfo pageInfo){
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
                 mPageInfo = pageInfo;
-                if (mPageInfo.getPageNo() == 1) {
-                    if (goodsList == null) {
-                        goodsList = new ArrayList<>();
-                    } else {
-                        goodsList.clear();
-                    }
+                if (goodsList == null) {
+                    goodsList = new ArrayList<>();
                 }
-                else{
-                    if (goodsList == null) {
-                        goodsList = new ArrayList<>();
-                    }
+                if (mPageInfo.getPageNo() == 1) {
+                    goodsList.clear();
                 }
 
                 if (rs == null) {
@@ -458,14 +426,35 @@ public class InventoryIOFragment extends BaseFragment {
                     if (caption != null) {
                         ioOrderItem.setOrderTypeCaption(wrapper.getCaption().get("orderType"));
                     }
-
                     goodsList.add(ioOrderItem);
                 }
 
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("加载库存批次失败: %s", ex.toString()));
+                subscriber.onNext(null);
+                subscriber.onCompleted();
             }
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef("加载库存批次失败:" + e.toString());
+                        onLoadFinished();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (goodsListAdapter != null) {
+                            goodsListAdapter.setEntityList(goodsList);
+                        }
+                        onLoadFinished();
+                    }
+
+                });
     }
 }

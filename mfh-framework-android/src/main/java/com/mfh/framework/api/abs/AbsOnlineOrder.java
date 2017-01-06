@@ -43,6 +43,9 @@ public class AbsOnlineOrder extends AbsOrder{
     }
 
     public Double getTransFee() {
+        if (transFee == null){
+            return 0D;
+        }
         return transFee;
     }
 

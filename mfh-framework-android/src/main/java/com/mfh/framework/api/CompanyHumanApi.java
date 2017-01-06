@@ -9,7 +9,7 @@ import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
 /**
- * 账号
+ * 员工账号
  * Created by bingshanguxue on 8/30/16.
  */
 public class CompanyHumanApi {

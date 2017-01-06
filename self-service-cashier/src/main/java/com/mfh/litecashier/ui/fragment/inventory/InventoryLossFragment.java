@@ -32,6 +32,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.bean.InvIoOrderItem;
 import com.mfh.litecashier.bean.InvLossOrderItem;
 import com.mfh.litecashier.event.StockLossEvent;
 import com.mfh.litecashier.ui.adapter.StockLossGoodsAdapter;
@@ -52,6 +53,11 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 库存－－库存报损
@@ -392,7 +398,7 @@ public class InventoryLossFragment extends BaseFragment {
 
                         InvLossOrder invLossOrder = wrapper.getBean();
                         Map<String, String> captioin = wrapper.getCaption();
-                        if (invLossOrder != null && captioin != null){
+                        if (invLossOrder != null && captioin != null) {
                             invLossOrder.setStatusCaption(captioin.get("status"));
                         }
 
@@ -405,9 +411,10 @@ public class InventoryLossFragment extends BaseFragment {
                     if (orderList == null) {
                         orderList = new ArrayList<>();
                     }
-                    for (EntityWrapper<InvLossOrder> wrapper : rs.getRowDatas()) {InvLossOrder invLossOrder = wrapper.getBean();
+                    for (EntityWrapper<InvLossOrder> wrapper : rs.getRowDatas()) {
+                        InvLossOrder invLossOrder = wrapper.getBean();
                         Map<String, String> captioin = wrapper.getCaption();
-                        if (invLossOrder != null && captioin != null){
+                        if (invLossOrder != null && captioin != null) {
                             invLossOrder.setStatusCaption(captioin.get("status"));
                         }
                         orderList.add(invLossOrder);
@@ -454,10 +461,9 @@ public class InventoryLossFragment extends BaseFragment {
         }
 
         //正在盘点
-        if (order.getStatus().equals(0)){
+        if (order.getStatus().equals(0)) {
             frameBottom.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             frameBottom.setVisibility(View.VISIBLE);
             tvQuntity.setText(String.format("数量：%.2f", curOrder.getCommitGoodsNum()));
             tvAmount.setText(String.format("金额：%.2f", curOrder.getCommitPrice()));
@@ -512,73 +518,47 @@ public class InventoryLossFragment extends BaseFragment {
         if (curOrder != null) {
             params.put("orderId", String.valueOf(curOrder.getId()));
         }
-        params.put("wrapper","true");
-        params.put("page", Integer.toString(pageInfo.getPageNo()));
-        params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        params.put("wrapper", "true");
+        if (pageInfo != null) {
+            params.put("page", Integer.toString(pageInfo.getPageNo()));
+            params.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<InvLossOrderItem>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<InvLossOrderItem> rs) {
-                //此处在主线程中执行。
-                new OrderDetailQueryAsyncTask(pageInfo).execute(rs);
-            }
+        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
+                new NetProcessor.QueryRsProcessor<InvLossOrderItem>(pageInfo) {
+                    @Override
+                    public void processQueryResult(RspQueryResult<InvLossOrderItem> rs) {
+                        saveQueryResult(rs, pageInfo);
+                    }
 
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.d("加载报损订单明细失败:" + errMsg);
-                onLoadFinished();
-            }
-        }, InvLossOrderItem.class, CashierApp.getAppContext());
+                    @Override
+                    protected void processFailure(Throwable t, String errMsg) {
+                        super.processFailure(t, errMsg);
+                        ZLogger.d("加载报损订单明细失败:" + errMsg);
+                        onLoadFinished();
+                    }
+                }, InvLossOrderItem.class, CashierApp.getAppContext());
 
         AfinalFactory.postDefault(InvOrderApiImpl.URL_INVLOSSORDERITEM_LIST, params, queryRsCallBack);
     }
 
-    public class OrderDetailQueryAsyncTask extends AsyncTask<RspQueryResult<InvLossOrderItem>, Integer, Long> {
-        private PageInfo pageInfo;
-
-        public OrderDetailQueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<InvLossOrderItem>... params) {
-            saveQueryResult(params[0], pageInfo);
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-
-            if (goodsListAdapter != null) {
-                goodsListAdapter.setEntityList(goodsList);
-            }
-            onLoadFinished();
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<InvLossOrderItem> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
+    /**
+     * 将后台返回的结果集保存到本地,同步执行
+     *
+     * @param rs       结果集
+     * @param pageInfo 分页信息
+     */
+    private void saveQueryResult(final RspQueryResult<InvLossOrderItem> rs, final PageInfo pageInfo) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
                 mPageInfo = pageInfo;
-                if (mPageInfo.getPageNo() == 1) {
-                    if (goodsList == null) {
-                        goodsList = new ArrayList<>();
-                    } else {
-                        goodsList.clear();
-                    }
+                if (goodsList == null) {
+                    goodsList = new ArrayList<>();
                 }
-                else{
-                    if (goodsList == null) {
-                        goodsList = new ArrayList<>();
-                    }
+                if (mPageInfo.getPageNo() == 1) {
+                    goodsList.clear();
                 }
 
                 if (rs == null) {
@@ -588,15 +568,37 @@ public class InventoryLossFragment extends BaseFragment {
                 //保存下来
                 int retSize = rs.getReturnNum();
                 ZLogger.d(String.format("保存 %d 条报损订单明细", retSize));
-                for (EntityWrapper<InvLossOrderItem> wrapper : rs.getRowDatas()){
+                for (EntityWrapper<InvLossOrderItem> wrapper : rs.getRowDatas()) {
                     goodsList.add(wrapper.getBean());
                 }
 
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("保存报损订单明细: %s", ex.toString()));
+                subscriber.onNext(null);
+                subscriber.onCompleted();
             }
-        }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef("加载库存批次失败:" + e.toString());
+                        onLoadFinished();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (goodsListAdapter != null) {
+                            goodsListAdapter.setEntityList(goodsList);
+                        }
+                        onLoadFinished();
+                    }
+
+                });
     }
 
     /**

@@ -12,6 +12,9 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.AbbreviationUtil;
+import com.mfh.framework.core.utils.AbbreviationUtilV2;
+import com.mfh.framework.core.utils.PinyinUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -67,15 +70,14 @@ public class CashierApp extends MfhApplication {
 
             if (BizConfig.RELEASE) {
 //            ZLogger.d("正式版本");
-                ZLogger.LOG_ENABLED = true;
                 SharedPreferencesUltimate.PREF_NAME_PREFIX = SharedPreferencesUltimate.RELEASE_PREFIX;
 //            Constants.CACHE_NAME = "ACache_Release";
             } else {
 //            ZLogger.d("测试版本");
-                ZLogger.LOG_ENABLED = true;
                 SharedPreferencesUltimate.PREF_NAME_PREFIX = SharedPreferencesUltimate.DEV_PREFIX;
                 ACacheHelper.CACHE_NAME = "ACache_Dev";
             }
+//            ZLogger.LOG_ENABLED = isReleaseVersion();//SharedPrefesManagerFactory.isSuperPermissionGranted();
 
             debugPrint();
 
@@ -84,6 +86,11 @@ public class CashierApp extends MfhApplication {
 
             initSkinLoader();
         }
+
+        ZLogger.d(AbbreviationUtilV2.cn2py("荷兰土豆"));//OK
+        ZLogger.d(AbbreviationUtil.cn2py("荷兰土豆"));//NOT OK
+        ZLogger.d(PinyinUtils.getFirstSpell("荷兰土豆"));//OK
+        ZLogger.d(PinyinUtils.getPingYin("荷兰土豆"));
 
         ZLogger.df(String.format("initialize finished(%s)", processAppName));
     }

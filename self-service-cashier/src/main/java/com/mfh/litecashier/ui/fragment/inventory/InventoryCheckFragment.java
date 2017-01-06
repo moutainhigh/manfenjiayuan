@@ -133,9 +133,9 @@ public class InventoryCheckFragment extends BaseFragment {
     }
 
     @OnClick(R.id.button_submit)
-    public void finishOrder(){
+    public void finishOrder() {
         final InvCheckOrder invCheckOrder = orderListAdapter.getCurOrder();
-        if (invCheckOrder == null){
+        if (invCheckOrder == null) {
             return;
         }
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
@@ -173,7 +173,7 @@ public class InventoryCheckFragment extends BaseFragment {
 
     /**
      * 新建盘点
-     * */
+     */
     @OnClick(R.id.button_create)
     public void createNewInvCheckOrder() {
 
@@ -200,6 +200,7 @@ public class InventoryCheckFragment extends BaseFragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     /**
      * 初始化订单列表
      */
@@ -314,7 +315,7 @@ public class InventoryCheckFragment extends BaseFragment {
     public void onEventMainThread(StockCheckEvent event) {
         ZLogger.d(String.format("InventoryCheckFragment: StockCheckEvent(%d)", event.getEventId()));
         if (event.getEventId() == StockCheckEvent.EVENT_ID_RELOAD_DATA) {
-            if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_STOCKCHECK_ORDER_ENABLED, true) || !readInvCheckOrderCache()){
+            if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_STOCKCHECK_ORDER_ENABLED, true) || !readInvCheckOrderCache()) {
                 reloadInvCheckOrder();
             }
         }
@@ -341,10 +342,10 @@ public class InventoryCheckFragment extends BaseFragment {
         }
         return false;
     }
-    
+
     /**
      * 加载盘点订单列表列表
-     * */
+     */
     @OnClick(R.id.order_empty_view)
     public synchronized void reloadInvCheckOrder() {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
@@ -430,7 +431,7 @@ public class InventoryCheckFragment extends BaseFragment {
                     for (EntityWrapper<InvCheckOrder> wrapper : rs.getRowDatas()) {
                         InvCheckOrder invCheckOrder = wrapper.getBean();
                         Map<String, String> caption = wrapper.getCaption();
-                        if (invCheckOrder != null && caption != null){
+                        if (invCheckOrder != null && caption != null) {
                             invCheckOrder.setStatusCaption(caption.get("status"));
                         }
 
@@ -444,9 +445,10 @@ public class InventoryCheckFragment extends BaseFragment {
                     if (orderList == null) {
                         orderList = new ArrayList<>();
                     }
-                    for (EntityWrapper<InvCheckOrder> wrapper : rs.getRowDatas()) {InvCheckOrder invCheckOrder = wrapper.getBean();
+                    for (EntityWrapper<InvCheckOrder> wrapper : rs.getRowDatas()) {
+                        InvCheckOrder invCheckOrder = wrapper.getBean();
                         Map<String, String> caption = wrapper.getCaption();
-                        if (invCheckOrder != null && caption != null){
+                        if (invCheckOrder != null && caption != null) {
                             invCheckOrder.setStatusCaption(caption.get("status"));
                         }
 
@@ -498,10 +500,9 @@ public class InventoryCheckFragment extends BaseFragment {
         tvSystemInventory.setText(String.format("系统库存：%.2f", curOrder.getInvGoodsNum()));
         tvLossQuantity.setText(String.format("盈亏数：%.2f", curOrder.getLossNum()));
         tvLossAmount.setText(String.format("盈亏金额：%.2f", curOrder.getCommitPrice() - curOrder.getInvPrice()));
-        if (curOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_PROCESSING)){
+        if (curOrder.getStatus().equals(InvCheckOrder.INVCHECK_ORDERSTATUS_PROCESSING)) {
             btnSubmit.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSubmit.setVisibility(View.GONE);
         }
 
@@ -558,7 +559,7 @@ public class InventoryCheckFragment extends BaseFragment {
     private void load(PageInfo pageInfo) {
         AjaxParams params = new AjaxParams();
 
-        if (curOrder != null){
+        if (curOrder != null) {
             params.put("orderId", String.valueOf(curOrder.getId()));
         }
         params.put("page", Integer.toString(pageInfo.getPageNo()));
@@ -592,7 +593,23 @@ public class InventoryCheckFragment extends BaseFragment {
 
         @Override
         protected Long doInBackground(RspQueryResult<InvCheckOrderItem>... params) {
-            saveQueryResult(params[0], pageInfo);
+            try {
+                mPageInfo = pageInfo;
+                ZLogger.d(String.format("保存盘点订单明细2,pageInfo':page=%d,rows=%d(%d/%d)",
+                        mPageInfo.getPageNo(), mPageInfo.getPageSize(),
+                        (goodsList == null ? 0 : goodsList.size()), mPageInfo.getTotalCount()));
+                RspQueryResult<InvCheckOrderItem> rs = params[0];
+                if (rs != null) {
+                    int retSize = rs.getReturnNum();
+                    ZLogger.d(String.format("加载 %d 商品", retSize));
+                    for (EntityWrapper<InvCheckOrderItem> wrapper : rs.getRowDatas()) {
+                        goodsList.add(wrapper.getBean());
+                    }
+                }
+            } catch (Throwable ex) {
+//            throw new RuntimeException(ex);
+                ZLogger.e(String.format("加载盘点订单明细失败: %s", ex.toString()));
+            }
             return -1L;
 //        return null;
         }
@@ -607,65 +624,7 @@ public class InventoryCheckFragment extends BaseFragment {
             }
             onLoadFinished();
         }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<InvCheckOrderItem> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
-                mPageInfo = pageInfo;
-                ZLogger.d(String.format("保存盘点订单明细2,pageInfo':page=%d,rows=%d(%d/%d)", mPageInfo.getPageNo(), mPageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size()), mPageInfo.getTotalCount()));
-
-                if (rs == null) {
-                    return;
-                }
-
-                //保存下来
-                int retSize = rs.getReturnNum();
-                ZLogger.d(String.format("加载 %d 商品", retSize));
-                for (EntityWrapper<InvCheckOrderItem> wrapper : rs.getRowDatas()){
-                    goodsList.add(wrapper.getBean());
-                }
-
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("加载盘点订单明细失败: %s", ex.toString()));
-            }
-        }
     }
-
-    NetCallBack.NetTaskCallBack orderdetailRespCallback = new NetCallBack.NetTaskCallBack<ReceivableOrderDetail,
-            NetProcessor.Processor<ReceivableOrderDetail>>(
-            new NetProcessor.Processor<ReceivableOrderDetail>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    if (rspData == null) {
-                        goodsListAdapter.setEntityList(null);
-                    }
-                    //com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-//                    RspBean<ReceivableOrderDetail> retValue = (RspBean<ReceivableOrderDetail>) rspData;
-//                    ReceivableOrderDetail orderDetail = retValue.getValue();
-
-//                    if (orderDetail != null) {
-//                        goodsListAdapter.setEntityList(orderDetail.getItems());
-//                    } else {
-//                        goodsListAdapter.setEntityList(null);
-//                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.d("加载商品失败：" + errMsg);
-                    goodsListAdapter.setEntityList(null);
-                }
-            }
-            , ReceivableOrderDetail.class
-            , CashierApp.getAppContext()) {
-    };
 
     /**
      * 设置刷新

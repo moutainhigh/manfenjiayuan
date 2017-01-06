@@ -1,12 +1,13 @@
 package com.mfh.framework.api.account;
 
-import java.io.Serializable;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 小区
  * Created by bingshanguxue on 2014/9/11.
  */
-public class Subdis implements Serializable{
+public class Subdis extends MfhEntity<Long> {
+//    private Long id;//小区编号
     private String subdisName;//小区名
     private String areaID;
     private String mfhArea;
@@ -25,7 +26,6 @@ public class Subdis implements Serializable{
     private Double latitude;//纬度
     private Double longitude;//经度
     private Long gaoId;
-    private Long id;//小区编号
     private Integer supportType;
     private String province;
     private String city;
@@ -33,10 +33,6 @@ public class Subdis implements Serializable{
     private String printFunc;
     private String remark;
     private Long saasId;
-    private String createdBy;
-    private String createdDate;
-    private String updatedBy;
-    private String updatedDate;
 
     public String getSubdisName() {
         return subdisName;
@@ -182,14 +178,6 @@ public class Subdis implements Serializable{
         this.gaoId = gaoId;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Integer getSupportType() {
         return supportType;
     }
@@ -244,37 +232,5 @@ public class Subdis implements Serializable{
 
     public void setSaasId(Long saasId) {
         this.saasId = saasId;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public String getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(String updatedDate) {
-        this.updatedDate = updatedDate;
     }
 }

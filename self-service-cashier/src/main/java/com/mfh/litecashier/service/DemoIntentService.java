@@ -92,7 +92,7 @@ public class DemoIntentService extends GTIntentService {
     public void onReceiveClientId(Context context, String clientid) {
         ZLogger.df("onReceiveClientId -> " + "clientid = " + clientid);
 
-        if(clientid != null){
+        if (clientid != null) {
             ZLogger.df(String.format("个推 clientId=%s-%s",
                     PushManager.getInstance().getClientid(CashierApp.getAppContext()),
                     clientid));
@@ -191,14 +191,14 @@ public class DemoIntentService extends GTIntentService {
 
     /**
      * 处理透传（payload）数据
-     * */
-    private void processPushPayload(Context context, String data){
-        if (!MfhLoginService.get().haveLogined()){
+     */
+    private void processPushPayload(Context context, String data) {
+        if (!MfhLoginService.get().haveLogined()) {
             ZLogger.d("用户未登录，忽略透传消息");
             return;
         }
         EmbMsg embMsg = EmbMsg.parseOjbect(data);
-        if (embMsg == null){
+        if (embMsg == null) {
             ZLogger.d("透传消息解析失败");
             return;
         }
@@ -207,54 +207,54 @@ public class DemoIntentService extends GTIntentService {
         EmbMsgService.getInstance().saveOrUpdate(embMsg, false);
 
         JSONObject msgBeanObj = JSONObject.parseObject(embMsg.getMsgBean());
-        if (msgBeanObj == null){
+        if (msgBeanObj == null) {
             return;
         }
         JSONObject bodyObj = msgBeanObj.getJSONObject("body");
         String content = bodyObj.getString("content");
         Integer bizType = msgBeanObj.getIntValue("bizType");//获取推送的数据类型
         String time = msgBeanObj.getString("time");
-        ZLogger.df(String.format("<--%s\n%s\ncontent=%s", bizType, data, content));
+        ZLogger.df(String.format("<--%d\n%s\ncontent=%s", bizType, data, content));
 
         //SKU更新
-        if (IMBizType.TENANT_SKU_UPDATE == bizType){
+        if (IMBizType.TENANT_SKU_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
-            if (count > 0){
+            if (count > 0) {
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
             }
-        }
-        else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType){
+        } else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
-            if (count > 0){
+            if (count > 0) {
                 DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY_GOODS);
             }
-        }
-        else if (IMBizType.FRONTCATEGORY_UPDATE == bizType){
+        } else if (IMBizType.FRONTCATEGORY_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
-            if (count > 0){
-                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY|DataDownloadManager.FRONTENDCATEGORY_GOODS);
+            if (count > 0) {
+                DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY | DataDownloadManager.FRONTENDCATEGORY_GOODS);
             }
         }
         //买手抢单组货
         else if (IMBizType.ORDER_TRANS_NOTIFY == bizType) {
-            if (!MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)){
+//            MfhUserManager.getInstance().updateModules();
+            if (!MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)) {
+                ZLogger.d("当前登录用户不是买手忽略订单消息");
                 return;
             }
-            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONTCATEGORY_UPDATE);
-            if (count > 0){
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
+            if (count > 0) {
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_ORDER_TRANS_NOTIFY));
             }
         }
         //新的采购订单
-        else if (IMBizType.NEW_PURCHASE_ORDER == bizType){
+        else if (IMBizType.NEW_PURCHASE_ORDER == bizType) {
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER));
         }
         //现金超过授权额度，要求锁定pos机
-        else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType){
+        else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType) {
             Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
 
             //保留最近一个小时的消息
-            if (createTime == null){
+            if (createTime == null) {
                 ZLogger.df("消息无效: time＝null");
                 return;
             }
@@ -279,7 +279,7 @@ public class DemoIntentService extends GTIntentService {
             ValidateManager.get().stepValidate(ValidateManager.STEP_VALIDATE_CASHQUOTA);
         }
         //现金授权额度将要用完，即将锁定pos机
-        else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType){
+        else if (IMBizType.PRE_LOCK_POS_CLIENT_NOTIFY == bizType) {
             AlarmManagerHelper.triggleNextDailysettle(1);
 
             Double cashLimitAmount = Double.valueOf(content);
@@ -288,17 +288,16 @@ public class DemoIntentService extends GTIntentService {
             args.putDouble("amount", cashLimitAmount);
 
             EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_PRE_LOCK_POS_CLIENT, args));
-        }
-        else if (IMBizType.REMOTE_CONTROL_CMD == bizType){
+        } else if (IMBizType.REMOTE_CONTROL_CMD == bizType) {
             responseRemoteControl(JSONObject.parseObject(content));
         }
     }
 
     /**
      * 响应远程控制
-     * */
-    private void responseRemoteControl(JSONObject jsonObject){
-        if (jsonObject == null){
+     */
+    private void responseRemoteControl(JSONObject jsonObject) {
+        if (jsonObject == null) {
             return;
         }
         Long remoteId = jsonObject.getLong("remoteId");
@@ -312,8 +311,7 @@ public class DemoIntentService extends GTIntentService {
             RemoteControlClient.getInstance().uploadCrashFileStep1();
         } else if (remoteId.equals(3L)) {
             Beta.checkUpgrade(false, false);
-        }
-        else if (remoteId.equals(20L)){
+        } else if (remoteId.equals(20L)) {
             GPrinter.print(remoteData);
         }
     }

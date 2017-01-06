@@ -1,6 +1,4 @@
-package com.mfh.litecashier.utils;
-
-import com.mfh.framework.core.utils.StringUtils;
+package com.mfh.framework.core.utils;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -75,6 +73,6 @@ public class PinyinUtils {
                 pybf.append(curchar);
             }
         }
-        return pybf.toString().replaceAll("\\W", "").trim();
+        return pybf.toString().replaceAll("\\W", "").trim().toUpperCase();
     }
 }

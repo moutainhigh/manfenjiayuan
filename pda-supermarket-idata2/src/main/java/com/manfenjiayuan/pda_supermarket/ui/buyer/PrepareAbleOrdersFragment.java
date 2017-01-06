@@ -306,7 +306,7 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder>
             mPageInfo = pageInfo;
 
             //第一页，缓存数据
-            if (mPageInfo.getPageNo() == 1) {
+            if (mPageInfo != null && mPageInfo.getPageNo() == 1) {
                 if (orderAdapter != null) {
                     orderAdapter.setEntityList(dataList);
                 }
