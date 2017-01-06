@@ -166,6 +166,7 @@ public class EmbPrinter extends Printer {
         esc.addSetBarcodeHeight((byte) 60);
         //设置条码单元宽度为1点
         esc.addSetBarcodeWidth((byte) 1);
+
         Barcode barcode1 = new Barcode(PrinterConstants.BarcodeType.CODE128, 3,
                 80, 2, barcode);
         esc.addUserCommand(barcode1.getBarcodeData());

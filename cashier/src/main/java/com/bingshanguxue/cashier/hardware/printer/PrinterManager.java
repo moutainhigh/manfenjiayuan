@@ -157,6 +157,7 @@ public abstract class PrinterManager implements IPrinterManager{
     }
 
     public abstract EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity);
+    /**外部平台配送单*/
     public abstract EscCommand makeSendOrder3pEsc(PosOrderEntity posOrderEntity);
 
 
@@ -549,21 +550,22 @@ public abstract class PrinterManager implements IPrinterManager{
 
         try {
             //计算行数
-            int maxLine = Math.max(1, (text1 == null ? 0 : (Printer.getLength(text1) - 1) / 20 + 1));
+            int nameLen = 18;
+            int maxLine = Math.max(1, (text1 == null ? 0 : (Printer.getLength(text1) - 1) / nameLen + 1));
 
             String nameTemp = text1;
             for (int i = 0; i < maxLine; i++) {
                 String nameLine = DataConvertUtil.subString(nameTemp,
-                        Math.min(18, Printer.getLength(nameTemp)));
+                        Math.min(nameLen, Printer.getLength(nameTemp)));
                 StringBuilder line = new StringBuilder();
                 //插入名称，不足补空格
                 //中间一行插入数量&金额
                 if (i == 0) {
-                    line.append(Printer.formatShort(nameLine, 18, Printer.BLANK_GRAVITY.RIGHT));
+                    line.append(Printer.formatShort(nameLine, nameLen, Printer.BLANK_GRAVITY.RIGHT));
                     line.append(Printer.formatShort(text2, 7, Printer.BLANK_GRAVITY.LEFT));
                     line.append(Printer.formatShort(text3, 7, Printer.BLANK_GRAVITY.LEFT));
                 } else {
-                    line.append(Printer.formatShort(nameLine, 18, Printer.BLANK_GRAVITY.RIGHT));
+                    line.append(Printer.formatShort(nameLine, nameLen, Printer.BLANK_GRAVITY.RIGHT));
                 }
                 line.append("\n");
                 esc.addText(line.toString());
@@ -578,7 +580,46 @@ public abstract class PrinterManager implements IPrinterManager{
         }
     }
 
-    public void makeOrderItem5(EscCommand esc, String name, String bcount, String amount){
+    public void makeOrderItem5(EscCommand esc, String text1, String text2, String text3, String text4){
+        if (esc == null) {
+            return;
+        }
+
+        try {
+            //计算行数
+            int nameLen = 11;
+            int maxLine = Math.max(1, (text1 == null ? 0 : (Printer.getLength(text1) - 1) / nameLen + 1));
+
+            String nameTemp = text1;
+            for (int i = 0; i < maxLine; i++) {
+                String nameLine = DataConvertUtil.subString(nameTemp,
+                        Math.min(nameLen, Printer.getLength(nameTemp)));
+                StringBuilder line = new StringBuilder();
+                //插入名称，不足补空格
+                //中间一行插入数量&金额
+                if (i == 0) {
+                    line.append(Printer.formatShort(nameLine, nameLen, Printer.BLANK_GRAVITY.RIGHT));
+                    line.append(Printer.formatShort(text2, 7, Printer.BLANK_GRAVITY.LEFT));
+                    line.append(Printer.formatShort(text3, 7, Printer.BLANK_GRAVITY.LEFT));
+                    line.append(Printer.formatShort(text4, 7, Printer.BLANK_GRAVITY.LEFT));
+                } else {
+                    line.append(Printer.formatShort(nameLine, nameLen, Printer.BLANK_GRAVITY.RIGHT));
+                }
+                line.append("\n");
+                esc.addText(line.toString());
+
+//                assert nameTemp != null;
+                if (!StringUtils.isEmpty(nameTemp)) {
+                    nameTemp = nameTemp.substring(nameLine.length(), nameTemp.length()).trim();
+                }
+            }
+//            esc.addText("\n");
+        } catch (Exception e) {
+            ZLogger.ef(e.toString());
+        }
+    }
+
+    public void makeOrderItem6(EscCommand esc, String name, String bcount, String amount){
         if (esc == null) {
             return;
         }
@@ -618,6 +659,7 @@ public abstract class PrinterManager implements IPrinterManager{
 //            line.append(formatLong(sub2, 8));
             }
 //        esc.addText("--------------------------------\n");//32个
+//            esc.addText("\n");
 
         } catch (Exception e) {
             ZLogger.ef(e.toString());

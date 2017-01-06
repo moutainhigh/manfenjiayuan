@@ -58,12 +58,12 @@ public class GPrinter extends Printer {
             return;
         }
 
-        // ：设置条码可识别字符位置在条码下方
+        //设置条码可识别字符位置在条码下方
         esc.addSelectPrintingPositionForHRICharacters(EscCommand.HRI_POSITION.BELOW);
         //设置条码高度为 60 点
-        esc.addSetBarcodeHeight((byte) 60);
+        esc.addSetBarcodeHeight((byte) 80);
         //设置条码单元宽度为1点
-        esc.addSetBarcodeWidth((byte) 1);
+        esc.addSetBarcodeWidth((byte) 2);
         esc.addCODE128(esc.genCode128(barcode));
     }
 }
