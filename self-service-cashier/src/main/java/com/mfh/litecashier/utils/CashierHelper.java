@@ -136,22 +136,31 @@ public class CashierHelper {
                 ZLogger.e(e.toString());
             }
         }
-        List<PosOrderEntity> entityList = PosOrderService.get()
-                .queryAllBy(String.format("updatedDate < '%s'", expireCursor));
-        if (entityList != null && entityList.size() > 0) {
-            for (PosOrderEntity entity : entityList) {
-                PosOrderItemService.get().deleteBy(String.format("orderId = '%d'", entity.getId()));
-                PosOrderPayService.get().deleteBy(String.format("orderId = '%d'", entity.getId()));
-                //删除订单
-//                PosOrderService.get().deleteById(String.valueOf(entity.getBarCode()));
-            }
+        //清楚过期的未完成订单
+        PosOrderService.get().deleteBy(String.format("updatedDate < '%s' and status != '%d'",
+                expireCursor, PosOrderEntity.ORDER_STATUS_FINISH));
+        //清除过期的已经同步的订单
+        PosOrderService.get().deleteBy(String.format("updatedDate < '%s' and syncStatus = '%d'",
+                expireCursor, PosOrderEntity.SYNC_STATUS_SYNCED));
 
-            //清除订单
-            PosOrderService.get().deleteBy(String.format("updatedDate < '%s'", expireCursor));
-            ZLogger.d(String.format("清除过期订单数据(%s)。", expireCursor));
-        } else {
-            ZLogger.d(String.format("暂无过期订单数据需要清除(%s)。", expireCursor));
-        }
+//        List<PosOrderEntity> entityList = PosOrderService.get()
+//                .queryAllBy(String.format("updatedDate < '%s'", expireCursor));
+//        if (entityList != null && entityList.size() > 0) {
+//            for (PosOrderEntity entity : entityList) {
+//                PosOrderItemService.get().deleteBy(String.format("orderId = '%d'", entity.getId()));
+//                PosOrderPayService.get().deleteBy(String.format("orderId = '%d'", entity.getId()));
+//                //删除订单
+////                PosOrderService.get().deleteById(String.valueOf(entity.getBarCode()));
+//            }
+//
+//
+//
+//
+//            PosOrderService.get().deleteBy(String.format("updatedDate < '%s'", expireCursor));
+//            ZLogger.d(String.format("清除过期订单数据(%s)。", expireCursor));
+//        } else {
+//            ZLogger.d(String.format("暂无过期订单数据需要清除(%s)。", expireCursor));
+//        }
     }
 
     /**

@@ -239,7 +239,7 @@ public class AppHelper {
             GlobalInstance.getInstance().reset();
         }
         else{
-            CashierHelper.clearOldPosOrder(7);//收银订单
+            CashierHelper.clearOldPosOrder(14);//收银订单
             PosTopupService.get().deleteOldData(7);
             ZLogger.deleteOldFiles(7);
             SMScaleSyncManager2.deleteOldFiles(1);
