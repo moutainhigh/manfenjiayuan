@@ -118,16 +118,26 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-core-utils-25.1.0" level="project" />
     <orderEntry type="module" module-name="mfh-framework-android" exported="" />
+    <orderEntry type="library" exported="" name="okio-1.8.0" level="project" />
     <orderEntry type="library" exported="" name="design-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="zxing" level="project" />
     <orderEntry type="library" exported="" name="slf4j-android-1.6.1-RC1" level="project" />
     <orderEntry type="library" exported="" name="transition-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="commons-lang3-3.1" level="project" />
     <orderEntry type="library" exported="" name="glide-3.7.0" level="project" />
+    <orderEntry type="library" exported="" name="pinyin4j-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.6.1" level="project" />
+    <orderEntry type="library" exported="" name="rxjava-1.1.6" level="project" />
     <orderEntry type="library" exported="" name="multitype-2.0.0" level="project" />
+    <orderEntry type="library" exported="" name="retrofit-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="gson-2.7" level="project" />
+    <orderEntry type="library" exported="" name="adapter-rxjava-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="converter-gson-2.1.0" level="project" />
+    <orderEntry type="library" exported="" name="rxandroid-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="eventbus-3.0.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.3.1" level="project" />
     <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="logging-interceptor-3.3.1" level="project" />
     <orderEntry type="library" exported="" name="butterknife-annotations-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="butterknife-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.1.0" level="project" />

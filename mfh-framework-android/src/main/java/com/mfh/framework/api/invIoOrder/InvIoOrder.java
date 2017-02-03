@@ -1,16 +1,13 @@
 package com.mfh.framework.api.invIoOrder;
 
-import com.mfh.comn.bean.ILongId;
-
-import java.io.Serializable;
-import java.util.Date;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  *  批次流水
  * Created by bingshanguxue on 15/9/22.
  */
-public class InvIoOrder implements ILongId, Serializable {
-    private Long id;//订单编号
+public class InvIoOrder extends MfhEntity<Long> {
+//    private Long id;//订单编号
     private String orderName;//订单名称
     private String statusCaption;//状态
     private String bizTypeCaption;//业务类型
@@ -18,16 +15,6 @@ public class InvIoOrder implements ILongId, Serializable {
     private String netName;//网点名称
     private Double commitGoodsNum;//商品数量
 
-    private Date createdDate;
-    private Date updatedDate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getOrderName() {
         return orderName;
@@ -36,23 +23,6 @@ public class InvIoOrder implements ILongId, Serializable {
     public void setOrderName(String orderName) {
         this.orderName = orderName;
     }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
 
     public String getStatusCaption() {
         return statusCaption;

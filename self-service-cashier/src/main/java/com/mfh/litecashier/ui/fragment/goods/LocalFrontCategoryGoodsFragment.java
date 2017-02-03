@@ -20,18 +20,15 @@ import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.anon.sc.ProductCatalogApi;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.http.ProductCatalogManager;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -51,7 +48,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -533,67 +532,59 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
      * 建档
      */
     private void importFromCenterSkus(final String productIds, String proSkuIds) {
-        NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("导入商品到本店仓储失败, " + errMsg);
-//                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                        DialogUtil.showHint("添加商品失败");
-                        hideProgressDialog();
-                    }
+        Map<String, String> options = new HashMap<>();
+        options.put("proSkuIds", proSkuIds);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().importFromCenterSkus(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
-                        ZLogger.df("导入商品到本店仓储成功");
-                        add2Category(productIds);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
+            }
 
-        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("导入商品到本店仓储失败, " + e.toString());
+                DialogUtil.showHint("添加商品失败");
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onNext(String s) {
+                ZLogger.df("导入商品到本店仓储成功");
+                add2Category(productIds);
+            }
+
+        });
     }
 
     /**
      * 导入类目
      */
     private void add2Category(String productIds) {
-        NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("导入前台类目商品失败, " + errMsg);
-//                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                        DialogUtil.showHint("添加商品失败");
-                        hideProgressDialog();
-                    }
+        Map<String, String> options = new HashMap<>();
+        options.put("groupIds", String.valueOf(categoryId));
+        options.put("productIds", productIds);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ProductCatalogManager.getInstance().addToCatalog(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
-//                        {"code":"0","msg":"操作成功!","version":"1","data":""}
-                        ZLogger.df("导入前台类目商品成功");
-                        hideProgressDialog();
-//                        if (rspData == null) {
-//                            return;
-//                        }
+            }
 
-//                        DataSyncManager.get().sync();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("导入前台类目商品失败, " + e.toString());
+                DialogUtil.showHint("添加商品失败");
+                hideProgressDialog();
+            }
 
+            @Override
+            public void onNext(String s) {
+                ZLogger.df("导入前台类目商品成功");
+                hideProgressDialog();
+            }
 
-        ProductCatalogApi.add2Category(String.valueOf(categoryId), productIds, submitRC);
+        });
     }
 
     /**
@@ -654,40 +645,39 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                        //{"code":"0","msg":"更新成功!","version":"1","data":""}
-//                                RspValue<String> retValue = (RspValue<String>) rspData;
-//                                String retStr = retValue.getValue();
-//                                ZLogger.d("修改售价成功:" + retStr);
-                        DialogUtil.showHint("修改成功");
-                        goods.setCostPrice(costPrice);
-//                        adapter.notifyDataSetChanged();
-                        adapter.notifyItemChanged(position);
-
-                        hideProgressDialog();
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("修改失败：" + errMsg);
-                        hideProgressDialog();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", goods.getId());
         jsonObject.put("costPrice", costPrice);
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
-        InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
+
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("修改零售价失败, " + e.toString());
+                DialogUtil.showHint("修改零售价失败");
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onNext(String s) {
+                DialogUtil.showHint("修改零售价成功");
+                goods.setCostPrice(costPrice);
+//                        adapter.notifyDataSetChanged();
+                adapter.notifyItemChanged(position);
+
+                hideProgressDialog();
+            }
+
+        });
+
     }
 
     /**
@@ -695,6 +685,11 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
      */
     private void deleteGoods(final int position, final LocalFrontCategoryGoods goods) {
         if (goods == null) {
+            return;
+        }
+
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
             return;
         }
 
@@ -712,50 +707,36 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             return;
         }
 
+
         //删除该前台类目下的商品
         final ProductCatalogEntity finalCatalogEntity = catalogEntity;
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                        //{"code":"0","msg":"更新成功!","version":"1","data":""}
-                        try {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String retStr = retValue.getValue();
-                            ZLogger.d("删除商品成功:" + retStr);
+        Map<String, String> options = new HashMap<>();
+        options.put("id", String.valueOf(catalogEntity.getId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ProductCatalogManager.getInstance().delete(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-                            //删除商品后台不推送消息，所以这里直接本地假删除，下次同步数据时再去更新。
-                            ProductCatalogService.getInstance()
-                                    .deleteById(String.valueOf(finalCatalogEntity.getId()));
-//                            adapter.notifyDataSetChanged();
-//                            adapter.notifyItemRemoved(position);
-                            reload();
-                        } catch (Exception e) {
-                            ZLogger.e(e.toString());
-                        }
-                        hideProgressDialog();
+            }
 
-                    }
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("删除商品失败, " + e.toString());
+                DialogUtil.showHint("删除商品失败");
+                hideProgressDialog();
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("删除商品失败：" + errMsg);
-                        hideProgressDialog();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
+            @Override
+            public void onNext(String s) {
+                DialogUtil.showHint("删除商品成功");
+                ProductCatalogService.getInstance()
+                        .deleteById(String.valueOf(finalCatalogEntity.getId()));
+                reload();
 
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-        ProductCatalogApi.delete(catalogEntity.getId(), responseCallback);
+                hideProgressDialog();
+            }
 
+        });
     }
 
 
@@ -767,6 +748,12 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             return;
         }
 
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(getString(R.string.toast_network_error));
+            return;
+        }
+
+
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
         int newStatus = 0;
@@ -775,44 +762,35 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         }
 
         final int finalNewStatus = newStatus;
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                        //{"code":"0","msg":"更新成功!","version":"1","data":""}
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        String retStr = retValue.getValue();
-                        ZLogger.d("更新商品成功:" + retStr);
+        Map<String, String> options = new HashMap<>();
+        options.put("status", String.valueOf(newStatus));
+        options.put("barcode", goods.getBarcode());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().updateStatus(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-                        //修改门店商品状态后台不推送消息，所以这里直接本地修改，下次同步数据时再去更新。
-                        goods.setStatus(finalNewStatus);
-                        PosProductService.get().saveOrUpdate(goods);
-                        adapter.notifyItemChanged(position);
-//                        reload();
+            }
 
-                        hideProgressDialog();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("更新商品失败, " + e.toString());
+                DialogUtil.showHint("更新商品失败");
+                hideProgressDialog();
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("更新商品失败：" + errMsg);
-//                        数据回滚
-                        hideProgressDialog();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
+            @Override
+            public void onNext(String s) {
+                DialogUtil.showHint("更新商品成功");
+                //修改门店商品状态后台不推送消息，所以这里直接本地修改，下次同步数据时再去更新。
+                goods.setStatus(finalNewStatus);
+                PosProductService.get().saveOrUpdate(goods);
+                adapter.notifyItemChanged(position);
 
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(getString(R.string.toast_network_error));
-            return;
-        }
-        InvSkuStoreApiImpl.updateStatusByBarcode(newStatus, goods.getBarcode(), responseCallback);
+                hideProgressDialog();
+            }
 
+        });
     }
 
 }

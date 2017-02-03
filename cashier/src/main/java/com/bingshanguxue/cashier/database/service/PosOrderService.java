@@ -31,12 +31,6 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
      * @return
      */
     public static PosOrderService get() {
-//        String lsName = PosOrderService.class.getName();
-//        if (ServiceFactory.checkService(lsName))
-//            instance = ServiceFactory.getService(lsName);
-//        else {
-//            instance = new PosOrderService();
-//        }
         if (instance == null) {
             synchronized (PosOrderService.class) {
                 if (instance == null) {
@@ -63,6 +57,12 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
 
     public void saveOrUpdate(PosOrderEntity msg) {
         getDao().saveOrUpdate(msg);
+    }
+
+    public void updateSequence(long curValue){
+        if (getDao() != null){
+            getDao().updateSequence(curValue);
+        }
     }
 
     /**

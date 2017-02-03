@@ -363,8 +363,9 @@ public class  HttpHandler  <T> extends AsyncTask<Object, Object, Object> impleme
                         callback.onFailure((Throwable)values[1],(String)values[2]);
                     break;
                 case UPDATE_SUCCESS:
-                    if(callback!=null)
+                    if(callback!=null){
                         callback.onSuccess((T)values[1]);
+                    }
                     break;
                 default:
                     break;

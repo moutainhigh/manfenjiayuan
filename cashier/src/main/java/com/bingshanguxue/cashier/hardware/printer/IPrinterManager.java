@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.model.PosOrder;
+import com.mfh.framework.api.pmcstock.PosOrder;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;

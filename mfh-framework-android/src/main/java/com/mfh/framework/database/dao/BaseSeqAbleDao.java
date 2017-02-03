@@ -51,7 +51,13 @@ public abstract class BaseSeqAbleDao<T extends IObject, PK>  extends BaseDbDao<T
         if (ret != null && ret.getV1() != null && ret.getV2() != null)
             seqService.checkSequence(sequeceName, ret.getV1(), ret.getV2());
     }
-    
+
+    public void updateSequence(long curValue){
+        if (seqService != null){
+            seqService.setSequenceValue(sequeceName, curValue);
+        }
+    }
+
     /**
      * 产生自增主键
      * @return

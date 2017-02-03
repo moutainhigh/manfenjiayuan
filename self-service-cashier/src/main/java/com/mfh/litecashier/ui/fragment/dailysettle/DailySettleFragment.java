@@ -2,7 +2,6 @@ package com.mfh.litecashier.ui.fragment.dailysettle;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +14,19 @@ import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
-import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.entity.MEntityWrapper;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -41,10 +40,13 @@ import com.mfh.litecashier.utils.AnalysisHelper;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * <h1>日结</h1>
@@ -109,13 +111,6 @@ public class DailySettleFragment extends BaseProgressFragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        EventBus.getDefault().register(this);
-    }
-
-    @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         ZLogger.df(String.format(">>开始日结：%s", StringUtils.decodeBundle(args)));
@@ -132,14 +127,6 @@ public class DailySettleFragment extends BaseProgressFragment {
 
         autoDateEnd();
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-//        EventBus.getDefault().unregister(this);
-    }
-
 
     @OnClick(R.id.button_header_close)
     public void finishActivity() {
@@ -214,8 +201,7 @@ public class DailySettleFragment extends BaseProgressFragment {
             if (mDailysettleInfo == null) {
                 ZLogger.d("日结单创建失败");
                 fabPrint.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 fabPrint.setVisibility(View.VISIBLE);
 
                 tvOfficeName.setText(String.format("门店：%s",
@@ -299,32 +285,30 @@ public class DailySettleFragment extends BaseProgressFragment {
             return;
         }
 
-        AnalysisApiImpl.autoDateEnd(mDailysettleInfo.getCreatedDate(), autoDateEndRC);
+        Map<String, String> options = new HashMap<>();
+        options.put("date", TimeUtil.format(mDailysettleInfo.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDD));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        RxHttpManager.getInstance().autoDateEnd(options,
+                new Subscriber<String>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onLoadError("启动日结统计失败：" + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.d("启动日结统计成功:" + s);
+                        //TODO,开始查询统计数据
+                        analysisAggShift();
+                    }
+                });
     }
-
-    //回调
-    NetCallBack.NetTaskCallBack autoDateEndRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                    RspValue<String> retValue = (RspValue<String>) rspData;
-                    ZLogger.d("启动日结统计成功:" + retValue.getValue());
-                    //TODO,开始查询统计数据
-                    analysisAggShift();
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //{"code":"1","msg":"指定网点已经日结过：132079","version":"1","data":null}
-                    onLoadError("启动日结统计失败：" + errMsg);
-                }
-            }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
 
     /**
      * 经营分析,查询业务类型日结数据
@@ -337,40 +321,52 @@ public class DailySettleFragment extends BaseProgressFragment {
             return;
         }
 
-        AnalysisApiImpl.analysisAggDateList(mDailysettleInfo.getCreatedDate(), aggDateListRC);
+        Map<String, String> options = new HashMap<>();
+        options.put("wrapper", "true");
+        options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        options.put("aggDate", TimeUtil.format(mDailysettleInfo.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDD));
+//        params.put("createdBy", MfhLoginService.get().getCurrentGuId());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+
+        RxHttpManager.getInstance().analysisAggDateList(options,
+                new MQuerySubscriber<MEntityWrapper<AggItem>>(new PageInfo(1, 50)) {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onLoadError("查询日结经营分析数据失败：" + e.toString());
+                    }
+
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<AggItem>> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
+                        //保存日结数据
+                        saveAggData2(dataList);
+
+                        //查询支付类型数据
+                        analysisAccDateList();
+                    }
+                });
     }
 
-    NetCallBack.QueryRsCallBack aggDateListRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<AggItem>(new PageInfo(1, 20)) {
-        @Override
-        public void processQueryResult(RspQueryResult<AggItem> rs) {
-            //保存日结数据
-            saveAggData(rs);
-
-            //查询支付类型数据
-            analysisAccDateList();
-        }
-
-        @Override
-        protected void processFailure(Throwable t, String errMsg) {
-            super.processFailure(t, errMsg);
-            onLoadError("查询日结经营分析数据失败：" + errMsg);
-        }
-    }, AggItem.class, CashierApp.getAppContext());
 
     /**
      * 保存经营分析数据
      */
-    private void saveAggData(RspQueryResult<AggItem> rs) {
+    private void saveAggData2(List<MEntityWrapper<AggItem>> dataList) {
         try {
             Double turnOver = 0D;
             Double grossProfit = 0D;
             List<AggItem> aggItems = new ArrayList<>();
-            if (rs != null && rs.getReturnNum() > 0) {
-                for (EntityWrapper<AggItem> wrapper : rs.getRowDatas()) {
-                    AggItem aggItem = wrapper.getBean();
-                    aggItem.setBizTypeCaption(wrapper.getPropCaption("bizType"));
-                    aggItem.setSubTypeCaption(wrapper.getPropCaption("subType"));
-                    aggItems.add(wrapper.getBean());
+
+            if (dataList != null && dataList.size() > 0){
+                for (MEntityWrapper<AggItem> entityWrapper : dataList){
+                    AggItem aggItem = entityWrapper.getBean();
+                    Map<String, String> caption = entityWrapper.getCaption();
+                    aggItem.setBizTypeCaption(caption.get("bizType"));
+                    aggItem.setSubTypeCaption(caption.get("subType"));
+                    aggItems.add(entityWrapper.getBean());
 
                     turnOver += aggItem.getTurnover();
                     grossProfit += aggItem.getGrossProfit();
@@ -400,24 +396,31 @@ public class DailySettleFragment extends BaseProgressFragment {
             return;
         }
 
-        AnalysisApiImpl.analysisAccDateList(mDailysettleInfo.getCreatedDate(), accDateListRC);
+        Map<String, String> options = new HashMap<>();
+        options.put("wrapper", "true");
+        options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        options.put("aggDate", TimeUtil.format(mDailysettleInfo.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDD));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        RxHttpManager.getInstance().analysisAccDateList(options,
+                new MQuerySubscriber<MEntityWrapper<AccItem>>(new PageInfo(1, 50)) {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onLoadError("查询日结流水分析数据失败：" + e.toString());
+                    }
+
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<AccItem>> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
+                        saveAccData2(dataList);
+
+                        onLoadFinished();
+                    }
+                });
     }
 
-    NetCallBack.QueryRsCallBack accDateListRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<AccItem>(new PageInfo(1, 20)) {
-        @Override
-        public void processQueryResult(RspQueryResult<AccItem> rs) {
-            //保存日结数据
-            saveAccData(rs);
-
-            onLoadFinished();
-        }
-
-        @Override
-        protected void processFailure(Throwable t, String errMsg) {
-            super.processFailure(t, errMsg);
-            onLoadError("查询日结流水分析数据失败：" + errMsg);
-        }
-    }, AccItem.class, CashierApp.getAppContext());
 
     /**
      * 保存流水分析数据
@@ -432,7 +435,36 @@ public class DailySettleFragment extends BaseProgressFragment {
                     accItem.setPayTypeCaption(wrapper.getPropCaption("payType"));
                     accItems.add(accItem);
 
-                    if (accItem.getPayType().equals(WayType.CASH)){
+                    if (accItem.getPayType().equals(WayType.CASH)) {
+                        cash = accItem.getAmount();
+                    }
+                }
+            }
+
+            mDailysettleInfo.setAccItems(accItems);
+            mDailysettleInfo.setCash(cash);
+            mDailysettleInfo.setUpdatedDate(new Date());
+
+            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
+
+            refresh();
+        } catch (Exception ex) {
+            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+        }
+    }
+    private void saveAccData2(List<MEntityWrapper<AccItem>> dataList) {
+        try {
+            Double cash = 0D;
+            List<AccItem> accItems = new ArrayList<>();
+            if (dataList != null && dataList.size() > 0) {
+                for (MEntityWrapper<AccItem> wrapper : dataList) {
+                    AccItem accItem = wrapper.getBean();
+                    Map<String, String> caption = wrapper.getCaption();
+
+                    accItem.setPayTypeCaption(caption.get("payType"));
+                    accItems.add(accItem);
+
+                    if (accItem.getPayType().equals(WayType.CASH)) {
                         cash = accItem.getAmount();
                     }
                 }

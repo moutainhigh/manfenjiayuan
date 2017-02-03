@@ -25,7 +25,7 @@ public class FragmentActivity extends BaseActivity {
     public static final int FT_STOCK_DETAIL = 0x32;
     public static final int FT_GROUPON_DETAIL = 0x33;  //团购详情页
     public static final int FT_CANARY_MESSAGE_MGR = 0x50;//消息管理器
-    public static final int FT_ORDER = 0x51;//订单
+    public static final int FT_ORDER = 0x51;//订单列表
 
 
     private int fragmentType = 0;

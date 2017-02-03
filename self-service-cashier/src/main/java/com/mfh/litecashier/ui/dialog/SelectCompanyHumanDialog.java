@@ -106,7 +106,8 @@ public class SelectCompanyHumanDialog extends CommonDialog {
 
         DeviceUtils.hideSoftInput(getOwnerActivity());
 
-        mAdapter.setEntityList(CompanyHumanService.get().queryAllBy(String.format("userName != '%s'", MfhLoginService.get().getLoginName())));
+        mAdapter.setEntityList(CompanyHumanService.get().queryAllBy(String.format("userName != '%s'",
+                MfhLoginService.get().getLoginName())));
     }
 
     public void setOnDialogClickListener(DialogClickListener listener){

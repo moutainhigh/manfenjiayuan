@@ -35,13 +35,15 @@ public class ScOrderApiImpl extends ScOrderApi{
      * 当前登录买手可以抢单去组货（也就是拣货）的订单列表{@link #URL_FINDPREPAREABLEORDERS}
      *
      */
-    public static void findPrepareAbleOrders(PageInfo pageInfo,AjaxCallBack<? extends Object> responseCallback) {
+    public static void findPrepareAbleOrders(PageInfo pageInfo,
+                                             AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (pageInfo != null){
             params.put("page", Integer.toString(pageInfo.getPageNo()));
             params.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
         params.put("wrapper", "true");
+        params.put("needDetail", "true");
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_FINDPREPAREABLEORDERS, params, responseCallback);
     }

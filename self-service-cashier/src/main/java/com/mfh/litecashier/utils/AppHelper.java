@@ -72,7 +72,8 @@ public class AppHelper {
             }
         }
         ZLogger.d(String.format("application startup datetime: %s application day first startup datetime: %s",
-                SharedPrefesManagerFactory.getAppStartupDateTime(), SharedPrefesManagerFactory.getAppDayFirstStartupDateTime()));
+                SharedPrefesManagerFactory.getAppStartupDateTime(),
+                SharedPrefesManagerFactory.getAppDayFirstStartupDateTime()));
 
     }
 

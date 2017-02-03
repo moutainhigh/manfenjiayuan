@@ -31,10 +31,13 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.pay.umsips.RequestConstants;
 import com.mfh.framework.pay.umsips.RspCode;
 import com.mfh.framework.pay.umsips.TransType;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
@@ -44,6 +47,9 @@ import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -523,7 +529,33 @@ public class PayByBandcardFragment extends BasePayFragment {
         jsonObject.put("bizType", bizType);//业务类型
         jsonObject.put("tagOne", "");//备用
 
-        PayOrderApiImpl.create(jsonObject.toJSONString(), responseCallback);
+        if (RxHttpManager.isUseRx) {
+            Map<String, String> options = new HashMap<>();
+            options.put("jsonStr", jsonObject.toJSONString());
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+            RxHttpManager.getInstance().createPayOrder(options,
+                    new MValueSubscriber<String>() {
+
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.df("提交支付记录失败:" + e.toString());
+                            onBarpayFinished(handleAmount, response.getRspChin());
+                        }
+
+                        @Override
+                        public void onValue(String data) {
+                            super.onValue(data);
+                            ZLogger.df(String.format("提交支付记录成功:%s", data));
+                            onBarpayFinished(handleAmount, response.getRspChin());
+                        }
+
+                    });
+        }
+        else {
+            PayOrderApiImpl.create(jsonObject.toJSONString(), responseCallback);
+        }
     }
 
     private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
@@ -538,7 +570,6 @@ public class PayByBandcardFragment extends BasePayFragment {
                     }
 
                     onBarpayFinished(handleAmount, response.getRspChin());
-                    // TODO: 16/4/7
                 }
 
                 @Override

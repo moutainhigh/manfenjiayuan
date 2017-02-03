@@ -1,22 +1,18 @@
 package com.mfh.framework.login;
 
-import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.UserApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.AfinalFactory;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetFactory;
-
-import net.tsz.afinal.http.AjaxParams;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * 保存登录相关信息
@@ -49,8 +45,7 @@ public class MfhUserManager {
      * 退出登录
      * */
     public void logout(final Callback callback) {
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())
-                || !MfhLoginService.get().haveLogined()) {
+        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             if (callback != null) {
                 callback.onError(-1, "网络未连接");
             }
@@ -66,30 +61,29 @@ public class MfhUserManager {
             return;
         }
 
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, sessionId);
-        AfinalFactory.postDefault(UserApi.URL_EXIT, params,
-                new NetCallBack.NormalNetTask<String>(String.class) {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-//                      {"code":"0","msg":"退出成功","version":"1","data":""}
-                        ZLogger.df("退出登录成功");
-                        if (callback != null) {
-                            callback.onSuccess();
-                        }
+        RxHttpManager.getInstance().exit(sessionId, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-                        //TODO 注销消息桥，发广播。。。
-                    }
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("退出登录失败：" + errMsg);
-                        if (callback != null) {
-                            callback.onError(-2, errMsg);
-                        }
-                    }
-                });
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("退出登录失败:" + e.toString());
+
+                if (callback != null) {
+                    callback.onError(-2, e.toString());
+                }
+            }
+
+            @Override
+            public void onNext(String s) {
+                ZLogger.df("退出登录成功");
+                if (callback != null) {
+                    callback.onSuccess();
+                }
+            }
+        });
     }
 
 

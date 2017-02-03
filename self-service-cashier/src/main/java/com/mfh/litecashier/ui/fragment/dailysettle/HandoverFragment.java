@@ -2,30 +2,28 @@ package com.mfh.litecashier.ui.fragment.dailysettle;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
-import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.entity.MEntityWrapper;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -36,10 +34,13 @@ import com.mfh.litecashier.utils.AnalysisHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * <h>交接班</h><br>
@@ -93,12 +94,6 @@ public class HandoverFragment extends BaseProgressFragment {
         return R.layout.fragment_components_handover;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        EventBus.getDefault().register(this);
-    }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
@@ -113,18 +108,8 @@ public class HandoverFragment extends BaseProgressFragment {
         refresh();
 
         btnSubmit.setEnabled(false);
-        //TODO,先提交本地订单再进行日结
-//        OrderSyncManager.get().sync();
 
         autoShiftAnalyasis();
-//        DialogUtil.showHint("开发君失踪了...");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-//        EventBus.getDefault().unregister(this);
     }
 
     @OnClick(R.id.button_header_close)
@@ -245,18 +230,6 @@ public class HandoverFragment extends BaseProgressFragment {
         btnSubmit.setEnabled(true);
     }
 
-//    public void onEventMainThread(OrderSyncManager.OrderSyncManagerEvent event) {
-//        //有新订单
-//        if (event.getEventId() == OrderSyncManager.OrderSyncManagerEvent.EVENT_ID_SYNC_DATA_PROCESS) {
-//            onLoadProcess("正在同步订单流水");
-//        } else if (event.getEventId() == OrderSyncManager.OrderSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
-//            autoShiftAnalyasis();
-//        } else if (event.getEventId() == OrderSyncManager.OrderSyncManagerEvent.EVENT_ID_SYNC_DATA_FAILED) {
-//            DialogUtil.showHint("同步订单流水失败");
-//            autoShiftAnalyasis();
-//        }
-//    }
-
     /**
      * 启动交接班统计
      */
@@ -269,34 +242,32 @@ public class HandoverFragment extends BaseProgressFragment {
             return;
         }
 
-        //回调
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        Map<String, String> options = new HashMap<>();
+        options.put("shiftId", String.valueOf(handOverBill.getShiftId()));
+        options.put("startTime", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        options.put("endTime", TimeUtil.format(handOverBill.getEndDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        RxHttpManager.getInstance().autoShiftAnalysis(options,
+                new Subscriber<String>() {
+
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        ZLogger.d("启动交接班统计成功:" + retValue.getValue());
-//                            btnSubmit.setEnabled(true);
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onLoadError("启动交接班统计失败：" + e.toString());
+                        btnSubmit.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.d("启动交接班统计成功:" + s);
                         //TODO,开始查询统计数据
                         analysisAggShift();
                     }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"交接班正在统计中，请稍候...","version":"1","data":null}
-                        onLoadError("启动交接班统计失败：" + errMsg);
-                        btnSubmit.setEnabled(false);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        AnalysisApiImpl.autoShiftAnalysic(handOverBill.getShiftId(),
-                TimeCursor.InnerFormat.format(handOverBill.getStartDate()),
-                TimeCursor.InnerFormat.format(handOverBill.getEndDate()), responseCallback);
+                });
     }
 
     /**
@@ -311,41 +282,56 @@ public class HandoverFragment extends BaseProgressFragment {
             return;
         }
 
-        NetCallBack.QueryRsCallBack responseCallback = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<AggItem>(new PageInfo(1, 20)) {
-            @Override
-            public void processQueryResult(RspQueryResult<AggItem> rs) {
-                //保存日结数据
-                saveAggData(rs);
+        Map<String, String> options = new HashMap<>();
+        options.put("wrapper", "true");
+        options.put("shiftId", String.valueOf(handOverBill.getShiftId()));
+        options.put("aggDate", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        options.put("createdBy", String.valueOf(MfhLoginService.get().getHumanId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-                //查询经营分析数据
-                accAnalysisAggShift();
-            }
+        RxHttpManager.getInstance().analysisAggShiftList(options,
+                new MQuerySubscriber<MEntityWrapper<AggItem>>(new PageInfo(1, 50)) {
 
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                onLoadError("查询日结经营分析数据失败:" + errMsg);
-                btnSubmit.setEnabled(false);
-            }
-        }, AggItem.class, CashierApp.getAppContext());
+                    @Override
+                    public void onError(Throwable e) {
+                        onLoadError("查询日结经营分析数据失败:" + e.toString());
+                        btnSubmit.setEnabled(false);                        }
 
-        AnalysisApiImpl.analysisAggShift(handOverBill.getShiftId(),
-                TimeCursor.FORMAT_YYYYMMDD.format(handOverBill.getStartDate()), responseCallback);
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<AggItem>> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
+                        //保存日结数据
+                        saveAggData2(dataList);
+
+                        //查询经营分析数据
+                        accAnalysisAggShift();
+                    }
+                });
     }
 
-    private void saveAggData(RspQueryResult<AggItem> rs){
-        List<AggItem> entityList = new ArrayList<>();
-        if (rs != null && rs.getReturnNum() > 0) {
-            for (EntityWrapper<AggItem> wrapper : rs.getRowDatas()) {
-                AggItem aggItem = wrapper.getBean();
-                aggItem.setBizTypeCaption(wrapper.getPropCaption("bizType"));
-                aggItem.setSubTypeCaption(wrapper.getPropCaption("subType"));
-                entityList.add(wrapper.getBean());
-            }
-        }
-        handOverBill.setAggItems(entityList);
+    private void saveAggData2(List<MEntityWrapper<AggItem>> dataList) {
+        try {
 
-        refresh();
+            List<AggItem> aggItems = new ArrayList<>();
+
+            if (dataList != null && dataList.size() > 0){
+                for (MEntityWrapper<AggItem> entityWrapper : dataList){
+                    AggItem aggItem = entityWrapper.getBean();
+                    Map<String, String> caption = entityWrapper.getCaption();
+                    aggItem.setBizTypeCaption(caption.get("bizType"));
+                    aggItem.setSubTypeCaption(caption.get("subType"));
+                    aggItems.add(entityWrapper.getBean());
+                }
+            }
+            handOverBill.setAggItems(aggItems);
+            ZLogger.df(String.format("保存经营分析数据:\n%s", JSON.toJSONString(handOverBill)));
+
+            refresh();
+        } catch (Exception ex) {
+            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+        }
+
     }
 
     /**
@@ -360,44 +346,60 @@ public class HandoverFragment extends BaseProgressFragment {
             return;
         }
 
-        NetCallBack.QueryRsCallBack responseCallback = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<AccItem>(new PageInfo(1, 20)) {
-            @Override
-            public void processQueryResult(RspQueryResult<AccItem> rs) {
-                saveAccData(rs);
+        Map<String, String> options = new HashMap<>();
+        options.put("wrapper", "true");
+        options.put("shiftId", String.valueOf(handOverBill.getShiftId()));
+        options.put("aggDate", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        options.put("createdBy", String.valueOf(MfhLoginService.get().getHumanId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-                onLoadFinished();
-            }
+        RxHttpManager.getInstance().accAnalysisAggShiftList(options,
+                new MQuerySubscriber<MEntityWrapper<AccItem>>(new PageInfo(1, 50)) {
 
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                onLoadError("查询交接班流水分析数据失败:" + errMsg);
-                btnSubmit.setEnabled(false);
-            }
-        }, AccItem.class, CashierApp.getAppContext());
+                    @Override
+                    public void onError(Throwable e) {
+                        onLoadError("查询交接班流水分析数据失败：" + e.toString());
+                        btnSubmit.setEnabled(false);
+                    }
 
-        AnalysisApiImpl.accAnalysisAggShift(handOverBill.getShiftId(),
-                TimeCursor.FORMAT_YYYYMMDD.format(handOverBill.getStartDate()), responseCallback);
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<AccItem>> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
+                        saveAccData2(dataList);
+
+                        onLoadFinished();
+                    }
+                });
     }
 
-    private void saveAccData(RspQueryResult<AccItem> rs){
-        ZLogger.d("保存交接班流水分析数据");
-        Double cash = 0D;
-        List<AccItem> entityList = new ArrayList<>();
-        if (rs != null && rs.getReturnNum() > 0) {
-            for (EntityWrapper<AccItem> wrapper : rs.getRowDatas()) {
-                AccItem accItem = wrapper.getBean();
-                accItem.setPayTypeCaption(wrapper.getPropCaption("payType"));
-                entityList.add(accItem);
-                if (accItem.getPayType().equals(WayType.CASH)){
-                    cash = accItem.getAmount();
+    private void saveAccData2(List<MEntityWrapper<AccItem>> dataList) {
+        try {
+            Double cash = 0D;
+            List<AccItem> accItems = new ArrayList<>();
+            if (dataList != null && dataList.size() > 0) {
+                for (MEntityWrapper<AccItem> wrapper : dataList) {
+                    AccItem accItem = wrapper.getBean();
+                    Map<String, String> caption = wrapper.getCaption();
+
+                    accItem.setPayTypeCaption(caption.get("payType"));
+                    accItems.add(accItem);
+
+                    if (accItem.getPayType().equals(WayType.CASH)) {
+                        cash = accItem.getAmount();
+                    }
                 }
             }
-        }
-        handOverBill.setCash(cash);
-        handOverBill.setAccItems(entityList);
 
-        refresh();
+            handOverBill.setAccItems(accItems);
+            handOverBill.setCash(cash);
+
+            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(handOverBill)));
+
+            refresh();
+        } catch (Exception ex) {
+            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+        }
     }
 
 }

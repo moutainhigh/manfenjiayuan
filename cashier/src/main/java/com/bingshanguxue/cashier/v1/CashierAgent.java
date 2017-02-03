@@ -104,7 +104,7 @@ public class CashierAgent {
         orderEntity.setSubType(subType);
         orderEntity.setOuterTradeNo(outTradeNo);
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);//订单状态
-        orderEntity.setUpdatedDate(new Date());
+//        orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
         ZLogger.df(String.format("结算订单:%s_%d:\n%s", orderBarCode,
                 orderEntity.getId(), JSONObject.toJSONString(orderEntity)));
@@ -335,7 +335,7 @@ public class CashierAgent {
 
         //修改订单状态：挂单改为待支付
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
-        orderEntity.setUpdatedDate(new Date());
+//        orderEntity.setUpdatedDate(new Date());
         PosOrderService.get().saveOrUpdate(orderEntity);
 
         //加载订单明细

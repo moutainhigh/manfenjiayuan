@@ -3,6 +3,7 @@ package com.mfh.litecashier.ui;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
@@ -87,6 +88,18 @@ public class ActivityRoute {
         extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleActivity.FT_CANARY_ORDERFLOW);
         UIHelper.startActivity(context, SimpleActivity.class, extras);
+    }
+
+    /**
+     * 订单列表
+     */
+    public static void redirect2OrderList(Context context) {
+        ZLogger.df(">>>打开线上订单页面");
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ORDER);
+        UIHelper.startActivity(context, FragmentActivity.class, extras);
+
     }
 
     /**

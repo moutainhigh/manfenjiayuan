@@ -18,7 +18,6 @@ public class ResMenu implements Serializable{
     public static final Long CASHIER_MENU_BALANCE_QUERY    = 18L;//余额查询
     public static final Long CASHIER_MENU_SETTINGS         = 19L;//设置
     public static final Long CASHIER_MENU_PACKAGE = 20L;//包裹(取快递)
-    public static final Long CASHIER_MENU_EXPRESS = 21L;//寄快递
     public static final Long CASHIER_MENU_PRINT_ORDER = 22L;//打印订单
     public static final Long CASHIER_MENU_DISCOUNT = 23L;//订单打折
     public static final Long CASHIER_MENU_SCORE = 24L;//积分兑换

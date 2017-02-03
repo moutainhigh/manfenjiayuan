@@ -47,9 +47,6 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
     public static final String DEV_PREFIX = "dev_litecashier";
     public static String PREF_NAME_PREFIX = "litecashier";
 
-    //导入商品批发商数据
-    public static final String PK_S_IMPORT_FROMCHAINSKU_STARTCURSOR = "pk_import_from_startcursor";//时间戳
-
     //同步商品
     private static final String PK_SYNC_PRODUCTS_STARTCURSOR = "pk_sync_products_startcursor";//时间戳
     private static final String PK_SYNC_PRODUCTSKU_STARTCURSOR = "pk_sync_productsku_startcursor";
@@ -89,6 +86,7 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
     //是否实时上传POS订单
     public static final String PK_B_UPLOAD_POSORDER_RELATIME = "PK_B_UPLOAD_POSORDER_RELATIME";
     public static final String PK_L_CATETYPE_POS_ID = "pk_l_catetype_pos_id";
+
 
     public static String getSyncProductsCursor() {
         return getText(PK_SYNC_PRODUCTS_STARTCURSOR);

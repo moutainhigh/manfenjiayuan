@@ -142,6 +142,8 @@ public class MfhLoginService implements IService {
         cookie = spLogin.getString(MfhLoginPreferences.PK_COOKIE, "");
         headimage = spLogin.getString(MfhLoginPreferences.PK_HEAD_IMAGE, "");
         sex = spLogin.getInt(MfhLoginPreferences.PK_SEX, Sex.UNKNOWN);
+
+//        MfhUserManager.getInstance().updateModules();
     }
 
     /**

@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.database.service;
 
 import com.bingshanguxue.cashier.database.dao.PosProductSkuDao;
 import com.bingshanguxue.cashier.database.entity.PosProductSkuEntity;
-import com.bingshanguxue.cashier.model.ProductSkuBarcode;
+import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;

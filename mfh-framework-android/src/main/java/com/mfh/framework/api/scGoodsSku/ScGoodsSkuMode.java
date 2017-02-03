@@ -8,13 +8,20 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * 商品
@@ -263,37 +270,31 @@ public class ScGoodsSkuMode {
             return;
         }
 
-        NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
-                NetProcessor.Processor<ScGoodsSku>>(
-                new NetProcessor.Processor<ScGoodsSku>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-                        ScGoodsSku goodsSku = null;
-                        if (rspData != null) {
-                            RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
-                            goodsSku = retValue.getValue();
-                        }
-                        if (listener != null) {
-                            listener.onSuccess(goodsSku);
-                        }
-                    }
+        Map<String, String> options = new HashMap<>();
+        options.put("barcode", barcode);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ScGoodsSkuHttpManager.getInstance().getByBarcode(options, new Subscriber<ScGoodsSku>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
-                        if (listener != null) {
-                            listener.onError(errMsg);
-                        }
-                    }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("查询失败: " + e.toString());
+                if (listener != null) {
+                    listener.onError(e.toString());
                 }
-                , ScGoodsSku.class
-                , MfhApplication.getAppContext()) {
-        };
+            }
 
-        ScGoodsSkuApiImpl.getByBarcode(barcode, queryResCallback);
+            @Override
+            public void onNext(ScGoodsSku scGoodsSku) {
+                if (listener != null) {
+                    listener.onSuccess(scGoodsSku);
+                }
+            }
+
+        });
     }
 
     /**

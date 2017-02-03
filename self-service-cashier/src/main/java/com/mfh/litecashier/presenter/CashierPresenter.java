@@ -33,16 +33,25 @@ public class CashierPresenter {
      * 查询商品
      */
     public synchronized void findGoods(String barcode) {
+        //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
+        if (BarcodeUtils.getType(barcode) == BarcodeUtils.BARCODE_DIGI){
+            findFreshGoods(barcode);
+        }
+        else{
+            findNormalGoods(barcode);
+        }
+    }
+
+    /**
+     * 查询商品
+     * @param barcode 商品条码
+     * */
+    private void findNormalGoods(String barcode){
         if (StringUtils.isEmpty(barcode)) {
             ZLogger.d("商品条码无效");
             return;
         }
 
-        //生鲜商品条码是以'2'开头并且是13位，F CCCCCC XXXXX CD
-        if (BarcodeUtils.getType(barcode) == BarcodeUtils.BARCODE_DIGI){
-            findFreshGoods(barcode);
-            return;
-        }
         ZLogger.df(String.format("搜索标准商品 条码：%s", barcode));
 
         int packFlag = 0;//是否是箱规：0不是；1是

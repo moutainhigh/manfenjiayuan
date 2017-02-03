@@ -135,6 +135,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.mfh.litecashier.R.id.buttonPrepareOrder;
+
 
 /**
  * 首页
@@ -194,7 +196,6 @@ public class MainActivity extends CashierActivity
     private RegisterUserDialog mRegisterUserDialog = null;
     private InitCardByStepDialog initCardDialog = null;
     private ReturnGoodsDialog returnGoodsDialog = null;
-    private ExpressDialog expressDialog = null;
 
 
     /**
@@ -208,7 +209,6 @@ public class MainActivity extends CashierActivity
 
     private CashierPresenter cashierPresenter;
     private ScOrderPresenter mScOrderPresenter;
-
 
 
     public static void actionStart(Context context, Bundle extras) {
@@ -270,10 +270,14 @@ public class MainActivity extends CashierActivity
 
         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)){
             btnPrepareOrder.setVisibility(View.VISIBLE);
-            btnPrepareOrder.setBadgeNumber(0);
+            int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.ORDER_TRANS_NOTIFY);
+            btnPrepareOrder.setBadgeNumber(count);
         }
         else{
+            ZLogger.d("当前登录用户不具有买手能力");
+//            btnPrepareOrder.setBadgeNumber(0);
             btnPrepareOrder.setVisibility(View.GONE);
+//            btnPrepareOrder.setVisibility(View.VISIBLE);
         }
 
         if (menuAdapter != null) {
@@ -285,6 +289,8 @@ public class MainActivity extends CashierActivity
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
+
+//        MfhUserManager.getInstance().updateModules();
     }
 
     @Override
@@ -295,6 +301,7 @@ public class MainActivity extends CashierActivity
     @Override
     protected void onResume() {
         super.onResume();
+        setupGetui();
         if (inlvBarcode == null) {
             inlvBarcode = (InputNumberLabelView) findViewById(R.id.inlv_barcode);
         }
@@ -400,7 +407,6 @@ public class MainActivity extends CashierActivity
 
         if (id.compareTo(ResMenu.CASHIER_MENU_ONLINE_ORDER) == 0) {
             redirectToOnlineOrder();
-//            test();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_PACKAGE) == 0) {
             packageService();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_REGISTER_VIP) == 0) {
@@ -412,8 +418,6 @@ public class MainActivity extends CashierActivity
             queryBalance();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_MEMBER_CARD) == 0) {
             initVipCardStep1();
-        } else if (id.compareTo(ResMenu.CASHIER_MENU_EXPRESS) == 0) {
-            expressService();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_RETURN_GOODS) == 0) {
             returnGoods();
         } else if (id.compareTo(ResMenu.CASHIER_MENU_MONEYBOX) == 0) {
@@ -493,15 +497,14 @@ public class MainActivity extends CashierActivity
                     0);
         }
 
-        ZLogger.df(">>>打开线上订单页面");
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-//        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
-//        SimpleActivity.actionStart(this, extras);
-
-        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ORDER);
-        FragmentActivity.actionStart(this, extras);
-
+        ActivityRoute.redirect2OrderList(this);
+//        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+////        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
+////        SimpleActivity.actionStart(this, extras);
+//
+//        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ORDER);
+//        FragmentActivity.actionStart(this, extras);
     }
 
 
@@ -634,32 +637,6 @@ public class MainActivity extends CashierActivity
 
 
     /**
-     * 寄快递
-     */
-    private void expressService() {
-        if (expressDialog == null) {
-            expressDialog = new ExpressDialog(this);
-            expressDialog.setCancelable(false);
-            expressDialog.setCanceledOnTouchOutside(false);
-        }
-        expressDialog.init(new ExpressDialog.DialogListener() {
-            @Override
-            public void query(String text) {
-
-            }
-
-            @Override
-            public void onNextStep() {
-                //TODO,显示快递页面
-                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_SHOW_EXPRESS));
-            }
-        });
-        if (!expressDialog.isShowing()) {
-            expressDialog.show();
-        }
-    }
-
-    /**
      * 退货
      */
     private void returnGoods() {
@@ -722,6 +699,8 @@ public class MainActivity extends CashierActivity
                 inlvBarcode.requestFocusEnd();
             }
 
+            MfhUserManager.getInstance().updateModules();
+
             //刷新上一单数据
             refreshLastOrder(null);
 
@@ -767,7 +746,13 @@ public class MainActivity extends CashierActivity
                 if (mTtsBinder != null){
                     mTtsBinder.cloudSpeak("您有新订单，请尽快处理");
                 }
+                btnPrepareOrder.setVisibility(View.VISIBLE);
+                btnPrepareOrder.setBadgeNumber(count);
             }
+            else{
+                btnPrepareOrder.setVisibility(View.GONE);
+            }
+
         } else if (eventId == AffairEvent.EVENT_ID_APPEND_UNREAD_SCHEDULE_ORDER) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.NEW_PURCHASE_ORDER);
             menuAdapter.setBadgeNumber(ResMenu.CASHIER_MENU_ONLINE_ORDER, count);
@@ -1765,7 +1750,7 @@ public class MainActivity extends CashierActivity
         // 清空二维码输入，避免下次扫描条码错误
         inlvBarcode.clear();
 
-        cashierPresenter.findGoods(barCode);
+//        cashierPresenter.findGoods(barCode);
 
         Observable.create(new Observable.OnSubscribe<PosProductEntity>() {
             @Override
@@ -2355,8 +2340,11 @@ public class MainActivity extends CashierActivity
     /**
      * 接单
      * */
-    @OnClick(R.id.buttonPrepareOrder)
+    @OnClick(buttonPrepareOrder)
     public void redirect2PrepareOrder(){
+        EmbMsgService.getInstance().setAllRead(IMBizType.ORDER_TRANS_NOTIFY);
+        btnPrepareOrder.setBadgeNumber(0);
+
         ActivityRoute.redirect2PrepareAbleOrders(this);
     }
 

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.cashier.model.PosOrder;
+import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -90,12 +90,6 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
 
         setupSwipeRefresh();
         initOrderRecyclerView();
-
-//        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-//            readCache();
-//        } else {
-//            reload();
-//        }
     }
 
     @Override
@@ -222,7 +216,6 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
             return;
         }
 
-        // && mPageInfo.getPageNo() <= MAX_PAGE
         if (mPageInfo.hasNextPage()) {
             mPageInfo.moveToNext();
 

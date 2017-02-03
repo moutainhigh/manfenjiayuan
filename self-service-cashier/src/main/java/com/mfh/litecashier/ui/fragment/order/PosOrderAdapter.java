@@ -12,8 +12,8 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.model.PosOrder;
-import com.bingshanguxue.cashier.model.PosOrderItem;
+import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.api.pmcstock.PosOrderItem;
 
 import java.util.List;
 

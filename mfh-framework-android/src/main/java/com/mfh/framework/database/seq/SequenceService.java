@@ -66,4 +66,6 @@ public interface SequenceService {
      * @author zhangyz created on 2012-8-13
      */
     void checkSequence(String seqName, long minValue, Long maxValue);
+
+    void setSequenceValue(String sequeceName, long curValue);
 }

@@ -1,4 +1,4 @@
-package com.bingshanguxue.cashier.model;
+package com.mfh.framework.api.scGoodsSku;
 
 import com.mfh.comn.bean.ILongId;
 

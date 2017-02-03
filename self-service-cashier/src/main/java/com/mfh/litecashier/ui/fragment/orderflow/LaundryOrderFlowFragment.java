@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.bingshanguxue.cashier.model.PosOrder;
+import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;

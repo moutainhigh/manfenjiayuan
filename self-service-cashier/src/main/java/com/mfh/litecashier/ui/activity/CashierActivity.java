@@ -421,6 +421,9 @@ public abstract class CashierActivity extends BaseActivity {
         if (ComPort != null && ComPort.isOpen()) {
             ComPort.send(bOutArray);
         }
+        else{
+            ZLogger.df("串口未打开");
+        }
     }
 
     /**
@@ -448,6 +451,7 @@ public abstract class CashierActivity extends BaseActivity {
         }
 
         if (devicesPath.contains(PrinterAgent.getPort()) && PrinterAgent.isEnabled()) {
+            CloseComPort(comPrint);
             OpenComPort(comPrint);
 //                if (embPrinter == null){
 //                    embPrinter = PrinterInstance.getPrinterInstance(new File(PrinterAgent.getPort()),
@@ -455,11 +459,23 @@ public abstract class CashierActivity extends BaseActivity {
 //                }
 //                embPrinter.openConnection();
         }
+        else{
+            CloseComPort(comPrint);
+        }
         if (devicesPath.contains(PoslabAgent.getPort()) && PoslabAgent.isEnabled()) {
+            CloseComPort(comDisplay);
             OpenComPort(comDisplay);
         }
+        else{
+            CloseComPort(comDisplay);
+
+        }
         if (devicesPath.contains(ScaleAgent.getPort()) && ScaleAgent.isEnabled()) {
+            CloseComPort(comScale);
             OpenComPort(comScale);
+        }
+        else{
+            CloseComPort(comScale);
         }
     }
 

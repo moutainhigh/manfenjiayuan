@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosProductNetDao;
 import com.bingshanguxue.cashier.database.dao.PosProductSkuNetDao;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
@@ -13,9 +14,6 @@ import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
-import com.mfh.framework.api.scGoodsSku.PosGoods;
-import com.bingshanguxue.cashier.model.ProductCatalog;
-import com.bingshanguxue.cashier.model.ProductSkuBarcode;
 import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.im.constants.IMBizType;
@@ -23,49 +21,47 @@ import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspListBean;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.CompanyHumanApi;
-import com.mfh.framework.api.account.UserApiImpl;
-import com.mfh.framework.api.anon.sc.ProductCatalogApi;
+import com.mfh.framework.api.CompanyHuman;
+import com.mfh.framework.api.anon.sc.ProductCatalog;
 import com.mfh.framework.api.category.CateApi;
-import com.mfh.framework.api.category.CateApiImpl;
 import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.category.CategoryQueryInfo;
-import com.mfh.framework.api.category.ScCategoryInfoApi;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
+import com.mfh.framework.api.constant.Priv;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
+import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
-import com.mfh.framework.api.tenant.TenantApi;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.ProductCatalogManager;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.bean.CompanyHuman;
 import com.mfh.litecashier.database.logic.CompanyHumanService;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import net.tsz.afinal.core.AsyncTask;
-import net.tsz.afinal.http.AjaxParams;
 
 import org.century.GreenTagsApi;
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -74,6 +70,8 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.mfh.framework.api.category.CateApi.CATEGORY_TENANT_ID;
 
 
 /**
@@ -291,6 +289,7 @@ public class DataDownloadManager {
             ZLogger.df(message);
         }
         bSyncInProgress = false;
+        currentStep = NA;
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED));
     }
 
@@ -345,28 +344,29 @@ public class DataDownloadManager {
             return;
         }
 
-        AjaxParams params = new AjaxParams();
-        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));//部门编号
-        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));//公司编号
-        params.put("startCursor", lastCursor);//游标
-//        params.put("page", Integer.toString(pageInfo.getPageNo()));
-//        params.put("rows", Integer.toString(pageInfo.getPageSize()));
-//        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
+        Map<String, String> options = new HashMap<>();
+        options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));//部门编号
+        options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));//公司编号
+        options.put("startCursor", lastCursor);//游标
+        if (pageInfo != null) {
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
+        ScGoodsSkuHttpManager.getInstance().downLoadPosProduct(options,
+                new MQuerySubscriber<PosGoods>(pageInfo) {
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        onNotifyNext(e.toString());
+                    }
 
-        ZLogger.df(String.format("同步商品档案开始(%d/%d/%s)",
-                pageInfo.getPageNo(), pageInfo.getTotalPage(), lastCursor));
-        posProductNetDao.query(params, new NetProcessor.QueryRsProcessor<PosGoods>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<PosGoods> rs) {
-                downLoadPosProductStep3(rs, pageInfo, lastCursor);
-            }
-
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                onNotifyNext(errMsg);
-            }
-        }, "/scGoodsSku/downLoadPosProduct");
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<PosGoods> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+                        downLoadPosProductStep3(dataList, pageInfo, lastCursor);
+                    }
+                });
     }
 
     /**
@@ -382,34 +382,93 @@ public class DataDownloadManager {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                try {
-                    mPageInfo = pageInfo;
-                    ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 开始", rs.getReturnNum(),
-                            rs.getTotalNum(), mPageInfo.getPageNo(),
-                            mPageInfo.getTotalPage(), startCursor));
+                mPageInfo = pageInfo;
+                ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 开始", rs.getReturnNum(),
+                        rs.getTotalNum(), mPageInfo.getPageNo(),
+                        mPageInfo.getTotalPage(), startCursor));
 
-                    Date cussor = null;
-                    //使用事务
-                    for (EntityWrapper<PosGoods> wrapper : rs.getRowDatas()) {
+                Date cussor = null;
+                //使用事务
+                for (EntityWrapper<PosGoods> wrapper : rs.getRowDatas()) {
+                    //保存商品到数据库
+                    PosGoods posGoods = wrapper.getBean();
+                    if (posGoods == null || posGoods.getId() == null) {
+                        ZLogger.d("保存商品档案失败：商品参数无效。");
+                        continue;
+                    }
+
+                    PosProductService.get().saveOrUpdate(posGoods);
+                    cussor = posGoods.getUpdatedDate();
+                }
+
+                //更新游标
+                SharedPreferencesUltimate.setSyncProductsCursor(cussor);
+                ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 结束", rs.getReturnNum(),
+                        rs.getTotalNum(), mPageInfo.getPageNo(),
+                        mPageInfo.getTotalPage(), SharedPreferencesUltimate.getSyncProductsCursor()));
+
+                subscriber.onNext(startCursor);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onNotifyNext("保存商品档案失败." + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+                        //从第一页开始请求，每页最多50条记录
+                        if (mPageInfo.hasNextPage()) {
+                            mPageInfo.moveToNext();
+                            downLoadPosProductStep2(startCursor, mPageInfo);
+                        } else {
+                            countNetSyncAbleSkuNum();
+                        }
+                    }
+
+                });
+    }
+
+    private void downLoadPosProductStep3(final List<PosGoods> goodses, final PageInfo pageInfo,
+                                         final String startCursor) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                mPageInfo = pageInfo;
+
+                if (mPageInfo != null) {
+                    ZLogger.df(String.format("保存 (%d/%d) 个商品档案（%s）开始",
+                            mPageInfo.getPageNo(),
+                            mPageInfo.getTotalPage(), startCursor));
+                }
+                Date cussor = null;
+                //使用事务
+                if (goodses != null && goodses.size() > 0) {
+                    for (PosGoods goods : goodses) {
                         //保存商品到数据库
-                        PosGoods posGoods = wrapper.getBean();
-                        if (posGoods == null || posGoods.getId() == null) {
+                        if (goods == null || goods.getId() == null) {
                             ZLogger.d("保存商品档案失败：商品参数无效。");
                             continue;
                         }
+                        ZLogger.df(String.format("保存商品档案: %s",
+                                JSONObject.toJSONString(goods)));
 
-                        PosProductService.get().saveOrUpdate(posGoods);
-                        cussor = posGoods.getUpdatedDate();
+                        PosProductService.get().saveOrUpdate(goods);
+                        cussor = goods.getUpdatedDate();
                     }
-
-                    //更新游标
-                    SharedPreferencesUltimate.setSyncProductsCursor(cussor);
-                    ZLogger.df(String.format("保存 %d/%d(%d/%d) 个商品（%s） 结束", rs.getReturnNum(),
-                            rs.getTotalNum(), mPageInfo.getPageNo(),
-                            mPageInfo.getTotalPage(), SharedPreferencesUltimate.getSyncProductsCursor()));
-                } catch (Throwable ex) {
-                    ZLogger.ef(String.format("保存商品档案失败: %s", ex.toString()));
                 }
+
+                //更新游标
+                SharedPreferencesUltimate.setSyncProductsCursor(cussor);
 
                 subscriber.onNext(startCursor);
                 subscriber.onCompleted();
@@ -431,7 +490,7 @@ public class DataDownloadManager {
                     @Override
                     public void onNext(String startCursor) {
                         //从第一页开始请求，每页最多50条记录
-                        if (pageInfo.hasNextPage()) {
+                        if (pageInfo != null && pageInfo.hasNextPage()) {
                             pageInfo.moveToNext();
                             downLoadPosProductStep2(startCursor, pageInfo);
                         } else {
@@ -447,71 +506,63 @@ public class DataDownloadManager {
      * 商品库增量同步后检查pos本地商品数目和后台商品数目是否一致，如果不一致，则自动触发一次全量同步。
      */
     private void countNetSyncAbleSkuNum() {
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        Map<String, String> options = new HashMap<>();
+        options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        ScGoodsSkuHttpManager.getInstance().countNetSyncAbleSkuNum(options,
+                new MValueSubscriber<String>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"701"}}
-                        int skuNum = 0;
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            skuNum = Integer.valueOf(retValue.getValue());
-                        }
-
-                        countNetSyncAbleSkuNumStep2(skuNum);
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询指定网点可同步sku总数失败：" + errMsg);
-//                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_NOT_LOGIN,
-//                                null, "Validate--会话过期，自动重登录");
-
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        ZLogger.df("查询指定网点可同步sku总数失败：" + e.toString());
                         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_POSPRODUCTS_UPDATED));
 
                         processQueue();
                     }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
 
-        ScGoodsSkuApiImpl.countNetSyncAbleSkuNum(responseCallback);
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+
+                        int skuNum = 0;
+                        if (data != null) {
+                            skuNum = Integer.valueOf(data);
+                        }
+
+                        countNetSyncAbleSkuNumStep2(skuNum);
+                    }
+                });
     }
 
     private void countNetSyncAbleSkuNumStep2(final int skuNum) {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                try {
-                    ZLogger.df(String.format("网点可同步sku总数:%d", skuNum));
+                ZLogger.df(String.format("网点可同步sku总数:%d", skuNum));
 
-                    //删除无效的数据
-                    PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
-                            0));
-                    // 比较本地商品数据库总数是否和可以同步的SKU总数一致，
-                    // 如果不一致，则重置时间戳，下次触发全量同步，否则继续按照时间戳同步。
-                    List<PosProductEntity> entityList = PosProductService.get()
-                            .queryAllByDesc(String.format("tenantId = '%d'",
-                                    MfhLoginService.get().getSpid()));
-                    int posNum = (entityList != null ? entityList.size() : 0);
-                    ZLogger.df(String.format("本地商品档案库sku总数:%d", posNum));
+                //删除无效的数据
+                PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
+                        0));
+                // 比较本地商品数据库总数是否和可以同步的SKU总数一致，
+                // 如果不一致，则重置时间戳，下次触发全量同步，否则继续按照时间戳同步。
+                List<PosProductEntity> entities = PosProductService.get()
+                        .queryAllByDesc(String.format("tenantId = '%d'",
+                                MfhLoginService.get().getSpid()));
+                int posNum = (entities != null ? entities.size() : 0);
+                ZLogger.df(String.format("本地商品档案库sku总数:%d", posNum));
 
-                    if (posNum != skuNum) {
-                        ZLogger.df(String.format("本地商品档案和云端数据不一致，重置时间戳，下一次需要全量同步商品库", posNum, skuNum));
+                if (posNum != skuNum) {
+                    ZLogger.df(String.format("本地商品档案和云端数据不一致，重置时间戳，" +
+                            "下一次需要全量同步商品库", posNum, skuNum));
 
-                        //初始化游标并设置下次需要全量更新
-                        SharedPreferencesUltimate.setSyncProductsCursor("");
-                        //商品档案全量更新时也要重置寺冈电子秤和电子价签同步游标。
-                        SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
-                                SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
-                        SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
-                                GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
-                    }
-                } catch (Exception e) {
-                    ZLogger.ef(String.format("查询指定网点可同步sku总数:%s", e.toString()));
+                    //初始化游标并设置下次需要全量更新
+                    SharedPreferencesUltimate.setSyncProductsCursor("");
+                    //商品档案全量更新时也要重置寺冈电子秤和电子价签同步游标。
+                    SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
+                            SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, "");
+                    SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
+                            GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, "");
                 }
 
                 subscriber.onNext(null);
@@ -528,8 +579,7 @@ public class DataDownloadManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.ef(e.toString());
-                        onNotifyCompleted("查询指定网点可同步sku总数失败.");
+                        onNotifyCompleted(String.format("查询指定网点可同步sku总数:%s", e.toString()));
                     }
 
                     @Override
@@ -565,29 +615,94 @@ public class DataDownloadManager {
             return;
         }
 
-        AjaxParams params = new AjaxParams();
-        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-        params.put("startCursor", String.valueOf(lastCursor));//游标
-//        params.put("page", Integer.toString(pageInfo.getPageNo()));
-//        params.put("rows", Integer.toString(pageInfo.getPageSize()));
-//        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
+        if (pageInfo != null) {
+            ZLogger.df(String.format("同步规格码表开始(%d/%d)", pageInfo.getPageNo(), pageInfo.getTotalPage()));
+        }
 
-        ZLogger.df(String.format("同步规格码表开始(%d/%d)", pageInfo.getPageNo(), pageInfo.getTotalPage()));
-        posProductSkuNetDao.query(params, new NetProcessor.QueryRsProcessor<ProductSkuBarcode>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<ProductSkuBarcode> rs) {
-                new ProductSkuQueryAsyncTask(pageInfo, lastCursor)
-                        .execute(rs);
-            }
+        Map<String, String> options = new HashMap<>();
+        options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));//公司编号
+        options.put("startCursor", lastCursor);//游标
+        if (pageInfo != null) {
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
+        RxHttpManager.getInstance().findShopOtherBarcodes(options,
+                new MQuerySubscriber<ProductSkuBarcode>(pageInfo) {
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        onNotifyNext(e.toString());
+                    }
 
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<ProductSkuBarcode> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+                        findShopOtherBarcodesStep3(dataList, pageInfo, lastCursor);
+                    }
+                });
+    }
+
+    private void findShopOtherBarcodesStep3(final List<ProductSkuBarcode> goodses, final PageInfo pageInfo,
+                                            final String startCursor) {
+        Observable.create(new Observable.OnSubscribe<String>() {
             @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.e(errMsg);
-                //同步账号数据
-                processQueue();
+            public void call(Subscriber<? super String> subscriber) {
+                mPosSkuPageInfo = pageInfo;
+
+                if (mPosSkuPageInfo != null) {
+                    ZLogger.df(String.format("保存 (%d/%d) 个箱规（%s）开始",
+                            mPosSkuPageInfo.getPageNo(),
+                            mPosSkuPageInfo.getTotalPage(), startCursor));
+                }
+                Date cursor = null;
+                //使用事务
+                if (goodses != null && goodses.size() > 0) {
+                    for (ProductSkuBarcode goods : goodses) {
+
+                        if (goods != null) {
+                            PosProductSkuService.get().saveOrUpdate(goods);
+                            cursor = goods.getCreatedDate();
+                        }
+                    }
+
+                    //更新游标
+                    if (cursor != null) {
+                        SharedPreferencesUltimate.setPosSkuLastUpdate(cursor);
+                    }
+                }
+
+                subscriber.onNext(startCursor);
+                subscriber.onCompleted();
             }
-        }, "/scProductSkuBarcodes/findShopOtherBarcodes");
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onNotifyNext("保存商品档案失败.");
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+                        //从第一页开始请求，每页最多50条记录
+                        if (pageInfo != null && pageInfo.hasNextPage()) {
+                            pageInfo.moveToNext();
+                            findShopOtherBarcodesStep2(startCursor, pageInfo);
+                        } else {
+                            ZLogger.df("同步规格码表品结束:" + SharedPreferencesUltimate.getSyncProductSkuCursor());
+
+                            processQueue();
+                        }
+                    }
+
+                });
     }
 
     private class ProductSkuQueryAsyncTask extends AsyncTask<RspQueryResult<ProductSkuBarcode>, Integer, Long> {
@@ -659,32 +774,25 @@ public class DataDownloadManager {
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
         EmbMsgService.getInstance().setAllRead(IMBizType.FRONTCATEGORY_UPDATE);
 
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<CategoryInfo,
-                NetProcessor.Processor<CategoryInfo>>(
-                new NetProcessor.Processor<CategoryInfo>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        CategoryInfo categoryInfo = null;
-                        if (rspData != null) {
-                            RspBean<CategoryInfo> retValue = (RspBean<CategoryInfo>) rspData;
-                            categoryInfo = retValue.getValue();
-                        }
+        Map<String, String> options = new HashMap<>();
+        options.put("cateType", String.valueOf(CateApi.POS));
+        options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+        RxHttpManager.getInstance().getTopFrontId(options, new Subscriber<CategoryInfo>() {
+            @Override
+            public void onCompleted() {
 
-                        getCodeValue(categoryInfo);
-                    }
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("加载前台根类目 失败, " + errMsg);
-                        processQueue();
-                    }
-                }
-                , CategoryInfo.class
-                , MfhApplication.getAppContext()) {
-        };
+            @Override
+            public void onError(Throwable e) {
+                onNotifyNext("加载前台根类目失败, " + e.toString());
+            }
 
-        ScCategoryInfoApi.getTopFrontId(CateApi.POS, queryRsCallBack);
+            @Override
+            public void onNext(CategoryInfo categoryInfo) {
+                getCodeValue(categoryInfo);
+            }
+        });
     }
 
     /**
@@ -696,25 +804,28 @@ public class DataDownloadManager {
             return;
         }
 
-        NetCallBack.NetTaskCallBack createRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("kind", "code");
+        jsonObject.put("domain", String.valueOf(CateApi.DOMAIN_TYPE_PROD));
+        jsonObject.put("nameCn", "POS前台类目");
+        jsonObject.put("catePosition", String.valueOf(CateApi.CATE_POSITION_FRONT));
+        jsonObject.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+        jsonObject.put("cateType", String.valueOf(CateApi.POS));
+
+        RxHttpManager.getInstance().create(MfhLoginService.get().getCurrentSessionId(),
+                jsonObject, new MValueSubscriber<String>() {
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("创建前台类目失败, " + errMsg);
-                        processQueue();
+                    public void onError(Throwable e) {
+                        onNotifyCompleted("新建前台类目 失败, " + e.toString());
                     }
 
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        //新建类目成功，保存类目信息，并触发同步。
+                    public void onValue(String data) {
+                        super.onValue(data);
                         try {
-                            if (rspData != null) {
-                                RspValue<String> retValue = (RspValue<String>) rspData;
-                                String result = retValue.getValue();
-                                Long code = Long.valueOf(result);
-                                ZLogger.df("新建前台类目成功:" + code);
+                            if (data != null) {
+                                Long code = Long.valueOf(data);
+                                ZLogger.df("新建前台类目成功:" + data);
                                 SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_L_CATETYPE_POS_ID, code);
 
                                 CategoryInfo categoryInfo = new CategoryInfo();
@@ -722,22 +833,18 @@ public class DataDownloadManager {
                                 categoryInfo.setNameCn("POS前台类目");
                                 getCodeValue(categoryInfo);
                             }
-
                         } catch (Exception e) {
                             ZLogger.ef(e.toString());
                         }
                         processQueue();
                     }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
 
-        ScCategoryInfoApi.create(CateApi.DOMAIN_TYPE_PROD,
-                CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
-                "POS前台类目", CateApi.POS, createRC);
+                });
     }
 
+    /**
+     * 加载前台类目树
+     */
     private void getCodeValue(CategoryInfo categoryInfo) {
         if (categoryInfo == null) {
             createCategoryInfo();
@@ -746,47 +853,41 @@ public class DataDownloadManager {
         SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_L_CATETYPE_POS_ID, categoryInfo.getId());
         PosLocalCategoryService.get().deactiveAll();
 
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<CategoryInfo,
-                NetProcessor.Processor<CategoryInfo>>(
-                new NetProcessor.Processor<CategoryInfo>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        List<CategoryInfo> items = new ArrayList<>();
-                        if (rspData != null) {
-                            RspListBean<CategoryInfo> retValue = (RspListBean<CategoryInfo>) rspData;
-                            items = retValue.getValue();
-                        }
-                        for (CategoryInfo item : items) {
-                            PosLocalCategoryService.get().saveOrUpdate(item);
-                        }
+        Map<String, String> options = new HashMap<>();
+        options.put("parentId", String.valueOf(categoryInfo.getId()));
+        RxHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
+            @Override
+            public void onCompleted() {
 
-                        //删除无效的数据
-                        PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
-                                PosLocalCategoryEntity.CLOUD_DEACTIVE));
+            }
 
-                        int count = PosLocalCategoryService.get().getCount();
-                        int cloudNum = items.size();
-                        ZLogger.df(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
-                                cloudNum, count));
+            @Override
+            public void onError(Throwable e) {
+                onNotifyCompleted("加载前台类目树 失败, " + e.toString());
+            }
 
-                        //通知刷新前台类目数据
-                        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
-
-                        processQueue();
+            @Override
+            public void onNext(List<CategoryInfo> categoryInfos) {
+                if (categoryInfos != null) {
+                    for (CategoryInfo item : categoryInfos) {
+                        PosLocalCategoryService.get().saveOrUpdate(item);
                     }
+                    //删除无效的数据
+                    PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
+                            PosLocalCategoryEntity.CLOUD_DEACTIVE));
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("加载前台根目录子类目 失败, " + errMsg);
-                        processQueue();
-                    }
+                    int count = PosLocalCategoryService.get().getCount();
+                    int cloudNum = categoryInfos.size();
+                    ZLogger.df(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
+                            cloudNum, count));
                 }
-                , CategoryInfo.class
-                , MfhApplication.getAppContext()) {
-        };
 
-        ScCategoryInfoApi.getCodeValue(categoryInfo.getId(), queryRsCallBack);
+                //通知刷新前台类目数据
+                EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+
+                processQueue();
+            }
+        });
     }
 
 
@@ -834,33 +935,105 @@ public class DataDownloadManager {
                 });
     }
 
-    private void downLoadProductCatalog2(final String startCusror, PageInfo pageInfo) {
+    private void downLoadProductCatalog2(final String startCursor, PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onNotifyCompleted("网络未连接，暂停同步类目商品关系表.");
             return;
         }
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<ProductCatalog>(pageInfo) {
+        Map<String, String> optionss = new HashMap<>();
+        if (!StringUtils.isEmpty(startCursor)) {
+            optionss.put("startCursor", startCursor);
+        }
+        if (pageInfo != null) {
+            optionss.put("page", Integer.toString(pageInfo.getPageNo()));
+            optionss.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        optionss.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ProductCatalogManager.getInstance().downLoadProductCatalog(optionss,
+                new MQuerySubscriber<ProductCatalog>(pageInfo) {
                     @Override
-                    public void processQueryResult(RspQueryResult<ProductCatalog> rs) {
-                        new saveProductCatalogAsync(pageInfo, startCusror).execute(rs);
+                    public void onQueryNext(PageInfo pageInfo, List<ProductCatalog> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+                        downLoadProductCatalog3(dataList, pageInfo, startCursor);
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("同步商品和类目关系表失败:" + errMsg);
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        ZLogger.df("同步商品和类目关系表失败:" + e.toString());
                         processQueue();
                     }
-                }, ProductCatalog.class, CashierApp.getAppContext());
-
-
-        ZLogger.df(String.format("同步类目商品关系表开始(%d/%d)%s",
-                pageInfo.getPageNo(), pageInfo.getTotalPage(), startCusror));
-
-        ProductCatalogApi.downLoadProductCatalog(startCusror, pageInfo, queryRsCallBack);
+                });
     }
+
+    private void downLoadProductCatalog3(final List<ProductCatalog> catalogs, final PageInfo pageInfo,
+                                         final String startCursor) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                productCateslogPageInfo = pageInfo;
+
+                if (productCateslogPageInfo != null) {
+                    ZLogger.df(String.format("保存 (%d/%d) 个商品类目关系表（%s）开始",
+                            productCateslogPageInfo.getPageNo(),
+                            productCateslogPageInfo.getTotalPage(), startCursor));
+                }
+                Date cussor = null;
+                //使用事务
+                if (catalogs != null && catalogs.size() > 0) {
+                    for (ProductCatalog catalog : catalogs) {
+                        //保存商品到数据库
+                        if (catalog == null || catalog.getId() == null) {
+                            ZLogger.d("保存商品类目关系失败：商品类目关系无效。");
+                            continue;
+                        }
+                        ZLogger.df(String.format("保存商品类目关系: %s",
+                                JSONObject.toJSONString(catalog)));
+                        ProductCatalogService.getInstance().saveOrUpdate(catalog);
+
+                        cussor = catalog.getUpdatedDate();
+                    }
+                }
+
+                //更新游标
+                SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
+                        TimeUtil.format(cussor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+
+                ZLogger.df(String.format("保存商品类目关系表结束（%s）",
+                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR)));
+
+                subscriber.onNext(startCursor);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onNotifyNext("保存商品档案失败.");
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+                        //若还有继续发起请求
+                        if (pageInfo.hasNextPage()) {
+                            pageInfo.moveToNext();
+                            downLoadProductCatalog2(startCursor, pageInfo);
+                        } else {
+                            countProductCatalogSyncAbleNum();
+                        }
+                    }
+
+                });
+    }
+
 
     private class saveProductCatalogAsync extends AsyncTask<RspQueryResult<ProductCatalog>, Integer, Long> {
         private PageInfo pageInfo;
@@ -928,17 +1101,23 @@ public class DataDownloadManager {
      * 商品库增量同步后检查pos本地商品数目和后台商品数目是否一致，如果不一致，则自动触发一次全量同步。
      */
     private void countProductCatalogSyncAbleNum() {
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        Map<String, String> optionss = new HashMap<>();
+        optionss.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ProductCatalogManager.getInstance().countProductCatalogSyncAbleNum(optionss,
+                new MValueSubscriber<String>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"701"}}
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        onNotifyNext("计算有多少可同步的商品类目关系失败：" + e.toString());
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
                         try {
                             int skuNum = 0;
-                            if (rspData != null) {
-                                RspValue<String> retValue = (RspValue<String>) rspData;
-                                skuNum = Integer.valueOf(retValue.getValue());
+                            if (data != null) {
+                                skuNum = Integer.valueOf(data);
                             }
                             ZLogger.df(String.format("计算有多少可同步的商品类目关系:%d", skuNum));
 
@@ -959,21 +1138,7 @@ public class DataDownloadManager {
                         }
                         processQueue();
                     }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("计算有多少可同步的商品类目关系失败：" + errMsg);
-//                        validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_NOT_LOGIN,
-//                                null, "Validate--会话过期，自动重登录");
-                        processQueue();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        ProductCatalogApi.countProductCatalogSyncAbleNum(responseCallback);
+                });
     }
 
     /**
@@ -990,43 +1155,37 @@ public class DataDownloadManager {
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
         ZLogger.df("下载后台类目树开始");
-        CateApiImpl.listBackendCategory(CateApi.DOMAIN_TYPE_PROD,
-                "",//CateApi.BACKEND_CATE_BTYPE_NORMAL,
-                CateApi.CATE_POSITION_BACKEND, 2,
-                backendCategoryInfoRspCallback);
-    }
+        Map<String, String> options = new HashMap<>();
+        options.put("kind", "code");
+        options.put("domain", String.valueOf(CateApi.DOMAIN_TYPE_PROD));
+        options.put("cateType", "");
+        options.put("catePosition", String.valueOf(CateApi.CATE_POSITION_BACKEND));
+        options.put("deep", "2");//层级
+//        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
+        options.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
+        RxHttpManager.getInstance().comnQuery(options, new Subscriber<CategoryQueryInfo>() {
+            @Override
+            public void onCompleted() {
 
-    private NetCallBack.NetTaskCallBack backendCategoryInfoRspCallback = new NetCallBack.NetTaskCallBack<CategoryQueryInfo,
-            NetProcessor.Processor<CategoryQueryInfo>>(
-            new NetProcessor.Processor<CategoryQueryInfo>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("加载后台类目树失败, " + errMsg);
-                    processQueue();
-                }
+            }
 
-                @Override
-                public void processResult(IResponseData rspData) {
-//                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                    CategoryQueryInfo categoryQueryInfo = null;
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("加载后台类目树失败, " + e.toString());
+                processQueue();
+            }
 
-                    if (rspData != null) {
-                        RspBean<CategoryQueryInfo> retValue = (RspBean<CategoryQueryInfo>) rspData;
-                        categoryQueryInfo = retValue.getValue();
-                    }
-
-                    if (categoryQueryInfo != null) {
-                        //缓存数据
-                        listBackendCategoryStep2(categoryQueryInfo.getOptions());
-                    } else {
-                        listBackendCategoryStep2(null);
-                    }
+            @Override
+            public void onNext(CategoryQueryInfo categoryQueryInfo) {
+                if (categoryQueryInfo != null) {
+                    //缓存数据
+                    listBackendCategoryStep2(categoryQueryInfo.getOptions());
+                } else {
+                    listBackendCategoryStep2(null);
                 }
             }
-            , CategoryQueryInfo.class
-            , CashierApp.getAppContext()) {
-    };
+        });
+    }
 
     /**
      * 保存后台类目树
@@ -1059,45 +1218,30 @@ public class DataDownloadManager {
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
         HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
-        if (hostServer != null){
-            TenantApi.getSaasInfo(hostServer.getSaasId(), responseCallback);
-        }
-        else{
+        if (hostServer != null) {
+            RxHttpManager.getInstance().getSaasInfo(hostServer.getSaasId(),
+                    new Subscriber<SassInfo>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            onNotifyNext(e.toString());
+                        }
+
+                        @Override
+                        public void onNext(SassInfo sassInfo) {
+                            GlobalInstanceBase.getInstance().updateHostServer(sassInfo);
+                            onNotifyNext("下载租户信息成功");
+                        }
+
+                    });
+        } else {
             onNotifyNext("租户信息已损坏");
         }
     }
-
-    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<SassInfo,
-            NetProcessor.Processor<SassInfo>>(
-            new NetProcessor.Processor<SassInfo>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-//                        {"code":"0","msg":"查询成功!","version":"1","dat"}}
-                    SassInfo sassInfo;
-                    try {
-                        if (rspData != null){
-                            RspBean<SassInfo> retValue = (RspBean<SassInfo>) rspData;
-                            sassInfo = retValue.getValue();
-
-                            GlobalInstanceBase.getInstance().updateHostServer(sassInfo);
-                        }
-                    }
-                    catch (Exception e){
-                        ZLogger.ef(e.toString());
-                    }
-                    processQueue();
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    onNotifyNext(errMsg);
-                }
-            }
-            , SassInfo.class
-            , MfhApplication.getAppContext()) {
-    };
 
     /**
      * 获取能力信息
@@ -1107,37 +1251,31 @@ public class DataDownloadManager {
         queue ^= HUMAN_ABILITY;
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
-        UserApiImpl.queryPrivList(getPartnerRC);
-    }
+        RxHttpManager.getInstance().queryPrivList(MfhLoginService.get().getCurrentSessionId(),
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-    private NetCallBack.NetTaskCallBack getPartnerRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    try {
-                        String moduleNames = null;
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            moduleNames = retValue.getValue();
-                        }
-                        MfhLoginService.get().setModuleNames(moduleNames);
-                    } catch (Exception ex) {
-                        ZLogger.ef("parseUserProfile, " + ex.toString());
-                    } finally {
                     }
-                    processQueue();
-                }
 
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    onNotifyNext(errMsg);
-                }
-            }
-            , String.class
-            , MfhApplication.getAppContext()) {
-    };
+                    @Override
+                    public void onError(Throwable e) {
+                        onNotifyNext(e.toString());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        MfhLoginService.get().setModuleNames(s);
+                        MfhUserManager.getInstance().updateModules();
+                        if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)) {
+                            ZLogger.d("当前登录用户具有买手能力");
+                        } else {
+                            ZLogger.d("当前登录用户不具有买手能力");
+                        }
+                        processQueue();
+                    }
+                });
+    }
 
     /**
      * 同步账号数据
@@ -1152,28 +1290,42 @@ public class DataDownloadManager {
         mCompanyHumanPageInfo.setPageNo(1);
     }
 
-    private void findCompUserPwdInfoStep2(PageInfo pageInfo) {
+    private void findCompUserPwdInfoStep2(final PageInfo pageInfo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onNotifyCompleted("网络未连接，暂停同步账号数据.");
             return;
         }
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<CompanyHuman>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<CompanyHuman> rs) {
-                findCompUserPwdInfoStep3(rs, pageInfo);
-            }
+        if (pageInfo != null) {
+            ZLogger.df(String.format("同步账号数据开始(%d/%d)", pageInfo.getPageNo(), pageInfo.getTotalPage()));
+        } else {
+            ZLogger.df("同步账号数据开始");
+        }
 
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.df("加载自账号数据失败:" + errMsg);
-                processQueue();
-            }
-        }, CompanyHuman.class, CashierApp.getAppContext());
+        Map<String, String> options = new HashMap<>();
+        options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        if (pageInfo != null) {
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
 
-        ZLogger.df(String.format("同步账号数据开始(%d/%d)", pageInfo.getPageNo(), pageInfo.getTotalPage()));
-        CompanyHumanApi.findCompUserPwdInfo(pageInfo, queryRsCallBack);
+        RxHttpManager.getInstance().findCompUserPwdInfo(options,
+                new MQuerySubscriber<CompanyHuman>(pageInfo) {
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<CompanyHuman> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+                        findCompUserPwdInfoStep3(dataList, pageInfo);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+
+                        ZLogger.df("加载自账号数据失败:" + e.toString());
+                        processQueue();
+                    }
+                });
     }
 
     /**
@@ -1191,20 +1343,72 @@ public class DataDownloadManager {
                 try {
                     mCompanyHumanPageInfo = pageInfo;
                     //第一页，清空旧数据
-                    if (mCompanyHumanPageInfo.getPageNo() == 1) {
+                    if (mCompanyHumanPageInfo != null && mCompanyHumanPageInfo.getPageNo() == 1) {
                         ZLogger.df("清空旧账号数据");
                         CompanyHumanService.get().clear();
                     }
 
-                    if (rs != null) {
-                        int retSize = rs.getReturnNum();
-                        ZLogger.df(String.format("保存 %d/%d 个账号数据", retSize, rs.getTotalNum()));
-                        for (EntityWrapper<CompanyHuman> wrapper : rs.getRowDatas()) {
-                            CompanyHumanService.get().saveOrUpdate(wrapper.getBean());
-                        }
+                    int retSize = rs.getReturnNum();
+                    ZLogger.df(String.format("保存 %d/%d 个账号数据", retSize, rs.getTotalNum()));
+                    for (EntityWrapper<CompanyHuman> wrapper : rs.getRowDatas()) {
+                        CompanyHumanService.get().saveOrUpdate(wrapper.getBean());
                     }
                 } catch (Throwable ex) {
                     ZLogger.ef(String.format("保存账号数据失败: %s", ex.toString()));
+                }
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onNotifyCompleted("保存账号数据失败.");
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        //若还有继续发起请求
+                        if (pageInfo.hasNextPage()) {
+                            pageInfo.moveToNext();
+                            findCompUserPwdInfoStep2(pageInfo);
+                        } else {
+                            ZLogger.df("同步账号数据结束");
+                            processQueue();
+                        }
+                    }
+
+                });
+    }
+
+    private void findCompUserPwdInfoStep3(final List<CompanyHuman> companyHumen, final PageInfo pageInfo) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                mCompanyHumanPageInfo = pageInfo;
+                //第一页，清空旧数据
+                if (mCompanyHumanPageInfo != null && mCompanyHumanPageInfo.getPageNo() == 1) {
+                    ZLogger.df("清空旧账号数据");
+                    CompanyHumanService.get().clear();
+                }
+
+//                    int retSize = rs.getReturnNum();
+                if (companyHumen != null && companyHumen.size() > 0) {
+                    ZLogger.df(String.format("保存 %d 个账号数据", companyHumen.size()));
+
+                    for (CompanyHuman wrapper : companyHumen) {
+                        CompanyHumanService.get().saveOrUpdate(wrapper);
+                    }
+                } else {
+                    ZLogger.df("保存 0 个账号数据");
                 }
 
                 subscriber.onNext(null);

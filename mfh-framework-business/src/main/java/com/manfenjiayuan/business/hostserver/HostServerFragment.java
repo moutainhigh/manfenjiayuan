@@ -160,7 +160,7 @@ public class HostServerFragment extends BaseProgressFragment {
         }
         ZLogger.df("选择租户：" + JSON.toJSONString(tenantInfo));
 
-        String requestUrl = String.format("http://%s/pmc/tenantInfo/getSaasInfo",
+        String requestUrl = String.format("http://%s/pmc/",
                 tenantInfo.getId());
         mTenantMode.getSaasInfo(requestUrl,
                 tenantInfo.getSaasId(), new OnModeListener<SassInfo>() {

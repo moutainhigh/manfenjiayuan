@@ -1,6 +1,7 @@
 package com.mfh.framework.api.analysis;
 
 import com.mfh.comn.bean.TimeCursor;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetFactory;
@@ -22,7 +23,8 @@ public class AnalysisApiImpl extends AnalysisApi {
      * @param startTime 交接班开始时间（默认使用上一次交接班/日结时间）
      * @param endTime   交接班结束时间 (当前系统时间)
      */
-    public static void autoShiftAnalysic(int shiftId, String startTime, String endTime, AjaxCallBack<? extends Object> responseCallback) {
+    public static void autoShiftAnalysic(int shiftId, String startTime, String endTime,
+                                         AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("shiftId", String.valueOf(shiftId));
         params.put("startTime", startTime);
@@ -69,7 +71,7 @@ public class AnalysisApiImpl extends AnalysisApi {
      */
     public static void autoDateEnd(Date date, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
-        params.put("date", (date != null ? TimeCursor.FORMAT_YYYYMMDD.format(date) : ""));
+        params.put("date", TimeUtil.format(date, TimeUtil.FORMAT_YYYYMMDD));
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_BIZSERVIE_AUTODATEEND, params, responseCallback);
@@ -105,29 +107,6 @@ public class AnalysisApiImpl extends AnalysisApi {
         AfinalFactory.getHttp(true).post(URL_ACCANALYSIS_AGGDATE_LIST, params, responseCallback);
     }
 
-    /**
-     * 获取最后日结日期
-     */
-    public static void analysisAccDateGetLastAggDate(AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_ANALYSISACCDATE_GETLASTAGGDATE, params, responseCallback);
-    }
-
-
-    /**
-     * 判读是否日结
-     */
-    public static void analysisAccDateHaveDateEnd(Date date,
-                                                  AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("date", date != null ? TimeCursor.FORMAT_YYYYMMDD.format(date) : "");
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_ANALYSISACCDATE_HAVEDATEEND, params, responseCallback);
-    }
 
     /**
      * 针对当前用户所属网点判断是否存在过清分时余额不足情况

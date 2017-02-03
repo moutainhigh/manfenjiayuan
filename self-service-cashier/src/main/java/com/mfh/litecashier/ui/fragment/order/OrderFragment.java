@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterContract;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.bingshanguxue.cashier.model.PosOrder;
+import com.mfh.framework.api.pmcstock.PosOrder;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -258,9 +258,7 @@ public class OrderFragment extends BaseFragment {
      * */
     private void reloadOrderItems(PosOrder posOrder){
         mPosOrder = posOrder;
-//        List<Item> items = new ArrayList<>();
         if (mPosOrder != null) {
-//            items.add(mPosOrder);
             tvGoodsQunatity.setText(MUtils.formatDouble("商品数", "：", mPosOrder.getBcount(), "无", null, null));
             tvTotalAmount.setText(MUtils.formatDouble("商品金额", "：", mPosOrder.getAmount(), "无", null, null));
             btnPrint.setEnabled(true);
@@ -273,6 +271,5 @@ public class OrderFragment extends BaseFragment {
             goodsAdapter.setEntityList(null);
 
         }
-//        goodsRecyclerView.setAdapter(new MultiTypeAdapter(items));
     }
 }

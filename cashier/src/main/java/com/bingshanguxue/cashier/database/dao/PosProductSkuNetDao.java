@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.database.dao;
 
 
-import com.bingshanguxue.cashier.model.ProductSkuBarcode;
+import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
 

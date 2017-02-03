@@ -1,8 +1,8 @@
 package com.mfh.litecashier.presenter;
 
+import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.bingshanguxue.cashier.model.PosOrder;
 import com.mfh.litecashier.mode.OrderflowMode;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 
@@ -32,27 +32,28 @@ public class OrderflowPresenter {
                                    String sellOffices, PageInfo pageInfo){
         orderflowMode.findGoodsOrderList(btype, subTypes, orderStatus, sellOffices, pageInfo,
                 new OnPageModeListener<PosOrder>() {
-            @Override
-            public void onProcess() {
-                if (iOrderflowView != null) {
-                    iOrderflowView.onProcess();
-                }
-            }
+                    @Override
+                    public void onProcess() {
+                        if (iOrderflowView != null) {
+                            iOrderflowView.onProcess();
+                        }
+                    }
 
-            @Override
-            public void onSuccess(PageInfo pageInfo, List<PosOrder> dataList) {
-                if (iOrderflowView != null) {
-                    iOrderflowView.onSuccess(pageInfo, dataList);
-                }
-            }
+                    @Override
+                    public void onSuccess(PageInfo pageInfo, List<PosOrder> dataList) {
+                        if (iOrderflowView != null) {
+                            iOrderflowView.onSuccess(pageInfo, dataList);
+                        }
+                    }
 
-            @Override
-            public void onError(String errorMsg) {
-                if (iOrderflowView != null) {
-                    iOrderflowView.onError(errorMsg);
-                }
-            }
-        });
+                    @Override
+                    public void onError(String errorMsg) {
+                        if (iOrderflowView != null) {
+                            iOrderflowView.onError(errorMsg);
+                        }
+                    }
+                });
+
     }
 
 

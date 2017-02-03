@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bingshanguxue.cashier.model.PosOrderItem;
+import com.mfh.framework.api.pmcstock.PosOrderItem;
 import com.bumptech.glide.Glide;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;

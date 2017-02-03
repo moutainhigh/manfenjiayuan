@@ -1,4 +1,4 @@
-package com.bingshanguxue.cashier.model;
+package com.mfh.framework.api.pmcstock;
 
 import java.io.Serializable;
 

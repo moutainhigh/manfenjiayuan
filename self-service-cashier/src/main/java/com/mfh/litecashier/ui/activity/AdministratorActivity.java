@@ -16,17 +16,17 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
-import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
-import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
@@ -48,6 +48,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 
 /**
@@ -198,6 +199,7 @@ public class AdministratorActivity extends BaseActivity {
             case ResultCode.ARC_NATIVE_SIGNIN: {
                 if (resultCode == Activity.RESULT_OK) {
                     DialogUtil.showHint("登录成功");
+                    toolbar.setTitle(MfhLoginService.get().getCurOfficeName());
                     mAvatarView.setAvatarUrl(MfhLoginService.get().getHeadimage());
                     tvUsername.setText(MfhLoginService.get().getHumanName());
 
@@ -482,32 +484,41 @@ public class AdministratorActivity extends BaseActivity {
      * @param bSlient 是否静默重试登录
      */
     private void retryLogin(final boolean bSlient) {
-        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
-                MfhLoginService.get().getPassword(), new LoginCallback() {
-                    @Override
-                    public void loginSuccess(UserMixInfo user) {
-                        //登录成功
-                        ZLogger.df("重登录成功：");
+        final String userName = MfhLoginService.get().getLoginName();
+        final String password = MfhLoginService.get().getPassword();
 
-                        //注册到消息桥
-                        IMClient.getInstance().registerBridge();
+        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
+            @Override
+            public void onCompleted() {
+                ZLogger.d("onCompleted");
+            }
 
-                        //初始化收银,createdBy(humanId)已经改变
-                        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
-                    }
+            @Override
+            public void onError(Throwable e) {
+//                HTTP 401 Unauthorized
+//                HTTP 500 Internal Server Error
+                ZLogger.e(e.getMessage());
 
-                    @Override
-                    public void loginFailed(String errMsg) {
-                        //登录失败
-                        ZLogger.df("重登录失败：" + errMsg);
-                        //初始化收银,createdBy(humanId)已经改变
-                        EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
 
-                        if (!bSlient) {
-                            redirect2Login();
-                        }
-                    }
-                });
+                if (!bSlient) {
+                    redirect2Login();
+                }
+            }
+
+            @Override
+            public void onNext(UserMixInfo userMixInfo) {
+                ZLogger.df("重登录成功：");
+
+                MfhLoginService.get().saveUserMixInfo(userName, password, userMixInfo);
+
+                //注册到消息桥
+                IMClient.getInstance().registerBridge();
+
+                //初始化收银,createdBy(humanId)已经改变
+                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
+            }
+        }, userName, password);
     }
 
 

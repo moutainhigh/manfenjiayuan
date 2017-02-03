@@ -21,26 +21,29 @@ import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * 商品建档并入库
@@ -483,36 +486,32 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         item.put("tenantSku", tenantSku);
         jsonArray.add(item);
 
-        ScGoodsSkuApiImpl.storeIn(jsonArray.toJSONString(), StoreType.SUPERMARKET, responseCallback);
-    }
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonArray.toJSONString());
+        options.put("storeType", String.valueOf(StoreType.SUPERMARKET));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //查询失败
-//                        animProgress.setVisibility(View.GONE);
-//                    DialogUtil.showHint("新增商品失败");
-                    onLoadError(errMsg);
-                    btnSubmit.setEnabled(true);
-                }
+        ScGoodsSkuHttpManager.getInstance().storeIn(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-                    onLoadFinished();
-                    /**
-                     * 商品建档成功，后台发送消息更新商品库
-                     * */
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                }
             }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
 
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("商品建档失败: " + e.toString());
+                onLoadError(e.toString());
+                btnSubmit.setEnabled(true);
+            }
+
+            @Override
+            public void onNext(String s) {
+                onLoadFinished();
+                //商品建档成功，后台发送消息更新商品库
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }
+        });
+    }
 
 }

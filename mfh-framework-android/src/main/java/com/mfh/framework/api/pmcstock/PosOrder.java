@@ -1,4 +1,4 @@
-package com.bingshanguxue.cashier.model;
+package com.mfh.framework.api.pmcstock;
 
 import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.api.constant.WayType;
@@ -52,6 +52,9 @@ public class PosOrder extends MfhEntity<Long> implements Item {
     private Date dueDate;//送达时间-开始
     private Date dueDateEnd;//送达时间-结束
     private String remark ="";    //备注
+
+    private Double disAmount;//券、促销规则等计算出的优惠金额,这部分金额由发券方承担，但应计入营业额
+
 
 
     /**
@@ -269,5 +272,13 @@ public class PosOrder extends MfhEntity<Long> implements Item {
 
     public void setOuterNo(String outerNo) {
         this.outerNo = outerNo;
+    }
+
+    public Double getDisAmount() {
+        return disAmount;
+    }
+
+    public void setDisAmount(Double disAmount) {
+        this.disAmount = disAmount;
     }
 }

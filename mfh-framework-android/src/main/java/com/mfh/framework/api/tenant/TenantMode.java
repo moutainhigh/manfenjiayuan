@@ -1,19 +1,17 @@
 package com.mfh.framework.api.tenant;
 
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * 网点
@@ -27,37 +25,34 @@ public class TenantMode {
             listener.onProcess();
         }
 
-        //回调
-        NetCallBack.QueryRsCallBack responseCallback = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<TenantInfo>(pageInfo) {
-                    //                处理查询结果集，子类必须继承
+        Map<String, String> options = new HashMap<>();
+//            options.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
+        options.put("bizDomainType", String.valueOf(bizDomainType));
+        options.put("domainUrlType", String.valueOf(domainUrlType));
+        if (pageInfo != null) {
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+
+        RxHttpManager.getInstance().listWhole(options,
+                new MQuerySubscriber<TenantInfo>(pageInfo) {
                     @Override
-                    public void processQueryResult(RspQueryResult<TenantInfo> rs) {//此处在主线程中执行。
-                        //此处在主线程中执行。
-                        List<TenantInfo> entityList = new ArrayList<>();
-                        if (rs != null) {
-                            for (EntityWrapper<TenantInfo> wrapper : rs.getRowDatas()) {
-                                entityList.add(wrapper.getBean());
-                            }
-                        }
+                    public void onQueryNext(PageInfo pageInfo, List<TenantInfo> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
                         if (listener != null) {
-                            listener.onSuccess(pageInfo, entityList);
-                        }
-                    }
+                            listener.onSuccess(pageInfo, dataList);
+                        }                        }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("加载网点失败:" + errMsg);
+                    public void onError(Throwable e) {
+                        super.onError(e);
+
+                        ZLogger.df("加载网点失败:" + e.toString());
                         if (listener != null) {
-                            listener.onError(errMsg);
+                            listener.onError(e.toString());
                         }
                     }
-                }
-                , TenantInfo.class
-                , MfhApplication.getAppContext());
-
-        TenantApi.listWhole(bizDomainType, domainUrlType, pageInfo, responseCallback);
+                });
     }
 
     public void getSaasInfo(String url, Long id, final OnModeListener<SassInfo> listener) {
@@ -65,40 +60,28 @@ public class TenantMode {
             listener.onProcess();
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<SassInfo,
-                NetProcessor.Processor<SassInfo>>(
-                new NetProcessor.Processor<SassInfo>() {
+        RxHttpManager.getInstance().getSaasInfo2(url, id,
+                new Subscriber<SassInfo>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-//                        java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-//                        {"code":"0","msg":"查询成功!","version":"1","dat"}}
-                        try {
-                            RspBean<SassInfo> retValue = (RspBean<SassInfo>) rspData;
-                            if (listener != null) {
-                                listener.onSuccess(retValue.getValue());
-                            }
-                        }
-                        catch (Exception e){
-                            ZLogger.ef(e.toString());
-                            if (listener != null) {
-                                listener.onError(e.getMessage());
-                            }
-                        }
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("加载店铺信息失败:" + errMsg);
+                    public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
                         if (listener != null) {
-                            listener.onError(errMsg);
+                            listener.onError(e.getMessage());
                         }
                     }
-                }
-                , SassInfo.class
-                , MfhApplication.getAppContext()) {
-        };
 
-        TenantApi.getSaasInfo(url, id, responseCallback);
+                    @Override
+                    public void onNext(SassInfo sassInfo) {
+                        if (listener != null) {
+                            listener.onSuccess(sassInfo);
+                        }
+                    }
+
+                });
     }
 }

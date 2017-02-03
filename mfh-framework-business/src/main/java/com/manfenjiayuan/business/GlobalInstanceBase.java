@@ -12,6 +12,7 @@ import com.mfh.framework.api.tenant.PayCfgId;
 import com.mfh.framework.api.tenant.SassInfo;
 import com.mfh.framework.api.tenant.TenantInfo;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 
 import java.util.List;
 import java.util.Observable;
@@ -124,6 +125,7 @@ public class GlobalInstanceBase extends Observable{
      * */
     private void updateApi(HostServer hostServer){
         if (hostServer != null){
+            RxHttpManager.API_BASE_URL = String.format("http://%s/pmc/", hostServer.getDomainUrl());
             MfhApi.URL_BASE_SERVER = String.format("http://%s/pmc", hostServer.getDomainUrl());
             MobileApi.DOMAIN = hostServer.getDomainUrl();
             List<PayCfgId> payCfgIds = hostServer.getPayInfos();
