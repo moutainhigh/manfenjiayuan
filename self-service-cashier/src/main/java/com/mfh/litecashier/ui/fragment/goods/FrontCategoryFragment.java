@@ -19,17 +19,16 @@ import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.sc.ProductCatalogApi;
 import com.mfh.framework.api.category.CategoryInfo;
-import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -37,7 +36,6 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.PosCategory;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
@@ -47,10 +45,13 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * 收银－－前台类目
@@ -74,7 +75,7 @@ public class FrontCategoryFragment extends BaseFragment {
     private Long categoryId;
     private CategoryInfo mCategoryInfo;//租户前台类目
     private String cacheKey;
-    private List<PosCategory> curCategoryList;//当前子类目
+    private List<CategoryInfo> curCategoryList;//当前子类目
 
     public static FrontCategoryFragment newInstance(Bundle args) {
         FrontCategoryFragment fragment = new FrontCategoryFragment();
@@ -182,7 +183,8 @@ public class FrontCategoryFragment extends BaseFragment {
             @Override
             public void onChanged(int page) {
                 Long categoryId = curCategoryList.get(page).getId();
-                EventBus.getDefault().post(new FrontCategoryGoodsEvent(FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
+                EventBus.getDefault().post(new FrontCategoryGoodsEvent(
+                        FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
             }
         });
 
@@ -197,7 +199,7 @@ public class FrontCategoryFragment extends BaseFragment {
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
             String cacheStr = ACacheHelper.getAsString(cacheKey);
-            List<PosCategory> cacheData = JSONArray.parseArray(cacheStr, PosCategory.class);
+            List<CategoryInfo> cacheData = JSONArray.parseArray(cacheStr, CategoryInfo.class);
             if (cacheData != null && cacheData.size() > 0) {
                 ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目", cacheKey, cacheData.size()));
                 refreshCategoryGoodsTab(cacheData);
@@ -211,7 +213,7 @@ public class FrontCategoryFragment extends BaseFragment {
     /**
      * 刷新子类目
      */
-    private void refreshCategoryGoodsTab(List<PosCategory> items) {
+    private void refreshCategoryGoodsTab(List<CategoryInfo> items) {
         if (curCategoryList == null) {
             curCategoryList = new ArrayList<>();
         } else {
@@ -227,7 +229,7 @@ public class FrontCategoryFragment extends BaseFragment {
 //        curCategoryList.add(rootClone);
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        for (PosCategory category : curCategoryList) {
+        for (CategoryInfo category : curCategoryList) {
             Bundle args = new Bundle();
             args.putLong(EXTRA_CATEGORY_ID_POS, posFrontCategoryId);
             args.putLong("parentId", category.getParentId());
@@ -258,45 +260,39 @@ public class FrontCategoryFragment extends BaseFragment {
      * 加载前台类目子类目
      */
     private void loadSubCategory(final Long categoryId, final boolean isNeedRefresh) {
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<PosCategory,
-                NetProcessor.Processor<PosCategory>>(
-                new NetProcessor.Processor<PosCategory>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        List<PosCategory> items = new ArrayList<>();
-                        if (rspData != null) {
-                            RspListBean<PosCategory> retValue = (RspListBean<PosCategory>) rspData;
-                            items = retValue.getValue();
-                        }
-                        ZLogger.d(String.format("加载POS %d 前台子类目", (items != null ? items.size() : 0)));
+        Map<String, String> options = new HashMap<>();
+        options.put("parentId", String.valueOf(categoryId));
+        ScCategoryInfoHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
+            @Override
+            public void onCompleted() {
 
-                        //缓存数据
-                        JSONArray cacheArrays = new JSONArray();
-                        if (items != null && items.size() > 0) {
-                            for (PosCategory item : items) {
-                                cacheArrays.add(item);
-                            }
-                        }
-                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                        if (isNeedRefresh) {
-                            refreshCategoryGoodsTab(items);
-                        }
-                    }
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("加载POS前台子类目 失败, " + errMsg);
-                        if (isNeedRefresh) {
-                            refreshCategoryGoodsTab(null);
-                        }
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.d("加载POS前台子类目 失败, " + e.toString());
+                if (isNeedRefresh) {
+                    refreshCategoryGoodsTab(null);
+                }
+            }
+
+            @Override
+            public void onNext(List<CategoryInfo> categoryInfos) {
+                ZLogger.d(String.format("加载POS %d 前台子类目", (categoryInfos != null ? categoryInfos.size() : 0)));
+
+                //缓存数据
+                JSONArray cacheArrays = new JSONArray();
+                if (categoryInfos != null && categoryInfos.size() > 0) {
+                    for (CategoryInfo item : categoryInfos) {
+                        cacheArrays.add(item);
                     }
                 }
-                , PosCategory.class
-                , CashierApp.getAppContext()) {
-        };
-
-        ScCategoryInfoApi.getCodeValue(categoryId, queryRsCallBack);
+                ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
+                if (isNeedRefresh) {
+                    refreshCategoryGoodsTab(categoryInfos);
+                }
+            }
+        });
     }
 
     /**

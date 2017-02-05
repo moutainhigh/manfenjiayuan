@@ -25,9 +25,8 @@ import com.mfh.litecashier.R;
 import java.util.List;
 
 
-
 /**
- * 批发商列表
+ * 租户批发商列表
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class TenantCategoryListFragment extends BaseListFragment<CategoryInfo>
@@ -240,13 +239,11 @@ public class TenantCategoryListFragment extends BaseListFragment<CategoryInfo>
     @Override
     public void onICategoryInfoViewProcess() {
         onLoadStart();
-
     }
 
     @Override
     public void onICategoryInfoViewError(String errorMsg) {
         onLoadFinished();
-
     }
 
     @Override

@@ -43,6 +43,7 @@ import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.ProductCatalogManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
 import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
@@ -777,7 +778,7 @@ public class DataDownloadManager {
         Map<String, String> options = new HashMap<>();
         options.put("cateType", String.valueOf(CateApi.POS));
         options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-        RxHttpManager.getInstance().getTopFrontId(options, new Subscriber<CategoryInfo>() {
+        ScCategoryInfoHttpManager.getInstance().getTopFrontId(options, new Subscriber<CategoryInfo>() {
             @Override
             public void onCompleted() {
 
@@ -812,7 +813,7 @@ public class DataDownloadManager {
         jsonObject.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
         jsonObject.put("cateType", String.valueOf(CateApi.POS));
 
-        RxHttpManager.getInstance().create(MfhLoginService.get().getCurrentSessionId(),
+        ScCategoryInfoHttpManager.getInstance().create(MfhLoginService.get().getCurrentSessionId(),
                 jsonObject, new MValueSubscriber<String>() {
                     @Override
                     public void onError(Throwable e) {
@@ -855,7 +856,7 @@ public class DataDownloadManager {
 
         Map<String, String> options = new HashMap<>();
         options.put("parentId", String.valueOf(categoryInfo.getId()));
-        RxHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
+        ScCategoryInfoHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
             @Override
             public void onCompleted() {
 
@@ -1163,7 +1164,7 @@ public class DataDownloadManager {
         options.put("deep", "2");//层级
 //        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
         options.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
-        RxHttpManager.getInstance().comnQuery(options, new Subscriber<CategoryQueryInfo>() {
+        ScCategoryInfoHttpManager.getInstance().comnQuery(options, new Subscriber<CategoryQueryInfo>() {
             @Override
             public void onCompleted() {
 

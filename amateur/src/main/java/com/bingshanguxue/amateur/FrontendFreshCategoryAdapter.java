@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.PosCategory;
 
 import java.util.List;
 
@@ -20,11 +20,11 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/6/5.
  */
 public class FrontendFreshCategoryAdapter
-        extends RegularAdapter<PosCategory, FrontendFreshCategoryAdapter.CategoryViewHolder> {
+        extends RegularAdapter<CategoryInfo, FrontendFreshCategoryAdapter.CategoryViewHolder> {
 
-    private PosCategory curOption = null;
+    private CategoryInfo curOption = null;
 
-    public FrontendFreshCategoryAdapter(Context context, List<PosCategory> entityList) {
+    public FrontendFreshCategoryAdapter(Context context, List<CategoryInfo> entityList) {
         super(context, entityList);
     }
 
@@ -48,7 +48,7 @@ public class FrontendFreshCategoryAdapter
 
     @Override
     public void onBindViewHolder(final CategoryViewHolder holder, final int position) {
-        final PosCategory bean = entityList.get(position);
+        final CategoryInfo bean = entityList.get(position);
 
         if (curOption != null && curOption.getId().compareTo(bean.getId()) == 0) {
             holder.rootView.setSelected(true);
@@ -60,7 +60,7 @@ public class FrontendFreshCategoryAdapter
     }
 
     @Override
-    public void setEntityList(List<PosCategory> entityList) {
+    public void setEntityList(List<CategoryInfo> entityList) {
         super.setEntityList(entityList);
 
         if (entityList != null && entityList.size() > 0){
@@ -106,7 +106,7 @@ public class FrontendFreshCategoryAdapter
         }
     }
 
-    public PosCategory getCurOption() {
+    public CategoryInfo getCurOption() {
         return curOption;
     }
 }

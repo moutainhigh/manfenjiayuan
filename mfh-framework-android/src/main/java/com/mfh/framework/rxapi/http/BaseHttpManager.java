@@ -11,7 +11,6 @@ import rx.schedulers.Schedulers;
 
 public class BaseHttpManager {
 
-
     /**
      * 添加线程管理并订阅
      */

@@ -54,8 +54,6 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
     private String keyword;
 
     public interface OnFragmentListener {
-        void onClose();
-
         void onAddGoods(PosProductEntity productEntity);
     }
 

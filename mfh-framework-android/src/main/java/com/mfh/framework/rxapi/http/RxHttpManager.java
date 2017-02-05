@@ -3,15 +3,13 @@ package com.mfh.framework.rxapi.http;
 import android.util.Base64;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
-import com.mfh.framework.api.category.CategoryInfo;
-import com.mfh.framework.api.category.CategoryQueryInfo;
+import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
@@ -29,7 +27,6 @@ import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -342,6 +339,13 @@ public class RxHttpManager {
                 .map(new MQueryResponseFunc<PosOrder>());
         toSubscribe(observable, subscriber);
     }
+    public void findPubSkusByFrontCatalog(Map<String, String> options,
+                                   MQuerySubscriber<PubSkus> subscriber) {
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.findPubSkusByFrontCatalog(options)
+                .map(new MQueryResponseFunc<PubSkus>());
+        toSubscribe(observable, subscriber);
+    }
 
     public void findShopOtherBarcodes(Map<String, String> options, MQuerySubscriber<ProductSkuBarcode> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
@@ -357,30 +361,6 @@ public class RxHttpManager {
         toSubscribe(observable, subscriber);
     }
 
-    public void comnQuery(Map<String, String> options, Subscriber<CategoryQueryInfo> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.comnQuery(options)
-                .map(new MResponseFunc<CategoryQueryInfo>());
-        toSubscribe(observable, subscriber);
-    }
-    public void getTopFrontId(Map<String, String> options, Subscriber<CategoryInfo> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.getTopFrontId(options)
-                .map(new MResponseFunc<CategoryInfo>());
-        toSubscribe(observable, subscriber);
-    }
-    public void getCodeValue(Map<String, String> options, Subscriber<List<CategoryInfo>> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.getCodeValue(options)
-                .map(new MResponseFunc<List<CategoryInfo>>());
-        toSubscribe(observable, subscriber);
-    }
-    public void create(String JSESSIONID, JSONObject jsonStr, MValueSubscriber<String> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.create(JSESSIONID, jsonStr.toJSONString())
-                .map(new MValueResponseFunc<String>());
-        toSubscribe(observable, subscriber);
-    }
     public void alipayBarPay(Map<String, String> options, Subscriber<MResponse<String>> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.alipayBarPay(options);
