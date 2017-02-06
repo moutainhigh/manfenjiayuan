@@ -18,7 +18,7 @@ import com.bingshanguxue.pda.bizz.ARCode;
 import com.bingshanguxue.pda.bizz.invloss.InvLossOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
-import com.manfenjiayuan.business.bean.InvLossOrder;
+import com.mfh.framework.api.invLossOrder.InvLossOrder;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;

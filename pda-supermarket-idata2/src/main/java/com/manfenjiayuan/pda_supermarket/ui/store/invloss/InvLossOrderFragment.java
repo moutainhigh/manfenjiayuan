@@ -19,7 +19,7 @@ import com.bingshanguxue.pda.bizz.invloss.InvLossOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
-import com.manfenjiayuan.business.bean.InvLossOrder;
+import com.mfh.framework.api.invLossOrder.InvLossOrder;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
@@ -45,10 +45,12 @@ import butterknife.OnClick;
 
 
 /**
- * 新建报损单
+ * 新建报损 or 盘点报损
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvLossOrderFragment extends BaseFragment {
+public class InvLossOrderFragment extends BaseFragment {
+
+    public static final String EXTRA_INV_LOSSORDER = "invLossOrder";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -64,10 +66,11 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     View emptyView;
 
 
+    //当前正在报损的单据
     private InvLossOrder invLossOrder = null;
 
-    public static CreateInvLossOrderFragment newInstance(Bundle args) {
-        CreateInvLossOrderFragment fragment = new CreateInvLossOrderFragment();
+    public static InvLossOrderFragment newInstance(Bundle args) {
+        InvLossOrderFragment fragment = new InvLossOrderFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -100,6 +103,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         Bundle args = getArguments();
         if (args != null) {
             animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            invLossOrder = (InvLossOrder) args.getSerializable(EXTRA_INV_LOSSORDER);
         }
         if (animType == ANIM_TYPE_NEW_FLOW) {
             mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
@@ -130,12 +134,9 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 
         initRecyclerView();
 
-//        Bundle args = getArguments();
-//        if (args != null) {
-////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
-//        }
-
-        loadLossOrder();
+        if (invLossOrder != null) {
+            mProviderView.setText(invLossOrder.getOrderName());
+        }
     }
 
     @Override
@@ -167,6 +168,9 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     }
 
 
+    /**
+     * 加载正在报损的订单
+     * */
     private void loadLossOrder() {
         invLossOrder = null;
 
@@ -229,11 +233,6 @@ public class CreateInvLossOrderFragment extends BaseFragment {
             return;
         }
 
-        if (invLossOrder == null) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR, "报损单号不能为空", true);
-            return;
-        }
-
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             showProgressDialog(ProgressDialog.STATUS_ERROR, getString(R.string.toast_network_error), true);
             return;
@@ -249,8 +248,14 @@ public class CreateInvLossOrderFragment extends BaseFragment {
             items.add(item);
         }
 
-        InvOrderApiImpl.invLossOrderItemBatchCommit(invLossOrder.getId(),
-                items.toJSONString(), submitCallback);
+        if (invLossOrder == null) {
+            // TODO: 07/02/2017 创建报损单
+            DialogUtil.showHint("TODO:创建报损单");
+        }
+        else{
+            InvOrderApiImpl.invLossOrderItemBatchCommit(invLossOrder.getId(),
+                    items.toJSONString(), submitCallback);
+        }
     }
 
     private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<String,
@@ -328,6 +333,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         inspect(null);
     }
 
+    /**盘点验货*/
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);

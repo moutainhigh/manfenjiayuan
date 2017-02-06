@@ -22,7 +22,7 @@ import com.manfenjiayuan.pda_supermarket.ui.rider.InstockScOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.rider.SendOrderFragmnt;
 import com.manfenjiayuan.pda_supermarket.ui.store.BindGoods2TagFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvIoOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.invloss.CreateInvLossOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvReturnOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.InvLabelFragment;
@@ -30,6 +30,7 @@ import com.manfenjiayuan.pda_supermarket.ui.store.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.cashier.CashierFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invconvert.InvConvertFromFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossListFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
@@ -48,21 +49,23 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FT_MY = 0x01;//我的
     //门店
     public static final int FRAGMENT_TYPE_PACKAGE = 0x03;
-    public static final int FRAGMENT_TYPE_INVENTORY_CHECK = 0x04;//盘点订单列表
+    public static final int FT_INV_CHECKORDER_STOCKTAKE = 0x04;//盘点订单列表
     public static final int FT_CREATE_INV_RECEIVEORDER = 0x05;//新建采购收货单
-    public static final int FT_BIND_GOODS_2_TAGS = 0x06;//货架绑定商品
+    public static final int FT_INV_RECVORDER_CONVERT = 0x06;//收货转换
     public static final int FT_CREATE_INV_RETURNORDER = 0x07;//退货
-    public static final int FT_CREATE_INV_LOSSORDER = 0x08;//报损
-    public static final int FT_INV_CONVERT = 0x09;//库存转换
-    public static final int FT_INVIO_IN = 0x0A;//入库
-    public static final int FT_INVIO_OUT = 0x0B;//出库
-    public static final int FT_PRINT_PRICETAGS = 0x0C;//价签
-    public static final int FT_OFFICE_LIST = 0x0D;//网店租户列表
-    public static final int FT_SHELVES_LIST = 0x0E;//盘点区域
-    public static final int FT_STORE_IN = 0x0F;//商品建档
-    public static final int FT_CASHIER = 0x10;//收银
-    public static final int FRAGMENT_TYPE_GOODS = 0x11;
+    public static final int FT_INV_LOSSORDER_NEW = 0x08;//报损
+    public static final int FT_INV_LOSSORDER_STOCKTAKE = 0x09;//报损盘点
+    public static final int FT_INV_CONVERT = 0x0A;//库存转换
+    public static final int FT_INVIO_IN = 0x0B;//入库
+    public static final int FT_INVIO_OUT = 0x0C;//出库
+    public static final int FT_PRINT_PRICETAGS = 0x0D;//价签
+    public static final int FT_OFFICE_LIST = 0x0E;//网店租户列表
+    public static final int FT_SHELVES_LIST = 0x0F;//盘点区域
+    public static final int FT_STORE_IN = 0x10;//商品建档
+    public static final int FT_CASHIER = 0x11;//收银
+    public static final int FRAGMENT_TYPE_GOODS = 0x12;
     public static final int FT_SCORDER_DETAIL = 0x13;//商城订单详情
+    public static final int FT_BIND_GOODS_2_TAGS = 0x14;//货架绑定商品
     //买手
     public static final int FT_BUY_SCORDER = 0x20;//买手——线上订单
     public static final int FT_BUY_PREAPARE = 0x21;//买手-组货
@@ -181,7 +184,7 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-        } else if (fragmentType == FRAGMENT_TYPE_INVENTORY_CHECK) {
+        } else if (fragmentType == FT_INV_CHECKORDER_STOCKTAKE) {
             InvCheckListFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
@@ -214,13 +217,24 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-        } else if (fragmentType == FT_CREATE_INV_LOSSORDER) {
-            CreateInvLossOrderFragment fragment;
+        } else if (fragmentType == FT_INV_LOSSORDER_NEW) {
+            InvLossOrderFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = CreateInvLossOrderFragment.newInstance(intent.getExtras());
+                fragment = InvLossOrderFragment.newInstance(intent.getExtras());
             } else {
-                fragment = CreateInvLossOrderFragment.newInstance(null);
+                fragment = InvLossOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (fragmentType == FT_INV_LOSSORDER_STOCKTAKE) {
+            InvLossListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvLossListFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvLossListFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

@@ -304,7 +304,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 "商品", R.mipmap.ic_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_STORE_IN,
                 "商品建档", R.mipmap.ic_goods_storein));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_TAKE,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_INVCHECKORDER_STOCKTAKE,
                 "盘点", R.mipmap.ic_stocktake));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_WHOLESALER_GOODS_SHELVES,
                 "货架号", R.mipmap.ic_shelves));
@@ -350,7 +350,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_WHOLESALER_GOODSSHELVES);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_INVCHECKORDER_STOCKTAKE) == 0) {
             Office office = DataCacheHelper.getInstance().getCurrentOffice();
             if (office == null) {
                 DialogUtil.showHint("请先选择网点");

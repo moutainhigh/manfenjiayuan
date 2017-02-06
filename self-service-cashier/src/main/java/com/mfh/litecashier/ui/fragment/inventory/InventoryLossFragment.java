@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.bean.InvLossOrder;
+import com.mfh.framework.api.invLossOrder.InvLossOrder;
 import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.RspQueryResult;
@@ -32,7 +32,6 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.InvIoOrderItem;
 import com.mfh.litecashier.bean.InvLossOrderItem;
 import com.mfh.litecashier.event.StockLossEvent;
 import com.mfh.litecashier.ui.adapter.StockLossGoodsAdapter;
@@ -107,180 +106,6 @@ public class InventoryLossFragment extends BaseFragment {
     private List<InvLossOrderItem> goodsList = new ArrayList<>();
 
 
-    @Override
-    protected int getLayoutResId() {
-        return R.layout.fragment_stock_loss;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        setupSwipeRefresh();
-        initOrderRecyclerView();
-        initGoodsRecyclerView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        EventBus.getDefault().unregister(this);
-    }
-
-
-    /**
-     * 新建报损
-     */
-    @OnClick(R.id.button_create)
-    public void createNewInvLossOrder() {
-//        Bundle extras = new Bundle();
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-//        extras.putInt(ServiceActivity.EXTRA_KEY_SERVICE_TYPE, ServiceActivity.FRAGMENT_TYPE_CREATE_PURCHASE_RETURN_ORDER);
-//
-//        Intent intent = new Intent(getActivity(), ServiceActivity.class);
-//        intent.putExtras(extras);
-//        startActivityForResult(intent, Constants.ACTIVITY_REQUEST_CODE_CREATE_STOCK_BATCH);
-
-        DialogUtil.showHint(R.string.coming_soon);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Constants.ARC_CREATE_STOCK_BATCH: {
-                //刷新订单列表
-//                goodsListAdapter.notifyDataSetChanged();
-            }
-            break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * 初始化订单列表
-     */
-    private void initOrderRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        orderRecyclerView.setLayoutManager(linearLayoutManager);
-        //enable optimizations if all item views are of the same height and width for
-        //signficantly smoother scrolling
-        orderRecyclerView.setHasFixedSize(true);
-        //添加分割线
-        orderRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST, 8));
-        //设置列表为空时显示的视图
-        orderRecyclerView.setEmptyView(orderEmptyView);
-        orderRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
-                // dy>0 表示向下滑动
-//                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
-                if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
-                    if (!isLoadingMore) {
-//                        reloadInvLossOrder();
-                    }
-                } else if (dy < 0) {
-                    isLoadingMore = false;
-                }
-            }
-        });
-
-        orderListAdapter = new StockLossOrderAdapter(CashierApp.getAppContext(), null);
-        orderListAdapter.setOnAdapterListener(new StockLossOrderAdapter.OnAdapterListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                loadGoodsList(orderListAdapter.getCurOrder());
-            }
-
-            @Override
-            public void onDataSetChanged() {
-                onLoadFinished();
-                loadGoodsList(orderListAdapter.getCurOrder());
-            }
-        });
-        orderRecyclerView.setAdapter(orderListAdapter);
-    }
-
-    private void initGoodsRecyclerView() {
-        linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        goodsRecyclerView.setLayoutManager(linearLayoutManager);
-        //enable optimizations if all item views are of the same height and width for
-        //signficantly smoother scrolling
-        goodsRecyclerView.setHasFixedSize(true);
-        //添加分割线
-        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
-        //设置列表为空时显示的视图
-        goodsRecyclerView.setEmptyView(goodsEmptyView);
-        goodsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
-                // dy>0 表示向下滑动
-//                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
-                if (dy > 0) {
-//                    fabShopcart.setVisibility(View.VISIBLE);
-                    if ((lastVisibleItem >= totalItemCount - 4) && !isLoadingMore) {
-                        loadMore();
-                    }
-                } else if (dy < 0) {
-                    isLoadingMore = false;
-//                    fabShopcart.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        goodsListAdapter = new StockLossGoodsAdapter(CashierApp.getAppContext(), null);
-        goodsListAdapter.setOnAdapterListener(new StockLossGoodsAdapter.OnAdapterListener() {
-                                                  @Override
-                                                  public void onDataSetChanged() {
-                                                      onLoadFinished();
-                                                  }
-                                              }
-
-        );
-        goodsRecyclerView.setAdapter(goodsListAdapter);
-    }
-
-
-    /**
-     * 在主线程接收CashierEvent事件，必须是public void
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(StockLossEvent event) {
-        ZLogger.d(String.format("InventoryLossFragment: StockLossEvent(%d)", event.getEventId()));
-        if (event.getEventId() == StockLossEvent.EVENT_ID_RELOAD_DATA) {
-            if (SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PK_SYNC_STOCKLOSS_ORDER_ENABLED, true)
-                    || !readInvLossOrderCache()) {
-                reloadInvLossOrder();
-            }
-        }
-    }
 
     /**
      * 读取报损订单缓存
@@ -292,7 +117,8 @@ public class InventoryLossFragment extends BaseFragment {
         String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_STOCK_LOSS_ORDER);
         List<InvLossOrder> cacheData = JSONArray.parseArray(cacheStr, InvLossOrder.class);
         if (cacheData != null && cacheData.size() > 0) {
-            ZLogger.d(String.format("加载报损订单缓存数据(%s): %d条报损订单", ACacheHelper.CK_STOCK_LOSS_ORDER, cacheData.size()));
+            ZLogger.d(String.format("加载报损订单缓存数据(%s): %d条报损订单",
+                    ACacheHelper.CK_STOCK_LOSS_ORDER, cacheData.size()));
 //            refreshCategoryGoodsTab(entity.getCategoryId(), cacheData);
             if (orderListAdapter != null) {
                 orderListAdapter.setEntityList(cacheData);
@@ -303,148 +129,6 @@ public class InventoryLossFragment extends BaseFragment {
         return false;
     }
 
-    /**
-     * 加载报损订单列表
-     */
-    @OnClick(R.id.order_empty_view)
-    public synchronized void reloadInvLossOrder() {
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            ZLogger.d("网络未连接，暂停加载报损列表。");
-            onLoadFinished();
-            return;
-        }
-
-//        if (bSyncInProgress) {
-//            ZLogger.d("正在加载报损列表。");
-//            onLoadFinished();
-//            return;
-//        }
-
-        onLoadStart();
-
-        if (orderList == null) {
-            orderList = new ArrayList<>();
-        } else {
-            orderList.clear();
-        }
-        InvOrderApiImpl.queryInvLossOrderList(queryOrderListCallback);
-    }
-
-    private NetCallBack.QueryRsCallBack queryOrderListCallback = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<InvLossOrder>(new PageInfo(-1, 30)) {
-        @Override
-        public void processQueryResult(RspQueryResult<InvLossOrder> rs) {
-            //此处在主线程中执行。
-            new OrderQueryAsyncTask(pageInfo).execute(rs);
-        }
-
-        @Override
-        protected void processFailure(Throwable t, String errMsg) {
-            super.processFailure(t, errMsg);
-            ZLogger.e("加载报损列表失败:" + errMsg);
-
-            onLoadFinished();
-        }
-    }, InvLossOrder.class, CashierApp.getAppContext());
-
-    public class OrderQueryAsyncTask extends AsyncTask<RspQueryResult<InvLossOrder>, Integer, Long> {
-        private PageInfo pageInfo;
-
-        public OrderQueryAsyncTask(PageInfo pageInfo) {
-            this.pageInfo = pageInfo;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<InvLossOrder>... params) {
-            saveQueryResult(params[0], pageInfo);
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-//            ZLogger.d(String.format("pageInfo':page=%d,rows=%d(%d)", pageInfo.getPageNo(), pageInfo.getPageSize(), (goodsList == null ? 0 : goodsList.size())));
-
-            if (orderListAdapter != null) {
-                orderListAdapter.setEntityList(orderList);
-            }
-            onLoadFinished();
-        }
-
-        /**
-         * 将后台返回的结果集保存到本地,同步执行
-         *
-         * @param rs       结果集
-         * @param pageInfo 分页信息
-         */
-        private void saveQueryResult(RspQueryResult<InvLossOrder> rs, PageInfo pageInfo) {//此处在主线程中执行。
-            try {
-//                mPageInfo = pageInfo;
-
-                if (rs == null) {
-                    return;
-                }
-
-                //第一页，缓存数据
-                if (mPageInfo.getPageNo() == 1) {
-                    ZLogger.d("缓存报损订单第一页数据");
-                    JSONArray cacheArrays = new JSONArray();
-                    if (orderList == null) {
-                        orderList = new ArrayList<>();
-                    } else {
-                        orderList.clear();
-                    }
-                    for (EntityWrapper<InvLossOrder> wrapper : rs.getRowDatas()) {
-
-                        InvLossOrder invLossOrder = wrapper.getBean();
-                        Map<String, String> captioin = wrapper.getCaption();
-                        if (invLossOrder != null && captioin != null) {
-                            invLossOrder.setStatusCaption(captioin.get("status"));
-                        }
-
-                        cacheArrays.add(invLossOrder);
-                        orderList.add(invLossOrder);
-                    }
-                    ACacheHelper.put(ACacheHelper.CK_STOCK_LOSS_ORDER, cacheArrays.toJSONString());
-                    SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_STOCKLOSS_ORDER_ENABLED, false);
-                } else {
-                    if (orderList == null) {
-                        orderList = new ArrayList<>();
-                    }
-                    for (EntityWrapper<InvLossOrder> wrapper : rs.getRowDatas()) {
-                        InvLossOrder invLossOrder = wrapper.getBean();
-                        Map<String, String> captioin = wrapper.getCaption();
-                        if (invLossOrder != null && captioin != null) {
-                            invLossOrder.setStatusCaption(captioin.get("status"));
-                        }
-                        orderList.add(invLossOrder);
-                    }
-                }
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.e(String.format("保存报损订单列表失败: %s", ex.toString()));
-            }
-        }
-    }
-
-
-    /**
-     * 开始加载
-     */
-    private void onLoadStart() {
-        isLoadingMore = true;
-        bSyncInProgress = true;
-        setRefreshing(true);
-    }
-
-    /**
-     * 加载完成
-     */
-    private void onLoadFinished() {
-        bSyncInProgress = false;
-        isLoadingMore = false;
-        setRefreshing(false);
-    }
 
     /**
      * 加载订单明细
@@ -601,62 +285,5 @@ public class InventoryLossFragment extends BaseFragment {
                 });
     }
 
-    /**
-     * 设置刷新
-     */
-    private void setupSwipeRefresh() {
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setColorSchemeResources(
-                    R.color.swiperefresh_color1, R.color.swiperefresh_color2,
-                    R.color.swiperefresh_color3, R.color.swiperefresh_color4);
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    if (mState == STATE_REFRESH) {
-                        return;
-                    }
 
-                    reloadInvLossOrder();
-                }
-            });
-        }
-        mState = STATE_NONE;
-    }
-
-    /**
-     * 设置刷新状态
-     */
-    public void setRefreshing(boolean refreshing) {
-        if (refreshing) {
-            setSwipeRefreshLoadingState();
-        } else {
-            setSwipeRefreshLoadedState();
-        }
-    }
-
-    /**
-     * 设置顶部正在加载的状态
-     */
-    private void setSwipeRefreshLoadingState() {
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            // 防止多次重复刷新
-            mSwipeRefreshLayout.setEnabled(false);
-
-
-            mState = STATE_REFRESH;
-        }
-    }
-
-    /**
-     * 设置顶部加载完毕的状态
-     */
-    private void setSwipeRefreshLoadedState() {
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setRefreshing(false);
-            mSwipeRefreshLayout.setEnabled(true);
-
-            mState = STATE_NONE;
-        }
-    }
 }

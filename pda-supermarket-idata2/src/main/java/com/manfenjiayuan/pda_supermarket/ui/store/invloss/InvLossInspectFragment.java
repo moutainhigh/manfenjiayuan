@@ -214,7 +214,6 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
         else{
             InvLossGoodsService.get().inspect(curGoods, quantityCheck);
             onSubmitSuccess();
-
         }
     }
 
