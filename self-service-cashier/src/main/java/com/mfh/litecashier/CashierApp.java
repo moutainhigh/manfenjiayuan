@@ -12,9 +12,6 @@ import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.core.utils.AbbreviationUtil;
-import com.mfh.framework.core.utils.AbbreviationUtilV2;
-import com.mfh.framework.core.utils.PinyinUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
@@ -87,10 +84,10 @@ public class CashierApp extends MfhApplication {
             initSkinLoader();
         }
 
-        ZLogger.d(AbbreviationUtilV2.cn2py("荷兰土豆"));//OK
-        ZLogger.d(AbbreviationUtil.cn2py("荷兰土豆"));//NOT OK
-        ZLogger.d(PinyinUtils.getFirstSpell("荷兰土豆"));//OK
-        ZLogger.d(PinyinUtils.getPingYin("荷兰土豆"));
+//        ZLogger.d(AbbreviationUtilV2.cn2py("荷兰土豆"));//OK
+//        ZLogger.d(AbbreviationUtil.cn2py("荷兰土豆"));//NOT OK
+//        ZLogger.d(PinyinUtils.getFirstSpell("荷兰土豆"));//OK
+//        ZLogger.d(PinyinUtils.getPingYin("荷兰土豆"));
 
         ZLogger.df(String.format("initialize finished(%s)", processAppName));
     }

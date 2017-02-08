@@ -15,19 +15,17 @@ import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
@@ -35,7 +33,11 @@ import com.mfh.litecashier.R;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
+import rx.Subscriber;
 
 /**
  * 会员卡支付
@@ -180,17 +182,37 @@ public class PayByVipFragment extends BasePayFragment {
             return;
         }
 
+        Map<String, String> options = new HashMap<>();
+
         //长度为8(466CAF31) ，会员卡芯片号
         if (codeA.length() == 8) {
-            validateVipCard(codeA);
+            final String cardNo = MUtils.parseCardId(codeA);
+            if (StringUtils.isEmpty(cardNo)) {
+                validateFailed("芯片号无效");
+                return;
+            }
+
+            options.put("cardNo", cardNo);
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            loadHuman(0, cardNo, options);
         }
         //长度为11(15250065084)，手机号
         else if (codeA.length() == 11) {
-            validateVipPhonenumber(codeA);
+            options.put("mobile", codeA);
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            loadHuman(2, null, options);
         }
         //长度为15(000000000712878)，微信付款码
         else if (codeA.length() == 15) {
-            validateVipHumanId(codeA);
+            String humanId = MUtils.parseMfPaycode(codeA);
+            if (StringUtils.isEmpty(humanId)) {
+                validateFailed("付款码无效");
+                return;
+            }
+
+            options.put("humanId", humanId);
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            loadHuman(1, null, options);
         } else {
             validateFailed("参数无效");
         }
@@ -229,125 +251,32 @@ public class PayByVipFragment extends BasePayFragment {
     }
 
     /**
-     * 验证会员卡芯片号
-     */
-    private void validateVipCard(String cardId) {
-        final String cardId2 = MUtils.parseCardId(cardId);
-        if (StringUtils.isEmpty(cardId2)) {
-            validateFailed("芯片号无效");
-            return;
-        }
-
-        NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-                NetProcessor.Processor<Human>>(
-                new NetProcessor.Processor<Human>() {
+     * 加载会员信息
+     * */
+    private void loadHuman(final int subPayType, final String cardId, Map<String, String> options){
+        SysHttpManager.getInstance().getHumanByIdentity(options,
+                new Subscriber<Human>() {
                     @Override
-                    public void processResult(final IResponseData rspData) {
-                        Human memInfo = null;
-                        if (rspData != null) {
-                            RspBean<Human> retValue = (RspBean<Human>) rspData;
-                            memInfo = retValue.getValue();
-                        }
+                    public void onCompleted() {
 
-                        if (memInfo == null){
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        validateFailed(e.toString());
+
+                    }
+
+                    @Override
+                    public void onNext(Human human) {
+                        if (human == null){
                             validateFailed("未查询到结果");
                         }
                         else {
-                            validateSuccess(0, cardId2, memInfo);
+                            validateSuccess(subPayType, cardId, human);
                         }
                     }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        validateFailed(errMsg);
-                    }
-                }
-                , Human.class
-                , CashierApp.getAppContext()) {
-        };
-
-
-        //加载用户信息
-        UserApiImpl.findHumanByCard(cardId2, findMemberResponseCallback);
-    }
-
-    /**
-     * 验证会员卡手机号
-     */
-    private void validateVipPhonenumber(String phoneNumber) {
-        NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-                NetProcessor.Processor<Human>>(
-                new NetProcessor.Processor<Human>() {
-                    @Override
-                    public void processResult(final IResponseData rspData) {
-                        Human memInfo = null;
-                        if (rspData != null) {
-                            RspBean<Human> retValue = (RspBean<Human>) rspData;
-                            memInfo = retValue.getValue();
-                        }
-
-                        if (memInfo == null){
-                            validateFailed("未查询到结果");
-                        }
-                        else {
-                            validateSuccess(2, null, memInfo);
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        validateFailed(errMsg);
-                    }
-                }
-                , Human.class
-                , CashierApp.getAppContext()) {
-        };
-
-        UserApiImpl.findHumanByCard(phoneNumber, findMemberResponseCallback);
-    }
-
-    /**
-     * 验证会员付款码
-     */
-    private void validateVipHumanId(String paycode) {
-        String humanId = MUtils.parseMfPaycode(paycode);
-        if (StringUtils.isEmpty(humanId)) {
-            validateFailed("付款码无效");
-            return;
-        }
-
-        NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-                NetProcessor.Processor<Human>>(
-                new NetProcessor.Processor<Human>() {
-                    @Override
-                    public void processResult(final IResponseData rspData) {
-                        Human memInfo = null;
-                        if (rspData != null) {
-                            RspBean<Human> retValue = (RspBean<Human>) rspData;
-                            memInfo = retValue.getValue();
-                        }
-
-                        if (memInfo == null){
-                            validateFailed("未查询到结果");
-                        }
-                        else {
-                            validateSuccess(1, null, memInfo);
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        validateFailed(errMsg);
-                    }
-                }
-                , Human.class
-                , CashierApp.getAppContext()) {
-        };
-
-        UserApiImpl.findHumanByHumanId(humanId, findMemberResponseCallback);
+                });
     }
 
 

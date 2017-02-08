@@ -1,7 +1,7 @@
 package com.manfenjiayuan.pda_supermarket.database.dao;
 
 
-import com.manfenjiayuan.pda_supermarket.bean.PosGoods;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
 import com.mfh.framework.database.dao.BaseNetDao;
 import com.mfh.framework.database.dao.DaoUrl;
 

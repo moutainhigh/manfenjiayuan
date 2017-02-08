@@ -374,10 +374,10 @@ public class RxHttpManager {
 //                .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
-    public void createPayOrder(Map<String, String> options, MValueSubscriber<String> subscriber) {
+    public void createPayOrder(Map<String, String> options, Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.createPayOrder(options)
-                .map(new MValueResponseFunc<String>());
+                .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
 

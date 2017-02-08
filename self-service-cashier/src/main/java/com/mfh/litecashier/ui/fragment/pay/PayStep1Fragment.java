@@ -36,6 +36,7 @@ import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.cashier.CashierDesktopObservable;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -157,6 +158,8 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
     @Override
     protected void refresh() {
+        CashierDesktopObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
+
         if (cashierOrderInfo != null) {
             //显示应付款
             Double handleAmount = CashierOrderInfoImpl.getUnpayAmount(cashierOrderInfo);

@@ -3,12 +3,12 @@ package com.manfenjiayuan.pda_supermarket.database.logic;
 
 import com.manfenjiayuan.pda_supermarket.database.dao.PosProductDao;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosProductEntity;
-import com.manfenjiayuan.pda_supermarket.bean.PosGoods;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.framework.core.utils.AbbreviationUtil;
+import com.mfh.framework.core.utils.PinyinUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 
 import net.tsz.afinal.db.table.KeyValue;
@@ -183,7 +183,8 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 //                    } else {
 //                        entity.setNameSortLetter("#");
 //                    }
-        entity.setAbbreviation(AbbreviationUtil.cn2py(posGoods.getName()));
+//        entity.setAbbreviation(AbbreviationUtil.cn2py(posGoods.getSkuName()));
+        entity.setAbbreviation(PinyinUtils.getFirstSpell(posGoods.getSkuName()));
 
         PosProductService.get().saveOrUpdate(entity);
     }

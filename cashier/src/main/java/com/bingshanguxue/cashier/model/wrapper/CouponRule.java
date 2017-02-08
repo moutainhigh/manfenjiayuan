@@ -1,7 +1,6 @@
 package com.bingshanguxue.cashier.model.wrapper;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 优惠券 & 规则
@@ -22,9 +21,9 @@ public class CouponRule implements Serializable {
     private Long couponsId;//卡券领用编号,不是卡券编号本身
 
     private boolean isSelected;//是否被选中
-    private List<Long> splitOrderIds;//关联的拆分订单编号,支持关联过个拆分订单，多个订单用逗号分隔
-    private Long splitOrderId;//当前指定关联的拆分订单编号
-    private Double amount;//关联的拆分订单金额
+//    private List<Long> splitOrderIds;//关联的拆分订单编号,支持关联过个拆分订单，多个订单用逗号分隔
+//    private Long splitOrderId;//当前指定关联的拆分订单编号
+//    private Double amount;//关联的拆分订单金额
 
     public Long getId() {
         return id;
@@ -97,30 +96,30 @@ public class CouponRule implements Serializable {
         isSelected = selected;
     }
 
-    public List<Long> getSplitOrderIds() {
-        return splitOrderIds;
-    }
+//    public List<Long> getSplitOrderIds() {
+//        return splitOrderIds;
+//    }
+//
+//    public void setSplitOrderIds(List<Long> splitOrderIds) {
+//        this.splitOrderIds = splitOrderIds;
+//    }
+//
+//    public Long getSplitOrderId() {
+//        return splitOrderId;
+//    }
+//
+//    public void setSplitOrderId(Long splitOrderId) {
+//        this.splitOrderId = splitOrderId;
+//    }
 
-    public void setSplitOrderIds(List<Long> splitOrderIds) {
-        this.splitOrderIds = splitOrderIds;
-    }
-
-    public Long getSplitOrderId() {
-        return splitOrderId;
-    }
-
-    public void setSplitOrderId(Long splitOrderId) {
-        this.splitOrderId = splitOrderId;
-    }
-
-    public Double getAmount() {
-        if (amount == null){
-            return 0D;
-        }
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
+//    public Double getAmount() {
+//        if (amount == null){
+//            return 0D;
+//        }
+//        return amount;
+//    }
+//
+//    public void setAmount(Double amount) {
+//        this.amount = amount;
+//    }
 }

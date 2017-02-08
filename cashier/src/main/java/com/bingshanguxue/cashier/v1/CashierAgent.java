@@ -7,25 +7,24 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.mfh.framework.api.pmcstock.MarketRules;
-import com.bingshanguxue.cashier.model.OrderMarketRules;
-import com.mfh.framework.api.pmcstock.RuleBean;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.pmcstock.MarketRules;
+import com.mfh.framework.api.pmcstock.RuleBean;
 import com.mfh.framework.core.utils.ObjectsCompact;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 收银
@@ -424,30 +423,27 @@ public class CashierAgent {
         return true;
     }
 
-    public static String getSelectCouponIds(Map<Long, List<CouponRule>> couponsMap,
-                                            Long splitOrderId) {
-        if (couponsMap == null || splitOrderId == null) {
+
+    /**
+     * 获取选中的优惠券
+     * */
+    public static String getSelectCouponIds(List<CouponRule> couponRules) {
+        if (couponRules == null || couponRules.size() <= 0) {
             return null;
         }
-        return getSelectCouponIds(couponsMap.get(splitOrderId));
-    }
-
-    public static String getSelectCouponIds(List<CouponRule> set) {
         StringBuilder sb = new StringBuilder();
-        if (set != null && set.size() > 0) {
-            int len = set.size();
-            for (int i = 0; i < len; i++) {
-                CouponRule coupon = set.get(i);
-                if (ObjectsCompact.equals(coupon.getType(), CouponRule.TYPE_RULE) ||
-                        !coupon.isSelected()) {
-                    continue;
-                }
-
-                if (i > 0) {
-                    sb.append(",");
-                }
-                sb.append(coupon.getCouponsId());
+        int len = couponRules.size();
+        for (int i = 0; i < len; i++) {
+            CouponRule coupon = couponRules.get(i);
+            if (ObjectsCompact.equals(coupon.getType(), CouponRule.TYPE_RULE) ||
+                    !coupon.isSelected()) {
+                continue;
             }
+
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(coupon.getCouponsId());
         }
 
         return sb.toString();
@@ -456,7 +452,7 @@ public class CashierAgent {
     /**
      * 获取规则ID列表，逗号分隔
      */
-    public static String getRuleIds(OrderMarketRules mOrderMarketRules) {
+    public static String getRuleIds(MarketRulesWrapper mOrderMarketRules) {
         if (mOrderMarketRules == null) {
             return "";
         }

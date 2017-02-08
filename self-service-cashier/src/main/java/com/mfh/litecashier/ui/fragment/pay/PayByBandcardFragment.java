@@ -37,7 +37,6 @@ import com.mfh.framework.pay.umsips.RequestConstants;
 import com.mfh.framework.pay.umsips.RspCode;
 import com.mfh.framework.pay.umsips.TransType;
 import com.mfh.framework.rxapi.http.RxHttpManager;
-import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
@@ -53,6 +52,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * 银联卡支付
@@ -80,7 +80,6 @@ public class PayByBandcardFragment extends BasePayFragment {
 
         public void getCallBack(String stateCode, String stateTips) {
             ZLogger.df("stateCode=" + stateCode + "|" + "stateTips=" + stateTips);
-//            DialogUtil.showHint(String.format("%s--%s", stateCode, stateTips));
         }
     }
 
@@ -529,14 +528,18 @@ public class PayByBandcardFragment extends BasePayFragment {
         jsonObject.put("bizType", bizType);//业务类型
         jsonObject.put("tagOne", "");//备用
 
-        if (RxHttpManager.isUseRx) {
+        if (RxHttpManager.RELEASE) {
             Map<String, String> options = new HashMap<>();
             options.put("jsonStr", jsonObject.toJSONString());
             options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
             RxHttpManager.getInstance().createPayOrder(options,
-                    new MValueSubscriber<String>() {
+                    new Subscriber<String>() {
 
+                        @Override
+                        public void onCompleted() {
+
+                        }
 
                         @Override
                         public void onError(Throwable e) {
@@ -545,9 +548,8 @@ public class PayByBandcardFragment extends BasePayFragment {
                         }
 
                         @Override
-                        public void onValue(String data) {
-                            super.onValue(data);
-                            ZLogger.df(String.format("提交支付记录成功:%s", data));
+                        public void onNext(String s) {
+                            ZLogger.df(String.format("提交支付记录成功:%s", s));
                             onBarpayFinished(handleAmount, response.getRspChin());
                         }
 

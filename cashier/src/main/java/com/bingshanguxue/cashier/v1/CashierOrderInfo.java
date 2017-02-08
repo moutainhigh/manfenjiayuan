@@ -2,7 +2,7 @@ package com.bingshanguxue.cashier.v1;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.cashier.model.OrderMarketRules;
+import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
@@ -62,7 +62,7 @@ public class CashierOrderInfo implements java.io.Serializable {
     //==============支付信息结束======================
 
     //卡券&促销规则（根据订单明细由后台计算）
-    private OrderMarketRules mOrderMarketRules;
+    private MarketRulesWrapper mOrderMarketRules;
     //促销or卡券优惠信息
     private DiscountInfo mDiscountInfo;
 
@@ -106,11 +106,11 @@ public class CashierOrderInfo implements java.io.Serializable {
         this.discountRate = discountRate;
     }
 
-    public OrderMarketRules getOrderMarketRules() {
+    public MarketRulesWrapper getOrderMarketRules() {
         return mOrderMarketRules;
     }
 
-    public void setOrderMarketRules(OrderMarketRules orderMarketRules) {
+    public void setOrderMarketRules(MarketRulesWrapper orderMarketRules) {
         mOrderMarketRules = orderMarketRules;
     }
 
@@ -212,13 +212,13 @@ public class CashierOrderInfo implements java.io.Serializable {
     /**
      * 保存卡券和促销规则
      */
-    public void couponPrivilege(List<OrderMarketRules> marketRulesList) {
-        OrderMarketRules orderMarketRules = null;
+    public void couponPrivilege(List<MarketRulesWrapper> marketRulesList) {
+        MarketRulesWrapper orderMarketRules = null;
         //优惠券和明细不匹配
         if (marketRulesList != null && marketRulesList.size() > 0) {
             orderMarketRules = marketRulesList.get(0);
-            orderMarketRules.setSplitOrderId(orderId);
-            orderMarketRules.setFinalAmount(finalAmount);
+//            orderMarketRules.setSplitOrderId(orderId);
+//            orderMarketRules.setFinalAmount(finalAmount);
         }
         setOrderMarketRules(orderMarketRules);
     }
@@ -229,7 +229,7 @@ public class CashierOrderInfo implements java.io.Serializable {
      * @param couponsMap
      */
     public boolean saveCouponDiscount(List<PayAmount> amountArray,
-                          Map<Long, List<CouponRule>> couponsMap) {
+                                      String couponsIds, String rulesIds) {
         //检查输入参数是否正确
         if (amountArray == null ||
                 amountArray.size() < 1) {
@@ -249,9 +249,8 @@ public class CashierOrderInfo implements java.io.Serializable {
         discountInfo.setEffectAmount(finalAmount
                 - paidAmount - payAmount.getPayAmount());
         // TODO: 5/26/16 选中的优惠券和订单可用的优惠券进行二次校验
-        discountInfo.setCouponsIds(CashierAgent.getSelectCouponIds(couponsMap,
-                orderId));
-        discountInfo.setRuleIds(CashierAgent.getRuleIds(getOrderMarketRules()));
+        discountInfo.setCouponsIds(couponsIds);
+        discountInfo.setRuleIds(rulesIds);
         setDiscountInfo(discountInfo);
 
         return true;

@@ -11,19 +11,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.mfh.framework.api.pmcstock.CoupBean;
-import com.mfh.framework.api.pmcstock.MarketRules;
-import com.bingshanguxue.cashier.model.OrderMarketRules;
-import com.mfh.framework.api.pmcstock.RuleBean;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.cashier.MarketRulesWrapper;
+import com.mfh.framework.api.pmcstock.CoupBean;
+import com.mfh.framework.api.pmcstock.MarketRules;
+import com.mfh.framework.api.pmcstock.RuleBean;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -287,7 +285,11 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public void digest(List<OrderMarketRules> orderMarketRules) {
+    public List<CouponRule> getEntityList() {
+        return entityList;
+    }
+
+    public void digest(List<MarketRulesWrapper> orderMarketRules) {
         List<CouponRule> couponRules = merge(orderMarketRules);
         setEntityList(couponRules);
     }
@@ -295,7 +297,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     /**
      * 保存卡券和促销规则
      * */
-    public List<CouponRule> merge(List<OrderMarketRules> orderMarketRulesList){
+    public List<CouponRule> merge(List<MarketRulesWrapper> orderMarketRulesList){
         List<CouponRule> couponRules = new ArrayList<>();
 
         //遍历拆分订单
@@ -303,13 +305,11 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ZLogger.d("orderMarketRulesList无效");
             return null;
         }
-        for (OrderMarketRules orderMarketRules : orderMarketRulesList){
+        for (MarketRulesWrapper orderMarketRules : orderMarketRulesList){
             //遍历卡券和促销规则
-            Long splitOrderId = orderMarketRules.getSplitOrderId();
-            Double finalAmount = orderMarketRules.getFinalAmount();
+
             List<MarketRules> marketRulesList = orderMarketRules.getResults();
-            if (splitOrderId == null ||
-                    marketRulesList == null || marketRulesList.size() <= 0){
+            if (marketRulesList == null || marketRulesList.size() <= 0){
                 ZLogger.d("marketRulesList无效");
                 continue;
             }
@@ -324,14 +324,14 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 //                List<RuleBean> ruleBeans = marketRules.getRuleBeans();
 //                if (ruleBeans != null && ruleBeans.size() > 0){
 //                    for (RuleBean rule : ruleBeans){
-//                        mergeRule(couponRules, rule, splitOrderId, finalAmount);
+//                        mergeRule(couponRules, rule);
 //                    }
 //                }
 
                 List<CoupBean> coupBeans = marketRules.getCoupBeans();
                 if (coupBeans != null && coupBeans.size() > 0){
                     for (CoupBean coup : coupBeans){
-                        mergeCoupon(couponRules, coup, splitOrderId, finalAmount);
+                        mergeCoupon(couponRules, coup);
                     }
                 }
             }
@@ -340,8 +340,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return couponRules;
     }
 
-    private void mergeRule(List<CouponRule> source, RuleBean rule,
-                           Long splitOrderId, Double finalAmount){
+    private void mergeRule(List<CouponRule> source, RuleBean rule){
         CouponRule entity = new CouponRule();
         entity.setId(rule.getId());
         entity.setType(CouponRule.TYPE_RULE);
@@ -351,33 +350,19 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         entity.setDiscount(rule.getExecNum());
         entity.setRuleExecType(rule.getExecType());
         entity.setSelected(false);
-        entity.setAmount(finalAmount);
-        entity.setSplitOrderId(splitOrderId);
-
-        List<Long> spilitOrderIds = new ArrayList<>();
-        if (!spilitOrderIds.contains(splitOrderId)){
-            spilitOrderIds.add(splitOrderId);
-        }
 
         if (source != null && source.size() > 0){
             for (CouponRule couponRule : source){
                 //删除重复的记录
                 if (CouponRule.TYPE_RULE.equals(couponRule.getType()) &&
                         rule.getId().equals(couponRule.getId())){
-                    spilitOrderIds.addAll(couponRule.getSplitOrderIds());
 
-                    if (finalAmount.compareTo(couponRule.getAmount()) > 0){
-                        entity.setAmount(couponRule.getAmount());
-                        entity.setSplitOrderId(couponRule.getSplitOrderId());
-                    }
                     source.remove(couponRule);
                     break;
                 }
             }
 
         }
-
-        entity.setSplitOrderIds(spilitOrderIds);
 
         if (source != null){
             source.add(entity);
@@ -386,8 +371,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ZLogger.df(JSON.toJSONString(entity));
     }
 
-    private void mergeCoupon(List<CouponRule> source, CoupBean coupon,
-                             Long splitOrderId, Double finalAmount){
+    private void mergeCoupon(List<CouponRule> source, CoupBean coupon){
         CouponRule entity = new CouponRule();
         entity.setId(coupon.getId());
         entity.setType(CouponRule.TYPE_COUPON);
@@ -396,14 +380,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         entity.setDiscount(coupon.getDiscount());
         entity.setCouponsId(coupon.getMyCouponsId());
         entity.setSelected(false);
-        
-        entity.setAmount(finalAmount);
-        entity.setSplitOrderId(splitOrderId);
 
-        List<Long> spilitOrderIds = new ArrayList<>();
-        if (!spilitOrderIds.contains(splitOrderId)){
-            spilitOrderIds.add(splitOrderId);
-        }
 
         if (source != null && source.size() > 0){
             for (CouponRule couponRule : source){
@@ -411,61 +388,19 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (CouponRule.TYPE_COUPON.equals(couponRule.getType()) &&
                         coupon.getId().equals(couponRule.getId()) &&
                         coupon.getMyCouponsId().equals(couponRule.getCouponsId())){
-                    
-                    spilitOrderIds.addAll(couponRule.getSplitOrderIds());
 
                     //// TODO: 14/10/2016 这里可能会有问题，目的应该是相同的卡券仅显示一个，但是其他信息应该替换掉。 
                     // TODO: 14/10/2016 由于不考虑本地拆分订单，所以这里应该也只有一份关联订单编号
-                    if (finalAmount.compareTo(couponRule.getAmount()) > 0){
-                        entity.setAmount(couponRule.getAmount());
-                        entity.setSplitOrderId(couponRule.getSplitOrderId());
-                    }
                     source.remove(couponRule);
                     break;
                 }
             }
         }
 
-        entity.setSplitOrderIds(spilitOrderIds);
-
         if (source != null){
             source.add(entity);
         }
         ZLogger.df(JSON.toJSONString(entity));
-    }
-
-
-    /**
-     * 按订单拆分，获取选中的优惠券
-     * */
-    public Map<Long, List<CouponRule>> getSelectSplitCoupons() {
-        Map<Long, List<CouponRule>> selectCouponsMap = new HashMap<>();
-
-        if (entityList != null && entityList.size() > 0) {
-            for (CouponRule couponRule : entityList){
-                Long splitOrderId = couponRule.getSplitOrderId();
-                List<CouponRule> temp = selectCouponsMap.get(splitOrderId);
-                if (temp == null){
-                    temp = new ArrayList<>();
-                }
-                temp.add(couponRule);
-                selectCouponsMap.put(splitOrderId, temp);
-
-//                List<String> spilitOrderIds = couponRule.getSplitOrderIds();
-//                if (spilitOrderIds != null && spilitOrderIds.size() > 0){
-//                    for (String splitOrderId : spilitOrderIds){
-//                        List<CouponRule> temp = selectCouponsMap.get(splitOrderId);
-//                        if (temp == null){
-//                            temp = new ArrayList<>();
-//                        }
-//                        temp.add(couponRule);
-//                        selectCouponsMap.put(splitOrderId, temp);
-//                    }
-//                }
-            }
-        }
-
-        return selectCouponsMap;
     }
 
     public void setVipScore(Double score){

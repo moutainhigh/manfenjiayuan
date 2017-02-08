@@ -116,7 +116,7 @@ public interface RxMfhService {
     Observable<MResponse<String>> wepayBarPay(@QueryMap Map<String, String> options);
 
     @GET("payOrder/create")
-    Observable<MResponse<MValue<String>>> createPayOrder(@QueryMap Map<String, String> options);
+    Observable<MResponse<String>> createPayOrder(@QueryMap Map<String, String> options);
 
     //批量上传订单
 //    @FormUrlEncoded

@@ -6,7 +6,6 @@ import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.bean.PosGoods;
 import com.manfenjiayuan.pda_supermarket.bean.ProductSkuBarcode;
 import com.manfenjiayuan.pda_supermarket.database.dao.PosProductNetDao;
 import com.manfenjiayuan.pda_supermarket.database.dao.PosProductSkuNetDao;
@@ -22,9 +21,11 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.scGoodsSku.PosGoods;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -543,6 +544,7 @@ public class DataDownloadManager extends DataSyncManager {
                             moduleNames = retValue.getValue();
                         }
                         MfhLoginService.get().setModuleNames(moduleNames);
+                        MfhUserManager.getInstance().updateModules();
                     } catch (Exception ex) {
                         ZLogger.e("parseUserProfile, " + ex.toString());
                     } finally {

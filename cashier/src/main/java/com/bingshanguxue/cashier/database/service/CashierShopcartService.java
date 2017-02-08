@@ -129,8 +129,12 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
      * */
     public void append(String orderBarCode, Double orderDiscount, PosProductEntity goods,
                              Double bCount) {
+        if (StringUtils.isEmpty(orderBarCode)) {
+            ZLogger.d("订单条码不能为空");
+            return;
+        }
         if (StringUtils.isEmpty(orderBarCode) || goods == null) {
-            ZLogger.d("参数无效");
+            ZLogger.d("商品无效");
             return;
         }
 

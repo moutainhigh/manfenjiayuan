@@ -23,10 +23,10 @@ public class ApiException extends RuntimeException {
 
     @Override
     public String toString() {
-        String s = getClass().getName();
+//        String s = getClass().getName();
         int code = getCode();
         String message = getLocalizedMessage();
-        return String.format("%s : %d - %s", s, code, message);
+        return String.format("%d - %s", code, message);
     }
 
     public int getCode() {
