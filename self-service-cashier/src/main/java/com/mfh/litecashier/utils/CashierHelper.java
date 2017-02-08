@@ -20,6 +20,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
+import com.mfh.litecashier.ui.cashier.CashierDesktopObservable;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -251,6 +252,8 @@ public class CashierHelper {
      * 更新客显信息
      */
     public static void broadcastCashierOrderInfo(int cmdType, CashierOrderInfo cashierOrderInfo) {
+        CashierDesktopObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
+
 //        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
 //            ZLogger.d("PAD客显功能未打开");
 //            return;

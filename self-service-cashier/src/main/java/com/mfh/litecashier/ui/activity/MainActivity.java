@@ -1,14 +1,11 @@
 package com.mfh.litecashier.ui.activity;
 
 import android.app.Activity;
-import android.app.Presentation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.hardware.display.DisplayManager;
 import android.media.MediaRouter;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -46,7 +43,6 @@ import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.business.presenter.ScOrderPresenter;
-import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.utils.BarcodeUtils;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScOrderView;
@@ -75,6 +71,7 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.mfh.framework.uikit.compound.BadgeViewButton;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -95,12 +92,12 @@ import com.mfh.litecashier.service.DemoPushService;
 import com.mfh.litecashier.service.EslSyncManager2;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.ActivityRoute;
+import com.mfh.litecashier.ui.cashier.CashierDesktopObservable;
+import com.mfh.litecashier.ui.cashier.OrderPresentation;
 import com.mfh.litecashier.ui.adapter.CashierMenuAdapter;
 import com.mfh.litecashier.ui.adapter.CashierSwipAdapter;
-import com.mfh.litecashier.ui.dialog.AdministratorSigninDialog;
 import com.mfh.litecashier.ui.dialog.AlipayDialog;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
-import com.mfh.litecashier.ui.dialog.ExpressDialog;
 import com.mfh.litecashier.ui.dialog.HangupOrderDialog;
 import com.mfh.litecashier.ui.dialog.InitCardByStepDialog;
 import com.mfh.litecashier.ui.dialog.QueryBalanceDialog;
@@ -135,7 +132,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.mfh.litecashier.R.id.buttonPrepareOrder;
 
 
 /**
@@ -284,7 +280,20 @@ public class MainActivity extends CashierActivity
             menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
         }
 
+
         reload();
+
+        initPresentation();
+
+
+        CashierDesktopObservable.getInstance().addObserver(new java.util.Observer() {
+            @Override
+            public void update(java.util.Observable o, Object arg) {
+                labelQuantity.setTopText(String.format("%.2f", CashierDesktopObservable.getInstance().getBcount()));
+                labelAmount.setTopText(String.format("%.2f", CashierDesktopObservable.getInstance().getAmount()));//成交价
+            }
+        });
+
         ValidateManager.get().batchValidate();
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
@@ -323,6 +332,8 @@ public class MainActivity extends CashierActivity
         super.onDestroy();
 
         AppHelper.clearCacheData();
+
+        hidePresentation();
     }
 
 
@@ -498,13 +509,6 @@ public class MainActivity extends CashierActivity
         }
 
         ActivityRoute.redirect2OrderList(this);
-//        Bundle extras = new Bundle();
-//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-////        extras.putInt(SimpleActivity.EXTRA_KEY_SERVICE_TYPE, SimpleActivity.FT_ONLINE_ORDER);
-////        SimpleActivity.actionStart(this, extras);
-//
-//        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ORDER);
-//        FragmentActivity.actionStart(this, extras);
     }
 
 
@@ -703,6 +707,8 @@ public class MainActivity extends CashierActivity
 
             //刷新上一单数据
             refreshLastOrder(null);
+            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
+
 
             //加载订单
             if (!StringUtils.isEmpty(curPosTradeNo)) {
@@ -726,6 +732,7 @@ public class MainActivity extends CashierActivity
             ZLogger.d("重新加载数据，准备同步数据...");
             dataSync();
         } catch (Exception e) {
+            e.printStackTrace();
             ZLogger.ef(e.toString());
         }
     }
@@ -928,9 +935,6 @@ public class MainActivity extends CashierActivity
      */
     @OnClick(R.id.fab_settle)
     public void settle() {
-//        if (mPresentation != null) {
-//            mPresentation.dismiss();
-//        }
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
         btnSettle.setEnabled(false);
 
@@ -993,11 +997,8 @@ public class MainActivity extends CashierActivity
                 if (cashierOrderInfo != null) {
                     ZLogger.df(String.format("[点击结算]--生成结算信息：%s",
                             JSON.toJSONString(cashierOrderInfo)));
-                    //显示客显
-                    CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
-                }
 
-//                GlobalInstance.getInstance().setCashierOrderInfo(cashierOrderInfo);
+                }
 
                 subscriber.onNext(cashierOrderInfo);
                 subscriber.onCompleted();
@@ -1018,6 +1019,8 @@ public class MainActivity extends CashierActivity
 
                     @Override
                     public void onNext(CashierOrderInfo cashierOrderInfo) {
+                        //显示客显
+                        CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_PAY_ORDER, cashierOrderInfo);
                         if (cashierOrderInfo != null) {
                             hideProgressDialog();
                             Intent intent = new Intent(MainActivity.this, CashierPayActivity.class);
@@ -1133,6 +1136,9 @@ public class MainActivity extends CashierActivity
         obtaincurPosTradeNo(null);
         productAdapter.setEntityList(null);
         changeOrderDiscount(false, 100D);
+        // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
+        CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER,
+                null);
 
         Observable.create(new Observable.OnSubscribe<LastOrderInfo>() {
             @Override
@@ -1147,10 +1153,6 @@ public class MainActivity extends CashierActivity
                 ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
                         WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
                         JSONObject.toJSONString(cashierOrderInfo)));
-
-                // TODO: 7/5/16 下个版本放到支付页面去,更新客显，支付完成
-                CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_FINISH_ORDER,
-                        cashierOrderInfo);
 
                 PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
                         cashierOrderInfo.getPosTradeNo());
@@ -1269,15 +1271,18 @@ public class MainActivity extends CashierActivity
 
             @Override
             public void onDataSetChanged(boolean needScroll) {
-                labelQuantity.setTopText(String.format("%.2f", productAdapter.getBcount()));
-                labelAmount.setTopText(String.format("%.2f", productAdapter.getFinalAmount()));//成交价
-
+                // TODO: 07/02/2017
                 if (productAdapter.getItemCount() > 0) {
                     btnSettle.setEnabled(true);
                 } else {
                     LedAgent.clear();
                     btnSettle.setEnabled(false);
                 }
+
+                CashierDesktopObservable.getInstance().setShopcartEntities(productAdapter.getEntityList());
+//                labelQuantity.setTopText(String.format("%.2f", productAdapter.getBcount()));
+//                labelAmount.setTopText(String.format("%.2f", productAdapter.getFinalAmount()));//成交价
+
                 if (needScroll) {
                     //后来者居上
                     productRecyclerView.scrollToPosition(0);
@@ -1647,8 +1652,6 @@ public class MainActivity extends CashierActivity
             tvLastQuantity.setText(String.format("数量: %.2f", 0D));
             tvLastDiscount.setText(String.format("优惠: ¥%.2f", 0D));
             tvLastCharge.setText(String.format("找零: ¥%.2f", 0D));
-
-            CashierHelper.broadcastCashierOrderInfo(CashierOrderInfoWrapper.CMD_CLEAR_ORDER, null);
         }
     }
 
@@ -2157,11 +2160,13 @@ public class MainActivity extends CashierActivity
         }
     }
 
-
     private MediaRouter mMediaRouter;
-    private DemoPresentation mPresentation;
+    private OrderPresentation mPresentation;
 
-    private void test() {
+    /**
+     * 初始化双屏异显
+     * */
+    private void initPresentation() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             boolean isMultiWindowSupported = isInMultiWindowMode();
         }
@@ -2174,7 +2179,7 @@ public class MainActivity extends CashierActivity
             // giving the user a choice.  For this example, we simply choose the first display
             // which is the one the system recommends as the preferred presentation display.
             Display display = presentationDisplays[0];
-            mPresentation = new DemoPresentation(this, display);
+            mPresentation = new OrderPresentation(this, display);
 
             mPresentation.show();
         }
@@ -2201,7 +2206,7 @@ public class MainActivity extends CashierActivity
         // Show a new presentation if needed.
         if (mPresentation == null && presentationDisplay != null) {
             ZLogger.d("Showing presentation on display: " + presentationDisplay);
-            mPresentation = new DemoPresentation(this, presentationDisplay);
+            mPresentation = new OrderPresentation(this, presentationDisplay);
             mPresentation.setOnDismissListener(mOnDismissListener);
             try {
                 mPresentation.show();
@@ -2211,35 +2216,15 @@ public class MainActivity extends CashierActivity
                 mPresentation = null;
             }
         }
-
-        // Update the contents playing in this activity.
-        updateContents();
     }
 
-    private void updateContents() {
-        // Show either the content in the main activity or the content in the presentation
-        // along with some descriptive text about what is happening.
+
+    /**
+     * 关闭双屏异显
+     * */
+    private void hidePresentation(){
         if (mPresentation != null) {
-//            mInfoTextView.setText(getResources().getString(
-//                    R.string.presentation_with_media_router_now_playing_remotely,
-//                    mPresentation.getDisplay().getName()));
-//            mSurfaceView.setVisibility(View.INVISIBLE);
-//            mSurfaceView.onPause();
-//            if (mPaused) {
-//                mPresentation.getSurfaceView().onPause();
-//            } else {
-//                mPresentation.getSurfaceView().onResume();
-//            }
-        } else {
-//            mInfoTextView.setText(getResources().getString(
-//                    R.string.presentation_with_media_router_now_playing_locally,
-//                    getWindowManager().getDefaultDisplay().getName()));
-//            mSurfaceView.setVisibility(View.VISIBLE);
-//            if (mPaused) {
-//                mSurfaceView.onPause();
-//            } else {
-//                mSurfaceView.onResume();
-//            }
+            mPresentation.dismiss();
         }
     }
 
@@ -2253,65 +2238,13 @@ public class MainActivity extends CashierActivity
                     if (dialog == mPresentation) {
                         ZLogger.d("Presentation was dismissed.");
                         mPresentation = null;
-                        updateContents();
                     }
                 }
             };
 
     @Override
-    public void onClose() {
-        redirect2LocalCategory();
-    }
-
-    @Override
     public void onAddGoods(PosProductEntity productEntity) {
         onFindGoods(productEntity, 0);
-    }
-
-    /**
-     * The presentation to show on the secondary display.
-     * <p>
-     * Note that this display may have different metrics from the display on which
-     * the main activity is showing so we must be careful to use the presentation's
-     * own {@link Context} whenever we load resources.
-     * </p>
-     */
-    private final static class DemoPresentation extends Presentation {
-        private GLSurfaceView mSurfaceView;
-
-        private TextView textView2;
-
-        public DemoPresentation(Context context, Display display) {
-            super(context, display);
-        }
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            // Be sure to call the super class.
-            super.onCreate(savedInstanceState);
-
-            // Get the resources for the context of the presentation.
-            // Notice that we are getting the resources from the context of the presentation.
-            Resources r = getContext().getResources();
-
-            // Inflate the layout.
-            setContentView(R.layout.presentation_test);
-
-            // Set up the surface view for visual interest.
-//            mSurfaceView = (GLSurfaceView)findViewById(R.id.surface_view);
-//            mSurfaceView.setRenderer(new CubeRenderer(false));
-            textView2 = (TextView) findViewById(R.id.textView2);
-        }
-
-        public void setText(String text) {
-            textView2.setText(text);
-            DialogUtil.showHint(text);
-            ZLogger.d(text);
-        }
-
-        public GLSurfaceView getSurfaceView() {
-            return mSurfaceView;
-        }
     }
 
     /**
@@ -2340,7 +2273,7 @@ public class MainActivity extends CashierActivity
     /**
      * 接单
      * */
-    @OnClick(buttonPrepareOrder)
+    @OnClick(R.id.buttonPrepareOrder)
     public void redirect2PrepareOrder(){
         EmbMsgService.getInstance().setAllRead(IMBizType.ORDER_TRANS_NOTIFY);
         btnPrepareOrder.setBadgeNumber(0);
@@ -2377,7 +2310,6 @@ public class MainActivity extends CashierActivity
      */
     private void redirect2LocalCategory(){
         inlvBarcode.setAction1Selected(false);
-//        DialogUtil.showHint("redirect2LocalCategory");
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         mQueryGoodsFragment = getSupportFragmentManager().findFragmentByTag("QueryGoodsFragment");

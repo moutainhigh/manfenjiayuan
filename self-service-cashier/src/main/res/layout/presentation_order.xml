@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--会员信息-->
+        <include
+            android:id="@+id/view_vip_brief"
+            layout="@layout/include_cashier_pay_header_1"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"/>
+
+        <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/view_vip_brief"
+            android:layout_marginTop="0dp"
+            android:background="#D2D2D2"/>
+
+        <!--商品金额-->
+        <LinearLayout
+            android:id="@+id/frame_orderinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/top_line"
+            android:baselineAligned="false"
+            android:divider="@drawable/divider_vertical_line_primary"
+            android:dividerPadding="12dp"
+            android:gravity="center"
+            android:padding="12dp"
+            android:showDividers="middle">
+            <!--应付金额-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_orderamount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="应付金额"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_black"
+                app:topTextSize="30sp"/>
+            <!--优惠券-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_discount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="优惠券"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_black"
+                app:topTextSize="30sp"/>
+
+            <!--积分-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_score"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="积分"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/colorPrimary"
+                app:topTextSize="30sp"/>
+
+            <!--实付金额-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_actualamount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="实付金额"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/colorPrimary"
+                app:topTextSize="30sp"/>
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/ll_procuct_header"
+            layout="@layout/itemview_orderprentation_goods_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frame_orderinfo"
+            android:layout_marginTop="@dimen/spacing_4x"/>
+
+        <!--商品列表-->
+        <RelativeLayout
+            android:id="@+id/frame_goods"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomview"
+            android:layout_below="@+id/ll_procuct_header"
+            android:background="@color/material_white"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/spacing_4x"
+            android:paddingStart="@dimen/spacing_4x">
+
+
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <!--空视图:二维码-->
+            <ImageView
+                android:id="@+id/empty_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
+                android:src="@mipmap/emptyimage_no_goods"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_normal">
+
+            <ImageView
+                android:id="@+id/iv_hostserver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/ic_textlogo_lanlj"
+                android:contentDescription="@null"
+                android:src="@mipmap/ic_textlogo_mixicook"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
+
