@@ -17,25 +17,30 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
-import com.mfh.framework.api.account.UserApiImpl;
-import com.mfh.framework.api.account.Human;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+
+import net.tsz.afinal.http.AjaxParams;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * <p>
@@ -233,7 +238,6 @@ public class RegisterUserDialog extends CommonDialog {
         etName.getText().clear();
         etLoginPass.getText().clear();
         etPayPass.getText().clear();
-
     }
 
     @Override
@@ -383,7 +387,51 @@ public class RegisterUserDialog extends CommonDialog {
 
 //                DialogUtil.showHint("开卡");
                 progressBar.setVisibility(View.VISIBLE);
-                CommonUserAccountApi.registerUser(phoneNumber, humanName, loginPassword, payPassword, submitCallback);
+
+                Map<String, String> options = new HashMap<>();
+                options.put("humanMobile", phoneNumber);
+                if (!StringUtils.isEmpty(humanName)) {
+                    options.put("humanName", humanName);
+                }
+                options.put("password", loginPassword);
+                options.put("payPassword", payPassword);
+                options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+                CommonUserAccountHttpManager.getInstance().registerUser(options,
+                        new Subscriber<Human>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                ZLogger.e(String.format("注册失败:%s", e.toString()));
+                                btnSubmit.setEnabled(true);
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onNext(Human human) {
+                                btnSubmit.setEnabled(true);
+                                if (human == null) {
+                                    DialogUtil.showHint("注册失败");
+                                    progressBar.setVisibility(View.GONE);
+
+                                    if (mRegisterListener != null){
+                                        mRegisterListener.onFailed();
+                                    }
+                                } else {
+                                    DialogUtil.showHint(String.format("注册成功:\n姓名：%s\n手机号：%s",
+                                            human.getName(), human.getMobile()));
+//                        dismiss();
+//                        DialogUtil.showHint("注册成功");
+                                    //自动去绑定小区，如果失败，则提示。
+                                    createParamDirect(human);
+                                }
+                            }
+
+                        });
             }
         });
         confirmDialog.setNegativeButton("点错了", new OnClickListener() {
@@ -398,74 +446,44 @@ public class RegisterUserDialog extends CommonDialog {
         confirmDialog.show();
     }
 
-    //注册
-    private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    Human human;
-                    if (rspData != null) {
-                        RspBean<Human> retValue = (RspBean<Human>) rspData;
-                        human = retValue.getValue();
-                    }
-                    else{
-                        human = null;
+    private void createParamDirect(final Human human) {
+        Map<String, String> options = new HashMap<>();
+        AjaxParams params = new AjaxParams();
+        JSONObject paramObject = new JSONObject();
+        paramObject.put("humanId", human.getId());
+        paramObject.put("paramName", "defaultNet");//固定不变
+        paramObject.put("paramValue", MfhLoginService.get().getCurOfficeId());//当前门店登录账号的网点编号
+        params.put("param", paramObject.toJSONString());
+        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        RxHttpManager.getInstance().createParamDirect(options,
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
                     }
 
-                    btnSubmit.setEnabled(true);
-                    if (human == null) {
-                        DialogUtil.showHint("注册失败");
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.e(String.format("服务网点绑定失败:%s", e.toString()));
+                        btnSubmit.setEnabled(true);
                         progressBar.setVisibility(View.GONE);
 
                         if (mRegisterListener != null){
-                            mRegisterListener.onFailed();
+                            mRegisterListener.onSuccess(human);
                         }
-                    } else {
-                        DialogUtil.showHint(String.format("注册成功:\n姓名：%s\n手机号：%s",
-                                human.getName(), human.getMobile()));
-//                        dismiss();
-//                        DialogUtil.showHint("注册成功");
-                        //自动去绑定小区，如果失败，则提示。
 
-                        createParamDirect(human);
+                        dismiss();
                     }
-                }
 
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //{"code":"1","msg":"1181527857该卡已被他人使用，请重新确认！","version":"1","data":null}
-                    ZLogger.e(String.format("注册失败:%s", errMsg));
-//                    DialogUtil.showHint("未查到会员信息");
-//                    refreshHumanInfo(null);
-                    btnSubmit.setEnabled(true);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-            , Human.class
-            , CashierApp.getAppContext()) {
-    };
-
-
-    private void createParamDirect(final Human human) {
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
                     @Override
-                    public void processResult(final IResponseData rspData) {
-                        String result = null;
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            result = retValue.getValue();
-                        }
-
+                    public void onNext(String s) {
                         btnSubmit.setEnabled(true);
-                        if (result == null) {
+                        if (s == null) {
                             DialogUtil.showHint("服务网点绑定失败");
                             progressBar.setVisibility(View.GONE);
                         } else {
-                            ZLogger.d(String.format("服务网点绑定成功:%s", result));
+                            ZLogger.d(String.format("服务网点绑定成功:%s", s));
                         }
 
                         if (mRegisterListener != null){
@@ -475,27 +493,8 @@ public class RegisterUserDialog extends CommonDialog {
                         dismiss();
                     }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"1181527857该卡已被他人使用，请重新确认！","version":"1","data":null}
-                        ZLogger.e(String.format("服务网点绑定失败:%s", errMsg));
-//                    DialogUtil.showHint("未查到会员信息");
-//                    refreshHumanInfo(null);
-                        btnSubmit.setEnabled(true);
-                        progressBar.setVisibility(View.GONE);
 
-                        if (mRegisterListener != null){
-                            mRegisterListener.onSuccess(human);
-                        }
+                });
 
-                        dismiss();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        UserApiImpl.createParamDirect(human.getId(), responseCallback);
     }
 }

@@ -14,23 +14,6 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class CommonUserAccountApiImpl extends CommonUserAccountApi{
-    /**
-     * 开卡并激活用户账户
-     *
-     * @param shortNo 卡面号
-     * @param cardId  卡芯片号
-     * @param humanId 用户编号 {@see com.mfh.litecashier.bean.Human}
-     * @see #URL_ACTIVATEACCOUNT
-     */
-    public static void activateAccount(String shortNo, String cardId, Long humanId,
-                                       AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("shortNo", shortNo);
-        params.put("cardId", cardId);
-        params.put("ownerId", String.valueOf(humanId));
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_ACTIVATEACCOUNT, params, responseCallback);
-    }
 
     /**
      * 会员卡充值
@@ -85,14 +68,6 @@ public class CommonUserAccountApiImpl extends CommonUserAccountApi{
 
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.postDefault(URL_GETPAYAMOUNT_BYORDERINFO, params, responseCallback);
-    }
-
-    public static void getPayAmountByOrderInfos(Integer bizType, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("bizType", String.valueOf(bizType));
-        params.put("jsonStr", jsonStr);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_GET_PAYAMOUNT_BY_ORDERINFOS, params, responseCallback);
     }
 
     /**

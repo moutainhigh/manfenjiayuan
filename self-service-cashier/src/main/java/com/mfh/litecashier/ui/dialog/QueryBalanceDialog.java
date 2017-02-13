@@ -34,8 +34,6 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
-import java.io.ByteArrayOutputStream;
-
 /**
  * <p>
  * 对话框 -- 门店用户注册
@@ -60,15 +58,11 @@ public class QueryBalanceDialog extends CommonDialog {
 
     private Long userTmpId = null;
 
-    public interface OnValidateListener{
-        void onSuccess(String phonenumber);
-        void onError();
-    }
-    private OnValidateListener mOnValidateListener;
 
-    private QueryBalanceDialog(Context context, boolean flag, OnCancelListener listener) {
-        super(context, flag, listener);
-    }
+
+//    private QueryBalanceDialog(Context context, boolean flag, OnCancelListener listener) {
+//        super(context, flag, listener);
+//    }
 
     @SuppressLint("InflateParams")
     private QueryBalanceDialog(Context context, int defStyle) {
@@ -175,8 +169,7 @@ public class QueryBalanceDialog extends CommonDialog {
         etCardNo.getText().clear();
     }
 
-    public void initialize(OnValidateListener onValidateListener) {
-        this.mOnValidateListener = onValidateListener;
+    public void initialize() {
         etCardNo.getText().clear();
         etCardNo.requestFocus();
     }
@@ -266,40 +259,4 @@ public class QueryBalanceDialog extends CommonDialog {
             , MfhApplication.getAppContext()) {
     };
 
-    //16进制字符串转换为String
-    private String hexString = "0123456789ABCDEF";
-
-    public String decode(String bytes) {
-        if (bytes.length() != 30) {
-            return null;
-        }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(
-                bytes.length() / 2);
-        // 将每2位16进制整数组装成一个字节
-        for (int i = 0; i < bytes.length(); i += 2)
-            baos.write((hexString.indexOf(bytes.charAt(i)) << 4 | hexString
-                    .indexOf(bytes.charAt(i + 1))));
-        return new String(baos.toByteArray());
-    }
-
-    // 字符序列转换为16进制字符串
-    private static String bytesToHexString(byte[] src, boolean isPrefix) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (isPrefix) {
-            stringBuilder.append("0x");
-        }
-        if (src == null || src.length <= 0) {
-            return null;
-        }
-        char[] buffer = new char[2];
-        for (byte aSrc : src) {
-            buffer[0] = Character.toUpperCase(Character.forDigit(
-                    (aSrc >>> 4) & 0x0F, 16));
-            buffer[1] = Character.toUpperCase(Character.forDigit(aSrc & 0x0F,
-                    16));
-            System.out.println(buffer);
-            stringBuilder.append(buffer);
-        }
-        return stringBuilder.toString();
-    }
 }

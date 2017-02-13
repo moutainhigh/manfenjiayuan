@@ -16,25 +16,25 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.sms.EmbWxUserRegisterApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.EmbWxUserRegisterHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
-import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * <p>
@@ -373,46 +373,77 @@ public class ValidatePhonenumberDialog extends CommonDialog {
         }
 
         if (countDownTimer == null) {
-            countDownTimer = new VerifyCodeCountDownTimer(60 * 1000, 1000);
+            countDownTimer = new VerifyCodeCountDownTimer(50 * 1000, 1000);
         }
         countDownTimer.start();
         progressBar.setVisibility(View.VISIBLE);
 
         if (userTmpId == null) {
-            EmbWxUserRegisterApi.beginAuthenBysms(phoneNumber, verifyCodeCallback);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("mobile", phoneNumber);
+            jsonObject.put("sourceType", 10);
+
+            Map<String, String> options = new HashMap<>();
+            options.put("jsonStr", jsonObject.toJSONString());
+
+            EmbWxUserRegisterHttpManager.getInstance().beginAuthenBysms(options,
+                    new Subscriber<Long>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.e(String.format("发送验证码失败:%s", e.toString()));
+                            DialogUtil.showHint("发送验证码失败");
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onNext(Long aLong) {
+                            userTmpId = aLong;
+                            ZLogger.d(String.format("发送验证码成功:%d", userTmpId));
+                            tvTip.setVisibility(View.VISIBLE);
+
+                            progressBar.setVisibility(View.GONE);
+                            secondStep();
+                        }
+                    });
         } else {
-            EmbWxUserRegisterApi.retryAuthenBysms(phoneNumber, userTmpId, verifyCodeCallback);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("mobile", phoneNumber);
+            jsonObject.put("userTmpId", userTmpId);
+
+            Map<String, String> options = new HashMap<>();
+            options.put("jsonStr", jsonObject.toJSONString());
+
+            EmbWxUserRegisterHttpManager.getInstance().retryAuthenBysms(options,
+                    new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.e(String.format("发送验证码失败:%s", e.toString()));
+                            DialogUtil.showHint("发送验证码失败");
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            ZLogger.d(String.format("发送验证码成功:%s", s));
+                            tvTip.setVisibility(View.VISIBLE);
+
+                            progressBar.setVisibility(View.GONE);
+                            secondStep();
+                        }
+                    });
         }
     }
 
-    private NetCallBack.NetTaskCallBack verifyCodeCallback = new NetCallBack.NetTaskCallBack<Long,
-            NetProcessor.Processor<Long>>(
-            new NetProcessor.Processor<Long>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    if (rspData != null) {
-                        RspValue<Long> retValue = (RspValue<Long>) rspData;
-                        userTmpId = retValue.getValue();
-                        ZLogger.d(String.format("发送验证码成功:%d", userTmpId));
-                        tvTip.setVisibility(View.VISIBLE);
-                    }
-
-                    progressBar.setVisibility(View.GONE);
-                    secondStep();
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //{"code":"1","msg":"缺少渠道端点标识！","version":"1","data":null}
-                    ZLogger.e(String.format("发送验证码失败:%s", errMsg));
-                    DialogUtil.showHint("发送验证码失败");
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-            , Long.class
-            , CashierApp.getAppContext()) {
-    };
 
     /**
      * 下一步：验证验证码是否输入正确
@@ -443,17 +474,32 @@ public class ValidatePhonenumberDialog extends CommonDialog {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        NetCallBack.NetTaskCallBack authCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(final IResponseData rspData) {
-//                    {"code":"0","msg":"操作成功!","version":"1","data":""}
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            ZLogger.d(String.format("验证码验证成功:%s", retValue.getValue()));
-                        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token", verifyCode);
+        jsonObject.put("userTmpId", userTmpId);
+        jsonObject.put("sourceType", 10);
 
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonObject.toJSONString());
+
+        EmbWxUserRegisterHttpManager.getInstance().doAuthenBysms(options,
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.e(String.format("短信码验证验证失败:%s", e.toString()));
+                        DialogUtil.showHint(e.getMessage());
+                        progressBar.setVisibility(View.GONE);
+                        secondStep();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.d(String.format("验证码验证成功:%s", s));
                         progressBar.setVisibility(View.GONE);
 
                         dismiss();
@@ -462,24 +508,7 @@ public class ValidatePhonenumberDialog extends CommonDialog {
                             mOnValidateListener.onSuccess(phoneNumber);
                         }
                     }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"缺少渠道端点标识！","version":"1","data":null}
-                        //{"code":"1","msg":"短信验证码验证不对，请重新输入!","version":"1","data":null}
-                        ZLogger.e(String.format("短信码验证验证失败:%s", errMsg));
-                        DialogUtil.showHint(errMsg);
-                        progressBar.setVisibility(View.GONE);
-                        secondStep();
-//                        btnVerifyCode.setVisibility(View.VISIBLE);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        EmbWxUserRegisterApi.doAuthenBysms(verifyCode, userTmpId, authCallback);
+                });
     }
 
 
@@ -514,41 +543,4 @@ public class ValidatePhonenumberDialog extends CommonDialog {
         }
     }
 
-
-    //16进制字符串转换为String
-    private String hexString = "0123456789ABCDEF";
-
-    public String decode(String bytes) {
-        if (bytes.length() != 30) {
-            return null;
-        }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(
-                bytes.length() / 2);
-        // 将每2位16进制整数组装成一个字节
-        for (int i = 0; i < bytes.length(); i += 2)
-            baos.write((hexString.indexOf(bytes.charAt(i)) << 4 | hexString
-                    .indexOf(bytes.charAt(i + 1))));
-        return new String(baos.toByteArray());
-    }
-
-    // 字符序列转换为16进制字符串
-    private static String bytesToHexString(byte[] src, boolean isPrefix) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (isPrefix) {
-            stringBuilder.append("0x");
-        }
-        if (src == null || src.length <= 0) {
-            return null;
-        }
-        char[] buffer = new char[2];
-        for (byte aSrc : src) {
-            buffer[0] = Character.toUpperCase(Character.forDigit(
-                    (aSrc >>> 4) & 0x0F, 16));
-            buffer[1] = Character.toUpperCase(Character.forDigit(aSrc & 0x0F,
-                    16));
-            System.out.println(buffer);
-            stringBuilder.append(buffer);
-        }
-        return stringBuilder.toString();
-    }
 }

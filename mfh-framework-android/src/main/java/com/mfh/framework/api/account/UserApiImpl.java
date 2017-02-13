@@ -102,47 +102,6 @@ public class UserApiImpl extends UserApi {
         AfinalFactory.postDefault(URL_CUSTOMER_CREATEPARAMDIRECT, params, responseCallback);
     }
 
-
-    /**
-     * 查询用户
-     * <ol>
-     *     适用场景
-     *     <li>会员收银支付查询</li>
-     * </ol>
-     * */
-    public static void findHumanByPhone(String phoneNumber, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("mobile", phoneNumber);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_FIND_HUMAN_BY_IDENTITY, params, responseCallback);
-    }
-    /**
-     * 查询用户
-     * <ol>
-     *     适用场景
-     *     <li>会员收银支付查询</li>
-     * </ol>
-     * */
-    public static void findHumanByCard(String cardNo, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("cardNo", cardNo);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_FIND_HUMAN_BY_IDENTITY, params, responseCallback);
-    }
-    /**
-     * 查询用户
-     * <ol>
-     *     适用场景
-     *     <li>会员收银支付查询</li>
-     * </ol>
-     * */
-    public static void findHumanByHumanId(String humanId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("humanId", humanId);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_FIND_HUMAN_BY_IDENTITY, params, responseCallback);
-    }
-
     /**
      * 获取默认参数
      * @param paramName
@@ -155,14 +114,4 @@ public class UserApiImpl extends UserApi {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AfinalFactory.getHttp(true).post(URL_GET_MYPARAMVALUE, params, responseCallback);
     }
-
-    /**
-     * 获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息
-     * */
-    public static void queryPrivList(AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_QUERY_PRIVLIST, params, responseCallback);
-    }
-
 }

@@ -1,4 +1,4 @@
-package com.mfh.litecashier.bean;
+package com.mfh.framework.api.commonuseraccount;
 
 
 /**

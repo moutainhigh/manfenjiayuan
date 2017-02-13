@@ -1,5 +1,7 @@
 package com.mfh.framework.rxapi.http;
 
+import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.commonuseraccount.ActivateAccountResult;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.func.MResponseFunc;
@@ -11,6 +13,8 @@ import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 import rx.Subscriber;
+
+import static com.mfh.framework.api.commonuseraccount.CommonUserAccountApi.URL_COMMONUSERACCOUNT;
 
 /**
  * Created by bingshanguxue on 25/01/2017.
@@ -44,6 +48,22 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
          */
         @GET("commonuseraccount/payDirect")
         Observable<MResponse<String>> payDirect(@QueryMap Map<String, String> options);
+
+        /**
+         * 用户注册,
+         * 根据手机号新注册或修改一个个人用户,并且建立个人支付账户，需要提供登录密码password和支付密码payPassword:
+         * /commonuseraccount/registerUser?humanMobile=18248499111&humanName=zhangyz&password=123456&payPassword=123456
+         */
+        @GET("commonuseraccount/registerUser")
+        Observable<MResponse<Human>> registerUser(@QueryMap Map<String, String> options);
+
+        /**
+         * 开卡并激活用户账户
+         * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
+         */
+        @GET("commonuseraccount/activateAccount")
+        Observable<MResponse<ActivateAccountResult>> activateAccount(@QueryMap Map<String, String> options);
+
     }
 
     public void getPayAmountByOrderInfos(Map<String, String> options, Subscriber<List<PayAmount>> subscriber) {
@@ -53,10 +73,38 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         toSubscribe(observable, subscriber);
     }
 
+    /**
+     *
+     * 积分兑换（免密）
+     * @param humanId 客户编号（扫描的支付码）
+     * @param score  积分值
+     *
+     * 收银订单会员支付（手机号需要输入密码，会员支付码不需要输入密码）
+     * @param cardNo  卡芯片号
+     * @param humanId         客户编号
+     * @param accountPassword 支付密码
+     * @param amount          支付金额,单位为元，精确到小数点后两位，取值范围[0.01,100000000]，
+     * @param bizType         业务类型
+     * @param orderId         pos机本地订单号格式（设备编号＋订单编号），还不算后台生成的订单号
+     */
     public void payDirect(Map<String, String> options, Subscriber<String> subscriber) {
         CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
         Observable observable = mfhApi.payDirect(options)
                 .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void registerUser(Map<String, String> options, Subscriber<Human> subscriber) {
+        CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
+        Observable observable = mfhApi.registerUser(options)
+                .map(new MResponseFunc<Human>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void activateAccount(Map<String, String> options, Subscriber<ActivateAccountResult> subscriber) {
+        CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
+        Observable observable = mfhApi.activateAccount(options)
+                .map(new MResponseFunc<ActivateAccountResult>());
         toSubscribe(observable, subscriber);
     }
 

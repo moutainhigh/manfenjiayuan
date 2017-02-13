@@ -19,29 +19,30 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.account.UserApiImpl;
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
+import com.mfh.framework.api.commonuseraccount.ActivateAccountResult;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.ActivateAccountResult;
 
-import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * <p>
@@ -352,35 +353,36 @@ public class InitCardByStepDialog extends CommonDialog {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        UserApiImpl.findHumanByPhone(phoneNumber, findMemberResponseCallback);
-    }
 
-    //查询会员信息
-    private NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    progressBar.setVisibility(View.GONE);
-                    if (rspData == null) {
-                        DialogUtil.showHint("未查到会员信息，请退出重试");
-                    } else {
-                        RspBean<Human> retValue = (RspBean<Human>) rspData;
-                        saveHumanInfo(retValue.getValue());
+        Map<String, String> options = new HashMap<>();
+        options.put("mobile", phoneNumber);
+        SysHttpManager.getInstance().getHumanByIdentity(options,
+                new Subscriber<Human>() {
+                    @Override
+                    public void onCompleted() {
+
                     }
-                }
 
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    progressBar.setVisibility(View.GONE);
-                    ZLogger.e(String.format("查询会员信息失败:%s", errMsg));
-                    DialogUtil.showHint("查询会员信息失败，请退出重试");
-                }
-            }
-            , Human.class
-            , CashierApp.getAppContext()) {
-    };
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                        ZLogger.e(String.format("查询会员信息失败:%s", e.toString()));
+                        DialogUtil.showHint("查询会员信息失败，请退出重试");
+                    }
+
+                    @Override
+                    public void onNext(Human human) {
+                        progressBar.setVisibility(View.GONE);
+
+
+                        if (human == null) {
+                            DialogUtil.showHint("未查到会员信息，请退出重试");
+                        } else {
+                            saveHumanInfo(human);
+                        }
+                    }
+                });
+    }
 
 
     /**
@@ -441,9 +443,47 @@ public class InitCardByStepDialog extends CommonDialog {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
 
-//                DialogUtil.showHint("开卡");
                 progressBar.setVisibility(View.VISIBLE);
-                CommonUserAccountApiImpl.activateAccount(shortNo, cardId, mHuman.getId(), submitCallback);
+
+                Map<String, String> options = new HashMap<>();
+                options.put("shortNo", shortNo);
+                options.put("cardId", cardId);
+                options.put("ownerId", String.valueOf(mHuman.getId()));
+                options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+                CommonUserAccountHttpManager.getInstance().activateAccount(options,
+                        new Subscriber<ActivateAccountResult>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                ZLogger.e(String.format("开卡失败:%s", e.toString()));
+                                btnSubmit.setEnabled(true);
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onNext(ActivateAccountResult activateAccountResult) {
+                                btnSubmit.setEnabled(true);
+                                if (activateAccountResult == null) {
+                                    DialogUtil.showHint("开卡失败");
+                                    if (mOnInitCardListener != null){
+                                        mOnInitCardListener.onFailed();
+                                    }
+                                } else {
+                                    ZLogger.df(String.format("开卡成功:%d-%d",
+                                            activateAccountResult.getId(), activateAccountResult.getOwnerId()));
+                                    dismiss();
+                                    if (mOnInitCardListener != null){
+                                        mOnInitCardListener.onSuccess();
+                                    }
+                                }
+                            }
+
+                        });
+
             }
         });
         confirmDialog.setNegativeButton("点错了", new DialogInterface.OnClickListener() {
@@ -456,85 +496,5 @@ public class InitCardByStepDialog extends CommonDialog {
             }
         });
         confirmDialog.show();
-    }
-
-    //开卡
-    private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<ActivateAccountResult,
-            NetProcessor.Processor<ActivateAccountResult>>(
-            new NetProcessor.Processor<ActivateAccountResult>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    ActivateAccountResult result = null;
-                    if (rspData != null) {
-                        RspBean<ActivateAccountResult> retValue = (RspBean<ActivateAccountResult>) rspData;
-                        result = retValue.getValue();
-                    }
-
-                    btnSubmit.setEnabled(true);
-                    if (result == null) {
-                        DialogUtil.showHint("开卡失败");
-                        if (mOnInitCardListener != null){
-                            mOnInitCardListener.onFailed();
-                        }
-                    } else {
-                        ZLogger.df(String.format("开卡成功:%d-%d", result.getId(), result.getOwnerId()));
-                        dismiss();
-                        if (mOnInitCardListener != null){
-                            mOnInitCardListener.onSuccess();
-                        }
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //{"code":"1","msg":"1181527857该卡已被他人使用，请重新确认！","version":"1","data":null}
-                    ZLogger.e(String.format("开卡失败:%s", errMsg));
-//                    DialogUtil.showHint("未查到会员信息");
-//                    refreshHumanInfo(null);
-                    btnSubmit.setEnabled(true);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-            , ActivateAccountResult.class
-            , CashierApp.getAppContext()) {
-    };
-
-
-    //16进制字符串转换为String
-    private String hexString = "0123456789ABCDEF";
-
-    public String decode(String bytes) {
-        if (bytes.length() != 30) {
-            return null;
-        }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(
-                bytes.length() / 2);
-        // 将每2位16进制整数组装成一个字节
-        for (int i = 0; i < bytes.length(); i += 2)
-            baos.write((hexString.indexOf(bytes.charAt(i)) << 4 | hexString
-                    .indexOf(bytes.charAt(i + 1))));
-        return new String(baos.toByteArray());
-    }
-
-    // 字符序列转换为16进制字符串
-    private static String bytesToHexString(byte[] src, boolean isPrefix) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (isPrefix) {
-            stringBuilder.append("0x");
-        }
-        if (src == null || src.length <= 0) {
-            return null;
-        }
-        char[] buffer = new char[2];
-        for (byte aSrc : src) {
-            buffer[0] = Character.toUpperCase(Character.forDigit(
-                    (aSrc >>> 4) & 0x0F, 16));
-            buffer[1] = Character.toUpperCase(Character.forDigit(aSrc & 0x0F,
-                    16));
-            System.out.println(buffer);
-            stringBuilder.append(buffer);
-        }
-        return stringBuilder.toString();
     }
 }

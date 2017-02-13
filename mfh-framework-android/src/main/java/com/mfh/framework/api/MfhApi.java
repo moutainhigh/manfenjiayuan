@@ -13,11 +13,11 @@ import com.mfh.framework.api.clientLog.ClientLogApi;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.api.companyInfo.CompanyInfoApi;
 import com.mfh.framework.api.invCheckOrder.InvCheckOrderApi;
-import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invCompProvider.InvComProviderApi;
 import com.mfh.framework.api.invCompany.InvCompanyApi;
 import com.mfh.framework.api.invFindOrder.InvFindOrderApi;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
+import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApi;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApi;
@@ -32,11 +32,9 @@ import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApi;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApi;
 import com.mfh.framework.api.scOrder.ScOrderApi;
 import com.mfh.framework.api.shoppingCart.ShoppingCartApi;
-import com.mfh.framework.api.sms.EmbWxUserRegisterApi;
 import com.mfh.framework.api.sms.HumanAuthTempApi;
 import com.mfh.framework.api.stock.StockApi;
 import com.mfh.framework.api.subdist.SubdistApi;
-import com.mfh.framework.api.tenant.TenantApi;
 import com.mfh.framework.network.NetFactory;
 
 
@@ -50,7 +48,8 @@ public class MfhApi implements ApiParams {
     //UBS:默认从配置文件读取，也可以配置
     public static String URL_BASE_SERVER = NetFactory.getServerUrl();
     //网络电话
-    public static String URL_NET_PHONE = URL_BASE_SERVER.replace(":8080/pmc", "") + "/msgcore/embYtx/getYuninfoByGuid";
+    public static String URL_NET_PHONE = URL_BASE_SERVER.replace(":8080/pmc", "")
+            + "/msgcore/embYtx/getYuninfoByGuid";
     //域名
     public static String URL_DEFAULT = "http://devmobile.manfenjiayuan.cn/";
     //渠道编号
@@ -103,7 +102,6 @@ public class MfhApi implements ApiParams {
         ScGoodsSkuApi.register();
         ScOrderApi.register();
         ShoppingCartApi.register();
-        EmbWxUserRegisterApi.register();
         HumanAuthTempApi.register();
         StockApi.register();
         SubdistApi.register();
@@ -114,6 +112,5 @@ public class MfhApi implements ApiParams {
         InvSkuLabelApi.register();
         PosOrderApi.register();
         ScApi.register();
-        TenantApi.register();
     }
 }

@@ -22,9 +22,6 @@ public class UserApi {
     public static String URL_USER_UPDATE = MfhApi.URL_BASE_SERVER + "/sys/human/update";
     /**更新用户信息:头像*/
     public static String URL_USER_UPLOAD_HEAD= MfhApi.URL_BASE_SERVER + "/sys/human/uploadHumanHeadImg";
-
-    /**查询用户：/pmc/sys/human/getHumanByIdentity?mobile=2123&humanId=31323*/
-    public static String URL_FIND_HUMAN_BY_IDENTITY = MfhApi.URL_BASE_SERVER + "/sys/human/getHumanByIdentity";
     /**
      * 获取默认参数
      * pmc/sysCommonParam/getMyParamValue?paramName=defaultNet
@@ -36,8 +33,6 @@ public class UserApi {
      /customer/createParamDirect?param={humanId:12345, paramName:"defaultNet",paramValue:132079}
      * */
     public static String URL_CUSTOMER_CREATEPARAMDIRECT = MfhApi.URL_BASE_SERVER + "/customer/createParamDirect";
-    /**查询登录用户能力信息*/
-    public static String URL_QUERY_PRIVLIST = MfhApi.URL_BASE_SERVER + "/queryPrivList";
 
 
     public static void register(){
@@ -48,9 +43,7 @@ public class UserApi {
         URL_USER_UPDATE_LOGINPWD = MfhApi.URL_BASE_SERVER + "/sys/human/updateUserPassword";
         URL_USER_UPDATE = MfhApi.URL_BASE_SERVER + "/sys/human/update";
         URL_USER_UPLOAD_HEAD= MfhApi.URL_BASE_SERVER + "/sys/human/uploadHumanHeadImg";
-        URL_FIND_HUMAN_BY_IDENTITY = MfhApi.URL_BASE_SERVER + "/sys/human/getHumanByIdentity";
         URL_CUSTOMER_CREATEPARAMDIRECT = MfhApi.URL_BASE_SERVER + "/customer/createParamDirect";
         URL_GET_MYPARAMVALUE = MfhApi.URL_BASE_SERVER + "/sysCommonParam/getMyParamValue";
-        URL_QUERY_PRIVLIST = MfhApi.URL_BASE_SERVER + "/queryPrivList";
     }
 }
