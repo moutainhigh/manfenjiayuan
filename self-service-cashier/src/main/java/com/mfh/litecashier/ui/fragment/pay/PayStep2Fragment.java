@@ -23,6 +23,7 @@ import com.bingshanguxue.cashier.hardware.led.LedAgent;
 import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.pay.BasePayStepFragment;
 import com.bingshanguxue.cashier.v1.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
@@ -32,14 +33,9 @@ import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspListBean;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -47,19 +43,15 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
 import com.mfh.framework.rxapi.http.PmcStockHttpManager;
-import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.PayCouponAdapter;
-import com.mfh.litecashier.ui.cashier.CashierDesktopObservable;
 import com.mfh.litecashier.ui.dialog.EnterPasswordDialog;
 
 import java.util.Date;
@@ -314,7 +306,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         PmcStockHttpManager.getInstance().findMarketRulesByOrderInfos(options,
-                new MQuerySubscriber<MarketRulesWrapper>(new PageInfo(1, 20)){
+                new MQuerySubscriber<MarketRulesWrapper>(new PageInfo(1, 20)) {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
@@ -390,94 +382,47 @@ public class PayStep2Fragment extends BasePayStepFragment {
         jsonstr.add(jsonstrItem);
 
 
-        if (RxHttpManager.RELEASE){
-            Map<String, String> options = new HashMap<>();
-            options.put("bizType", String.valueOf(cashierOrderInfo.getBizType()));
-            options.put("jsonStr", jsonstr.toJSONString());
-            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        Map<String, String> options = new HashMap<>();
+        options.put("bizType", String.valueOf(cashierOrderInfo.getBizType()));
+        options.put("jsonStr", jsonstr.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-            CommonUserAccountHttpManager.getInstance().getPayAmountByOrderInfos(options,
-                    new Subscriber<List<PayAmount>>() {
-                        @Override
-                        public void onCompleted() {
+        CommonUserAccountHttpManager.getInstance().getPayAmountByOrderInfos(options,
+                new Subscriber<List<PayAmount>>() {
+                    @Override
+                    public void onCompleted() {
 
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            ZLogger.ef(e.toString());
-                            if (couponRule != null) {
-                                couponRule.toggleSelected();
-                                couponAdapter.notifyDataSetChanged();
-                            }
-                            btnSubmit.setEnabled(true);
-                            showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
-                        }
-
-                        @Override
-                        public void onNext(List<PayAmount> payAmounts) {
-                            if (cashierOrderInfo.saveCouponDiscount(payAmounts, couponsIds, rulesIds)) {
-                                //刷新会员优惠的积分
-                                if (couponAdapter != null) {
-                                    couponAdapter.setVipScore(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo) / 2);
-                                }
-                                refresh();
-                            } else {
-                                if (couponRule != null) {
-                                    couponRule.toggleSelected();
-                                    couponAdapter.notifyDataSetChanged();
-                                }
-                            }
-                            btnSubmit.setEnabled(true);
-                            hideProgressDialog();
-                        }
-                    });
-        }
-        else{
-            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PayAmount,
-                    NetProcessor.Processor<PayAmount>>(
-                    new NetProcessor.Processor<PayAmount>() {
-                        @Override
-                        public void processResult(IResponseData rspData) {
-
-                            RspListBean<PayAmount> retValue = (RspListBean<PayAmount>) rspData;
-                            List<PayAmount> amountArray = retValue.getValue();
-                            if (cashierOrderInfo.saveCouponDiscount(amountArray, couponsIds, rulesIds)) {
-                                //刷新会员优惠的积分
-                                if (couponAdapter != null) {
-                                    couponAdapter.setVipScore(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo) / 2);
-                                }
-                                refresh();
-                            } else {
-                                if (couponRule != null) {
-                                    couponRule.toggleSelected();
-                                    couponAdapter.notifyDataSetChanged();
-                                }
-                            }
-                            btnSubmit.setEnabled(true);
-                            hideProgressDialog();
-                        }
-
-                        @Override
-                        protected void processFailure(Throwable t, String errMsg) {
-                            super.processFailure(t, errMsg);
-                            ZLogger.ef(errMsg);
-                            if (couponRule != null) {
-                                couponRule.toggleSelected();
-                                couponAdapter.notifyDataSetChanged();
-                            }
-                            btnSubmit.setEnabled(true);
-                            showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                        }
                     }
-                    , PayAmount.class
-                    , CashierApp.getAppContext()) {
-            };
 
-            CommonUserAccountApiImpl.getPayAmountByOrderInfos(cashierOrderInfo.getBizType(),
-                    jsonstr.toJSONString(), responseCallback);
-        }
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
+                        if (couponRule != null) {
+                            couponRule.toggleSelected();
+                            couponAdapter.notifyDataSetChanged();
+                        }
+                        btnSubmit.setEnabled(true);
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                    }
 
+                    @Override
+                    public void onNext(List<PayAmount> payAmounts) {
+                        if (cashierOrderInfo.saveCouponDiscount(payAmounts, couponsIds, rulesIds)) {
+                            //刷新会员优惠的积分
+                            if (couponAdapter != null) {
+                                couponAdapter.setVipScore(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo) / 2);
+                            }
+                            refresh();
+                        } else {
+                            if (couponRule != null) {
+                                couponRule.toggleSelected();
+                                couponAdapter.notifyDataSetChanged();
+                            }
+                        }
+                        btnSubmit.setEnabled(true);
+                        hideProgressDialog();
+                    }
+                });
     }
 
     @OnClick(R.id.button_submit)
@@ -491,53 +436,18 @@ public class PayStep2Fragment extends BasePayStepFragment {
         }
 
         if (paySubType == 0) {
-            onPreSubmit();
-
-            if (RxHttpManager.RELEASE){
-                Map<String, String> options = new HashMap<>();
-                if (!StringUtils.isEmpty(vipCardId)){
-                    options.put("cardNo", vipCardId);
-                }
+            Map<String, String> options = new HashMap<>();
+            if (!StringUtils.isEmpty(vipCardId)) {
+                options.put("cardNo", vipCardId);
+            }
 //        params.put("accountPassword", accountPassword);
-                options.put("amount", MUtils.formatDouble(handleAmount, ""));
-                options.put("bizType", bizType);
-                options.put("orderId", outTradeNo);
-                options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-                options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            options.put("amount", MUtils.formatDouble(handleAmount, ""));
+            options.put("bizType", bizType);
+            options.put("orderId", outTradeNo);
+            options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-                CommonUserAccountHttpManager.getInstance().payDirect(options,
-                        new Subscriber<String>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
-                                        PosOrderPayEntity.PAY_STATUS_FAILED,
-                                        handleAmount, handleAmount, 0D,
-                                        cashierOrderInfo.getDiscountInfo());
-                                onPayStepFailed(paymentInfo, e.toString());
-                            }
-
-                            @Override
-                            public void onNext(String s) {
-                                ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
-                                        WayType.name(curPayType), s));
-//                    bPayProcessing = false;
-                                onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
-                                        PosOrderPayEntity.PAY_STATUS_FINISH,
-                                        handleAmount, handleAmount, 0D,
-                                        cashierOrderInfo.getDiscountInfo()));
-                            }
-                        });
-            }
-            else{
-                CommonUserAccountApi.payDirectByCard(vipCardId,
-                        MUtils.formatDouble(handleAmount, ""), bizType,
-                        outTradeNo, payRespCallback);
-            }
+            payDirect(options);
 
         } else if (paySubType == 1) {
             payByAccountPassword(null);
@@ -546,7 +456,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
         }
     }
 
-    private void onPreSubmit(){
+    private void onPreSubmit() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在支付订单...", false);
 
         handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
@@ -558,6 +468,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
         onPayStepProcess(paymentInfo);
     }
+
     /**
      * 输入支付密码
      */
@@ -581,88 +492,53 @@ public class PayStep2Fragment extends BasePayStepFragment {
         mEnterPasswordDialog.show();
     }
 
-    private void payByAccountPassword(String password){
+    private void payByAccountPassword(String password) {
         onPreSubmit();
 
-        if (RxHttpManager.RELEASE){
-            Map<String, String> options = new HashMap<>();
-            options.put("humanId", String.valueOf(mMemberInfo.getId()));
-            if (!StringUtils.isEmpty(password)){
-                options.put("accountPassword", password);
-            }
-            options.put("amount", MUtils.formatDouble(handleAmount, ""));
-            options.put("bizType", bizType);
-            options.put("orderId", outTradeNo);
-            options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-            CommonUserAccountHttpManager.getInstance().payDirect(options,
-                    new Subscriber<String>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
-                                    PosOrderPayEntity.PAY_STATUS_FAILED,
-                                    handleAmount, handleAmount, 0D,
-                                    cashierOrderInfo.getDiscountInfo());
-                            onPayStepFailed(paymentInfo, e.toString());
-                        }
-
-                        @Override
-                        public void onNext(String s) {
-                            ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
-                                    WayType.name(curPayType), s));
-//                    bPayProcessing = false;
-                            onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
-                                    PosOrderPayEntity.PAY_STATUS_FINISH,
-                                    handleAmount, handleAmount, 0D,
-                                    cashierOrderInfo.getDiscountInfo()));
-                        }
-                    });
+        Map<String, String> options = new HashMap<>();
+        options.put("humanId", String.valueOf(mMemberInfo.getId()));
+        if (!StringUtils.isEmpty(password)) {
+            options.put("accountPassword", password);
         }
-        else{
-            CommonUserAccountApi.payDirectByAccount(mMemberInfo.getId(), password,
-                    MUtils.formatDouble(handleAmount, ""), bizType,
-                    outTradeNo, payRespCallback);
-        }
+        options.put("amount", MUtils.formatDouble(handleAmount, ""));
+        options.put("bizType", bizType);
+        options.put("orderId", outTradeNo);
+        options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        payDirect(options);
     }
-    NetCallBack.NetTaskCallBack payRespCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                    RspValue<String> retValue = (RspValue<String>) rspData;
-                    String retStr = retValue.getValue();
-                    ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
-                            WayType.name(curPayType), retStr));
-//                    bPayProcessing = false;
-                    onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
-                            PosOrderPayEntity.PAY_STATUS_FINISH,
-                            handleAmount, handleAmount, 0D,
-                            cashierOrderInfo.getDiscountInfo()));
-                }
 
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //当商户后台、网络、服务器等出现异常，商户系统最终未接收到支付通知
-                    //{"code":"5","msg":"余额不足，请先充值!","version":"1","data":null}
+
+    private void payDirect(Map<String, String> options) {
+        CommonUserAccountHttpManager.getInstance().payDirect(options,
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+                                PosOrderPayEntity.PAY_STATUS_FAILED,
+                                handleAmount, handleAmount, 0D,
+                                cashierOrderInfo.getDiscountInfo());
+                        onPayStepFailed(paymentInfo, e.toString());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
+                                WayType.name(curPayType), s));
 //                    bPayProcessing = false;
-                    PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
-                            PosOrderPayEntity.PAY_STATUS_FAILED,
-                            handleAmount, handleAmount, 0D,
-                            cashierOrderInfo.getDiscountInfo());
-                    onPayStepFailed(paymentInfo, errMsg);
-                }
-            }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
+                        onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+                                PosOrderPayEntity.PAY_STATUS_FINISH,
+                                handleAmount, handleAmount, 0D,
+                                cashierOrderInfo.getDiscountInfo()));
+                    }
+                });
+    }
 
     @Override
     public void onPayStepFinish() {

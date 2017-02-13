@@ -19,7 +19,6 @@ import com.bingshanguxue.pda.bizz.invloss.InvLossOrderGoodsAdapter;
 import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
 import com.bingshanguxue.pda.database.service.InvLossGoodsService;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
-import com.mfh.framework.api.invLossOrder.InvLossOrder;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
@@ -27,21 +26,28 @@ import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.StoreType;
+import com.mfh.framework.api.invLossOrder.InvLossOrder;
 import com.mfh.framework.api.invOrder.InvOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.InvLossOrderHttpManager;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 
 /**
@@ -67,7 +73,7 @@ public class InvLossOrderFragment extends BaseFragment {
 
 
     //当前正在报损的单据
-    private InvLossOrder invLossOrder = null;
+    private InvLossOrder mInvLossOrder = null;
 
     public static InvLossOrderFragment newInstance(Bundle args) {
         InvLossOrderFragment fragment = new InvLossOrderFragment();
@@ -103,7 +109,7 @@ public class InvLossOrderFragment extends BaseFragment {
         Bundle args = getArguments();
         if (args != null) {
             animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
-            invLossOrder = (InvLossOrder) args.getSerializable(EXTRA_INV_LOSSORDER);
+            mInvLossOrder = (InvLossOrder) args.getSerializable(EXTRA_INV_LOSSORDER);
         }
         if (animType == ANIM_TYPE_NEW_FLOW) {
             mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
@@ -134,8 +140,11 @@ public class InvLossOrderFragment extends BaseFragment {
 
         initRecyclerView();
 
-        if (invLossOrder != null) {
-            mProviderView.setText(invLossOrder.getOrderName());
+        if (mInvLossOrder != null) {
+            mProviderView.setText(mInvLossOrder.getOrderName());
+        }
+        else {
+            loadLossOrder();
         }
     }
 
@@ -172,7 +181,7 @@ public class InvLossOrderFragment extends BaseFragment {
      * 加载正在报损的订单
      * */
     private void loadLossOrder() {
-        invLossOrder = null;
+        mInvLossOrder = null;
 
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
@@ -182,8 +191,46 @@ public class InvLossOrderFragment extends BaseFragment {
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在请求报损单号...", false);
 
-        InvOrderApiImpl.invLossOrderGetCurrentOrder(MfhLoginService.get().getCurOfficeId(),
-                StoreType.SUPERMARKET, queryOrderRC);
+        if (RxHttpManager.RELEASE){
+            Map<String, String> options = new HashMap<>();
+            options.put("storeType", String.valueOf(StoreType.SUPERMARKET));
+            options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            InvLossOrderHttpManager.getInstance().getCurrentOrder(options,
+                    new Subscriber<InvLossOrder>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.ef(e.toString());
+                            hideProgressDialog();
+                            DialogUtil.showHint("获取报损单号失败");
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onNext(InvLossOrder invLossOrder) {
+                            hideProgressDialog();
+                            mInvLossOrder = invLossOrder;
+                            if (invLossOrder == null) {
+                                DialogUtil.showHint("获取报损单号失败");
+                                getActivity().finish();
+                            } else {
+                                mProviderView.setText(invLossOrder.getOrderName());
+                            }
+                        }
+
+
+                    });
+        }
+        else {
+            InvOrderApiImpl.invLossOrderGetCurrentOrder(MfhLoginService.get().getCurOfficeId(),
+                    StoreType.SUPERMARKET, queryOrderRC);
+        }
+
     }
 
     private NetCallBack.NetTaskCallBack queryOrderRC = new NetCallBack.NetTaskCallBack<InvLossOrder,
@@ -197,14 +244,14 @@ public class InvLossOrderFragment extends BaseFragment {
 
                     if (rspData != null) {
                         RspBean<InvLossOrder> retValue = (RspBean<InvLossOrder>) rspData;
-                        invLossOrder = retValue.getValue();
+                        mInvLossOrder = retValue.getValue();
                     }
 
-                    if (invLossOrder == null) {
+                    if (mInvLossOrder == null) {
                         DialogUtil.showHint("获取报损单号失败");
                         getActivity().finish();
                     } else {
-                        mProviderView.setText(invLossOrder.getOrderName());
+                        mProviderView.setText(mInvLossOrder.getOrderName());
                     }
                 }
 
@@ -248,14 +295,8 @@ public class InvLossOrderFragment extends BaseFragment {
             items.add(item);
         }
 
-        if (invLossOrder == null) {
-            // TODO: 07/02/2017 创建报损单
-            DialogUtil.showHint("TODO:创建报损单");
-        }
-        else{
-            InvOrderApiImpl.invLossOrderItemBatchCommit(invLossOrder.getId(),
-                    items.toJSONString(), submitCallback);
-        }
+        InvOrderApiImpl.invLossOrderItemBatchCommit(mInvLossOrder.getId(),
+                items.toJSONString(), submitCallback);
     }
 
     private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<String,
@@ -362,7 +403,7 @@ public class InvLossOrderFragment extends BaseFragment {
      */
     @OnClick(R.id.providerView)
     public void selectInvCompProvider() {
-        if (invLossOrder == null) {
+        if (mInvLossOrder == null) {
             loadLossOrder();
         }
     }

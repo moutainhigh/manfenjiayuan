@@ -1,8 +1,8 @@
 package com.mfh.framework.api.account;
 
+import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,10 +10,12 @@ import java.util.Date;
  * Created by bingshanguxue on 7/5/16.
  * {@link CommonUserAccountApi}
  */
-public class UserAccount implements Serializable{
+public class UserAccount extends MfhEntity<Long> {
     /**
      * ownerId / humanId*/
     private Long ownerId;
+//    private Integer accountType;//账号类型
+
 
     private Double cur_cash = 0D;//当前余额
     private Double con_cash = 0D;//已消费金额
@@ -64,19 +66,4 @@ public class UserAccount implements Serializable{
         this.con_score = con_score;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getUpdatedDate() {
-        return updatedDate;
-    }
-
-    public void setUpdatedDate(Date updatedDate) {
-        this.updatedDate = updatedDate;
-    }
 }

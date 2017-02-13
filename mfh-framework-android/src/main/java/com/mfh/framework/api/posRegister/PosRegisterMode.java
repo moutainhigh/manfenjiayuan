@@ -17,10 +17,13 @@ import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import rx.Subscriber;
 
 public class PosRegisterMode {
 
@@ -30,42 +33,38 @@ public class PosRegisterMode {
             listener.onProcess();
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String retStr = retValue.getValue();
-                            ZLogger.df("get terminal id success:" + retStr);
-                            SharedPrefesManagerFactory.setTerminalId(retStr);
-                            if (listener != null) {
-                                listener.onSuccess(retStr);
-                            }
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df(String.format("get terminal id failed(%s),please set manual", errMsg));
-                        if (listener != null) {
-                            listener.onError(errMsg);
-                        }
-                    }
-                }
-                , String.class
-                , MfhApplication.getAppContext()) {
-        };
-
         JSONObject order = new JSONObject();
         order.put("serialNo", MfhApplication.genSerialNo());
         order.put("channelId", channelId);
         order.put("channelPointId", channelPointId);
         order.put("netId", netId);
 
-        PosRegisterApi.create(order.toJSONString(), responseCallback);
+        RxHttpManager.getInstance().posRegisterCreate(order.toJSONString(),
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df(String.format("注册设备失败,%s", e.toString()));
+
+                        if (listener != null) {
+                            listener.onError(e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.df(String.format("注册设备成功,%s", s));
+
+                        SharedPrefesManagerFactory.setTerminalId(s);
+                        if (listener != null) {
+                            listener.onSuccess(s);
+                        }
+                    }
+                });
     }
 
     public void update(String terminalId, String channelId, String channelPointId, Long netId,

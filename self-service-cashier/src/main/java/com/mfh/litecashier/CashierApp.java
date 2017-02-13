@@ -73,10 +73,10 @@ public class CashierApp extends MfhApplication {
 //            ZLogger.d("测试版本");
                 SharedPreferencesUltimate.PREF_NAME_PREFIX = SharedPreferencesUltimate.DEV_PREFIX;
                 ACacheHelper.CACHE_NAME = "ACache_Dev";
+
+                debugPrint();
             }
 //            ZLogger.LOG_ENABLED = isReleaseVersion();//SharedPrefesManagerFactory.isSuperPermissionGranted();
-
-            debugPrint();
 
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());

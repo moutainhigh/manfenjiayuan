@@ -18,21 +18,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.mfh.framework.api.account.UserApiImpl;
-import com.mfh.framework.api.account.Human;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
-import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 
 /**
@@ -264,18 +264,19 @@ public class QueryDialog extends CommonDialog {
         if (dialogType == DT_MEMBER_CARD) {
             //手机号11位
             if (queryText.length() == 11) {
-                UserApiImpl.findHumanByPhone(queryText, findMemberResponseCallback);
+                queryByPhone(queryText);
             }
         } else if (dialogType == DT_EXPRESS_COLLECTION) {
             //手机号11位
             if (queryText.length() == 11) {
-                UserApiImpl.findHumanByPhone(queryText, findHumanResponseCallback);
+                queryByPhone(queryText);
             }
         } else if (dialogType == DT_EXPRESS_PAY) {
             //手机号11位
 //            String amount = s.toString();
         }
     }
+
 
     private void doSubmit(){
         if (dialogType == DT_EXPRESS_PAY){
@@ -338,103 +339,30 @@ public class QueryDialog extends CommonDialog {
 //    {
 //    };
 
+    private void queryByPhone(String phoneNumber){
+        Map<String, String> options = new HashMap<>();
+        options.put("mobile", phoneNumber);
+        SysHttpManager.getInstance().getHumanByIdentity(options,
+                new Subscriber<Human>() {
+                    @Override
+                    public void onCompleted() {
 
-    //查询会员信息
-    private NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    if (rspData == null){
-                        ZLogger.d("未查询到结果");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
                         btnSubmit.setEnabled(false);
-                        return;
-                    }
-
-                    RspBean<Human> retValue = (RspBean<Human>) rspData;
-
-                    mHuman = retValue.getValue();
-                    refreshHumanInfo();
-
-//                    final Human human = retValue.getValue();
-//
-//                    if(human != null){
-//                        ZLogger.d("查询用户成功");
-//                        GlobalInstance.getInstance().setMfMemberInfo(human);
-//
-//                        Message msg = new Message();
-//                        msg.what = MSG_REFRESH_HUMANINFO;
-//                        msg.obj = human;
-//                        uiHandler.sendMessage(msg);
-//                    }else {
-//                        ZLogger.d("查询用户失败");
-//                        btnSubmit.setEnabled(false);
-//                        GlobalInstance.getInstance().setMfMemberInfo(null);
-//                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    btnSubmit.setEnabled(false);
-                }
-            }
-            , Human.class
-            , CashierApp.getAppContext())
-    {
-    };
-
-    //查询
-    private NetCallBack.NetTaskCallBack findHumanResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    if (rspData == null){
                         mHuman = null;
-                        refreshHumanInfo();
-                        return;
                     }
 
-                    try{
-                        RspBean<Human> retValue = (RspBean<Human>) rspData;
-                        mHuman = retValue.getValue();
+                    @Override
+                    public void onNext(Human human) {
+                        mHuman = human;
                         refreshHumanInfo();
-
-//                        getOwnerActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (human != null) {
-//                                    ZLogger.d("查询用户che成功");
-//                                    GlobalInstance.getInstance().setCourier(human);
-//
-//                                    tvSubTitle.setText(human.getName());
-//                                    ivHeader.setAvatarUrl(human.getHeadimageUrl());
-////                            etQuery.getText().clear();
-//
-//                                    btnSubmit.setEnabled(true);
-//                                } else {
-//                                    ZLogger.d("查询用户失败");
-//                                }
-//                            }
-//                        });
-
-                    }catch(Exception ex){
-                        ZLogger.e("findHumanResponseCallback, " + ex.toString());
                     }
-                }
+                });
+    }
 
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    btnSubmit.setEnabled(false);
-                    mHuman = null;
-                }
-            }
-            , Human.class
-            , CashierApp.getAppContext())
-    {
-    };
 
     public void refreshHumanInfo(){
         if (mHuman != null) {

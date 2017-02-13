@@ -6,8 +6,6 @@ import android.os.Message;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.database.dao.PosProductNetDao;
-import com.bingshanguxue.cashier.database.dao.PosProductSkuNetDao;
 import com.bingshanguxue.cashier.database.entity.PosLocalCategoryEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
@@ -18,10 +16,7 @@ import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.bean.TimeCursor;
-import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.anon.sc.ProductCatalog;
@@ -52,8 +47,6 @@ import com.mfh.litecashier.database.logic.CompanyHumanService;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
-
-import net.tsz.afinal.core.AsyncTask;
 
 import org.century.GreenTagsApi;
 import org.greenrobot.eventbus.EventBus;
@@ -125,9 +118,7 @@ public class DataDownloadManager {
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
-    private PosProductNetDao posProductNetDao = new PosProductNetDao();
     private PageInfo mPosSkuPageInfo = new PageInfo(1, DataManagerHelper.MAX_SYNC_PAGESIZE);
-    private PosProductSkuNetDao posProductSkuNetDao = new PosProductSkuNetDao();
     private PageInfo productCateslogPageInfo = new PageInfo(1, DataManagerHelper.MAX_SYNC_PAGESIZE);
     private PageInfo mCompanyHumanPageInfo = new PageInfo(1, DataManagerHelper.MAX_SYNC_PAGESIZE);
 
@@ -386,10 +377,9 @@ public class DataDownloadManager {
                             mPageInfo.getTotalPage(), startCursor));
                 }
                 Date cussor = null;
-                //使用事务
+                //TODO 使用事务
                 if (goodses != null && goodses.size() > 0) {
                     for (PosGoods goods : goodses) {
-                        //保存商品到数据库
                         if (goods == null || goods.getId() == null) {
                             ZLogger.d("保存商品档案失败：商品参数无效。");
                             continue;
@@ -424,7 +414,6 @@ public class DataDownloadManager {
 
                     @Override
                     public void onNext(String startCursor) {
-                        //从第一页开始请求，每页最多50条记录
                         if (pageInfo != null && pageInfo.hasNextPage()) {
                             pageInfo.moveToNext();
                             downLoadPosProductStep2(startCursor, pageInfo);
@@ -460,21 +449,21 @@ public class DataDownloadManager {
                     public void onValue(String data) {
                         super.onValue(data);
 
-                        int skuNum = 0;
-                        if (data != null) {
-                            skuNum = Integer.valueOf(data);
-                        }
-
-                        countNetSyncAbleSkuNumStep2(skuNum);
+                        countNetSyncAbleSkuNumStep2(data);
                     }
                 });
     }
 
-    private void countNetSyncAbleSkuNumStep2(final int skuNum) {
+    private void countNetSyncAbleSkuNumStep2(final String data) {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                ZLogger.df(String.format("网点可同步sku总数:%d", skuNum));
+                ZLogger.df(String.format("网点可同步sku总数:%s", data));
+
+                int skuNum = 0;
+                if (data != null) {
+                    skuNum = Integer.valueOf(data);
+                }
 
                 //删除无效的数据
                 PosProductService.get().deleteBy(String.format("isCloudActive = '%d'",
@@ -594,7 +583,6 @@ public class DataDownloadManager {
                 //使用事务
                 if (goodses != null && goodses.size() > 0) {
                     for (ProductSkuBarcode goods : goodses) {
-
                         if (goods != null) {
                             PosProductSkuService.get().saveOrUpdate(goods);
                             cursor = goods.getCreatedDate();
@@ -626,76 +614,15 @@ public class DataDownloadManager {
 
                     @Override
                     public void onNext(String startCursor) {
-                        //从第一页开始请求，每页最多50条记录
                         if (pageInfo != null && pageInfo.hasNextPage()) {
                             pageInfo.moveToNext();
                             findShopOtherBarcodesStep2(startCursor, pageInfo);
                         } else {
-                            ZLogger.df("同步规格码表品结束:" + SharedPreferencesUltimate.getSyncProductSkuCursor());
-
-                            processQueue();
+                            onNotifyNext("同步规格码表品结束:" + SharedPreferencesUltimate.getSyncProductSkuCursor());
                         }
                     }
 
                 });
-    }
-
-    private class ProductSkuQueryAsyncTask extends AsyncTask<RspQueryResult<ProductSkuBarcode>, Integer, Long> {
-        private PageInfo pageInfo;
-        private String lastCursor;
-
-
-        public ProductSkuQueryAsyncTask(PageInfo pageInfo, String lastCursor) {
-            this.pageInfo = pageInfo;
-            this.lastCursor = lastCursor;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<ProductSkuBarcode>... params) {
-//            saveQueryResult(params[0], pageInfo);
-            RspQueryResult<ProductSkuBarcode> rs = params[0];
-            try {
-                mPosSkuPageInfo = pageInfo;
-
-                if (rs != null) {
-                    int retSize = rs.getReturnNum();
-                    Date cursor = null;
-                    for (EntityWrapper<ProductSkuBarcode> wrapper : rs.getRowDatas()) {
-                        ProductSkuBarcode bean = wrapper.getBean();
-                        if (bean != null) {
-                            PosProductSkuService.get().saveOrUpdate(bean);
-                            cursor = bean.getCreatedDate();
-                        }
-                    }
-
-                    //更新游标
-                    if (cursor != null) {
-                        SharedPreferencesUltimate.setPosSkuLastUpdate(cursor);
-                    }
-                    ZLogger.df(String.format("同步 %d/%d 个箱规", retSize, rs.getTotalNum()));
-                }
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.ef(String.format("同步码表失败: %s", ex.toString()));
-            }
-
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-            //若还有继续发起请求
-            if (pageInfo.hasNextPage()) {
-                pageInfo.moveToNext();
-                findShopOtherBarcodesStep2(lastCursor, pageInfo);
-            } else {
-                ZLogger.df("同步规格码表品结束:" + SharedPreferencesUltimate.getSyncProductSkuCursor());
-
-                processQueue();
-            }
-        }
     }
 
     private void getTopFrontId() {
@@ -970,67 +897,6 @@ public class DataDownloadManager {
     }
 
 
-    private class saveProductCatalogAsync extends AsyncTask<RspQueryResult<ProductCatalog>, Integer, Long> {
-        private PageInfo pageInfo;
-        private String lastCursor;
-
-
-        public saveProductCatalogAsync(PageInfo pageInfo, String lastCursor) {
-            this.pageInfo = pageInfo;
-            this.lastCursor = lastCursor;
-        }
-
-        @Override
-        protected Long doInBackground(RspQueryResult<ProductCatalog>... params) {
-            try {
-                RspQueryResult<ProductCatalog> rs = params[0];
-                productCateslogPageInfo = pageInfo;
-
-                if (rs == null) {
-                    return -1L;
-                }
-
-                //保存下来
-                int retSize = rs.getReturnNum();
-                Date cursor = null;
-                for (EntityWrapper<ProductCatalog> wrapper : rs.getRowDatas()) {
-                    ProductCatalog bean = wrapper.getBean();
-                    if (bean != null) {
-                        ProductCatalogService.getInstance().saveOrUpdate(bean);
-                        cursor = bean.getCreatedDate();
-                    }
-                }
-
-                //更新游标
-                if (cursor != null) {
-                    SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
-                            TimeCursor.InnerFormat.format(cursor));
-                }
-                ZLogger.df(String.format("保存 %d/%d 个商品类目关系表（%s）",
-                        retSize, rs.getTotalNum(),
-                        SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR)));
-            } catch (Throwable ex) {
-//            throw new RuntimeException(ex);
-                ZLogger.ef(String.format("保存商品类目关系表失败: %s", ex.toString()));
-            }
-
-            return -1L;
-//        return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-            //若还有继续发起请求
-            if (pageInfo.hasNextPage()) {
-                pageInfo.moveToNext();
-                downLoadProductCatalog2(lastCursor, pageInfo);
-            } else {
-                countProductCatalogSyncAbleNum();
-            }
-        }
-    }
-
     /**
      * 查询指定网点可同步类目商品关系表
      * 商品库增量同步后检查pos本地商品数目和后台商品数目是否一致，如果不一致，则自动触发一次全量同步。
@@ -1260,67 +1126,6 @@ public class DataDownloadManager {
                         ZLogger.df("加载自账号数据失败:" + e.toString());
                         processQueue();
                     }
-                });
-    }
-
-    /**
-     * 保存账号数据
-     */
-    private void findCompUserPwdInfoStep3(final RspQueryResult<CompanyHuman> rs, final PageInfo pageInfo) {
-        if (rs == null) {
-            processQueue();
-            return;
-        }
-
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                try {
-                    mCompanyHumanPageInfo = pageInfo;
-                    //第一页，清空旧数据
-                    if (mCompanyHumanPageInfo != null && mCompanyHumanPageInfo.getPageNo() == 1) {
-                        ZLogger.df("清空旧账号数据");
-                        CompanyHumanService.get().clear();
-                    }
-
-                    int retSize = rs.getReturnNum();
-                    ZLogger.df(String.format("保存 %d/%d 个账号数据", retSize, rs.getTotalNum()));
-                    for (EntityWrapper<CompanyHuman> wrapper : rs.getRowDatas()) {
-                        CompanyHumanService.get().saveOrUpdate(wrapper.getBean());
-                    }
-                } catch (Throwable ex) {
-                    ZLogger.ef(String.format("保存账号数据失败: %s", ex.toString()));
-                }
-
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        onNotifyCompleted("保存账号数据失败.");
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        //若还有继续发起请求
-                        if (pageInfo.hasNextPage()) {
-                            pageInfo.moveToNext();
-                            findCompUserPwdInfoStep2(pageInfo);
-                        } else {
-                            ZLogger.df("同步账号数据结束");
-                            processQueue();
-                        }
-                    }
-
                 });
     }
 

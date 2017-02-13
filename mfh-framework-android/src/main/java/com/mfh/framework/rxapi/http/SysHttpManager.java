@@ -27,7 +27,8 @@ public class SysHttpManager extends BaseHttpManager{
     }
 
     private interface InvSkuStoreService{
-        /**查询用户：/pmc/sys/human/getHumanByIdentity?mobile=2123&humanId=31323*/
+        /**查询用户：
+         * /pmc/sys/human/getHumanByIdentity?mobile=2123&humanId=31323*/
         @GET("sys/human/getHumanByIdentity")
         Observable<MResponse<Human>> getHumanByIdentity(@QueryMap Map<String, String> options);
     }

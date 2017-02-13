@@ -18,25 +18,30 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.account.UserApiImpl;
+import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.utils.DecimalInputFilter;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.ActivateAccountResult;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 
 /**
@@ -84,10 +89,9 @@ public class TransferDialog extends CommonDialog {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etPhoneNumber);
-                    }
-                    else{
+                    } else {
                         DeviceUtils.hideSoftInput(getContext(), etPhoneNumber);
                     }
                 }
@@ -119,10 +123,9 @@ public class TransferDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etAmount);
-                    }
-                    else{
+                    } else {
                         DeviceUtils.hideSoftInput(getContext(), etAmount);
                     }
                 }
@@ -137,10 +140,9 @@ public class TransferDialog extends CommonDialog {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(getContext(), etPassword);
-                    }
-                    else{
+                    } else {
                         DeviceUtils.hideSoftInput(getContext(), etPassword);
                     }
                 }
@@ -214,7 +216,7 @@ public class TransferDialog extends CommonDialog {
         DeviceUtils.hideSoftInput(getOwnerActivity());
     }
 
-    public void init(){
+    public void init() {
         etAmount.getText().clear();
         etPassword.getText().clear();
         refreshHumanInfo(null);
@@ -223,15 +225,14 @@ public class TransferDialog extends CommonDialog {
     /**
      * 刷新会员信息
      */
-    private void refreshHumanInfo(Human human){
-        if (human != null){
+    private void refreshHumanInfo(Human human) {
+        if (human != null) {
             ivHeaderTo.setAvatarUrl(human.getHeadimageUrl());
             tvUsernameTo.setText(human.getName());
             etAmount.requestFocus();
 
             btnSubmit.setEnabled(true);
-        }
-        else{
+        } else {
             ivHeaderTo.setAvatarUrl("");
             tvUsernameTo.setText("");
             etPhoneNumber.getText().clear();
@@ -247,10 +248,10 @@ public class TransferDialog extends CommonDialog {
 
     /**
      * 查询会员
-     * */
-    private void queryPhone(){
+     */
+    private void queryPhone() {
         String phoneNumber = etPhoneNumber.getText().toString();
-        if (StringUtils.isEmpty(phoneNumber)){
+        if (StringUtils.isEmpty(phoneNumber)) {
             DialogUtil.showHint("请输入手机号");
             return;
         }
@@ -265,41 +266,34 @@ public class TransferDialog extends CommonDialog {
             return;
         }
 
-        UserApiImpl.findHumanByPhone(phoneNumber, findMemberResponseCallback);
-    }
-    //查询会员信息
-    private NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    if (rspData == null) {
-                        DialogUtil.showHint("未查到会员信息");
-                        refreshHumanInfo(null);
-                        return;
+        Map<String, String> options = new HashMap<>();
+        options.put("mobile", phoneNumber);
+        SysHttpManager.getInstance().getHumanByIdentity(options,
+                new Subscriber<Human>() {
+                    @Override
+                    public void onCompleted() {
+
                     }
 
-                    RspBean<Human> retValue = (RspBean<Human>) rspData;
-                    refreshHumanInfo(retValue.getValue());
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.e(String.format("未查到会员信息:%s", e.toString()));
+                        DialogUtil.showHint("未查到会员信息");
+                        refreshHumanInfo(null);
+                    }
 
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.e(String.format("未查到会员信息:%s", errMsg));
-                    DialogUtil.showHint("未查到会员信息");
-                    refreshHumanInfo(null);
-                }
-            }
-            , Human.class
-            , CashierApp.getAppContext()) {
-    };
+                    @Override
+                    public void onNext(Human human) {
+                        refreshHumanInfo(human);
+                    }
+                });
+    }
 
 
     private void submit() {
         btnSubmit.setEnabled(false);
 
-        if (humanTo == null){
+        if (humanTo == null) {
             DialogUtil.showHint("请输入会员信息");
             btnSubmit.setEnabled(true);
             return;
@@ -330,24 +324,23 @@ public class TransferDialog extends CommonDialog {
     }
 
     //充值
-    private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<ActivateAccountResult,
-            NetProcessor.Processor<ActivateAccountResult>>(
-            new NetProcessor.Processor<ActivateAccountResult>() {
+    private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<UserAccount,
+            NetProcessor.Processor<UserAccount>>(
+            new NetProcessor.Processor<UserAccount>() {
                 @Override
                 public void processResult(final IResponseData rspData) {
-                    ActivateAccountResult result = null;
-                    if (rspData != null){
-                        RspBean<ActivateAccountResult> retValue = (RspBean<ActivateAccountResult>) rspData;
+                    UserAccount result = null;
+                    if (rspData != null) {
+                        RspBean<UserAccount> retValue = (RspBean<UserAccount>) rspData;
                         result = retValue.getValue();
                     }
 
-                    if (result == null){
+                    if (result == null) {
                         DialogUtil.showHint("充值失败");
                         refreshHumanInfo(null);
                         btnSubmit.setEnabled(true);
                         progressBar.setVisibility(View.GONE);
-                    }
-                    else{
+                    } else {
                         ZLogger.d(String.format("充值成功:%d-%d", result.getId(), result.getOwnerId()));
                         dismiss();
                     }
@@ -364,7 +357,7 @@ public class TransferDialog extends CommonDialog {
                     progressBar.setVisibility(View.GONE);
                 }
             }
-            , ActivateAccountResult.class
+            , UserAccount.class
             , CashierApp.getAppContext()) {
     };
 

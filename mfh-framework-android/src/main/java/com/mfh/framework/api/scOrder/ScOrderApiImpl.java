@@ -20,7 +20,8 @@ public class ScOrderApiImpl extends ScOrderApi{
      * @param status 订单状态
      * @param needDetail 是否返回订单明细详情
      */
-    public static void getByBarcode(String barcode, Integer status, boolean needDetail, AjaxCallBack<? extends Object> responseCallback) {
+    public static void getByBarcode(String barcode, Integer status, boolean needDetail,
+                                    AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("barcode", barcode);
         if (status != null){

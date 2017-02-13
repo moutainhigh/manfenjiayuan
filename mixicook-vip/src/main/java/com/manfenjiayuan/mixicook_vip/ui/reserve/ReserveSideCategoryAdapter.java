@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.model.PosCategory;
+import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -20,11 +21,11 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN(bingshanguxue) on 15/6/5.
  */
 public class ReserveSideCategoryAdapter
-        extends RegularAdapter<PosCategory, ReserveSideCategoryAdapter.CategoryViewHolder> {
+        extends RegularAdapter<CategoryInfo, ReserveSideCategoryAdapter.CategoryViewHolder> {
 
-    private PosCategory curOption = null;
+    private CategoryInfo curOption = null;
 
-    public ReserveSideCategoryAdapter(Context context, List<PosCategory> entityList) {
+    public ReserveSideCategoryAdapter(Context context, List<CategoryInfo> entityList) {
         super(context, entityList);
     }
 
@@ -47,7 +48,7 @@ public class ReserveSideCategoryAdapter
 
     @Override
     public void onBindViewHolder(final CategoryViewHolder holder, final int position) {
-        final PosCategory bean = entityList.get(position);
+        final CategoryInfo bean = entityList.get(position);
 
         if (curOption != null && curOption.getId().compareTo(bean.getId()) == 0) {
             holder.rootView.setSelected(true);
@@ -60,7 +61,7 @@ public class ReserveSideCategoryAdapter
     }
 
     @Override
-    public void setEntityList(List<PosCategory> entityList) {
+    public void setEntityList(List<CategoryInfo> entityList) {
         super.setEntityList(entityList);
         if (entityList != null && entityList.size() > 0){
             curOption = entityList.get(0);
@@ -103,7 +104,7 @@ public class ReserveSideCategoryAdapter
         }
     }
 
-    public PosCategory getCurOption() {
+    public CategoryInfo getCurOption() {
         return curOption;
     }
 }

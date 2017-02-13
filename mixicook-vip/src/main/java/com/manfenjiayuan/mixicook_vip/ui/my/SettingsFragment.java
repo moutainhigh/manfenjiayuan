@@ -16,6 +16,7 @@ import com.manfenjiayuan.mixicook_vip.ui.ActivityRoute;
 import com.manfenjiayuan.mixicook_vip.ui.FragmentActivity;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.mobile.Mixicook;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
@@ -226,6 +227,8 @@ public class SettingsFragment extends BaseFragment implements OnTabReselectListe
 
                 DialogUtil.showHint("恭喜你,你已经获取到超级权限!");
                 SharedPrefesManagerFactory.setSuperPermissionGranted(true);
+                ZLogger.LOG_ENABLED = SharedPrefesManagerFactory.isSuperPermissionGranted();
+
                 refresh(true);
             }
             else{

@@ -25,7 +25,7 @@ import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.commonuseraccount.ActivateAccountResult;
+import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -451,7 +451,7 @@ public class InitCardByStepDialog extends CommonDialog {
                 options.put("ownerId", String.valueOf(mHuman.getId()));
                 options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
                 CommonUserAccountHttpManager.getInstance().activateAccount(options,
-                        new Subscriber<ActivateAccountResult>() {
+                        new Subscriber<UserAccount>() {
                             @Override
                             public void onCompleted() {
 
@@ -465,7 +465,7 @@ public class InitCardByStepDialog extends CommonDialog {
                             }
 
                             @Override
-                            public void onNext(ActivateAccountResult activateAccountResult) {
+                            public void onNext(UserAccount activateAccountResult) {
                                 btnSubmit.setEnabled(true);
                                 if (activateAccountResult == null) {
                                     DialogUtil.showHint("开卡失败");

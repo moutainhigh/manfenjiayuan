@@ -2,6 +2,7 @@ package com.mfh.framework.api.tenant;
 
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.rxapi.http.RxHttpManager;
@@ -34,7 +35,7 @@ public class TenantMode {
             options.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
 
-        RxHttpManager.getInstance().listWhole(options,
+        RxHttpManager.getInstance().listWhole(MfhApi.URL_TENANT + "/", options,
                 new MQuerySubscriber<TenantInfo>(pageInfo) {
                     @Override
                     public void onQueryNext(PageInfo pageInfo, List<TenantInfo> dataList) {
@@ -47,7 +48,7 @@ public class TenantMode {
                     public void onError(Throwable e) {
                         super.onError(e);
 
-                        ZLogger.df("加载网点失败:" + e.toString());
+                        ZLogger.df("加载租户失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.toString());
                         }

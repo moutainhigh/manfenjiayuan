@@ -7,7 +7,6 @@ package com.mfh.litecashier.bean.wrapper;
  *
  */
 public class AnalysisItemWrapper implements java.io.Serializable{
-
     private String caption;//业务类型/支付类型
     private Double orderNum = 0D;//订单数量
     private Double turnover = 0D;//金额

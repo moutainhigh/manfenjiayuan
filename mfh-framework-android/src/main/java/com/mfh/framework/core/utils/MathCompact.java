@@ -5,6 +5,18 @@ package com.mfh.framework.core.utils;
  */
 
 public class MathCompact {
+
+    /**
+     * 减法运算
+     * */
+    public static Double sub(Double d1, Double d2){
+        if (d1 == null){
+            return null;
+        }
+
+        return d2 != null ? d1 - d2 : d1;
+    }
+
     /**
      * 乘法运算
      * */
@@ -16,13 +28,17 @@ public class MathCompact {
     }
 
     /**
-     * 减法运算
+     * 除法运算
      * */
-    public static Double sub(Double d1, Double d2){
+    public static Double div(Double d1, Double d2){
         if (d1 == null){
             return null;
         }
 
-        return d2 != null ? d1 - d2 : d1;
+        if (d2 == null || d2 == 0) {
+            return d1;
+        } else {
+            return d1 / d2;
+        }
     }
 }

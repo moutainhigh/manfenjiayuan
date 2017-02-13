@@ -134,18 +134,6 @@ public class ScGoodsSkuApiImpl extends ScGoodsSkuApi {
         AfinalFactory.getHttp(true).post(URL_STOREIN, params, responseCallback);
     }
 
-
-    /**
-     * 查询指定网点可同步sku总数
-     */
-    public static void countNetSyncAbleSkuNum(AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_COUNTNETSYNCABLESKUNUM, params, responseCallback);
-    }
-
     /**
      * 查询库存商品
      *  <ul>

@@ -18,21 +18,22 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.MfhApplication;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.UserAccount;
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * <p>
@@ -194,7 +195,7 @@ public class QueryBalanceDialog extends CommonDialog {
     private void loadUserAccount(String cardId){
         refresh(null);
 
-        final String cardId2 = parseCardId(cardId);
+        final String cardId2 = MUtils.parseCardId(cardId);
         if (StringUtils.isEmpty(cardId2)) {
             DialogUtil.showHint("芯片号无效");
             return;
@@ -206,57 +207,68 @@ public class QueryBalanceDialog extends CommonDialog {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        CommonUserAccountApi.getUserAccountByCardId(cardId2, responseCallback);
-    }
 
-    /**
-     * 解析卡芯片号，十六进制转换为十进制
-     * 十六进制：466CAF31 (8位)
-     * 十进制：1181527857 (10位)
-     */
-    private String parseCardId(String rawData) {
-        if (StringUtils.isEmpty(rawData)) {
-            return null;
+        Map<String, String> options = new HashMap<>();
+        if (!StringUtils.isEmpty(cardId2)) {
+            options.put("cardId", cardId2);
         }
-        try {
-            return String.valueOf(Long.parseLong(rawData, 16));
-        } catch (Exception e) {
-            ZLogger.e(String.format("parseCardId failed, %s", e.toString()));
-            return null;
-        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        CommonUserAccountHttpManager.getInstance().getUserAccountByCardId(options,
+                new Subscriber<UserAccount>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                        DialogUtil.showHint(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(UserAccount userAccount) {
+                        refresh(userAccount);
+                        progressBar.setVisibility(View.GONE);
+
+                    }
+
+                });
+
+//        CommonUserAccountApi.getUserAccountByCardId(cardId2, responseCallback);
     }
 
     //回调
-    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<UserAccount,
-            NetProcessor.Processor<UserAccount>>(
-            new NetProcessor.Processor<UserAccount>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    try {
-                        RspBean<UserAccount> retValue = (RspBean<UserAccount>) rspData;
-                        refresh(retValue.getValue());
-                    } catch (Exception ex) {
-                        ZLogger.e("parseUserProfile, " + ex.toString());
-                    } finally {
-//                        loadingImageView.toggle(false);
-                        progressBar.setVisibility(View.GONE);
-//                        emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-//                    loadingImageView.toggle(false);
-                    progressBar.setVisibility(View.GONE);
-                    DialogUtil.showHint(errMsg);
-//                    emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
-                }
-
-
-            }
-            , UserAccount.class
-            , MfhApplication.getAppContext()) {
-    };
+//    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<UserAccount,
+//            NetProcessor.Processor<UserAccount>>(
+//            new NetProcessor.Processor<UserAccount>() {
+//                @Override
+//                public void processResult(IResponseData rspData) {
+//                    try {
+//                        RspBean<UserAccount> retValue = (RspBean<UserAccount>) rspData;
+//                        refresh(retValue.getValue());
+//                    } catch (Exception ex) {
+//                        ZLogger.e("parseUserProfile, " + ex.toString());
+//                    } finally {
+////                        loadingImageView.toggle(false);
+//                        progressBar.setVisibility(View.GONE);
+////                        emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
+//                    }
+//                }
+//
+//                @Override
+//                protected void processFailure(Throwable t, String errMsg) {
+//                    super.processFailure(t, errMsg);
+////                    loadingImageView.toggle(false);
+//                    progressBar.setVisibility(View.GONE);
+//                    DialogUtil.showHint(errMsg);
+////                    emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
+//                }
+//
+//
+//            }
+//            , UserAccount.class
+//            , MfhApplication.getAppContext()) {
+//    };
 
 }

@@ -5,7 +5,6 @@ import android.os.Message;
 
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.litecashier.service.DataDownloadManager;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -13,9 +13,14 @@ import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ScOrderHttpManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * 商城订单
@@ -87,37 +92,68 @@ public class ScOrderMode {
             return;
         }
 
-        NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScOrder,
-                NetProcessor.Processor<ScOrder>>(
-                new NetProcessor.Processor<ScOrder>() {
+        Map<String, String> options = new HashMap<>();
+        options.put("barcode", barcode);
+        if (status != null){
+            options.put("status", String.valueOf(status));
+        }
+        options.put("needDetail", String.valueOf(isNeedDetail));
+
+        ScOrderHttpManager.getInstance().getByCode(options,
+                new Subscriber<ScOrder>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-                        ScOrder scOrder = null;
-                        if (rspData != null) {
-                            RspBean<ScOrder> retValue = (RspBean<ScOrder>) rspData;
-                            scOrder = retValue.getValue();
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df("查询失败: " + e.toString());
+                        if (listener != null) {
+                            listener.onError(e.getMessage());
                         }
+                    }
+
+                    @Override
+                    public void onNext(ScOrder scOrder) {
                         if (listener != null) {
                             listener.onSuccess(scOrder);
                         }
                     }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
-                        if (listener != null) {
-                            listener.onError(errMsg);
-                        }
-                    }
-                }
-                , ScOrder.class
-                , MfhApplication.getAppContext()) {
-        };
+                });
 
-        ScOrderApiImpl.getByBarcode(barcode, status, isNeedDetail, queryResCallback);
+//        NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScOrder,
+//                NetProcessor.Processor<ScOrder>>(
+//                new NetProcessor.Processor<ScOrder>() {
+//                    @Override
+//                    public void processResult(IResponseData rspData) {
+//                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
+//                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
+//                        ScOrder scOrder = null;
+//                        if (rspData != null) {
+//                            RspBean<ScOrder> retValue = (RspBean<ScOrder>) rspData;
+//                            scOrder = retValue.getValue();
+//                        }
+//                        if (listener != null) {
+//                            listener.onSuccess(scOrder);
+//                        }
+//                    }
+//
+//                    @Override
+//                    protected void processFailure(Throwable t, String errMsg) {
+//                        super.processFailure(t, errMsg);
+//                        ZLogger.df("查询失败: " + errMsg);
+//                        if (listener != null) {
+//                            listener.onError(errMsg);
+//                        }
+//                    }
+//                }
+//                , ScOrder.class
+//                , MfhApplication.getAppContext()) {
+//        };
+//
+//        ScOrderApiImpl.getByBarcode(barcode, status, isNeedDetail, queryResCallback);
     }
 
     /**

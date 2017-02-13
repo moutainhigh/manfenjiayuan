@@ -35,6 +35,8 @@ public class PosGoods implements ILongId, Serializable {
     private Long procateId;     //商品类目
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
     private Integer prodLineId;//商品线编号
+    private Integer needWait;//是否需要等待（餐饮商品收银后除了需要打印小票，同时需要打印2张取货单）
+
 
 
     public Long getId() {
@@ -201,5 +203,13 @@ public class PosGoods implements ILongId, Serializable {
 
     public void setProdLineId(Integer prodLineId) {
         this.prodLineId = prodLineId;
+    }
+
+    public Integer getNeedWait() {
+        return needWait;
+    }
+
+    public void setNeedWait(Integer needWait) {
+        this.needWait = needWait;
     }
 }

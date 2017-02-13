@@ -169,7 +169,6 @@ public class InvCheckListFragment extends BaseListFragment<InvCheckOrder> implem
         orderListAdapter.setOnAdapterListener(new InvCheckOrderAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                loadGoodsList(orderListAdapter.getCurOrder());
                 //TODO
                 InvCheckOrder invCheckOrder = orderListAdapter.getEntity(position);
                 if (invCheckOrder == null) {

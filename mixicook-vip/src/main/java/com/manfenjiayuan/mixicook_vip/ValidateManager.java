@@ -25,6 +25,7 @@ import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 
 import java.util.Date;
 
@@ -164,42 +165,32 @@ public class ValidateManager {
             order.put("channelPointId", IMConfig.getPushClientId());
             order.put("netId", MfhLoginService.get().getCurOfficeId());
             ZLogger.df("注册设备中..." + order.toJSONString());
-            PosRegisterApi.create(order.toJSONString(), posRegisterCreateRC);
+            RxHttpManager.getInstance().posRegisterCreate(order.toJSONString(),
+                    new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.df(String.format("注册设备失败,%s", e.toString()));
+
+                            if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
+                                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+                                        null, "设备注册失败，需要重新注册");
+                            } else {
+                                nextStep();
+                            }
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            saveTerminalId(s);
+                        }
+                    });
         }
     }
-
-    NetCallBack.NetTaskCallBack posRegisterCreateRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    if (rspData != null) {
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        String retStr = retValue.getValue();
-                        ZLogger.df("注册设备成功:" + retStr);
-                        saveTerminalId(retStr);
-                    }
-                    else{
-                        saveTerminalId(null);
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df(String.format("注册设备失败,%s", errMsg));
-
-                    if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
-                        validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
-                                null, "设备注册失败，需要重新注册");
-                    } else {
-                        nextStep();
-                    }
-                }
-            }
-            , String.class
-            , MfhApplication.getAppContext()) {
-    };
 
     /**
      * 保存设备编号
@@ -311,29 +302,38 @@ public class ValidateManager {
      * 自动重登录
      */
     private void retryLogin() {
-        MfhLoginService.get().doLoginAsync(MfhLoginService.get().getLoginName(),
-                MfhLoginService.get().getPassword(), new LoginCallback() {
-                    @Override
-                    public void loginSuccess(UserMixInfo user) {
-                        //登录成功
-                        ZLogger.df("重登录成功：");
+        final String username = MfhLoginService.get().getLoginName();
+        final String password = MfhLoginService.get().getPassword();
 
-                        //注册到消息桥
-                        IMClient.getInstance().registerBridge();
+        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
+            @Override
+            public void onCompleted() {
+                ZLogger.d("onCompleted");
+            }
 
-                        validateUpdate(ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED,
-                                null, "重登录成功");
-                        nextStep();
-                    }
+            @Override
+            public void onError(Throwable e) {
+//                HTTP 401 Unauthorized
+//                HTTP 500 Internal Server Error
+                ZLogger.ef("账号重登录失败，账号失效，准备跳转到登录页面");
 
-                    @Override
-                    public void loginFailed(String errMsg) {
-                        ZLogger.d("账号重登录失败，账号失效，准备跳转到登录页面");
+                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
+                        null, "登录已失效－－" + e.getMessage());
+            }
 
-                        validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
-                                null, "登录已失效－－" + errMsg);
-                    }
-                });
+            @Override
+            public void onNext(UserMixInfo userMixInfo) {
+                ZLogger.df("重登录成功：");//登录成功
+
+                MfhLoginService.get().saveUserMixInfo(username, password, userMixInfo);
+
+                IMClient.getInstance().registerBridge();
+
+                validateUpdate(ValidateManagerEvent.EVENT_ID_RETRY_SIGNIN_SUCCEED,
+                        null, "重登录成功");
+                nextStep();
+            }
+        }, username, password);
     }
 
     public class ValidateManagerEvent {

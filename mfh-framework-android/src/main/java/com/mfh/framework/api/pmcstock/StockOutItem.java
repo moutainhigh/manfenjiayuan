@@ -10,6 +10,8 @@ public class StockOutItem implements java.io.Serializable{
     private String barcode;//面单号
     private String humanName;// 收件人
     private String humanPhone;//收件人手机号
+    private String receiveName;// 收件人
+    private String receivePhone;//收件人手机号
     private String transportName;//物流公司
     private Long itemType;//1-洗衣包裹 2-快递包裹 3-商城包裹 6-皮具包裹
     private String itemTypeName;//包裹类型
@@ -143,6 +145,21 @@ public class StockOutItem implements java.io.Serializable{
         this.status = status;
     }
 
+    public String getReceiveName() {
+        return receiveName;
+    }
+
+    public void setReceiveName(String receiveName) {
+        this.receiveName = receiveName;
+    }
+
+    public String getReceivePhone() {
+        return receivePhone;
+    }
+
+    public void setReceivePhone(String receivePhone) {
+        this.receivePhone = receivePhone;
+    }
 
     public boolean isbSelected() {
         return bSelected;

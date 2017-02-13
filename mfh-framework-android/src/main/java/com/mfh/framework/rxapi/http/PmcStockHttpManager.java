@@ -29,6 +29,8 @@ public class PmcStockHttpManager extends BaseHttpManager{
 
     private interface PmcStockService{
         /**查询卡券,订单提交前*/
+        /**查询多条订单的规则和优惠券信息
+         * 适用于客户端拆单的情况*/
         @GET("pmcstock/findMarketRulesByOrderInfos")
         Observable<MResponse<MRspQuery<MarketRulesWrapper>>> findMarketRulesByOrderInfos(@QueryMap Map<String, String> options);
 

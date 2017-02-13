@@ -23,6 +23,7 @@ import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CateApiImpl;
+import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.category.CategoryQueryInfo;
 import com.mfh.framework.api.category.ScCategoryInfoApi;
@@ -32,14 +33,18 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import rx.Subscriber;
 
 
 /**
@@ -61,7 +66,7 @@ public class ReserveFragment extends BaseProgressFragment
     @BindView(R.id.empty_view)
     TextView emptyView;
 
-    private PosCategory mPosCategory;
+    private CategoryInfo mPosCategory;
 
     private boolean isLoadingMore;
     private static final int MAX_PAGE = 10;
@@ -210,7 +215,7 @@ public class ReserveFragment extends BaseProgressFragment
     private boolean readCategoryInfoCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_FRONTEND_CATEGORY_FRESH);
-        List<PosCategory> cacheData = JSONArray.parseArray(cacheStr, PosCategory.class);
+        List<CategoryInfo> cacheData = JSONArray.parseArray(cacheStr, CategoryInfo.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载缓存数据(%s): %d个前台生鲜商品类目",
                     ACacheHelper.CK_BACKEND_CATEGORY_FRESH, cacheData.size()));
@@ -270,8 +275,8 @@ public class ReserveFragment extends BaseProgressFragment
             return;
         }
 
-        List<CategoryOption> options = categoryQueryInfo.getOptions();
-        if (options == null || options.size() < 1) {
+        List<CategoryOption> categoryOptions = categoryQueryInfo.getOptions();
+        if (categoryOptions == null || categoryOptions.size() < 1) {
             ZLogger.df("前台自定义（私有）类目为空");
             saveFreshFrontendCategoryInfoCache(null);
             readCategoryInfoCache();
@@ -282,48 +287,41 @@ public class ReserveFragment extends BaseProgressFragment
             return;
         }
 
-        CategoryOption option = options.get(0);
-        ZLogger.df(String.format("同步前台自定义（私有）二级类目(%s)开始", option.getValue()));
-        NetCallBack.NetTaskCallBack queryRsCallBack = new NetCallBack.NetTaskCallBack<PosCategory,
-                NetProcessor.Processor<PosCategory>>(
-                new NetProcessor.Processor<PosCategory>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        List<PosCategory> items = new ArrayList<>();
-                        if (rspData != null) {
-                            RspListBean<PosCategory> retValue = (RspListBean<PosCategory>) rspData;
-                            items = retValue.getValue();
-                        }
+        CategoryOption option = categoryOptions.get(0);
 
-                        saveFreshFrontendCategoryInfoCache(items);
+        Map<String, String> options = new HashMap<>();
+        options.put("parentId", String.valueOf(option.getCode()));
+        RxHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
+            @Override
+            public void onCompleted() {
 
-                        readCategoryInfoCache();
-                    }
+            }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("加载前台自定义（私有）二级类目 失败, " + errMsg);
-                        readCategoryInfoCache();
-                    }
-                }
-                , PosCategory.class
-                , AppContext.getAppContext()) {
-        };
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.df("加载前台自定义（私有）二级类目 失败, " + e.toString());
+                readCategoryInfoCache();
+            }
 
-        ScCategoryInfoApi.getCodeValue(option.getCode(), queryRsCallBack);
+            @Override
+            public void onNext(List<CategoryInfo> categoryInfos) {
+                saveFreshFrontendCategoryInfoCache(categoryInfos);
+
+                readCategoryInfoCache();
+            }
+        });
     }
 
     /**
      * 缓存前台私有类目树
      */
-    private void saveFreshFrontendCategoryInfoCache(List<PosCategory> options) {
+    private void saveFreshFrontendCategoryInfoCache(List<CategoryInfo> options) {
         ZLogger.df(String.format("保存POS %d个前台自定义（私有）二级类目",
                 (options != null ? options.size() : 0)));
         //缓存数据
         JSONArray cacheArrays = new JSONArray();
         if (options != null && options.size() > 0) {
-            for (PosCategory option : options) {
+            for (CategoryInfo option : options) {
                 cacheArrays.add(option);
             }
         }

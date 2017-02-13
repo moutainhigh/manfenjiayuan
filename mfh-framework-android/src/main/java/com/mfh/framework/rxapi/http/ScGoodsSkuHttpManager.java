@@ -38,6 +38,10 @@ public class ScGoodsSkuHttpManager extends BaseHttpManager{
         Observable<MResponse<MRspQuery<ScGoodsSku>>> findStoreWithChainSku(@QueryMap Map<String, String> options);
         @GET("scGoodsSku/downLoadPosProduct")
         Observable<MResponse<MRspQuery<PosGoods>>> downLoadPosProduct(@QueryMap Map<String, String> options);
+        /**
+         * 查询指定网点可同步sku总数<br>
+         * {"code":"0","msg":"查询成功!","version":"1","data":{"val":"701"}}
+         */
         @GET("scGoodsSku/countNetSyncAbleSkuNum")
         Observable<MResponse<MValue<String>>> countNetSyncAbleSkuNum(@QueryMap Map<String, String> options);
         @GET("scGoodsSku/getByBarcode")

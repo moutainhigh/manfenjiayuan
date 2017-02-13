@@ -8,40 +8,6 @@ import com.mfh.comn.bean.ILongId;
  *
  */
 public class StockGoods implements ILongId, java.io.Serializable{
-//    {
-//        "name": "8999999999001",
-//            "unit": "",
-//            "specNames": "",
-//            "imgUrl": "",
-//            "providerId": 132593,
-//            "attList": null,
-//            "proSkuId": 3517,
-//            "barcode": "88011062221974",
-//            "productId": 2934,
-//            "skuMask": 0,
-//            "status": 1,
-//            "costPrice": 15,
-//            "oldPrice": 15,
-//            "costScore": null,
-//            "buyPrice": 10,
-//            "mfhPrice": null,
-//            "mfhSupply": 0,
-//            "vipStatus": 1,
-//            "priceStatus": 1,
-//            "quantity": 8,
-//            "lowerLimit": 10,
-//            "upperLimit": null,
-//            "packageNum": null,
-//            "sellNumber": null,
-//            "tenantId": 132079,
-//            "netId": 132079,
-//            "id": 0,
-//            "createdBy": "132079",
-//            "createdDate": "2015-09-15 23:24:54",
-//            "updatedBy": "",
-//            "updatedDate": "2015-09-23 00:07:33"
-//    }
-//
     private Long id;
     private Long proSkuId;//产品sku编号
     private Long productId;//所属产品spu编号

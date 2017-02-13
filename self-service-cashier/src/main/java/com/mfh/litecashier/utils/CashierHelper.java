@@ -20,7 +20,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
-import com.mfh.litecashier.ui.cashier.CashierDesktopObservable;
+import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
 
 import java.text.ParseException;
 import java.util.ArrayList;

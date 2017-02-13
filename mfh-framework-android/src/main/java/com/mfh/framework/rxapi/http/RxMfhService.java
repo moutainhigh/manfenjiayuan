@@ -83,8 +83,10 @@ public interface RxMfhService {
     @GET("scNetRealInfo/needLockPos")
     Observable<MResponse<String>> needLockPos(@Query("JSESSIONID") String JSESSIONID,
                                               @Query("netId") Long netId);
+    /**获取一个生态租户的详细信息*/
     @GET("tenantInfo/getSaasInfo")
     Observable<MResponse<SassInfo>> getSaasInfo(@Query("id") Long id);
+    /**获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息*/
     @GET("queryPrivList")
     Observable<MResponse<String>> queryPrivList(@Query("JSESSIONID") String JSESSIONID);
     @GET("companyHuman/findCompUserPwdInfo")
@@ -93,6 +95,7 @@ public interface RxMfhService {
     @GET("scProductSkuBarcodes/findShopOtherBarcodes")
     Observable<MResponse<MRspQuery<ProductSkuBarcode>>> findShopOtherBarcodes(@QueryMap Map<String, String> options);
 
+    /**查询有哪些生态租户信息*/
     @GET("realmMap/listWhole")
     Observable<MResponse<MRspQuery<TenantInfo>>> listWhole(@QueryMap Map<String, String> options);
 
@@ -117,6 +120,9 @@ public interface RxMfhService {
 
     @GET("payOrder/create")
     Observable<MResponse<String>> createPayOrder(@QueryMap Map<String, String> options);
+
+    @GET("customer/createParamDirect")
+    Observable<MResponse<String>> createParamDirect(@QueryMap Map<String, String> options);
 
     //批量上传订单
 //    @FormUrlEncoded

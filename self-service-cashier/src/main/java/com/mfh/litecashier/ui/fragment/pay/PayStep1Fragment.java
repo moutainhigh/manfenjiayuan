@@ -36,7 +36,7 @@ import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.cashier.CashierDesktopObservable;
+import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

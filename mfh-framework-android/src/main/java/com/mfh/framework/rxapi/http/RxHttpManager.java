@@ -74,7 +74,8 @@ public class RxHttpManager {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
-                .addInterceptor(new MfhHttpLoggingInterceptor().setLevel(MfhHttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(new MfhHttpLoggingInterceptor()
+                        .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
                 .build();
 
         // Create a very simple REST adapter which points the API.
@@ -96,7 +97,8 @@ public class RxHttpManager {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
-                .addInterceptor(new MfhHttpLoggingInterceptor().setLevel(MfhHttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(new MfhHttpLoggingInterceptor()
+                        .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
                 .build();
 
         // Create a very simple REST adapter which points the API.
@@ -135,7 +137,8 @@ public class RxHttpManager {
 //                            return chain.proceed(request);
 //                        }
 //                    })
-                    .addInterceptor(new MfhHttpLoggingInterceptor().setLevel(MfhHttpLoggingInterceptor.Level.BODY))
+                    .addInterceptor(new MfhHttpLoggingInterceptor()
+                            .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
                     .build();
 
             // Create a very simple REST adapter which points the API.
@@ -172,7 +175,8 @@ public class RxHttpManager {
                             return chain.proceed(request);
                         }
                     })
-                    .addInterceptor(new MfhHttpLoggingInterceptor().setLevel(MfhHttpLoggingInterceptor.Level.BODY))
+                    .addInterceptor(new MfhHttpLoggingInterceptor()
+                            .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
                     .build();
 
             // Create a very simple REST adapter which points the API.
@@ -263,6 +267,7 @@ public class RxHttpManager {
                 .map(new MResponseFunc<SassInfo>());
         toSubscribe(observable, subscriber);
     }
+
     public void getSaasInfo2(String baseUrl, Long id, Subscriber<SassInfo> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class, baseUrl);
         Observable observable = mfhApi.getSaasInfo(id)
@@ -284,9 +289,10 @@ public class RxHttpManager {
                 .map(new MQueryResponseFunc<CompanyHuman>());
         toSubscribe(observable, subscriber);
     }
-    public void listWhole(Map<String, String> options,
-                                    MQuerySubscriber<TenantInfo> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+
+    public void listWhole(String baseUrl, Map<String, String> options,
+                          MQuerySubscriber<TenantInfo> subscriber) {
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class, baseUrl);
         Observable observable = mfhApi.listWhole(options)
                 .map(new MQueryResponseFunc<TenantInfo>());
         toSubscribe(observable, subscriber);
@@ -298,6 +304,7 @@ public class RxHttpManager {
                 .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
+
     public void analysisAggDateList(Map<String, String> options,
                                     MQuerySubscriber<MEntityWrapper<AggItem>> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
@@ -305,6 +312,7 @@ public class RxHttpManager {
                 .map(new MQueryResponseFunc<MEntityWrapper<AggItem>>());
         toSubscribe(observable, subscriber);
     }
+
     public void analysisAccDateList(Map<String, String> options,
                                     MQuerySubscriber<MEntityWrapper<AccItem>> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
@@ -312,35 +320,40 @@ public class RxHttpManager {
                 .map(new MQueryResponseFunc<MEntityWrapper<AccItem>>());
         toSubscribe(observable, subscriber);
     }
+
     public void autoShiftAnalysis(Map<String, String> options, Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.autoShiftAnalysis(options)
                 .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
+
     public void analysisAggShiftList(Map<String, String> options,
-                                    MQuerySubscriber<MEntityWrapper<AggItem>> subscriber) {
+                                     MQuerySubscriber<MEntityWrapper<AggItem>> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.analysisAggShiftList(options)
                 .map(new MQueryResponseFunc<MEntityWrapper<AggItem>>());
         toSubscribe(observable, subscriber);
     }
+
     public void accAnalysisAggShiftList(Map<String, String> options,
-                                    MQuerySubscriber<MEntityWrapper<AccItem>> subscriber) {
+                                        MQuerySubscriber<MEntityWrapper<AccItem>> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.accAnalysisAggShiftList(options)
                 .map(new MQueryResponseFunc<MEntityWrapper<AccItem>>());
         toSubscribe(observable, subscriber);
     }
+
     public void findGoodsOrderList(Map<String, String> options,
-                                    MQuerySubscriber<PosOrder> subscriber) {
+                                   MQuerySubscriber<PosOrder> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.findGoodsOrderList(options)
                 .map(new MQueryResponseFunc<PosOrder>());
         toSubscribe(observable, subscriber);
     }
+
     public void findPubSkusByFrontCatalog(Map<String, String> options,
-                                   MQuerySubscriber<PubSkus> subscriber) {
+                                          MQuerySubscriber<PubSkus> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.findPubSkusByFrontCatalog(options)
                 .map(new MQueryResponseFunc<PubSkus>());
@@ -374,6 +387,14 @@ public class RxHttpManager {
 //                .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
+
+    public void createParamDirect(Map<String, String> options, Subscriber<String> subscriber) {
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.createParamDirect(options)
+                .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
     public void createPayOrder(Map<String, String> options, Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.createPayOrder(options)
@@ -397,12 +418,13 @@ public class RxHttpManager {
     }
 
     public void exit(String JSESSIONID,
-                              Subscriber<String> subscriber) {
+                     Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.exit(JSESSIONID)
                 .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
+
 
 //    public void posRegisterList(Subscriber<MQueryResponse<PosRegister>> subscriber) {
 //        MfhApi mfhClient = MfhService.createService(MfhApi.class);

@@ -31,7 +31,6 @@ import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.R;
 import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
-import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.route.RouteActivity;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -40,9 +39,12 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.framework.uikit.base.ResultCode;
+
+import rx.Subscriber;
 
 
 /**
@@ -195,8 +197,8 @@ public class SignInActivity extends SkinBaseActivity {
 //        btnSignIn.setEnabled(false);
         DeviceUtils.hideSoftInputEver(this, etUserName);
 
-        String username = etUserName.getText().toString();
-        String password = etPassword.getText().toString();
+        final String username = etUserName.getText().toString();
+        final String password = etPassword.getText().toString();
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(username)) {
@@ -226,26 +228,39 @@ public class SignInActivity extends SkinBaseActivity {
         // perform the user login attempt.
         showProgress(true);
 
-        MfhLoginService.get().doLoginAsync(username, password, new LoginCallback() {
+        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
             @Override
-            public void loginSuccess(UserMixInfo user) {
-                //登录成功
+            public void onCompleted() {
+                ZLogger.d("onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+//                HTTP 401 Unauthorized
+//                HTTP 500 Internal Server Error
+                ZLogger.ef(e.getMessage());
+
+                //登录失败
+                DialogUtil.showHint(e.getMessage());
+                showProgress(false);
+
+//                Snackbar.make(etUserName, e.getMessage(), Snackbar.LENGTH_SHORT)
+//                        .setAction("Action", null).show();
+            }
+
+            @Override
+            public void onNext(UserMixInfo userMixInfo) {
+                ZLogger.df("登录成功：");//登录成功
                 DialogUtil.showHint("登录成功");
-//                MainActivity.actionStart(LoginActivity.this, null);
+
+                MfhLoginService.get().saveUserMixInfo(username, password, userMixInfo);
 
                 IMClient.getInstance().registerBridge();
 
                 setResult(RESULT_OK);
                 finish();
             }
-
-            @Override
-            public void loginFailed(String errMsg) {
-                //登录失败
-                DialogUtil.showHint(errMsg);
-                showProgress(false);
-            }
-        });
+        }, username, password);
     }
 
     private boolean isPasswordValid(String password) {

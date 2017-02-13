@@ -18,24 +18,24 @@ import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
+import rx.Subscriber;
 
 
 /**
@@ -198,6 +198,9 @@ public class PayByVipFragment extends BasePayFragment {
                 });
     }
 
+    /**
+     * 验证会员付款码
+     */
     @Override
     protected void submitOrder() {
 //        if (bPayProcessing) {
@@ -218,40 +221,31 @@ public class PayByVipFragment extends BasePayFragment {
             validateFailed(getString(R.string.toast_network_error));
             return;
         }
-        UserApiImpl.findHumanByHumanId(humanId, findMemberResponseCallback);
+
+        Map<String, String> options = new HashMap<>();
+        options.put("humanId", humanId);
+        SysHttpManager.getInstance().getHumanByIdentity(options,
+                new Subscriber<Human>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        validateFailed(e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Human human) {
+                        if (human == null) {
+                            validateFailed("没有查到会员信息");
+                        } else {
+                            validateSuccess(1, null, human);
+                        }
+                    }
+                });
     }
-
-    /**
-     * 验证会员付款码
-     */
-    private NetCallBack.NetTaskCallBack findMemberResponseCallback = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    Human memInfo = null;
-                    if (rspData != null) {
-                        RspBean<Human> retValue = (RspBean<Human>) rspData;
-                        memInfo = retValue.getValue();
-                    }
-
-                    if (memInfo == null) {
-                        validateFailed("未查询到结果");
-                    } else {
-                        validateSuccess(1, null, memInfo);
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    validateFailed(errMsg);
-                }
-            }
-            , Human.class
-            , AppContext.getAppContext()) {
-    };
-
 
     /**
      * 验证失败

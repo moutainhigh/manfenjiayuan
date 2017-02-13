@@ -1,7 +1,7 @@
 package com.mfh.framework.rxapi.http;
 
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.commonuseraccount.ActivateAccountResult;
+import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.func.MResponseFunc;
@@ -62,7 +62,14 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
          * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
          */
         @GET("commonuseraccount/activateAccount")
-        Observable<MResponse<ActivateAccountResult>> activateAccount(@QueryMap Map<String, String> options);
+        Observable<MResponse<UserAccount>> activateAccount(@QueryMap Map<String, String> options);
+
+        /**
+         * 根据卡号获取用户信息
+         * /commonuseraccount/getUserAccountByCardId?cardId=
+         */
+        @GET("commonuseraccount/getUserAccountByCardId")
+        Observable<MResponse<UserAccount>> getUserAccountByCardId(@QueryMap Map<String, String> options);
 
     }
 
@@ -101,10 +108,17 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         toSubscribe(observable, subscriber);
     }
 
-    public void activateAccount(Map<String, String> options, Subscriber<ActivateAccountResult> subscriber) {
+    public void activateAccount(Map<String, String> options, Subscriber<UserAccount> subscriber) {
         CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
         Observable observable = mfhApi.activateAccount(options)
-                .map(new MResponseFunc<ActivateAccountResult>());
+                .map(new MResponseFunc<UserAccount>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void getUserAccountByCardId(Map<String, String> options, Subscriber<UserAccount> subscriber) {
+        CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
+        Observable observable = mfhApi.getUserAccountByCardId(options)
+                .map(new MResponseFunc<UserAccount>());
         toSubscribe(observable, subscriber);
     }
 

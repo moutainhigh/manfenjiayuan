@@ -13,10 +13,6 @@ public class ScGoodsSkuApi {
      * 同步微超商品列表
      */
     public static String URL_DOWNLOAD_POS_PRODUCT = URL_SCGOODSSKU + "downLoadPosProduct";
-    /**
-     * 指定网点可同步sku总数查询接口： /scGoodsSku/countNetSyncAbleSkuNum?netId=132079
-     */
-    static String URL_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
 
     /**
      * 查询网点库存商品信息列表（包括本店商品库存、采购价、售价和商品档案基本信息等）.
@@ -96,7 +92,6 @@ public class ScGoodsSkuApi {
     public static void register() {
         URL_SCGOODSSKU = MfhApi.URL_BASE_SERVER + "/scGoodsSku/";
         URL_DOWNLOAD_POS_PRODUCT = URL_SCGOODSSKU + "downLoadPosProduct";
-        URL_COUNTNETSYNCABLESKUNUM = URL_SCGOODSSKU + "countNetSyncAbleSkuNum";
         URL_FINDGOODSLIST = URL_SCGOODSSKU + "findGoodsList";
         URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
         URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
