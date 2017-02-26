@@ -1,16 +1,16 @@
 package com.mfh.framework.api.invLossOrder;
 
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.invOrder.InvOrderApiImpl;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.entity.MEntityWrapper;
+import com.mfh.framework.rxapi.http.InvLossOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +28,32 @@ public class InvLossOrderMode {
             listener.onProcess();
         }
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<InvLossOrder>(pageInfo) {
+        Map<String, String> options = new HashMap<>();
+        options.put("wrapper", "true");
+        options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+        if (pageInfo != null){
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        InvLossOrderHttpManager.getInstance().list(options,
+                new MQuerySubscriber<MEntityWrapper<InvLossOrder>>(pageInfo) {
+//                        @Override
+//                        public void onQueryNext(PageInfo pageInfo, List<InvLossOrder> dataList) {
+//                            super.onQueryNext(pageInfo, dataList);
+//                            findCompUserPwdInfoStep3(dataList, pageInfo);
+//                        }
+
+
                     @Override
-                    public void processQueryResult(RspQueryResult<InvLossOrder> rs) {
+                    public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<InvLossOrder>> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
                         List<InvLossOrder> entityList = new ArrayList<>();
-                        if (rs != null) {
-                            for (EntityWrapper<InvLossOrder> wrapper : rs.getRowDatas()) {
+                        if (dataList != null) {
+                            for (MEntityWrapper<InvLossOrder> wrapper : dataList) {
                                 InvLossOrder invLossOrder = wrapper.getBean();
                                 Map<String, String> caption = wrapper.getCaption();
                                 if (caption != null) {
@@ -43,21 +62,21 @@ public class InvLossOrderMode {
                                 entityList.add(invLossOrder);
                             }
                         }
+
                         if (listener != null) {
                             listener.onSuccess(pageInfo, entityList);
                         }
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("加载报损订单失败:" + errMsg);
+                    public void onError(Throwable e) {
+                        super.onError(e);
+
+                        ZLogger.df("加载报损订单失败:" + e.toString());
                         if (listener != null) {
-                            listener.onError(errMsg);
+                            listener.onError(e.getMessage());
                         }
                     }
-                }, InvLossOrder.class, MfhApplication.getAppContext());
-
-        InvOrderApiImpl.queryInvLossOrderList(pageInfo, queryRsCallBack);
+                });
     }
 }

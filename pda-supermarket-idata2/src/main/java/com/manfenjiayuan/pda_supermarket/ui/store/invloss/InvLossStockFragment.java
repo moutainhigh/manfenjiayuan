@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_wholesaler.ui.fragment;
+package com.manfenjiayuan.pda_supermarket.ui.store.invloss;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -15,28 +15,27 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.bizz.ARCode;
-import com.bingshanguxue.pda.bizz.invloss.InvLossGoodsAdapter;
-import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
-import com.bingshanguxue.pda.database.service.InvLossGoodsService;
-import com.mfh.framework.api.invLossOrder.InvLossOrder;
-import com.manfenjiayuan.pda_wholesaler.R;
-import com.manfenjiayuan.pda_wholesaler.ui.activity.SecondaryActivity;
+import com.bingshanguxue.pda.bizz.invloss.InvLossStockGoodsAdapter;
+import com.bingshanguxue.pda.database.entity.InvLossStockGoodsEntity;
+import com.bingshanguxue.pda.database.service.InvLossStockGoodsService;
+import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
+import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.StoreType;
+import com.mfh.framework.api.invLossOrder.InvLossOrder;
 import com.mfh.framework.api.invOrder.InvOrderApiImpl;
-import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.InvLossOrderHttpManager;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseFragment;
-import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -44,35 +43,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-import static com.igexin.push.core.g.R;
-
 
 /**
- * 新建报损单
+ * 盘点报损
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvLossOrderFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+public class InvLossStockFragment extends BaseFragment {
+
+    public static final String EXTRA_INV_LOSSORDER = "invLossOrder";
+
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.providerView)
+    @BindView(R.id.providerView)
     NaviAddressView mProviderView;
-    @Bind(R.id.office_list)
-    RecyclerViewEmptySupport goodsRecyclerView;
-    private InvLossGoodsAdapter goodsAdapter;
+    @BindView(R.id.office_list)
+    RecyclerViewEmptySupport addressRecyclerView;
+    private InvLossStockGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
+
+    //当前正在报损的单据
     private InvLossOrder mInvLossOrder = null;
 
-    public static CreateInvLossOrderFragment newInstance(Bundle args) {
-        CreateInvLossOrderFragment fragment = new CreateInvLossOrderFragment();
+    public static InvLossStockFragment newInstance(Bundle args) {
+        InvLossStockFragment fragment = new InvLossStockFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -97,12 +99,21 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 
         setHasOptionsMenu(true);
 
-        InvLossGoodsService.get().clear();
+        InvLossStockGoodsService.get().clear();
     }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        Bundle args = getArguments();
+        if (args != null) {
+            animType = args.getInt(EXTRA_KEY_ANIM_TYPE, ANIM_TYPE_NEW_NONE);
+            mInvLossOrder = (InvLossOrder) args.getSerializable(EXTRA_INV_LOSSORDER);
+        }
+        if (animType == ANIM_TYPE_NEW_FLOW) {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
+        }
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -127,12 +138,13 @@ public class CreateInvLossOrderFragment extends BaseFragment {
 
         initRecyclerView();
 
-//        Bundle args = getArguments();
-//        if (args != null) {
-////            invSendOrder = (InvSendOrder)args.getSerializable("sendOrder");
-//        }
-
-        loadLossOrder();
+        if (mInvLossOrder != null) {
+            mProviderView.setText(mInvLossOrder.getOrderName());
+        }
+        else {
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -155,8 +167,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
                             dialog.dismiss();
                         }
                     });
-        }
-        else{
+        } else {
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
@@ -164,88 +175,68 @@ public class CreateInvLossOrderFragment extends BaseFragment {
         return isResponseBackPressed();
     }
 
-
-    private void loadLossOrder(){
-        mInvLossOrder = null;
-
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            getActivity().finish();
-            return;
-        }
-
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在请求报损单号...", false);
-
-        Map<String, String> options = new HashMap<>();
-        options.put("storeType", String.valueOf(StoreType.WHOLESALER));
-        options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        InvLossOrderHttpManager.getInstance().getCurrentOrder(options,
-                new Subscriber<InvLossOrder>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ZLogger.ef(e.toString());
-                        hideProgressDialog();
-                        DialogUtil.showHint("获取报损单号失败");
-                        getActivity().finish();
-                    }
-
-                    @Override
-                    public void onNext(InvLossOrder invLossOrder) {
-                        hideProgressDialog();
-                        mInvLossOrder = invLossOrder;
-                        if (invLossOrder == null) {
-                            DialogUtil.showHint("获取报损单号失败");
-                            getActivity().finish();
-                        } else {
-                            mProviderView.setText(invLossOrder.getOrderName());
-                        }
-                    }
-                });
-
-    }
-
-
     /**
      * 签收
      */
     public void submit() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在报损...", false);
 
-        List<InvLossGoodsEntity> goodsList = goodsAdapter.getEntityList();
+        List<InvLossStockGoodsEntity> goodsList = goodsAdapter.getEntityList();
         if (goodsList == null || goodsList.size() < 1) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR, "商品不能为空", true);
-            return;
-        }
-
-        if (invLossOrder == null){
-            showProgressDialog(ProgressDialog.STATUS_ERROR, "报损单号不能为空", true);
+            showProgressDialog(ProgressDialog.STATUS_ERROR, "您还没有添加商品", true);
             return;
         }
 
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            showProgressDialog(ProgressDialog.STATUS_ERROR,
-                    getString(R.string.toast_network_error), true);
+            showProgressDialog(ProgressDialog.STATUS_ERROR, getString(R.string.toast_network_error), true);
             return;
         }
 
         JSONArray items = new JSONArray();
-        for (InvLossGoodsEntity goods : goodsList){
+        for (InvLossStockGoodsEntity goods : goodsList) {
             JSONObject item = new JSONObject();
             item.put("proSkuId", goods.getProSkuId());
             item.put("barcode", goods.getBarcode());
-            item.put("quantityCheck", goods.getQuantityCheck());
+            item.put("checkInv", goods.getCheckInv());
             item.put("updateHint", 1);
             items.add(item);
         }
 
-        InvOrderApiImpl.invLossOrderItemBatchCommit(invLossOrder.getId(),
-                items.toJSONString(), submitCallback);
+        if (RxHttpManager.RELEASE){
+            Map<String, String> options = new HashMap<>();
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            if (mInvLossOrder.getId() != null) {
+                options.put("orderId", String.valueOf(mInvLossOrder.getId()));
+            }
+            options.put("posId", SharedPrefesManagerFactory.getTerminalId());
+            options.put("jsonStr", items.toJSONString());
+
+            InvLossOrderHttpManager.getInstance().batchCommitItems(options,
+                    new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.ef(e.toString());
+                            showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            ZLogger.d("报损完成: " + s);
+                            hideProgressDialog();
+                            getActivity().finish();
+                        }
+                    });
+        }
+        else {
+            InvOrderApiImpl.invLossOrderItemBatchCommit(mInvLossOrder.getId(),
+                    items.toJSONString(), submitCallback);
+        }
+
     }
 
     private NetCallBack.NetTaskCallBack submitCallback = new NetCallBack.NetTaskCallBack<String,
@@ -282,22 +273,22 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        goodsRecyclerView.setLayoutManager(linearLayoutManager);
+        addressRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
-        goodsRecyclerView.setHasFixedSize(true);
+        addressRecyclerView.setHasFixedSize(true);
         //添加分割线
-        goodsRecyclerView.addItemDecoration(new LineItemDecoration(
-                getActivity(), LineItemDecoration.VERTICAL_LIST));
+//        addressRecyclerView.addItemDecoration(new LineItemDecoration(
+//                getActivity(), LineItemDecoration.VERTICAL_LIST));
         //设置列表为空时显示的视图
-        goodsRecyclerView.setEmptyView(emptyView);
+        addressRecyclerView.setEmptyView(emptyView);
 
-        goodsAdapter = new InvLossGoodsAdapter(getActivity(), null);
-        goodsAdapter.setOnAdapterListener(new InvLossGoodsAdapter.OnAdapterListener() {
+        goodsAdapter = new InvLossStockGoodsAdapter(getActivity(), null);
+        goodsAdapter.setOnAdapterListener(new InvLossStockGoodsAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                InvLossGoodsEntity entity = goodsAdapter.getEntity(position);
-                if (entity != null){
+                InvLossStockGoodsEntity entity = goodsAdapter.getEntity(position);
+                if (entity != null) {
                     inspect(entity.getBarcode());
                 }
             }
@@ -308,25 +299,26 @@ public class CreateInvLossOrderFragment extends BaseFragment {
             }
         });
 
-        goodsRecyclerView.setAdapter(goodsAdapter);
+        addressRecyclerView.setAdapter(goodsAdapter);
 
         ItemTouchHelper.Callback callback = new MyItemTouchHelper(goodsAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(goodsRecyclerView);
+        itemTouchHelper.attachToRecyclerView(addressRecyclerView);
     }
 
     /**
      * 验货
-     * */
+     */
     @OnClick(R.id.fab_add)
     public void inspect() {
         inspect(null);
     }
 
+    /**盘点验货*/
     private void inspect(String barcode) {
         Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVLOSS_INSPECTGOODS);
+        extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE, SecondaryActivity.FT_INVLOSS_STOCK_INSPECTGOODS);
         extras.putString(InvLossInspectFragment.EXTRA_KEY_BARCODE, barcode);
 
         Intent intent = new Intent(getActivity(), SecondaryActivity.class);
@@ -338,7 +330,7 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ARCode.ARC_DISTRIBUTION_INSPECT: {
-                goodsAdapter.setEntityList(InvLossGoodsService.get().queryAll());
+                goodsAdapter.setEntityList(InvLossStockGoodsService.get().queryAll());
             }
             break;
         }
@@ -346,14 +338,13 @@ public class CreateInvLossOrderFragment extends BaseFragment {
     }
 
 
-    /**
-     * 选择批发商
-     */
-    @OnClick(R.id.providerView)
-    public void selectInvCompProvider() {
-        if (invLossOrder == null){
-            loadLossOrder();
-        }
-    }
-
+//    /**
+//     * 选择批发商
+//     */
+//    @OnClick(R.id.providerView)
+//    public void selectInvCompProvider() {
+//        if (mInvLossOrder == null) {
+//            loadLossOrder();
+//        }
+//    }
 }

@@ -1,7 +1,7 @@
 package com.bingshanguxue.pda.database.service;
 
 import com.bingshanguxue.pda.database.entity.InvCheckGoodsEntity;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.manfenjiayuan.business.wrapper.L2CSyncStatus;
 import com.bingshanguxue.pda.database.dao.InvCheckGoodsDao;
 import com.mfh.comn.bean.PageInfo;

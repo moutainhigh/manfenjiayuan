@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.R;
-import com.bingshanguxue.pda.database.entity.InvLossGoodsEntity;
+import com.bingshanguxue.pda.database.entity.InvLossStockGoodsEntity;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
@@ -19,10 +19,10 @@ import java.util.List;
  * 报损商品
  * Created by bingshanguxue on 15/8/5.
  */
-public class InvLossOrderGoodsAdapter extends SwipAdapter<InvLossGoodsEntity,
-        InvLossOrderGoodsAdapter.ProductViewHolder> {
+public class InvLossStockGoodsAdapter extends SwipAdapter<InvLossStockGoodsEntity,
+        InvLossStockGoodsAdapter.ProductViewHolder> {
 
-    public InvLossOrderGoodsAdapter(Context context, List<InvLossGoodsEntity> entityList) {
+    public InvLossStockGoodsAdapter(Context context, List<InvLossStockGoodsEntity> entityList) {
         super(context, entityList);
     }
 
@@ -46,11 +46,11 @@ public class InvLossOrderGoodsAdapter extends SwipAdapter<InvLossGoodsEntity,
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
-        InvLossGoodsEntity entity = entityList.get(position);
+        InvLossStockGoodsEntity entity = entityList.get(position);
 
         holder.tvName.setEndText(entity.getProductName());
         holder.tvBarcode.setEndText(entity.getBarcode());
-        holder.tvQuantity.setEndText(MUtils.formatDouble(entity.getQuantityCheck(), ""));
+        holder.tvQuantity.setEndText(MUtils.formatDouble(entity.getCheckInv(), ""));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -102,7 +102,7 @@ TextLabelView tvQuantity;
     }
 
     @Override
-    public void setEntityList(List<InvLossGoodsEntity> entityList) {
+    public void setEntityList(List<InvLossStockGoodsEntity> entityList) {
 //        super.setEntityList(entityList);
         this.entityList = entityList;
         sortByUpdateDate();
@@ -120,9 +120,9 @@ TextLabelView tvQuantity;
             return;
         }
 
-        Collections.sort(entityList, new Comparator<InvLossGoodsEntity>() {
+        Collections.sort(entityList, new Comparator<InvLossStockGoodsEntity>() {
             @Override
-            public int compare(InvLossGoodsEntity order1, InvLossGoodsEntity order2) {
+            public int compare(InvLossStockGoodsEntity order1, InvLossStockGoodsEntity order2) {
                 return 0 - order1.getUpdatedDate().compareTo(order2.getUpdatedDate());
             }
         });

@@ -38,7 +38,7 @@ import butterknife.OnClick;
  * 库存－－报损盘点列表
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvLossListFragment extends BaseListFragment<InvLossOrder> implements IInvLossOrderView {
+public class InvLossOrderListFragment extends BaseListFragment<InvLossOrder> implements IInvLossOrderView {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.swiperefreshlayout)
@@ -52,8 +52,8 @@ public class InvLossListFragment extends BaseListFragment<InvLossOrder> implemen
 
     private InvLossOrderPresenter mInvLossOrderPresenter;
 
-    public static InvLossListFragment newInstance(Bundle args) {
-        InvLossListFragment fragment = new InvLossListFragment();
+    public static InvLossOrderListFragment newInstance(Bundle args) {
+        InvLossOrderListFragment fragment = new InvLossOrderListFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -178,8 +178,8 @@ public class InvLossListFragment extends BaseListFragment<InvLossOrder> implemen
                 if (invLossOrder.getStatus().equals(InvLossOrder.INVLOSS_ORDERSTATUS_PROCESSING)) {
                     Bundle extras = new Bundle();
 //                        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-                    extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_LOSSORDER_NEW);
-                    extras.putSerializable(InvLossOrderFragment.EXTRA_INV_LOSSORDER, invLossOrder);
+                    extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_LOSSORDER_STOCKTAKE);
+                    extras.putSerializable(InvLossStockFragment.EXTRA_INV_LOSSORDER, invLossOrder);
                     UIHelper.startActivity(getActivity(), PrimaryActivity.class, extras);
                 }
 //                else if (InvLossOrder.getStatus().equals(InvLossOrder.INVCHECK_ORDERSTATUS_FREEZE)){

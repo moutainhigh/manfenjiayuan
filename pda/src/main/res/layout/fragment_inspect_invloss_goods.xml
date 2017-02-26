@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 app:editInputType="numberDecimal"
-                app:editTextHint="请输入报损数量"
+                app:editTextHint="请输入数量"
                 app:softKeyboardEnabled="true"
                 app:startText="数量:"
                 app:startTextGravity="end"

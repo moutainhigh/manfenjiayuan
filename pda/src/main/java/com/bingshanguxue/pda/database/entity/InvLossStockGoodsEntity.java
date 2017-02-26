@@ -8,13 +8,13 @@ import com.mfh.framework.api.abs.MfhEntity;
  * 报损
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
-@Table(name="pda_invloss_goods_v0001")
-public class InvLossGoodsEntity extends MfhEntity<Long> implements ILongId{
+@Table(name="pda_invloss_stock_goods_v0001")
+public class InvLossStockGoodsEntity extends MfhEntity<Long> implements ILongId{
 
     private Long proSkuId;//
     private String barcode;//条码
     private String productName;//商品名称
-    private Double quantityCheck;//提交的报损数
+    private Double checkInv;//提交的盘点数
 
 
     public String getProductName() {
@@ -41,12 +41,12 @@ public class InvLossGoodsEntity extends MfhEntity<Long> implements ILongId{
     public void setProSkuId(Long proSkuId) {
         this.proSkuId = proSkuId;
     }
-    
-    public Double getQuantityCheck() {
-        return quantityCheck;
+
+    public Double getCheckInv() {
+        return checkInv;
     }
 
-    public void setQuantityCheck(Double quantityCheck) {
-        this.quantityCheck = quantityCheck;
+    public void setCheckInv(Double checkInv) {
+        this.checkInv = checkInv;
     }
 }

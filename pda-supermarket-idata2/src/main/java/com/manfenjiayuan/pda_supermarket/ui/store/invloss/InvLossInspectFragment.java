@@ -341,7 +341,7 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
             if (aBoolean){
                 hideProgressDialog();
 
-                saveInvLossGoodsEntity(goodsEntity);
+                refresh(goodsEntity);
             }
             else{
                 queryNetGoods(barcode);
@@ -368,31 +368,6 @@ public class InvLossInspectFragment extends PDAScanFragment implements IScGoodsS
 
         chainGoodsSkuPresenter.getGoodsByBarCode(barcode);
     }
-
-
-    public void saveInvLossGoodsEntity(InvLossGoodsEntity goods){
-        if (goods == null) {
-            DialogUtil.showHint("商品无效");
-            return;
-        }
-
-        InvLossGoodsEntity entity = InvLossGoodsService.get().queryEntityBy(goods.getBarcode());
-        if (entity == null){
-            entity = new InvLossGoodsEntity();
-            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
-
-            entity.setProSkuId(goods.getProSkuId());
-            entity.setProductName(goods.getProductName());
-            entity.setBarcode(goods.getBarcode());
-
-            entity.setQuantityCheck(1D);
-            entity.setUpdatedDate(new Date());
-
-            InvLossGoodsService.get().saveOrUpdate(entity);
-        }
-        refresh(entity);
-    }
-
 
     /**
      * 保存搜索商品
