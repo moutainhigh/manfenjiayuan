@@ -284,22 +284,29 @@ public class InvRecvInspectFragment extends PDAScanFragment
 
 
     private Double calculateReceivePrice() {
-        String quantityStr = labelReceiveQuantity.getInput();
-        if (StringUtils.isEmpty(quantityStr)) {
-            return 0D;
-        }
+        try{
+            String quantityStr = labelReceiveQuantity.getInput();
+            if (StringUtils.isEmpty(quantityStr)) {
+                return 0D;
+            }
 
-        String amount = labelReceiveAmount.getInput();
-        if (StringUtils.isEmpty(amount)) {
-            return 0D;
-        }
+            String amount = labelReceiveAmount.getInput();
+            if (StringUtils.isEmpty(amount)) {
+                return 0D;
+            }
 
-        Double quantityVal = Double.valueOf(quantityStr);
-        Double amountVal = Double.valueOf(amount);
-        if (quantityVal == 0) {
+
+            Double quantityVal = Double.valueOf(quantityStr);
+            Double amountVal = Double.valueOf(amount);
+            if (quantityVal == 0) {
+                return 0D;
+            } else {
+                return amountVal / quantityVal;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
             return 0D;
-        } else {
-            return amountVal / quantityVal;
         }
     }
 

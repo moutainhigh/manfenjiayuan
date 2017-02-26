@@ -45,7 +45,10 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.InvSendIoOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -54,7 +57,9 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -352,37 +357,35 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
         jsonStrObject.put("remark", "");
         jsonStrObject.put("items", itemsArray);
 
-        InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
-                jsonStrObject.toJSONString(), signResponseCallback);
+
+        Map<String, String> options = new HashMap<>();
+        if (otherOrderId != null) {
+            options.put("otherOrderId", String.valueOf(otherOrderId));
+        }
+        options.put("checkOk", "true");
+        options.put("jsonStr", jsonStrObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSendIoOrderHttpManager.getInstance().createRecOrder(options,
+                new MValueSubscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef("新建收货单失败:" + e.toString());
+                        onReceiveOrderInterrupted(e.getMessage());
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+                        onReceiveOrderSucceed();
+                    }
+
+                });
     }
-
-    private NetCallBack.NetTaskCallBack signResponseCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //parser:{"code":"1","msg":"收货时发送方租户不能为空!","data":null,"version":1}
-                    //查询失败
-//                        animProgress.setVisibility(View.GONE);
-                    onReceiveOrderInterrupted("新建收货单失败" + errMsg);
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-                    /**
-                     * 新增采购单成功，更新采购单列表
-                     * */
-                    RspValue<String> retValue = (RspValue<String>) rspData;
-                    ZLogger.df(String.format("新建收货单成功:%s", retValue.getValue()));
-
-                    onReceiveOrderSucceed();
-                }
-            }
-            , String.class
-            , AppContext.getAppContext()) {
-    };
 
     public void onReceiveOrderProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在处理订单，请稍后...", false);

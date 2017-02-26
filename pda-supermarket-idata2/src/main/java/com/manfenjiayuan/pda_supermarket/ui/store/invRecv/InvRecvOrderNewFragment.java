@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store;
+package com.manfenjiayuan.pda_supermarket.ui.store.invRecv;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -31,15 +31,12 @@ import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.invOrder.InvOrderApi;
-import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
@@ -47,15 +44,18 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvSendIoOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -70,7 +70,7 @@ import rx.schedulers.Schedulers;
  * 新建采购收货单
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class CreateInvReceiveOrderFragment extends BaseFragment
+public class InvRecvOrderNewFragment extends BaseFragment
         implements IInvSendOrderView {
 
     @BindView(R.id.toolbar)
@@ -96,8 +96,8 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     private int entryMode = SendIoEntryMode.MANUAL;
     private ActionDialog mActionDialog = null;
 
-    public static CreateInvReceiveOrderFragment newInstance(Bundle args) {
-        CreateInvReceiveOrderFragment fragment = new CreateInvReceiveOrderFragment();
+    public static InvRecvOrderNewFragment newInstance(Bundle args) {
+        InvRecvOrderNewFragment fragment = new InvRecvOrderNewFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -391,8 +391,18 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
             itemsArray.add(item);
             amount += goods.getReceiveAmount();
         }
+        final JSONObject jsonStrObject = new JSONObject();
+        if (companyInfo.getTenantId() != null) {
+            jsonStrObject.put("sendTenantId", companyInfo.getTenantId());
+        }
+        jsonStrObject.put("sendStoreType", StoreType.WHOLESALER);
+        jsonStrObject.put("isPrivate", IsPrivate.PLATFORM);
+        jsonStrObject.put("receiveNetId", MfhLoginService.get().getCurOfficeId());
+        jsonStrObject.put("tenantId", MfhLoginService.get().getSpid());
+        jsonStrObject.put("remark", "");
+        jsonStrObject.put("items", itemsArray);
 
-        final Double finalAmount = amount;
+        totalAmount = amount;
         showConfirmDialog(String.format("总金额：%.2f, \n请确认已经查验过所有商品。", amount),
                 "签收", new DialogInterface.OnClickListener() {
 
@@ -401,10 +411,7 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
                         dialog.dismiss();
 
                         //由于商品明细可以修改，所以这里不直接对订单做收货，而是新建一个收货单
-//                        doSignWork(itemsArray, finalAmount, invSendOrder.getId(),
-//                                invSendOrder.getSendTenantId(), invSendOrder.getIsPrivate());
-                        doSignWork(itemsArray, finalAmount, null,
-                                companyInfo.getTenantId());
+                        doSignWork(jsonStrObject, null);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -416,55 +423,42 @@ public class CreateInvReceiveOrderFragment extends BaseFragment
     }
 
 
-    public void doSignWork(JSONArray itemsArray, Double amount, Long otherOrderId,
-                           Long sendTenantId) {
+    public void doSignWork(JSONObject jsonStrObject, Long otherOrderId) {
         onReceiveOrderProcess();
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             onReceiveOrderInterrupted(getString(R.string.toast_network_error));
             return;
         }
-        final JSONObject jsonStrObject = new JSONObject();
-        if (sendTenantId != null) {
-            jsonStrObject.put("sendTenantId", sendTenantId);
+
+        Map<String, String> options = new HashMap<>();
+        if (otherOrderId != null) {
+            options.put("otherOrderId", String.valueOf(otherOrderId));
         }
-        jsonStrObject.put("sendStoreType", StoreType.WHOLESALER);
-        jsonStrObject.put("isPrivate", IsPrivate.PLATFORM);
-        jsonStrObject.put("receiveNetId", MfhLoginService.get().getCurOfficeId());
-        jsonStrObject.put("tenantId", MfhLoginService.get().getSpid());
-        jsonStrObject.put("remark", "");
-        jsonStrObject.put("items", itemsArray);
-        totalAmount = amount;
+        options.put("checkOk", "true");
+        options.put("jsonStr", jsonStrObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSendIoOrderHttpManager.getInstance().createRecOrder(options,
+                new MValueSubscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-        InvSendIoOrderApiImpl.createInvSendIoRecOrder(otherOrderId, true,
-                jsonStrObject.toJSONString(), signResponseCallback);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef("新建收货单失败:" + e.toString());
+                        onReceiveOrderInterrupted(e.getMessage());
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+                        onReceiveOrderSucceed(data);
+                    }
+
+                });
     }
-
-    private NetCallBack.NetTaskCallBack signResponseCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    //parser:{"code":"1","msg":"收货时发送方租户不能为空!","data":null,"version":1}
-                    //查询失败
-//                        animProgress.setVisibility(View.GONE);
-                    onReceiveOrderInterrupted("新建收货单失败" + errMsg);
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-                    /**
-                     * 新增采购单成功，更新采购单列表
-                     * */
-                    RspValue<String> retValue = (RspValue<String>) rspData;
-                    onReceiveOrderSucceed(retValue.getValue());
-                }
-            }
-            , String.class
-            , AppContext.getAppContext()) {
-    };
 
     public void onReceiveOrderProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在处理订单，请稍后...", false);
