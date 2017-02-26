@@ -40,7 +40,7 @@
                 style="@style/mfh_textlabelview"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                app:startText="库存:"
+                app:startText="库存数量:"
                 app:startTextGravity="end"
                 app:startTextWidth="90dp"/>
 
@@ -56,7 +56,7 @@
                 app:endTextSize="14sp"
                 app:endTextVisible="true"
                 app:softKeyboardEnabled="true"
-                app:startText="减少库存:"
+                app:startText="转换数量:"
                 app:startTextGravity="end"
                 app:startTextWidth="90dp"/>
 

@@ -1,24 +1,25 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:orientation="vertical">
+                                                 android:layout_height="match_parent">
+
 
     <include layout="@layout/appbar"/>
 
-    <!--目标商品列表-->
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--空视图-->
-        <ImageView
+        <TextView
             android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@null"
-            android:scaleType="centerInside"
-            android:src="@mipmap/emptyimage_no_goods"/>
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="暂无数据"/>
 
         <!--订单列表-->
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
@@ -26,22 +27,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-
+        <ProgressBar
+            android:id="@+id/animProgress"
+            style="@style/loading"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
     </RelativeLayout>
 
 
-    <!--结算-->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_submit"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/spacing_double"
-        android:src="@mipmap/ic_fab_submit"
-        app:backgroundTint="@color/colorPrimary"
-        app:borderWidth="0dp"
-        app:elevation="0dp"
-        app:pressedTranslationZ="0dp"
-        app:rippleColor="@color/material_green_800"/>
 
 </android.support.design.widget.CoordinatorLayout>
