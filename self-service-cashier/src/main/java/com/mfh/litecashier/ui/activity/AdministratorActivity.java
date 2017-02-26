@@ -386,6 +386,8 @@ public class AdministratorActivity extends BaseActivity {
                 "统计", R.mipmap.ic_admin_menu_analysis));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_CASHQUOTA,
                 "授信", R.mipmap.ic_admin_menu_cashquota));
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_GOODSFLOW,
+                "商品流水", R.mipmap.ic_admin_menu_goodsflow));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_FACTORYDATA_RESET,
@@ -420,6 +422,8 @@ public class AdministratorActivity extends BaseActivity {
             ActivityRoute.redirect2Receipt(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_ANALYSIS) == 0) {
             dailySettle();
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_GOODSFLOW) == 0) {
+            ActivityRoute.redirect2GoodsFlow(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_SETTINGS) == 0) {
             ActivityRoute.redirect2Settings(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_CASHQUOTA) == 0) {
