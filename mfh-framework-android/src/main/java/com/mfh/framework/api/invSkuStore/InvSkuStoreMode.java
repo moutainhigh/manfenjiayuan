@@ -1,24 +1,24 @@
 package com.mfh.framework.api.invSkuStore;
 
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.invSendOrder.InvSendOrderItemBrief;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendOrder.InvSendOrderItemBrief;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * Created by bingshanguxue on 7/28/16.
  */
 public class InvSkuStoreMode {
     /**
-     * 加载库存调拨订单列表
-     * @param pageInfo
-     * @param status 订单状态，可以为空，为空时表示查询所有状态
-     * @param payStatus 支付状态，可以为空，为空时表示查询所有状态。
-     * @param sendTenantId 发货方网点编号，可以为空，为空时表示查询所有发货发。
+     * 智能订货
+     * @param chainCompanyId
      * @param listener
      * */
     public void autoAskSendOrder(Long chainCompanyId,
@@ -27,39 +27,33 @@ public class InvSkuStoreMode {
             listener.onProcess();
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<InvSendOrderItemBrief,
-                NetProcessor.Processor<InvSendOrderItemBrief>>(
-                new NetProcessor.Processor<InvSendOrderItemBrief>() {
+        Map<String, String> options = new HashMap<>();
+        options.put("chainCompanyId", String.valueOf(chainCompanyId));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().autoAskSendOrder(options,
+                new Subscriber<InvSendOrderItemBrief>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
+                    public void onCompleted() {
 
-                        InvSendOrderItemBrief invSendOrderItemBrief = null;
+                    }
 
-                        if (rspData != null) {
-                            //com.mfh.comn.net.data.RspBean cannot be cast to com.mfh.comn.net.data.RspValue
-                            RspBean<InvSendOrderItemBrief> retValue = (RspBean<InvSendOrderItemBrief>) rspData;
-                            invSendOrderItemBrief = retValue.getValue();
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.d("智能订货失败：" + e.toString());
+
+
+                        if (listener != null) {
+                            listener.onError(e.getMessage());
                         }
+                    }
 
+                    @Override
+                    public void onNext(InvSendOrderItemBrief invSendOrderItemBrief) {
                         if (listener != null) {
                             listener.onSuccess(invSendOrderItemBrief);
                         }
                     }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("智能订货失败：" + errMsg);
-
-                        if (listener != null) {
-                            listener.onError(errMsg);
-                        }
-                    }
-                }
-                , InvSendOrderItemBrief.class
-                , MfhApplication.getAppContext()) {
-        };
-
-        InvSkuStoreApiImpl.autoAskSendOrder(chainCompanyId, responseCallback);
+                });
     }
 }

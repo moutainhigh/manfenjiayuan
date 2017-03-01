@@ -249,7 +249,8 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
                         }
                         else{
                             Bundle args = new Bundle();
-                            args.putSerializable(PrepareTakeoutFragment.EXTRA_KEY_SUBTYPE, mBizSubTypeWrapper);
+                            args.putSerializable(PrepareTakeoutFragment.EXTRA_KEY_SUBTYPE,
+                                    mBizSubTypeWrapper);
                             args.putString(PrepareEvent.KEY_OUTERNO, value);
                             EventBus.getDefault().post(new PrepareEvent(PrepareEvent.ACTION_PREPARE_TAKEOUT, args));
                         }

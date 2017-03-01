@@ -5,16 +5,17 @@ import android.os.Build;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.clientLog.ClientLog;
 import com.mfh.framework.api.clientLog.ClientLogApi;
-import com.mfh.framework.api.res.ResApi;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.SystemUtils;
+import com.mfh.framework.core.utils.ZipUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ResHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,8 +52,7 @@ public class RemoteControlClient {
      * */
     public List<RemoteControl> generateRemoteControls(){
         List<RemoteControl> remoteControls = new ArrayList<>();
-        remoteControls.add(new RemoteControl(1L, "上传最近一次的日志", "上传系统日志信息"));
-        remoteControls.add(new RemoteControl(2L, "上传Crash文件", "检查软件版本更新"));
+        remoteControls.add(new RemoteControl(1L, "一键反馈", "一键反馈"));
         remoteControls.add(new RemoteControl(3L, "软件更新", "检查软件版本更新"));
         remoteControls.add(new RemoteControl(20L, "远程打印", "远程打印票据"));
         return remoteControls;
@@ -61,95 +61,59 @@ public class RemoteControlClient {
     /**
      * 远程上传日志文件
      * */
-    public void uploadLogFileStep1(){
-        String time = ZLogger.DATE_FORMAT.format(new Date());
-        String fileName = time + ".log";
+    public void onekeyFeedback() {
+        try {
+//            ZipUtils.zipFiles(FileUtil.getSavePath(ZLogger.CRASH_FOLDER_PATH),
+//                    FileUtil.getSaveFile("", "onekeyfeedback"));
 
-        File file = FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<Long,
-                NetProcessor.Processor<Long>>(
-                new NetProcessor.Processor<Long>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-//                        ScOrder scOrder = null;
-                        if (rspData != null) {
-                            RspValue<Long> retValue = (RspValue<Long>) rspData;
-                            String stackTraceInfo = String.format("远程控制上传日志文件,文件编号为 %d",
-                                    retValue.getValue());
-                            uploadLogFileStep2(stackTraceInfo, MfhLoginService.get().getLoginName());
+            File zipFile = FileUtil.getSaveFile("", "onekeyfeedback.zip");
+            if (!zipFile.exists()) {
+                zipFile.createNewFile();
+            }
+            ZipUtils.zipFiles(FileUtil.getSavePath(ZLogger.CRASH_FOLDER_PATH),
+                    zipFile);
+
+            File file = FileUtil.getSaveFile("", "onekeyfeedback.zip");//FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
+            if (!file.exists()) {
+                return;
+            }
+            ZLogger.d("file: " + file.getPath());
+
+            ResHttpManager.getInstance().upload2(file,
+                    new MValueSubscriber<Long>() {
+                        @Override
+                        public void onCompleted() {
+
                         }
-//                        if (listener != null) {
-//                            listener.onSuccess(scOrder);
-//                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            //retrofit2.adapter.rxjava.HttpException: HTTP 413 Request Entity Too Large
+                            ZLogger.ef("一键反馈:" + e.toString());
+                        }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
-//                        if (listener != null) {
-//                            listener.onError(errMsg);
-//                        }
-                    }
-                }
-                , Long.class
-                , MfhApplication.getAppContext()) {
-        };
-
-        ResApi.upload(file, responseCallback);
+                        @Override
+                        public void onValue(Long data) {
+                            super.onValue(data);
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(String.format("\n" +
+                                            "一键反馈:日志文件编号为 %d\n",
+                                    data));
+                            sb.append("备注:");
+                            uploadLogFileStep2(sb.toString(), MfhLoginService.get().getLoginName());
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
     }
 
-    /**
-     * 远程上传crash文件
-     * */
-    public void uploadCrashFileStep1(){
-        String time = ZLogger.DATE_FORMAT.format(new Date());
-        String fileName = time + ".log";
-
-        File file = FileUtil.getSaveFile(AppException.CRASH_FOLDER_PATH, AppException.CRASH_FILE_NAME);
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<Long,
-                NetProcessor.Processor<Long>>(
-                new NetProcessor.Processor<Long>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-//                        ScOrder scOrder = null;
-                        if (rspData != null) {
-                            RspValue<Long> retValue = (RspValue<Long>) rspData;
-                            String stackTraceInfo = String.format("远程控制上传日志文件,文件编号为 %d",
-                                    retValue.getValue());
-                            uploadLogFileStep2(stackTraceInfo, MfhLoginService.get().getLoginName());
-                        }
-//                        if (listener != null) {
-//                            listener.onSuccess(scOrder);
-//                        }
-
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
-//                        if (listener != null) {
-//                            listener.onError(errMsg);
-//                        }
-                    }
-                }
-                , Long.class
-                , MfhApplication.getAppContext()) {
-        };
-
-        ResApi.upload(file, responseCallback);
-    }
 
     /**
      * 远程上传日志文件:提交后台资源文件编号
      * */
-    private void uploadLogFileStep2(String stackInformation, String userName){
+    public static void uploadLogFileStep2(String stackInformation, String userName){
         NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {

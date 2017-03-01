@@ -9,7 +9,6 @@ import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
-import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
@@ -74,6 +73,25 @@ public class RxHttpManager {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
+                .addInterceptor(new MfhHttpLoggingInterceptor()
+                        .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
+                .build();
+
+        // Create a very simple REST adapter which points the API.
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(httpClient)
+                .build();
+
+        return retrofit.create(serviceClass);
+    }
+
+    public static <S> S createService2(Class<S> serviceClass) {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(new MfhOAuthInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
                 .build();
@@ -154,6 +172,7 @@ public class RxHttpManager {
             return createService(serviceClass);
         }
     }
+
 
     public static <S> S createService(Class<S> serviceClass, final AccessToken token) {
         if (token != null) {
@@ -349,14 +368,6 @@ public class RxHttpManager {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.findGoodsOrderList(options)
                 .map(new MQueryResponseFunc<PosOrder>());
-        toSubscribe(observable, subscriber);
-    }
-
-    public void findPubSkusByFrontCatalog(Map<String, String> options,
-                                          MQuerySubscriber<PubSkus> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.findPubSkusByFrontCatalog(options)
-                .map(new MQueryResponseFunc<PubSkus>());
         toSubscribe(observable, subscriber);
     }
 

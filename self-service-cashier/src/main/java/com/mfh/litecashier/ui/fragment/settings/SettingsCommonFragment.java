@@ -8,25 +8,17 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
-import com.mfh.framework.api.res.ResApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.ZipUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.ResHttpManager;
-import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -49,8 +41,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 import static com.mfh.framework.anlaysis.remoteControl.RemoteControlClient.uploadLogFileStep2;
 
@@ -274,101 +264,57 @@ public class SettingsCommonFragment extends BaseFragment {
         try {
             showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
             File zipFile = FileUtil.getSaveFile("", "onekeyfeedback.zip");
-            if (zipFile.exists()) {
+            if (!zipFile.exists()) {
                 zipFile.createNewFile();
             }
             ZipUtils.zipFiles(FileUtil.getSavePath(ZLogger.CRASH_FOLDER_PATH),
                     zipFile);
 
-            if (RxHttpManager.RELEASE) {
-                Map<String, String> options = new HashMap<>();
+            Map<String, String> options = new HashMap<>();
 //                options.put("fileToUpload", zipFile.toString());
 //                ZLogger.d(zipFile.toString());
-                options.put("responseType", "1");
-                options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            options.put("responseType", "1");
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-                String time = ZLogger.DATE_FORMAT.format(new Date());
-                String fileName = time + ".log";
-                ZLogger.d("fileName: " + fileName);
+            String time = ZLogger.DATE_FORMAT.format(new Date());
+            String fileName = time + ".log";
+            ZLogger.d("fileName: " + fileName);
 
-                File file = FileUtil.getSaveFile("", "onekeyfeedback.zip");//FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
-                if (!file.exists()) {
-                    return;
-                }
-                ZLogger.d("file: " + file.getPath());
-
-                MultipartBody.Builder builder = new MultipartBody.Builder();
-                builder.setType(MultipartBody.FORM);
-                builder.addFormDataPart("responseType", "1");
-                RequestBody requestBody = RequestBody.create(ResHttpManager.ZIP, file);
-                builder.addFormDataPart("fileToUpload", file.getName(), requestBody);
-
-                ResHttpManager.getInstance().upload2(MultipartBody.Part.createFormData("responseType", "1"),
-                        MultipartBody.Part.createFormData("fileToUpload", file.getName(),
-                                requestBody),
-                        new MValueSubscriber<Long>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                //retrofit2.adapter.rxjava.HttpException: HTTP 413 Request Entity Too Large
-                                ZLogger.ef("一键反馈:" + e.toString());
-                                hideProgressDialog();
-                            }
-
-                            @Override
-                            public void onValue(Long data) {
-                                super.onValue(data);
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(String.format("\n" +
-                                                "一键反馈:日志文件编号为 %d\n",
-                                        data));
-                                sb.append("备注:");
-                                if (!StringUtils.isEmpty(feedback)) {
-                                    sb.append(feedback).append("\n");
-                                }
-                                uploadLogFileStep2(sb.toString(), MfhLoginService.get().getLoginName());
-                            }
-                        });
-            } else {
-                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<Long,
-                        NetProcessor.Processor<Long>>(
-                        new NetProcessor.Processor<Long>() {
-                            @Override
-                            public void processResult(IResponseData rspData) {
-                                //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                                // {"code":"0","msg":"查询成功!","version":"1","data":null}
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("一键反馈:\n");
-                                if (rspData != null) {
-                                    RspValue<Long> retValue = (RspValue<Long>) rspData;
-                                    sb.append(String.format("日志文件编号为 %d\n",
-                                            retValue.getValue()));
-                                }
-                                if (!StringUtils.isEmpty(feedback)) {
-                                    sb.append(feedback).append("\n");
-                                }
-                                RemoteControlClient.uploadLogFileStep2(sb.toString(),
-                                        MfhLoginService.get().getLoginName());
-                                hideProgressDialog();
-                            }
-
-                            @Override
-                            protected void processFailure(Throwable t, String errMsg) {
-                                super.processFailure(t, errMsg);
-                                ZLogger.df("查询失败: " + errMsg);
-                                hideProgressDialog();
-                            }
-                        }
-                        , Long.class
-                        , MfhApplication.getAppContext()) {
-                };
-
-                ResApi.upload(zipFile, responseCallback);
+            File file = FileUtil.getSaveFile("", "onekeyfeedback.zip");//FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
+            if (!file.exists()) {
+                return;
             }
+            ZLogger.d("file: " + file.getPath());
+
+
+            ResHttpManager.getInstance().upload2(file,
+                    new MValueSubscriber<Long>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            //retrofit2.adapter.rxjava.HttpException: HTTP 413 Request Entity Too Large
+                            ZLogger.ef("一键反馈:" + e.toString());
+                            hideProgressDialog();
+                        }
+
+                        @Override
+                        public void onValue(Long data) {
+                            super.onValue(data);
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(String.format("\n" +
+                                            "一键反馈:日志文件编号为 %d\n",
+                                    data));
+                            sb.append("备注:");
+                            if (!StringUtils.isEmpty(feedback)) {
+                                sb.append(feedback).append("\n");
+                            }
+                            uploadLogFileStep2(sb.toString(), MfhLoginService.get().getLoginName());
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
             ZLogger.e(e.toString());

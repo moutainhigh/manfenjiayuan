@@ -203,22 +203,4 @@ public class InvSendOrderApiImpl extends InvSendOrderApi {
         AfinalFactory.postDefault(URL_INVSENDORDER_CREATE_PLANORDER, params, responseCallback);
     }
 
-    /**
-     * 商品申请生成订单
-     * public static int STATUS_INIT = 0;//生成
-     * public static int STATUS_CONFIRM = 1;//审核通过
-     * public static int STATUS_SENDED = 2;//已发货
-     * public static int STATUS_ON_TRANS = 3;//在途中
-     * public static int STATUS_RECEIVE = 4;//已签收
-     * public static int STATUS_CANCEL = 9;//已取消
-     */
-    public static void askSendOrder(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("jsonStr", jsonStr);
-//        params.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_INVSENDORDER_ASK_SENDORDER, params, responseCallback);
-    }
-
 }

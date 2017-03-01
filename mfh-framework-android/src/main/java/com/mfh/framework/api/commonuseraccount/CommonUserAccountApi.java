@@ -1,10 +1,8 @@
 package com.mfh.framework.api.commonuseraccount;
 
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
-import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -24,20 +22,6 @@ public class CommonUserAccountApi {
      * 检查支付密码
      */
     private static String URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
-
-    /**
-     * 用户注册,
-     * 根据手机号新注册或修改一个个人用户,并且建立个人支付账户，需要提供登录密码password和支付密码payPassword:
-     * /commonuseraccount/registerUser?humanMobile=18248499111&humanName=zhangyz&password=123456&payPassword=123456
-     */
-    private static String URL_REGISTERUSER = URL_COMMONUSERACCOUNT + "registerUser";
-
-    /**
-     * 根据卡号获取用户信息
-     * /commonuseraccount/getUserAccountByCardId?cardId=
-     */
-    private static String URL_GET_USERACCOUNT_BYCARDID = URL_COMMONUSERACCOUNT + "getUserAccountByCardId";
-
 
     /**
      * 会员卡充值:给其他帐号转账
@@ -70,8 +54,6 @@ public class CommonUserAccountApi {
         URL_COMMONUSERACCOUNT = MfhApi.URL_BASE_SERVER + "/commonuseraccount/";
         URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
         URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
-        URL_REGISTERUSER = URL_COMMONUSERACCOUNT + "registerUser";
-        URL_GET_USERACCOUNT_BYCARDID = URL_COMMONUSERACCOUNT + "getUserAccountByCardId";
         URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
         URL_GETPAYAMOUNT_BYORDERINFO = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfo";
         URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
@@ -111,43 +93,4 @@ public class CommonUserAccountApi {
         AfinalFactory.postDefault(URL_CHECK_ACCOUNTPASSWORD, params, responseCallback);
     }
 
-    /**
-     * 用户注册
-     * <ol>
-     * 适用场景
-     * <li>门店用户注册</li>
-     * </ol>
-     *
-     * @param humanName 姓名（必填）
-     */
-    public static void registerUser(String humanMobile, String humanName, String password,
-                                    String payPassword, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("humanMobile", humanMobile);
-        if (!StringUtils.isEmpty(humanName)) {
-            params.put("humanName", humanName);
-        }
-        params.put("password", password);
-        params.put("payPassword", payPassword);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_REGISTERUSER, params, responseCallback);
-    }
-
-    /**
-     * {@link #URL_GET_USERACCOUNT_BYCARDID 获取用户信息}
-     * <ol>
-     * 适用场景
-     * <li>门店用户注册</li>
-     * </ol>
-     *
-     * @param cardId 卡芯片号（必填）
-     */
-    public static void getUserAccountByCardId(String cardId, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(cardId)) {
-            params.put("cardId", cardId);
-        }
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_GET_USERACCOUNT_BYCARDID, params, responseCallback);
-    }
 }

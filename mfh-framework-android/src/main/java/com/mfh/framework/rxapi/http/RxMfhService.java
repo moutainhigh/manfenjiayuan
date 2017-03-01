@@ -5,7 +5,6 @@ import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
-import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
@@ -139,12 +138,6 @@ public interface RxMfhService {
     @GET("posOrder/getMaxPosOrderId")
     Observable<MResponse<MValue<String>>> getMaxPosOrderId(@Query("posId") String jsonStr);
 
-    /**
-     * /anon/sc/productPrice/findPubSkusByFrontCatalog?frontCataLogId=&priceMask=0
-     * 根据前台类目查找有效的商品列表(前台类目可能又包含后台类目),返回的id就是proSkuId，另外还有productId
-     * */
-    @GET("anon/sc/productPrice/findPubSkusByFrontCatalog")
-    Observable<MResponse<MRspQuery<PubSkus>>> findPubSkusByFrontCatalog(@QueryMap Map<String, String> options);
 
 
     @POST("exit")

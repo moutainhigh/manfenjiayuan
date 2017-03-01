@@ -252,7 +252,7 @@ public class DataDownloadManager extends DataSyncManager {
             options.put("page", Integer.toString(pageInfo.getPageNo()));
             options.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
-        options.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         ScGoodsSkuHttpManager.getInstance().downLoadPosProduct(options,
                 new MQuerySubscriber<PosGoods>(pageInfo) {
                     @Override

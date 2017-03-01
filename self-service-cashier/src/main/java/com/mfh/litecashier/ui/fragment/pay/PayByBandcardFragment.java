@@ -453,7 +453,8 @@ public class PayByBandcardFragment extends BasePayFragment {
         //TPDU传送协议数据单元(tpdu)    String		10	是
         this.transCFX.setTpdu("6000030000");
         //商户号(mchtId)  String	15	是	商户号
-        String mchtId = SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_MCHTID, "898320554115217");
+        String mchtId = SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_MCHTID,
+                "898320554115217");
         this.transCFX.setMchtId(mchtId);
         //SN密文(authSN)	String		60	是	SN密文
         // TODO: 8/25/16 商户号多的情况，可能需要云端同步 

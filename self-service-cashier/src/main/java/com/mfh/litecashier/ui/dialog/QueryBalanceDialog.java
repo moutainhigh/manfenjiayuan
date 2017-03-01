@@ -234,41 +234,6 @@ public class QueryBalanceDialog extends CommonDialog {
                     }
 
                 });
-
-//        CommonUserAccountApi.getUserAccountByCardId(cardId2, responseCallback);
     }
-
-    //回调
-//    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<UserAccount,
-//            NetProcessor.Processor<UserAccount>>(
-//            new NetProcessor.Processor<UserAccount>() {
-//                @Override
-//                public void processResult(IResponseData rspData) {
-//                    try {
-//                        RspBean<UserAccount> retValue = (RspBean<UserAccount>) rspData;
-//                        refresh(retValue.getValue());
-//                    } catch (Exception ex) {
-//                        ZLogger.e("parseUserProfile, " + ex.toString());
-//                    } finally {
-////                        loadingImageView.toggle(false);
-//                        progressBar.setVisibility(View.GONE);
-////                        emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
-//                    }
-//                }
-//
-//                @Override
-//                protected void processFailure(Throwable t, String errMsg) {
-//                    super.processFailure(t, errMsg);
-////                    loadingImageView.toggle(false);
-//                    progressBar.setVisibility(View.GONE);
-//                    DialogUtil.showHint(errMsg);
-////                    emptyView.setErrorType(EmptyLayout.HIDE_LAYOUT);
-//                }
-//
-//
-//            }
-//            , UserAccount.class
-//            , MfhApplication.getAppContext()) {
-//    };
 
 }

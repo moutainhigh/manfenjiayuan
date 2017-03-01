@@ -2,11 +2,9 @@ package com.manfenjiayuan.pda_supermarket.service;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Printer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.ValidateManager;
-import com.bingshanguxue.pda.alarm.AlarmManagerHelper;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
@@ -23,22 +21,16 @@ import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
 import com.manfenjiayuan.pda_supermarket.ui.MainActivity;
-import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.api.constant.Priv;
 import com.mfh.framework.core.utils.NotificationUtils;
-import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.litecashier.service.DataDownloadManager;
 import com.tencent.bugly.beta.Beta;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * 继承 GTIntentService 接收来自个推的消息, 所有消息在线程中回调, 如果注册了该服务,
@@ -281,9 +273,7 @@ public class DemoIntentService extends GTIntentService {
         ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
 
         if (remoteId.equals(1L)) {
-            RemoteControlClient.getInstance().uploadLogFileStep1();
-        } else if (remoteId.equals(2L)) {
-            RemoteControlClient.getInstance().uploadCrashFileStep1();
+            RemoteControlClient.getInstance().onekeyFeedback();
         } else if (remoteId.equals(3L)) {
             Beta.checkUpgrade(false, false);
         }

@@ -190,7 +190,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
     }
 
     public File getCrashFile(){
-        return FileUtil.getSaveFile(CRASH_FOLDER_PATH, CRASH_FILE_NAME);
+        return FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, CRASH_FILE_NAME);
     }
 
     private boolean saveToSDCard(Throwable ex) throws Exception {

@@ -204,8 +204,13 @@ public class DailysettlePreviewDialog extends CommonDialog {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(dailysettleDate);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
                 String endCursor = TimeCursor.InnerFormat.format(calendar.getTime());
 //                calendar.add(Calendar.DATE, 0 - 1);
+                calendar.setTime(dailysettleDate);
                 calendar.set(Calendar.HOUR_OF_DAY, 0);
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);

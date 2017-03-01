@@ -5,7 +5,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
+import com.manfenjiayuan.business.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.database.dao.PurchaseOrderDao;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 

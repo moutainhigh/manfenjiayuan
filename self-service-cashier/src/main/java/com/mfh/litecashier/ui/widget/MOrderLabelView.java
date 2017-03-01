@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.litecashier.R;
 
 import butterknife.BindView;
@@ -56,15 +57,13 @@ public class MOrderLabelView extends LinearLayout {
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MOrderLabelView);
 
-        float textSize = ta.getDimension(R.styleable.MOrderLabelView_mOrderLabelView_textSize, 16);
-        int textColor = ta.getColor(R.styleable.MOrderLabelView_mOrderLabelView_textColor, 0);
-        String text = ta.getString(R.styleable.MOrderLabelView_mOrderLabelView_text);
+        float textSizeInPx = ta.getDimensionPixelSize(R.styleable.MOrderLabelView_mOrderLabelView_textSize, 16);
+        int textSizeInSp = DensityUtil.px2sp(getContext(), textSizeInPx);
+        tvLabel.setTextSize(textSizeInSp);
+        tvLabel.setText(ta.getString(R.styleable.MOrderLabelView_mOrderLabelView_text));
+        tvLabel.setTextColor(ta.getColor(R.styleable.MOrderLabelView_mOrderLabelView_textColor, 0));
 
         ta.recycle();
-
-        tvLabel.setText(text);
-        tvLabel.setTextSize(textSize);
-        tvLabel.setTextColor(textColor);
     }
 
     public void setOrderEnabled(boolean enabled){

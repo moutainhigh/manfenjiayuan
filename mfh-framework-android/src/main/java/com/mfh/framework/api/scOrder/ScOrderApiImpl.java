@@ -54,7 +54,8 @@ public class ScOrderApiImpl extends ScOrderApi{
      * @param id 订单编号
      * @param jsonStr 订单明细
      */
-    public static void updateCommitInfo(Long id, String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
+    public static void updateCommitInfo(Long id, String jsonStr,
+                                        AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("id", String.valueOf(id));
         params.put("jsonStr", jsonStr);

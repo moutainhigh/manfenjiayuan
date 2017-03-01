@@ -83,7 +83,8 @@ public class MfhApplication extends Application {
 
         context = getApplicationContext();
 
-        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
+        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
+//        AppException.CRASH_FOLDER_PATH = getPackageName() + File.separator + "crash";
 
         //错误收集
         Thread.setDefaultUncaughtExceptionHandler(AppException.getAppExceptionHandler(this));
@@ -93,7 +94,6 @@ public class MfhApplication extends Application {
         //初始化统一配置对象
         initConfig();
 
-        ZLogger.CRASH_FOLDER_PATH = getPackageName() + File.separator + "zlogger";
     }
 
     @Override

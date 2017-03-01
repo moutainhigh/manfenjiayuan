@@ -14,7 +14,6 @@ import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.api.companyInfo.CompanyInfoApi;
 import com.mfh.framework.api.invCheckOrder.InvCheckOrderApi;
 import com.mfh.framework.api.invCompProvider.InvComProviderApi;
-import com.mfh.framework.api.invCompany.InvCompanyApi;
 import com.mfh.framework.api.invFindOrder.InvFindOrderApi;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.api.invOrder.InvOrderApi;
@@ -84,7 +83,6 @@ public class MfhApi implements ApiParams {
         CommonUserAccountApi.register();
         CompanyInfoApi.register();
         InvCheckOrderApi.register();
-        InvCompanyApi.register();
         InvComProviderApi.register();
         InvFindOrderApi.register();
         InvIoOrderApi.register();

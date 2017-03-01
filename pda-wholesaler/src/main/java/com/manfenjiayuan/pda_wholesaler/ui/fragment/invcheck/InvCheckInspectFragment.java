@@ -22,7 +22,7 @@ import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;

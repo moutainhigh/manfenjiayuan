@@ -27,4 +27,5 @@ package com.mfh.framework;
  * Created by bingshanguxue on 4/26/16.
  */
 public class CodeTemplate {
+
 }

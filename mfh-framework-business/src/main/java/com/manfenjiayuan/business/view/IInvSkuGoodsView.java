@@ -1,6 +1,6 @@
 package com.manfenjiayuan.business.view;
 
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.mfh.framework.mvp.MvpView;
 
 /**

@@ -1,5 +1,7 @@
 package com.mfh.framework.rxapi.http;
 
+import com.mfh.framework.api.invSendOrder.InvSendOrderItemBrief;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.func.MResponseFunc;
 
@@ -32,6 +34,19 @@ public class InvSkuStoreHttpManager extends BaseHttpManager{
         Observable<MResponse<String>> update(@QueryMap Map<String, String> options);
         @GET("invSkuStore/updateStatus")
         Observable<MResponse<String>> updateStatus(@QueryMap Map<String, String> options);
+        /**
+         * 根据条码查询库存商品,如果库存中没有则从租户档案中自动建立库存。门店和批发都适用
+         * /invSkuStore/getByBarcodeMust?barcode=998800000000
+         */
+        @GET("invSkuStore/getByBarcodeMust")
+        Observable<MResponse<InvSkuGoods>> getByBarcodeMust(@QueryMap Map<String, String> options);
+
+        /**
+         * 当前登录网点的操作人员，通过指定一个批发商，自动生成配送单
+         * /invSkuStore/autoAskSendOrder?chainCompanyId=134651
+         */
+        @GET("invSkuStore/autoAskSendOrder")
+        Observable<MResponse<InvSendOrderItemBrief>> autoAskSendOrder(@QueryMap Map<String, String> options);
     }
 
     public void importFromCenterSkus(Map<String, String> options, Subscriber<String> subscriber) {
@@ -52,6 +67,19 @@ public class InvSkuStoreHttpManager extends BaseHttpManager{
         InvSkuStoreService mfhApi = RxHttpManager.createService(InvSkuStoreService.class);
         Observable observable = mfhApi.updateStatus(options)
                 .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void getByBarcodeMust(Map<String, String> options, Subscriber<InvSkuGoods> subscriber) {
+        InvSkuStoreService mfhApi = RxHttpManager.createService(InvSkuStoreService.class);
+        Observable observable = mfhApi.getByBarcodeMust(options)
+                .map(new MResponseFunc<InvSkuGoods>());
+        toSubscribe(observable, subscriber);
+    }
+    public void autoAskSendOrder(Map<String, String> options, Subscriber<InvSendOrderItemBrief> subscriber) {
+        InvSkuStoreService mfhApi = RxHttpManager.createService(InvSkuStoreService.class);
+        Observable observable = mfhApi.autoAskSendOrder(options)
+                .map(new MResponseFunc<InvSendOrderItemBrief>());
         toSubscribe(observable, subscriber);
     }
 

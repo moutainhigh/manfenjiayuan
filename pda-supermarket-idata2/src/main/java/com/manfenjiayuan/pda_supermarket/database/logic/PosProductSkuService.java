@@ -3,9 +3,9 @@ package com.manfenjiayuan.pda_supermarket.database.logic;
 
 import com.manfenjiayuan.pda_supermarket.database.dao.PosProductSkuDao;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosProductSkuEntity;
-import com.manfenjiayuan.pda_supermarket.bean.ProductSkuBarcode;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 

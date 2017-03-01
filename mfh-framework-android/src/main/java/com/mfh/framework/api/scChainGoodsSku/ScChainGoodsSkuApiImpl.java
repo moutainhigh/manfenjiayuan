@@ -119,34 +119,7 @@ public class ScChainGoodsSkuApiImpl extends ScChainGoodsSkuApi {
 
         AfinalFactory.getHttp(true).post(URL_FIND_PUBLICCHAINGOODSSKU, params, responseCallback);
     }
-    /**
-     * 查询供应链商品
-     * <ol>
-     *     适用场景
-     *     <li>门店or批发商PDA商品管理</li>
-     * </ol>
-     */
-    public static void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike,
-                                               PageInfo pageInfo,
-                                                AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(barcode)){
-            params.put("barcode", barcode);
-        }
-        if (proSkuId != null) {
-            params.put("companyId", String.valueOf(proSkuId));
-        }
-        if (!StringUtils.isEmpty(nameLike)){
-            params.put("nameLike", nameLike);
-        }
-        if (pageInfo != null){
-            params.put("page", Integer.toString(pageInfo.getPageNo()));
-            params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        }
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        AfinalFactory.getHttp(true).post(URL_FIND_SUPPLYCHAINGOODSSKU, params, responseCallback);
-    }
     /**
      * 批量查询供应链商品
      * @param proSkuId 格式：“16172,16534”,逗号隔开。

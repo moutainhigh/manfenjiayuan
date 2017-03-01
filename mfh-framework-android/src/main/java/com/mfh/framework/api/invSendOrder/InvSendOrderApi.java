@@ -9,13 +9,6 @@ import com.mfh.framework.api.MfhApi;
 public class InvSendOrderApi {
     public static String URL_INVSENDORDER = MfhApi.URL_BASE_SERVER + "/invSendOrder/";
 
-    /**
-     * <b>需要登录</b>
-     * 由门店方创建一个采购单，需要登录,采购单的tenantId就是门店的tenantId
-     * 适用场景：门店智能订货，标品订货，生鲜订货
-     */
-    static String URL_INVSENDORDER_ASK_SENDORDER = URL_INVSENDORDER + "askSendOrder";
-
 
     /**
      * 查询采销单，便于生成收发单。
@@ -53,9 +46,6 @@ public class InvSendOrderApi {
 
     public static void register(){
         URL_INVSENDORDER = MfhApi.URL_BASE_SERVER + "/invSendOrder/";
-
-        URL_INVSENDORDER_ASK_SENDORDER = URL_INVSENDORDER + "askSendOrder";
-
 
         URL_INVSENDORDER_LIST = URL_INVSENDORDER + "list";
         URL_INVSENDORDER_GETBYID = URL_INVSENDORDER + "getById";

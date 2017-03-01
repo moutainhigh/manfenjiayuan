@@ -1,18 +1,20 @@
 package com.manfenjiayuan.business.mode;
 
-import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
-import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 /**
- * {@link com.manfenjiayuan.business.bean.InvSkuGoods}
+ * {@link InvSkuGoods}
  * Created by bingshanguxue on 16/3/17.
  */
 public class InvSkuGoodsMode {
@@ -30,37 +32,32 @@ public class InvSkuGoodsMode {
             return;
         }
 
-        NetCallBack.NetTaskCallBack queryRespCallback = new NetCallBack.NetTaskCallBack<InvSkuGoods,
-                NetProcessor.Processor<InvSkuGoods>>(
-                new NetProcessor.Processor<InvSkuGoods>() {
+        Map<String, String> options = new HashMap<>();
+        options.put("barcode", barcode);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().getByBarcodeMust(options,
+                new Subscriber<InvSkuGoods>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                        InvSkuGoods chainGoodsSku = null;
-                        if (rspData != null) {
-                            RspBean<InvSkuGoods> retValue = (RspBean<InvSkuGoods>) rspData;
-                            chainGoodsSku = retValue.getValue();
-                        }
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.d("查询商品失败：" + e.toString());
+
                         if (listener != null) {
-                            listener.onSuccess(chainGoodsSku);
+                            listener.onError(e.getMessage());
                         }
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("查询商品失败：" + errMsg);
-
+                    public void onNext(InvSkuGoods invSkuGoods) {
                         if (listener != null) {
-                            listener.onError(errMsg);
+                            listener.onSuccess(invSkuGoods);
                         }
                     }
-                }
-                , InvSkuGoods.class
-                , MfhApplication.getAppContext()) {
-        };
-
-        InvSkuStoreApiImpl.getByBarcodeMust(barcode, queryRespCallback);
+                });
     }
 
 

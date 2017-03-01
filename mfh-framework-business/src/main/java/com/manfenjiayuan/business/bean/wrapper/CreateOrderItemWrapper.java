@@ -5,7 +5,7 @@ import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.api.invFindOrder.InvFindOrderItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.core.utils.ObjectsCompact;

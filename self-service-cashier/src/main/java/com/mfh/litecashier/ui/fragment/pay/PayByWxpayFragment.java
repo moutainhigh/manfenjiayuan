@@ -471,7 +471,9 @@ public class PayByWxpayFragment extends BasePayFragment {
         btnQueryOrderStatus.setVisibility(View.GONE);
 
         tvCountdown.setText("");
-        payCountDownTimer.cancel();
+        if (payCountDownTimer != null) {
+            payCountDownTimer.cancel();
+        }
         payTimerRunning = false;
 
         etBarCode.getText().clear();//清空授权码

@@ -20,7 +20,6 @@ import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
@@ -34,7 +33,7 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.adapter.AggAnalysisOrderAdapter;
 import com.mfh.litecashier.ui.adapter.AnalysisOrderAdapter;
-import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
+import com.mfh.litecashier.ui.dialog.MyDatePickerDialog;
 import com.mfh.litecashier.utils.AnalysisHelper;
 
 import java.util.ArrayList;
@@ -57,8 +56,6 @@ import rx.Subscriber;
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class DailySettleFragment extends BaseProgressFragment {
-    public static final String EXTRA_KEY_DATETIME = "datetime";
-
     @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
 
@@ -93,8 +90,7 @@ public class DailySettleFragment extends BaseProgressFragment {
     ImageButton fabPrint;
 
     private DailysettleInfo mDailysettleInfo;
-    private String dailySettleDatetime = null;//日结日期
-    private DateTimePickerDialog dateTimePickerDialog = null;
+    private MyDatePickerDialog dateTimePickerDialog = null;
 
     public static DailySettleFragment newInstance(Bundle args) {
         DailySettleFragment fragment = new DailySettleFragment();
@@ -112,13 +108,13 @@ public class DailySettleFragment extends BaseProgressFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        ZLogger.df(String.format(">>开始日结：%s", StringUtils.decodeBundle(args)));
-        if (args != null) {
-            dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
-        }
+//        Bundle args = getArguments();
+//        ZLogger.df(String.format(">>开始日结：%s", StringUtils.decodeBundle(args)));
+//        if (args != null) {
+//            dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
+//        }
 
-        tvHeaderTitle.setText("日结");
+        tvHeaderTitle.setText("统计");
         initAggRecyclerView();
         initAccRecyclerView();
 
@@ -249,19 +245,20 @@ public class DailySettleFragment extends BaseProgressFragment {
         calendar.setTime(new Date());
 
         if (dateTimePickerDialog == null) {
-            dateTimePickerDialog = new DateTimePickerDialog(getActivity());
+            dateTimePickerDialog = new MyDatePickerDialog(getActivity());
             dateTimePickerDialog.setCancelable(true);
             dateTimePickerDialog.setCanceledOnTouchOutside(true);
         }
-        dateTimePickerDialog.init(calendar, new DateTimePickerDialog.OnDateTimeSetListener() {
+        dateTimePickerDialog.init(calendar, new MyDatePickerDialog.OnDateTimeSetListener() {
             @Override
-            public void onDateTimeSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minute) {
+            public void onDateTimeSet(int year, int monthOfYear, int dayOfMonth) {
 
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
 
                 mDailysettleInfo = AnalysisHelper.createDailysettle(calendar.getTime());
                 refresh();

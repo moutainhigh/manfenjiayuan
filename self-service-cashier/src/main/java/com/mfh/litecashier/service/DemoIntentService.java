@@ -219,11 +219,13 @@ public class DemoIntentService extends GTIntentService {
         //SKU更新
         if (IMBizType.TENANT_SKU_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
+            ZLogger.df(String.format("IMBizType.TENANT_SKU_UPDATE = %d", count));
             if (count > 0) {
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
             }
         } else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
+            ZLogger.df(String.format("IMBizType.FRONGCATEGORY_GOODS_UPDATE = %d", count));
             if (count > 0) {
                 DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY_GOODS);
             }
@@ -306,9 +308,7 @@ public class DemoIntentService extends GTIntentService {
         ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
 
         if (remoteId.equals(1L)) {
-            RemoteControlClient.getInstance().uploadLogFileStep1();
-        } else if (remoteId.equals(2L)) {
-            RemoteControlClient.getInstance().uploadCrashFileStep1();
+            RemoteControlClient.getInstance().onekeyFeedback();
         } else if (remoteId.equals(3L)) {
             Beta.checkUpgrade(false, false);
         } else if (remoteId.equals(20L)) {

@@ -12,7 +12,6 @@ import com.bingshanguxue.cashier.hardware.scale.AHScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -260,7 +259,7 @@ public class PeripheralService extends Service {
         ZLogger.d("devicePath:" + devicesPath.toString());
         SerialManager.getInstance().setComDevicesPath(devicesPath);//保存devices
 
-        if (BizConfig.RELEASE) {
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             String[] devices = mSerialPortFinder.getAllDevices();
             List<String> allDevices2 = new ArrayList<>();
             if (devices != null) {
@@ -421,7 +420,7 @@ public class PeripheralService extends Service {
             return;
         }
 
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted() || !BizConfig.RELEASE) {
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
                     comBean.sRecTime, port,
                     new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
@@ -447,6 +446,9 @@ public class PeripheralService extends Service {
 
                 lastScaleTriggle = rightNow;
             }
+        }
+        else{
+
         }
     }
 

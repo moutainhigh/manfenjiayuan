@@ -245,7 +245,7 @@ public class MyFragment extends BaseFragment {
 
     @OnClick(R.id.item_remotecontrol)
     public void remoteControl() {
-        RemoteControlClient.getInstance().uploadLogFileStep1();
+        RemoteControlClient.getInstance().onekeyFeedback();
     }
 
     @OnClick(R.id.item_gettui)

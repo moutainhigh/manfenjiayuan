@@ -31,19 +31,6 @@ public class InvSkuStoreApi {
     static String URL_GOODSSKU_BINDRACKNO = URL_INVSKUSTORE + "bindRackNo";
 
     /**
-     * 当前登录网点的操作人员，通过指定一个批发商，自动生成配送单
-     * /invSkuStore/autoAskSendOrder?chainCompanyId=134651
-     */
-    static String URL_INVSKUSTORE_AUTOASKSENDORDER = URL_INVSKUSTORE + "autoAskSendOrder";
-
-
-    /**
-     * 根据条码查询库存商品,如果库存中没有则从租户档案中自动建立库存。门店和批发都适用
-     * /invSkuStore/getByBarcodeMust?barcode=998800000000
-     */
-    static String URL_INVSKUSTORE_GETBYBARCODEMUST = URL_INVSKUSTORE + "getByBarcodeMust";
-
-    /**
      * 库存转换，其中的id都是库存sku商品id
      * /invSkuStore/changeSkuStore?
      * sendItems=[{"id":111,"quantity":1.0},
@@ -67,10 +54,6 @@ public class InvSkuStoreApi {
         URL_UPDATE_STATUS = URL_INVSKUSTORE + "updateStatus";
 
         URL_GOODSSKU_BINDRACKNO = URL_INVSKUSTORE + "bindRackNo";
-
-        URL_INVSKUSTORE_AUTOASKSENDORDER = URL_INVSKUSTORE + "autoAskSendOrder";
-
-        URL_INVSKUSTORE_GETBYBARCODEMUST = URL_INVSKUSTORE + "getByBarcodeMust";
 
         URL_INVSKUSTORE_CHANGESKUSTORE = URL_INVSKUSTORE + "changeSkuStore";
 

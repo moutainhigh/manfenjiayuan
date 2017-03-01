@@ -8,24 +8,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.analysis.AnalysisApiImpl;
-import com.mfh.framework.api.cashier.CashierApiImpl;
-import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.login.logic.LoginCallback;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
@@ -504,10 +495,13 @@ public class ValidateManager {
                     @Override
                     public void onValue(String data) {
                         super.onValue(data);
+                        //{"code":"0","msg":"操作成功!","version":"1","data":null}
                         ZLogger.df(String.format("获取指定pos机编号在服务器端已经生成的" +
                                 "最大订单id号成功,%s", data));
 
-                        PosOrderService.get().updateSequence(Long.parseLong(data));
+                        if (!StringUtils.isEmpty(data)){
+                            PosOrderService.get().updateSequence(Long.parseLong(data));
+                        }
                         nextStep();
                     }
                 });

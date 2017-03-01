@@ -29,8 +29,12 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.ScOrderHttpManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -38,10 +42,13 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * 组货确认
@@ -237,7 +244,36 @@ public class PrepareStep2Fragment extends BaseFragment {
             }
         }
 
-        ScOrderApiImpl.updateCommitInfo(mScOrder.getId(), jsonArray.toJSONString(), updateCommitInfoRC);
+        if (RxHttpManager.RELEASE) {
+            Map<String, String> options = new HashMap<>();
+            options.put("id", String.valueOf(mScOrder.getId()));
+            options.put("jsonStr", jsonArray.toJSONString());
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+            ScOrderHttpManager.getInstance().updateCommitInfo(options,
+                    new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            DialogUtil.showHint(e.getMessage());
+                            btnSubmit.setEnabled(true);
+                            hideProgressDialog();
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            ZLogger.df("发货并通知骑手:" + s);
+                            prepareOrder();
+
+                        }
+                    });
+        } else {
+            ScOrderApiImpl.updateCommitInfo(mScOrder.getId(),
+                    jsonArray.toJSONString(), updateCommitInfoRC);
+        }
     }
 
     NetCallBack.NetTaskCallBack updateCommitInfoRC = new NetCallBack.NetTaskCallBack<String,
@@ -279,7 +315,47 @@ public class PrepareStep2Fragment extends BaseFragment {
             return;
         }
 
-        ScOrderApiImpl.prepareOrder(mScOrder.getId(), mScOrder.getGuideHumanId(), null, prepareOrderRC);
+        if (RxHttpManager.RELEASE) {
+            Map<String, String> options = new HashMap<>();
+            options.put("orderId", String.valueOf(mScOrder.getId()));
+            if (mScOrder.getGuideHumanId() != null){
+                options.put("buyerId", String.valueOf(mScOrder.getGuideHumanId()));
+            }
+//            if (transHumanId != null){
+//                options.put("transHumanId", String.valueOf(transHumanId));
+//            }
+            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+            ScOrderHttpManager.getInstance().prepareOrder(options,
+                    new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            ZLogger.ef(e.toString());
+
+                            btnSubmit.setEnabled(true);
+                            showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            btnSubmit.setEnabled(true);
+                            hideProgressDialog();
+                            DialogUtil.showHint("组货成功");
+                            Intent data = new Intent();
+                            data.putExtra(EXTRA_KEY_SCORDER, mScOrder);
+                            getActivity().setResult(Activity.RESULT_OK, data);
+                            getActivity().finish();
+                        }
+                    });
+        } else {
+            ScOrderApiImpl.prepareOrder(mScOrder.getId(), mScOrder.getGuideHumanId(),
+                    null, prepareOrderRC);
+        }
     }
 
     //保存
@@ -312,6 +388,5 @@ public class PrepareStep2Fragment extends BaseFragment {
             , String.class
             , CashierApp.getAppContext()) {
     };
-
 
 }

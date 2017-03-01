@@ -13,8 +13,9 @@ import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
-import com.mfh.litecashier.ui.fragment.dailysettle.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
+import com.mfh.litecashier.ui.goodsflow.GoodsFlowFragment;
+import com.mfh.litecashier.ui.fragment.dailysettle.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
@@ -36,30 +37,31 @@ import butterknife.BindView;
 public class SimpleDialogActivity extends BaseActivity {
     public static final String EXTRA_KEY_SERVICE_TYPE = "serviceType";
 
-    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS     = 0x01;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS   = 0x02;//采购商品－新增商品
-    public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER      = 0x03;//选择收货单
-    public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL      = 0x04;//采购商品详情
-    public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT  = 0x05;//选择批发商&门店
-    public static final int FRAGMENT_TYPE_DAILY_SETTLE              = 0x06;//日结
-    public static final int FRAGMENT_TYPE_HANDOVER                  = 0x07;//交接班
+    public static final int FRAGMENT_TYPE_CREATE_PURCHASE_GOODS = 0x01;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS = 0x02;//采购商品－新增商品
+    public static final int FRAGMENT_TYPE_SELECT_INV_RECVORDER = 0x03;//选择收货单
+    public static final int FRAGMENT_TYPE_PURCHASE_GOODSDETAIL = 0x04;//采购商品详情
+    public static final int FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT = 0x05;//选择批发商&门店
+    public static final int FRAGMENT_TYPE_DAILY_SETTLE = 0x06;//日结
+    public static final int FRAGMENT_TYPE_HANDOVER = 0x07;//交接班
     public static final int FT_CANARY_CASH_QUOTA = 0x08;//现金授权
     public static final int FT_PAY_HISTORY = 0x09;//支付记录
     public static final int FT_GOODS_SALESHISTORY = 0x10;//商品销量记录
     public static final int FT_EXCHANGE_SCORE = 0x11;//积分兑换
 
     public static final int FT_TENANT_POSCATEGORYLIST = 0x12;//租户pos前台类目
+    public static final int FT_GOODS_FLOW = 0x13;//商品流水
 
-    public static final int FT_PREPAREABLE_ORDER                  = 0x21;//买手接单
+    public static final int FT_PREPAREABLE_ORDER = 0x21;//买手接单
 
 
     private int serviceType = 0;
 
 
     public static final String EXTRA_KEY_DIALOG_TYPE = "dialogType";
-    public static final int DT_NORMAL   = 0x01;//正常
-    public static final int DT_MIDDLE   = 0x02;//中等
-    public static final int DT_VERTICIAL_FULLSCREEN   = 0x03;//全屏
+    public static final int DT_NORMAL = 0x01;//正常
+    public static final int DT_MIDDLE = 0x02;//中等
+    public static final int DT_VERTICIAL_FULLSCREEN = 0x03;//全屏
     private int dialogType = DT_NORMAL;
 
     public static final String EXTRA_KEY_TITLE = "title";
@@ -95,19 +97,16 @@ public class SimpleDialogActivity extends BaseActivity {
         super.initViews();
 
         ViewGroup.LayoutParams layoutParams = frameLayout.getLayoutParams();
-        if (dialogType == DT_NORMAL){
+        if (dialogType == DT_NORMAL) {
             layoutParams.width = DensityUtil.dip2px(this, 600);
-        }
-        else if (dialogType == DT_MIDDLE){
+        } else if (dialogType == DT_MIDDLE) {
             layoutParams.width = DensityUtil.dip2px(this,
                     getResources().getDimension(R.dimen.mf_simple_dialog_width));
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-        else if (dialogType == DT_VERTICIAL_FULLSCREEN){
+        } else if (dialogType == DT_VERTICIAL_FULLSCREEN) {
             layoutParams.width = DensityUtil.dip2px(this, 600);
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-        else {
+        } else {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
         }
         frameLayout.setLayoutParams(layoutParams);
@@ -151,8 +150,8 @@ public class SimpleDialogActivity extends BaseActivity {
      * Caused by: java.lang.IllegalStateException: commit already called
      */
     private void initFragments() {
-        switch (serviceType){
-            case FRAGMENT_TYPE_CREATE_PURCHASE_GOODS:{
+        switch (serviceType) {
+            case FRAGMENT_TYPE_CREATE_PURCHASE_GOODS: {
                 ScSkuGoodsStoreInFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -165,7 +164,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS:{
+            case FRAGMENT_TYPE_GENERATE_PURCHASE_GOODS: {
                 GreateScSkuGoodsFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -178,7 +177,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FRAGMENT_TYPE_HANDOVER:{
+            case FRAGMENT_TYPE_HANDOVER: {
                 HandoverFragment handoverFragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -191,7 +190,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FRAGMENT_TYPE_DAILY_SETTLE:{
+            case FRAGMENT_TYPE_DAILY_SETTLE: {
                 DailySettleFragment dailySettleFragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -204,7 +203,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FRAGMENT_TYPE_SELECT_INV_RECVORDER:{
+            case FRAGMENT_TYPE_SELECT_INV_RECVORDER: {
                 SelectInvRecvOrderFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -217,7 +216,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FRAGMENT_TYPE_PURCHASE_GOODSDETAIL:{
+            case FRAGMENT_TYPE_PURCHASE_GOODSDETAIL: {
                 PurchaseGoodsDetailFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -230,7 +229,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT:{
+            case FRAGMENT_TYPE_SELECT_WHOLESALER_TENANT: {
                 SelectWholesalerWithTenantFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -243,7 +242,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_CANARY_CASH_QUOTA:{
+            case FT_CANARY_CASH_QUOTA: {
                 CashQuotaFragment fragment = new CashQuotaFragment();
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
@@ -251,7 +250,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_PAY_HISTORY:{
+            case FT_PAY_HISTORY: {
                 PayHistoryFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -265,9 +264,9 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_GOODS_SALESHISTORY:{
+            case FT_GOODS_SALESHISTORY: {
                 ZLogger.d("准备跳转到销量页面");
-                try{
+                try {
                     GoodsSalesFragment fragment;
                     Intent intent = this.getIntent();
                     if (intent != null) {
@@ -279,14 +278,13 @@ public class SimpleDialogActivity extends BaseActivity {
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                             .replace(R.id.fragment_container, fragment)
                             .commit();
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     ZLogger.e(e.toString());
                     e.printStackTrace();
                 }
             }
             break;
-            case FT_EXCHANGE_SCORE:{
+            case FT_EXCHANGE_SCORE: {
                 ExchangeScoreFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -300,7 +298,7 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_TENANT_POSCATEGORYLIST:{
+            case FT_TENANT_POSCATEGORYLIST: {
                 TenantCategoryListFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
@@ -314,13 +312,27 @@ public class SimpleDialogActivity extends BaseActivity {
             }
             break;
 
-            case FT_PREPAREABLE_ORDER:{
+            case FT_PREPAREABLE_ORDER: {
                 PrepareAbleOrdersFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
                     fragment = PrepareAbleOrdersFragment.newInstance(intent.getExtras());
                 } else {
                     fragment = PrepareAbleOrdersFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+
+            case FT_GOODS_FLOW: {
+                GoodsFlowFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = GoodsFlowFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = GoodsFlowFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)

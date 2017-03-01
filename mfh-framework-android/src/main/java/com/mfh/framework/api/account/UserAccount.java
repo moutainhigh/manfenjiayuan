@@ -3,8 +3,6 @@ package com.mfh.framework.api.account;
 import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 
-import java.util.Date;
-
 /**
  * 用户账号信息
  * Created by bingshanguxue on 7/5/16.
@@ -21,9 +19,6 @@ public class UserAccount extends MfhEntity<Long> {
     private Double con_cash = 0D;//已消费金额
     private Long cur_score = 0L;//当前积分
     private Long con_score = 0L;//已消费积分
-
-    private Date createdDate;
-    private Date updatedDate;
 
     public Long getOwnerId() {
         return ownerId;

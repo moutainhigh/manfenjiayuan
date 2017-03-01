@@ -1,17 +1,18 @@
 package com.mfh.framework.api.invCompany;
 
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.companyInfo.CompanyInfo;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvCompanyHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bingshanguxue on 7/27/16.
@@ -19,39 +20,44 @@ import java.util.List;
 public class InvCompanyMode {
 
     public void list(PageInfo pageInfo, String shortCodeLike,
-                               final OnPageModeListener<CompanyInfo> listener) {
-        if (listener != null){
+                     final OnPageModeListener<CompanyInfo> listener) {
+        if (listener != null) {
             listener.onProcess();
         }
-        ZLogger.d(String.format("加载批发商开始:page=%d/%d",
-                pageInfo.getPageNo(), pageInfo.getTotalPage()));
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<CompanyInfo>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<CompanyInfo> rs) {
-                //此处在主线程中执行。
-                List<CompanyInfo> entityList = new ArrayList<>();
-                if (rs != null){
-                    for (EntityWrapper<CompanyInfo> wrapper : rs.getRowDatas()) {
-                        entityList.add(wrapper.getBean());
+        Map<String, String> options = new HashMap<>();
+        options.put("status", String.valueOf(InvCompanyHttpManager.STATUS_ONLINE));
+        if (!StringUtils.isEmpty(shortCodeLike)) {
+            options.put("shortCode", shortCodeLike);
+        }
+
+        if (pageInfo != null) {
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        InvCompanyHttpManager.getInstance().list(options,
+                new MQuerySubscriber<CompanyInfo>(pageInfo) {
+
+                    @Override
+                    public void onQueryNext(PageInfo pageInfo, List<CompanyInfo> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
+                        if (listener != null) {
+                            listener.onSuccess(pageInfo, dataList);
+                        }
                     }
-                }
 
-                if (listener != null){
-                    listener.onSuccess(pageInfo, entityList);
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
 
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.d("加载批发商失败:" + errMsg);
-                if (listener != null){
-                    listener.onError(errMsg);
-                }
-            }
-        }, CompanyInfo.class, MfhApplication.getAppContext());
-
-        InvCompanyApi.list(InvCompanyApi.STATUS_ONLINE, shortCodeLike, pageInfo, queryRsCallBack);
+                        ZLogger.df("加载批发商失败:" + e.toString());
+                        if (listener != null) {
+                            listener.onError(e.getMessage());
+                        }
+                    }
+                });
     }
 }

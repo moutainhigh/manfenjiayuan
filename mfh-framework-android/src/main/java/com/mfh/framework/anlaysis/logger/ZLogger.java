@@ -2,6 +2,7 @@ package com.mfh.framework.anlaysis.logger;
 
 import android.util.Log;
 
+import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -324,6 +325,10 @@ public class ZLogger {
         public synchronized void addQueue(String log) {
             mLogQueue.add(log);
         }
+    }
+
+    public static File getCrashFile() {
+        return FileUtil.getSaveFile(CRASH_FOLDER_PATH, AppException.CRASH_FILE_NAME);
     }
 
     /**

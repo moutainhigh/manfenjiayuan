@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.bizz.goods.ScGoodsSkuEvent;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.mfh.comn.net.data.IResponseData;

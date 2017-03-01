@@ -42,7 +42,7 @@ public class PurchaseMode {
         if (listener != null) {
             listener.onProcess();
         }
-        if (RxHttpManager.isUseRx){
+        if (RxHttpManager.RELEASE) {
             Map<String, String> options = new HashMap<>();
             //类目
             if (categoryId != null) {
@@ -54,7 +54,9 @@ public class PurchaseMode {
             }
 
             //价格类型0-计件 1-计重
-            options.put("priceType", priceType);
+            if (!StringUtils.isEmpty(priceType)) {
+                options.put("priceType", priceType);
+            }
             //排序
             if (sortType == SearchParamsWrapper.SORT_BY_STOCK_QUANTITY_DESC) {
                 options.put("orderby", "quantity");
@@ -75,17 +77,24 @@ public class PurchaseMode {
             if (!StringUtils.isEmpty(barcode)) {
                 options.put("barcode", barcode);
             }
-            options.put("nameLike", nameLike);
-            options.put("page", Integer.toString(pageInfo.getPageNo()));
-            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+            if (!StringUtils.isEmpty(nameLike)) {
+                options.put("nameLike", nameLike);
+            }
+            if (pageInfo != null) {
+                options.put("page", Integer.toString(pageInfo.getPageNo()));
+                options.put("rows", Integer.toString(pageInfo.getPageSize()));
+            }
+
             options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
             ScGoodsSkuHttpManager.getInstance().findStoreWithChainSku(options,
-                    new MQuerySubscriber<ScGoodsSku>(pageInfo){
+                    new MQuerySubscriber<ScGoodsSku>(pageInfo) {
                         @Override
                         public void onError(Throwable e) {
                             super.onError(e);
-                            if (listener != null){
+                            ZLogger.df("加载采购商品列表失败:" + e.toString());
+
+                            if (listener != null) {
                                 listener.onError(e.toString());
                             }
                         }
@@ -93,13 +102,12 @@ public class PurchaseMode {
                         @Override
                         public void onQueryNext(PageInfo pageInfo, List<ScGoodsSku> dataList) {
                             super.onQueryNext(pageInfo, dataList);
-                            if (listener != null){
+                            if (listener != null) {
                                 listener.onSuccess(pageInfo, dataList);
                             }
                         }
                     });
-        }
-        else{
+        } else {
             AjaxParams params = new AjaxParams();
             //类目
             if (categoryId != null) {

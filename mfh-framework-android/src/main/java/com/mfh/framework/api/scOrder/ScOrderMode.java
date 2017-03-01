@@ -5,7 +5,6 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspQueryResult;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
@@ -122,38 +121,6 @@ public class ScOrderMode {
                     }
 
                 });
-
-//        NetCallBack.NetTaskCallBack queryResCallback = new NetCallBack.NetTaskCallBack<ScOrder,
-//                NetProcessor.Processor<ScOrder>>(
-//                new NetProcessor.Processor<ScOrder>() {
-//                    @Override
-//                    public void processResult(IResponseData rspData) {
-//                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-//                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-//                        ScOrder scOrder = null;
-//                        if (rspData != null) {
-//                            RspBean<ScOrder> retValue = (RspBean<ScOrder>) rspData;
-//                            scOrder = retValue.getValue();
-//                        }
-//                        if (listener != null) {
-//                            listener.onSuccess(scOrder);
-//                        }
-//                    }
-//
-//                    @Override
-//                    protected void processFailure(Throwable t, String errMsg) {
-//                        super.processFailure(t, errMsg);
-//                        ZLogger.df("查询失败: " + errMsg);
-//                        if (listener != null) {
-//                            listener.onError(errMsg);
-//                        }
-//                    }
-//                }
-//                , ScOrder.class
-//                , MfhApplication.getAppContext()) {
-//        };
-//
-//        ScOrderApiImpl.getByBarcode(barcode, status, isNeedDetail, queryResCallback);
     }
 
     /**
@@ -193,44 +160,6 @@ public class ScOrderMode {
         ScOrderApiImpl.findPrepareAbleOrders(pageInfo, queryRsCallBack);
     }
 
-    /**
-     * 当前登录买手可以抢单去组货（也就是拣货）的订单列表
-     */
-    public void prepareOrder(Long orderId, Long buyerId, Long transHumanId, final OnPageModeListener<ScOrder> listener) {
-        if (listener != null) {
-            listener.onProcess();
-        }
-
-        NetCallBack.NetTaskCallBack responseRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"操作成功!","version":"1","data":""}
-                        // {"code":"0","msg":"查询成功!","version":"1","data":null}
-                        String result = null;
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            result = retValue.getValue();
-                        }
-                        ZLogger.d("抢单成功：" + result);
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("抢单失败: " + errMsg);
-                        if (listener != null) {
-                            listener.onError(errMsg);
-                        }
-                    }
-                }
-                , String.class
-                , MfhApplication.getAppContext()) {
-        };
-
-        ScOrderApiImpl.prepareOrder(orderId, buyerId, transHumanId, responseRC);
-    }
 
     /**
      *  获取当前登录骑手待配送的订单列表

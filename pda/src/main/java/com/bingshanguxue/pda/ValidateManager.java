@@ -7,7 +7,6 @@ import android.os.SystemClock;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
@@ -268,10 +267,6 @@ public class ValidateManager {
                             validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
                                     null, "设备注册失败，需要重新注册");
                         } else {
-                            if (!BizConfig.RELEASE){
-                                validateFinished(ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER,
-                                        null, "测试注册设备功能");
-                            }
                             nextStep();
                         }
 

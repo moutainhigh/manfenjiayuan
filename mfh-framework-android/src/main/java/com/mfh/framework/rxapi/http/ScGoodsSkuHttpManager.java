@@ -1,5 +1,6 @@
 package com.mfh.framework.rxapi.http;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.PosGoods;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.rxapi.entity.MResponse;
@@ -22,7 +23,7 @@ import rx.Subscriber;
  * Created by bingshanguxue on 26/01/2017.
  */
 
-public class ScGoodsSkuHttpManager extends BaseHttpManager{
+public class ScGoodsSkuHttpManager extends BaseHttpManager {
     //在访问HttpMethods时创建单例
     private static class SingletonHolder {
         private static final ScGoodsSkuHttpManager INSTANCE = new ScGoodsSkuHttpManager();
@@ -33,27 +34,36 @@ public class ScGoodsSkuHttpManager extends BaseHttpManager{
         return ScGoodsSkuHttpManager.SingletonHolder.INSTANCE;
     }
 
-    private interface ScGoodsSkuService{
+    private interface ScGoodsSkuService {
+        /**
+         * 查询批发商采购商品
+         * 适用场景：门店采购查询商品
+         */
         @GET("scGoodsSku/findStoreWithChainSku")
         Observable<MResponse<MRspQuery<ScGoodsSku>>> findStoreWithChainSku(@QueryMap Map<String, String> options);
+
         @GET("scGoodsSku/downLoadPosProduct")
         Observable<MResponse<MRspQuery<PosGoods>>> downLoadPosProduct(@QueryMap Map<String, String> options);
+
         /**
          * 查询指定网点可同步sku总数<br>
          * {"code":"0","msg":"查询成功!","version":"1","data":{"val":"701"}}
          */
         @GET("scGoodsSku/countNetSyncAbleSkuNum")
         Observable<MResponse<MValue<String>>> countNetSyncAbleSkuNum(@QueryMap Map<String, String> options);
+
         @GET("scGoodsSku/getByBarcode")
         Observable<MResponse<ScGoodsSku>> getByBarcode(@QueryMap Map<String, String> options);
+
         @GET("scGoodsSku/storeIn")
         Observable<MResponse<String>> storeIn(@QueryMap Map<String, String> options);
     }
 
     public void findStoreWithChainSku(Map<String, String> options, MQuerySubscriber<ScGoodsSku> subscriber) {
+        ZLogger.d("findStoreWithChainSku 3");
         ScGoodsSkuService mfhApi = RxHttpManager.createService(ScGoodsSkuService.class);
         Observable observable = mfhApi.findStoreWithChainSku(options)
-                .map(new MResponseFunc<MRspQuery<ScGoodsSku>>());
+                .map(new MQueryResponseFunc<ScGoodsSku>());
         toSubscribe(observable, subscriber);
     }
 
@@ -77,6 +87,7 @@ public class ScGoodsSkuHttpManager extends BaseHttpManager{
                 .map(new MResponseFunc<ScGoodsSku>());
         toSubscribe(observable, subscriber);
     }
+
     public void storeIn(Map<String, String> options, Subscriber<String> subscriber) {
         ScGoodsSkuService mfhApi = RxHttpManager.createService(ScGoodsSkuService.class);
         Observable observable = mfhApi.storeIn(options)

@@ -71,22 +71,6 @@ public class InvOrderApi {
     //收发单：收货单&发货单
     public static String URL_INVIOORDER_ITEM = MfhApi.URL_BASE_SERVER + "/invIoOrderItem/";
 
-
-    /**
-     * 库存报损订单列表
-     */
-    public static String URL_INVLOSSORDER_LIST = URL_INVLOSSORDER + "list";
-    /**
-     * 获取当前网点正在报损的报损单号
-     * /invLossOrder/getCurrentOrder
-     */
-    public static String URL_INVLOSSORDER_GETCURRENTORDER = URL_INVLOSSORDER + "getCurrentOrder";
-    /**
-     * 库存报损订单明细列表
-     */
-    public static String URL_INVLOSSORDERITEM_LIST = URL_INVLOSSORDER_ITEM + "list";
-
-
     /**
      * 针对一个报损单，提交一批报损记录,需要登录。
      * /invLossOrderItem/batchCommitItems?orderId=21&posId=1&jsonStr=
@@ -104,9 +88,6 @@ public class InvOrderApi {
         URL_INVLOSSORDER_ITEM = MfhApi.URL_BASE_SERVER + "/invLossOrderItem/";
         URL_INVIOORDER_ITEM = MfhApi.URL_BASE_SERVER + "/invIoOrderItem/";
 
-        URL_INVLOSSORDER_LIST = URL_INVLOSSORDER + "list";
-        URL_INVLOSSORDER_GETCURRENTORDER = URL_INVLOSSORDER + "getCurrentOrder";
-        URL_INVLOSSORDERITEM_LIST = URL_INVLOSSORDER_ITEM + "list";
         URL_INVLOSSORDERITEM_BATCHCOMMIT = URL_INVLOSSORDER_ITEM + "batchCommitItems";
         URL_INVIOORDERITEM_LIST = URL_INVIOORDER_ITEM + "list";
     }

@@ -1,6 +1,6 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.manfenjiayuan.business.bean.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.manfenjiayuan.business.mode.InvSkuGoodsMode;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
 import com.mfh.framework.mvp.OnModeListener;

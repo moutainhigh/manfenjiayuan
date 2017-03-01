@@ -42,7 +42,6 @@ public class ClientLogApi {
     public static void create(ClientLog clientLog, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         if (clientLog != null) {
-
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("stackInformation", clientLog.getStackInformation());
             jsonObject.put("hardwareInformation", clientLog.getHardwareInformation());

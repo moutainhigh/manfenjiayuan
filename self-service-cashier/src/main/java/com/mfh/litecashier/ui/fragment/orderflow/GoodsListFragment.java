@@ -94,9 +94,6 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (orderRecyclerView != null) {
-            orderRecyclerView.removeOnScrollListener(orderListScrollListener);
-        }
 
         EventBus.getDefault().unregister(this);
     }
@@ -160,31 +157,6 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
         orderRecyclerView.setAdapter(orderListAdapter);
     }
 
-
-    private RecyclerView.OnScrollListener orderListScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-            int totalItemCount = linearLayoutManager.getItemCount();
-            //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
-            // dy>0 表示向下滑动
-//                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
-            if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
-                if (!isLoadingMore) {
-                    loadMore();
-                }
-            } else if (dy < 0) {
-                isLoadingMore = false;
-            }
-        }
-    };
-
     /**
      * 在主线程接收CashierEvent事件，必须是public void
      */
@@ -227,12 +199,6 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-//        if (entityList == null) {
-//            entityList = new ArrayList<>();
-//        } else {
-//            entityList.clear();
-//        }
-
         orderflowPresenter.findGoodsOrderList(BizType.SC, null, status,
                 String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
         mPageInfo.setPageNo(1);

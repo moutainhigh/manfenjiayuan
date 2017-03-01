@@ -212,9 +212,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
         ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
 
         if (remoteId.equals(1L)) {
-            RemoteControlClient.getInstance().uploadLogFileStep1();
-        } else if (remoteId.equals(2L)) {
-            RemoteControlClient.getInstance().uploadCrashFileStep1();
+            RemoteControlClient.getInstance().onekeyFeedback();
         } else if (remoteId.equals(3L)) {
             Beta.checkUpgrade(false, false);
         }

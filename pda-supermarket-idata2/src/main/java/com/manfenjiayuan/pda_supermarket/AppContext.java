@@ -33,6 +33,8 @@ public class AppContext extends MfhApplication {
     public void onCreate() {
         super.onCreate();
 
+//        SharedPrefesManagerFactory.setSuperPermissionGranted(true);
+
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);
         ZLogger.df("进程:" + processAppName);
@@ -42,11 +44,9 @@ public class AppContext extends MfhApplication {
             configBugly();
 
             if (BizConfig.RELEASE){
-//            ZLogger.d("正式版本");
                 ZLogger.LOG_ENABLED = true;
             }
             else{
-//            ZLogger.d("测试版本");
                 ZLogger.LOG_ENABLED = true;
             }
             //初始化IM模块

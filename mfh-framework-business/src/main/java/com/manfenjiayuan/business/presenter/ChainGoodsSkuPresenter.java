@@ -22,36 +22,6 @@ public class ChainGoodsSkuPresenter {
         this.iChainGoodsSkuMode = new ChainGoodsSkuMode();
     }
 
-    /**
-     * 查询洗衣类目商品商品
-     *
-     * @param frontCategoryId 类目编号
-     */
-    public void findPublicChainGoodsSku(PageInfo pageInfo, Long frontCategoryId, Long netId) {
-        iChainGoodsSkuMode.findPublicChainGoodsSku(pageInfo, frontCategoryId, netId,
-                new OnPageModeListener<ChainGoodsSku>() {
-                    @Override
-                    public void onProcess() {
-                        if (iChainGoodsSkuView != null) {
-                            iChainGoodsSkuView.onChainGoodsSkuViewProcess();
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(PageInfo pageInfo, List<ChainGoodsSku> dataList) {
-                        if (iChainGoodsSkuView != null) {
-                            iChainGoodsSkuView.onChainGoodsSkuViewSuccess(pageInfo, dataList);
-                        }
-                    }
-
-                    @Override
-                    public void onError(String errorMsg) {
-                        if (iChainGoodsSkuView != null) {
-                            iChainGoodsSkuView.onChainGoodsSkuViewError(errorMsg);
-                        }
-                    }
-                });
-    }
 
     /**
      * 查询批发商商品
@@ -90,7 +60,8 @@ public class ChainGoodsSkuPresenter {
      *
      * @param barcode 商品条码
      */
-    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike, PageInfo pageInfo) {
+    public void findSupplyChainGoodsSku(String barcode, Long proSkuId, String nameLike,
+                                        PageInfo pageInfo) {
         iChainGoodsSkuMode.findSupplyChainGoodsSku(barcode, proSkuId, nameLike, pageInfo,
                 new OnPageModeListener<ChainGoodsSku>() {
                     @Override

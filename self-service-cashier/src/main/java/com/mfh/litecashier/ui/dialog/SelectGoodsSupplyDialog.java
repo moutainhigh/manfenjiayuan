@@ -31,7 +31,7 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
+import com.manfenjiayuan.business.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.ui.adapter.OrderGoodsSupplyAdapter;
 
 import java.util.List;

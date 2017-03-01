@@ -34,16 +34,6 @@ public class ScChainGoodsSkuApi {
      */
     static String URL_FIND_PUBLICCHAINGOODSSKU = URL_SCCHAINGOODSSKU + "findPublicChainGoodsSku";
 
-    /**
-     * 查询一个产品sku有哪些批发商供应
-     * /scChainGoodsSku/findSupplyChainGoodsSku?barcode=|proSkuId=|nameLike=
-     * <p>
-     * 注意，这个接口和上面的"findPublicChainGoodsSku"接口返回的结果是一样的。
-     * findPublicChainGoodsSku历史原因，里面包含了很多附加逻辑，譬如自动根据当前登录用户
-     * 附加了一些条件，使用起来不方便
-     */
-    static String URL_FIND_SUPPLYCHAINGOODSSKU = URL_SCCHAINGOODSSKU + "findSupplyChainGoodsSku";
-
 
     /**
      * 批量查询批发商商品
@@ -64,7 +54,6 @@ public class ScChainGoodsSkuApi {
         URL_GET_TENANTSKUMUST = URL_SCCHAINGOODSSKU + "getTenantSkuMust";
 
         URL_FIND_PUBLICCHAINGOODSSKU = URL_SCCHAINGOODSSKU + "findPublicChainGoodsSku";
-        URL_FIND_SUPPLYCHAINGOODSSKU = URL_SCCHAINGOODSSKU + "findSupplyChainGoodsSku";
 
         URL_SCCHAINGOODSSKU_LIST = URL_SCCHAINGOODSSKU + "list";
         URL_INVSKUPROVIDER_LIST = MfhApi.URL_BASE_SERVER + "/invSkuProvider/list";

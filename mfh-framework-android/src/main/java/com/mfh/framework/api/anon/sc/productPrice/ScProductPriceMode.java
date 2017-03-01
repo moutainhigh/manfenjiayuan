@@ -10,6 +10,7 @@ import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.AnonScHttpManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
@@ -45,7 +46,7 @@ public class ScProductPriceMode {
             }
             options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-            RxHttpManager.getInstance().findPubSkusByFrontCatalog(options,
+            AnonScHttpManager.getInstance().findPubSkusByFrontCatalog(options,
                     new MQuerySubscriber<PubSkus>(pageInfo) {
                         @Override
                         public void onQueryNext(PageInfo pageInfo, List<PubSkus> dataList) {

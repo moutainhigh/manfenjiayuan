@@ -32,7 +32,7 @@ import com.mfh.litecashier.event.OrderflowLocalWarehouseEvent;
 import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.ExceptionOrderflowAdapter;
 import com.mfh.litecashier.ui.dialog.DailysettlePreviewDialog;
-import com.mfh.litecashier.ui.dialog.DateTimePickerDialog;
+import com.mfh.litecashier.ui.dialog.MyDatePickerDialog;
 import com.mfh.litecashier.ui.dialog.OrderPrintPreviewDialog;
 import com.mfh.litecashier.ui.dialog.PosOrderDetailDialog;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -88,7 +88,7 @@ public class OrderFlowFragment extends BaseFragment {
     private OrderPrintPreviewDialog mOrderPrintPreviewDialog = null;
     private DailysettlePreviewDialog mDailysettlePreviewDialog = null;
 
-    private DateTimePickerDialog dateTimePickerDialog = null;
+    private MyDatePickerDialog dateTimePickerDialog = null;
 
     @Override
     protected int getLayoutResId() {
@@ -559,19 +559,20 @@ public class OrderFlowFragment extends BaseFragment {
         calendar.setTime(new Date());
 
         if (dateTimePickerDialog == null) {
-            dateTimePickerDialog = new DateTimePickerDialog(getActivity());
+            dateTimePickerDialog = new MyDatePickerDialog(getActivity());
             dateTimePickerDialog.setCancelable(true);
             dateTimePickerDialog.setCanceledOnTouchOutside(true);
         }
-        dateTimePickerDialog.init(calendar, new DateTimePickerDialog.OnDateTimeSetListener() {
+        dateTimePickerDialog.init(calendar, new MyDatePickerDialog.OnDateTimeSetListener() {
             @Override
-            public void onDateTimeSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minute) {
+            public void onDateTimeSet(int year, int monthOfYear, int dayOfMonth) {
 
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
 
                 dailysettlePreview2(calendar.getTime());
             }

@@ -1,14 +1,14 @@
-package com.manfenjiayuan.business.bean;
+package com.mfh.framework.api.invSkuStore;
 
-import java.io.Serializable;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * 库存商品<br>
  * 适用场景：批发商盘点/报损
  * Created by bingshanguxue on 4/28/16.
  */
-public class InvSkuGoods implements Serializable{
-    private Long id;//本店最小商品库存单元编号
+public class InvSkuGoods extends MfhEntity<Long> {
+//    private Long id;//本店最小商品库存单元编号
     private Long proSkuId;
     private String barcode;//商品条码
     private String rackNo;//货架编号
@@ -19,13 +19,7 @@ public class InvSkuGoods implements Serializable{
     private String unit;//单位
     private String name;//名称
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Double quantityCheck;
 
     public Long getProSkuId() {
         return proSkuId;
@@ -97,5 +91,13 @@ public class InvSkuGoods implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Double getQuantityCheck() {
+        return quantityCheck;
+    }
+
+    public void setQuantityCheck(Double quantityCheck) {
+        this.quantityCheck = quantityCheck;
     }
 }

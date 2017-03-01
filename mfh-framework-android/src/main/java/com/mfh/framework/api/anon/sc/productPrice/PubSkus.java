@@ -1,23 +1,16 @@
 package com.mfh.framework.api.anon.sc.productPrice;
 
-import java.io.Serializable;
+import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * Created by bingshanguxue on 8/30/16.
  */
-public class PubSkus implements Serializable {
-    private Long id;//proSkuId
+public class PubSkus extends MfhEntity<Long> {
+//    private Long id;//proSkuId
     private Long productId;
     private String barcode = "";
     private String name = "";
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getProductId() {
         return productId;

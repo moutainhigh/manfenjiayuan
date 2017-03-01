@@ -8,9 +8,6 @@ import com.mfh.framework.network.NetFactory;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 /**
  * 商城订单
  * Created by bingshanguxue on 9/22/16.
@@ -19,12 +16,6 @@ public class ResApi {
     public static String URL_REMOTE = MfhApi.URL_BASE_SERVER + "/res/remote/";
     public static String URL_REMOTESAVE = MfhApi.URL_BASE_SERVER + "/res/remotesave/";
 
-    /**
-     * 图片上传修改
-     * 采用multipart/form-data或post方式提交图片。
-     * /res/remotesave/upload? responseType=1
-     */
-    private static String URL_REMOTESAVE_UPLOAD = URL_REMOTESAVE + "upload";
 
 
     /**
@@ -43,32 +34,12 @@ public class ResApi {
     public static void register() {
         URL_REMOTE = MfhApi.URL_BASE_SERVER + "/res/remote/";
         URL_REMOTESAVE = MfhApi.URL_BASE_SERVER + "/res/remotesave/";
-        URL_REMOTESAVE_UPLOAD = URL_REMOTESAVE + "upload";
         URL_REMOTESAVE_DELETE = URL_REMOTESAVE + "delete";
 
         URL_REMOTE_UPLOAD = URL_REMOTE + "download";
     }
 
-    /**
-     * 图片上传修改
-     * 采用multipart/form-data或post方式提交图片。
-     *
-     * @param responseType 响应方式	1：只返回素材id 3：返回素材id和访问url
-     */
-    public static void upload(File file, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        try {
-            if (file != null) {
-                params.put("fileToUpload", file);
-            }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("不存在的文件:" + file.getAbsolutePath());
-        }
-        //
-        params.put("responseType", "1");
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_REMOTESAVE_UPLOAD, params, responseCallback);
-    }
+
 
     /**
      * 删除文件

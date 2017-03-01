@@ -48,6 +48,7 @@ public class ResHttpManager extends BaseHttpManager{
         @POST("res/remotesave/upload")
         Observable<MResponse<MValue<Long>>> upload(@Part List<MultipartBody.Part> parts);
 
+
         @Multipart
         @POST("res/remotesave/upload")
         Observable<MResponse<MValue<Long>>> upload2(@Part MultipartBody.Part responseType,
@@ -66,6 +67,14 @@ public class ResHttpManager extends BaseHttpManager{
     }
 
     public void upload(List<MultipartBody.Part> parts, MValueSubscriber<Long> subscriber) {
+
+
+//            MultipartBody.Builder builder = new MultipartBody.Builder();
+//            builder.setType(MultipartBody.FORM);
+//            builder.addFormDataPart("responseType", "1");
+//            RequestBody requestBody = RequestBody.create(ResHttpManager.ZIP, file);
+//            builder.addFormDataPart("fileToUpload", file.getName(), requestBody);
+
 //        RequestBody responseType =
 //                RequestBody.create(
 //                        MediaType.parse("multipart/form-data"), "1");
@@ -84,9 +93,14 @@ public class ResHttpManager extends BaseHttpManager{
                 .map(new MValueResponseFunc<Long>());
         toSubscribe(observable, subscriber);
     }
-    public void upload2(MultipartBody.Part responseType, MultipartBody.Part file, MValueSubscriber<Long> subscriber) {
+    public void upload2(File file, MValueSubscriber<Long> subscriber) {
+        MultipartBody.Part responseTypePart = MultipartBody.Part.createFormData("responseType", "1");
+        RequestBody requestBody = RequestBody.create(ResHttpManager.ZIP, file);
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("fileToUpload", file.getName(),
+                requestBody);
+
         ResService mfhApi = RxHttpManager.createService2(ResService.class);
-        Observable observable = mfhApi.upload2(responseType, file)
+        Observable observable = mfhApi.upload2(responseTypePart, filePart)
                 .map(new MValueResponseFunc<Long>());
         toSubscribe(observable, subscriber);
     }
