@@ -191,16 +191,6 @@ public class DeveloperOptionsFragment extends BaseFragment {
         IMClient.getInstance().registerBridge();
     }
 
-    @OnClick(R.id.button_upload_log)
-    public void uploadLog() {
-        RemoteControlClient.getInstance().uploadLogFileStep1();
-    }
-
-    @OnClick(R.id.button_upload_crash)
-    public void uploadCrash() {
-        RemoteControlClient.getInstance().uploadCrashFileStep1();
-    }
-
     @OnClick(R.id.button_test)
     public void test() {
         String sqlOrder = String.format("sellerId = '%d' and bizType = '%d' and status = '%d'",

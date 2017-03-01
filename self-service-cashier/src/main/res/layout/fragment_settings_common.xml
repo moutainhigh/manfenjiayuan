@@ -93,6 +93,18 @@
             app:text="应用版本"
             app:textSize="16sp"/>
 
+        <!--一键反馈-->
+        <com.bingshanguxue.vector_uikit.SettingsItem
+            android:id="@+id/item_onekey_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:position="bottom"
+            app:src="@mipmap/ic_upgrade"
+            app:subText=""
+            app:subTextSize="12sp"
+            app:text="一键反馈"
+            app:textSize="16sp"/>
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
