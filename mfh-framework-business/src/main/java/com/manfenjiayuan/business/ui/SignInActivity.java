@@ -22,15 +22,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bingshanguxue.skinloader.base.SkinBaseActivity;
 import com.bingshanguxue.skinloader.listener.ILoaderListener;
 import com.bingshanguxue.skinloader.loader.SkinManager;
 import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.R;
-import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.business.route.RouteActivity;
 import com.manfenjiayuan.im.IMClient;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -57,7 +57,7 @@ public class SignInActivity extends SkinBaseActivity {
     private EditText etUserName;
     private EditText etPassword;
     private Button btnSignIn;
-    private ImageView ivHostServer;
+    private TextView tvSassName;
 
     private View mProgressView;
 
@@ -91,7 +91,7 @@ public class SignInActivity extends SkinBaseActivity {
         etPassword = (EditText) findViewById(R.id.et_password);
         mProgressView = findViewById(R.id.login_progress);
         btnSignIn = (Button) findViewById(R.id.button_sign_in);
-        ivHostServer = (ImageView) findViewById(R.id.iv_hostserver);
+        tvSassName = (TextView) findViewById(R.id.tv_sassname);
 
         rootView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -322,7 +322,7 @@ public class SignInActivity extends SkinBaseActivity {
 
     /**
      * 加载皮肤
-     * */
+     */
     private void loadSkin(String skinName) {
         SkinManager.getInstance().loadSkin(skinName,
                 new ILoaderListener() {
@@ -365,12 +365,12 @@ public class SignInActivity extends SkinBaseActivity {
             etUserName.requestFocus();
         }
 
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+        TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer == null) {
-            ivHostServer.setImageResource(R.mipmap.ic_launcher);
+            tvSassName.setText("米宝收银端");
             redirect2HostServer();
         } else {
-            ivHostServer.setImageResource(getImageResource(hostServer.getDomainUrl()));
+            tvSassName.setText(hostServer.getSaasName());
         }
     }
 
@@ -387,21 +387,6 @@ public class SignInActivity extends SkinBaseActivity {
         startActivityForResult(intent, ResultCode.ARC_APP_HOSTSERVER);
     }
 
-    private int getImageResource(String domain){
-        if (!StringUtils.isEmpty(domain)){
-            if (domain.startsWith("admin")){
-                return R.mipmap.ic_textlogo_mixicook;
-            }
-            else if (domain.startsWith("lanlj")){
-                return R.mipmap.ic_textlogo_lanlj;
-            }
-            else if (domain.startsWith("qianwj")){
-                return R.mipmap.ic_textlogo_qianwj;
-            }
-        }
-
-        return R.mipmap.ic_launcher;
-    }
 
 //    @Override
 //    public void onThemeUpdate() {

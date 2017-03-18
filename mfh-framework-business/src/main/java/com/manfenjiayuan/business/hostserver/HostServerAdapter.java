@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.manfenjiayuan.business.R;
 import com.mfh.framework.api.tenant.TenantInfo;
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class HostServerAdapter
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
         final TenantInfo entity = entityList.get(position);
 
-        holder.ivHeader.setImageResource(getImageResource(entity.getId()));
+        holder.ivHeader.setImageResource(TenantInfoWrapper.getImageResource(entity.getSaasId()));
         holder.tvName.setText(entity.getSaasName());
     }
 
@@ -76,22 +75,6 @@ public class HostServerAdapter
             });
 
         }
-    }
-
-    private int getImageResource(String domain){
-        if (!StringUtils.isEmpty(domain)){
-            if (domain.startsWith("admin")){
-                return R.mipmap.ic_launcher_mixicook;
-            }
-            else if (domain.startsWith("lanlj")){
-                return R.mipmap.ic_launcher_lanlj;
-            }
-            else if (domain.startsWith("qianwj")){
-                return R.mipmap.ic_launcher_qianwj;
-            }
-        }
-
-        return R.mipmap.ic_launcher;
     }
 
 }

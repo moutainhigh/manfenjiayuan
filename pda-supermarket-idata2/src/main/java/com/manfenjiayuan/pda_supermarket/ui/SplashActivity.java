@@ -2,14 +2,9 @@ package com.manfenjiayuan.pda_supermarket.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -17,7 +12,7 @@ import com.bingshanguxue.skinloader.listener.ILoaderListener;
 import com.bingshanguxue.skinloader.loader.SkinManager;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
 import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.route.RouteActivity;
@@ -40,7 +35,6 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.system.PermissionUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
 import com.mfh.framework.uikit.widget.LoadingImageView;
@@ -48,7 +42,6 @@ import com.mfh.framework.uikit.widget.LoadingImageView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -131,7 +124,7 @@ public class SplashActivity extends InitActivity {
             break;
             case ResultCode.ARC_APP_HOSTSERVER: {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+                    TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
                     if (hostServer == null) {
                         finish();
                     }
@@ -218,7 +211,7 @@ public class SplashActivity extends InitActivity {
     private void onInitializedCompleted() {
         ZLogger.df("应用程序初始化完成。");
 
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+        TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer == null) {
             redirect2HostServer();
             return;

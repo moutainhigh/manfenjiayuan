@@ -1,7 +1,7 @@
 package com.manfenjiayuan.business.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesUltimate;
 
@@ -32,15 +32,15 @@ public class SharedPrefesManagerBase extends SharedPrefesUltimate {
 //        return instance;
 //    }
 
-    public static HostServer getHostServer(){
+    public static TenantInfoWrapper getHostServer(){
         String jsonData = getText(SharedPrefesManagerBase.PK_S_HOSTSERVER, null);
         if (StringUtils.isEmpty(jsonData)){
             return null;
         }
-        return JSONObject.toJavaObject(JSONObject.parseObject(jsonData), HostServer.class);
+        return JSONObject.toJavaObject(JSONObject.parseObject(jsonData), TenantInfoWrapper.class);
     }
 
-    public static void setHostServer(HostServer hostServer){
+    public static void setHostServer(TenantInfoWrapper hostServer){
         if (hostServer != null){
             set(SharedPrefesManagerBase.PK_S_HOSTSERVER, JSONObject.toJSONString(hostServer));
         }

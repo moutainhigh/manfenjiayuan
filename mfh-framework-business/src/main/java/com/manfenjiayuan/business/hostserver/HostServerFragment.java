@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * <h>选择租户，设置域名</h><br>
- * {@link HostServer}<br>
+ * {@link TenantInfoWrapper}<br>
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class HostServerFragment extends BaseProgressFragment {

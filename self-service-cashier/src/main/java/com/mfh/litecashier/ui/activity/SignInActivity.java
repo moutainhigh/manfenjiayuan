@@ -12,16 +12,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bingshanguxue.skinloader.base.SkinBaseActivity;
 import com.bingshanguxue.skinloader.listener.ILoaderListener;
 import com.bingshanguxue.skinloader.loader.SkinManager;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.business.route.RouteActivity;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.IMClient;
@@ -60,12 +60,13 @@ public class SignInActivity extends SkinBaseActivity {
     EditText etPassword;
     @BindView(R.id.button_signin)
     Button btnSignin;
-    @BindView(R.id.bottomview)
-    LinearLayout bottomView;
-    @BindView(R.id.iv_hostserver)
-    ImageView ivHostServer;
+    @BindView(R.id.tv_sassname)
+    TextView tvSassName;
     @BindView(R.id.animProgressBar)
     ProgressBar progressBar;
+
+    @BindView(R.id.login_form)
+    LinearLayout loginForm;
 
     private int loginMode = LOGIN_MODE_SPLASH;
 
@@ -244,6 +245,13 @@ public class SignInActivity extends SkinBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onThemeUpdate() {
+        super.onThemeUpdate();
+//        loginForm.setBackgroundColor(ContextCompat.getColor(this,
+//                R.color.material_white));
+    }
+
     private void refresh(){
         String lastUsername = MfhLoginService.get().getLastLoginName();
         if (!StringUtils.isEmpty(lastUsername)){
@@ -254,13 +262,13 @@ public class SignInActivity extends SkinBaseActivity {
             etUserName.requestFocus();
         }
 
-        HostServer hostServer = SharedPrefesManagerBase.getHostServer();
+        TenantInfoWrapper hostServer = SharedPrefesManagerBase.getHostServer();
         if (hostServer == null){
-            ivHostServer.setImageResource(R.mipmap.ic_launcher);
+            tvSassName.setText(R.string.app_name);
             redirect2HostServer();
         }
         else{
-            ivHostServer.setImageResource(getImageResource(hostServer.getDomainUrl()));
+            tvSassName.setText(hostServer.getSaasName());
 
 //            String domain = hostServer.getDomainUrl();
 //            if (!StringUtils.isEmpty(domain)){
@@ -275,21 +283,6 @@ public class SignInActivity extends SkinBaseActivity {
 //                }
 //            }
         }
-    }
-    private int getImageResource(String domain){
-        if (!StringUtils.isEmpty(domain)){
-            if (domain.startsWith("admin")){
-                return R.mipmap.ic_textlogo_mixicook;
-            }
-            else if (domain.startsWith("lanlj")){
-                return R.mipmap.ic_textlogo_lanlj;
-            }
-            else if (domain.startsWith("qianwj")){
-                return R.mipmap.ic_textlogo_qianwj;
-            }
-        }
-
-        return R.mipmap.ic_launcher;
     }
 
     @OnClick(R.id.tv_retrievePwd)
@@ -360,7 +353,7 @@ public class SignInActivity extends SkinBaseActivity {
 //        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
 //    }
 
-    @OnClick(R.id.bottomview)
+    @OnClick(R.id.tv_sassname)
     public void redirect2HostServer(){
         ZLogger.d("跳转到选择租户页面");
         Bundle extras = new Bundle();

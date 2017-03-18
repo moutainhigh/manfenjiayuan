@@ -1,5 +1,6 @@
 package com.manfenjiayuan.business.hostserver;
 
+import com.manfenjiayuan.business.R;
 import com.mfh.framework.api.tenant.PayCfgId;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by bingshanguxue on 04/11/2016.
  */
 
-public class HostServer implements Serializable {
+public class TenantInfoWrapper implements Serializable {
     private Long saasId;//租户编号
     private String saasName;//租户名称
     private String area;//城市编号
@@ -95,4 +96,56 @@ public class HostServer implements Serializable {
     public void setPayInfos(List<PayCfgId> payInfos) {
         this.payInfos = payInfos;
     }
+
+
+    /**
+     * 根据租户编号获取对应的logo图标
+     * */
+    public static int getImageResource(Long saasId){
+        if (saasId != null) {
+            if (saasId.equals(134342L)){
+                return R.mipmap.ic_launcher_mixicook;
+            }
+            else if (saasId.equals(137039L)){
+                return R.mipmap.ic_launcher_lanlj;
+            }
+            else if (saasId.equals(137143L)){
+                return R.mipmap.ic_launcher_qianwj;
+            }
+            else if (saasId.equals(137540L)){
+                return R.mipmap.ic_launcher_banmx;
+            }
+            else if (saasId.equals(130222L)){
+                return R.mipmap.ic_launcher_mixicook;
+            }
+        }
+
+        return R.mipmap.ic_launcher;
+    }
+
+    /**
+     * 根据租户编号获取对应的logo图标
+     * */
+    public static int getTextLogo(Long saasId){
+        if (saasId != null) {
+            if (saasId.equals(134342L)){
+                return R.mipmap.ic_textlogo_mixicook;
+            }
+            else if (saasId.equals(137039L)){
+                return R.mipmap.ic_textlogo_lanlj;
+            }
+            else if (saasId.equals(137143L)){
+                return R.mipmap.ic_textlogo_qianwj;
+            }
+            else if (saasId.equals(137540L)){
+                return R.mipmap.ic_launcher;
+            }
+            else if (saasId.equals(130222L)){
+                return R.mipmap.ic_launcher;
+            }
+        }
+
+        return R.mipmap.ic_launcher;
+    }
+
 }
