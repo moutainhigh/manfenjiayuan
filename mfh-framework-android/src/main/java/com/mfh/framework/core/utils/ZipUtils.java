@@ -15,6 +15,8 @@
  */
 package com.mfh.framework.core.utils;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -40,6 +42,32 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipUtils {
     private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte
+
+    /**
+     * 批量压缩文件（夹）
+     *
+     * @param srcDir 要压缩的文件（夹）目录
+     * @param zipFile     生成的压缩文件
+     * @throws IOException 当压缩过程出错时抛出
+     */
+    public static void zipFiles(String srcDir, File zipFile) throws IOException {
+        File srcFile = new File(srcDir);
+        if (!srcFile.exists()) {
+            return;
+        }
+        ZLogger.d("zipFiles.srcFile:" + srcFile.getPath());
+
+
+        ZLogger.d("zipFiles.zipFile:" + zipFile.getPath());
+
+        ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(
+                zipFile), BUFF_SIZE));
+        for (File resFile : srcFile.listFiles()) {
+            zipFile(resFile, zipOut, "");
+        }
+        zipOut.close();
+    }
+
 
     /**
      * 批量压缩文件（夹）

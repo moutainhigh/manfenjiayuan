@@ -12,20 +12,13 @@ import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
-import com.mfh.framework.core.utils.FileUtil;
-import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.core.utils.ZipUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.ResHttpManager;
-import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.service.DataDownloadManager;
-import com.mfh.litecashier.ui.dialog.TextInputDialog;
+import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.utils.AppHelper;
 import com.mfh.litecashier.utils.GlobalInstance;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
@@ -33,16 +26,10 @@ import com.tencent.bugly.beta.Beta;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.mfh.framework.anlaysis.remoteControl.RemoteControlClient.uploadLogFileStep2;
 
 /**
  * 设置－－通用
@@ -65,8 +52,6 @@ public class SettingsCommonFragment extends BaseFragment {
     ToggleSettingItem tsiSoftKeyboard;
     @BindView(R.id.toggleItem_tts)
     ToggleSettingItem ttsToggleItem;
-
-    private TextInputDialog mTextInputDialog = null;
 
 
     @Override
@@ -240,85 +225,7 @@ public class SettingsCommonFragment extends BaseFragment {
      */
     @OnClick(R.id.item_onekey_feedback)
     public void onekeyFeedback() {
-        if (mTextInputDialog == null) {
-            mTextInputDialog = new TextInputDialog(getActivity());
-            mTextInputDialog.setCancelable(true);
-            mTextInputDialog.setCanceledOnTouchOutside(true);
-        }
-        mTextInputDialog.initialize("反馈内容", "请输入反馈意见", false,
-                new TextInputDialog.OnTextInputListener() {
-                    @Override
-                    public void onCancel() {
-                    }
-
-                    @Override
-                    public void onConfirm(String text) {
-                        uploadFile(text);
-                    }
-                });
-        if (!mTextInputDialog.isShowing()) {
-            mTextInputDialog.show();
-        }
-    }
-    public void uploadFile(final String feedback) {
-        try {
-            showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
-            File zipFile = FileUtil.getSaveFile("", "onekeyfeedback.zip");
-            if (!zipFile.exists()) {
-                zipFile.createNewFile();
-            }
-            ZipUtils.zipFiles(FileUtil.getSavePath(ZLogger.CRASH_FOLDER_PATH),
-                    zipFile);
-
-            Map<String, String> options = new HashMap<>();
-//                options.put("fileToUpload", zipFile.toString());
-//                ZLogger.d(zipFile.toString());
-            options.put("responseType", "1");
-            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-            String time = ZLogger.DATE_FORMAT.format(new Date());
-            String fileName = time + ".log";
-            ZLogger.d("fileName: " + fileName);
-
-            File file = FileUtil.getSaveFile("", "onekeyfeedback.zip");//FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
-            if (!file.exists()) {
-                return;
-            }
-            ZLogger.d("file: " + file.getPath());
-
-
-            ResHttpManager.getInstance().upload2(file,
-                    new MValueSubscriber<Long>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            //retrofit2.adapter.rxjava.HttpException: HTTP 413 Request Entity Too Large
-                            ZLogger.ef("一键反馈:" + e.toString());
-                            hideProgressDialog();
-                        }
-
-                        @Override
-                        public void onValue(Long data) {
-                            super.onValue(data);
-                            StringBuilder sb = new StringBuilder();
-                            sb.append(String.format("\n" +
-                                            "一键反馈:日志文件编号为 %d\n",
-                                    data));
-                            sb.append("备注:");
-                            if (!StringUtils.isEmpty(feedback)) {
-                                sb.append(feedback).append("\n");
-                            }
-                            uploadLogFileStep2(sb.toString(), MfhLoginService.get().getLoginName());
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-            ZLogger.e(e.toString());
-        }
+        ActivityRoute.redirect2OnekeyFeedback(getActivity());
     }
 
 

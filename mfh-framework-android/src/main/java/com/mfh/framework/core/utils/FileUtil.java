@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
@@ -18,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -857,6 +859,34 @@ public class FileUtil {
 		while((read = in.read(buffer)) != -1){
 			out.write(buffer, 0, read);
 		}
+	}
+
+	private static String getSuffix(File file) {
+		if (file == null || !file.exists() || file.isDirectory()) {
+			return null;
+		}
+		String fileName = file.getName();
+		if (fileName.equals("") || fileName.endsWith(".")) {
+			return null;
+		}
+		int index = fileName.lastIndexOf(".");
+		if (index != -1) {
+			return fileName.substring(index + 1).toLowerCase(Locale.US);
+		} else {
+			return null;
+		}
+	}
+
+	public static String getMimeType(File file){
+		String suffix = getSuffix(file);
+		if (suffix == null) {
+			return "file/*";
+		}
+		String type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(suffix);
+		if (StringUtils.isEmpty(type)) {
+			return type;
+		}
+		return "file/*";
 	}
 
 }

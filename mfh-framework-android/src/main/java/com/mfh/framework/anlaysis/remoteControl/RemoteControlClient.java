@@ -2,25 +2,26 @@ package com.mfh.framework.anlaysis.remoteControl;
 
 import android.os.Build;
 
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
+import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.clientLog.ClientLog;
-import com.mfh.framework.api.clientLog.ClientLogApi;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.SystemUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.core.utils.ZipUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.ClientLogHttpManager;
 import com.mfh.framework.rxapi.http.ResHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 远程控制
@@ -114,27 +115,6 @@ public class RemoteControlClient {
      * 远程上传日志文件:提交后台资源文件编号
      * */
     public static void uploadLogFileStep2(String stackInformation, String userName){
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String retStr = retValue.getValue();
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df(errMsg);
-                    }
-                }
-                , String.class
-                , MfhApplication.getAppContext()) {
-        };
-
         ClientLog clientLog = new ClientLog();
         clientLog.setSoftVersion(SystemUtils.getVersionName(MfhApplication.getAppContext()));
         clientLog.setAndroidLevel(String.format("%s(API %d)", Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
@@ -143,6 +123,36 @@ public class RemoteControlClient {
         clientLog.setLoginName(userName);
         clientLog.setErrorTime(new Date());
 
-        ClientLogApi.create(clientLog, responseCallback);
+        Map<String, String> options = new HashMap<>();
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("stackInformation", clientLog.getStackInformation());
+        jsonObject.put("hardwareInformation", clientLog.getHardwareInformation());
+        jsonObject.put("androidLevel", clientLog.getAndroidLevel());
+        jsonObject.put("loginName", clientLog.getLoginName());
+        jsonObject.put("softVersion", clientLog.getSoftVersion());
+        jsonObject.put("errorTime", TimeUtil.format(clientLog.getErrorTime(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+
+        options.put("jsonStr", jsonObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        ClientLogHttpManager.getInstance().create(options,
+                new MValueSubscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df(e.toString());
+                    }
+
+                    @Override
+                    public void onValue(Long data) {
+                        super.onValue(data);
+                    }
+                });
+
     }
 }

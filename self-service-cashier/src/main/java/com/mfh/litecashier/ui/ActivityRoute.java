@@ -165,4 +165,17 @@ public class ActivityRoute {
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
 
     }
+
+    /**
+     * 一键反馈
+     * */
+    public static void redirect2OnekeyFeedback(Context context){
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+                SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleDialogActivity.FT_ONEKEY_FEEDBACK);
+        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
 }
