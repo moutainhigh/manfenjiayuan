@@ -16,7 +16,6 @@ import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.IMConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.anlaysis.remoteControl.RemoteControlClient;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
@@ -24,7 +23,6 @@ import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.utils.AppHelper;
-import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -138,15 +136,15 @@ public class DeveloperOptionsFragment extends BaseFragment {
             toggleItemRelease.setChecked(false);
             toggleItemRelease.setSubTitle("开发测试");
         }
-   Resources resources = this.getResources();
+        Resources resources = this.getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         //获取NavigationBar的高度
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("DisplayMetrics: %d*%d %f%navigation_bar_height:%d\n",
                 resources.getDisplayMetrics().widthPixels,
-                this.getResources().getDisplayMetrics().heightPixels,
-                this.getResources().getDisplayMetrics().density,
+                resources.getDisplayMetrics().heightPixels,
+                resources.getDisplayMetrics().density,
                 resources.getDimensionPixelSize(resourceId)));
 //        sb.append(String.format("buildTime: %s", BuildConfig.S))
         tvDisplay.setText(sb.toString());

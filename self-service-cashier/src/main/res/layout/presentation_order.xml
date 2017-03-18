@@ -8,23 +8,49 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2">
+        android:layout_weight="1">
+
+        <com.mfh.framework.uikit.adv.AdvertisementViewPager
+            android:id="@+id/viewpager_adv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:background="@color/mfhtheme_maskPrimary"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <!--会员信息-->
-        <include
+        <LinearLayout
             android:id="@+id/view_vip_brief"
-            layout="@layout/include_cashier_pay_header_1"
             android:layout_width="match_parent"
-            android:layout_height="130dp"/>
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_double"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!--头像-->
+            <com.bingshanguxue.vector_uikit.widget.AvatarView
+                android:id="@+id/iv_vip_header"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/chat_tmp_user_head"/>
+
+            <!--用户信息：用户名/手机号-->
+            <TextView
+                android:id="@+id/tv_vip_brief"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_normal"
+                android:text=""
+                android:textColor="@color/material_black"
+                android:layout_marginTop="@dimen/spacing_micro"
+                android:textSize="@dimen/textsize_normal"/>
+        </LinearLayout>
 
         <View
             android:id="@+id/top_line"
@@ -44,7 +70,7 @@
             android:divider="@drawable/divider_vertical_line_primary"
             android:dividerPadding="12dp"
             android:gravity="center"
-            android:padding="12dp"
+            android:padding="@dimen/spacing_micro"
             android:showDividers="middle">
             <!--应付金额-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
@@ -68,7 +94,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="0.00"
-                app:topTextColor="@color/material_black"
+                app:topTextColor="@color/material_green_500"
                 app:topTextSize="30sp"/>
 
             <!--积分-->
@@ -81,7 +107,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="0.00"
-                app:topTextColor="@color/colorPrimary"
+                app:topTextColor="@color/material_red_500"
                 app:topTextSize="30sp"/>
 
             <!--实付金额-->
@@ -94,7 +120,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="0.00"
-                app:topTextColor="@color/colorPrimary"
+                app:topTextColor="@color/material_black"
                 app:topTextSize="30sp"/>
 
         </LinearLayout>
@@ -104,21 +130,16 @@
             layout="@layout/itemview_orderprentation_goods_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/frame_orderinfo"
-            android:layout_marginTop="@dimen/spacing_4x"/>
+            android:layout_below="@+id/frame_orderinfo"/>
 
         <!--商品列表-->
         <RelativeLayout
             android:id="@+id/frame_goods"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/bottomview"
             android:layout_below="@+id/ll_procuct_header"
             android:background="@color/material_white"
-            android:orientation="vertical"
-            android:paddingEnd="@dimen/spacing_4x"
-            android:paddingStart="@dimen/spacing_4x">
-
+            android:orientation="vertical">
 
             <!--空视图:二维码-->
             <ImageView
@@ -133,29 +154,12 @@
                 android:id="@+id/goods_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"/>
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/bottomview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/black"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_normal">
-
-            <ImageView
-                android:id="@+id/iv_hostserver"
-                android:layout_width="wrap_content"
-                android:layout_height="21dp"
-                android:background="@null"
-                android:contentDescription="@null"
-                android:src="@mipmap/ic_textlogo_mixicook"/>
-        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>
