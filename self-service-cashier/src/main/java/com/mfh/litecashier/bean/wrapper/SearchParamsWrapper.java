@@ -25,7 +25,7 @@ public class SearchParamsWrapper implements Serializable {
     private String barcode = "";//商品条码
     private String productName = "";//商品名称
     private String brand = "";//品牌
-    private Long categoryId;//类目
+    private String categoryId;//类目
     private String categoryName = "";
     //价格类型0-计件 1-计重
     private String priceType = PRICE_TYPE_NAME_NA;//价格类型
@@ -65,11 +65,11 @@ public class SearchParamsWrapper implements Serializable {
         this.brand = brand;
     }
 
-    public Long getCategoryId() {
+    public String getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) {
+    public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 

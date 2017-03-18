@@ -2,7 +2,6 @@ package com.mfh.litecashier.ui.fragment.goods;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -10,61 +9,46 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
-import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.sc.ProductCatalogApi;
-import com.mfh.framework.api.category.CategoryInfo;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
-import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
-import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
-import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
-import rx.Subscriber;
 
 /**
  * 收银－－前台类目
+ * 从商品库导入商品到pos前台类目
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class FrontCategoryFragment extends BaseFragment {
 
-    public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";
+    public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";//从哪个pos前台类目进来到
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.addressView)
-    NaviAddressView mAddressView;
     @BindView(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
     @BindView(R.id.viewpager_category_goods)
@@ -72,10 +56,7 @@ public class FrontCategoryFragment extends BaseFragment {
     private TopFragmentPagerAdapter categoryGoodsPagerAdapter;
 
     private Long posFrontCategoryId;//pos本地前台类目
-    private Long categoryId;
-    private CategoryInfo mCategoryInfo;//租户前台类目
-    private String cacheKey;
-    private List<CategoryInfo> curCategoryList;//当前子类目
+    private List<CategoryOption> curCategoryList;//当前子类目
 
     public static FrontCategoryFragment newInstance(Bundle args) {
         FrontCategoryFragment fragment = new FrontCategoryFragment();
@@ -96,7 +77,7 @@ public class FrontCategoryFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         init(getArguments());
 
-//        mToolbar.setTitle("选择商品");
+        mToolbar.setTitle("POS商品库");
         mToolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         mToolbar.setNavigationOnClickListener(
                 new View.OnClickListener() {
@@ -124,57 +105,15 @@ public class FrontCategoryFragment extends BaseFragment {
         mToolbar.inflateMenu(R.menu.menu_addprodudts2category);
 
         initCategoryGoodsView();
-        //加载上一次选择的类目
-        String cacheStr = ACacheHelper.getAsString(ACacheHelper.TCK_LAST_TENANT_POSFRONTCATEGORY);
-        ZLogger.d(String.format("cacheStr=%s", cacheStr));
-        mCategoryInfo = JSONObject.toJavaObject(JSON.parseObject(cacheStr), CategoryInfo.class);
 
-        if (mCategoryInfo != null){
-            categoryId = mCategoryInfo.getId();
-//            mToolbar.setTitle(mCategoryInfo.getNameCn());
-            mAddressView.setText(mCategoryInfo.getNameCn());
-            reload();
-        }
-        else{
-            mAddressView.setText("");
-            selectCategory();
-        }
+        refreshCategoryGoodsTab();
+        reload();
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Constants.ARC_TENANT_CATEGORYLIST: {
-                CategoryInfo categoryInfo = null;
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    categoryInfo = (CategoryInfo) data.getSerializableExtra("categoryInfo");
-                }
-
-                if (categoryInfo == null){
-                    getActivity().finish();
-                }
-                else{
-                    ACacheHelper.put(ACacheHelper.TCK_LAST_TENANT_POSFRONTCATEGORY,
-                            JSONObject.toJSONString(categoryInfo));
-
-                    mCategoryInfo = categoryInfo;
-                    categoryId = mCategoryInfo.getId();
-                    mAddressView.setText(mCategoryInfo.getNameCn());
-                    reload();
-                }
-            }
-            break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
 
     public void init(Bundle args) {
         if (args != null) {
             this.posFrontCategoryId = args.getLong(EXTRA_CATEGORY_ID_POS);
         }
-        this.cacheKey = String.format("%s_%d",
-                ACacheHelper.CK_FRONT_CATEGORY_ID, categoryId);
     }
 
     private void initCategoryGoodsView() {
@@ -182,9 +121,9 @@ public class FrontCategoryFragment extends BaseFragment {
         mCategoryGoodsTabStrip.setOnPagerChange(new TopSlidingTabStrip.OnPagerChangeLis() {
             @Override
             public void onChanged(int page) {
-                Long categoryId = curCategoryList.get(page).getId();
+                String categoryCode = curCategoryList.get(page).getCode();
                 EventBus.getDefault().post(new FrontCategoryGoodsEvent(
-                        FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
+                        FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryCode));
             }
         });
 
@@ -196,24 +135,15 @@ public class FrontCategoryFragment extends BaseFragment {
      * 加载数据
      */
     public void reload() {
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
-            String cacheStr = ACacheHelper.getAsString(cacheKey);
-            List<CategoryInfo> cacheData = JSONArray.parseArray(cacheStr, CategoryInfo.class);
-            if (cacheData != null && cacheData.size() > 0) {
-                ZLogger.d(String.format("加载缓存数据(%s): %d个前台子类目", cacheKey, cacheData.size()));
-                refreshCategoryGoodsTab(cacheData);
-                loadSubCategory(categoryId, false);
-                return;
-            }
-        }
-        loadSubCategory(categoryId, true);
     }
 
     /**
      * 刷新子类目
      */
-    private void refreshCategoryGoodsTab(List<CategoryInfo> items) {
+    private void refreshCategoryGoodsTab() {
+        String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_BACKEND_CATEGORY_TREE);
+        List<CategoryOption> items = JSONArray.parseArray(cacheStr, CategoryOption.class);
+
         if (curCategoryList == null) {
             curCategoryList = new ArrayList<>();
         } else {
@@ -229,13 +159,13 @@ public class FrontCategoryFragment extends BaseFragment {
 //        curCategoryList.add(rootClone);
 
         ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-        for (CategoryInfo category : curCategoryList) {
+        for (CategoryOption category : curCategoryList) {
             Bundle args = new Bundle();
             args.putLong(EXTRA_CATEGORY_ID_POS, posFrontCategoryId);
-            args.putLong("parentId", category.getParentId());
-            args.putLong("categoryId", category.getId());
+//            args.putLong("parentId", category.getParentId());
+            args.putString("categoryId", category.getCode());
 
-            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(),
+            mTabs.add(new ViewPageInfo(category.getValue(), category.getValue(),
                     FrontCategoryGoodsFragment.class, args));
 //            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), FrontCategoryGoodsFragment.class, args));
         }
@@ -246,53 +176,13 @@ public class FrontCategoryFragment extends BaseFragment {
         if (mCategoryGoodsViewPager.getCurrentItem() == 0) {
             //如果直接加载，可能会出现加载两次的问题
             if (curCategoryList != null && curCategoryList.size() > 0) {
-                Long categoryId = curCategoryList.get(0).getId();
+                String categoryCode = curCategoryList.get(0).getCode();
 
-                EventBus.getDefault().post(new FrontCategoryGoodsEvent(FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryId));
+                EventBus.getDefault().post(new FrontCategoryGoodsEvent(FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA, categoryCode));
             }
         } else {
             mCategoryGoodsViewPager.setCurrentItem(0, false);
         }
-    }
-
-
-    /**
-     * 加载前台类目子类目
-     */
-    private void loadSubCategory(final Long categoryId, final boolean isNeedRefresh) {
-        Map<String, String> options = new HashMap<>();
-        options.put("parentId", String.valueOf(categoryId));
-        ScCategoryInfoHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.d("加载POS前台子类目 失败, " + e.toString());
-                if (isNeedRefresh) {
-                    refreshCategoryGoodsTab(null);
-                }
-            }
-
-            @Override
-            public void onNext(List<CategoryInfo> categoryInfos) {
-                ZLogger.d(String.format("加载POS %d 前台子类目", (categoryInfos != null ? categoryInfos.size() : 0)));
-
-                //缓存数据
-                JSONArray cacheArrays = new JSONArray();
-                if (categoryInfos != null && categoryInfos.size() > 0) {
-                    for (CategoryInfo item : categoryInfos) {
-                        cacheArrays.add(item);
-                    }
-                }
-                ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                if (isNeedRefresh) {
-                    refreshCategoryGoodsTab(categoryInfos);
-                }
-            }
-        });
     }
 
     /**
@@ -330,26 +220,6 @@ public class FrontCategoryFragment extends BaseFragment {
 
         importFromCenterSkus(productIds.toString(), proSkuIds.toString());
     }
-
-    /**
-     * 选择商品库
-     * */
-    @OnClick(R.id.addressView)
-    public void selectCategory(){
-        Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_TENANT_POSCATEGORYLIST);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
-        if (hostServer != null){
-            extras.putLong(TenantCategoryListFragment.EXTRA_KEY_TENANTID, hostServer.getSaasId());
-        }
-
-        intent.putExtras(extras);
-        startActivityForResult(intent, Constants.ARC_TENANT_CATEGORYLIST);
-    }
-
 
     /**
      * 建档

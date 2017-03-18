@@ -10,10 +10,16 @@ public class FrontCategoryGoodsEvent {
 
     private int affairId;
     private Long categoryId;
+    private String categoryCode;//==categoryId
 
     public FrontCategoryGoodsEvent(int affairId, Long categoryId) {
         this.affairId = affairId;
         this.categoryId = categoryId;
+    }
+
+    public FrontCategoryGoodsEvent(int affairId, String categoryCode) {
+        this.affairId = affairId;
+        this.categoryCode = categoryCode;
     }
 
     public int getAffairId() {
@@ -22,5 +28,9 @@ public class FrontCategoryGoodsEvent {
 
     public Long getCategoryId() {
         return categoryId;
+    }
+
+    public String getCategoryCode() {
+        return categoryCode;
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class CategoryOption implements java.io.Serializable {
     private String access;
-    private Long code;
+    private String code;
     private boolean hasChild;
     private String levelName;
     private String value;//名称
@@ -21,7 +21,7 @@ public class CategoryOption implements java.io.Serializable {
         return access;
     }
 
-    public Long getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -41,7 +41,7 @@ public class CategoryOption implements java.io.Serializable {
         this.access = access;
     }
 
-    public void setCode(Long code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

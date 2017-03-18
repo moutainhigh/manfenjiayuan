@@ -17,6 +17,7 @@ import java.util.Map;
  */
 public class ScCategoryInfoMode {
 
+    /**pos导入商品到前台类目时，加载平台维护的POS前台类目*/
     public void list(int domain, int cateType, int catePosition,
                      int deep, Long tenantId, PageInfo pageInfo,
                      final OnPageModeListener<CategoryInfo> listener) {

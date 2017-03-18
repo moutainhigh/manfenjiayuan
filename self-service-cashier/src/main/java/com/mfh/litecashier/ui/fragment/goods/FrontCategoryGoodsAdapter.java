@@ -55,7 +55,7 @@ public class FrontCategoryGoodsAdapter
     public void onBindViewHolder(final MenuOptioinViewHolder holder, final int position) {
         final FrontCategoryGoods entity = entityList.get(position);
 
-        holder.tvName.setText(entity.getName());
+        holder.tvName.setText(entity.getSkuName());
         holder.tvPrice.setText(entity.getBarcode());
 
         String sqlWhere = String.format("productId = '%d'", entity.getProductId());

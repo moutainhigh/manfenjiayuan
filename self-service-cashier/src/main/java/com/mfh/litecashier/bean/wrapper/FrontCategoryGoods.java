@@ -1,11 +1,11 @@
 package com.mfh.litecashier.bean.wrapper;
 
-import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 
 /**
  * Created by bingshanguxue on 8/15/16.
  */
-public class FrontCategoryGoods extends PubSkus {
+public class FrontCategoryGoods extends ScGoodsSku {
     private boolean isSelected = false;
 
     public boolean isSelected() {

@@ -10,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
-import com.bingshanguxue.cashier.mode.IScProductPriceView;
-import com.bingshanguxue.cashier.mode.ScProductPricePresenter;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
+import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
+import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -44,7 +45,7 @@ import rx.schedulers.Schedulers;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
  */
 public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGoods>
-        implements IScProductPriceView {
+        implements IScGoodsSkuView {
 
     @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -57,9 +58,9 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     private FrontCategoryGoodsAdapter adapter;
 
     private Long parentId;
-    private Long categoryId;
+    private String categoryId;
     private String cacheKey;
-    private ScProductPricePresenter mScProductPricePresenter;
+    private ScGoodsSkuPresenter inventoryGoodsPresenter;
 
 
     @Override
@@ -72,7 +73,8 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         super.onCreate(savedInstanceState);
 
         EventBus.getDefault().register(this);
-        mScProductPricePresenter = new ScProductPricePresenter(this);
+        inventoryGoodsPresenter = new ScGoodsSkuPresenter(this);
+
 
         MAX_SYNC_PAGESIZE = 72;
 //        mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 50);
@@ -84,10 +86,10 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         Bundle args = getArguments();
         if (args != null) {
             parentId = args.getLong("parentId");
-            categoryId = args.getLong("categoryId");
+            categoryId = args.getString("categoryId");
         }
         //format:CACHE_KEY_FRONT_CATEGORY_GOODS_[parentId]_[categoryId]
-        cacheKey = String.format("%s_%d_%d", ACacheHelper.CK_FRONT_CATEGORY_GOODS,
+        cacheKey = String.format("%s_%d_%s", ACacheHelper.CK_FRONT_CATEGORY_GOODS,
                 parentId, categoryId);
 
         initRecyclerView();
@@ -111,7 +113,7 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     public void onEventMainThread(FrontCategoryGoodsEvent event) {
         ZLogger.d(String.format("FrontCategoryGoodsEvent(%d/%d)",
                 event.getAffairId(), event.getCategoryId()));
-        if (event.getCategoryId().compareTo(categoryId) != 0) {
+        if (!ObjectsCompact.equals(event.getCategoryCode(), categoryId)) {
             return;
         }
         if (event.getAffairId() == FrontCategoryGoodsEvent.EVENT_ID_RELOAD_DATA) {
@@ -273,106 +275,11 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
     }
 
     private void load(PageInfo pageInfo) {
-        mScProductPricePresenter.findProductByFrontCatalog(pageInfo, categoryId);
+        inventoryGoodsPresenter.listScGoodsSku(mPageInfo,
+                categoryId, null,
+                null, null, false, null);
     }
 
-
-    @Override
-    public void onIScProductPriceViewProcess() {
-        onLoadStart();
-    }
-
-    @Override
-    public void onIScProductPriceViewError(String errorMsg) {
-        onLoadFinished();
-    }
-
-    @Override
-    public void onIScProductPriceViewSuccess(PageInfo pageInfo, List<PubSkus> dataList) {
-        saveChainGoodsSku(pageInfo, dataList);
-    }
-
-    @Override
-    public void onIScProductPriceViewSuccess(PubSkus data) {
-        onLoadFinished();
-    }
-
-
-    private void saveChainGoodsSku(final PageInfo pageInfo, final List<PubSkus> dataList) {
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                try {
-                    mPageInfo = pageInfo;
-
-                    //第一页，缓存数据
-                    if (mPageInfo.getPageNo() == 1) {
-                        if (entityList == null) {
-                            entityList = new ArrayList<>();
-                        } else {
-                            entityList.clear();
-                        }
-                        ZLogger.d("缓存第一页前台类目数据");
-                        JSONArray cacheArrays = new JSONArray();
-                        if (dataList != null && dataList.size() > 0) {
-                            for (PubSkus goodsSku : dataList) {
-                                FrontCategoryGoods goods = new FrontCategoryGoods();
-                                goods.setBarcode(goodsSku.getBarcode());
-                                goods.setName(goodsSku.getName());
-                                goods.setId(goodsSku.getId());
-                                goods.setProductId(goodsSku.getProductId());
-                                entityList.add(goods);
-                                cacheArrays.add(goods);
-                            }
-                        }
-//                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
-                    } else {
-                        if (entityList == null) {
-                            entityList = new ArrayList<>();
-                        }
-
-                        if (dataList != null && dataList.size() > 0) {
-                            for (PubSkus goodsSku : dataList) {
-                                FrontCategoryGoods goods = new FrontCategoryGoods();
-                                goods.setBarcode(goodsSku.getBarcode());
-                                goods.setName(goodsSku.getName());
-                                goods.setId(goodsSku.getId());
-                                goods.setProductId(goodsSku.getProductId());
-                                entityList.add(goods);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    ZLogger.ef(e.toString());
-                }
-
-                subscriber.onNext(null);
-                subscriber.onCompleted();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(String startCursor) {
-                        ZLogger.d("显示前台类目商品: " + entityList.size());
-                        if (adapter != null) {
-                            adapter.setEntityList(entityList);
-                        }
-                        onLoadFinished();
-                    }
-
-                });
-    }
 
     /**
      * 设置刷新
@@ -437,4 +344,100 @@ public class FrontCategoryGoodsFragment extends BaseListFragment<FrontCategoryGo
         }
     }
 
+
+    @Override
+    public void onIScGoodsSkuViewProcess() {
+        onLoadStart();
+    }
+
+    @Override
+    public void onIScGoodsSkuViewError(String errorMsg) {
+        onLoadFinished();
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+        saveChainGoodsSku(pageInfo, dataList);
+    }
+
+    @Override
+    public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
+        onLoadFinished();
+    }
+
+    private void saveChainGoodsSku(final PageInfo pageInfo, final List<ScGoodsSku> dataList) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    mPageInfo = pageInfo;
+
+                    //第一页，缓存数据
+                    if (mPageInfo.getPageNo() == 1) {
+                        if (entityList == null) {
+                            entityList = new ArrayList<>();
+                        } else {
+                            entityList.clear();
+                        }
+                        ZLogger.d("缓存第一页前台类目数据");
+                        JSONArray cacheArrays = new JSONArray();
+                        if (dataList != null && dataList.size() > 0) {
+                            for (ScGoodsSku goodsSku : dataList) {
+                                FrontCategoryGoods goods = new FrontCategoryGoods();
+                                goods.setBarcode(goodsSku.getBarcode());
+                                goods.setSkuName(goodsSku.getSkuName());
+                                goods.setId(goodsSku.getProSkuId());
+                                goods.setProductId(goodsSku.getProductId());
+                                entityList.add(goods);
+                                cacheArrays.add(goods);
+                            }
+                        }
+//                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
+                    } else {
+                        if (entityList == null) {
+                            entityList = new ArrayList<>();
+                        }
+
+                        if (dataList != null && dataList.size() > 0) {
+                            for (ScGoodsSku goodsSku : dataList) {
+                                FrontCategoryGoods goods = new FrontCategoryGoods();
+                                goods.setBarcode(goodsSku.getBarcode());
+                                goods.setSkuName(goodsSku.getSkuName());
+                                goods.setId(goodsSku.getProSkuId());
+                                goods.setProductId(goodsSku.getProductId());
+                                entityList.add(goods);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    ZLogger.ef(e.toString());
+                }
+
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(String startCursor) {
+                        ZLogger.d("显示前台类目商品: " + entityList.size());
+                        if (adapter != null) {
+                            adapter.setEntityList(entityList);
+                        }
+                        onLoadFinished();
+                    }
+
+                });
+    }
 }

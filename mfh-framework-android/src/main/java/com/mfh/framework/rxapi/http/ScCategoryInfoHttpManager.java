@@ -42,13 +42,13 @@ public class ScCategoryInfoHttpManager  extends BaseHttpManager{
         Observable<MResponse<CategoryQueryInfo>> comnQuery(@QueryMap Map<String, String> options);
         @GET("scCategoryInfo/getTopFrontId")
         Observable<MResponse<CategoryInfo>> getTopFrontId(@QueryMap Map<String, String> options);
-        //查询类目
+        /**加载类目*/
         @GET("scCategoryInfo/getCodeValue")
         Observable<MResponse<List<CategoryInfo>>> getCodeValue(@QueryMap Map<String, String> options);
         @GET("scCategoryInfo/create")
         Observable<MResponse<MValue<String>>> create(@Query("JSESSIONID") String JSESSIONID,
                                                      @Query("jsonStr") String jsonStr);
-        /**类目查询*/
+        /**pos导入商品到前台类目时，加载平台维护的POS前台类目*/
         @GET("scCategoryInfo/list")
         Observable<MResponse<MRspQuery<CategoryInfo>>> list(@QueryMap Map<String, String> options);
     }
