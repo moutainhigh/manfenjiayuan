@@ -509,7 +509,9 @@ public class PayStep2Fragment extends BasePayStepFragment {
         payDirect(options);
     }
 
-
+    /**
+     * 会员支付
+     * */
     private void payDirect(Map<String, String> options) {
         CommonUserAccountHttpManager.getInstance().payDirect(options,
                 new Subscriber<String>() {
@@ -532,18 +534,14 @@ public class PayStep2Fragment extends BasePayStepFragment {
                         ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
                                 WayType.name(curPayType), s));
 //                    bPayProcessing = false;
-                        onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+                        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
                                 PosOrderPayEntity.PAY_STATUS_FINISH,
                                 handleAmount, handleAmount, 0D,
-                                cashierOrderInfo.getDiscountInfo()));
+                                cashierOrderInfo.getDiscountInfo());
+
+                        onUpdate(paymentInfo);
                     }
                 });
-    }
-
-    @Override
-    public void onPayStepFinish() {
-        super.onPayStepFinish();
-        refresh();
     }
 
     @Override

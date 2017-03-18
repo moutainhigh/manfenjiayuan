@@ -135,8 +135,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             DialogUtil.showHint("订单支付数据错误");
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
-        }
-        else{
+        } else {
             reload(cashierOrderInfo);
         }
     }
@@ -187,9 +186,9 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
     /**
      * 赠送
-     * */
+     */
     @OnClick(R.id.fab_give)
-    public void onClickGive(){
+    public void onClickGive() {
         showConfirmDialog("确认要赠送吗？",
                 getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
 
@@ -199,7 +198,8 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
                         CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
 
-                        onPayFinished();                    }
+                        onPayFinished();
+                    }
                 }, getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
 
                     @Override
@@ -215,10 +215,9 @@ public class PayStep1Fragment extends BasePayStepFragment {
     public void activeMode(boolean isActive) {
         mViewPager.setScrollEnabled(isActive);
         paySlidingTabStrip.setClickEnabled(isActive);
-        if (isActive){
+        if (isActive) {
             fabGive.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             fabGive.setVisibility(View.GONE);
         }
     }
@@ -233,7 +232,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             }
             break;
             //支付处理中
-            case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS: {
                 activeMode(false);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -242,7 +241,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             }
             break;
             //支付失败
-            case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED: {
                 activeMode(true);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -252,7 +251,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             }
             break;
             //支付成功
-            case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED:{
+            case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED: {
                 activeMode(true);
 
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
@@ -356,12 +355,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
     @Override
     public void onPayFinished() {
         super.onPayFinished();
-    }
-
-    @Override
-    public void onPayStepFinish() {
-        super.onPayStepFinish();
-        refresh();
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.Constants;
@@ -82,7 +83,7 @@ public class PayByCashFragment extends BasePayFragment {
     @Override
     public void onInitializeMode() {
         super.onInitializeMode();
-        if (inlvPaidMoney != null){
+        if (inlvPaidMoney != null) {
             inlvPaidMoney.clear();
             inlvPaidMoney.requestFocusEnd();
             inlvPaidMoney.setEnabled(true);
@@ -104,15 +105,16 @@ public class PayByCashFragment extends BasePayFragment {
 
     private void initPaidMoneyInput() {
         inlvPaidMoney.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER,
-                KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD}, new InputNumberLabelView.OnInterceptListener() {
-            @Override
-            public void onKey(int keyCode, String text) {
-                //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    submitOrder();
-                }
-            }
-        });
+                        KeyEvent.KEYCODE_NUMPAD_MULTIPLY, KeyEvent.KEYCODE_NUMPAD_ADD},
+                new InputNumberLabelView.OnInterceptListener() {
+                    @Override
+                    public void onKey(int keyCode, String text) {
+                        //Press “Enter”
+                        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                            submitOrder();
+                        }
+                    }
+                });
         inlvPaidMoney.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
             @Override
             public void onClickAction1(String text) {
@@ -190,26 +192,29 @@ public class PayByCashFragment extends BasePayFragment {
     @Override
     protected void submitOrder() {
         super.submitOrder();
-        //混合支付aas
-        if (rechargeAmount < 0) {
-            ZLogger.df("收取金额不足");
-//            DialogUtil.showHint("收取金额不足");
+        if (rechargeAmount == null || rechargeAmount < 0) {
+            ZLogger.d("收取金额不足,请重试！！！");
+            DialogUtil.showHint("收取金额不足");
             return;
         }
 
+        //找零超过100元，提示是否支付
         if (rechargeAmount.compareTo(100D) >= 0) {
-            //找零超过100元，提示是否支付
-            ZLogger.df("收取金额过大，请确认是否支付");
+            ZLogger.df("收取金额过大，请确认是否支付...");
             showConfirmDialog(String.format("找零: %.2f, 确认支付吗？", rechargeAmount),
-                    getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+                    getString(R.string.dialog_button_ok),
+                    new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
 
+                            ZLogger.df("继续支付");
                             onPaidSucceed();
                         }
-                    }, getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                    },
+                    getString(R.string.dialog_button_cancel),
+                    new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -241,7 +246,7 @@ public class PayByCashFragment extends BasePayFragment {
     protected void calculateCharge() {
         super.calculateCharge();
         try {
-            if (rechargeAmount >= 0) {
+            if (rechargeAmount != null && rechargeAmount >= 0) {
                 tvCharge.setText(MUtils.formatDouble(rechargeAmount, ""));
                 tvCharge.setTextColor(AppHelper.getOkTextColor());
             } else {
@@ -273,7 +278,7 @@ public class PayByCashFragment extends BasePayFragment {
 
                     @Override
                     public void onNext(Double value) {
-                        if (value != null){
+                        if (value != null) {
                             inlvPaidMoney.setInputString(String.valueOf(value));
 
                             submitOrder();
@@ -297,7 +302,10 @@ public class PayByCashFragment extends BasePayFragment {
         }
     }
 
-    private void onPaidSucceed(){
+    /**
+     * 支付成功
+     * */
+    private void onPaidSucceed() {
         PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
                 PosOrderPayEntity.PAY_STATUS_FINISH,
                 handleAmount, handleAmount, rechargeAmount);
