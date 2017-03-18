@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:skin="http://schemas.android.com/android/skin"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -8,24 +9,17 @@
                 android:padding="@dimen/spacing_normal"
                 skin:enable="true">
 
-    <LinearLayout
-        android:id="@+id/bottomview"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_sassname"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_normal">
-
-        <ImageView
-            android:id="@+id/iv_hostserver"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:contentDescription="@null"
-            android:src="@mipmap/ic_textlogo_mixicook"/>
-    </LinearLayout>
+        android:padding="@dimen/spacing_double"
+        android:text="米宝收银端"
+        android:textColor="@color/material_white_600"
+        android:textSize="22sp"/>
 
     <ProgressBar
         android:id="@+id/animProgressBar"
@@ -36,30 +30,32 @@
         android:visibility="gone"
         tools:ignore="InconsistentLayout"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/material_white_600"
+            android:background="@drawable/bg_login_form"
             android:orientation="vertical"
-            android:padding="16dp"
-            skin:enable="true">
+            android:padding="@dimen/spacing_double"
+            skin:enable="true"
+            tools:ignore="InconsistentLayout">
 
+            <!--<View android:layout_width="match_parent"-->
+                  <!--android:layout_height="30dp"-->
+                  <!--android:background="@color/material_white_600"/>-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:background="@drawable/btn_corner_white"
                 android:divider="@drawable/divider_horizontal_line"
                 android:orientation="vertical"
-                android:padding="@dimen/spacing_micro"
                 android:showDividers="middle">
 
                 <EditText
@@ -89,7 +85,7 @@
                 android:id="@+id/button_signin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/spacing_double"
                 android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:minHeight="?android:attr/actionBarSize"
@@ -104,6 +100,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/login_form"
             android:layout_marginTop="16dp"
             android:divider="@drawable/divider_vertical_line"
             android:dividerPadding="@dimen/spacing_normal"
@@ -128,6 +125,6 @@
                 android:textColor="@color/material_white_600"
                 android:textSize="14sp"/>
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
