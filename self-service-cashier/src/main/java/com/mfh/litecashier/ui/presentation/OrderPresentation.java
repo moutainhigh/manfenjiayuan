@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.cashier;
+package com.mfh.litecashier.ui.presentation;
 
 import android.app.Presentation;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
@@ -48,9 +47,9 @@ import java.util.Observer;
 
 public class OrderPresentation  extends Presentation {
     private AvatarView ivMemberHeader;
-    private TextView tvVipBrief;
     private MultiLayerLabel labelOrderAmount;
     private MultiLayerLabel labelDiscount;
+    private MultiLayerLabel labelCouponDiscount;
     private MultiLayerLabel labelScore;
     private MultiLayerLabel labelActualAmount;
     private RecyclerViewEmptySupport goodsRecyclerView;
@@ -77,9 +76,9 @@ public class OrderPresentation  extends Presentation {
         setContentView(R.layout.presentation_order);
 
         ivMemberHeader = (AvatarView) findViewById(R.id.iv_vip_header);
-        tvVipBrief = (TextView) findViewById(R.id.tv_vip_brief);
         labelOrderAmount = (MultiLayerLabel) findViewById(R.id.label_orderamount);
         labelDiscount = (MultiLayerLabel) findViewById(R.id.label_discount);
+        labelCouponDiscount = (MultiLayerLabel) findViewById(R.id.label_coupon_discount);
         labelScore = (MultiLayerLabel) findViewById(R.id.label_score);
         labelActualAmount = (MultiLayerLabel) findViewById(R.id.label_actualamount);
         goodsRecyclerView = (RecyclerViewEmptySupport) findViewById(R.id.goods_list);
@@ -93,22 +92,15 @@ public class OrderPresentation  extends Presentation {
 
         List<AdvLocalPic> localAdvList = new ArrayList<>();
         localAdvList.add(AdvLocalPic.newInstance(R.mipmap.img_presentation_hb1));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.img_presentation_hb2));
-        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.img_presentation_hb3));
+        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.img_presentation_hb1));
+//        localAdvList.add(AdvLocalPic.newInstance(R.mipmap.img_presentation_hb3));
         mPictureAdvPagerAdapter = new AdvLocalPicAdapter(getContext(), localAdvList, advertiseViewPager, null);
 
         advertiseViewPager.setShowPoint(false);
         advertiseViewPager.setAdapter(mPictureAdvPagerAdapter);
         //TODO,定时切换(每隔5秒切换一次)
-        advertiseViewPager.startSlide(5 * 1000);
-
-        CashierDesktopObservable.getInstance().addObserver(new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                refresh();
-            }
-        });
-
+//        advertiseViewPager.startSlide(5 * 1000);
+        advertiseViewPager.setTimerEnabled(false);
 
         Resources resources = getContext().getResources();
         int resourceId = resources.getIdentifier("navigation_bar_height",
@@ -123,6 +115,20 @@ public class OrderPresentation  extends Presentation {
         ZLogger.d(sb.toString());
 //
 //        getWindow().getWindowManager().getDefaultDisplay().getSize();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        CashierDesktopObservable.getInstance().addObserver(mObserver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        CashierDesktopObservable.getInstance().deleteObserver(mObserver);
     }
 
     private void initGoodsRecyclerView() {
@@ -171,38 +177,48 @@ public class OrderPresentation  extends Presentation {
             ZLogger.df(String.format("刷新会员信息：%s", JSON.toJSONString(memberInfo)));
 
             ivMemberHeader.setAvatarUrl(memberInfo.getHeadimageUrl());
-            tvVipBrief.setText(memberInfo.getName());
         } else {
             ivMemberHeader.setImageResource(R.drawable.chat_tmp_user_head);
-            tvVipBrief.setText("");
         }
     }
-    /**刷新数据*/
-    private void refresh(){
-        mGoodsAdapter.setEntityList(CashierDesktopObservable.getInstance().getShopcartEntities());
-        labelOrderAmount.setTopText(String.format("%.2f",
-                CashierDesktopObservable.getInstance().getAmount()));//成交价
 
-        CashierOrderInfo cashierOrderInfo = CashierDesktopObservable.getInstance().getCashierOrderInfo();
-        if (cashierOrderInfo != null){
-            refreshMemberInfo(cashierOrderInfo.getVipMember());
 
-            Double handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
-            labelDiscount.setTopText(String.format("%.2f",
-                    CashierOrderInfoImpl.getDiscountAmount(cashierOrderInfo)));
-            labelScore.setTopText(String.format("%.2f", Math.abs(handleAmount / 2)));
-            labelActualAmount.setTopText(String.format("%.2f", handleAmount));
-        }
-        else{
-            refreshMemberInfo(null);
-            labelDiscount.setTopText(String.format("%.2f", 0D));
-            labelScore.setTopText(String.format("%.2f", 0D));
-            labelActualAmount.setTopText(String.format("%.2f", 0D));
-        }
+    private Observer mObserver = new Observer() {
+        @Override
+        public void update(Observable o, Object arg) {
+            try {
+                mGoodsAdapter.setEntityList(CashierDesktopObservable.getInstance().getShopcartEntities());
+                labelOrderAmount.setTopText(String.format("%.2f",
+                        CashierDesktopObservable.getInstance().getAmount()));//成交价
 
-        advertiseViewPager.notifyAll();
+                CashierOrderInfo cashierOrderInfo = CashierDesktopObservable.getInstance().getCashierOrderInfo();
+                if (cashierOrderInfo != null){
+                    refreshMemberInfo(cashierOrderInfo.getVipMember());
+
+                    Double handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
+                    labelDiscount.setTopText(String.format("%.2f",
+                            CashierOrderInfoImpl.getRuleDiscountAmount(cashierOrderInfo)));
+                    labelCouponDiscount.setTopText(String.format("%.2f",
+                            CashierOrderInfoImpl.getCouponDiscountAmount(cashierOrderInfo)));
+                    labelScore.setTopText(String.format("%.2f", Math.abs(handleAmount / 2)));
+                    labelActualAmount.setTopText(String.format("%.2f", handleAmount));
+                }
+                else{
+                    refreshMemberInfo(null);
+                    labelDiscount.setTopText(String.format("%.2f", 0D));
+                    labelCouponDiscount.setTopText(String.format("%.2f", 0D));
+                    labelScore.setTopText(String.format("%.2f", 0D));
+                    labelActualAmount.setTopText(String.format("%.2f", 0D));
+                }
+
+                //java.lang.IllegalMonitorStateException: object not locked by thread before notifyAll()
+//                advertiseViewPager.notifyAll();
 //        mPictureAdvPagerAdapter.notifyDataSetChanged();
-    }
+            } catch (Exception e) {
+                ZLogger.ef(e.toString());
+            }
+        }
+    };
 
     /**
      * 刷新订单信息

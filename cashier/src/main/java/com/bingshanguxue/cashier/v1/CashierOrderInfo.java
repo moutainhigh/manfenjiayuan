@@ -246,6 +246,7 @@ public class CashierOrderInfo implements java.io.Serializable {
 
         discountInfo.setRuleDiscountAmount(payAmount.getRuleAmount());
         discountInfo.setCouponDiscountAmount(payAmount.getCoupAmount());
+        //优惠后实际生效金额（会员+优惠券）
         discountInfo.setEffectAmount(finalAmount
                 - paidAmount - payAmount.getPayAmount());
         // TODO: 5/26/16 选中的优惠券和订单可用的优惠券进行二次校验

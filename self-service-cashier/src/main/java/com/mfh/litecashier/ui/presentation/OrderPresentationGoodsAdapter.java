@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.cashier;
+package com.mfh.litecashier.ui.presentation;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

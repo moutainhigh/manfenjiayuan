@@ -5,58 +5,53 @@
               android:layout_height="match_parent"
               android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-        <com.mfh.framework.uikit.adv.AdvertisementViewPager
-            android:id="@+id/viewpager_adv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
+    <com.mfh.framework.uikit.adv.AdvertisementViewPager
+        android:id="@+id/viewpager_adv"
+        android:layout_width="282dp"
+        android:layout_height="match_parent"/>
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:background="@color/mfhtheme_maskPrimary"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:orientation="vertical">
         <!--会员信息-->
-        <LinearLayout
-            android:id="@+id/view_vip_brief"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_double"
-            android:gravity="center"
-            android:orientation="vertical">
+        <!--头像-->
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
+            android:id="@+id/iv_vip_header"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_centerHorizontal="true"/>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/view_vip_brief"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="@dimen/spacing_normal"-->
+            <!--android:layout_marginTop="@dimen/spacing_normal"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical">-->
 
-            <!--头像-->
-            <com.bingshanguxue.vector_uikit.widget.AvatarView
-                android:id="@+id/iv_vip_header"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:src="@drawable/chat_tmp_user_head"/>
+            <!---->
 
-            <!--用户信息：用户名/手机号-->
-            <TextView
-                android:id="@+id/tv_vip_brief"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_normal"
-                android:text=""
-                android:textColor="@color/material_black"
-                android:layout_marginTop="@dimen/spacing_micro"
-                android:textSize="@dimen/textsize_normal"/>
-        </LinearLayout>
+            <!--&lt;!&ndash;用户信息：用户名/手机号&ndash;&gt;-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_vip_brief"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/spacing_normal"-->
+                <!--android:textColor="@color/material_black"-->
+                <!--android:textSize="@dimen/textsize_normal"/>-->
+        <!--</LinearLayout>-->
 
         <View
             android:id="@+id/top_line"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_below="@+id/view_vip_brief"
+            android:layout_below="@+id/iv_vip_header"
             android:layout_marginTop="0dp"
             android:background="#D2D2D2"/>
 
@@ -66,13 +61,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/top_line"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:layout_marginTop="@dimen/spacing_micro"
             android:baselineAligned="false"
             android:divider="@drawable/divider_vertical_line_primary"
             android:dividerPadding="12dp"
             android:gravity="center"
-            android:padding="@dimen/spacing_micro"
             android:showDividers="middle">
-            <!--应付金额-->
+            <!--订单金额-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                 android:id="@+id/label_orderamount"
                 android:layout_width="0dp"
@@ -80,22 +76,35 @@
                 android:layout_weight="1"
                 app:bottomText="应付金额"
                 app:bottomTextColor="@color/black_70"
-                app:bottomTextSize="16sp"
+                app:bottomTextSize="12sp"
                 app:topText="0.00"
                 app:topTextColor="@color/material_black"
-                app:topTextSize="30sp"/>
-            <!--优惠券-->
+                app:topTextSize="18sp"/>
+            <!--会员优惠-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                 android:id="@+id/label_discount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:bottomText="优惠券"
+                app:bottomText="@string/label_member_discount"
                 app:bottomTextColor="@color/black_70"
-                app:bottomTextSize="16sp"
+                app:bottomTextSize="12sp"
                 app:topText="0.00"
                 app:topTextColor="@color/material_green_500"
-                app:topTextSize="30sp"/>
+                app:topTextSize="18sp"/>
+
+            <!--代金券-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_coupon_discount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="积分"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="10sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_red_500"
+                app:topTextSize="18sp"/>
 
             <!--积分-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
@@ -105,41 +114,53 @@
                 android:layout_weight="1"
                 app:bottomText="积分"
                 app:bottomTextColor="@color/black_70"
-                app:bottomTextSize="16sp"
+                app:bottomTextSize="12sp"
                 app:topText="0.00"
                 app:topTextColor="@color/material_red_500"
-                app:topTextSize="30sp"/>
+                app:topTextSize="18sp"/>
 
-            <!--实付金额-->
+            <!--应付金额-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                 android:id="@+id/label_actualamount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:bottomText="实付金额"
+                app:bottomText="应付金额"
                 app:bottomTextColor="@color/black_70"
-                app:bottomTextSize="16sp"
+                app:bottomTextSize="12sp"
                 app:topText="0.00"
                 app:topTextColor="@color/material_black"
-                app:topTextSize="30sp"/>
+                app:topTextSize="18sp"/>
 
         </LinearLayout>
 
-        <include
-            android:id="@+id/ll_procuct_header"
-            layout="@layout/itemview_orderprentation_goods_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/frame_orderinfo"/>
 
         <!--商品列表-->
         <RelativeLayout
             android:id="@+id/frame_goods"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/ll_procuct_header"
+            android:layout_below="@+id/frame_orderinfo"
             android:background="@color/material_white"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:paddingStart="@dimen/spacing_normal">
+
+            <include
+                android:id="@+id/ll_procuct_header"
+                layout="@layout/itemview_orderprentation_goods_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"/>
+
+
+            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                android:id="@+id/goods_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/ll_procuct_header"/>
+
 
             <!--空视图:二维码-->
             <ImageView
@@ -149,15 +170,6 @@
                 android:layout_centerInParent="true"
                 android:contentDescription="@null"
                 android:src="@mipmap/emptyimage_no_goods"/>
-
-            <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
-                android:id="@+id/goods_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"/>
         </RelativeLayout>
 
     </RelativeLayout>

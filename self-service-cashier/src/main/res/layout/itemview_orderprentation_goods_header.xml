@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootview"
-    style="@style/mfh_form_header"
-    android:gravity="center"
-    android:orientation="horizontal">
+              android:id="@+id/rootview"
+              style="@style/mfh_form_header"
+              android:gravity="center"
+              android:orientation="horizontal">
 
     <TextView
         android:id="@+id/tv_name"
         style="@style/mfh_form_header_text"
         android:layout_width="0dp"
-        android:textSize="12sp"
         android:layout_height="match_parent"
         android:layout_weight="2.5"
-        android:text="商品"/>
+        android:gravity="start|center_vertical"
+        android:text="商品"
+        android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/tv_price"
@@ -20,20 +21,20 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:textSize="12sp"
+        android:gravity="start|center_vertical"
         android:text="单价"
-        android:gravity="center" />
+        android:textSize="12sp"/>
 
 
     <TextView
         android:id="@+id/tv_bcount"
         style="@style/mfh_textview_text"
         android:layout_width="0dp"
-        android:textSize="12sp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:gravity="start|center_vertical"
         android:text="数量"
-        android:gravity="center" />
+        android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/tv_amount"
@@ -41,8 +42,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:textSize="12sp"
+        android:gravity="start|center_vertical"
         android:text="小计"
-        android:gravity="center"/>
+        android:textSize="12sp"/>
 
 </LinearLayout>
