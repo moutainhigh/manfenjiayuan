@@ -82,21 +82,13 @@ public abstract class BasePayStepFragment extends BaseFragment {
     }
 
     /**
-     * 支付状态更新
+     * 支付成功，保存支付记录
      */
     public void onUpdate(PaymentInfo paymentInfo) {
-        ZLogger.df(String.format("支付状态更新：\n%s", JSONObject.toJSONString(cashierOrderInfo)));
-
         if (paymentInfo == null) {
             return;
         }
-        ZLogger.df(String.format("支付记录：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-        //保存订单支付记录并更新订单
-        // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
-        // 下一次保存支付记录的时候，数据会不准确
-        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
-                cashierOrderInfo.getVipMember(), paymentInfo);
+        ZLogger.df(String.format("支付状态更新：\n%s", JSONObject.toJSONString(paymentInfo)));
 
         //有现金支付时才打开钱箱
         if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
@@ -105,6 +97,12 @@ public abstract class BasePayStepFragment extends BaseFragment {
             ZLogger.df(String.format(">>开钱箱：收银：%.2f,找零:%.2f",
                     paymentInfo.getPaidAmount(), paymentInfo.getChange()));
         }
+
+        //保存订单支付记录并更新订单
+        // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
+        // 下一次保存支付记录的时候，数据会不准确
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
 
         // TODO: 7/5/16 注意这里需要重新生成订单支付信息，如果允许多次支付的话，可能还需要清空页面优惠券信息。
         cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
@@ -130,7 +128,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
      * 支付步骤成功
      */
     public void onPayStepFinish() {
-        ZLogger.df(String.format("%s 支付成功：\n%s", WayType.name(curPayType),
+        ZLogger.df(String.format("%s 支付成功：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
     }
 
@@ -138,7 +136,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
      * 订单失败or异常
      */
     public void onPayStepFailed(PaymentInfo paymentInfo, String errMsg) {
-        ZLogger.df(String.format("%s 订单支付失败or异常：%s\n%s", WayType.name(curPayType),
+        ZLogger.df(String.format("%s 订单支付失败or异常：%s\n%s", WayType.getWayTypeName(curPayType),
                 errMsg, JSONObject.toJSONString(cashierOrderInfo)));
 
         if (paymentInfo == null) {
@@ -173,7 +171,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
     public void onPayCancel() {
         CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_STAY_PAY);
 
-        ZLogger.df(String.format("%s 支付取消：准备关闭支付窗口：\n%s", WayType.name(curPayType),
+        ZLogger.df(String.format("%s 支付取消：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
 
         getActivity().setResult(Activity.RESULT_CANCELED);
@@ -185,7 +183,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
      */
     public void onPayException() {
         CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_EXCEPTION);
-        ZLogger.df(String.format("%s 订单异常：准备关闭支付窗口：\n%s", WayType.name(curPayType),
+        ZLogger.df(String.format("%s 订单异常：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
 
         Intent data = new Intent();
@@ -236,7 +234,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
 
 
     private void back2MainActivity() {
-        ZLogger.df(String.format("%s 支付成功：准备关闭支付窗口：\n%s", WayType.name(curPayType),
+        ZLogger.df(String.format("%s 支付成功：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
         Intent data = new Intent();
         data.putExtra(EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);

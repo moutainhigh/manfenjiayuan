@@ -10,18 +10,19 @@ import java.io.Serializable;
  * Created by bingshanguxue on 8/2/16.
  */
 public class LastOrderInfo implements Serializable {
-    private int payType = WayType.NA;
+    private Long orderId;//本地订单编号
     private Double finalAmount = 0D;
     private Double bCount = 0D;
+    private int payType = WayType.NA;
     private Double discountAmount = 0D;
     private Double changeAmount = 0D;
 
-    public int getPayType() {
-        return payType;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setPayType(int payType) {
-        this.payType = payType;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Double getFinalAmount() {
@@ -40,6 +41,15 @@ public class LastOrderInfo implements Serializable {
         this.bCount = bCount;
     }
 
+
+    public int getPayType() {
+        return payType;
+    }
+
+    public void setPayType(int payType) {
+        this.payType = payType;
+    }
+
     public Double getDiscountAmount() {
         return discountAmount;
     }
@@ -55,4 +65,5 @@ public class LastOrderInfo implements Serializable {
     public void setChangeAmount(Double changeAmount) {
         this.changeAmount = changeAmount;
     }
+
 }

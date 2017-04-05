@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -27,7 +26,6 @@ import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
-import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -65,7 +63,7 @@ import rx.Subscriber;
 
 /**
  * 会员支付
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class PayStep2Fragment extends BasePayStepFragment {
     public static final String EXTRA_KEY_PAYTYPE = "payType";
@@ -76,8 +74,6 @@ public class PayStep2Fragment extends BasePayStepFragment {
     Toolbar toolbar;
     @BindView(R.id.iv_vip_header)
     AvatarView ivMemberHeader;
-    @BindView(R.id.tv_vip_brief)
-    TextView tvVipBrief;
     @BindView(R.id.labelHandleAmount)
     MultiLayerLabel tvHandleAmount;
     @BindView(R.id.labelRuleDiscount)
@@ -238,7 +234,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
                     CashierOrderInfoImpl.getRuleDiscountAmount(cashierOrderInfo)));
             tvCouponAmount.setTopText(String.format("%.2f",
                     CashierOrderInfoImpl.getCouponDiscountAmount(cashierOrderInfo)));
-            tvScore.setTopText(String.format("%.2f", Math.abs(handleAmount / 2)));
+            tvScore.setTopText(String.format("%.0f", Math.abs(handleAmount / 2)));
             tvDealPayAmount.setTopText(String.format("%.2f", handleAmount));
 
             //显示应付款
@@ -257,14 +253,11 @@ public class PayStep2Fragment extends BasePayStepFragment {
         ZLogger.df(String.format("刷新会员信息：%s", JSON.toJSONString(memberInfo)));
         if (memberInfo != null) {
             ivMemberHeader.setAvatarUrl(memberInfo.getHeadimageUrl());
-            tvVipBrief.setText(String.format("%s/%s", memberInfo.getName(),
-                    memberInfo.getMobile()));
 
             //自动加载优惠券
             loadCoupons();
         } else {
             ivMemberHeader.setImageResource(R.drawable.chat_tmp_user_head);
-            tvVipBrief.setText("");
         }
     }
 
@@ -461,7 +454,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
         handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
 
-        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, curPayType,
                 PosOrderPayEntity.PAY_STATUS_PROCESS,
                 handleAmount, handleAmount, 0D,
                 cashierOrderInfo.getDiscountInfo());
@@ -522,7 +515,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+                        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, curPayType,
                                 PosOrderPayEntity.PAY_STATUS_FAILED,
                                 handleAmount, handleAmount, 0D,
                                 cashierOrderInfo.getDiscountInfo());
@@ -532,9 +525,9 @@ public class PayStep2Fragment extends BasePayStepFragment {
                     @Override
                     public void onNext(String s) {
                         ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
-                                WayType.name(curPayType), s));
+                                WayType.getWayTypeName(curPayType), s));
 //                    bPayProcessing = false;
-                        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+                        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, curPayType,
                                 PosOrderPayEntity.PAY_STATUS_FINISH,
                                 handleAmount, handleAmount, 0D,
                                 cashierOrderInfo.getDiscountInfo());
@@ -564,4 +557,10 @@ public class PayStep2Fragment extends BasePayStepFragment {
         super.onPayFinished();
     }
 
+    @Override
+    public void onPayStepFinish() {
+        btnSubmit.setEnabled(true);
+        hideProgressDialog();
+        super.onPayStepFinish();
+    }
 }

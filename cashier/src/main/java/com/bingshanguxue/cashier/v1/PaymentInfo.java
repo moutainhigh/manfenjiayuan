@@ -18,9 +18,10 @@ public class PaymentInfo implements Serializable {
      * 当前订单批次流水总的应付金额，用于计算拆分订单实际分配的支付金额。（包括优惠券优惠）
      * */
     private Double payableAmount = 0D;
-    private Double paidAmount = 0D;//实际支付金额到账户的钱
-    private Double change = 0D;//找零金额
-
+    /**实际支付金额到账户的钱*/
+    private Double paidAmount = 0D;
+    /**找零金额*/
+    private Double change = 0D;
     /**
      * 优惠信息（促销规则和优惠券优惠，如果优惠不为null,需要将优惠记录也另存为一条支付记录）
      * 多个拆分订单*/
@@ -90,5 +91,22 @@ public class PaymentInfo implements Serializable {
 
     public void setDiscountInfo(DiscountInfo discountInfo) {
         mDiscountInfo = discountInfo;
+    }
+
+    /**
+     * 订单支付记录
+     */
+    public static PaymentInfo create(String outTradeNo, int payType, int status,
+                                             Double payableAmount, Double paidAmount, Double change,
+                                             DiscountInfo discountInfo) {
+        PaymentInfo paymentInfo = new PaymentInfo();
+        paymentInfo.setOutTradeNo(outTradeNo);
+        paymentInfo.setPayType(payType);
+        paymentInfo.setStatus(status);
+        paymentInfo.setPayableAmount(payableAmount);
+        paymentInfo.setPaidAmount(paidAmount);
+        paymentInfo.setChange(change);
+        paymentInfo.setDiscountInfo(discountInfo);
+        return paymentInfo;
     }
 }

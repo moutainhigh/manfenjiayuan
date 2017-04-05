@@ -17,7 +17,7 @@ public class DiscountInfo implements Serializable {
     //折扣价(卡券优惠)
     private Double couponDiscountAmount = 0D;
     private String couponsIds = "";//使用的优惠券编号,多个用逗号隔开
-    //优惠生效金额
+    //优惠后实际生效金额（会员+优惠券）
     private Double effectAmount = 0D;
 
     public DiscountInfo(Long orderId) {

@@ -18,9 +18,10 @@ public class PayWayType {
     public final static Integer TYPE_VIP             = 8;//会员账户支付：会员卡，付款码，手机号
     public final static Integer TYPE_VIP_DISCOUNT    = 9;//会员优惠
     public final static Integer TYPE_VIP_COUPONS     = 10;//优惠券
-    public final static Integer TYPE_VIP_SCORE       = 11;//积分支付
-    public final static Integer TYPE_CREDIT          = 12;
-    public final static Integer TYPE_THIRD_PARTY     = 13;//第三方外卖（支持第三单拣货，统一使用支付方式）
+    public final static Integer TYPE_VIP_BALANCE     = 11;//余额
+    public final static Integer TYPE_VIP_SCORE       = 12;//积分支付
+    public final static Integer TYPE_CREDIT          = 13;
+    public final static Integer TYPE_THIRD_PARTY     = 14;//第三方外卖（支持第三单拣货，统一使用支付方式）
 
 
     private static HashMap<Integer, String> typeMaps = new HashMap<>();
@@ -34,6 +35,7 @@ public class PayWayType {
         typeMaps.put(TYPE_VIP, "会员账号支付");
         typeMaps.put(TYPE_VIP_DISCOUNT, "会员优惠");
         typeMaps.put(TYPE_VIP_COUPONS, "优惠券");
+        typeMaps.put(TYPE_VIP_BALANCE, "账户余额");
     }
 
     /**获取支付方式名称*/

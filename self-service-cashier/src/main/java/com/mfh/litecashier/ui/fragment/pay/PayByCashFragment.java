@@ -18,7 +18,6 @@ import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
-import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
@@ -173,8 +172,8 @@ public class PayByCashFragment extends BasePayFragment {
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED)) {
                     Bundle extras = intent.getExtras();
                     ZLogger.d(StringUtils.decodeBundle(extras));
-                    if (extras != null && extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
+                    if (extras != null) {
+//                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
                         onActiveMode();
 
                         calculateCharge();
@@ -306,9 +305,9 @@ public class PayByCashFragment extends BasePayFragment {
      * 支付成功
      * */
     private void onPaidSucceed() {
-        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, payType,
                 PosOrderPayEntity.PAY_STATUS_FINISH,
-                handleAmount, handleAmount, rechargeAmount);
+                handleAmount, handleAmount, rechargeAmount, null);
         ZLogger.df(String.format("现金支付成功，收取金额：%.2f\n%s",
                 paidAmount, JSON.toJSONString(paymentInfo)));
 

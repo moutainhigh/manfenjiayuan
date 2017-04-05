@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
-import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.chinaums.mis.bank.BankDAO;
 import com.chinaums.mis.bank.ICallBack;
 import com.chinaums.mis.bean.RequestPojo;
@@ -40,7 +40,7 @@ import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.ui.widget.PayProcessView;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
@@ -177,10 +177,10 @@ public class PayByBandcardFragment extends BasePayFragment {
                 ZLogger.d("onReceive.action=" + intent.getAction());
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_BANK)) {
                     Bundle extras = intent.getExtras();
-                    if (extras != null && extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
+                    if (extras != null) {
                         isRunningThread = false;
 
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
+//                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
                         calculateCharge();
                     }
                 }
@@ -351,9 +351,9 @@ public class PayByBandcardFragment extends BasePayFragment {
 
             Bundle args = new Bundle();
             args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                    PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                    PaymentInfo.create(outTradeNo, payType,
                             PosOrderPayEntity.PAY_STATUS_PROCESS,
-                            paidAmount, paidAmount, 0D));
+                            paidAmount, paidAmount, 0D, null));
             EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS, args));
         } catch (Exception ex) {
             ZLogger.e(ex.toString());
@@ -373,9 +373,9 @@ public class PayByBandcardFragment extends BasePayFragment {
 
                     Bundle args = new Bundle();
                     args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                            PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                            PaymentInfo.create(outTradeNo, payType,
                                     PosOrderPayEntity.PAY_STATUS_FINISH,
-                                    paidAmount, paidAmount, 0D));
+                                    paidAmount, paidAmount, 0D, null));
                     EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
 
                     llPayInfo.setVisibility(View.VISIBLE);
@@ -403,9 +403,9 @@ public class PayByBandcardFragment extends BasePayFragment {
 
             Bundle args = new Bundle();
             args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                    PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                    PaymentInfo.create(outTradeNo, payType,
                             payStatus,
-                            paidAmount, paidAmount, 0D));
+                            paidAmount, paidAmount, 0D, null));
             args.putString(PayStep1Event.KEY_ERROR_MESSAGE, msg);
             EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FAILED, args));
 

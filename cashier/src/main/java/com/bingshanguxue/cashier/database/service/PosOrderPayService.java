@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosOrderPayDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayWayType;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.account.Human;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
@@ -181,44 +184,64 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
     }
 
     /**
-     * 保存货更新订单的支付记录
-     * 2016-07-01 重构订单，支持订单支付明细
+     * 保存支付信息
      *
-     * @param orderId    关联的订单
-     * @param outTradeNo 商户交易订单号，每次发起订单支付请求都不同
-     * @param payType    支付方式
-     * @param amountType 收入/支出
-     * @param amount     收入/找零金额
-     * @param status     支付状态
-     * @param vipMember  客户信息
+     * @param orderId   关联的订单
+     * @param paymentInfo   支付信息
+     * @param member    会员信息
      */
-    public void saveOrUpdate(Long orderId,
-                                    String outTradeNo, int payType, Integer amountType,
-                                    Double amount, int status,
-                                    Human vipMember) {
-        saveOrUpdate(orderId, outTradeNo, payType, amountType, amount, status, vipMember, null, null);
-    }
+    public void savePayInfo(Long orderId, PaymentInfo paymentInfo, Human member) {
+        //商户交易订单号
+        String outTradeNo = paymentInfo.getOutTradeNo();
+        Double paidRemain = paymentInfo.getPaidAmount();//实际支付
+        Double changeRemain = paymentInfo.getChange();//找零
+        //支付状态
+        int status = paymentInfo.getStatus();
 
-    /**
-     * 保存或更新订单的支付记录
-     * 2016-07-01 重构订单，支持订单支付明细
-     *
-     * @param outTradeNo   商户交易订单号，每次发起订单支付请求都不同
-     * @param status       支付状态
-     * @param vipMember    客户信息
-     * @param discountInfo 优惠信息
-     */
-    public void saveOrUpdate(String outTradeNo, int status,
-                                    Human vipMember, DiscountInfo discountInfo) {
-        if (discountInfo.getEffectAmount() < 0.01){
-            return;
+        int amountType = PayWayType.TYPE_NA;
+        int payType = paymentInfo.getPayType();
+        if ((payType & WayType.CASH) == WayType.CASH) {
+            amountType = PayWayType.TYPE_CASH;
+            //保存找零金额
+            if (changeRemain >= 0.01) {
+                saveOrUpdate(orderId,
+                        outTradeNo, paymentInfo.getPayType(),
+                        PayWayType.TYPE_CASH_CHANGE, changeRemain,
+                        status, member, null, null);
+            }
+        } else if ((payType & WayType.ALI_F2F) == WayType.ALI_F2F) {
+            amountType = PayWayType.TYPE_ALIPAY_F2F;
+        } else if ((payType & WayType.BANKCARD) == WayType.BANKCARD) {
+            amountType = PayWayType.TYPE_BANKCARD;
+        } else if ((payType & WayType.VIP) == WayType.VIP) {
+            amountType = PayWayType.TYPE_VIP;
+            saveOrUpdate(orderId,
+                    outTradeNo, paymentInfo.getPayType(),
+                    PayWayType.TYPE_VIP_BALANCE, changeRemain,
+                    status, member, null, null);
+
+            DiscountInfo discountInfo = paymentInfo.getDiscountInfo();
+            if (discountInfo != null) {
+                //会员优惠
+                saveOrUpdate(discountInfo.getOrderId(),
+                        outTradeNo, WayType.RULES,
+                        PayWayType.TYPE_VIP_DISCOUNT,
+                        discountInfo.getRuleDiscountAmount(),
+                        status, member, discountInfo.getCouponsIds(), discountInfo.getRuleIds());
+                //优惠券
+                saveOrUpdate(discountInfo.getOrderId(),
+                        outTradeNo, WayType.RULES,
+                        PayWayType.TYPE_VIP_COUPONS,
+                        discountInfo.getCouponDiscountAmount(),
+                        status, member, discountInfo.getCouponsIds(), discountInfo.getRuleIds());
+            }
+        } else if ((payType & WayType.WX_F2F) == WayType.WX_F2F) {
+            amountType = PayWayType.TYPE_WEPAY_F2F;
+        } else if ((payType & WayType.TAKEOUT) == WayType.TAKEOUT) {
+            amountType = PayWayType.TYPE_THIRD_PARTY;
         }
-        saveOrUpdate(discountInfo.getOrderId(),
-                outTradeNo, discountInfo.getPayType(),
-                PosOrderPayEntity.AMOUNT_TYPE_IN,
-                discountInfo.getEffectAmount(),
-                status, vipMember, discountInfo.getCouponsIds(), discountInfo.getRuleIds());
+        //保存实际支付金额
+        saveOrUpdate(orderId,
+                outTradeNo, payType, amountType, paidRemain, status, member, null, null);
     }
-
-
 }

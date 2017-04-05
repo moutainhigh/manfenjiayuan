@@ -30,16 +30,16 @@ public class CashierOrderInfoImpl {
         return discountInfo != null ? discountInfo.getCouponDiscountAmount() : 0D;
     }
 
-    /**
-     * 获取所有优惠总金额
-     */
-    public static Double getDiscountAmount(CashierOrderInfo cashierOrderInfo) {
-        if (cashierOrderInfo == null) {
-            return 0D;
-        }
-        DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
-        return discountInfo != null ? discountInfo.getEffectAmount() : 0D;
-    }
+//    /**
+//     * 获取所有优惠总金额
+//     */
+//    public static Double getDiscountAmount(CashierOrderInfo cashierOrderInfo) {
+//        if (cashierOrderInfo == null) {
+//            return 0D;
+//        }
+//        DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
+//        return discountInfo != null ? discountInfo.getEffectAmount() : 0D;
+//    }
 
     /**
      * 计算找零金额
@@ -69,7 +69,8 @@ public class CashierOrderInfoImpl {
         Double amount = cashierOrderInfo.getFinalAmount() - cashierOrderInfo.getPaidAmount();
         DiscountInfo discountInfo = cashierOrderInfo.getDiscountInfo();
         if (discountInfo != null) {
-            amount -= discountInfo.getEffectAmount();
+            amount -= discountInfo.getRuleDiscountAmount();
+            amount -= discountInfo.getCouponDiscountAmount();
         }
 
         //实际场景中应付金额不会小于1分钱，所以这里要保留两位小数

@@ -1,6 +1,7 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.mfh.framework.api.pmcstock.GoodsItem;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
@@ -29,6 +30,11 @@ public interface IPrinterManager {
      * 收银流水，退单
      * */
     void printPosOrder(final PosOrderEntity posOrderEntity);
+
+    /**
+     * 打印收银流水订单
+     * */
+    void printCashierOrder(final PosOrderEntity posOrderEntity);
 
     /**
      * 拣货单
@@ -64,5 +70,10 @@ public interface IPrinterManager {
      * 测试页
      * */
     void printTestPage();
+
+    /**
+     * 商品流水
+     * */
+    void printGoodsFlow(List<GoodsItem> goodsItems);
 
 }

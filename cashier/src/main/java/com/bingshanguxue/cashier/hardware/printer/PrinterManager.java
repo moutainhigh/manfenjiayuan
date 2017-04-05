@@ -3,23 +3,30 @@ package com.bingshanguxue.cashier.hardware.printer;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.hardware.printer.gprinter.EscCommand;
-import com.mfh.framework.api.pmcstock.PosOrder;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
+import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PosType;
+import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.pmcstock.GoodsItem;
+import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.core.utils.DataConvertUtil;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -31,7 +38,7 @@ import rx.schedulers.Schedulers;
  * Created by bingshanguxue on 23/12/2016.
  */
 
-public abstract class PrinterManager implements IPrinterManager{
+public abstract class PrinterManager implements IPrinterManager {
     protected IPrinter mPrinter;
 
 
@@ -47,7 +54,7 @@ public abstract class PrinterManager implements IPrinterManager{
         if (esc == null) {
             return;
         }
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+        TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer != null) {
             String footerText = String.format("%s%s\n",
                     Printer.formatShort(hostServer.getSaasName(), 20, Printer.BLANK_GRAVITY.RIGHT),
@@ -58,16 +65,16 @@ public abstract class PrinterManager implements IPrinterManager{
 
     /**
      * 打印条码，自动进纸一行
-     * */
+     */
     public void addCODE128(EscCommand esc, String barcode) {
-        if (mPrinter != null){
+        if (mPrinter != null) {
             mPrinter.addCODE128(esc, barcode);
             mPrinter.printAndLineFeed(esc, 1);
         }
     }
 
     public void printAndLineFeed(EscCommand esc, int lines) {
-        if (mPrinter != null){
+        if (mPrinter != null) {
             mPrinter.printAndLineFeed(esc, lines);
         }
     }
@@ -76,7 +83,7 @@ public abstract class PrinterManager implements IPrinterManager{
 
     @Override
     public void openMoneyBox() {
-        if (mPrinter != null){
+        if (mPrinter != null) {
             mPrinter.openMoneyBox();
         }
     }
@@ -123,10 +130,9 @@ public abstract class PrinterManager implements IPrinterManager{
             public void call(Subscriber<? super EscCommand> subscriber) {
                 EscCommand escCommand = null;
                 if (posOrderEntity != null) {
-                    if (PosType.POS_STANDARD.equals(posOrderEntity.getSubType())){
-                        escCommand = makePosOrderEsc(posOrderEntity);
-                    }
-                    else {
+                    if (PosType.POS_STANDARD.equals(posOrderEntity.getSubType())) {
+                        escCommand = makePosOrderEsc(posOrderEntity, false);
+                    } else {
                         escCommand = makeSendOrder3pEsc(posOrderEntity);
                     }
                 }
@@ -156,8 +162,46 @@ public abstract class PrinterManager implements IPrinterManager{
                 });
     }
 
-    public abstract EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity);
-    /**外部平台配送单*/
+    /**
+     * 打印收银流水订单
+     */
+    @Override
+    public void printCashierOrder(final PosOrderEntity posOrderEntity) {
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                EscCommand escCommand = makePosOrderEsc(posOrderEntity, true);
+                subscriber.onNext(escCommand);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        Printer.print(escCommand, PrinterAgent.getInstance()
+                                .getPrinterTimes(PrinterContract.Receipt.CASHIER_ORDER));
+                    }
+                });
+    }
+
+    public abstract EscCommand makePosOrderEsc(PosOrderEntity posOrderEntity, boolean waitReceiptEnabled);
+
+    /**
+     * 外部平台配送单
+     */
     public abstract EscCommand makeSendOrder3pEsc(PosOrderEntity posOrderEntity);
 
 
@@ -347,7 +391,7 @@ public abstract class PrinterManager implements IPrinterManager{
      * 打印日结经营分析明细
      */
     public void printDailySettleAggItem(EscCommand esc, int startIndex,
-                                               List<AggItem> aggItems) {
+                                        List<AggItem> aggItems) {
         if (aggItems != null) {
             for (AggItem aggItem : aggItems) {
                 makeHandoverTemp(esc,
@@ -364,9 +408,9 @@ public abstract class PrinterManager implements IPrinterManager{
      * 打印日结流水分析明细
      */
     public void printDailySettleAccItem(EscCommand esc, int startIndex,
-                                               List<AccItem> accItems) {
+                                        List<AccItem> accItems) {
         if (accItems != null && accItems.size() > 0) {
-            for (AccItem accItem : accItems){
+            for (AccItem accItem : accItems) {
                 makeHandoverTemp(esc,
                         String.format("%d %s", startIndex, accItem.getPayTypeCaption()),
                         String.format("%.2f", accItem.getOrderNum()),
@@ -396,7 +440,7 @@ public abstract class PrinterManager implements IPrinterManager{
 
                     @Override
                     public void onError(Throwable e) {
-
+                        ZLogger.ef(e.toString());
                     }
 
                     @Override
@@ -405,6 +449,7 @@ public abstract class PrinterManager implements IPrinterManager{
                     }
                 });
     }
+
     /**
      * 打印订单
      */
@@ -433,14 +478,48 @@ public abstract class PrinterManager implements IPrinterManager{
         }
         return esc;
     }
+
     //收银订单
     public abstract EscCommand makePosOrderEsc1(PosOrder posOrder);
 
-//平台配送单
-   public abstract EscCommand makePosOrderEsc2(PosOrder posOrder);
+    //平台配送单
+    public abstract EscCommand makePosOrderEsc2(PosOrder posOrder);
 
     //外部平台配送单
     public abstract EscCommand makePosOrderEsc3(PosOrder posOrder);
+
+    @Override
+    public void printGoodsFlow(final List<GoodsItem> goodsItems) {
+        Observable.create(new Observable.OnSubscribe<EscCommand>() {
+            @Override
+            public void call(Subscriber<? super EscCommand> subscriber) {
+                subscriber.onNext(makeGoodsFlowEsc(goodsItems));
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<EscCommand>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(EscCommand escCommand) {
+                        Printer.print(escCommand, 1);
+                    }
+                });
+    }
+
+    public abstract EscCommand makeGoodsFlowEsc(List<GoodsItem> goodsItems);
+
 
     @Override
     public void printTestPage() {
@@ -543,7 +622,7 @@ public abstract class PrinterManager implements IPrinterManager{
         }
     }
 
-    public void makeOrderItem4(EscCommand esc, String text1, String text2, String text3){
+    public void makeOrderItem4(EscCommand esc, String text1, String text2, String text3) {
         if (esc == null) {
             return;
         }
@@ -580,7 +659,7 @@ public abstract class PrinterManager implements IPrinterManager{
         }
     }
 
-    public void makeOrderItem5(EscCommand esc, String text1, String text2, String text3, String text4){
+    public void makeOrderItem5(EscCommand esc, String text1, String text2, String text3, String text4) {
         if (esc == null) {
             return;
         }
@@ -619,7 +698,7 @@ public abstract class PrinterManager implements IPrinterManager{
         }
     }
 
-    public void makeOrderItem6(EscCommand esc, String name, String bcount, String amount){
+    public void makeOrderItem6(EscCommand esc, String name, String bcount, String amount) {
         if (esc == null) {
             return;
         }
@@ -665,4 +744,116 @@ public abstract class PrinterManager implements IPrinterManager{
             ZLogger.ef(e.toString());
         }
     }
+
+
+    public void makeOrderItem7(EscCommand esc, String text1, String text2, String text3,
+                                        String text4, String text5) {
+        if (esc == null) {
+            return;
+        }
+
+//        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
+
+        //最多显示17*0.6=10.2个汉字
+        if (Printer.getLength(text1) > 16) {
+            //另起一行显示单价/数量/小计，居右显示
+            esc.addText(String.format("%s%s%s\n",
+                    Printer.formatShort(text1.substring(0, 16), 16, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
+
+            esc.addText(String.format("%s%s%s\n",
+                    Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
+        } else {
+            //在名称后面显示单价/数量/小计
+            esc.addText(String.format("%s%s%s\n",
+                    Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
+            esc.addText(String.format("%s%s%s\n",
+                    Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
+                    Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
+
+//            ZLogger.d("printText:" + printText);
+        }
+    }
+
+    private Double getPayWayAmount(Integer amountType, Map<Integer, PayWay> payWayMap) {
+        if (amountType == null || payWayMap == null) {
+            return 0D;
+        }
+
+        PayWay payWay = payWayMap.get(amountType);
+
+        return payWay != null ? payWay.getAmount() : 0D;
+    }
+
+    /**
+     * 支付记录
+     * */
+    public void appendPayWays(EscCommand esc, Long orderId) {
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderId);
+        Map<Integer, PayWay> payWayMap = OrderPayInfo.getPayWays(payWrapper);
+
+        Double vipDiscount = getPayWayAmount(PayWayType.TYPE_VIP_DISCOUNT, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_VIP_DISCOUNT);
+        Double vipCoupons = getPayWayAmount(PayWayType.TYPE_VIP_COUPONS, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_VIP_COUPONS);
+        Double cashAmount = getPayWayAmount(PayWayType.TYPE_CASH, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_CASH);
+        Double cashChangeAmount = getPayWayAmount(PayWayType.TYPE_CASH_CHANGE, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_CASH_CHANGE);
+        Double vipAmount = getPayWayAmount(PayWayType.TYPE_VIP, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_VIP);
+        Double vipBalanceAmount = getPayWayAmount(PayWayType.TYPE_VIP_BALANCE, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_VIP_BALANCE);
+
+        esc.addText(String.format("%s%s\n",
+                Printer.formatShort("会员优惠:", 24, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(String.format("%.2f", vipDiscount), 8, Printer.BLANK_GRAVITY.LEFT)));
+        esc.addText(String.format("%s%s\n",
+                Printer.formatShort("优惠券:", 24, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(String.format("%.2f", vipCoupons), 8, Printer.BLANK_GRAVITY.LEFT)));
+        esc.addText(String.format("%s%s\n",
+                Printer.formatShort("优惠合计:", 24, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(String.format("%.2f", MathCompact.add(vipDiscount, vipCoupons)),
+                        8, Printer.BLANK_GRAVITY.LEFT)));
+
+        //现金支付（订单支付金额＋找零金额）
+        Integer wayType = payWrapper.getPayType();
+        if ((wayType & WayType.CASH) == WayType.CASH) {
+            esc.addText(String.format("%s%s\n",
+                    Printer.formatShort("现金支付:", 24, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(String.format("%.2f", MathCompact.add(cashAmount, cashChangeAmount)),
+                            8, Printer.BLANK_GRAVITY.LEFT)));
+            esc.addText(String.format("%s%s\n",
+                    Printer.formatShort("找零:", 24, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(String.format("%.2f", cashChangeAmount),
+                            8, Printer.BLANK_GRAVITY.LEFT)));
+        }
+        //会员支付（会员支付金额＋账户余额）
+        else if ((wayType & WayType.VIP) == WayType.VIP) {
+            esc.addText(String.format("%s%s\n",
+                    Printer.formatShort(String.format("%s:", PayWayType.getWayTypeName(PayWayType.TYPE_VIP)),
+                            24, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(String.format("%.2f", vipAmount),
+                            8, Printer.BLANK_GRAVITY.LEFT)));
+            esc.addText(String.format("%s%s\n",
+                    Printer.formatShort(String.format("%s:", PayWayType.getWayTypeName(PayWayType.TYPE_VIP_BALANCE)),
+                            24, Printer.BLANK_GRAVITY.LEFT),
+                    Printer.formatShort(String.format("%.2f", MathCompact.sub(vipBalanceAmount, vipAmount)),
+                            8, Printer.BLANK_GRAVITY.LEFT)));
+        } else {
+            for (Integer key : payWayMap.keySet()){
+                PayWay payWay = payWayMap.get(key);
+                esc.addText(String.format("%s%s\n",
+                        Printer.formatShort(PayWayType.getWayTypeName(payWay.getAmountType()), 24, Printer.BLANK_GRAVITY.LEFT),
+                        Printer.formatShort(String.format("%.2f", payWay.getAmount()), 8, Printer.BLANK_GRAVITY.LEFT)));
+            }
+        }
+    }
+
 }

@@ -25,7 +25,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.SysHttpManager;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
@@ -107,8 +107,8 @@ public class PayByVipFragment extends BasePayFragment {
                 ZLogger.d("onReceive.action=" + intent.getAction());
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_VIP)) {
                     Bundle extras = intent.getExtras();
-                    if (extras != null && extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
+                    if (extras != null) {
+//                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
                         etBarCode.getText().clear();
                         etBarCode.requestFocus();
 
@@ -254,7 +254,7 @@ public class PayByVipFragment extends BasePayFragment {
      * 加载会员信息
      * */
     private void loadHuman(final int subPayType, final String cardId, Map<String, String> options){
-        SysHttpManager.getInstance().getHumanByIdentity(options,
+        RxHttpManager.getInstance().getCustomerByOther(options,
                 new Subscriber<Human>() {
                     @Override
                     public void onCompleted() {

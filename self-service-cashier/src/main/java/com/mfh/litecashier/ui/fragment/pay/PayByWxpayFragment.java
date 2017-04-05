@@ -22,7 +22,7 @@ import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
-import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -220,8 +220,8 @@ public class PayByWxpayFragment extends BasePayFragment {
                 ZLogger.d("onReceive.action=" + intent.getAction());
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_WX)) {
                     Bundle extras = intent.getExtras();
-                    if (extras != null && extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
+                    if (extras != null) {
+//                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
                         etBarCode.setText("");
                         etBarCode.requestFocus();
                         calculateCharge();
@@ -266,9 +266,9 @@ public class PayByWxpayFragment extends BasePayFragment {
 
         Bundle args = new Bundle();
         args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
-                PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                PaymentInfo.create(outTradeNo, payType,
                         PosOrderPayEntity.PAY_STATUS_PROCESS,
-                        paidAmount, paidAmount, 0D));
+                        paidAmount, paidAmount, 0D, null));
         EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS, args));
 
         Map<String, String> options = new HashMap<>();
@@ -484,9 +484,9 @@ public class PayByWxpayFragment extends BasePayFragment {
 
                 Bundle args = new Bundle();
                 args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
-                        PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                        PaymentInfo.create(outTradeNo, payType,
                                 PosOrderPayEntity.PAY_STATUS_FINISH,
-                                paidAmount, paidAmount, 0D));
+                                paidAmount, paidAmount, 0D, null));
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
 
                 llPayInfo.setVisibility(View.VISIBLE);
@@ -509,17 +509,17 @@ public class PayByWxpayFragment extends BasePayFragment {
         final Bundle args = new Bundle();
         if (isException) {
             args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
-                    PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                    PaymentInfo.create(outTradeNo, payType,
                             PosOrderPayEntity.PAY_STATUS_EXCEPTION,
-                            paidAmount, paidAmount, 0D));
+                            paidAmount, paidAmount, 0D, null));
 
             btnCancelAliBarPay.setVisibility(View.VISIBLE);
             btnQueryOrderStatus.setVisibility(View.VISIBLE);
         } else {
             args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
-                    PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                    PaymentInfo.create(outTradeNo, payType,
                             PosOrderPayEntity.PAY_STATUS_FAILED,
-                            paidAmount, paidAmount, 0D));
+                            paidAmount, paidAmount, 0D, null));
 
             btnCancelAliBarPay.setVisibility(View.GONE);
             btnQueryOrderStatus.setVisibility(View.GONE);

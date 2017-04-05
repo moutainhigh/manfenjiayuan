@@ -2,15 +2,13 @@ package com.mfh.framework.rxapi.http;
 
 
 import com.mfh.framework.api.CompanyHuman;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.analysis.AccItem;
-import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
 import com.mfh.framework.api.tenant.TenantInfo;
-import com.mfh.framework.rxapi.entity.MEntityWrapper;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.entity.MRspQuery;
 import com.mfh.framework.rxapi.entity.MValue;
@@ -98,22 +96,32 @@ public interface RxMfhService {
     @GET("realmMap/listWhole")
     Observable<MResponse<MRspQuery<TenantInfo>>> listWhole(@QueryMap Map<String, String> options);
 
-    @GET("bizServer/autoDateEnd")
-    Observable<MResponse<String>> autoDateEnd(@QueryMap Map<String, String> options);
-    @GET("analysisAggDate/list")
-    Observable<MResponse<MRspQuery<MEntityWrapper<AggItem>>>> analysisAggDateList(@QueryMap Map<String, String> options);
-    @GET("analysisAccDate/list")
-    Observable<MResponse<MRspQuery<MEntityWrapper<AccItem>>>> analysisAccDateList(@QueryMap Map<String, String> options);
 
-    @GET("bizServer/autoShiftAnalysis")
-    Observable<MResponse<String>> autoShiftAnalysis(@QueryMap Map<String, String> options);
-    @GET("analysisAggShift/list")
-    Observable<MResponse<MRspQuery<MEntityWrapper<AggItem>>>> analysisAggShiftList(@QueryMap Map<String, String> options);
-    @GET("accAnalysisAggShift/list")
-    Observable<MResponse<MRspQuery<MEntityWrapper<AccItem>>>> accAnalysisAggShiftList(@QueryMap Map<String, String> options);
-
+    /**
+     * 支付宝条码支付
+     *
+     * /toAlipayBarTradePay/barPay?jsonStr={out_trade_no:20150929003638,auth_code:289802075510210664,
+     * total_amount:0.1,subject:test,terminal_id:001,operator_id:112369}
+     *
+     * @param outTradeNo         商户订单号,商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
+     * @param authCode           支付授权码,用户支付宝钱包中的“付款码”信息
+     * @param totalAmount        订单总金额,单位为元，精确到小数点后两位，取值范围[0.01,100000000]，
+     * @param discountableAmount 可打折金额
+     * @param subject            订单标题
+     * @param bizType            业务类型
+     * @param chId               支付渠道编号
+     */
     @GET("toAlipayBarTradePay/barPay")
     Observable<MResponse<String>> alipayBarPay(@QueryMap Map<String, String> options);
+    /**
+     * 微信条码支付
+     *
+     * @param outTradeNo         商户订单号,商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
+     * @param authCode           支付授权码,用户支付宝钱包中的“付款码”信息
+     * @param totalAmount        订单总金额,单位为元，精确到小数点后两位，取值范围[0.01,100000000]，
+     * @param discountableAmount 可打折金额
+     * @param subject            订单标题
+     */
     @GET("toWxpayBarTradePay/barPay")
     Observable<MResponse<String>> wepayBarPay(@QueryMap Map<String, String> options);
 
@@ -173,5 +181,13 @@ public interface RxMfhService {
     @FormUrlEncoded
     @POST("http://www.weibovideo.com")
     Observable<ResponseBody> getVideoUrl(@Field("weibourl") String weibourl);
+
+    /**查询用户：
+     * /pmc/customer/getCustomerByOther?mobile=2123&humanId=31323
+     * 返回当前账户余额
+     * */
+    @GET("customer/getCustomerByOther")
+    Observable<MResponse<Human>> getCustomerByOther(@QueryMap Map<String, String> options);
+
 
 }

@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
-import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
+import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -246,8 +246,8 @@ public class PayByAlipayFragment extends BasePayFragment {
                 ZLogger.d("onReceive.action=" + intent.getAction());
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_ALIPAY)) {
                     Bundle extras = intent.getExtras();
-                    if (extras != null && extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
+                    if (extras != null) {
+//                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
                         etBarCode.setText("");
                         etBarCode.requestFocus();
                         calculateCharge();
@@ -294,10 +294,9 @@ public class PayByAlipayFragment extends BasePayFragment {
 //        savePayHistory(paidAmount, PosOrderPayEntity.PAY_STATUS_PROCESS);
         Bundle args = new Bundle();
         args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                PaymentInfo.create(outTradeNo, payType,
                         PosOrderPayEntity.PAY_STATUS_PROCESS,
-                        paidAmount, paidAmount, 0D));
-
+                        paidAmount, paidAmount, 0D, null));
         EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS, args));
 
         Map<String, String> options = new HashMap<>();
@@ -377,6 +376,7 @@ public class PayByAlipayFragment extends BasePayFragment {
 
                     @Override
                     public void processResult(ResponseBody rspBody) {
+                        //{"code":"-2","msg":"Business Failed-交易不存在","version":"1","data":""}
                         ZLogger.df(String.format("支付宝条码支付状态查询:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
 
                         switch (rspBody.getRetCode()) {
@@ -563,9 +563,9 @@ public class PayByAlipayFragment extends BasePayFragment {
 
                 Bundle args = new Bundle();
                 args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                        PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+                        PaymentInfo.create(outTradeNo, payType,
                                 PosOrderPayEntity.PAY_STATUS_FINISH,
-                                paidAmount, paidAmount, 0D));
+                                paidAmount, paidAmount, 0D, null));
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
 
                 llPayInfo.setVisibility(View.VISIBLE);
@@ -604,8 +604,8 @@ public class PayByAlipayFragment extends BasePayFragment {
             public void run() {
                 Bundle args = new Bundle();
                 args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO,
-                        PaymentInfoImpl.genPaymentInfo(outTradeNo, payType, payStatus,
-                                paidAmount, paidAmount, 0D));
+                        PaymentInfo.create(outTradeNo, payType, payStatus,
+                                paidAmount, paidAmount, 0D, null));
                 args.putString(PayStep1Event.KEY_ERROR_MESSAGE, msg);
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FAILED, args));
 

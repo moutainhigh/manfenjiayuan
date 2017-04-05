@@ -129,14 +129,14 @@ public class PayStep1Fragment extends BasePayStepFragment {
         // Inflate a menu to be displayed in the toolbar
         toolbar.inflateMenu(R.menu.menu_normal);
 
-        initTabs();
-
         if (cashierOrderInfo == null) {
             DialogUtil.showHint("订单支付数据错误");
             getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         } else {
             reload(cashierOrderInfo);
+
+            initTabs();
         }
     }
 
@@ -157,8 +157,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
 
     @Override
     protected void refresh() {
-        CashierDesktopObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
-
         if (cashierOrderInfo != null) {
             //显示应付款
             Double handleAmount = CashierOrderInfoImpl.getUnpayAmount(cashierOrderInfo);
@@ -178,6 +176,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             tvAdjustAmount.setTopText(String.format("%.2f", 0D));
         }
 
+        CashierDesktopObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
         notifyPayInfoChanged(paySlidingTabStrip.getCurrentPosition());
 
         activeMode(true);
@@ -294,6 +293,8 @@ public class PayStep1Fragment extends BasePayStepFragment {
                 cashierOrderInfo.getSubject());
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
+        parArgs.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
+                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
 
         mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));
@@ -317,24 +318,21 @@ public class PayStep1Fragment extends BasePayStepFragment {
     private void notifyPayInfoChanged(int page) {
         Intent intent = new Intent();
         Bundle extras = new Bundle();
-        extras.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT, CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
+//        extras.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
+//                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
 
         if (page == TAB_ALIPAY) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_ALIPAY);
             curPayType = WayType.ALI_F2F;
-            ZLogger.df("切换到‘支付宝扫码’支付");
         } else if (page == TAB_WX) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_WX);
             curPayType = WayType.WX_F2F;
-            ZLogger.df("切换到‘微信扫码’支付");
         } else if (page == TAB_BANK) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_BANK);
             curPayType = WayType.BANKCARD;
-            ZLogger.df("切换到‘银行卡’支付");
         } else if (page == TAB_VIP) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_VIP);
             curPayType = WayType.VIP;
-            ZLogger.df("切换到‘会员’支付");
             extras.putSerializable(BasePayFragment.EXTRA_KEY_MEMBERINFO, cashierOrderInfo.getVipMember());
         }
 //        else if (page == TAB_CREDIT) {
@@ -343,11 +341,10 @@ public class PayStep1Fragment extends BasePayStepFragment {
 //            curPayType = WayType.CREDIT;
 //        }
         else {
-            ZLogger.df("切换到‘现金’支付");
             curPayType = WayType.CASH;
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED);
         }
-
+        ZLogger.df(String.format("切换到‘%s’支付", WayType.getWayTypeName(curPayType)));
         intent.putExtras(extras);
         getContext().sendBroadcast(intent);
     }
@@ -360,11 +357,16 @@ public class PayStep1Fragment extends BasePayStepFragment {
     @Override
     public void onPayCancel() {
         super.onPayCancel();
-//        refresh();
     }
 
     @Override
     public void onPayStepFailed(PaymentInfo paymentInfo, String errMsg) {
         super.onPayStepFailed(paymentInfo, errMsg);
     }
-}
+
+    @Override
+    public void onPayStepFinish() {
+//        btnSubmit.setEnabled(true);
+        hideProgressDialog();
+        super.onPayStepFinish();
+    }}

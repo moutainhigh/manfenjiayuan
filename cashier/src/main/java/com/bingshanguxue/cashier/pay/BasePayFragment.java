@@ -10,6 +10,7 @@ import com.bingshanguxue.cashier.CashierFactory;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -56,7 +57,6 @@ public abstract class BasePayFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         handleIntent();
         payType = getPayType();
-//        ZLogger.d("paytype:" + payType);
 
         initProgressDialog("正在支付订单", " 支付成功", "支付失败");
     }
@@ -65,8 +65,6 @@ public abstract class BasePayFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
-//        DialogUtil.showHint(WayType.name(payType));
-//        ZLogger.d("OnResume");
         registerReceiver();
     }
 
@@ -74,7 +72,6 @@ public abstract class BasePayFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
 
-//        ZLogger.d("onPause");
         if (receiver != null) {
             getActivity().unregisterReceiver(receiver);
         }
@@ -89,6 +86,7 @@ public abstract class BasePayFragment extends BaseFragment {
             orderBarcode = args.getString(EXTRA_KEY_ORDER_BARCODE, "");
             subject = args.getString(EXTRA_KEY_SUBJECT, "");
             body = args.getString(EXTRA_KEY_BODY, "");
+            handleAmount = args.getDouble(EXTRA_KEY_HANDLE_AMOUNT);
         }
     }
 
@@ -102,7 +100,7 @@ public abstract class BasePayFragment extends BaseFragment {
      * */
     public void generateOutTradeNo(){
         outTradeNo = CashierFactory.genTradeNo(orderId, true);
-        ZLogger.df(String.format("%s支付－交易编号：%s", WayType.name(payType), outTradeNo));
+        ZLogger.df(String.format("%s支付－交易编号：%s", WayType.getWayTypeName(payType), outTradeNo));
     }
 
     /**
@@ -151,7 +149,7 @@ public abstract class BasePayFragment extends BaseFragment {
      * */
     protected void calculateCharge(){
         calculatePaidAmount();
-        rechargeAmount = paidAmount - handleAmount;
+        rechargeAmount = MathCompact.sub(paidAmount, handleAmount);
     }
 
     /**
@@ -162,7 +160,7 @@ public abstract class BasePayFragment extends BaseFragment {
         //生成商户订单号
         generateOutTradeNo();
         ZLogger.df(String.format("支付订单--(%s) 商户订单号:%s 应付金额:%.6f 收取金额:%.6f 找零金额:%.6f",
-                WayType.name(payType), outTradeNo, handleAmount, paidAmount, rechargeAmount));
+                WayType.getWayTypeName(payType), outTradeNo, handleAmount, paidAmount, rechargeAmount));
     }
 
     /**
