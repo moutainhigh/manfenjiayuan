@@ -6,15 +6,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mfh.framework.api.CompanyHuman;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.analysis.AccItem;
-import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
 import com.mfh.framework.api.tenant.TenantInfo;
 import com.mfh.framework.rxapi.AccessToken;
-import com.mfh.framework.rxapi.entity.MEntityWrapper;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.func.MQueryResponseFunc;
 import com.mfh.framework.rxapi.func.MResponseFunc;
@@ -45,7 +43,7 @@ import rx.schedulers.Schedulers;
  * Created by bingshanguxue on 8/29/16.
  */
 
-public class RxHttpManager {
+public class    RxHttpManager {
     public static boolean RELEASE = true;
     public static boolean isUseRx = false;
 
@@ -53,7 +51,8 @@ public class RxHttpManager {
     public static String API_BASE_URL = "http://admin.mixicook.com/pmc/";
 
     //请求超时时间
-    private static final int DEFAULT_TIMEOUT = 5;
+    private static final int DEFAULT_CONNECT_TIMEOUT = 20;
+    private static final int DEFAULT_READ_TIMEOUT = 60 * 5;
 //    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder().connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 
     // @formatter:off
@@ -71,7 +70,8 @@ public class RxHttpManager {
     public static <S> S createService(Class<S> serviceClass) {
         //手动创建一个OkHttpClient并设置超时时间
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
@@ -90,7 +90,8 @@ public class RxHttpManager {
 
     public static <S> S createService2(Class<S> serviceClass) {
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhOAuthInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
@@ -113,7 +114,8 @@ public class RxHttpManager {
     public static <S> S createService(Class<S> serviceClass, String apiBaseUrl) {
         //手动创建一个OkHttpClient并设置超时时间
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
@@ -137,7 +139,8 @@ public class RxHttpManager {
                     "Basic " + Base64.encodeToString(credentials.getBytes(), Base64.NO_WRAP);
 
             OkHttpClient httpClient = new OkHttpClient.Builder()
-                    .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                     .addInterceptor(new MfhOAuthInterceptor())
 //                    .addInterceptor(new Interceptor() {
 //                        @Override
@@ -177,7 +180,8 @@ public class RxHttpManager {
     public static <S> S createService(Class<S> serviceClass, final AccessToken token) {
         if (token != null) {
             OkHttpClient httpClient = new OkHttpClient.Builder()
-                    .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
+                    .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
                     .addInterceptor(new MfhRequestInterceptor())
                     .addInterceptor(new Interceptor() {
                         @Override
@@ -317,51 +321,7 @@ public class RxHttpManager {
         toSubscribe(observable, subscriber);
     }
 
-    public void autoDateEnd(Map<String, String> options, Subscriber<String> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.autoDateEnd(options)
-                .map(new MResponseFunc<String>());
-        toSubscribe(observable, subscriber);
-    }
 
-    public void analysisAggDateList(Map<String, String> options,
-                                    MQuerySubscriber<MEntityWrapper<AggItem>> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.analysisAggDateList(options)
-                .map(new MQueryResponseFunc<MEntityWrapper<AggItem>>());
-        toSubscribe(observable, subscriber);
-    }
-
-    public void analysisAccDateList(Map<String, String> options,
-                                    MQuerySubscriber<MEntityWrapper<AccItem>> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.analysisAccDateList(options)
-                .map(new MQueryResponseFunc<MEntityWrapper<AccItem>>());
-        toSubscribe(observable, subscriber);
-    }
-
-    public void autoShiftAnalysis(Map<String, String> options, Subscriber<String> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.autoShiftAnalysis(options)
-                .map(new MResponseFunc<String>());
-        toSubscribe(observable, subscriber);
-    }
-
-    public void analysisAggShiftList(Map<String, String> options,
-                                     MQuerySubscriber<MEntityWrapper<AggItem>> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.analysisAggShiftList(options)
-                .map(new MQueryResponseFunc<MEntityWrapper<AggItem>>());
-        toSubscribe(observable, subscriber);
-    }
-
-    public void accAnalysisAggShiftList(Map<String, String> options,
-                                        MQuerySubscriber<MEntityWrapper<AccItem>> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.accAnalysisAggShiftList(options)
-                .map(new MQueryResponseFunc<MEntityWrapper<AccItem>>());
-        toSubscribe(observable, subscriber);
-    }
 
     public void findGoodsOrderList(Map<String, String> options,
                                    MQuerySubscriber<PosOrder> subscriber) {
@@ -436,6 +396,12 @@ public class RxHttpManager {
         toSubscribe(observable, subscriber);
     }
 
+    public void getCustomerByOther(Map<String, String> options, Subscriber<Human> subscriber) {
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.getCustomerByOther(options)
+                .map(new MResponseFunc<Human>());
+        toSubscribe(observable, subscriber);
+    }
 
 //    public void posRegisterList(Subscriber<MQueryResponse<PosRegister>> subscriber) {
 //        MfhApi mfhClient = MfhService.createService(MfhApi.class);
