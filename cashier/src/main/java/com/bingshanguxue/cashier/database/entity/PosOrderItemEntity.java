@@ -37,6 +37,8 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     private Double bcount = 0D; //商品数量,quantity
     /**档案价格(商品零售价格)。*/
     private Double costPrice = 0D;
+    /**会员价*/
+    private Double customerPrice = 0D;
     private Double amount = 0D; //档案价格总价.按零售价计算得出
     /**订单价（店收银默认取商品的档案价格，可以手动修改，只影响当前订单）*/
 //    private Double adjustPrice = 0D;
@@ -50,6 +52,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;
     //2016-08-01，新增产品线编号清分
     private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
+    private Integer needWait = 0;
 
     public String getOrderBarCode() {
         return orderBarCode;
@@ -116,6 +119,16 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
         this.costPrice = costPrice;
     }
 
+    public Double getCustomerPrice() {
+        if (customerPrice == null) {
+            return 0D;
+        }
+        return customerPrice;
+    }
+
+    public void setCustomerPrice(Double customerPrice) {
+        this.customerPrice = customerPrice;
+    }
 
     public String getName() {
         if (name == null) {
@@ -165,6 +178,9 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public String getUnit() {
+        if (unit == null) {
+            return "";
+        }
         return unit;
     }
 
@@ -180,21 +196,6 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
         this.providerId = providerId;
     }
 
-//    public Double getAdjustPrice() {
-//        return adjustPrice;
-//    }
-//
-//    public void setAdjustPrice(Double adjustPrice) {
-//        this.adjustPrice = adjustPrice;
-//    }
-//
-//    public Double getAdjustAmount() {
-//        return adjustAmount;
-//    }
-//
-//    public void setAdjustAmount(Double adjustAmount) {
-//        this.adjustAmount = adjustAmount;
-//    }
 
     public Double getFinalPrice() {
         if (finalPrice == null){
@@ -243,5 +244,16 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
 
     public void setProdLineId(Integer prodLineId) {
         this.prodLineId = prodLineId;
+    }
+
+    public Integer getNeedWait() {
+        if (needWait == null){
+            return 0;
+        }
+        return needWait;
+    }
+
+    public void setNeedWait(Integer needWait) {
+        this.needWait = needWait;
     }
 }

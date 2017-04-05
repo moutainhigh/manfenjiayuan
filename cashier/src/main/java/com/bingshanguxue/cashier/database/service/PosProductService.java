@@ -90,6 +90,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
     public List<PosProductEntity> queryAllAsc(String strWhere, PageInfo pageInfo) {
         return getDao().queryAllAsc(strWhere, pageInfo);
     }
+
     public List<PosProductEntity> queryAllByDesc(String strWhere) {
         return getDao().queryAllByDesc(strWhere);
     }
@@ -115,9 +116,10 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 
     /**
      * 查询本地商品库搜索商品
+     *
      * @param barcode 商品条码
      * @return PosProductEntity 如果找到多个返回第一个商品；没有找到返回null.
-     * */
+     */
     public PosProductEntity findGoods(String barcode) {
         //注意，这里的租户默认是当前登录租户
         List<PosProductEntity> entities = PosProductService.get()
@@ -128,8 +130,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
             ZLogger.d(String.format("找到%d个商品:%s[%s]",
                     entities.size(), barcode, goods.getSkuName()));
             return goods;
-        }
-        else{
+        } else {
             ZLogger.d(String.format("未找到商品:%s", barcode));
         }
 
@@ -138,10 +139,10 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 
     /**
      * 保存商品档案
-     * */
-    public void saveOrUpdate(PosGoods posGoods){
+     */
+    public void saveOrUpdate(PosGoods posGoods) {
         Long id = posGoods.getId();
-        PosProductEntity entity = PosProductService.get().getEntityById(String.valueOf(id));
+        PosProductEntity entity = getEntityById(String.valueOf(id));
         if (entity == null) {
             entity = new PosProductEntity();
             entity.setId(id);
@@ -158,6 +159,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         entity.setShortName(posGoods.getShortName());
         entity.setUnit(posGoods.getUnit());
         entity.setCostPrice(posGoods.getCostPrice());
+        entity.setCustomerPrice(posGoods.getCustomerPrice());
         entity.setQuantity(posGoods.getQuantity());
         entity.setTenantId(posGoods.getTenantId());
         entity.setProviderId(posGoods.getProviderId());
@@ -167,6 +169,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
         entity.setProcateId(posGoods.getProcateId());
         entity.setCateType(posGoods.getCateType());
         entity.setProdLineId(posGoods.getProdLineId());
+        entity.setNeedWait(posGoods.getNeedWait());
         entity.setIsCloudActive(1);//默认有效，即商品和云端数据是同步到
 
         // TODO: 8/2/16 用不到，影响效率，暂时忽略。
@@ -189,8 +192,8 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
 
     /**
      * 假删除数据
-     * */
-    public void pretendDelete(){
+     */
+    public void pretendDelete() {
         List<KeyValue> keyValues = new ArrayList<>();
         keyValues.add(new KeyValue("isCloudActive", 0));
         getDao().update(PosProductEntity.class, keyValues, String.format("isCloudActive = %d", 1));

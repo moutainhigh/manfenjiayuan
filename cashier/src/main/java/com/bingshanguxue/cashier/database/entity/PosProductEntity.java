@@ -28,6 +28,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
     private String barcode = ""; //最小商品库存单元的条形码
     private Integer priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double costPrice = 0D;  // 商品价格
+    private Double customerPrice = 0D;//会员价
     private String unit = "";    // 单位，如箱、瓶
     private Double packageNum = 0D;//箱规
 
@@ -50,6 +51,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //
     //2016-08-01，新增产品线编号清分,产品线的商品默认都归到0，相当于原来的标超
     private Integer prodLineId = 0;
+    private Integer needWait;//是否需要等待（餐饮商品收银后除了需要打印小票，同时需要打印2张取货单）
 
 
     /**
@@ -252,5 +254,24 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
 
     public void setIsCloudActive(int isCloudActive) {
         this.isCloudActive = isCloudActive;
+    }
+
+    public Integer getNeedWait() {
+        return needWait;
+    }
+
+    public void setNeedWait(Integer needWait) {
+        this.needWait = needWait;
+    }
+
+    public Double getCustomerPrice() {
+        if (customerPrice == null) {
+            return 0D;
+        }
+        return customerPrice;
+    }
+
+    public void setCustomerPrice(Double customerPrice) {
+        this.customerPrice = customerPrice;
     }
 }

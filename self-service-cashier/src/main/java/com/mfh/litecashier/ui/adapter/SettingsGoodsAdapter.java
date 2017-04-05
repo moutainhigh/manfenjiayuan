@@ -123,6 +123,8 @@ public class SettingsGoodsAdapter
         holder.tvSkuId.setText(String.format("SKU编号：%d", entity.getProSkuId()));
         holder.tvCostPrice.setText(MUtils.formatDouble("零售价：", "",
                 entity.getCostPrice(), "", "/", entity.getUnit()));
+        holder.tvCustomerPrice.setText(MUtils.formatDouble("会员价：", "",
+                entity.getCustomerPrice(), "", "/", entity.getUnit()));
         holder.tvPackageNum.setText(String.format("箱规：%.2f", entity.getPackageNum()));
         holder.tvTenantId.setText(String.format("租户编号：%d", entity.getTenantId()));
         holder.tvStockQuantity.setText(String.format("库存：%.2f", entity.getQuantity()));
@@ -153,6 +155,8 @@ public class SettingsGoodsAdapter
         TextView tvSkuId;
         @BindView(R.id.tv_costprice)
         TextView tvCostPrice;
+        @BindView(R.id.tv_customerPrice)
+        TextView tvCustomerPrice;
         @BindView(R.id.tv_packageNum)
         TextView tvPackageNum;
         @BindView(R.id.tv_tenant_id)

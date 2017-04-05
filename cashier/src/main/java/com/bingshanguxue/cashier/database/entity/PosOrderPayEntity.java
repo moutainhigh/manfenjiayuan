@@ -1,8 +1,10 @@
 package com.bingshanguxue.cashier.database.entity;
 
+import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.abs.MfhEntity;
+import com.mfh.framework.api.constant.WayType;
 
 /**
  * POS支付记录
@@ -41,7 +43,7 @@ public class PosOrderPayEntity extends MfhEntity<Long> implements ILongId {
      * */
     private String outTradeNo = "";
 
-    //支付状态
+
     public static final int PAY_STATUS_INIT     = 0;//初始状态
     public static final int PAY_STATUS_STAY_PAY = 1;//等待支付
     public static final int PAY_STATUS_PROCESS  = 2;//支付处理中
@@ -50,6 +52,7 @@ public class PosOrderPayEntity extends MfhEntity<Long> implements ILongId {
     public static final int PAY_STATUS_FAILED   = 5;//支付失败
     public static final int PAY_STATUS_CANCELED = 6;//交易取消
     public static final int PAY_STATUS_REFUND   = 7;//退款
+    /**支付状态*/
     private int paystatus = PAY_STATUS_INIT;
 
     /**
@@ -58,9 +61,10 @@ public class PosOrderPayEntity extends MfhEntity<Long> implements ILongId {
     private Integer payType;
     private Double amount = 0D;//支付/找零金额
 
-    public static final Integer AMOUNT_TYPE_IN      = 0;//收入
-    public static final Integer AMOUNT_TYPE_OUT     = 1;//支出（找零）
-    private Integer amountType = AMOUNT_TYPE_IN;
+
+    /**支付记录所属类别
+     * {@link PayWayType}*/
+    private Integer amountType = PayWayType.TYPE_NA;
 
     /**
      * 会员ID<br>

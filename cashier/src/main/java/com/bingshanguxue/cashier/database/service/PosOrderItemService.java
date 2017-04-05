@@ -121,9 +121,9 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
             entity = new PosOrderItemEntity();
             entity.setOrderBarCode(orderBarCode);
             entity.setOrderId(orderId);
-            entity.setProdLineId(goods.getProdLineId());
             entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
 
+            entity.setProdLineId(goods.getProdLineId());
             entity.setBarcode(goods.getBarcode());
             entity.setGoodsId(goods.getGoodsId());
             entity.setProSkuId(goods.getProSkuId());
@@ -134,10 +134,12 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
             entity.setUnit(goods.getUnit());
             entity.setProviderId(goods.getProviderId());
             entity.setPriceType(goods.getPriceType());
+            entity.setNeedWait(goods.getNeedWait());
         }
 
         entity.setBcount(goods.getBcount());
         entity.setCostPrice(goods.getCostPrice());
+        entity.setCustomerPrice(goods.getCustomerPrice());
         entity.setFinalPrice(goods.getFinalPrice());
         //标准金额
         entity.setAmount(entity.getBcount() * goods.getCostPrice());
@@ -146,7 +148,8 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
         entity.setUpdatedDate(new Date());
 
         saveOrUpdate(entity);
-        ZLogger.d(String.format("保存or更新订单明细:%s\n%s", goods.getBarcode(), JSON.toJSONString(entity)));
+        ZLogger.d(String.format("保存or更新订单明细:%s\n%s",
+                goods.getBarcode(), JSON.toJSONString(entity)));
     }
 
 

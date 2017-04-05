@@ -111,7 +111,7 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 21);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 22);
 
         setupGetui();
     }

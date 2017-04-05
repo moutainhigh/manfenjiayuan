@@ -72,6 +72,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="零售价&amp;单位" />
+        <!-- 会员价-->
+        <TextView
+            android:id="@+id/tv_customerPrice"
+            style="@style/singleline_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="会员价" />
 
         <!-- 箱规-->
         <TextView

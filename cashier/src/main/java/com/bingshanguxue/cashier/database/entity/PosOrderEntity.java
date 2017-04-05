@@ -92,6 +92,8 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
     private String outerTradeNo;//外部订单编号
 
+    private Long flowId = 0L;//订单流水编号
+
     public String getBarCode() {
         return barCode;
     }
@@ -248,5 +250,13 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
     public void setOuterTradeNo(String outerTradeNo) {
         this.outerTradeNo = outerTradeNo;
+    }
+
+    public Long getFlowId() {
+        return flowId;
+    }
+
+    public void setFlowId(Long flowId) {
+        this.flowId = flowId;
     }
 }

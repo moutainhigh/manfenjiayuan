@@ -27,17 +27,18 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     private String unit; // 单位，如箱、瓶
     private Double bcount = 0D; //商品数量,quantity
 
-
     private Long goodsId;   //商品主键
     private Long productId; //产品编号
     private Long proSkuId; //商品sku编号
     private Long providerId;//商品供应商编号
     private int priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double costPrice = 0D; //商品零售价格
+    private Double customerPrice = 0D;//会员价
     private Double amount = 0D; //总价.按零售价计算得出
 
     private Double finalPrice = 0D;//成交价
     private Double finalAmount = 0D; //总价.按成交价计算得出
+    private Integer needWait;
 
     public String getPosTradeNo() {
         return posTradeNo;
@@ -96,6 +97,16 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
         this.costPrice = costPrice;
     }
 
+    public Double getCustomerPrice() {
+        if (customerPrice == null) {
+            return 0D;
+        }
+        return customerPrice;
+    }
+
+    public void setCustomerPrice(Double customerPrice) {
+        this.customerPrice = customerPrice;
+    }
 
     public String getName() {
         if (name == null) {
@@ -195,5 +206,13 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
 
     public void setProdLineId(Integer prodLineId) {
         this.prodLineId = prodLineId;
+    }
+
+    public Integer getNeedWait() {
+        return needWait;
+    }
+
+    public void setNeedWait(Integer needWait) {
+        this.needWait = needWait;
     }
 }
