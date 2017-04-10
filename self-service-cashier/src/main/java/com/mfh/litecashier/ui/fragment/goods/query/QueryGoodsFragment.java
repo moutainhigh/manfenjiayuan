@@ -14,6 +14,7 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
@@ -28,6 +29,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -197,7 +199,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
             //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载，各位自由选择
             // dy>0 表示向下滑动
 //                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
-            if (lastVisibleItem >= totalItemCount - 4 && dy > 0) {
+            if (lastVisibleItem >= totalItemCount - 4 && dx > 0) {
                 if (!isLoadingMore) {
                     loadMore();
                 }
@@ -318,6 +320,28 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                 subscriber.onCompleted();
             }
         })
+                .map(new Func1<List<PosProductEntity>, List<PosProductEntity>>() {
+                    @Override
+                    public List<PosProductEntity> call(List<PosProductEntity> productEntities) {
+                        if (productEntities == null) {
+                            ZLogger.d("未查询到满足条件的商品");
+                            return  null;
+                        }
+
+                        int size = productEntities.size();
+                        ZLogger.d(String.format("共查询到 %d 个商品", size));
+
+                        List<PosProductEntity> temp = new ArrayList<>();
+                        for (PosProductEntity product : productEntities) {
+                            String barcode = product.getBarcode();
+                            if (!StringUtils.isEmpty(barcode) && barcode.length() == 6) {
+                                temp.add(product);
+                            }
+                        }
+                        ZLogger.d(String.format("共查询到 %d 个商品满足条件", temp.size()));
+                        return temp;
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<PosProductEntity>>() {
