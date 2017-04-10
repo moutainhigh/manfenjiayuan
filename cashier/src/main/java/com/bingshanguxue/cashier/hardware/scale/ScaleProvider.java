@@ -11,11 +11,13 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
  * Created by bingshanguxue on 27/11/2016.
  */
 
-public class ScaleAgent {
+public class ScaleProvider {
     private static final boolean ENABLED_DEF = true;
+
     public static final int SCALE_TYPE_ACS_P215 = 0;
     public static final int SCALE_TYPE_DS_781A = 1;
     private static final int SCALE_TYPE_DEF = SCALE_TYPE_ACS_P215;//0,爱华；1,寺冈
+
     private static final String PORT_DEF = "/dev/ttymxc1";
     private static final String BAUDRATE_DEF = "9600";
 

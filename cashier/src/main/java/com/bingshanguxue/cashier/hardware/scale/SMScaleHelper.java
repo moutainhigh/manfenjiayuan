@@ -1,7 +1,6 @@
 package com.bingshanguxue.cashier.hardware.scale;
 
 import com.alibaba.fastjson.JSON;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
@@ -152,7 +151,7 @@ public class SMScaleHelper {
             ds781A.setTareWeight(Double.parseDouble(sTareWeight2));
             ds781A.setUnitPrice(Double.parseDouble(sUnitPrice2));
             ds781A.setTotalPrice(Double.parseDouble(sTotalPrice2));
-            if (SharedPrefesManagerFactory.isSuperPermissionGranted() && !BizConfig.RELEASE) {
+            if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
                 ZLogger.d(String.format("ds781A:%s", JSON.toJSONString(ds781A)));
             }
 

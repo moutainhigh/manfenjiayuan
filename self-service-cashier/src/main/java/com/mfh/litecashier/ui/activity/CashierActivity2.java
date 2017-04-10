@@ -140,7 +140,7 @@ public abstract class CashierActivity2 extends BaseActivity {
         } else if (event.getType() == SerialPortEvent.UPDATE_PORT_SCALE) {
             try {
                 //清空数据
-                GlobalInstance.getInstance().setNetWeight(0D);
+                GlobalInstance.getInstance().reset();
 
                 if (mPeripheralBinder != null){
                     mPeripheralBinder.onScaleUpdated();
