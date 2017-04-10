@@ -3,6 +3,7 @@ package com.mfh.litecashier.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -16,8 +17,10 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -25,7 +28,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -49,16 +52,14 @@ public class QueryBalanceDialog extends CommonDialog {
 
     private View rootView;
     private ImageButton btnClose;
-    private EditText etCardNo;
     private TextView tvTitle;
-    private TextLabelView tvCash, tvScore;
+    private EditText etCardNo;
+    private AvatarView ivHeader;
+    private TextLabelView tvName, tvCash, tvScore;
 //    private AvatarView ivHeader;
     private Button btnSubmit;
 
     private ProgressBar progressBar;
-
-    private Long userTmpId = null;
-
 
 
 //    private QueryBalanceDialog(Context context, boolean flag, OnCancelListener listener) {
@@ -72,9 +73,9 @@ public class QueryBalanceDialog extends CommonDialog {
 //        ButterKnife.bind(rootView);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
-//        ivHeader = (AvatarView) rootView.findViewById(R.id.iv_header);
+        ivHeader = (AvatarView) rootView.findViewById(R.id.iv_header);
         etCardNo = (EditText) rootView.findViewById(R.id.et_card_id);
-//        tvUsername = (TextView) rootView.findViewById(R.id.tv_username);
+        tvName = (TextLabelView) rootView.findViewById(R.id.tv_humanName);
         tvCash = (TextLabelView) rootView.findViewById(R.id.tv_cash);
         tvScore = (TextLabelView) rootView.findViewById(R.id.tv_score);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
@@ -82,8 +83,8 @@ public class QueryBalanceDialog extends CommonDialog {
         btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
 
         tvTitle.setText("余额查询");
-//        ivHeader.setBorderWidth(3);
-//        ivHeader.setBorderColor(Color.parseColor("#e8e8e8"));
+        ivHeader.setBorderWidth(3);
+        ivHeader.setBorderColor(Color.parseColor("#e8e8e8"));
         etCardNo.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -140,7 +141,6 @@ public class QueryBalanceDialog extends CommonDialog {
 
         getWindow().setGravity(Gravity.CENTER);
 
-
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -192,8 +192,28 @@ public class QueryBalanceDialog extends CommonDialog {
         etCardNo.requestFocus();
     }
 
+    private void refresh2(Human human){
+        if (human != null){
+            ivHeader.setAvatarUrl(human.getHeadimageUrl());
+            tvName.setTvSubTitle(human.getCustomName());
+            tvCash.setEndText(MUtils.formatDouble(human.getCurCash(), "暂无数据"));
+            tvScore.setEndText(human.getCurScore() != null
+                    ? String.valueOf(human.getCurScore())
+                    : "暂无数据");
+        }
+        else{
+            ivHeader.setAvatarUrl(null);
+            tvName.setTvSubTitle("暂无数据");
+            tvCash.setEndText("暂无数据");
+            tvScore.setEndText("暂无数据");
+        }
+
+        etCardNo.getText().clear();
+        etCardNo.requestFocus();
+    }
+
     private void loadUserAccount(String cardId){
-        refresh(null);
+        refresh2(null);
 
         final String cardId2 = MUtils.parseCardId(cardId);
         if (StringUtils.isEmpty(cardId2)) {
@@ -210,11 +230,33 @@ public class QueryBalanceDialog extends CommonDialog {
 
         Map<String, String> options = new HashMap<>();
         if (!StringUtils.isEmpty(cardId2)) {
-            options.put("cardId", cardId2);
+//            options.put("cardId", cardId2);
+            options.put("cardNo", cardId2);
         }
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        CommonUserAccountHttpManager.getInstance().getUserAccountByCardId(options,
-                new Subscriber<UserAccount>() {
+//        CommonUserAccountHttpManager.getInstance().getUserAccountByCardId(options,
+//                new Subscriber<UserAccount>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        progressBar.setVisibility(View.GONE);
+//                        DialogUtil.showHint(e.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onNext(UserAccount userAccount) {
+//                        refresh(userAccount);
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//
+//                });
+
+        RxHttpManager.getInstance().getCustomerByOther(options,
+                new Subscriber<Human>() {
                     @Override
                     public void onCompleted() {
 
@@ -227,12 +269,10 @@ public class QueryBalanceDialog extends CommonDialog {
                     }
 
                     @Override
-                    public void onNext(UserAccount userAccount) {
-                        refresh(userAccount);
+                    public void onNext(Human human) {
+                        refresh2(human);
                         progressBar.setVisibility(View.GONE);
-
                     }
-
                 });
     }
 

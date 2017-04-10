@@ -19,42 +19,58 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/cardView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/et_card_id"
+                style="@style/mfh_edittext_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="请刷卡"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:cursorVisible="false"
+                android:layout_marginTop="@dimen/spacing_double"
+                android:minHeight="48dp"
+                android:padding="@dimen/spacing_micro"
+                android:textColor="@color/material_black"
+                android:textSize="16sp">
 
-                <EditText
-                    android:id="@+id/et_card_id"
-                    style="@style/mfh_edittext_normal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_4x"
-                    android:gravity="center"
-                    android:hint="请刷卡"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:minHeight="48dp"
-                    android:padding="@dimen/spacing_micro"
-                    android:textColor="@color/material_black"
-                    android:textSize="16sp">
+                <requestFocus
+                    android:duplicateParentState="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"/>
+            </EditText>
 
-                    <requestFocus
-                        android:duplicateParentState="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"/>
-                </EditText>
+            <!--会员信息-->
+            <!--头像-->
+            <com.bingshanguxue.vector_uikit.widget.AvatarView
+                android:id="@+id/iv_header"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="@dimen/spacing_double"
+                android:src="@drawable/chat_tmp_user_head"/>
 
-            </RelativeLayout>
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
+                android:id="@+id/tv_humanName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_4x"
+                app:endTextColor="@color/material_black"
+                app:endTextSize="16sp"
+                app:startText="会员名:"
+                app:endText=""
+                app:startTextColor="@color/material_black_50"
+                app:startTextGravity="end"
+                app:startTextSize="16sp"
+                app:startTextWidth="80dp"/>
 
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/tv_cash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="@dimen/spacing_normal"
                 app:endTextColor="@color/material_black"
                 app:endTextSize="16sp"
                 app:startText="余额:"
