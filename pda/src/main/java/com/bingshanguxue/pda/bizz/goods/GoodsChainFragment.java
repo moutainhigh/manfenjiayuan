@@ -14,8 +14,8 @@ import com.manfenjiayuan.business.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSkuStore.InvSkuBizBean;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -44,7 +44,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
 //    @Bind(R.id.empty_view)
     View emptyView;
 
-    private ScGoodsSku curGoods;
+    private InvSkuBizBean curGoods;
     private ChainGoodsSkuPresenter mChainGoodsSkuPresenter;
 
     public static GoodsChainFragment newInstance(Bundle args) {
@@ -107,7 +107,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
         ZLogger.d(String.format("ScGoodsSkuEvent(%d)", eventId));
         switch (eventId) {
             case ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE: {
-                curGoods = (ScGoodsSku) args.getSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU);
+                curGoods = (InvSkuBizBean) args.getSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU);
                 reload();
             }
             break;
@@ -228,7 +228,6 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
             return;
         }
 
-
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
             reload(curGoods, mPageInfo);
@@ -239,7 +238,7 @@ public class GoodsChainFragment extends BaseListFragment<ChainGoodsSku> implemen
     }
 
 
-    private void reload(ScGoodsSku goods, PageInfo pageInfo){
+    private void reload(InvSkuBizBean goods, PageInfo pageInfo){
         if (goods != null){
             if (!NetworkUtils.isConnect(getActivity())) {
                 DialogUtil.showHint(R.string.toast_network_error);

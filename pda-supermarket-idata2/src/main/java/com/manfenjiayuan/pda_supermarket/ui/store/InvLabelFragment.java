@@ -9,19 +9,19 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.pda.PDAScanManager;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.presenter.InvSkuBizPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.manfenjiayuan.business.view.IInvSkuBizView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.QueryBarcodeFragment;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvSkuLabelApi;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.api.invSkuStore.InvSkuBizBean;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -32,8 +32,6 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.List;
-
 import butterknife.BindView;
 
 
@@ -41,7 +39,7 @@ import butterknife.BindView;
  * 打印价签
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSkuView {
+public class InvLabelFragment extends QueryBarcodeFragment implements IInvSkuBizView {
 
     public static final String EXTRA_KEY_BARCODE = "EXTRA_KEY_BARCODE";
 
@@ -53,6 +51,8 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     TextLabelView labelShortName;
     @BindView(R.id.label_costPrice)
     TextLabelView labelCostPrice;
+    @BindView(R.id.label_customerPrice)
+    TextLabelView labelCustomerPrice;
     @BindView(R.id.label_costScore)
     TextLabelView labelCostScore;
     @BindView(R.id.label_prodArea)
@@ -62,8 +62,8 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     @BindView(R.id.fab_scan)
     FloatingActionButton btnSweep;
 
-    private ScGoodsSku curGoods = null;
-    private ScGoodsSkuPresenter mScGoodsSkuPresenter;
+    private InvSkuBizBean curGoods = null;
+    private InvSkuBizPresenter mInvSkuBizPresenter;
 
 
     public static InvLabelFragment newInstance(Bundle args) {
@@ -84,7 +84,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mInvSkuBizPresenter = new InvSkuBizPresenter(this);
     }
 
     @Override
@@ -97,6 +97,8 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             barcode = args.getString(EXTRA_KEY_BARCODE, null);
         }
         super.createViewInner(rootView, container, savedInstanceState);
+
+        mScanBar.setInputType(EditInputType.TEXT);
 
         btnSweep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +136,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             onQueryError(getString(R.string.toast_network_error));
         } else {
             // TODO: 7/30/16 执行查询动作
-            mScGoodsSkuPresenter.getByBarcode(barcode);
+            mInvSkuBizPresenter.getBeanByBizKeys(barcode);
         }
     }
 
@@ -161,10 +163,10 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
         jsonStr.put("shortName", curGoods.getShortName());
         jsonStr.put("unit", curGoods.getUnit());
         jsonStr.put("priceType", curGoods.getPriceType());
-        jsonStr.put("costPrice", curGoods.getCostPrice());
         jsonStr.put("costScore", curGoods.getCostScore());
+        jsonStr.put("costPrice", curGoods.getCostPrice());
         //customPrice目前就用costPrice代替
-        jsonStr.put("customPrice", curGoods.getCostPrice());
+        jsonStr.put("customPrice", curGoods.getCustomerPrice());
         jsonStr.put("prodArea", curGoods.getProdArea());
         jsonStr.put("prodLevel", curGoods.getProdLevel());
 
@@ -201,7 +203,7 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     /**
      * 刷新信息
      */
-    private void refreshPackage(ScGoodsSku goods) {
+    private void refreshPackage(InvSkuBizBean goods) {
         refresh();
         curGoods = goods;
         if (curGoods == null) {
@@ -220,6 +222,8 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
             labelShortName.setTvSubTitle(curGoods.getShortName());
             labelCostPrice.setTvSubTitle(MUtils.formatDouble(null, null,
                     curGoods.getCostPrice(), "", "/", curGoods.getUnit()));
+            labelCustomerPrice.setTvSubTitle(MUtils.formatDouble(null, null,
+                    curGoods.getCustomerPrice(), "", "/", curGoods.getUnit()));
             labelCostScore.setTvSubTitle(MUtils.formatDouble(curGoods.getCostScore(), ""));
             labelProdArea.setTvSubTitle(curGoods.getProdArea());
             labelProdLevel.setTvSubTitle(curGoods.getProdLevel());
@@ -230,29 +234,25 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IScGoodsSk
     }
 
     @Override
-    public void onIScGoodsSkuViewProcess() {
+    public void onIInvSkuBizViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询商品...", false);
+
     }
 
     @Override
-    public void onIScGoodsSkuViewError(String errorMsg) {
+    public void onIInvSkuBizViewError(String errorMsg) {
         onQuerySuccess();
         refreshPackage(null);
     }
 
     @Override
-    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> scGoodsSkus) {
-
-    }
-
-    @Override
-    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
+    public void onIInvSkuBizViewSuccess(InvSkuBizBean data) {
         onQuerySuccess();
 
-        if (goodsSku == null) {
+        if (data == null) {
             DialogUtil.showHint("未找到商品");
         }
 
-        refreshPackage(goodsSku);
+        refreshPackage(data);
     }
 }

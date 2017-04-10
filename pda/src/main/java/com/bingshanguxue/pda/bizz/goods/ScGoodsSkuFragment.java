@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.pda.dialog.ActionDialog;
+import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
-import com.mfh.comn.bean.PageInfo;
+import com.manfenjiayuan.business.presenter.InvSkuBizPresenter;
+import com.manfenjiayuan.business.view.IInvSkuBizView;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.api.invSkuStore.InvSkuBizBean;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -29,7 +29,6 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 
@@ -37,7 +36,7 @@ import java.util.List;
  * 商品档案
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuView {
+public class ScGoodsSkuFragment extends PDAScanFragment implements IInvSkuBizView {
 
     //    @Bind(R.id.toolbar)
     public Toolbar mToolbar;
@@ -52,8 +51,8 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
 
     private String curBarcode;
-    private ScGoodsSku curGoods = null;
-    private ScGoodsSkuPresenter mScGoodsSkuPresenter = null;
+    private InvSkuBizBean curGoods = null;
+    private InvSkuBizPresenter mScGoodsSkuPresenter = null;
 
 
     private ActionDialog mActionDialog = null;
@@ -77,7 +76,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mScGoodsSkuPresenter = new InvSkuBizPresenter(this);
     }
 
     @Override
@@ -107,6 +106,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         }
 
         if (mScanBar != null) {
+            mScanBar.setInputType(EditInputType.TEXT);
 //            mScanBar.setSoftKeyboardEnabled(true);
             mScanBar.setOnScanBarListener(new ScanBar.OnScanBarListener() {
                 @Override
@@ -168,6 +168,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
      * 搜索条码
      */
     public void queryByBarcode(String barcode) {
+//        DeviceUtils.hideSoftInput(getActivity());
         isAcceptBarcodeEnabled = false;
         if (StringUtils.isEmpty(barcode)) {
             onQueryError("请先扫描商品条码");
@@ -181,12 +182,11 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
 
         if (mScGoodsSkuPresenter != null) {
             curBarcode = barcode;
-            mScGoodsSkuPresenter.findGoodsListByBarcode(barcode);
+            mScGoodsSkuPresenter.getBeanByBizKeys(barcode);
         } else {
             refresh(null, false);
         }
     }
-
 
     /**
      * 网点商品档案未找到商品提示
@@ -201,7 +201,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                 new ActionDialog.DialogClickListener() {
                     @Override
                     public void onAction1Click() {
-                        mScGoodsSkuPresenter.getByBarcode(barcode);
+                        mScGoodsSkuPresenter.getBeanByBizKeys(barcode);
                     }
 
                     @Override
@@ -220,31 +220,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         }
     }
 
-    /**
-     * 查询商品信息
-     */
-    public void queryByName(String name) {
-        isAcceptBarcodeEnabled = false;
-        if (StringUtils.isEmpty(name)) {
-            mScanBar.requestFocus();
-            isAcceptBarcodeEnabled = true;
-            return;
-        }
-
-        if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            isAcceptBarcodeEnabled = true;
-            refresh(null, false);
-            return;
-        }
-
-        if (mScGoodsSkuPresenter != null) {
-            mScGoodsSkuPresenter.findGoodsListByName(name);
-        } else {
-            refresh(null, false);
-        }
-    }
-
     public void onQueryError(String errorMsg) {
         if (!StringUtils.isEmpty(errorMsg)) {
             ZLogger.df(errorMsg);
@@ -260,7 +235,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     /**
      * 刷新信息
      */
-    private void refresh(ScGoodsSku invSkuGoods, boolean isEditable) {
+    private void refresh(InvSkuBizBean invSkuGoods, boolean isEditable) {
         mScanBar.reset();
         isAcceptBarcodeEnabled = true;
         DeviceUtils.hideSoftInput(getActivity(), mScanBar);
@@ -270,6 +245,7 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
         Bundle args = new Bundle();
         if (curGoods != null) {
             args.putLong(ScGoodsSkuEvent.EXTRA_KEY_PROSKUID, curGoods.getProSkuId());
+//            args.putLong(ScGoodsSkuEvent.EXTRA_KEY_PROSKUID, curGoods.getProSkuId());
         }
         args.putSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU, curGoods);
         args.putBoolean(ScGoodsSkuEvent.EXTRA_KEY_ISEDITABLE, isEditable);
@@ -277,21 +253,21 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
     }
 
     @Override
-    public void onIScGoodsSkuViewProcess() {
+    public void onIInvSkuBizViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在搜索商品...", false);
+
     }
 
     @Override
-    public void onIScGoodsSkuViewError(String errorMsg) {
+    public void onIInvSkuBizViewError(String errorMsg) {
         onQueryError(errorMsg);
     }
 
     @Override
-    public void onIScGoodsSkuViewSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
-        if (dataList != null && dataList.size() > 0) {
-            ScGoodsSku scGoodsSku = dataList.get(0);
-            refresh(scGoodsSku, true);
-
+    public void onIInvSkuBizViewSuccess(InvSkuBizBean data) {
+        if (data != null) {
+            refresh(data, true);
+            curBarcode = null;
             hideProgressDialog();
         } else {
             if (!StringUtils.isEmpty(curBarcode)) {
@@ -302,17 +278,6 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IScGoodsSkuVi
                 hideProgressDialog();
                 refresh(null, false);
             }
-        }
-    }
-
-    @Override
-    public void onIScGoodsSkuViewSuccess(ScGoodsSku goodsSku) {
-        refresh(goodsSku, false);
-        curBarcode = null;
-        hideProgressDialog();
-
-        if (goodsSku == null) {
-            DialogUtil.showHint("未找到商品");
         }
     }
 }

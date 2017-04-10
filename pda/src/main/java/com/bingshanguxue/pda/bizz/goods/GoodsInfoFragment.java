@@ -10,30 +10,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.pda.DataSyncManager;
 import com.bingshanguxue.pda.PDAScanManager;
 import com.bingshanguxue.pda.R;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
+import com.mfh.framework.api.invSkuStore.InvSkuBizBean;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
 
 
 /**
@@ -48,6 +50,7 @@ public class GoodsInfoFragment extends BaseFragment {
     TextLabelView labelBarcode;
     //    @Bind(R.id.label_buyprice)
     TextLabelView labelBuyprice;
+    TextLabelView labelCustomerPrice;
     //    @Bind(R.id.label_costPrice)
     EditLabelView labelCostPrice;
     //    @Bind(R.id.label_grossProfit)
@@ -65,7 +68,7 @@ public class GoodsInfoFragment extends BaseFragment {
     public FloatingActionButton btnSubmit;
     public FloatingActionButton btnSweep;
 
-    private ScGoodsSku curGoods = null;
+    private InvSkuBizBean curGoods = null;
     private boolean isEditable = true;//网店商品档案允许被修改，平台商品档案不允许被修改。
 
     public static GoodsInfoFragment newInstance(Bundle args) {
@@ -94,6 +97,7 @@ public class GoodsInfoFragment extends BaseFragment {
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcodee);
         labelBuyprice = (TextLabelView) rootView.findViewById(R.id.label_buyprice);
+        labelCustomerPrice = (TextLabelView) rootView.findViewById(R.id.label_customerPrice);
         labelCostPrice = (EditLabelView) rootView.findViewById(R.id.label_costPrice);
         labelGrossProfit = (TextLabelView) rootView.findViewById(R.id.label_grossProfit);
         labelQuantity = (TextLabelView) rootView.findViewById(R.id.label_quantity);
@@ -130,7 +134,7 @@ public class GoodsInfoFragment extends BaseFragment {
                 if (curGoods != null) {
                     //计算毛利率:(costPrice-buyPrice) / buyPrice
                     String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
-                            (calInputCostPrice() - curGoods.getBuyPrice()));
+                            MathCompact.sub(calInputCostPrice(), curGoods.getBuyPrice()));
                     labelGrossProfit.setTvSubTitle(grossProfit);
                 }
             }
@@ -187,7 +191,7 @@ public class GoodsInfoFragment extends BaseFragment {
         ZLogger.d(String.format("ScGoodsSkuEvent(%d)", eventId));
         switch (eventId) {
             case ScGoodsSkuEvent.EVENT_ID_SKU_UPDATE: {
-                ScGoodsSku sku = (ScGoodsSku) args.getSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU);
+                InvSkuBizBean sku = (InvSkuBizBean) args.getSerializable(ScGoodsSkuEvent.EXTRA_KEY_SCGOODSSKU);
                 isEditable = args.getBoolean(ScGoodsSkuEvent.EXTRA_KEY_ISEDITABLE, true);
                 refresh(sku);
             }
@@ -245,35 +249,29 @@ public class GoodsInfoFragment extends BaseFragment {
 //        jsonObject.put("lowerLimit", labelLowerLimit.getInput());
         jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
-        //回调
-        InvSkuStoreApiImpl.update(jsonObject.toJSONString(), updateResponseCallback);
-    }
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
 
-    NetCallBack.NetTaskCallBack updateResponseCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                    RspValue<String> retValue = (RspValue<String>) rspData;
-                    String retStr = retValue.getValue();
-
-                    //出库成功:1-556637
-                    ZLogger.d("修改成功:" + retStr);
-                    onSubmitSuccess();
-
-                    DataSyncManager.getInstance().notifyUpdateSku();
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    onSubmitError(errMsg);
-                }
             }
-            , String.class
-            , MfhApplication.getAppContext()) {
-    };
+
+            @Override
+            public void onError(Throwable e) {
+                onSubmitError(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                onSubmitSuccess();
+
+//                DataSyncManager.getInstance().notifyUpdateSku();
+            }
+
+        });
+    }
 
     /**
      * 提交处理中
@@ -305,12 +303,13 @@ public class GoodsInfoFragment extends BaseFragment {
     /**
      * 刷新信息
      */
-    private void refresh(ScGoodsSku invSkuGoods) {
+    private void refresh(InvSkuBizBean invSkuGoods) {
         curGoods = invSkuGoods;
         if (curGoods == null) {
             labelBarcode.setTvSubTitle("");
             labelProductName.setTvSubTitle("");
             labelBuyprice.setTvSubTitle("");
+            labelCustomerPrice.setTvSubTitle("");
             labelCostPrice.setInput("");
             labelGrossProfit.setTvSubTitle("");
             labelQuantity.setTvSubTitle("");
@@ -335,9 +334,10 @@ public class GoodsInfoFragment extends BaseFragment {
 
             //计算毛利率:(costPrice-buyPrice) / costPrice
             String grossProfit = MUtils.retrieveFormatedGrossMargin(curGoods.getCostPrice(),
-                    (curGoods.getCostPrice() - curGoods.getBuyPrice()));
+                    MathCompact.sub(curGoods.getCostPrice(), curGoods.getBuyPrice()));
             labelGrossProfit.setTvSubTitle(grossProfit);
             labelBuyprice.setTvSubTitle(MUtils.formatDouble(curGoods.getBuyPrice(), ""));
+            labelCustomerPrice.setTvSubTitle(MUtils.formatDouble(curGoods.getCustomerPrice(), ""));
 
             labelCostPrice.setInputEnabled(isEditable);
             labelUpperLimit.setInputEnabled(isEditable);
