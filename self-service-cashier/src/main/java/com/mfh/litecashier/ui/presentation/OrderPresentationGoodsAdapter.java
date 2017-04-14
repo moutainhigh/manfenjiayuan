@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
@@ -54,6 +55,7 @@ public class OrderPresentationGoodsAdapter
 
         holder.tvName.setText(entity.getSkuName());
         holder.tvPrice.setText(String.format("%.2f", entity.getFinalPrice()));
+        holder.tvCustomerPrice.setText(MUtils.formatDouble(entity.getCustomerPrice(), ""));
         //计件：整数；记重：3位小数
         if (entity.getPriceType() == PriceType.WEIGHT) {
             holder.tvBcount.setText(String.format("%.3f", entity.getBcount()));
@@ -68,6 +70,8 @@ public class OrderPresentationGoodsAdapter
         TextView tvName;
         @BindView(R.id.tv_price)
         TextView tvPrice;
+        @BindView(R.id.tv_customer_price)
+        TextView tvCustomerPrice;
         @BindView(R.id.tv_bcount)
         TextView tvBcount;
         @BindView(R.id.tv_amount)
