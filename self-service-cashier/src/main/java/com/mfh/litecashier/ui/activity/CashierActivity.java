@@ -20,7 +20,6 @@ import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.service.TtsService;
 import com.mfh.litecashier.utils.GlobalInstance;
 
@@ -30,10 +29,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,15 +38,14 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
-import android_serialport_api.SerialPortFinder;
+
 
 /**
  * 首页
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public abstract class CashierActivity extends BaseActivity {
-    private DispQueueThread DispQueue;//刷新显示线程
-    private SerialPortFinder mSerialPortFinder;//串口设备搜索
+    private DispQueueThread mDispQueueThread;//刷新显示线程
     protected SerialControl comDisplay, comPrint, comScale;//串口
 
     private long lastScaleTriggle = System.currentTimeMillis();
@@ -126,14 +121,14 @@ public abstract class CashierActivity extends BaseActivity {
         CloseComPort(comPrint);
         CloseComPort(comScale);
 
-        if (mSerialDispatcher != null){
+        if (mSerialDispatcher != null) {
             mSerialDispatcher.quit();
             mSerialDispatcher = null;
         }
 
-        if (DispQueue != null){
-            DispQueue.interrupt();
-            DispQueue = null;
+        if (mDispQueueThread != null) {
+            mDispQueueThread.interrupt();
+            mDispQueueThread = null;
         }
 
         unbindService(ttsServiceConnection);
@@ -162,20 +157,31 @@ public abstract class CashierActivity extends BaseActivity {
             super(sPort, iBaudRate);
         }
 
+        public SerialControl(String sPort, String sBaudRate, int readDelay) {
+            super(sPort, sBaudRate);
+            setReadDelay(readDelay);
+        }
+
         public SerialControl() {
         }
 
-        protected void onDataReceived(final ComBean ComRecData) {
-            //数据接收量大或接收时弹出软键盘，界面会卡顿,可能和6410的显示性能有关
-            //直接刷新显示，接收数据量大时，卡顿明显，但接收与显示同步。
-            //用线程定时刷新显示可以获得较流畅的显示效果，但是接收数据速度快于显示速度时，显示会滞后。
-            //最终效果差不多-_-，线程定时刷新稍好一些。
-            DispQueue.AddQueue(ComRecData);//线程定时刷新显示(推荐)
+        protected void onDataReceived(final ComBean comBean) {
+            if (comBean == null) {
+                ZLogger.d("串口数据无效");
+                return;
+            }
+
+            //线程定时刷新显示，目前只接收并处理电子秤发送的数据
+            mDispQueueThread.addQueue(comBean);
         }
     }
 
     /**
      * 刷新显示线程
+     * 数据接收量大或接收时弹出软键盘，界面会卡顿,可能和6410的显示性能有关
+     * 直接刷新显示，接收数据量大时，卡顿明显，但接收与显示同步。
+     * 用线程定时刷新显示可以获得较流畅的显示效果，但是接收数据速度快于显示速度时，显示会滞后。
+     * 最终效果差不多-_-，线程定时刷新稍好一些(推荐)。
      */
     private class DispQueueThread extends Thread {
         private Queue<ComBean> mComBeanQueue = new LinkedList<>();
@@ -186,11 +192,11 @@ public abstract class CashierActivity extends BaseActivity {
             // TODO: 8/9/16 java.util.NoSuchElementException 
             try {
                 while (!isInterrupted()) {
-                    final ComBean ComData;
-                    while ((ComData = mComBeanQueue.poll()) != null) {
-                        performData(ComData);
+                    final ComBean comBean;
+                    while ((comBean = mComBeanQueue.poll()) != null) {
+                        processComBean(comBean);
 
-                        Thread.sleep(50);//显示性能高的话，可以把此数值调小。
+                        Thread.sleep(5);//显示性能高的话，可以把此数值调小。
                         break;
                     }
                 }
@@ -200,68 +206,76 @@ public abstract class CashierActivity extends BaseActivity {
             }
         }
 
-        public synchronized void AddQueue(ComBean ComData) {
+        public synchronized void addQueue(ComBean ComData) {
             mComBeanQueue.add(ComData);
         }
     }
 
 
     /**
-     * 显示接收数据
+     * 处理串口数据
      */
-    private void performData(ComBean comBean) {
+    private void processComBean(ComBean comBean) {
         String port = comBean.sComPort;
         if (StringUtils.isEmpty(port)) {
             return;
         }
 
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-            String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
-                    comBean.sRecTime, port,
-                    new String(comBean.bRec), DataConvertUtil.ByteArrToHex(comBean.bRec));
-            ZLogger.df("COM RECV:" + sMsg);
-        }
-
         Long rightNow = System.currentTimeMillis();
+        if (port.equals(ScaleProvider.getPort())) {
+            if (ScaleProvider.isEnabled()) {
+                if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
+//                    String sMsg = String.format("时间：<%s>\n串口：<%s>\n数据1：<%s>\n数据2:<%s>",
+//                            comBean.sRecTime, port,
+//                            new String(comBean.bRec),
+//                            DataConvertUtil.ByteArrToHex(comBean.bRec));
+                    ZLogger.df("电子秤串口数据:" + DataConvertUtil.ByteArrToHex(comBean.bRec));
+                }
 
-        if (ScaleProvider.isEnabled()) {
-            //接收到串口数据
-            if (port.equals(ScaleProvider.getPort())) {
                 lastScaleTriggle = rightNow;
                 if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
                     Double netWeight = AHScaleHelper.parseACSP215(comBean.bRec);
+                    //只保留有效数据
                     if (netWeight != null) {
                         GlobalInstance.getInstance().setNetWeight(netWeight);
-                        return;
                     }
                 } else if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_DS_781A) {
-                    DS781A ds781A = SMScaleHelper.parseData(comBean.bRec);
+                    DS781A ds781A = SMScaleHelper.parseCase4(comBean.bRec);
                     if (ds781A != null) {
                         GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
-                        return;
                     }
                 }
-                GlobalInstance.getInstance().reset();
             } else {
-                Long interval = rightNow - lastScaleTriggle;
-                ZLogger.d(String.format("interval＝%d, rightNow=%d, lastAhscaleTriggle=%d",
-                        interval, rightNow, lastScaleTriggle));
-                if (interval > 2 * MINUTE) {
-                    ZLogger.df(String.format("(%s)超过2分钟没有收到电子秤串口消息，自动重新打开串口",
-                            ScaleProvider.getPort()));
-                    GlobalInstance.getInstance().reset();
-
-                    CloseComPort(comScale);
-                    comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
-                    OpenComPort(comScale);
-                    lastScaleTriggle = rightNow;
-                }
+                GlobalInstance.getInstance().reset();
             }
+        } else {
+            //暂时不处理其他串口发送的数据
+            checkScalePort();
         }
-        else{
-            GlobalInstance.getInstance().reset();
-        }
+    }
 
+    /**
+     * 检查是否需要重启电子秤串口
+     */
+    private void checkScalePort() {
+        Long rightNow = System.currentTimeMillis();
+        Long interval = rightNow - lastScaleTriggle;
+        ZLogger.d(String.format("interval＝%d, rightNow=%d, lastAhscaleTriggle=%d",
+                interval, rightNow, lastScaleTriggle));
+        if (interval > 2 * MINUTE) {
+            ZLogger.df(String.format("(%s)超过2分钟没有收到电子秤串口消息，自动重新打开串口",
+                    ScaleProvider.getPort()));
+            GlobalInstance.getInstance().reset();
+
+            CloseComPort(comScale);
+            if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
+                comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate(), 50);
+            } else {
+                comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
+            }
+            OpenComPort(comScale);
+            lastScaleTriggle = rightNow;
+        }
     }
 
     private int comMode = 1;
@@ -285,7 +299,7 @@ public abstract class CashierActivity extends BaseActivity {
          */
         private BlockingQueue<ComBean> mQueue;
 
-        public SerialDispatcher(BlockingQueue<ComBean> queue){
+        public SerialDispatcher(BlockingQueue<ComBean> queue) {
             mQueue = queue;
         }
 
@@ -311,8 +325,8 @@ public abstract class CashierActivity extends BaseActivity {
 
                 try {
                     if (comBean != null) {
-                        performData(comBean);
-                        Thread.sleep(50);//显示性能高的话，可以把此数值调小。
+                        processComBean(comBean);
+                        Thread.sleep(10);//显示性能高的话，可以把此数值调小。
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -331,7 +345,6 @@ public abstract class CashierActivity extends BaseActivity {
     }
 
 
-
     /**
      * 初始化串口
      */
@@ -343,11 +356,10 @@ public abstract class CashierActivity extends BaseActivity {
 //        embPrinter = PrinterInstance.getPrinterInstance(new File(PrinterAgent.getPort()),
 //                Integer.parseInt(PrinterAgent.getBaudrate()), 0, mHandler);
 
-        if (comMode == 1){
-            DispQueue = new DispQueueThread();
-            DispQueue.start();
-        }
-        else{
+        if (comMode == 1) {
+            mDispQueueThread = new DispQueueThread();
+            mDispQueueThread.start();
+        } else {
             mSerialDispatcher = new SerialDispatcher(mSerialQueue);
             mSerialDispatcher.start();
         }
@@ -386,7 +398,7 @@ public abstract class CashierActivity extends BaseActivity {
 
     /**
      * 打开串口，并发送数据
-     * */
+     */
     private class OpenPortRunnable2 implements Runnable {
         private SerialHelper serialHelper;
         private byte[] bOutArray;
@@ -458,8 +470,7 @@ public abstract class CashierActivity extends BaseActivity {
     private void sendPortData(SerialHelper serialHelper, byte[] bOutArray) {
         if (serialHelper != null && serialHelper.isOpen()) {
             serialHelper.send(bOutArray);
-        }
-        else{
+        } else {
             ZLogger.df("串口未打开, 暂停打印，重新打开串口");
             //使用线程，避免界面卡顿
             new Thread(new OpenPortRunnable2(serialHelper, bOutArray)).start();
@@ -471,26 +482,7 @@ public abstract class CashierActivity extends BaseActivity {
      * JOOYTEC: devices:[/dev/ttyGS3, /dev/ttyGS2, /dev/ttyGS1, /dev/ttyGS0, /dev/ttyS3, /dev/ttyS1, /dev/ttyS0, /dev/ttyFIQ0]
      */
     public void setControls() {
-        mSerialPortFinder = new SerialPortFinder();
-
-        String[] entryValues = mSerialPortFinder.getAllDevicesPath();
-        List<String> devicesPath = new ArrayList<>();
-        if (entryValues != null) {
-            Collections.addAll(devicesPath, entryValues);
-        }
-        ZLogger.d("devicePath:" + devicesPath.toString());
-        SerialManager.getInstance().setComDevicesPath(devicesPath);//保存devices
-
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-            String[] devices = mSerialPortFinder.getAllDevices();
-            List<String> allDevices2 = new ArrayList<>();
-            if (devices != null) {
-                Collections.addAll(allDevices2, devices);
-            }
-            ZLogger.d("devices:" + allDevices2.toString());
-        }
-
-        if (devicesPath.contains(PrinterAgent.getPort()) && PrinterAgent.isEnabled()) {
+        if (PrinterAgent.isEnabled()) {
             CloseComPort(comPrint);
             OpenComPort(comPrint);
 //                if (embPrinter == null){
@@ -498,23 +490,25 @@ public abstract class CashierActivity extends BaseActivity {
 //                            Integer.parseInt(PrinterAgent.getBaudrate()), 0, mHandler);
 //                }
 //                embPrinter.openConnection();
-        }
-        else{
+        } else {
             CloseComPort(comPrint);
         }
-        if (devicesPath.contains(PoslabAgent.getPort()) && PoslabAgent.isEnabled()) {
+        if (PoslabAgent.isEnabled()) {
             CloseComPort(comDisplay);
             OpenComPort(comDisplay);
-        }
-        else{
+        } else {
             CloseComPort(comDisplay);
 
         }
-        if (devicesPath.contains(ScaleProvider.getPort()) && ScaleProvider.isEnabled()) {
+        if (ScaleProvider.isEnabled()) {
             CloseComPort(comScale);
+            if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
+                comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate(), 50);
+            } else {
+                comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
+            }
             OpenComPort(comScale);
-        }
-        else{
+        } else {
             CloseComPort(comScale);
         }
     }
@@ -547,10 +541,14 @@ public abstract class CashierActivity extends BaseActivity {
             try {
                 //清空数据
                 GlobalInstance.getInstance().reset();
-                CloseComPort(comScale);
 
+                CloseComPort(comScale);
                 if (ScaleProvider.isEnabled()) {
-                    comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
+                    if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
+                        comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate(), 50);
+                    } else {
+                        comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
+                    }
                     OpenComPort(comScale);
                 }
             } catch (Exception e) {
@@ -650,7 +648,11 @@ public abstract class CashierActivity extends BaseActivity {
                     if (interval1 > 1000 * 60) {
                         ZLogger.df(String.format("(%s)超过1分钟没有收到电子秤串口消息，自动重新打开串口", ScaleProvider.getPort()));
                         CloseComPort(comScale);
-                        comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
+                        if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
+                            comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate(), 50);
+                        } else {
+                            comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
+                        }
                         OpenComPort(comScale);
                         lastScaleTriggle = rightNow;
                     }
