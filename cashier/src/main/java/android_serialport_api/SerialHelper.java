@@ -14,8 +14,12 @@ import java.security.InvalidParameterException;
 /**
  * @author benjaminwan
  *         串口辅助工具类
+ *         波特率/10  = 每秒发送的字节数
+ *
  */
 public abstract class SerialHelper {
+
+
     private static final String PORT_DEF = "/dev/s3c2410_serial0";
     private static final int BAUDRATE_FEF = 9600;//波特率
     private static final int MAX_READ_BUFFER_SIZE = 4096;
@@ -30,6 +34,7 @@ public abstract class SerialHelper {
     private boolean _isOpen = false;
     private byte[] _bLoopData = new byte[]{0x30};
     private int iDelay = 500;
+    private int readDelay = 33;//ms
 
 
     public SerialHelper(String sPort, int iBaudRate) {
@@ -77,11 +82,13 @@ public abstract class SerialHelper {
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
                 ZLogger.d("串口发送" + DataConvertUtil.ByteArrToHex(bOutArray));
             }
-            mOutputStream.write(bOutArray);
+            if (mOutputStream != null) {
+                mOutputStream.write(bOutArray);
+            }
 //            mOutputStream.flush();
         } catch (IOException e) {
 //			e.printStackTrace();
-            ZLogger.e(e.toString());
+            ZLogger.ef("串口发送数据失败：" + e.toString());
         }
     }
 
@@ -110,7 +117,7 @@ public abstract class SerialHelper {
                         onDataReceived(ComRecData);
                     }
                     try {
-                        Thread.sleep(50);//延时50ms
+                        Thread.sleep(readDelay);//延时50ms
                     } catch (InterruptedException e) {
 //						e.printStackTrace();
                         ZLogger.ef(e.toString());
@@ -223,6 +230,14 @@ public abstract class SerialHelper {
 
     public void setiDelay(int iDelay) {
         this.iDelay = iDelay;
+    }
+
+    public int getReadDelay() {
+        return readDelay;
+    }
+
+    public void setReadDelay(int readDelay) {
+        this.readDelay = readDelay;
     }
 
     public void startSend() {
