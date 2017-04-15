@@ -265,10 +265,12 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Double getCustomerPrice() {
+        //2017-04-08 商品不在促销规则里面时后台计算会员价为null，前台默认设置为和零售价一样
         if (customerPrice == null) {
-            return 0D;
+            return costPrice;
+        } else {
+            return customerPrice;
         }
-        return customerPrice;
     }
 
     public void setCustomerPrice(Double customerPrice) {

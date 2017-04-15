@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.hardware;
 import android.os.Bundle;
 
 /**
- * Created by kun on 15/9/7.
+ * Created by bingshanguxue on 15/9/7.
  */
 public class SerialPortEvent {
     public static final int SERIAL_TYPE_DISPLAY = 0;//屏显（JOOYTEC）

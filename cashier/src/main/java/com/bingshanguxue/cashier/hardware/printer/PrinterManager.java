@@ -746,39 +746,58 @@ public abstract class PrinterManager implements IPrinterManager {
     }
 
 
+    /**
+     * 收银订单明细打印样式7
+     * <ol>
+     * 三行显示
+     * <li>text1    text2   text3</li>
+     * <li>         text4   text5</li>
+     * <li>         text6   text7</li>
+     * </ol>
+     */
     public void makeOrderItem7(EscCommand esc, String text1, String text2, String text3,
-                                        String text4, String text5) {
+                               String text4, String text5, String text6, String text7,
+                               boolean bottomLineEnabled) {
+        if (esc == null) {
+            return;
+        }
+
+        esc.addText(String.format("%s%s%s\n",
+                Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
+        esc.addText(String.format("%s%s%s\n",
+                Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
+        esc.addText(String.format("%s%s%s\n",
+                Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text6, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text7, 8, Printer.BLANK_GRAVITY.LEFT)));
+        if (bottomLineEnabled) {
+            esc.addText("--------------------------------\n");//32个
+        }
+    }
+
+    /**
+     * 收银订单明细打印样式8
+     */
+    public void makeOrderItem8(EscCommand esc, String text1, String text2, String text3,
+                               String text4, String text5) {
         if (esc == null) {
             return;
         }
 
 //        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
+        esc.addText(String.format("%s%s%s\n",
+                Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
 
-        //最多显示17*0.6=10.2个汉字
-        if (Printer.getLength(text1) > 16) {
-            //另起一行显示单价/数量/小计，居右显示
-            esc.addText(String.format("%s%s%s\n",
-                    Printer.formatShort(text1.substring(0, 16), 16, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
-
-            esc.addText(String.format("%s%s%s\n",
-                    Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
-        } else {
-            //在名称后面显示单价/数量/小计
-            esc.addText(String.format("%s%s%s\n",
-                    Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
-            esc.addText(String.format("%s%s%s\n",
-                    Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
-                    Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
-
-//            ZLogger.d("printText:" + printText);
-        }
+        esc.addText(String.format("%s%s%s\n",
+                Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
     }
 
     private Double getPayWayAmount(Integer amountType, Map<Integer, PayWay> payWayMap) {
@@ -793,7 +812,7 @@ public abstract class PrinterManager implements IPrinterManager {
 
     /**
      * 支付记录
-     * */
+     */
     public void appendPayWays(EscCommand esc, Long orderId) {
         OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderId);
         Map<Integer, PayWay> payWayMap = OrderPayInfo.getPayWays(payWrapper);
@@ -813,13 +832,13 @@ public abstract class PrinterManager implements IPrinterManager {
 
         esc.addText(String.format("%s%s\n",
                 Printer.formatShort("会员优惠:", 24, Printer.BLANK_GRAVITY.LEFT),
-                Printer.formatShort(String.format("%.2f", vipDiscount), 8, Printer.BLANK_GRAVITY.LEFT)));
+                Printer.formatShort(String.format("%.3f", vipDiscount), 8, Printer.BLANK_GRAVITY.LEFT)));
         esc.addText(String.format("%s%s\n",
                 Printer.formatShort("优惠券:", 24, Printer.BLANK_GRAVITY.LEFT),
-                Printer.formatShort(String.format("%.2f", vipCoupons), 8, Printer.BLANK_GRAVITY.LEFT)));
+                Printer.formatShort(String.format("%.3f", vipCoupons), 8, Printer.BLANK_GRAVITY.LEFT)));
         esc.addText(String.format("%s%s\n",
                 Printer.formatShort("优惠合计:", 24, Printer.BLANK_GRAVITY.LEFT),
-                Printer.formatShort(String.format("%.2f", MathCompact.add(vipDiscount, vipCoupons)),
+                Printer.formatShort(String.format("%.3f", MathCompact.add(vipDiscount, vipCoupons)),
                         8, Printer.BLANK_GRAVITY.LEFT)));
 
         //现金支付（订单支付金额＋找零金额）
@@ -827,31 +846,34 @@ public abstract class PrinterManager implements IPrinterManager {
         if ((wayType & WayType.CASH) == WayType.CASH) {
             esc.addText(String.format("%s%s\n",
                     Printer.formatShort("现金支付:", 24, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(String.format("%.2f", MathCompact.add(cashAmount, cashChangeAmount)),
+                    Printer.formatShort(String.format("%.3f", MathCompact.add(cashAmount, cashChangeAmount)),
                             8, Printer.BLANK_GRAVITY.LEFT)));
             esc.addText(String.format("%s%s\n",
                     Printer.formatShort("找零:", 24, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(String.format("%.2f", cashChangeAmount),
+                    Printer.formatShort(String.format("%.3f", cashChangeAmount),
                             8, Printer.BLANK_GRAVITY.LEFT)));
         }
         //会员支付（会员支付金额＋账户余额）
         else if ((wayType & WayType.VIP) == WayType.VIP) {
             esc.addText(String.format("%s%s\n",
-                    Printer.formatShort(String.format("%s:", PayWayType.getWayTypeName(PayWayType.TYPE_VIP)),
+                    Printer.formatShort(String.format("%s:",
+                            PayWayType.getWayTypeName(PayWayType.TYPE_VIP)),
                             24, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(String.format("%.2f", vipAmount),
+                    Printer.formatShort(String.format("%.3f", vipAmount),
                             8, Printer.BLANK_GRAVITY.LEFT)));
             esc.addText(String.format("%s%s\n",
-                    Printer.formatShort(String.format("%s:", PayWayType.getWayTypeName(PayWayType.TYPE_VIP_BALANCE)),
+                    Printer.formatShort(String.format("%s:",
+                            PayWayType.getWayTypeName(PayWayType.TYPE_VIP_BALANCE)),
                             24, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(String.format("%.2f", MathCompact.sub(vipBalanceAmount, vipAmount)),
+                    Printer.formatShort(String.format("%.3f",
+                            MathCompact.sub(vipBalanceAmount, vipAmount)),
                             8, Printer.BLANK_GRAVITY.LEFT)));
         } else {
-            for (Integer key : payWayMap.keySet()){
+            for (Integer key : payWayMap.keySet()) {
                 PayWay payWay = payWayMap.get(key);
                 esc.addText(String.format("%s%s\n",
                         Printer.formatShort(PayWayType.getWayTypeName(payWay.getAmountType()), 24, Printer.BLANK_GRAVITY.LEFT),
-                        Printer.formatShort(String.format("%.2f", payWay.getAmount()), 8, Printer.BLANK_GRAVITY.LEFT)));
+                        Printer.formatShort(String.format("%.3f", payWay.getAmount()), 8, Printer.BLANK_GRAVITY.LEFT)));
             }
         }
     }

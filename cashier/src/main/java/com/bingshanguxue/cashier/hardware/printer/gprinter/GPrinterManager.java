@@ -153,27 +153,20 @@ public class GPrinterManager extends PrinterManager {
             List<PosOrderItemEntity> needWaitEntities = new ArrayList<>();
             List<PosOrderItemEntity> posOrderItemEntities = CashierAgent.fetchOrderItems(posOrderEntity);
             if (posOrderItemEntities != null && posOrderItemEntities.size() > 0) {
-//                esc.addText("商品              原价   会员价\n");
-//                esc.addText("                    数量   小计\n");
-                makeOrderItem7(esc, "商品", "原价", "会员价", "数量", "小计");
-//                esc.addText("品名            单价 数量   小计\n");
+                makeOrderItem7(esc, "商品", "数量", "单位","原价", "小计", "会员价", "小计", true);
                 esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
                 esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
-                esc.addText("--------------------------------\n");//32个
                 for (PosOrderItemEntity entity : posOrderItemEntities) {
                     if (entity.getNeedWait().equals(1)) {
                         needWaitEntities.add(entity);
                     }
-//                    makeOrderItem2(esc, entity.getSkuName(),
-//                            String.format("%.2f", entity.getFinalPrice()),
-//                            String.format("%.2f", entity.getBcount()),
-//                            String.format("%.2f", entity.getFinalAmount()));
                     makeOrderItem7(esc, entity.getSkuName(),
+                            String.format("%.3f", entity.getBcount()), entity.getUnit(),
                             String.format("%.2f", entity.getFinalPrice()),
+                            String.format("%.3f", entity.getFinalAmount()),
                             String.format("%.2f", entity.getCustomerPrice()),
-                            String.format("%.3f%s", entity.getBcount(), entity.getUnit()),
-                            String.format("%.3f", entity.getFinalAmount()));
-                    esc.addText("--------------------------------\n");//32个
+                            String.format("%.3f", MathCompact.mult(entity.getCustomerPrice(), entity.getBcount())),
+                            true);
                 }
             }
 

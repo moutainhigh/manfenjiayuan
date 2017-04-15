@@ -159,27 +159,21 @@ public class EmbPrinterManager extends PrinterManager {
 
         List<PosOrderItemEntity> posOrderItemEntities = CashierAgent.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntities != null && posOrderItemEntities.size() > 0) {
-//            esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
-//            esc.addText("品名            单价 数量   小计\n");
-            makeOrderItem7(esc, "商品", "原价", "会员价", "数量", "小计");
+            makeOrderItem7(esc, "商品", "数量", "单位", "原价", "小计", "会员价", "小计", true);
             esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                     PrinterConstants.Command.ALIGN_LEFT));
-            esc.addText("--------------------------------\n");//32个
             for (PosOrderItemEntity entity : posOrderItemEntities) {
                 if (entity.getNeedWait().equals(1)){
                     needWaitEntities.add(entity);
                 }
-//                makeOrderItem2(esc, entity.getSkuName(),
-//                        String.format("%.2f", entity.getFinalPrice()),
-//                        String.format("%.2f", entity.getBcount()),
-//                        String.format("%.2f", entity.getFinalAmount()));
                 makeOrderItem7(esc, entity.getSkuName(),
+                        String.format("%.3f", entity.getBcount()), entity.getUnit(),
                         String.format("%.2f", entity.getFinalPrice()),
+                        String.format("%.3f", entity.getFinalAmount()),
                         String.format("%.2f", entity.getCustomerPrice()),
-                        String.format("%.3f%s", entity.getBcount(), entity.getUnit()),
-                        String.format("%.3f", entity.getFinalAmount()));
-                esc.addText("--------------------------------\n");//32个
+                        String.format("%.3f", MathCompact.mult(entity.getCustomerPrice(), entity.getBcount())),
+                        true);
             }
         }
 

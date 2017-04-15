@@ -98,9 +98,6 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Double getCustomerPrice() {
-        if (customerPrice == null) {
-            return 0D;
-        }
         return customerPrice;
     }
 

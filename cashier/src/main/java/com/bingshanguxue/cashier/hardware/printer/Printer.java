@@ -20,8 +20,11 @@ import java.util.Vector;
  */
 
 public class Printer implements IPrinter {
-    public static java.text.SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm",
+    public static final java.text.SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm",
             Locale.US);
+
+    /**默认线条，虚线，共32个字符*/
+    public static final String LINE_DEFAULT = "--------------------------------";
 
     /**
      * 空格对齐方式

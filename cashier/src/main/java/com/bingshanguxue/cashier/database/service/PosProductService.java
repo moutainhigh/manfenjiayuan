@@ -140,7 +140,7 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
     /**
      * 保存商品档案
      */
-    public void saveOrUpdate(PosGoods posGoods) {
+    public synchronized void saveOrUpdate(PosGoods posGoods) {
         Long id = posGoods.getId();
         PosProductEntity entity = getEntityById(String.valueOf(id));
         if (entity == null) {
