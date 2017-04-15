@@ -139,13 +139,15 @@ public class MUtils {
     /**
      * 计算毛利率
      * 公式：毛利率＝毛利／营业额
+     * @param turnover 营业额
+     * @param grossProfit 毛利
      * */
     public static Double retrieveGrossMargin(Double turnover, Double grossProfit){
-        if (grossProfit == 0D) {
+        if (grossProfit == null || grossProfit == 0D) {
             return 0D;
         }
 
-        if (turnover == 0D) {
+        if (turnover == null || turnover == 0D) {
             return Double.valueOf(String.valueOf(Integer.MAX_VALUE));
         } else {
             return grossProfit / turnover;
@@ -153,6 +155,7 @@ public class MUtils {
     }
     /**
      * 计算毛利率:格式11%
+     * 计算公式:(costPrice-buyPrice) / buyPrice
      * */
     public static String retrieveFormatedGrossMargin(Double turnover, Double grossProfit){
         Double grossMargin = retrieveGrossMargin(turnover, grossProfit);
