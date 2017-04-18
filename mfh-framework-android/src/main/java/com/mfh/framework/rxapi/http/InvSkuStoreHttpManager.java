@@ -1,9 +1,13 @@
 package com.mfh.framework.rxapi.http;
 
 import com.mfh.framework.api.invSendOrder.InvSendOrderItemBrief;
+import com.mfh.framework.api.invSkuStore.InvSkuBizBean;
 import com.mfh.framework.api.invSkuStore.InvSkuGoods;
 import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.entity.MRspQuery;
+import com.mfh.framework.rxapi.func.MQueryResponseFunc;
 import com.mfh.framework.rxapi.func.MResponseFunc;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.Map;
 
@@ -42,6 +46,22 @@ public class InvSkuStoreHttpManager extends BaseHttpManager{
         Observable<MResponse<InvSkuGoods>> getByBarcodeMust(@QueryMap Map<String, String> options);
 
         /**
+         * /invSkuStore/listBeans?skuName= 根据商品名称返回可能存在的多个商品详情信息
+         * 根据条码获取详情bean，包括会员价、销量信息等
+         */
+        @GET("invSkuStore/listBeans")
+        Observable<MResponse<MRspQuery<InvSkuBizBean>>> listBeans(@QueryMap Map<String, String> options);
+
+        /**
+         * /invSkuStore/getBeanByBizKeys?barcode=
+         * 根据条码获取详情bean，包括会员价、销量信息等
+         */
+        @GET("invSkuStore/getBeanByBizKeys")
+        Observable<MResponse<InvSkuBizBean>> getBeanByBizKeys(@QueryMap Map<String, String> options);
+
+
+        /**
+         *
          * 当前登录网点的操作人员，通过指定一个批发商，自动生成配送单
          * /invSkuStore/autoAskSendOrder?chainCompanyId=134651
          */
@@ -74,6 +94,18 @@ public class InvSkuStoreHttpManager extends BaseHttpManager{
         InvSkuStoreService mfhApi = RxHttpManager.createService(InvSkuStoreService.class);
         Observable observable = mfhApi.getByBarcodeMust(options)
                 .map(new MResponseFunc<InvSkuGoods>());
+        toSubscribe(observable, subscriber);
+    }
+    public void listBeans(Map<String, String> options, MQuerySubscriber<InvSkuBizBean> subscriber) {
+        InvSkuStoreService mfhApi = RxHttpManager.createService(InvSkuStoreService.class);
+        Observable observable = mfhApi.listBeans(options)
+                .map(new MQueryResponseFunc<InvSkuBizBean>());
+        toSubscribe(observable, subscriber);
+    }
+    public void getBeanByBizKeys(Map<String, String> options, Subscriber<InvSkuBizBean> subscriber) {
+        InvSkuStoreService mfhApi = RxHttpManager.createService(InvSkuStoreService.class);
+        Observable observable = mfhApi.getBeanByBizKeys(options)
+                .map(new MResponseFunc<InvSkuBizBean>());
         toSubscribe(observable, subscriber);
     }
     public void autoAskSendOrder(Map<String, String> options, Subscriber<InvSendOrderItemBrief> subscriber) {

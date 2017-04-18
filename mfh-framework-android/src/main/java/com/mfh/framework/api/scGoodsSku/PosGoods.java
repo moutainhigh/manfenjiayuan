@@ -22,7 +22,8 @@ public class PosGoods implements ILongId, Serializable {
     private String skuName;//商品名称
     private String shortName;//商品规格
     private String unit;    // 单位，如箱、瓶
-    private Double costPrice;   // 商品价格
+    private Double costPrice;   // 商品价格（零售价）
+    private Double customerPrice;//会员价
     private Double quantity = 0D; // 商品数量(库存)
     private Date createdDate;
     private Date updatedDate;
@@ -36,7 +37,6 @@ public class PosGoods implements ILongId, Serializable {
     private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //商品类目的类型
     private Integer prodLineId;//商品线编号
     private Integer needWait;//是否需要等待（餐饮商品收银后除了需要打印小票，同时需要打印2张取货单）
-
 
 
     public Long getId() {
@@ -211,5 +211,13 @@ public class PosGoods implements ILongId, Serializable {
 
     public void setNeedWait(Integer needWait) {
         this.needWait = needWait;
+    }
+
+    public Double getCustomerPrice() {
+        return customerPrice;
+    }
+
+    public void setCustomerPrice(Double customerPrice) {
+        this.customerPrice = customerPrice;
     }
 }

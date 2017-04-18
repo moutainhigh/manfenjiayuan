@@ -12,6 +12,20 @@ import com.mfh.framework.uikit.base.BaseActivity;
 
 public class ActivityRoute {
     /**
+     * 跳转页面
+     * */
+    public static void redirect2Primary(Context context, int type){
+        if (context == null){
+            return;
+        }
+
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, type);
+        PrimaryActivity.actionStart(context, extras);
+    }
+
+    /**
      * 跳转到商品
      * */
     public static void redirect2Goods(Context context){

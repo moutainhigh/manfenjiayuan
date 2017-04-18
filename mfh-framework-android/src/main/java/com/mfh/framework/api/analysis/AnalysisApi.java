@@ -11,43 +11,6 @@ public class AnalysisApi {
 
     public static String URL_BIZSERVER = MfhApi.URL_BASE_SERVER + "/bizServer/";
 
-    /**
-     * 日结经营分析查询
-     * 经营分析：/analysisAggDate/list?aggDate=2016-02-17&officeId=131295
-     */
-    public static String URL_ACCANALYSIS_AGGDATE_LIST = MfhApi.URL_BASE_SERVER + "/analysisAggDate/list";
-
-    /**
-     * 交接班流水分析查询
-     * /analysisAggShift/list?aggDate=2016-02-02&shiftId=1&createdBy=134475，finishDay参数改成aggDate
-     */
-    public static String URL_ANALYSIS_AGGSHIFT = MfhApi.URL_BASE_SERVER + "/analysisAggShift/list";
-
-    /**
-     * 交接班经营分析查询
-     * /accAnalysisAggShift/list?aggDate=2016-02-02&createdBy=134475&shiftId=1
-     */
-    public static String URL_ACCANALYSIS_AGGSHIFT = MfhApi.URL_BASE_SERVER + "/accAnalysisAggShift/list";
-
-
-    /**
-     * 启动交接班统计
-     * /bizServer/autoShiftAnalysis?shiftId=1&startTime=2016-02-02 07:00:00&endTime=2016-02-02 19:00:00
-     */
-    public static String URL_BIZSERVIE_AUTOSHIFITANALYSIC = URL_BIZSERVER + "autoShiftAnalysis";
-
-    /**
-     * 启动日结统计
-     * /bizServer/autoDateEnd?date=2016-02-02
-     */
-    public static String URL_BIZSERVIE_AUTODATEEND = URL_BIZSERVER + "autoDateEnd";
-
-
-    /**
-     * 日结流水分析查询
-     * 流水分析：/analysisAccDate/list?officeId=132079&aggDate=2016-02-18&wrapper=true
-     */
-    public static String URL_ANALYSIS_ACCDATE_LIST = URL_ANALYSIS_ACCDATE + "list";
 
     /**
      * 获取最后日结日期
@@ -89,13 +52,6 @@ public class AnalysisApi {
     public static void register() {
         URL_ANALYSIS_ACCDATE = MfhApi.URL_BASE_SERVER + "/analysisAccDate/";
         URL_BIZSERVER = MfhApi.URL_BASE_SERVER + "/bizServer/";
-        URL_ACCANALYSIS_AGGDATE_LIST = MfhApi.URL_BASE_SERVER + "/analysisAggDate/list";
-        URL_ANALYSIS_AGGSHIFT = MfhApi.URL_BASE_SERVER + "/analysisAggShift/list";
-        URL_ACCANALYSIS_AGGSHIFT = MfhApi.URL_BASE_SERVER + "/accAnalysisAggShift/list";
-
-        URL_BIZSERVIE_AUTOSHIFITANALYSIC = URL_BIZSERVER + "autoShiftAnalysis";
-        URL_BIZSERVIE_AUTODATEEND = URL_BIZSERVER + "autoDateEnd";
-        URL_ANALYSIS_ACCDATE_LIST = URL_ANALYSIS_ACCDATE + "list";
         URL_ANALYSISACCDATE_GETLASTAGGDATE = URL_ANALYSIS_ACCDATE + "getLastAggDate";
         URL_ANALYSISACCDATE_HAVENOMONEYEND = URL_ANALYSIS_ACCDATE + "haveNoMoneyEnd";
         URL_ANALYSISACCDATE_HAVEDATEEND = URL_ANALYSIS_ACCDATE + "haveDateEnd";

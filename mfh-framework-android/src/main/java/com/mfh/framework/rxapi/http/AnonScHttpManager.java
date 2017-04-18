@@ -1,5 +1,6 @@
 package com.mfh.framework.rxapi.http;
 
+import com.mfh.framework.api.anon.sc.productPrice.ProductSku;
 import com.mfh.framework.api.anon.sc.productPrice.PubSkus;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.entity.MRspQuery;
@@ -37,6 +38,13 @@ public class AnonScHttpManager extends BaseHttpManager{
         @GET("anon/sc/productPrice/findPubSkusByFrontCatalog")
         Observable<MResponse<MRspQuery<PubSkus>>> findPubSkusByFrontCatalog(@QueryMap Map<String, String> options);
 
+        /**
+         * /anon/sc/productPrice/findProductSku?companyId=&nameLike=&categoryId=&barcode=
+         * 查找平台商品列表(前台类目可能又包含后台类目),返回的id就是proSkuId，另外还有productId
+         * */
+        @GET("anon/sc/productPrice/findProductSku")
+        Observable<MResponse<MRspQuery<ProductSku>>> findProductSku(@QueryMap Map<String, String> options);
+
 
         /**
          * 查询商品：
@@ -52,6 +60,14 @@ public class AnonScHttpManager extends BaseHttpManager{
         AnonScService mfhApi = RxHttpManager.createService(AnonScService.class);
         Observable observable = mfhApi.findPubSkusByFrontCatalog(options)
                 .map(new MQueryResponseFunc<PubSkus>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void findProductSku(Map<String, String> options,
+                                          MQuerySubscriber<ProductSku> subscriber) {
+        AnonScService mfhApi = RxHttpManager.createService(AnonScService.class);
+        Observable observable = mfhApi.findProductSku(options)
+                .map(new MQueryResponseFunc<ProductSku>());
         toSubscribe(observable, subscriber);
     }
 

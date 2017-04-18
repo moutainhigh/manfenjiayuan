@@ -177,6 +177,18 @@ public class SystemUtils {
         return "Unknown";
     }
 
+    public static String getVersion(Context context){
+        try {
+            PackageInfo packageInfo = getPackageInfo(context, 0);
+            if (packageInfo != null){
+                return packageInfo.versionName + "." + packageInfo.versionCode;
+            }
+        } catch (Exception e) {
+            ZLogger.e(e.toString());
+        }
+        return "Unknown";
+    }
+
     /**
      * 获取设备序列号
      * */

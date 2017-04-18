@@ -33,44 +33,6 @@ public class CommonUserAccountApiImpl extends CommonUserAccountApi{
     }
 
     /**
-     * 根据订单信息计算实际金额（综合考虑优惠券、促销规则）
-     * 参数为：/commonuseraccount/getPayAmountByOrderInfo?couponsIds=&ruleIds=116
-     * &jsonStr={
-     * "humanId":94182,
-     * "btype":7,
-     * "discount":1,
-     * "createdDate":"2015-12-10 01:00:00",
-     * "subdisId":746,
-     * items:[
-     * {"bcount":1,"price":25,"skuId":1289,"whereId":132079},
-     * {"bcount":1,"price":11,"skuId":1292,"whereId":132079}
-     * ]
-     * }
-     *
-     * @param bizType 业务类型
-     * @param version 版本号，1,只返回payAmount; 2,返回运费优惠券费用
-     * @param jsonStr    订单明细信息
-     * @param couponsIds 卡券领用号
-     * @param ruleIds    规则
-     */
-    public static void getPayAmountByOrderInfo(int version, String jsonStr,
-                                               String couponsIds, String ruleIds,
-                                               AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("version", String.valueOf(version));
-        params.put("jsonStr", jsonStr);
-        if (!StringUtils.isEmpty(couponsIds)){
-            params.put("couponsIds", couponsIds);
-        }
-        if (!StringUtils.isEmpty(ruleIds)){
-            params.put("ruleIds", ruleIds);
-        }
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_GETPAYAMOUNT_BYORDERINFO, params, responseCallback);
-    }
-
-    /**
      * 商城订单支付（满分账户）
      * @param humanId 人员编号
      * @param orderId 订单编号，多个订单以逗号隔开。

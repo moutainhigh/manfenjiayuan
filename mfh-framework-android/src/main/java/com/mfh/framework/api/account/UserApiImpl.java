@@ -16,13 +16,6 @@ import java.io.FileNotFoundException;
  */
 public class UserApiImpl extends UserApi {
 
-    public static void validSession(AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-        AfinalFactory.getHttp(true).post(URL_VALID_SESSION, params, responseCallback);
-    }
-
     /**
      * 修改用户密码
      *

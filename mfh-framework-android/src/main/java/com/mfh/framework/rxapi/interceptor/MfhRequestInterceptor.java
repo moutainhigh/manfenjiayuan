@@ -20,6 +20,7 @@ import okio.Okio;
  * This interceptor compresses the HTTP request body. Many webservers can't handle this!
  */
 public class MfhRequestInterceptor implements Interceptor {
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
@@ -27,7 +28,7 @@ public class MfhRequestInterceptor implements Interceptor {
         long t1 = System.nanoTime();
         Response response;
         if (originalRequest.body() == null) {
-            ZLogger.d(String.format("---> [%s] %s on %s%n%s", originalRequest.method(),
+            ZLogger.df(String.format("---> [%s] %s on %s%n%s", originalRequest.method(),
                     originalRequest.url(), chain.connection(), originalRequest.headers()));
 
             ZLogger.d("method GET must not have a request body.");
@@ -36,7 +37,7 @@ public class MfhRequestInterceptor implements Interceptor {
         else{
             Request compressedRequest = originalRequest.newBuilder()
 //                    .header("Content-Encoding", "gzip")
-                    .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+//                    .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
                     .header("Accept-Encoding", "gzip")
                     .header("Connection", "Keep-Alive")
 //                    .header("Accept", "*/*")
@@ -46,7 +47,7 @@ public class MfhRequestInterceptor implements Interceptor {
                     .method(originalRequest.method(), gzip(originalRequest.body()))
                     .build();
 
-            ZLogger.d(String.format("---> [%s] %s on %s%n%s", compressedRequest.method(),
+            ZLogger.df(String.format("---> [%s] %s on %s%n%s", compressedRequest.method(),
                     compressedRequest.url(), chain.connection(), compressedRequest.headers()));
             response = chain.proceed(compressedRequest);
         }

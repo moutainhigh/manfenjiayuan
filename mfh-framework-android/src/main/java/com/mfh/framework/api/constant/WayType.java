@@ -1,5 +1,7 @@
 package com.mfh.framework.api.constant;
 
+import java.util.HashMap;
+
 /**
  * 支付方式(前后台统一)
  * Created by bingshanguxue on 16/3/2.
@@ -21,6 +23,30 @@ public class WayType {
     public final static Integer TAKEOUT  = 16384;//第三方外卖（支持第三方外卖订单拣货，统一使用支付方式）
 
 
+    private static HashMap<Integer, String> wayTypeMaps = new HashMap<>();
+
+    static {
+        wayTypeMaps.put(CASH, "现金");
+        wayTypeMaps.put(ALI_F2F, "支付宝");
+        wayTypeMaps.put(BANKCARD, "银联");
+        wayTypeMaps.put(VIP, "会员账号支付");
+        wayTypeMaps.put(ALI, "支付宝");
+        wayTypeMaps.put(CREDIT, "赊账");
+        wayTypeMaps.put(WX_F2F, "微信");
+        wayTypeMaps.put(WEPAY_APP, "微信");
+        wayTypeMaps.put(RULES, "会员优惠");//"卡券"改成"会员优惠"
+        wayTypeMaps.put(SCORE, "积分");
+        wayTypeMaps.put(ALIPAY_APP, "支付宝");
+        wayTypeMaps.put(TAKEOUT, "第三方平台");
+    }
+
+    /**获取支付方式名称*/
+    public static String getWayTypeName(Integer value){
+        if (value != null){
+            return wayTypeMaps.get(value);
+        }
+        return null;
+    }
 
     public static String name(Integer value) {
         StringBuilder sb = new StringBuilder();
@@ -46,7 +72,7 @@ public class WayType {
             if (sb.length() > 0){
                 sb.append(",");
             }
-            sb.append("会员");
+            sb.append("会员账号支付");
         }
         if ((value & ALI) == ALI) {
             if (sb.length() > 0){
@@ -76,7 +102,7 @@ public class WayType {
             if (sb.length() > 0){
                 sb.append(",");
             }
-            sb.append("卡券促销");
+            sb.append("会员优惠");
         }
         if ((value & ALIPAY_APP) == ALIPAY_APP) {
             if (sb.length() > 0){
@@ -88,7 +114,7 @@ public class WayType {
             if (sb.length() > 0){
                 sb.append(",");
             }
-            sb.append("第三方外卖");
+            sb.append("第三方平台");
         }
 
         return sb.toString();

@@ -14,7 +14,7 @@ public class ScProductPriceApi {
 
     /**
      * /anon/sc/productPrice/findProductSku?barcode
-     * 根据条码查询平台商品档案
+     * 查询平台商品档案
      * */
     private static String URL_FIND_PRODUCTSKU= URL_ANON_SC_PRODUCTPRICE + "findProductSku";
 

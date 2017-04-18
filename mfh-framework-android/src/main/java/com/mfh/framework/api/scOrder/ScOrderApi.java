@@ -64,20 +64,7 @@ public class ScOrderApi implements ApiParams {
      * /scOrder/updateCommitInfoWhenPrepaired?id=&jsonStr=[{skuId:11, bcount:10}, {skuId:12, bcount:10}]
      */
     private static String URL_UPDATECOMMITINFO_WHENPREPAIRED = URL_SCORDER + "updateCommitInfoWhenPrepaired";
-    /**
-     * 替换{@link #URL_UPDATECOMMITINFO_WHENPREPAIRED}接口，
-     * 支持：“增加“妥投”,扫描订单条码,可以显示订单商品,点击打勾按钮,即可完成妥投。⽀支持单品的退 单,删除单品后,订单价格会发⽣生变化”，也使用这个接口updateCommitInfo，退单时这个明细的数量为0即可。
-     * /scOrder/updateCommitInfo?id=&jsonStr=[{skuId:11, bcount:10}, {skuId:12, bcount:10}]
-     */
-    static String URL_UPDATECOMMITINFO = URL_SCORDER + "updateCommitInfo";
 
-    /**
-     * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手，
-     * 其中transHumanId为骑手编号，orderId为订单编号
-     * (针对已组货的订单)
-     * /scOrder/prepareOrder?orderId=&transHumanId=
-     */
-    static String URL_PREPAREORDER = URL_SCORDER + "prepareOrder";
 
     /**
      * 获取当前登录骑手待配送的订单列表,netId可不传
@@ -175,8 +162,6 @@ public class ScOrderApi implements ApiParams {
         URL_FINDPREPAREABLEORDERS = URL_SCORDER + "findPrepareAbleOrders";
         URL_ACCEPTORDER_WHENORDERED = URL_SCORDER + "acceptOrderWhenOrdered";
         URL_UPDATECOMMITINFO_WHENPREPAIRED = URL_SCORDER + "updateCommitInfoWhenPrepaired";
-        URL_UPDATECOMMITINFO = URL_SCORDER + "updateCommitInfo";
-        URL_PREPAREORDER = URL_SCORDER + "prepareOrder";
         URL_FINDSENDABLEORDERS = URL_SCORDER + "findSendAbleOrders";
         URL_SEND_TOENDCUSTOM = URL_SCORDER + "sendToEndCustom";
         URL_FINDACCEPTABLE_SENDORDERS = URL_SCORDER + "findAcceptAbleSendOrders";

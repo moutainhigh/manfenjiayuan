@@ -32,9 +32,17 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
     }
 
     private interface CommonUserAccountService{
-        /**pos端提交客户编号、订单基础信息和卡券信息，计算金额*/
+        /**
+         * pos端提交客户编号、订单基础信息和卡券信息，计算金额
+         * <p>POS拆单时用到此接口</p>*/
         @GET("commonuseraccount/getPayAmountByOrderInfos")
         Observable<MResponse<List<PayAmount>>> getPayAmountByOrderInfos(@QueryMap Map<String, String> options);
+
+        /**pos端提交客户编号、订单基础信息和卡券信息，计算金额*/
+        @GET("commonuseraccount/getPayAmountByOrderInfo")
+        Observable<MResponse<PayAmount>> getPayAmountByOrderInfo(@QueryMap Map<String, String> options);
+
+
         /**
          * pos端直接使用满分账户进行余额支支付或积分支付，无具体业务背景:
          * <ol>
@@ -77,6 +85,20 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
         Observable observable = mfhApi.getPayAmountByOrderInfos(options)
                 .map(new MResponseFunc<List<PayAmount>>());
+        toSubscribe(observable, subscriber);
+    }
+
+    /**
+     * @param bizType 业务类型
+     * @param version 版本号，1,只返回payAmount; 2,返回运费优惠券费用
+     * @param jsonStr    订单明细信息
+     * @param couponsIds 卡券领用号
+     * @param ruleIds    规则
+     * */
+    public void getPayAmountByOrderInfo(Map<String, String> options, Subscriber<PayAmount> subscriber) {
+        CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
+        Observable observable = mfhApi.getPayAmountByOrderInfo(options)
+                .map(new MResponseFunc<PayAmount>());
         toSubscribe(observable, subscriber);
     }
 

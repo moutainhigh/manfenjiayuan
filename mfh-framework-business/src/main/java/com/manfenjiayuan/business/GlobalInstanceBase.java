@@ -1,6 +1,6 @@
 package com.manfenjiayuan.business;
 
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.IMApi;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -24,7 +24,7 @@ import java.util.Observable;
 public class GlobalInstanceBase extends Observable{
     private static GlobalInstanceBase instance = null;
     //租户信息
-    private HostServer mHostServer;
+    private TenantInfoWrapper mHostServer;
 
     /**
      * 返回 DataDownloadManager 实例
@@ -50,7 +50,7 @@ public class GlobalInstanceBase extends Observable{
 
     }
 
-    public HostServer getHostServer() {
+    public TenantInfoWrapper getHostServer() {
         return mHostServer;
     }
 
@@ -59,7 +59,7 @@ public class GlobalInstanceBase extends Observable{
             return;
         }
 
-        HostServer hostServer = new HostServer();
+        TenantInfoWrapper hostServer = new TenantInfoWrapper();
         hostServer.setSaasId(tenantInfo.getSaasId());
         hostServer.setSaasName(tenantInfo.getSaasName());
         hostServer.setArea(tenantInfo.getArea());
@@ -123,7 +123,7 @@ public class GlobalInstanceBase extends Observable{
     /**
      * 动态更新API
      * */
-    private void updateApi(HostServer hostServer){
+    private void updateApi(TenantInfoWrapper hostServer){
         if (hostServer != null){
             RxHttpManager.API_BASE_URL = String.format("http://%s/pmc/", hostServer.getDomainUrl());
             MfhApi.URL_BASE_SERVER = String.format("http://%s/pmc", hostServer.getDomainUrl());

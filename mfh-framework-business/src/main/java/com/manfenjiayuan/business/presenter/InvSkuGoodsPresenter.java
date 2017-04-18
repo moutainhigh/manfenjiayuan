@@ -1,8 +1,8 @@
 package com.manfenjiayuan.business.presenter;
 
-import com.mfh.framework.api.invSkuStore.InvSkuGoods;
-import com.manfenjiayuan.business.mode.InvSkuGoodsMode;
 import com.manfenjiayuan.business.view.IInvSkuGoodsView;
+import com.mfh.framework.api.invSkuStore.InvSkuGoods;
+import com.mfh.framework.api.invSkuStore.InvSkuStoreMode;
 import com.mfh.framework.mvp.OnModeListener;
 
 /**
@@ -11,11 +11,11 @@ import com.mfh.framework.mvp.OnModeListener;
  */
 public class InvSkuGoodsPresenter {
     private IInvSkuGoodsView mInvSkuGoodsView;
-    private InvSkuGoodsMode mInvSkuGoodsMode;
+    private InvSkuStoreMode mInvSkuGoodsMode;
 
     public InvSkuGoodsPresenter(IInvSkuGoodsView mInvSkuGoodsView) {
         this.mInvSkuGoodsView = mInvSkuGoodsView;
-        this.mInvSkuGoodsMode = new InvSkuGoodsMode();
+        this.mInvSkuGoodsMode = new InvSkuStoreMode();
     }
 
     /**

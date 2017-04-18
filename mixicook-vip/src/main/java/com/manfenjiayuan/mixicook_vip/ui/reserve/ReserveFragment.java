@@ -290,7 +290,7 @@ public class ReserveFragment extends BaseProgressFragment
         CategoryOption option = categoryOptions.get(0);
 
         Map<String, String> options = new HashMap<>();
-        options.put("parentId", String.valueOf(option.getCode()));
+        options.put("parentId", option.getCode());
         RxHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
             @Override
             public void onCompleted() {

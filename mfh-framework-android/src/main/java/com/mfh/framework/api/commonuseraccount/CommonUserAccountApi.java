@@ -30,11 +30,6 @@ public class CommonUserAccountApi {
     static String URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
 
     /**
-     * pos端提交客户编号、订单基础信息和卡券信息，计算金额
-     */
-    static String URL_GETPAYAMOUNT_BYORDERINFO = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfo";
-
-    /**
      * (商城/洗衣)订单支付
      */
     static String URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
@@ -55,7 +50,6 @@ public class CommonUserAccountApi {
         URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
         URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
         URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
-        URL_GETPAYAMOUNT_BYORDERINFO = URL_COMMONUSERACCOUNT + "getPayAmountByOrderInfo";
         URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
         URL_MFACCOUNT_PAY = URL_COMMONUSERACCOUNT + "mfhAccountPay";
         NOTIFY_ACCOUNT = URL_COMMONUSERACCOUNT + "notifyAccount";

@@ -122,30 +122,4 @@ public class TenantInfoWrapper implements Serializable {
 
         return R.mipmap.ic_launcher;
     }
-
-    /**
-     * 根据租户编号获取对应的logo图标
-     * */
-    public static int getTextLogo(Long saasId){
-        if (saasId != null) {
-            if (saasId.equals(134342L)){
-                return R.mipmap.ic_textlogo_mixicook;
-            }
-            else if (saasId.equals(137039L)){
-                return R.mipmap.ic_textlogo_lanlj;
-            }
-            else if (saasId.equals(137143L)){
-                return R.mipmap.ic_textlogo_qianwj;
-            }
-            else if (saasId.equals(137540L)){
-                return R.mipmap.ic_launcher;
-            }
-            else if (saasId.equals(130222L)){
-                return R.mipmap.ic_launcher;
-            }
-        }
-
-        return R.mipmap.ic_launcher;
-    }
-
 }

@@ -13,6 +13,7 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class StockApiImpl extends StockApi{
+
     public static void findHumanInfoByMobile(String mobile, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();
         params.put("companyId", String.valueOf(MfhLoginService.get().getCurOfficeId()));

@@ -11,6 +11,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
+ * <ul>
+ *     QueryMap 字段值不能为空
+ *     <li>java.lang.IllegalArgumentException: Query map contained null value for key 'couponsIds'.</li>
+ * </ul>
  * Created by bingshanguxue on 25/01/2017.
  */
 

@@ -33,30 +33,6 @@ public class ScGoodsSkuApi {
             + "checkWithBuyInfoByBarcode";
 
     /**
-     * 查询发布商品/scGoodsSku/getByBarcode?barcode=77777777&&JSESSIONID=7a6b9fe4-f6fb-4985-9810-6a7c544eeb0d
-     * 根据条码逐级查找商品：
-     * 若门店中存在该商品则返回信息中id、tenantSkuId、proSkuId、productId都不为空，且quantity和costPrice都有值
-     * 若仅在租户存在则返回信息中tenantSkuId、proSkuId、productId不为空，且costPrice有值， quantity为0;
-     * 若仅在产品中心中存在则返回信息中proSkuId、productId不为空, costPrice为空，quantity为0；
-     * 若产品中心也不存在，则返回null
-     */
-    static String URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
-
-
-    /**
-     * 查询批发商采购商品
-     * 适用场景：门店采购查询商品
-     */
-    public static String URL_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
-
-    /**
-     * 店家商品建档入库
-     * /scGoodsSku/storeIn?jsonStr=&storeType=0|1，增加一个storeType参数，默认不传为0代表零售商，如果是批发商建档则storeType=1
-     */
-    static String URL_STOREIN = URL_SCGOODSSKU + "storeIn";
-
-
-    /**
      * 盘点查询商品
      * <ul>
      * 适用场景：
@@ -65,23 +41,16 @@ public class ScGoodsSkuApi {
      */
     static String URL_GETGOODS_BYBARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
 
-    /**
-     * 查询库存商品:库存成本，批次流水，库存调拨－－
-     * <p/>
-     * <ul>
-     * 适用场景：
-     * <li>手持终端－－根据条码查询库存商品，修改商品零售价和安全库存</li>
-     * </ul>
-     */
-    public static String URL_LIST = URL_SCGOODSSKU + "list";
-
 
     /**
-     * 从批发商导入某个类目的商品到当前门店,
-     * 其中sendTenantId是平台上的某个批发商，目前只能写死是米西配送。
-     * startCursor是游标，同步一次后pos机本地记录一下后台返回的最大日期值，下次从这个值作为参数传递
+     * 从批发商导入某个类目的商品到当前门店
+     * 注意此操作只会同步批发商的商品库到门店的商品库，POS机的商品库同步是另外一个逻辑
      * /scGoodsSku/importFromChainSku?sendTenantId=134651&cateType=2&startCursor=2015-01-01 10:00:00
-     */
+     *
+     * @param sendTenantId 平台上的某个批发商
+     * @param cateType 类目, 不传cateType,由后台控制，导入全部类目商品
+     * @param startCursor 时间戳, 默认值 "2015-01-01 10:00:00"
+     * */
     static String URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
 
     /**
@@ -96,11 +65,7 @@ public class ScGoodsSkuApi {
         URL_GETLOCAL_BYBARCODE = URL_SCGOODSSKU + "getLocalByBarcode";
         URL_CHECKWITHBUYINFO_BYBARCODE = URL_SCGOODSSKU
                 + "checkWithBuyInfoByBarcode";
-        URL_GET_BYBARCODE = URL_SCGOODSSKU + "getByBarcode";
-        URL_FIND_STOREWITHCHAINSKU = URL_SCGOODSSKU + "findStoreWithChainSku";
-        URL_STOREIN = URL_SCGOODSSKU + "storeIn";
         URL_GETGOODS_BYBARCODE = URL_SCGOODSSKU + "getGoodsByBarCode";
-        URL_LIST = URL_SCGOODSSKU + "list";
         URL_IMPORT_FROM_CHAINSKU = URL_SCGOODSSKU + "importFromChainSku";
 
         URL_FINDONLINEGOODSLIST = URL_SCGOODSSKU + "findOnlineGoodsList";

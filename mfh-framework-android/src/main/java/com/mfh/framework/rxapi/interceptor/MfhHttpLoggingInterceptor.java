@@ -261,7 +261,8 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
 
         if (contentLength != 0) {
           logger.log("");
-          logger.log(buffer.clone().readString(charset));
+//          logger.log(buffer.clone().readString(charset));
+          ZLogger.df(buffer.clone().readString(charset));
         }
 
         logger.log("<-- END HTTP (" + buffer.size() + "-byte body)");

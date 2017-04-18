@@ -57,14 +57,23 @@ public class ZipUtils {
         }
         ZLogger.d("zipFiles.srcFile:" + srcFile.getPath());
 
-
-        ZLogger.d("zipFiles.zipFile:" + zipFile.getPath());
-
         ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(
                 zipFile), BUFF_SIZE));
         for (File resFile : srcFile.listFiles()) {
             zipFile(resFile, zipOut, "");
         }
+        zipOut.close();
+    }
+
+    public static void zipFile(File srcFile, File zipFile) throws IOException {
+        if (!srcFile.exists()) {
+            return;
+        }
+        ZLogger.d("zipFiles.srcFile:" + srcFile.getPath());
+
+        ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(
+                zipFile), BUFF_SIZE));
+        zipFile(srcFile, zipOut, "");
         zipOut.close();
     }
 

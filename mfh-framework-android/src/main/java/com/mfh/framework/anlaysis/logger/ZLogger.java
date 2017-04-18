@@ -148,6 +148,14 @@ public class ZLogger {
         }
     }
 
+    public static void i2f(String log) {
+        if (LOG_ENABLED) {
+
+//            Log.i(TAG, log);
+            printWrapper(INFO_FILE, TAG, log);
+        }
+    }
+
     /**
      * Warn
      */

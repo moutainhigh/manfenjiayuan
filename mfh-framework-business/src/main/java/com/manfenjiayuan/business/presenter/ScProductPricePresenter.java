@@ -7,6 +7,7 @@ import com.mfh.framework.api.anon.sc.productPrice.ScProductPriceMode;
 import com.mfh.framework.mvp.OnPageModeListener;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 平台商品档案
@@ -23,10 +24,9 @@ public class ScProductPricePresenter {
 
     /**
      * 查询平台商品档案
-     * @param barcode 商品条码
      * */
-    public void findProductSku(String barcode, PageInfo pageInfo){
-        mScProductPriceMode.findProductSku(barcode, pageInfo,
+    public void findProductSku(Map<String, String> options, PageInfo pageInfo){
+        mScProductPriceMode.findProductSku(options, pageInfo,
                 new OnPageModeListener<ProductSku>() {
             @Override
             public void onProcess() {

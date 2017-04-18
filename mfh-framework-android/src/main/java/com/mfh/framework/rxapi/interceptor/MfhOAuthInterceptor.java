@@ -54,7 +54,7 @@ public class MfhOAuthInterceptor implements Interceptor {
         }
 
 
-        ZLogger.d(String.format("---> [%s] %s on %s%n%s", compressedRequest.method(),
+        ZLogger.df(String.format("---> [%s] %s on %s%n%s", compressedRequest.method(),
                 compressedRequest.url(), chain.connection(), compressedRequest.headers()));
         Response response = chain.proceed(compressedRequest);
 

@@ -2,6 +2,8 @@ package com.mfh.framework.core.utils;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
+import static com.mfh.comn.logic.SeqInit.SeqArea.str;
+
 /**
  * Created by kun on 15/9/7.
  * 数据转换工具
@@ -61,6 +63,9 @@ public class DataConvertUtil {
      * @return String 每个Byte之间空格分隔，如: [61 6C 6B]
      */
     static public String ByteArrToHex(byte[] inBytArr, String seperate) {
+        if (inBytArr == null) {
+            return null;
+        }
         StringBuilder strBuilder = new StringBuilder();
         int j = inBytArr.length;
         for (byte anInBytArr : inBytArr) {
@@ -133,6 +138,9 @@ public class DataConvertUtil {
      * @return String 对应的字符串
      */
     public static String hexStr2Str(String hexStr) {
+        if (hexStr == null) {
+            return null;
+        }
         String str = "0123456789ABCDEF";
         char[] hexs = hexStr.toCharArray();
         byte[] bytes = new byte[hexStr.length() / 2];

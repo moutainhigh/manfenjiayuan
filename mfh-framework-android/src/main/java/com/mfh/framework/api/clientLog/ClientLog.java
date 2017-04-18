@@ -13,9 +13,10 @@ public class ClientLog implements Serializable{
     private String stackInformation; //堆栈信息
     private String hardwareInformation; //硬件版本信息
     private String androidLevel; //安卓版本号
-    private String loginName; //登录名
     private String softVersion; //程序的版本号
-    private Date errorTime; //错误时间
+    private String loginName; //登录名
+    private String terminalId;//设备编号
+    private Date errorTime; //反馈时间
 
     public Long getId() {
         return id;
@@ -79,5 +80,13 @@ public class ClientLog implements Serializable{
 
     public void setErrorTime(Date errorTime) {
         this.errorTime = errorTime;
+    }
+
+    public String getTerminalId() {
+        return terminalId;
+    }
+
+    public void setTerminalId(String terminalId) {
+        this.terminalId = terminalId;
     }
 }

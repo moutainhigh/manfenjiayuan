@@ -9,6 +9,17 @@ public class MathCompact {
     /**
      * 减法运算
      * */
+    public static Double add(Double d1, Double d2){
+        if (d1 == null){
+            return d2 != null ? d2 : null;
+        }
+
+        return d2 != null ? d1 + d2 : d1;
+    }
+
+    /**
+     * 减法运算
+     * */
     public static Double sub(Double d1, Double d2){
         if (d1 == null){
             return null;

@@ -49,42 +49,7 @@ public class ScOrderApiImpl extends ScOrderApi{
         AfinalFactory.postDefault(URL_FINDPREPAREABLEORDERS, params, responseCallback);
     }
 
-    /**
-     * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手
-     * @param id 订单编号
-     * @param jsonStr 订单明细
-     */
-    public static void updateCommitInfo(Long id, String jsonStr,
-                                        AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("id", String.valueOf(id));
-        params.put("jsonStr", jsonStr);
 
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_UPDATECOMMITINFO, params, responseCallback);
-    }
-
-    /**
-     * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手
-     * @param orderId 订单编号
-     * @param buyerId 买手编号,可以为空
-     * @param transHumanId 骑手编号,可以为空
-     *
-     */
-    public static void prepareOrder(Long orderId, Long buyerId, Long transHumanId,
-                                    AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("orderId", String.valueOf(orderId));
-        if (buyerId != null){
-            params.put("buyerId", String.valueOf(buyerId));
-        }
-        if (transHumanId != null){
-            params.put("transHumanId", String.valueOf(transHumanId));
-        }
-
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_PREPAREORDER, params, responseCallback);
-    }
 
     /**
      * 当前登录的小伙伴即买手收到消息后点击接单，选择一个骑手并进行发货，并且通知骑手

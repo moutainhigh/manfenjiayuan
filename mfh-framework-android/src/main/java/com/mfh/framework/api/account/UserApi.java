@@ -12,8 +12,6 @@ public class UserApi {
     public static String URL_LOGIN = MfhApi.URL_BASE_SERVER + "/login";
     /**退出*/
     public static String URL_EXIT= MfhApi.URL_BASE_SERVER + "/exit";
-    /**会话是否有效*/
-    public static String URL_VALID_SESSION = MfhApi.URL_BASE_SERVER + "/isSessionValid";
     /**用户信息*/
     public static String URL_MY_PROFILE = MfhApi.URL_BASE_SERVER + "/baseProfile/myProfile";
     /**更新用户信息:登录密码*/
@@ -38,7 +36,6 @@ public class UserApi {
     public static void register(){
         URL_LOGIN = MfhApi.URL_BASE_SERVER + "/login";
         URL_EXIT = MfhApi.URL_BASE_SERVER + "/exit";
-        URL_VALID_SESSION = MfhApi.URL_BASE_SERVER + "/isSessionValid";
         URL_MY_PROFILE = MfhApi.URL_BASE_SERVER + "/baseProfile/myProfile";
         URL_USER_UPDATE_LOGINPWD = MfhApi.URL_BASE_SERVER + "/sys/human/updateUserPassword";
         URL_USER_UPDATE = MfhApi.URL_BASE_SERVER + "/sys/human/update";

@@ -54,7 +54,6 @@ public class ScOrderHttpManager extends BaseHttpManager{
         @GET("scOrder/prepareOrder")
         Observable<MResponse<String>> prepareOrder(@QueryMap Map<String, String> options);
 
-
     }
 
     public void getByCode(Map<String, String> options, Subscriber<ScOrder> subscriber) {
@@ -64,6 +63,11 @@ public class ScOrderHttpManager extends BaseHttpManager{
         toSubscribe(observable, subscriber);
     }
 
+    /**
+     * 当前登录人员即买手或发货人员，选择一个骑手并进行发货，并且通知骑手
+     * @param id 订单编号
+     * @param jsonStr 订单明细
+     */
     public void updateCommitInfo(Map<String, String> options, Subscriber<String> subscriber) {
         ScOrderService mfhApi = RxHttpManager.createService(ScOrderService.class);
         Observable observable = mfhApi.updateCommitInfo(options)

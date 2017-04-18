@@ -15,6 +15,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -302,116 +303,44 @@ public class ScGoodsSkuMode {
      *
      * @param categoryId 类目编号
      */
-    public void listScGoodsSku(PageInfo pageInfo, Long categoryId, String barcode, String name,
-                               String orderby, boolean orderbydesc,
-                               String priceType, final OnPageModeListener<ScGoodsSku> listener) {
+    public void listScGoodsSku(Long categoryId, PageInfo pageInfo,
+                               final OnPageModeListener<ScGoodsSku> listener) {
         if (listener != null) {
             listener.onProcess();
         }
 
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<ScGoodsSku>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
-                //此处在主线程中执行。
-                List<ScGoodsSku> entityList = new ArrayList<>();
-                if (rs != null) {
-                    for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
-                        entityList.add(wrapper.getBean());
-                    }
-                }
-                if (listener != null) {
-                    listener.onSuccess(pageInfo, entityList);
-                }
-            }
-
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.df("加载库存商品失败:" + errMsg);
-                if (listener != null) {
-                    listener.onError(errMsg);
-                }
-            }
-        }, ScGoodsSku.class, MfhApplication.getAppContext());
-
-        ScGoodsSkuApiImpl.listScGoodsSku(pageInfo, categoryId, barcode, name,
-                orderby, orderbydesc, false, priceType, queryRsCallBack);
-    }
-
-    public void listScGoodsSku(Long categoryId, PageInfo pageInfo, final OnPageModeListener<ScGoodsSku> listener) {
-        if (listener != null) {
-            listener.onProcess();
+        Map<String, String> options = new HashMap<>();
+        //类目
+        if (categoryId != null) {
+            options.put("categoryId", String.valueOf(categoryId));
         }
-
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<ScGoodsSku>(pageInfo) {
-            @Override
-            public void processQueryResult(RspQueryResult<ScGoodsSku> rs) {
-                //此处在主线程中执行。
-                List<ScGoodsSku> entityList = new ArrayList<>();
-                if (rs != null) {
-                    for (EntityWrapper<ScGoodsSku> wrapper : rs.getRowDatas()) {
-                        entityList.add(wrapper.getBean());
-                    }
-                }
-                if (listener != null) {
-                    listener.onSuccess(pageInfo, entityList);
-                }
-            }
-
-            @Override
-            protected void processFailure(Throwable t, String errMsg) {
-                super.processFailure(t, errMsg);
-                ZLogger.df("加载库存商品失败:" + errMsg);
-                if (listener != null) {
-                    listener.onError(errMsg);
-                }
-            }
-        }, ScGoodsSku.class, MfhApplication.getAppContext());
-
-        ScGoodsSkuApiImpl.listScGoodsSku(categoryId, pageInfo, false, queryRsCallBack);
-    }
-
-    /**
-     * 根据条码查找租户是否已经发布过该商品，若存在返回信息
-     */
-    public void checkWithBuyInfoByBarcode(String barcode, final OnModeListener<ScGoodsSku> listener) {
-        if (listener != null) {
-            listener.onProcess();
+        //gku.sell_day_num
+        options.put("joinFlag", String.valueOf(false));// 只查网点商品
+        if (pageInfo != null){
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
-
-
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<ScGoodsSku,
-                NetProcessor.Processor<ScGoodsSku>>(
-                new NetProcessor.Processor<ScGoodsSku>() {
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ScGoodsSkuHttpManager.getInstance().list(options,
+                new MQuerySubscriber<ScGoodsSku>(pageInfo) {
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //查询失败
-                        ZLogger.df("查询商品失败:" + errMsg);
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        ZLogger.df("加载库存商品失败:" + e.toString());
+
                         if (listener != null) {
-                            listener.onError(errMsg);
+                            listener.onError(e.toString());
                         }
                     }
 
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        ScGoodsSku goods = null;
-
-                        if (rspData != null) {
-//                            java.lang.ClassCastException: com.mfh.comn.net.data.RspListBean cannot be cast to com.mfh.comn.net.data.RspValue
-                            RspBean<ScGoodsSku> retValue = (RspBean<ScGoodsSku>) rspData;
-                            goods = retValue.getValue();
-                        }
-
+                    public void onQueryNext(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
                         if (listener != null) {
-                            listener.onSuccess(goods);
+                            listener.onSuccess(pageInfo, dataList);
                         }
                     }
-                }
-                , ScGoodsSku.class
-                , MfhApplication.getAppContext()) {
-        };
-        ScGoodsSkuApiImpl.checkWithBuyInfoByBarcode(barcode, responseCallback);
+                });
     }
 
     /**

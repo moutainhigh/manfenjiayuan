@@ -1,5 +1,6 @@
 package com.mfh.framework.rxapi.http;
 
+import com.mfh.framework.rxapi.bean.InvSendIoOrderBody;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.entity.MValue;
 import com.mfh.framework.rxapi.func.MValueResponseFunc;
@@ -7,7 +8,9 @@ import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 
 import java.util.Map;
 
-import retrofit2.http.GET;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -38,8 +41,14 @@ public class InvSendIoOrderHttpManager extends BaseHttpManager{
          *
          * 成功返回：{"code":"0","msg":"新增成功!","version":"1","data":{"val":"2638"}}
          */
-        @GET("invSendIoOrder/createRecOrder")
+//        @GET("invSendIoOrder/createRecOrder")
+//        Observable<MResponse<MValue<String>>> createRecOrder(@QueryMap Map<String, String> options);
+        @POST("invSendIoOrder/createRecOrder")
         Observable<MResponse<MValue<String>>> createRecOrder(@QueryMap Map<String, String> options);
+
+        @POST("invSendIoOrder/createRecOrder")
+        Observable<MResponse<MValue<String>>> createRecOrder2(@Query("JSESSIONID") String JSESSIONID,
+                                                             @Body InvSendIoOrderBody body);
 
 //        Observable<MResponse<String>> createRecOrder(@QueryMap Map<String, String> options);
 
@@ -70,6 +79,13 @@ public class InvSendIoOrderHttpManager extends BaseHttpManager{
     public void createRecOrder(Map<String, String> options, MValueSubscriber<String> subscriber) {
         InvSendIoOrderService mfhApi = RxHttpManager.createService(InvSendIoOrderService.class);
         Observable observable = mfhApi.createRecOrder(options)
+                .map(new MValueResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void createRecOrder2(String JSESSIONID, InvSendIoOrderBody body, MValueSubscriber<String> subscriber) {
+        InvSendIoOrderService mfhApi = RxHttpManager.createService(InvSendIoOrderService.class);
+        Observable observable = mfhApi.createRecOrder2(JSESSIONID, body)
                 .map(new MValueResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }

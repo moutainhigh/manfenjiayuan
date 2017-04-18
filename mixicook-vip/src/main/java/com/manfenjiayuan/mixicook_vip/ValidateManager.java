@@ -274,27 +274,26 @@ public class ValidateManager {
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             nextStep();
         } else {
-            NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                    NetProcessor.Processor<String>>(
-                    new NetProcessor.Processor<String>() {
+
+            RxHttpManager.getInstance().isSessionValid(MfhLoginService.get().getCurrentSessionId(),
+                    new Subscriber<String>() {
                         @Override
-                        public void processResult(IResponseData rspData) {
-                            //{"code":"0","msg":"登录成功!","version":"1","data":""}
-                            ZLogger.df("验证登录状态成功");
-                            nextStep();
+                        public void onCompleted() {
+
                         }
 
                         @Override
-                        protected void processFailure(Throwable t, String errMsg) {
-                            super.processFailure(t, errMsg);
+                        public void onError(Throwable e) {
+                            ZLogger.df("登录状态已失效，准备冲登录" + e.toString());
                             retryLogin();
                         }
-                    }
-                    , String.class
-                    , AppContext.getAppContext()) {
-            };
 
-            UserApiImpl.validSession(responseCallback);
+                        @Override
+                        public void onNext(String s) {
+                            ZLogger.df(String.format("验证登录状态成功: %s", s));
+                            nextStep();
+                        }
+                    });
         }
     }
 

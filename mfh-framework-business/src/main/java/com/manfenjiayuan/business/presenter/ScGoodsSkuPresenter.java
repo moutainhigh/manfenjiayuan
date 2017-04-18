@@ -2,12 +2,20 @@ package com.manfenjiayuan.business.presenter;
 
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSkuMode;
+import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商超库存商品
@@ -183,59 +191,65 @@ public class ScGoodsSkuPresenter {
     /**
      * 加载库存商品
      */
-    public void listScGoodsSku(PageInfo pageInfo, Long categoryId, String barcode, String name,
+    public void listScGoodsSku(PageInfo pageInfo, String categoryId, String barcode, String name,
                                String orderby, boolean orderbydesc, String priceType) {
 
-        mScGoodsSkuMode.listScGoodsSku(pageInfo, categoryId, barcode, name,
-                orderby, orderbydesc, priceType, new OnPageModeListener<ScGoodsSku>() {
+        if (mIScGoodsSkuView != null){
+            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+        }
+
+        Map<String, String> options = new HashMap<>();
+        //类目
+        if (!StringUtils.isEmpty(categoryId)) {
+            options.put("categoryId", categoryId);
+        }
+//        价格类型0-计件 1-计重
+        if (!StringUtils.isEmpty(priceType)) {
+            options.put("priceType", priceType);
+        }
+        //排序
+        if (!StringUtils.isEmpty(orderby)) {
+            options.put("orderby", orderby);
+            options.put("orderbydesc", String.valueOf(orderbydesc));
+        }
+        //gku.sell_day_num
+        options.put("joinFlag", String.valueOf(false));// 只查网点商品
+        if (!StringUtils.isEmpty(barcode)) {
+            options.put("barcode", barcode);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            options.put("name", name);
+        }
+
+        if (pageInfo != null){
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ScGoodsSkuHttpManager.getInstance().list(options,
+                new MQuerySubscriber<ScGoodsSku>(pageInfo) {
                     @Override
-                    public void onProcess() {
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        ZLogger.df("加载库存商品失败:" + e.toString());
+
                         if (mIScGoodsSkuView != null){
-                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
+                            mIScGoodsSkuView.onIScGoodsSkuViewError(e.getMessage());
                         }
                     }
 
                     @Override
-                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                    public void onQueryNext(PageInfo pageInfo, List<ScGoodsSku> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
                         if (mIScGoodsSkuView != null){
                             mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
                         }
                     }
-
-                    @Override
-                    public void onError(String errorMsg) {
-                        if (mIScGoodsSkuView != null){
-                            mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
-                        }
-                    }
                 });
+
     }
 
-    public void listScGoodsSku(Long categoryId, PageInfo pageInfo) {
 
-        mScGoodsSkuMode.listScGoodsSku(categoryId, pageInfo, new OnPageModeListener<ScGoodsSku>() {
-                    @Override
-                    public void onProcess() {
-                        if (mIScGoodsSkuView != null){
-                            mIScGoodsSkuView.onIScGoodsSkuViewProcess();
-                        }
-                    }
-
-                    @Override
-                    public void onSuccess(PageInfo pageInfo, List<ScGoodsSku> dataList) {
-                        if (mIScGoodsSkuView != null){
-                            mIScGoodsSkuView.onIScGoodsSkuViewSuccess(pageInfo, dataList);
-                        }
-                    }
-
-                    @Override
-                    public void onError(String errorMsg) {
-                        if (mIScGoodsSkuView != null){
-                            mIScGoodsSkuView.onIScGoodsSkuViewError(errorMsg);
-                        }
-                    }
-                });
-    }
 
     public void findOnlineGoodsList(Long netId, String proSkuIds, PageInfo pageInfo) {
         mScGoodsSkuMode.findOnlineGoodsList(netId, proSkuIds, pageInfo,
